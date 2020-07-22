@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<servers>
+  <server auto-publish-setting="1" auto-publish-time="1" configuration-id="/Servers/NCP_WEB_BO(8012)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost" name="NCP_WEB_BO(8012)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="4">
+    <list key="modules" value0="ncp_web_bo::org.eclipse.jst.j2ee.server:ncp_web_bo::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="1" auto-publish-time="1" configuration-id="/Servers/NCP_BATCH(8092)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (2)" name="NCP_BATCH(8092)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="3">
+    <list key="modules" value0="ncp_batch_server::org.eclipse.jst.j2ee.server:ncp_batch_server::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="1" auto-publish-time="1" configuration-id="/Servers/NCP_IF_EXTERNAL(8072)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (3)" name="NCP_IF_EXTERNAL(8072)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="4">
+    <list key="modules" value0="ncp_if_external_server::org.eclipse.jst.j2ee.server:ncp_if_external_server::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="1" auto-publish-time="1" configuration-id="/Servers/NCP_IF_INTERNAL(8082)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (4)" name="NCP_IF_INTERNAL(8082)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="5">
+    <list key="modules" value0="ncp_if_internal_server::org.eclipse.jst.j2ee.server:ncp_if_internal_server::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="2" auto-publish-time="0" configuration-id="/Servers/NCP_WEB_MB_DX(8022)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (5)" name="NCP_WEB_MB_DX(8022)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="4">
+    <list key="modules" value0="ncp_web_mb_dx::org.eclipse.jst.j2ee.server:ncp_web_mb_dx::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="2" auto-publish-time="0" configuration-id="/Servers/NCP_WEB_PC_DX(8032)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (6)" name="NCP_WEB_PC_DX(8032)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="5">
+    <list key="modules" value0="ncp_web_pc_dx::org.eclipse.jst.j2ee.server:ncp_web_pc_dx::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="1" auto-publish-time="1" configuration-id="/Servers/NCP_TUTORIAL(7012)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (7)" name="NCP_TUTORIAL(7012)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="4">
+    <list key="modules"/>
+  </server>
+  <server auto-publish-setting="1" auto-publish-time="0" configuration-id="/Servers/NCP_WEB_MB_MLB(9022)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (9)" name="NPC_WEB_MB_MLB(9022)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="17">
+    <list key="modules" value0="ncp_web_mb_mlb::org.eclipse.jst.j2ee.server:ncp_web_mb_mlb::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="1" auto-publish-time="1" configuration-id="/Servers/NCP_WEB_PC_SA(9052)-config" deployDir="wtpwebapps" hostname="localhost" id="NCP_WEB_PC_SA(9052)" name="NCP_WEB_PC_SA(9052)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="2">
+    <list key="modules" value0="ncp_web_pc_sa::org.eclipse.jst.j2ee.server:ncp_web_pc_sa::jst.web::2.4"/>
+  </server>
+  <server auto-publish-setting="1" auto-publish-time="1" configuration-id="/Servers/NCP_WEB_MB_SA(9042)-config" deployDir="wtpwebapps" hostname="localhost" id="NCP_WEB_MB_SA(9042)" name="NCP_WEB_MB_SA(9042)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="450" stop-timeout="150" testEnvironment="true" timestamp="1"/>
+  <server auto-publish-setting="2" auto-publish-time="1" configuration-id="/Servers/Tomcat v9.0 Server at localhost (8)-config" deployDir="wtpwebapps" hostname="localhost" id="Tomcat v9.0 Server at localhost (8)" modulesReloadableByDefault="true" name="NPC_WEB_PC_MLB(9032)" runtime-id="Apache Tomcat v9.0" serveModulesWithoutPublish="true" server-type="org.eclipse.jst.server.tomcat.90" server-type-id="org.eclipse.jst.server.tomcat.90" start-timeout="4500" stop-timeout="15" testEnvironment="true" timestamp="8">
+    <list key="modules" value0="ncp_web_pc_mlb::org.eclipse.jst.j2ee.server:ncp_web_pc_mlb::jst.web::2.4"/>
+  </server>
+</servers>

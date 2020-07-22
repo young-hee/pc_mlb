@@ -1,0 +1,2445 @@
+/* Copyright (c) 2015 plgrim, Inc.
+ * All right reserved.
+ * http://plgrim.com
+ * This software is the confidential and proprietary information of plgrim
+ * , Inc. You shall not disclose such Confidential Information and
+ * shall use it only in accordance with the terms of the license agreement
+ * you entered into with plgrim.
+ *
+ * ------------------------------------------------------------------------
+ * @author      sy59.gim
+ * @since       2015. 6. 17
+ */
+
+package com.plgrim.ncp.web.bo.member.web;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.plgrim.ncp.base.abstracts.AbstractController;
+import com.plgrim.ncp.base.abstracts.AbstractDTO;
+import com.plgrim.ncp.base.abstracts.AbstractEntity;
+import com.plgrim.ncp.base.entities.RepositoryHelper;
+import com.plgrim.ncp.base.entities.datasource1.cso.CsoGodInq;
+import com.plgrim.ncp.base.entities.datasource1.cso.CsoMtmInq;
+import com.plgrim.ncp.base.entities.datasource1.cso.CsoMtmInqOrdGod;
+import com.plgrim.ncp.base.entities.datasource1.evt.EvtApplcn;
+import com.plgrim.ncp.base.entities.datasource1.god.GodGodEvl;
+import com.plgrim.ncp.base.entities.datasource1.mbr.Mbr;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrCrtfc;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrDlvsp;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrPsnlInfoModHist;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrRfdBnkAcct;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrWebpntHist;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrWebpntHistExtend;
+import com.plgrim.ncp.base.entities.datasource1.ord.OrdGod;
+import com.plgrim.ncp.base.entities.datasource1.sys.SysAuthorGrp;
+import com.plgrim.ncp.base.enums.MemberEnum;
+import com.plgrim.ncp.base.enums.WebPointEnum;
+import com.plgrim.ncp.base.enums.member.MemberErpEnum;
+import com.plgrim.ncp.base.enums.member.MemberErpEnum.BoReserveCpType;
+import com.plgrim.ncp.base.repository.mbr.MbrDlvspRepository;
+import com.plgrim.ncp.biz.callcenter.data.CsoCnsltMemoExtendDTO;
+import com.plgrim.ncp.biz.callcenter.result.CsoOthersMemberResult;
+import com.plgrim.ncp.biz.goods.result.GoodsReviewResult;
+import com.plgrim.ncp.biz.member.data.MemberBoDTO;
+import com.plgrim.ncp.biz.member.data.MemberChildDTO;
+import com.plgrim.ncp.biz.member.data.MemberFoDTO;
+import com.plgrim.ncp.biz.member.data.MemberResultDTO;
+import com.plgrim.ncp.biz.member.data.MemberSysGrpcoSearchDTO;
+import com.plgrim.ncp.biz.member.data.MysizeDTO;
+import com.plgrim.ncp.biz.member.result.MbrExtendResult;
+import com.plgrim.ncp.biz.member.result.MemberBoResult;
+import com.plgrim.ncp.biz.member.result.MemberSysGrpcoResult;
+import com.plgrim.ncp.biz.order.data.OrderBoDTO;
+import com.plgrim.ncp.biz.order.result.OrderBoResult;
+import com.plgrim.ncp.biz.promotion.result.EventOthersMemberResult;
+import com.plgrim.ncp.cmp.member.bo.MemberActivityBOComponent;
+import com.plgrim.ncp.cmp.member.bo.MemberBenefitBOComponent;
+import com.plgrim.ncp.cmp.member.bo.MemberTermsBOComponent;
+import com.plgrim.ncp.cmp.member.fo.MemberJoinFOComponent;
+import com.plgrim.ncp.commons.builder.GridBuilder;
+import com.plgrim.ncp.commons.util.BOSecurityUtil;
+import com.plgrim.ncp.framework.commons.DateService;
+import com.plgrim.ncp.framework.commons.ExcelUploadService;
+import com.plgrim.ncp.framework.commons.JsonService;
+import com.plgrim.ncp.framework.commons.StringService;
+import com.plgrim.ncp.framework.data.ExcelFileResult;
+import com.plgrim.ncp.framework.data.ExcelResult;
+import com.plgrim.ncp.framework.data.SystemPK;
+import com.plgrim.ncp.framework.page.PageParam;
+import com.plgrim.ncp.interfaces.member.data.MemberInformationSDO;
+import com.plgrim.ncp.interfaces.order.data.OrderOfflinePurchaseResultSDO;
+import com.plgrim.ncp.interfaces.order.data.OrderOfflinePurchaseSDO;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 회원 화면 Controller...
+ *
+ * @author sy59.gim
+ */
+@Slf4j
+@Controller
+public class MemberPageController extends AbstractController {
+
+    /*
+     * ---------------------------------------------------------------------
+     * Instance fields.
+     * ---------------------------------------------------------------------
+     */
+
+	/* 기본 날짜 포맷 */
+    private final static String DEFAULT_DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
+	
+    /** The grid builder. */
+    @Autowired
+    private GridBuilder gridBuilder;
+
+    /** 회원 배송지 조회 repository */
+    @Autowired
+    MbrDlvspRepository mbrDlvspRepository;
+
+    /** 메시지. */
+    @Autowired
+    MessageSourceAccessor messageSourceAccessor;
+
+    @Autowired
+    private MemberActivityBOComponent memberActivityBOComponent;
+	
+	@Autowired
+	private MemberJoinFOComponent memberJoinFOComponent;
+	
+	@Autowired
+	private MemberTermsBOComponent memberTermsBOComponent;
+
+    @Autowired
+    private MemberBenefitBOComponent memberBenefitBOComponent;
+
+    /*
+     * ---------------------------------------------------------------------
+     * Constructors.
+     * ---------------------------------------------------------------------
+     */
+
+
+    /*
+     * ---------------------------------------------------------------------
+     * public & interface method.
+     * ---------------------------------------------------------------------
+     */
+    /**
+     * 회원 목록 화면.
+     */
+    @RequestMapping(value = "/mb/member/list")
+    public String getMemberList(Model model) throws Exception {
+
+        /** CSS Club 조회 조건 추가 start */
+        String aplMallId = this.setAplMallIdBySysAuthor();
+        model.addAttribute("aplMallId", aplMallId);
+        /** CSS Club 조회 조건 추가 end */
+
+        return "member/listMember";
+    }
+
+    /**
+     * 앱다운로드 포인트 적립 조회  화면.
+     */
+    @RequestMapping(value = "/mb/appDownloadPoint/list")
+    public String getAppDownloadPoint(Model model) throws Exception {
+        return "member/listAppDownloadPoint";
+    }
+
+    /**
+     * 최초 앱 다운로드 포인트 적립  목록 조회
+     */
+    @RequestMapping(value = "/mb/appDownloadPoint/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getAppDownloadPoint(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); 						// System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+        PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());	// 페이징 정보
+        dto.setPageParam(pageParam);
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = null;
+        resultDTO= memberBenefitBOComponent.getAppdownloadPointList(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getLists(), resultDTO.getListCount());
+    }
+
+
+    /**
+     * 앱다운로드 포인트 적립 목록 엑셀 조회.
+     */
+    @RequestMapping(value = "/mb/appDownloadPoint/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelAppDownloadPointList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberBenefitBOComponent.getAppdownloadPointListExcel(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrNo"));        // 회원번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrId"));        // 회원ID
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrNm"));        // 회원명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.erpCstmrNo"));        // ERP번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.pntAmt"));       // 적립포인트
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.regDt"));        // 적립일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.preDelDt"));     // 차감예정일
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.member.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원 목록 조회
+     */
+    @RequestMapping(value = "/mb/member/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); 						// System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+        dto.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+        PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());	// 페이징 정보
+        dto.setPageParam(pageParam);
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = memberJoinFOComponent.getMemberList(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getLists(), resultDTO.getListCount());
+    }
+
+    /**
+     * 회원 목록 엑셀 조회.
+     */
+    @RequestMapping(value = "/mb/member/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberJoinFOComponent.getMemberListExcel(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrNo"));        // 회원번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.joinMall"));          // 가입몰
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrId"));        // 회원ID
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrNm"));        // 회원명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrOnlneGrdNM"));  // PLGRIM SHOP 회원 등급
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.erpCstmrNo"));   // ERP고객번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrNationNm"));   // ERP고객번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mobilNo"));      // 휴대전화번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.telNo"));        // 전화번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrEmail"));     // 이메일
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrStat"));      // 회원상태
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrTp"));        // 회원유형
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrAtrb"));      // 회원속성
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.joinDvc"));      // 가입 디바이스
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.joinLang"));     // 언어채널
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.logOccurDate")); // 최종방문일
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.joinDt"));       // 온라인가입일
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrCrtfcDate")); // 통합회원가입일
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.excel.mbrMinOrdDt")); // 최초 구매일
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.excel.mbrMaxOrdDt")); // 최종 구매일
+        result.addHeader("이메일수신동의여부");
+        result.addHeader("SMS수신동의여부");
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.member.grid.title"))
+                     .append("_")
+                     .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원 팝업.
+     */
+    @RequestMapping(value = "/mb/member/view")
+    public String viewMember(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+            @RequestParam(value = "openTab", required = false) String openTab, Model model, HttpServletRequest request) throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+
+        Mbr mbrParam = new Mbr();
+        mbrParam.setMbrNo(mbrNo);
+
+        MemberBoDTO dto = this.setMenuInfo(new MemberBoDTO(), request);
+        dto.setMbr(mbrParam);
+        dto.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 회원 간략 정보 조회
+        MemberBoResult data = memberJoinFOComponent.getMemberSimple(systemPK, dto, BOSecurityUtil.getLoginId());       
+
+        model.addAttribute("data", data);
+        
+        model.addAttribute("mode", "view");
+        model.addAttribute("openTab", openTab);
+        //        model.addAttribute("pcSfUrl", getConfigService().getProperty("ncp.url.pc_SF.root"));
+        return "popup/member/popup/editMember";
+    }
+
+    /**
+     * 회원팝업 - 기본정보 탭 - 임시 비밀번호 발송.
+     */
+    @RequestMapping(value = "/mb/member/password/edit")
+    public String editMemberPassword(@ModelAttribute MemberBoDTO requestDTO, Model model) throws Exception {
+        return "layer/member/layer/editMemberPassword";
+    }
+
+    /**
+     * 회원 팝업 - 기본정보 탭.
+     */
+    @RequestMapping(value = "/mb/member/detail/view", method = RequestMethod.GET)
+    public String viewMemberDetail(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        Mbr mbrParam = new Mbr();
+        mbrParam.setMbrNo(mbrNo);
+        MemberBoDTO dto = this.setMenuInfo(new MemberBoDTO(), request);
+        dto.setMbr(mbrParam);
+
+        // step 2. 상세 조회
+        MemberResultDTO result = memberJoinFOComponent.getMember(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // 마이사이즈 조회
+		List<MysizeDTO> mySize = memberActivityBOComponent.selectMyBasicSize(mbrNo);
+		if (mySize != null && mySize.size() > 0) {
+			String height = "";
+			String maskedHeight = "";
+			if (mySize.get(0).getHeight() != null) {
+				height = mySize.get(0).getHeight();
+				for (int i = 0; i < height.length(); i++) {
+					maskedHeight += "*";
+				}
+			}
+
+			String weight = "";
+			String maskedWeight = "";
+			if (mySize.get(0).getWeight() != null) {
+				weight = mySize.get(0).getWeight();
+				for (int i = 0; i < weight.length(); i++) {
+					maskedWeight += "*";
+				}
+			}
+
+			model.addAttribute("height", maskedHeight);
+			model.addAttribute("weight", maskedWeight);
+		}
+
+		// 혜택 이력 조회 (추천인 조회)
+        /*if("CS".equals(BOSecurityUtil.getAccessSiteId())){
+            dto.setMaskingYn("N");
+        }else{
+            dto.setMaskingYn("Y");
+        }
+*/
+        String recommandMbrId = memberJoinFOComponent.selectRecommandMbrId(dto);
+        
+        if(BOSecurityUtil.getAuthMallId().equals("MBM")){
+        	mbrParam.setErpCstmrNo(result.getMbrDetail().getMbr().getErpCstmrNo());
+        	mbrParam.setMbrId(result.getMbrDetail().getMbr().getMbrId());
+	        // ERP 통합회원정보 조회
+	    	MemberInformationSDO memberInformationSDO = memberJoinFOComponent.getMemberInformation(systemPK, mbrParam);
+	    	model.addAttribute("memberInformationSDO", memberInformationSDO);
+        }
+
+
+        model.addAttribute("detail", result.getMbrDetail());
+        model.addAttribute("emailMbrCrtfc", result.getMbrCrtfcEmail());
+        model.addAttribute("unityMbrCrtfc", result.getMbrCrtfcUnion());
+        model.addAttribute("crtfcMobilNo", result.getCrtfcMobilNo());
+        model.addAttribute("empMbrCrtfc", result.getMbrCrtfcEmp());
+        model.addAttribute("optionalAgree", memberTermsBOComponent.selectMemberOptionalAgreeList(mbrNo));	// 회원 선택적 약관동의 리스트
+        model.addAttribute("recommandMbrId", recommandMbrId); //추천인 ID
+        return "layer/member/tab/editMemberDetail";
+    }
+    
+    
+    /**
+     * 회원팝업 - 자녀정보 수정
+     */
+    @RequestMapping(value = "/mb/member/detail/familyEdit", method = RequestMethod.POST, produces = { "application/json" })
+    public void familyEdit(
+    		HttpServletRequest request
+			,MemberFoDTO dto 
+			,Model model 	
+			,@RequestParam(value="childrenName", required=true) List<String> childrenName			
+			,@RequestParam(value="childrenBirthDay", required=true) List<String> childrenBirthDay			
+    		) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+       
+      	//자녀정보
+		List<MemberChildDTO> cDto = new ArrayList<MemberChildDTO>();	
+		try{
+			if(childrenName != null && !childrenName.isEmpty()){
+				for(int k = 0 ; k < childrenName.size() ; k++){
+					
+						String cName = childrenName.get(k);
+						String bir = childrenBirthDay.get(k);
+						if(cName != null && !"".equals(cName) && bir != null && !"".equals(bir) && bir.length() == 8){
+							
+							String cBirthY = bir.substring(0, 4);
+							String cBirthM = bir.substring(4, 6);
+							String cBirthD = bir.substring(6);
+													
+							if(!StringUtils.isEmpty(cBirthY) && !StringUtils.isEmpty(cBirthM) && !StringUtils.isEmpty(cBirthD)){
+								MemberChildDTO m = new MemberChildDTO();
+								m.setChildrenName(cName);
+								m.setChildrenBirthYear(cBirthY);
+								m.setChildrenBirthMonth(cBirthM);
+								m.setChildrenBirthDay(cBirthD);
+								
+								cDto.add(m);
+							}
+									
+						}
+				}
+			}
+		}catch(Exception e){
+			log.debug("자녀정보 오류");
+		}	
+			
+		if(!cDto.isEmpty()){
+			dto.setChildrenList(cDto);
+		}
+		
+		log.debug("====aaaaa : " + dto);
+		
+		// 국문용 자동세팅
+//		if(dto.getMbr().getMbrAddrSectCd() != null) {
+//			dto.getMbr().setMbrAddrNationCd("kr");
+//			dto.getMbr().setMbrAddrTpCd("OWNHOM");
+//		}
+//		if(dto.getMbr().getTelAreaNo() != null && !"".equals(dto.getMbr().getTelAreaNo())) {
+//			dto.getMbr().setTelNationNo("82");
+//		}
+		// 인증정보
+		MbrCrtfc mbrCrtfc = memberJoinFOComponent.selectMemberCertification(dto.getMbr().getMbrNo());
+		dto.setMbrCrtfc(mbrCrtfc);
+		memberJoinFOComponent.updateMember(systemPK, dto);
+    }
+
+
+    /**
+     * 회원팝업 - 기본정보 탭 - 개인정보수정 이력 레이어 팝업
+     */
+    @RequestMapping(value = "/mb/member/history/list")
+    public String getMemberHistoryList(Model model) throws Exception {
+        return "layer/member/layer/listMemberHistory";
+    }
+
+    /**
+     * 회원팝업 - 기본정보 탭 - 수정 이력 조회
+     */
+    @RequestMapping(value = "/mb/member/history/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void listMemberHistory(@RequestParam(value = "mbrNo", required = true) String mbrNo, @ModelAttribute MemberBoDTO requestDTO,
+            Model model) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+
+        MbrPsnlInfoModHist mpimh = new MbrPsnlInfoModHist();
+        mpimh.setMbrNo(mbrNo);
+
+        PageParam pageParam = getPageService().buildPageParam(requestDTO.getGPageNo(), requestDTO.getGPageSize());
+        RepositoryHelper.makePageEntityIndex(mpimh, pageParam);
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = memberJoinFOComponent.getPersonalInfoModHistoryListForMember(systemPK, mpimh,
+                BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getLists(), resultDTO.getListCount());
+    }
+
+    /**
+     * 회원팝업 - 기본정보 탭 - 임직원 인증코드 발송 팝업
+     */
+    @RequestMapping(value = "/mb/member/empCrtfc/edit")
+    public String editEmpCrtfcCode() throws Exception {
+        return "layer/member/layer/editEmpCrtfcCode";
+    }
+
+    /**
+     * 회원팝업 - 기본정보 탭 - 메모 전체 목록
+     */
+    @RequestMapping(value = "/mb/member/memo/list")
+    public String getMemberMemoList() throws Exception {
+        return "layer/member/layer/listMemberMemo";
+    }
+
+    /**
+     * 회원팝업 - 기본정보 탭 - 메모 전체 조회
+     */
+    @RequestMapping(value = "/mb/member/memo/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getMemberMemoList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        // step 2. 목록 조회
+        List<CsoCnsltMemoExtendDTO> memoList = memberJoinFOComponent.getCsoCnsltMemoList(systemPK, mbrNo, BOSecurityUtil.getLoginId());
+
+        model.addAttribute("rows", memoList);
+        // step 3. 리턴값 설정
+        model.addAttribute("totalRow", memoList.size());
+    }
+
+    /**
+     * 회원 정보 수정 팝업.
+     */
+    @RequestMapping(value = "/mb/member/edit")
+    public String editMember(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        Mbr mbrParam = new Mbr();
+        mbrParam.setMbrNo(mbrNo);
+        MemberBoDTO dto = this.setMenuInfo(new MemberBoDTO(), request);
+        dto.setMbr(mbrParam);
+
+        // step 2. 회원 간략 정보 조회
+        MemberBoResult data = memberJoinFOComponent.getMemberSimple(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 2. 상세 조회
+        MemberResultDTO result = memberJoinFOComponent.getMember(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // 마이사이즈 조회
+ 		List<MysizeDTO> mySize = memberActivityBOComponent.selectMyBasicSize(mbrNo);
+ 		if (mySize != null && mySize.size() > 0) {
+ 			String height = "";
+ 			String maskedHeight = "";
+ 			if (mySize.get(0).getHeight() != null) {
+ 				height = mySize.get(0).getHeight();
+ 				for (int i = 0; i < height.length(); i++) {
+ 					maskedHeight += "*";
+ 				}
+ 			}
+
+ 			String weight = "";
+ 			String maskedWeight = "";
+ 			if (mySize.get(0).getWeight() != null) {
+ 				weight = mySize.get(0).getWeight();
+ 				for (int i = 0; i < weight.length(); i++) {
+ 					maskedWeight += "*";
+ 				}
+ 			}
+
+ 			model.addAttribute("height", maskedHeight);
+ 			model.addAttribute("weight", maskedWeight);
+ 		}
+
+
+        model.addAttribute("detail", result.getMbrDetail());
+        model.addAttribute("unityMbrCrtfc", result.getMbrCrtfcUnion());
+        model.addAttribute("empMbrCrtfc", result.getMbrCrtfcEmp());
+        model.addAttribute("data", data);
+        model.addAttribute("mode", "edit");
+
+        return "popup/member/popup/editMember";
+    }
+
+    /**
+     * 회원팝업 - 기본정보 수정 팝업 - 회원 상태 변경(다건)
+     */
+    @RequestMapping(value = "/mb/member/status/edit")
+    public String editMemberListStatus(@RequestParam(value = "mbrStat", required = true) String mbrStat,
+            @RequestParam(value = "mbrNo", required = true) String[] mbrNo, Model model) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        
+        model.addAttribute("targetMbrStat", mbrStat);
+        model.addAttribute("mbrList", mbrNo);
+        model.addAttribute("systemPK", systemPK);
+
+        return "layer/member/layer/editMemberStatus";
+    }
+
+    /**
+     * 회원팝업 - 기본정보 수정 팝업 - 회원 탈퇴 변경
+     */
+    @RequestMapping(value = "/mb/member/secsn/edit")
+    public String editMemberSecsn(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        // step 2. 회원 탈퇴 조건 조회
+        MbrExtendResult data = memberJoinFOComponent.getMemberForTerminate(systemPK, mbrNo, BOSecurityUtil.getLoginId());
+
+        model.addAttribute("data", data);
+
+        return "layer/member/layer/editMemberSecsn";
+    }
+
+    @RequestMapping(value = "/mb/member/popupOrderList")
+    public String getOrderListPopup(MemberBoDTO dto, Model model) throws Exception {
+        return "popup/member/popup/popupListMemberOrder";
+    }
+
+    /**
+     * 회원팝업 - 주문내역 탭.
+     */
+    @RequestMapping(value = "/mb/member/order/list")
+    public String getOrderList(MemberBoDTO dto, Model model) throws Exception {
+        //  에잇 세컨즈 구매금액 조회.
+        String erpCstmrNo= "";
+
+        try {
+            if(dto.getMbr() != null) {
+                if (!dto.getMbr().getErpCstmrNo().isEmpty() && "UNITY_MBR".equals(dto.getMbr().getMbrTpCd())) {
+                    erpCstmrNo = dto.getMbr().getErpCstmrNo();
+//                    BpCbEsDisplaySDO bpCbEsDisplaySDO = new BpCbEsDisplaySDO();
+//                    bpCbEsDisplaySDO.setR3nameR("ERP");
+//                    bpCbEsDisplaySDO.setIvPartner(erpCstmrNo);
+//                    model.addAttribute("bpCbEsAmt", memberActivityBOComponent.getBpEsSalePrc(bpCbEsDisplaySDO));
+                }
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        model.addAttribute("erpCstmrNo", erpCstmrNo);
+
+        return "layer/member/tab/listMemberOrder";
+    }
+
+    /**
+     * 회원팝업 - 주문내역 탭 - 주문조회
+     */
+    @RequestMapping(value = "/mb/member/order/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getOrderList(@RequestParam(value = "mbrNo", required = true) String mbrNo, OrderBoDTO requestDTO, Model model,
+            HttpServletRequest request) throws Exception {
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString());
+        OrderBoDTO orderDTO = this.setMenuInfo(requestDTO, request);
+        orderDTO.setPchId(mbrNo);
+        orderDTO.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        PageParam pageParam = getPageService().buildPageParam(orderDTO.getGPageNo(), orderDTO.getGPageSize());
+
+        Page<OrderBoResult> list = memberActivityBOComponent.getOrderListForMember(systemPK, orderDTO, pageParam, BOSecurityUtil.getLoginId());
+
+        gridBuilder.build(model, pageParam, list.getContent(), list.getTotalElements());
+    }
+
+    /**
+     * 회원팝업 - 주문내역 탭 - 엑셀
+     */
+    @RequestMapping(value = "/mb/member/order/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelOrderList(@RequestParam(value = "mbrNo", required = true) String mbrNo, @ModelAttribute OrderBoDTO requestDTO,
+            Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        OrderBoDTO orderDTO = this.setMenuInfo(requestDTO, request);
+        orderDTO.setPchId(mbrNo);
+        orderDTO.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberActivityBOComponent.getOrderExcelForMember(systemPK, orderDTO, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.ordNo"));              // 주문번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.ordDt"));              // 주문일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.ordTp"));              // 주문구분
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.ordStat"));            // 주문상태
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.ordAmt"));             // 주문금액
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.mainPayAmt"));         // 주결제금액
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.bskCpnDcSumAmt"));     // 장바구니 쿠폰
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.dlvCstCpnDcSumAmt"));  // 배송비 쿠폰
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.memPntAmt"));          // 멤버십포인트 사용
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.saleAff"));            // 판매제휴사
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.advrtsCh"));           // 광고채널
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.rcverNm"));            // 수취인명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.rcptfrReqst"));        // 영수증신청
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabOrder.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 쿠폰내역 탭.
+     */
+    @RequestMapping(value = "/mb/member/coupon/list")
+    public String getCouponList(Model model) throws Exception {
+        return "layer/member/tab/listMemberCoupon";
+    }
+
+    /**
+     * 회원팝업 - 쿠폰내역 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/coupon/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getCouponList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+        dto.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());
+        RepositoryHelper.makePageEntityIndex(dto, pageParam);
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = memberBenefitBOComponent.getCouponListCountForMember(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getLists(), resultDTO.getListCount());
+    }
+
+    /**
+     * 회원팝업 - 쿠폰내역 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/coupon/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelCouponList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+        dto.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberBenefitBOComponent.getCouponListExcelForMember(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.mbrCpnNo"));       // 쿠폰번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.cpnPubliDt"));     // 발급일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.cpnKind"));        // 쿠폰발급처
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.prmNo"));          // 프로모션번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.prmNm"));          // 프로모션명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.cpnTp"));          // 쿠폰유형
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.cpnStat"));        // 상태
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.dcSectNm"));       // 할인유형
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.validDate"));      // 유효기간
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.cpnUseDt"));       // 사용일자
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.ordNo"));          // 사용주문번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.desc"));           // 비고
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabCoupon.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 멤버십 포인트 탭.
+     */
+    @RequestMapping(value = "/mb/member/reserve/list")
+    public String getReserveList(Model model) throws Exception {
+        return "layer/member/tab/listMemberReserve";
+    }
+    
+    /**
+     * 회원팝업 - 멤버십 포인트 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/reserve/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getMembershipReserveList(@RequestParam(value = "mbrNo", required = true) String mbrNo, 
+    									 @RequestParam(value = "startReserveDt", required = true) String startReserveDt, 
+    									 @RequestParam(value = "endReserveDt", required = true) String endReserveDt, Model model) throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        
+        systemPK.setMall(BOSecurityUtil.getAuthMallId());
+
+        // step 2. 멤버십 포인트 조회
+        MemberResultDTO resultDTO = memberBenefitBOComponent.getMemberReserveList(systemPK, mbrNo, BOSecurityUtil.getLoginId(), startReserveDt, endReserveDt);
+
+        if(resultDTO != null && resultDTO.getReserveList() != null){
+	        // step 3. 리턴값 설정
+	        model.addAttribute("reserve", resultDTO.getReserveAmount());			// 잔여 마일리지
+	        model.addAttribute("expiringReserve", resultDTO.getExpiringAmount());	// 소멸예정 마일리지
+	        model.addAttribute("rows", resultDTO.getReserveList());					// 마일리지 내역
+	        model.addAttribute("totalRow", resultDTO.getReserveList().size());		// 마일리지 내역 건수
+        }
+    }
+
+    /**
+     * 회원팝업 - 멤버십포인트 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/reserve/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelReserveList(@RequestParam(value = "mbrNo", required = true) String mbrNo, 
+			 							 @RequestParam(value = "startReserveDt", required = true) String startReserveDt, 
+			 							 @RequestParam(value = "endReserveDt", required = true) String endReserveDt, Model model) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberBenefitBOComponent.getMemberReserveExcel(systemPK, mbrNo, BOSecurityUtil.getLoginId(), startReserveDt, endReserveDt);
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+
+//        result.addHeader("마일리지 생성/사용 일자");
+//        result.addHeader("마일리지 유형");
+//        result.addHeader("마일리지 몰");
+//        result.addHeader("주문번호");
+//        result.addHeader("마일리지 사용 금액");
+//        result.addHeader("마일리지 적립/복원 금액");
+
+		// 엑셀헤더생성
+		if(content.size()>0){
+			Iterator<String> iterator = content.get(0).keySet().iterator();
+			while(iterator.hasNext()){
+				result.addHeader((String)iterator.next());
+			}
+		}
+        
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabReserve.grid.excel.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 멤버십 포인트 탭 - 멤버십 포인트 변경 레이어 팝업.
+     */
+    @RequestMapping(value = "/mb/member/reserve/edit")
+    public String editReserve(@RequestParam(value = "mbrNo", required = true) String mbrNo, @ModelAttribute MemberBoDTO requestDTO,
+            Model model) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        // step 2. 멤버십 포인트 조정 유형 콤보 데이타
+        List<Map<String, String>> cbTypeCombo = new ArrayList<Map<String, String>>();
+        StringBuilder enumKey = new StringBuilder();
+        for (BoReserveCpType cd : BoReserveCpType.values()) {
+            Map<String, String> cMap = new ConcurrentHashMap<String, String>();
+
+            enumKey.delete(0, enumKey.length()).append(cd);
+            cMap.put("cd", MemberErpEnum.valueOf(enumKey.toString()).toString());
+
+            enumKey.append("_").append(systemPK.getLang());
+            cMap.put("cdNm", MemberErpEnum.valueOf(enumKey.toString()).toString());
+
+            cbTypeCombo.add(cMap);
+        }
+
+        // step 3. 멤버십 포인트 잔액 조회
+        MemberResultDTO resultDTO = memberBenefitBOComponent.getMemberReserve(systemPK, mbrNo, BOSecurityUtil.getLoginId());
+
+        // step 4. 리턴값 설정
+        model.addAttribute("cbTypeCombo", cbTypeCombo);                     // 멤버십 조정유형 콤보
+        model.addAttribute("mbr", requestDTO.getMbr());                     // 회원 정보
+        model.addAttribute("reserve", resultDTO.getReserveAmount());        // 멤버십포인트
+
+        return "layer/member/layer/editMemberReserve";
+    }
+
+    /**
+     * 회원팝업 - 멤버십 포인트 탭 - 임시삭감 내역 조회 레이어 팝업.
+     */
+    @RequestMapping(value = "/mb/member/tempDelReserve/list")
+    public String listTempDelReserve(Model model) throws Exception {
+        return "layer/member/layer/listMemberTempDelReserve";
+    }
+
+    /**
+     * 회원팝업 - 멤버십 포인트 탭 - 임시삭감 내역 조회 레이어 팝업. - 조회.
+     */
+    @RequestMapping(value = "/mb/member/tempDelReserve/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getMemberTempDelReserveList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model) throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        // step 2. 임시삭감 포인트 조회
+        MemberResultDTO resultDTO = memberBenefitBOComponent.getMemberTempDelReserveList(systemPK, mbrNo, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        model.addAttribute("rows", resultDTO.getReserveList());                // 임시삭감 포인트 내역
+        model.addAttribute("totalRow", resultDTO.getReserveList().size());    // 임사삭감 포인트 내역 건수
+    }
+
+    /**
+     * 회원팝업 - 이벤트 포인트 탭.
+     */
+    @RequestMapping(value = "/mb/member/eventReserve/list")
+    public String getEventReserve(Model model) throws Exception {
+        return "layer/member/tab/listMemberEventReserve";
+    }
+
+    /**
+     * * 회원팝업 - 매장 구매 내역 탭.
+     */
+    @RequestMapping(value = "/mb/member/shop/list")
+    public String getShopList(Model model) throws Exception {
+        return "layer/member/tab/listMemberShop";
+    }
+
+    /**
+     * 회원팝업 - 매장 구매 내역 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/shop/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getOfflinePurchaseList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model,
+    		MemberBoDTO dto) throws Exception {
+
+    	// step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+    	
+        // step 2. 매장 구매 내역 정보 조회
+		OrderOfflinePurchaseSDO sdo = new OrderOfflinePurchaseSDO();
+		sdo.setStartDt(dto.getSearchStartDate());
+		sdo.setEndDt(dto.getSearchEndDate());
+		sdo.setCid(dto.getMbr().getErpCstmrNo());
+		sdo.setBrand(dto.getMbr().getJoinMallId());
+		
+		OrderOfflinePurchaseSDO resultSDO = memberActivityBOComponent.getOfflinePurchaseList(sdo, systemPK);
+		int resultSDOSize = 0;
+		if (resultSDO.getResponseData() != null && resultSDO.getResponseData().isEmpty() == false) {
+			resultSDOSize = resultSDO.getResponseData().size();
+		}
+
+        // step 3. 리턴값 설정
+        model.addAttribute("rows", resultSDO.getResponseData());
+        model.addAttribute("totalRow", resultSDOSize);
+    }
+
+    /**
+     * 회원팝업 - 매장 구매 내역 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/shop/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelShopList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model,
+    		MemberBoDTO dto) throws Exception {
+
+    	// step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+    	
+        // step 2. 매장 구매 내역 정보 조회
+		OrderOfflinePurchaseSDO sdo = new OrderOfflinePurchaseSDO();
+		sdo.setStartDt(dto.getSearchStartDate());
+		sdo.setEndDt(dto.getSearchEndDate());
+		sdo.setCid(dto.getMbr().getErpCstmrNo());
+		sdo.setBrand("X");
+		
+		OrderOfflinePurchaseSDO resultSDO = memberActivityBOComponent.getOfflinePurchaseList(sdo, systemPK);
+		
+		List<Map<String, Object>> excelList = new ArrayList<Map<String, Object>>();
+		if (resultSDO.getResponseData() != null && resultSDO.getResponseData().isEmpty() == false) {
+	        for(OrderOfflinePurchaseResultSDO purchaseResultSdo : resultSDO.getResponseData()) {
+	            Map<String, Object> map = new LinkedHashMap<String, Object>();
+	            map.put("purchaseDt", purchaseResultSdo.getPurchaseDt());
+	            map.put("shopNm", purchaseResultSdo.getShopNm());
+	            map.put("godNm", purchaseResultSdo.getGodNm());
+	            map.put("purchaseAmt", purchaseResultSdo.getPurchaseAmt());
+	            map.put("purchaseqTY", purchaseResultSdo.getPurchaseQty());
+	            excelList.add(map);
+	        }
+		}
+    	
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabShop.grid.purDt"));	// 구매일
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabShop.grid.shopNm"));	// 매장명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabShop.grid.godNm"));	// 상품명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabShop.grid.purAmt"));	// 구매금액
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabShop.grid.purCnt"));	// 수량
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabShop.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMdd"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, excelList);
+
+    }
+
+    /**
+     * 회원팝업 - 포인트 관리 탭 - 포인트변경 레이어팝업.
+     */
+    @RequestMapping(value = "/mb/member/eventReserve/edit")
+    public String editEventReserve(MemberBoDTO dto, Model model) throws Exception {
+        return "layer/member/layer/listMemberReserve";
+    }
+
+    /**
+     * 회원팝업 - P포인트 탭.
+     */
+    @RequestMapping(value = "/mb/member/purpleCoin/list")
+    public String getPurpleCoinList() throws Exception {
+        return "layer/member/tab/listMemberPurpleCoin";
+    }
+
+
+    /**
+     * 회원팝업 - P포인트 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/purpleCoin/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getPurpleCoinList(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+                                  @RequestParam(value = "gPageNo", required = false) String pageNo,
+                                  @RequestParam(value = "gPageSize", defaultValue = "50") String pageSize, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        MbrWebpntHist mwh = this.setMenuInfoEntity(new MbrWebpntHist(), request);
+        mwh.setMbrNo(mbrNo);
+        mwh.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        PageParam pageParam = getPageService().buildPageParam(pageNo, Integer.parseInt(pageSize));
+        RepositoryHelper.makePageEntityIndex(mwh, pageParam);
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = memberBenefitBOComponent.getMemberPurpleCoinList(systemPK, mwh, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getLists(), resultDTO.getListCount());
+        model.addAttribute("mbrWebpntAmt", resultDTO.getMbrWebpntAmt());
+    }
+
+    /**
+     * 회원팝업 - 웹포인트 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/purpleCoin/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getPurpleCoinExcel(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        MbrWebpntHist mwh = this.setMenuInfoEntity(new MbrWebpntHist(), request);
+        mwh.setMbrNo(mbrNo);
+        mwh.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberBenefitBOComponent.getMemberPurpleCoinExcel(systemPK, mwh, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader("사유");
+        result.addHeader("주문/이벤트/클레임");
+        result.addHeader("내역");
+        result.addHeader("상태");
+        result.addHeader("금액");
+        result.addHeader("유효기간");
+        result.addHeader("처리일");
+        result.addHeader("등록자");
+        result.addHeader("등록일시");
+        result.addHeader("수정자");
+        result.addHeader("수정일시");
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append("P포인트 적립/사용내역").append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+
+    /**
+     * 회원팝업 - 환불관리 탭
+     */
+    @RequestMapping(value = "/mb/member/refundAccount/list")
+    public String getRefundAccountList() throws Exception {
+        return "layer/member/tab/listMemberRefundAccount";
+    }
+
+    /**
+     * 회원팝업 - 환불관리 탭 - 환불 계좌 목록 조회.
+     */
+    @RequestMapping(value = "/mb/member/refundAccount/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getRefundAccountList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+
+        MbrRfdBnkAcct mrbaParam = this.setMenuInfoEntity(new MbrRfdBnkAcct(), request);
+        mrbaParam.setMbrNo(mbrNo);
+
+        // step 2. 목록 조회
+        List<MbrRfdBnkAcct> lists = memberActivityBOComponent.getRefundAccountList(systemPK, mrbaParam, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        model.addAttribute("rows", lists);
+        model.addAttribute("totalRow", lists.size());
+    }
+
+    /**
+     * 회원팝업 - 환불관리 탭 - 환불 내역 조회.
+     */
+    @RequestMapping(value = "/mb/member/refund/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getRefundList(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+            @RequestParam(value = "gPageNo", required = false) String pageNo,
+            @RequestParam(value = "gPageSize", defaultValue = "50") String pageSize, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        PageParam pageParam = getPageService().buildPageParam(pageNo, Integer.parseInt(pageSize));
+        Mbr mbr = this.setMenuInfoEntity(new Mbr(), request);
+        mbr.setMbrNo(mbrNo);
+        mbr.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 환불내역 조회
+        Page<CsoOthersMemberResult> lists = memberActivityBOComponent.getRefundListForMember(systemPK, mbr, pageParam);
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, lists.getContent(), lists.getTotalElements());
+    }
+
+    /**
+     * 회원팝업 - 환불관리 탭 - 환불 내역 조회 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/refund/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getRefundList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        Mbr mbr = this.setMenuInfoEntity(new Mbr(), request);
+        mbr.setMbrNo(mbrNo);
+        mbr.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberActivityBOComponent.getRefundExcelForMember(systemPK, mbr, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.rfdRequstDt"));      // 환불요청일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.rfdComptDt"));       // 환불완료일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.rfdStat"));          // 환줄상태
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.accountNo"));        // 환불계좌
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.bank"));             // 은행명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.accountAcnthldr"));  // 예금주
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.rfdRequstResn"));    // 환불내용
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.clmNo"));            // 클레임번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.ordNo"));            // 주문번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.regtrNm"));          // 처리자
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabRefund.grid2.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 배송지 탭.
+     */
+    @RequestMapping(value = "/mb/member/deliveryLocation/list")
+    public String getDeliveryLocationList() throws Exception {
+        return "layer/member/tab/listMemberDeliveryLocation";
+    }
+
+    /**
+     * 회원팝업 - 배송지 조회.
+     */
+    @RequestMapping(value = "/mb/member/deliveryLocation/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getDeliveryLocationListData(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+                                            @RequestParam(value = "joinLangCd", required = false) String joinLangCd,
+                                            @RequestParam(value = "langCd", required = false) String langCd,
+                                            Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        MbrDlvsp mdParam = this.setMenuInfoEntity(new MbrDlvsp(), request);
+        
+        String dlvAdbukTurn = request.getParameter("dlvAdbukTurn");
+        if(StringService.isNotEmpty(dlvAdbukTurn)){
+        	try{
+        		mdParam.setDlvAdbukTurn(new Integer(dlvAdbukTurn));
+        	}catch(Exception e){}
+        }
+        
+        mdParam.setMbrNo(mbrNo);
+        /*
+         * 1. 수정일자 	: 2016-12-08
+         * 2. 수정자 	: 김재성 (jskim27)
+         * 3. 요청 SR NO	: #30376
+         * 4. 수정 내용 	: [고객센터] 글로벌 수취인 배송지변경 불가 확인요청
+         *                  - 주문상세 페이지에서 'langCd'가 파라미터로 전달되는 경우 사용하는 방식으로 변경
+         */
+        if (StringService.isEmpty(joinLangCd) &&
+                StringService.isNotEmpty(langCd)) {
+            mdParam.setLang(langCd);
+        }
+        else {
+            mdParam.setLang(joinLangCd);
+        }
+        log.info("'getDeliveryLocationListData' method parameter[{}::{}::{}:{}]",
+                mbrNo, joinLangCd, langCd, mdParam.getLang() );
+
+        // step 2. 목록 조회
+        List<MemberBoResult> lists = memberActivityBOComponent.getDeliveryLocationList(systemPK, mdParam, BOSecurityUtil.getLoginId());
+
+        Mbr mbr = new Mbr();
+        mbr.setMbrNo(mbrNo);
+        model.addAttribute("mbr", memberJoinFOComponent.selectMbr(mbr));
+
+        // step 3. 리턴값 설정
+        model.addAttribute("rows", lists);
+        model.addAttribute("totalRow", lists.size());
+    }
+
+    /**
+     * 회원팝업 - 해외 배송지 입력 팝업
+     */
+    @RequestMapping(value = "/mb/member/popupGlobalMemberDeliveryLocation.popup")
+    public String getDeliveryLocationPopup(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+                                           @RequestParam(value = "type", required = true) String type,
+                                           @RequestParam(value = "adbukTurn", required = true) Integer adbukTurn,
+                                           Model model, HttpServletRequest request) throws Exception {
+
+
+        if("mbrDlvsp".equalsIgnoreCase(type)){
+            MbrDlvsp mbrDlvsp = new MbrDlvsp();
+            mbrDlvsp.setMbrNo(mbrNo);
+            mbrDlvsp.setDlvAdbukTurn(adbukTurn);
+
+            model.addAttribute("detail", mbrDlvspRepository.selectMbrDlvsp(mbrDlvsp));
+        } else {
+            Mbr mbr = new Mbr();
+            mbr.setMbrNo(mbrNo);
+            model.addAttribute("detail", memberJoinFOComponent.selectMbr(mbr));
+        }
+        model.addAttribute("type", type);
+
+        return "popup/member/popup/popupGlobalMemberDeliveryLocation";
+    }
+
+
+    /**
+     * 회원팝업 - 이벤트 응모현황 탭.
+     */
+    @RequestMapping(value = "/mb/member/eventApply/list")
+    public String getEventApplyList() throws Exception {
+        return "layer/member/tab/listMemberEvent";
+    }
+
+    /**
+     * 회원팝업 - 이벤트 응모현황 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/eventApply/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getEventApplyList(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+            @RequestParam(value = "gPageNo", required = false) String pageNo,
+            @RequestParam(value = "gPageSize", defaultValue = "50") String pageSize, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        PageParam pageParam = getPageService().buildPageParam(pageNo, Integer.parseInt(pageSize));
+        EvtApplcn ea = this.setMenuInfoEntity(new EvtApplcn(), request);
+        ea.setMbrNo(mbrNo);
+        ea.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // 이벤트 응모현황 조회
+        Page<EventOthersMemberResult> lists = memberActivityBOComponent.getEventApplyListForMember(systemPK, ea, pageParam,
+                BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, lists.getContent(), lists.getTotalElements());
+    }
+
+    /**
+     * 회원팝업 - 이벤트 응모현황 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/eventApply/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getEventApplyList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        EvtApplcn ea = this.setMenuInfoEntity(new EvtApplcn(), request);
+        ea.setMbrNo(mbrNo);
+        ea.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberActivityBOComponent.getEventApplyExcelForMember(systemPK, ea, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabEvent.grid.evtStat"));        // 상태
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabEvent.grid.evtNo"));          // 이벤트번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabEvent.grid.evtNm"));          // 이벤트명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabEvent.grid.evtDt"));          // 이벤트기간
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabEvent.grid.applcnDt"));       // 이벤트참여일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabEvent.grid.prizeInfo"));      // 이벤트당첨정보
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabEvent.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 상품평 탭.
+     */
+    @RequestMapping(value = "/mb/member/goodsReview/list")
+    public String getGoodsReviewList() throws Exception {
+        return "layer/member/tab/listMemberGoodsReview";
+    }
+
+    /**
+     * 회원팝업 - 상품평 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/goodsReview/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getGoodsReviewList(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+            @RequestParam(value = "gPageNo", required = false) String pageNo,
+            @RequestParam(value = "gPageSize", defaultValue = "50") String pageSize, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        PageParam pageParam = getPageService().buildPageParam(pageNo, Integer.parseInt(pageSize));
+        GodGodEvl gge = this.setMenuInfoEntity(new GodGodEvl(), request);
+        gge.setMbrNo(mbrNo);
+        gge.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // 상품평 조회
+        Page<GoodsReviewResult> lists = memberActivityBOComponent.getGoodsReviewListForMember(systemPK, gge, pageParam,
+                BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, lists.getContent(), lists.getTotalElements());
+    }
+
+    /**
+     * 회원팝업 - 상품평 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/goodsReview/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getGoodsReviewList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        GodGodEvl gge = this.setMenuInfoEntity(new GodGodEvl(), request);
+        gge.setMbrNo(mbrNo);
+        gge.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberActivityBOComponent.getGoodsReviewExcelForMember(systemPK, gge, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.godEvlWritngDt")); // 등록일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.godNo"));          // 상품번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.godNm"));          // 상품명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.godEvlCont"));     // 상품평
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.ntceYn"));         // 게시여부
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.qltyEvlScore"));   // 품질
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.pkgEvlScore"));    // 포장
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.dlvEvlScore"));    // 배송
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.sizeEvlScore"));   // Size
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.colorEvlScore"));  // Color
+        for (Map<String, Object> map : content) {
+            String colNm = "NTCE_YN";
+            String colValue = StringService.trimToEmpty((String) map.get(colNm));
+            if (StringService.equalsIgnoreCase(colValue, MemberEnum.YES.toString())) {
+                map.put(colNm, messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.ntceYn.Y"));
+            }
+            else if (StringService.equalsIgnoreCase(colValue, MemberEnum.NO.toString())) {
+                map.put(colNm, messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.ntceYn.N"));
+            }
+        }
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsReview.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 상품Q&A 탭.
+     */
+    @RequestMapping(value = "/mb/member/goodsQNA/list")
+    public String getGoodsQNAList() throws Exception {
+        return "layer/member/tab/listMemberGoodsQNA";
+    }
+
+    /**
+     * 회원팝업 - 상품Q&A 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/goodsQNA/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getGoodsQNAList(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+            @RequestParam(value = "gPageNo", required = false) String pageNo,
+            @RequestParam(value = "gPageSize", defaultValue = "50") String pageSize, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        PageParam pageParam = getPageService().buildPageParam(pageNo, Integer.parseInt(pageSize));
+        CsoGodInq cgi = this.setMenuInfoEntity(new CsoGodInq(), request);
+        cgi.setMbrNo(mbrNo);
+
+        // step 2. 상품문의 조회
+        Page<CsoOthersMemberResult> lists = memberActivityBOComponent.getGoodsInquiryListForMember(systemPK, cgi, pageParam,
+                BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, lists.getContent(), lists.getTotalElements());
+    }
+
+    /**
+     * 회원팝업 - 상품Q&A 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/goodsQNA/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getGoodsQNAList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        CsoGodInq cgi = this.setMenuInfoEntity(new CsoGodInq(), request);
+        cgi.setMbrNo(mbrNo);
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberActivityBOComponent.getGoodsInquiryExcelForMember(systemPK, cgi, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.inqDt"));          // 문의일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.godNo"));          // 상품번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.godNm"));          // 상품명
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.inqCont"));        // 문의내용
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.secretsntnc"));    // 비밀글여부
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.delete"));         // 삭제여부
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.ansStat"));        // 상태
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.adminNm"));        // 답변처리자
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.ansDt"));          // 답변일시
+
+        for (Map<String, Object> map : content) {
+            String colNm = "SECRETSNTNC_YN";
+            String colValue = StringService.trimToEmpty((String) map.get(colNm));
+            if (StringService.equalsIgnoreCase(colValue, MemberEnum.YES.toString())) {
+                map.put(colNm, messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.secretsntnc.Y"));
+            }
+            else if (StringService.equalsIgnoreCase(colValue, MemberEnum.NO.toString())) {
+                map.put(colNm, messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.secretsntnc.N"));
+            }
+
+            colNm = "DELETE_YN";
+            colValue = StringService.trimToEmpty((String) map.get(colNm));
+            if (StringService.equalsIgnoreCase(colValue, MemberEnum.YES.toString())) {
+                map.put(colNm, messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.delete.Y"));
+            }
+            else if (StringService.equalsIgnoreCase(colValue, MemberEnum.NO.toString())) {
+                map.put(colNm, messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.delete.N"));
+            }
+        }
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabGoodsQNA.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 1:1문의 탭.
+     */
+    @RequestMapping(value = "/mb/member/counsel/list")
+    public String getCounselList() throws Exception {
+        return "layer/member/tab/listMemberCounsel";
+    }
+
+    /**
+     * 회원팝업 - 1:1문의 탭 - 조회.
+     */
+    @RequestMapping(value = "/mb/member/counsel/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getCounselList(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+            @RequestParam(value = "gPageNo", required = false) String pageNo,
+            @RequestParam(value = "gPageSize", defaultValue = "50") String pageSize, Model model, HttpServletRequest request)
+            throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        PageParam pageParam = getPageService().buildPageParam(pageNo, Integer.parseInt(pageSize));
+        CsoMtmInq cmi = this.setMenuInfoEntity(new CsoMtmInq(), request);
+        cmi.setInqMbrNo(mbrNo);
+        cmi.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 1:1문의 조회
+        Page<CsoOthersMemberResult> lists = memberActivityBOComponent.getMtmInquiryListForMember(systemPK, cmi, pageParam,
+                BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, lists.getContent(), lists.getTotalElements());
+    }
+
+    /**
+     * 회원팝업 - 1:1문의 탭 - 문의상품 레이어팝업.
+     */
+    @RequestMapping(value = "/mb/member/counsel/goods/list")
+    public String getCounselList(@RequestParam(value = "mtmInqSn", required = true) String mtmInqSn,
+            @RequestParam(value = "ordNo", required = true) String ordNo, Model model, HttpServletRequest request) throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        //        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        CsoMtmInqOrdGod cmiog = this.setMenuInfoEntity(new CsoMtmInqOrdGod(), request);
+        cmiog.setMtmInqSn(Long.parseLong(mtmInqSn));
+        cmiog.setOrdNo(ordNo);
+
+        // step 2. 상품문의 조회
+        List<OrdGod> lists = memberActivityBOComponent.getMtmInquiryOrdGodList(cmiog);
+
+        // step 3. 리턴값 설정
+        model.addAttribute("rowsList", JsonService.marshalling(lists));
+
+        return "layer/member/layer/listMemberInqGoods";
+    }
+
+    /**
+     * 회원팝업 - 1:1문의 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/counsel/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getCounselList(@RequestParam(value = "mbrNo", required = true) String mbrNo, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        CsoMtmInq cmi = this.setMenuInfoEntity(new CsoMtmInq(), request);
+        cmi.setInqMbrNo(mbrNo);
+        cmi.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberActivityBOComponent.getMtmInquiryExcelForMember(systemPK, cmi, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.inqDt"));          // 접수일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.inqTp"));          // 상담구분
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.inqCont"));        // 문의내용
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.onlneGrdNm"));     // PLGRIM SHOP 회원 등급
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.ordNo"));          // 주문번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.godNo"));          // 상품번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.ansStat"));        // 처리상태
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.adminNm"));        // 처리자
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.ansDt"));          // 처리일자
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabCounsel.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 회원팝업 - 발송내역 탭.
+     */
+    @RequestMapping(value = "/mb/member/send/list")
+    public String getSendList() throws Exception {
+        return "layer/member/tab/listMemberSend";
+    }
+
+    /**
+     * 회원팝업 - 발송내역 탭 - 조회.
+     */
+	@RequestMapping(value = "/mb/member/send/list", method = RequestMethod.POST, produces = { "application/json" })
+	public void getSendList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request)
+			throws Exception {
+
+		// step 1. 입력 변수 확인 및 설정
+		MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+		PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());
+		RepositoryHelper.makePageEntityIndex(dto, pageParam);
+
+		// step 2. 목록 조회
+		long count = 0L;
+		List resultList = new ArrayList();
+		List<String> searchListGubun = new ArrayList<String>();
+		
+//		if (StringService.equalsIgnoreCase(dto.getSendType(), "NTALK")) {
+//
+//			searchListGubun.add("NTALK");
+//			dto.setSearchListGubun(searchListGubun);
+//
+//			NoticeListResult result = historyMessageBOComponent.selectAlimTalkListForMember(dto);
+//
+//			if(result==null) result = new NoticeListResult();
+//			resultList = result.getNoticeResultList();
+//
+//			count = result.getTotalCount();
+//
+//		} else {
+//			NetpathyNoticeSDO netpathyNoticeSDO = setNetpathyNoticeSDO(dto);
+//
+//
+//			if 		(StringService.equalsIgnoreCase(dto.getSendType(), "CAHR")) searchListGubun.add("SMS");
+//			else if (StringService.equalsIgnoreCase(dto.getSendType(), "MAIL")) searchListGubun.add("EMAIL");
+//
+//			netpathyNoticeSDO.setSearchListGubun(searchListGubun);
+//
+//			count = netpathyNoticeRepository.selectEmsLogListCountForMember(netpathyNoticeSDO);
+//			if (count > 0) {
+//				resultList = netpathyNoticeRepository.selectEmsLogListForMember(netpathyNoticeSDO);
+//			}
+//		}
+
+		gridBuilder.build(model, pageParam, resultList, count);
+
+	}
+
+    /**
+     * 회원팝업 - 발송내역 탭 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/member/send/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getSendExcel(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = null;
+        if (StringService.equalsIgnoreCase(dto.getSendType(), "NTALK")) {
+//            content = historyMessageBOComponent.selectAlimTalkExcelListForMember(dto);
+
+        } else {
+//        	NetpathyNoticeSDO netpathyNoticeSDO = setNetpathyNoticeSDO(dto);
+//
+//			List<String> searchListGubun = new ArrayList<String>();
+//			if 		(StringService.equalsIgnoreCase(dto.getSendType(), "CAHR")) searchListGubun.add("SMS");
+//			else if (StringService.equalsIgnoreCase(dto.getSendType(), "MAIL")) searchListGubun.add("EMAIL");
+//
+//			content = netpathyNoticeRepository.selectEmsLogExcelListForMember(netpathyNoticeSDO);
+        }
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.sendDt"));       // 발송일시
+        if(StringService.equalsIgnoreCase(dto.getSendType(), "NTALK")){
+            result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.type"));         // 구분
+            result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.sendStatus"));   // 발송구분
+            result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.errorCode"));    // 오류 CODE
+        } else {
+            result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.sendStatus"));   // 발송구분
+        }
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.receiver"));     // 수신자
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.detail.tabSend.grid.sendInfo"));     // 발송내용
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+    
+    /**
+     * 휴면회원 관리 화면.
+     */
+    @RequestMapping(value = "/mb/suspendMember/list")
+    public String getSuspendMemberList(Model model) throws Exception {
+        return "member/listSuspendMember";
+    }
+
+    /**
+     * 휴면회원 관리 화면 - 조회.
+     */
+    @RequestMapping(value = "/mb/suspendMember/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getSuspendMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());
+        dto.setPageParam(pageParam);
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = memberJoinFOComponent.getSuspendMemberList(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getLists(), resultDTO.getListCount());
+    }
+
+    /**
+     * 휴면회원 관리 화면 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/suspendMember/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelSuspendMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberJoinFOComponent.getSuspendMemberListExcel(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.stop.member.grid.mbrNo"));        // 회원번호
+        result.addHeader("가입몰");
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.stop.member.grid.mbrId"));        // 회원ID
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.stop.member.grid.stopDt"));       // 휴면일시
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.stop.member.grid.stopResn"));     // 휴면사유
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.stop.member.grid.mbrTp"));        // 회원유형
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.stop.member.grid.mbrAtrb"));      // 회원속성
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.stop.member.grid.joinDt"));       // 회원가입일
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.stop.member.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 탈퇴회원 관리 화면
+     */
+    @RequestMapping(value = "/mb/secessionMember/list")
+    public String getSecessionMemberList(Model model) throws Exception {
+        return "member/listSecessionMember";
+    }
+
+    /**
+     * 탈퇴회원 관리 화면 - 조회.
+     */
+    @RequestMapping(value = "/mb/secessionMember/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getSecessionMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+        PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());
+        dto.setPageParam(pageParam);
+
+        /** CSS Club 조회 조건 추가 start */
+        String aplMallId = this.setAplMallIdBySysAuthor();
+//        dto.setMbr(new Mbr());
+        dto.getMbr().setJoinMallId(aplMallId);
+        /** CSS Club 조회 조건 추가 end */
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = memberJoinFOComponent.getSecessionMemberList(systemPK, dto);
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getLists(), resultDTO.getListCount());
+    }
+
+    /**
+     * 탈퇴회원 관리 화면 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/secessionMember/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelSecessionMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request)
+            throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        /** CSS Club 조회 조건 추가 start */
+        String aplMallId = this.setAplMallIdBySysAuthor();
+        dto.setMbr(new Mbr());
+        dto.getMbr().setJoinMallId(aplMallId);
+        /** CSS Club 조회 조건 추가 end */
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberJoinFOComponent.getSecessionMemberListExcel(systemPK, dto);
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.secession.member.grid.mbrNo"));               // 회원번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.secession.member.grid.secsnDate"));           // 탈퇴일자
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.secession.member.grid.secsnSect"));           // 탈퇴유형
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.secession.member.grid.enfrcsecsnDspsNm"));    // 탈퇴처리자
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.secession.member.grid.secsnResn"));           // 탈퇴사유
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.secession.member.grid.secsnResnDetailCont")); // 메시지
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.secession.member.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 온라인클럽회원 관리 화면
+     */
+    @RequestMapping(value = "/mb/onlineClubMember/list")
+    public String getOnlineClubMemberList(Model model) throws Exception {
+        return "member/listOnlineClubMember";
+    }
+
+    /**
+     * 온라인클럽회원 관리 화면 - 조회.
+     */
+    @RequestMapping(value = "/mb/onlineClubMember/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getOnlineClubMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+        PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());
+        dto.setPageParam(pageParam);
+
+        // step 2. 목록 조회
+        PageImpl<MemberBoResult> lists = memberJoinFOComponent.getOnlineClubMemberList(systemPK, dto);
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, lists.getContent(), lists.getTotalElements());
+    }
+
+    /**
+     * 탈퇴회원 관리 화면 - 엑셀.
+     */
+    @RequestMapping(value = "/mb/onlineClubMember/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void getOnlineClubMemberExcel(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberJoinFOComponent.getOnlineClubMemberExcel(systemPK, dto);
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.setFileName(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.title"));
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.mbrNo"));
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.mbrId"));
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.mbrNm"));
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.onlneClubJoinDt"));
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.loginCnt"));
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.godEvlCnt"));
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.snsCnt"));
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.onlineClub.member.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * 배송지 관리 팝업.
+     * #30376 [고객센터] 글로벌 수취인 배송지변경 불가 확인요청
+     *  - 주문상세 페이지에서 'langCd'가 파라미터로 전달되는 경우 사용하는 방식으로 변경
+     */
+    @RequestMapping(value = "/mb/member/deliveryLocation/edit")
+    public String editDeliveryLocation(@RequestParam(value = "mbrNo", required = true) String mbrNo,
+                                       @RequestParam(value = "langCd", required = false) String langCd,
+                                       Model model, HttpServletRequest request) throws Exception {
+
+    	// step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+
+        Mbr mbrParam = new Mbr();
+        mbrParam.setMbrNo(mbrNo);
+
+        MemberBoDTO dto = new MemberBoDTO();
+        dto.setMbr(mbrParam);
+        dto.setMaskingYn("N");
+
+        String servletPath = request.getServletPath();
+        // 메뉴 일련번호
+        dto.setAccessMenuSn(BOSecurityUtil.getMenuSnFromAccessUrl(servletPath));
+
+        // 회원 간략 정보 조회
+        MemberBoResult data = memberJoinFOComponent.getMemberSimple(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        model.addAttribute("data", data);
+        model.addAttribute("mbrNo", mbrNo);
+        /*
+         * 1. 수정일자 	: 2016-12-08
+         * 2. 수정자 	: 김재성 (jskim27)
+         * 3. 요청 SR NO	: #30376
+         * 4. 수정 내용 	: [고객센터] 글로벌 수취인 배송지변경 불가 확인요청
+         *                  - 주문상세 페이지에서 'langCd'가 파라미터로 전달되는 경우 사용하는 방식으로 변경
+         */
+        //model.addAttribute("langCd" , StringUtils.defaultString(data.getMbr().getJoinLangCd() , "KOR"));
+        if (StringService.isEmpty(langCd)) {
+            model.addAttribute("langCd", StringUtils.defaultString(data.getMbr().getJoinLangCd(), "KOR"));
+        }
+        else {
+            model.addAttribute("langCd", StringUtils.defaultString(langCd, "KOR"));
+        }
+
+        return "popup/member/popup/popupMemberDeliveryLocation";
+    }
+
+    /**
+     * 회원 목록 화면.
+     */
+    @RequestMapping(value = "/mb/member/popupListMember")
+    public String getPopupMemberList(Model model) throws Exception {
+
+        /** CSS Club 조회 조건 추가 start */
+        String aplMallId = this.setAplMallIdBySysAuthor();
+        model.addAttribute("aplMallId", aplMallId);
+        /** CSS Club 조회 조건 추가 end */
+
+        return "popup/member/popup/popupListMember";
+    }
+
+    /**
+     * 그룹사 팝업 조회 화면
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/mb/member/popupSysGrpco/list", method = RequestMethod.GET)
+    public String getPopupSysGrpcoList(Model model) throws Exception {
+        return "popup/member/popup/popupSysGrpcoList";
+    }
+
+    /**
+     * 그룹사 팝업 조회
+     * @param memberSysGrpcoSearchDTO
+     * @param model
+     * @throws Exception
+     */
+    @RequestMapping(value = "/mb/member/popupSysGrpco/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getPopupSysGrpcoList(@ModelAttribute MemberSysGrpcoSearchDTO memberSysGrpcoSearchDTO, Model model) throws Exception {
+        // step1. 입력 변수 확인
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        PageParam pageParam = getPageService().buildPageParam(memberSysGrpcoSearchDTO.getGPageNo(), memberSysGrpcoSearchDTO.getGPageSize());
+        memberSysGrpcoSearchDTO.setPageParam(pageParam);
+        // step2. 목록 조회
+        Page<MemberSysGrpcoResult> lists = memberJoinFOComponent.selectSysGrpcoList(systemPK, memberSysGrpcoSearchDTO);
+        // 리턴값 설정
+        gridBuilder.build(model, pageParam, lists.getContent(), lists.getTotalElements());
+    }
+
+    /*
+     * ---------------------------------------------------------------------
+     * private method.
+     * ---------------------------------------------------------------------
+     */
+
+    /**
+     * 메뉴 정보 설정.
+     * @param dto
+     * @param request
+     * @return
+     * @return
+     */
+    private <T extends AbstractDTO> T setMenuInfo(T dto, HttpServletRequest request) {
+        T boDTO = dto;
+        String servletPath = request.getServletPath();
+
+        if (log.isInfoEnabled()) {
+            log.info("ACCESS PATH : {} : START", servletPath);
+        }
+
+        // 메뉴 일련번호
+        boDTO.setAccessMenuSn(BOSecurityUtil.getMenuSnFromAccessUrl(servletPath));
+
+        // 권한에 따른 마스킹 해제 여부 확인.
+        String viewServletPath = StringService.replace(StringService.replace(servletPath, ".json", ""), "/excel", "/list");
+        if (BOSecurityUtil.hasAccessUrl(viewServletPath, "M")) {// 마스킹 해제 권한 확인
+            boDTO.setMaskingYn(MemberEnum.NO.toString());
+        }
+        else {
+            boDTO.setMaskingYn(MemberEnum.YES.toString());
+        }
+
+        return boDTO;
+    }
+
+    /**
+     * 메뉴 정보 설정.
+     * @param entity
+     * @param request
+     * @return
+     * @return
+     */
+    private <T extends AbstractEntity> T setMenuInfoEntity(T entity, HttpServletRequest request) {
+        T boEntity = entity;
+        String servletPath = request.getServletPath();
+
+        if (log.isInfoEnabled()) {
+            log.info("ACCESS PATH : {} : START", servletPath);
+        }
+
+        // 메뉴 일련번호
+        boEntity.setAccessMenuSn(BOSecurityUtil.getMenuSnFromAccessUrl(servletPath));
+
+        // 권한에 따른 마스킹 해제 여부 확인.
+        String viewServletPath = StringService.replace(StringService.replace(servletPath, ".json", ""), "/excel", "/list");
+        if (BOSecurityUtil.hasAccessUrl(viewServletPath, "M")) {// 마스킹 해제 권한 확인
+            boEntity.setMaskingYn(MemberEnum.NO.toString());
+        }
+        else {
+            boEntity.setMaskingYn(MemberEnum.YES.toString());
+        }
+
+        return boEntity;
+    }
+
+    // ~ Private Methods. ~~~~~~~~~~~~~~
+    private String setAplMallIdBySysAuthor() throws Exception {
+        //권한그룹 조회 ==> css club 관리자일 경우 app_mall_id = CSS 로 조회
+        String loginId = BOSecurityUtil.getLoginId();
+        SysAuthorGrp sysAuthorGrp = null;
+        String authorGrpNm = null;
+        String mallId = "";
+
+        if(StringService.isNotEmpty(loginId)) {
+            sysAuthorGrp = memberJoinFOComponent.selectAdminAuthorGrp(loginId);
+            if(sysAuthorGrp != null) {
+                authorGrpNm = sysAuthorGrp.getAuthorGrpNm();
+            }
+        }
+
+        mallId = MemberEnum.MALL.toString();
+        return mallId;
+    }
+
+    /**
+     * P포인트 회원 목록 화면.
+     */
+    @RequestMapping(value = "/mb/member/purpleCoinList")
+    public String getPurpleCoinMemberList(Model model) throws Exception {
+
+        /** CSS Club 조회 조건 추가 start */
+        String aplMallId = this.setAplMallIdBySysAuthor();
+        model.addAttribute("aplMallId", aplMallId);
+        /** CSS Club 조회 조건 추가 end */
+
+        return "member/listPurpleCoinMember";
+    }
+
+    /**
+     * P포인트 회원 목록 조회
+     */
+    @RequestMapping(value = "/mb/purpleCoinMember/list", method = RequestMethod.POST, produces = { "application/json" })
+    public void getPurpleCoinMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); 						// System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+        PageParam pageParam = getPageService().buildPageParam(dto.getGPageNo(), dto.getGPageSize());	// 페이징 정보
+        dto.setPageParam(pageParam);
+        dto.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+
+//        dto.setMaskingYn("Y");
+
+        // step 2. 목록 조회
+        MemberResultDTO resultDTO = memberJoinFOComponent.getPurpleCoinMemberList(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 리턴값 설정
+        gridBuilder.build(model, pageParam, resultDTO.getPurpleCoinMbrlists(), resultDTO.getListCount());
+    }
+
+    /**
+     * P포인트 회원 목록 엑셀 조회.
+     */
+    @RequestMapping(value = "/mb/purpleCoinMember/excel", method = RequestMethod.POST, produces = { "application/xls" })
+    public void downloadExcelPurpleCoinMemberList(@ModelAttribute MemberBoDTO requestDTO, Model model, HttpServletRequest request) throws Exception {
+        // step 1. 입력 변수 확인 및 설정
+        SystemPK systemPK = getIdGenService().generateSystemPK("", "", MemberEnum.KOR.toString()); // System PK
+        systemPK.setSite(BOSecurityUtil.getAccessSiteId());
+        MemberBoDTO dto = this.setMenuInfo(requestDTO, request);
+
+        /** CSS Club 조회 조건 추가 start */
+        String aplMallId = this.setAplMallIdBySysAuthor();
+        dto.setMbr(new Mbr());
+        dto.getMbr().setJoinMallId(aplMallId);
+        /** CSS Club 조회 조건 추가 end */
+
+        // step 2. 목록 조회
+        List<Map<String, Object>> content = memberJoinFOComponent.getMemberListExcel(systemPK, dto, BOSecurityUtil.getLoginId());
+
+        // step 3. 엑셀 파일 설정
+        ExcelResult result = new ExcelResult();
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrNo"));        // 회원번호
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrId"));        // 회원ID
+        result.addHeader(messageSourceAccessor.getMessage("MemberController.member.grid.mbrNm"));        // 회원명
+        result.addHeader("전체적립코인");
+        result.addHeader("전체사용코인");
+        result.addHeader("전체소멸코인");
+        result.addHeader("당월적립코인");
+        result.addHeader("당월소멸코인");
+        result.addHeader("최초적립일");
+        result.addHeader("회원상태");
+        result.addHeader("회원유형");
+        result.addHeader("회원속성");
+        result.addHeader("언어채널");
+        result.addHeader("최종방문일");
+        result.addHeader("온라인가입일");
+        result.addHeader("통합회원가입일");
+
+        StringBuilder excelFileName = new StringBuilder();
+        excelFileName.append(messageSourceAccessor.getMessage("MemberController.member.grid.title")).append("_")
+                .append(DateService.parseString(new Date(), "yyyyMMddHHmm"));
+        result.setFileName(excelFileName.toString());
+
+        // step 4. 컨텐트 데이터 생성
+        result.parse(model, content);
+    }
+
+    /**
+     * P포인트 일괄적립 엑셀등록 팝업 페이지.
+     *
+     * @param model [설명]
+     * @param request [설명]
+     * @param mbrWebpntHist [설명]
+     * @return String [설명]
+     * @throws Exception the exception
+     * @since 2015. 11. 30
+     */
+    @RequestMapping("/mb/member/popupPurpleCoinAccmlBulk")
+    public String popupPurpleCoinAccmlBulk(Model model, HttpServletRequest request, MbrWebpntHist mbrWebpntHist) throws Exception {
+
+        return "/member/popup/popupPurpleCoinAccmlBulk";
+
+    }
+
+    /**
+     * P포인트 일괄회수 엑셀등록 팝업 페이지.
+     *
+     * @param model [설명]
+     * @param request [설명]
+     * @param mbrWebpntHist [설명]
+     * @return String [설명]
+     * @throws Exception the exception
+     * @since 2015. 11. 30
+     */
+    @RequestMapping("/mb/member/popupPurpleCoinRtrvlBulk")
+    public String popupPurpleCoinDdctBulk(Model model, HttpServletRequest request, MbrWebpntHist mbrWebpntHist) throws Exception {
+
+        return "/member/popup/popupPurpleCoinRtrvlBulk";
+
+    }
+
+
+    /**
+     * [메서드 설명].
+     *
+     * * P포인트 일괄적립 엑셀등록 템플릿 업로드 처리
+     *
+     * [사용 방법 설명].
+     *
+     * @param files
+     * @param files
+     * @param model
+     * @return
+     * @throws Exception
+     */
+
+    @RequestMapping(value = "/mb/member/popupPurpleCoinAccmlBulk", method = RequestMethod.POST, produces = { "application/json" })
+    public void popupPurpleCoinAccmlBulk(@RequestParam("files") MultipartFile[] files, Model model, HttpServletRequest request) throws Exception {
+
+//        SystemPK systemPK = getIdGenService().generateSystemPK("SFM", "WEB", "KOR");
+        String loginId = BOSecurityUtil.getLoginId();
+
+        String[] properties = {
+                "mallId",		// 몰구분
+        		"mbrNo",		// 회원번호
+                "webpntAmt",	// 적립코인
+                "useBegDtStr",	// 유효기간(FROM)
+                "useEndDtStr",	// 유효기간(TO)
+                "resnDscr",		// 적립사유
+                "validText"		// 오류메시지
+        };
+
+        ExcelFileResult excelResult = null;
+
+        // 일괄처리 오류정보 목록
+        List<MbrWebpntHistExtend> errorList = new ArrayList<MbrWebpntHistExtend>();
+
+        if(files !=null &&  files.length > 0){
+
+            // 엑셀템플릿 파싱처리
+            List<MultipartFile> multipartFiles = Arrays.asList(files);
+            String upfilePath = getConfigService().getProperty("ncp_base.spring.mvc.upload.temp");
+            excelResult = ExcelUploadService.excelUpload(multipartFiles, properties, MbrWebpntHistExtend.class, request, upfilePath);
+
+            // 엑셀업로드 데이터 파싱결과 목록
+            @SuppressWarnings("unchecked")
+            List<MbrWebpntHistExtend> uploadList = (List<MbrWebpntHistExtend>)excelResult.getAllList();
+
+            // 전체 처리카운트
+            int totalCnt = 0;
+            
+            List<String> dupMbrNoList = new ArrayList<String>();
+            String mallId = BOSecurityUtil.getAuthMall().get("mallId");
+            
+            // 엑셀업로드 파싱결과목록 처리
+            for(MbrWebpntHistExtend mwhExt : uploadList) {
+            	
+            	if(mwhExt.getMallId() == null || "".equals(mwhExt.getMallId())) {
+            		mwhExt.setValidText("몰구분이 존재하지 않습니다.");
+                    errorList.add(mwhExt);
+            	}
+            	else if(!mallId.equals(mwhExt.getMallId().toUpperCase())) {
+            		mwhExt.setValidText("몰구분이 맞지 않습니다. 현재 로그인된 담당자의 몰구분은 " + mallId + "입니다.");
+                    errorList.add(mwhExt);
+            	}
+            	else if(mwhExt.getMbrNo() == null || "".equals(mwhExt.getMbrNo())) {
+                    mwhExt.setValidText("회원번호가 존재하지 않습니다.");
+                    errorList.add(mwhExt);
+                }
+            	else if(!dupMbrNoList.isEmpty() && dupMbrNoList.contains(mwhExt.getMbrNo())) {
+            		mwhExt.setValidText("중복되는 회원번호입니다.");
+                    errorList.add(mwhExt);
+            	}
+                else if(mwhExt.getWebpntAmt() == null || mwhExt.getWebpntAmt().compareTo(BigDecimal.ZERO) <= 0) {
+                    mwhExt.setValidText("적립포인트는 필수입력값입니다.");
+                    errorList.add(mwhExt);
+                }
+                else if(mwhExt.getWebpntAmt().compareTo(new BigDecimal(100000)) > 0) {
+                    mwhExt.setValidText("일괄적립시 한번에 적립이 가능한 포인트는 최대 10만 포인트입니다.");
+                    errorList.add(mwhExt);
+                }
+                else if(mwhExt.getUseEndDtStr() == null || "".equals(mwhExt.getUseEndDtStr())) {
+                    mwhExt.setValidText("유효기간(TO)는 필수입력값입니다.");
+                    errorList.add(mwhExt);
+                }
+                else if(mwhExt.getResnDscr() == null || "".equals(mwhExt.getResnDscr())) {
+                    mwhExt.setValidText("적립사유는 필수입력값입니다.");
+                    errorList.add(mwhExt);
+                }
+                else {
+                	// 중복 회원번호 검증을 위한 리스트
+                	if(!dupMbrNoList.contains(mwhExt.getMbrNo())) {
+                		dupMbrNoList.add(mwhExt.getMbrNo());
+                	}
+                	
+                    MbrWebpntHist mwh = new MbrWebpntHist();
+                    mwh.setMbrNo(mwhExt.getMbrNo());
+                    mwh.setWebpntAmt(mwhExt.getWebpntAmt());
+                    if(mwhExt.getUseBegDtStr() == null || "".equals(mwhExt.getUseBegDtStr())) {
+                        mwh.setUseBegDt(new Date());
+                    }
+                    else {
+                        mwh.setUseBegDt(DateService.createDate(mwhExt.getUseBegDtStr(), DEFAULT_DATE_FORMAT_YYYYMMDD));
+                    }
+                    mwh.setUseEndDt(DateService.createDate(mwhExt.getUseEndDtStr(), DEFAULT_DATE_FORMAT_YYYYMMDD));
+
+                    if(getDiffOfDate(DateService.parseString(mwh.getUseBegDt(), DEFAULT_DATE_FORMAT_YYYYMMDD), DateService.parseString(mwh.getUseEndDt(), DEFAULT_DATE_FORMAT_YYYYMMDD)) < 0) {
+                        mwhExt.setValidText("유효기간(TO)의 값이 올바르지 않습니다.");
+                        errorList.add(mwhExt);
+                        totalCnt++;
+                        totalCnt++;	// continue; 를 하므로 추가.
+                    }
+                    else if(getDiffOfDate(DateService.parseString(new Date(), DEFAULT_DATE_FORMAT_YYYYMMDD), DateService.parseString(mwh.getUseEndDt(), DEFAULT_DATE_FORMAT_YYYYMMDD)) < 0) {
+                    	mwhExt.setValidText("유효기간(TO)의 값은 현재일자보다 이전일 수 없습니다.");
+                        errorList.add(mwhExt);
+                        totalCnt++;	// continue; 를 하므로 추가.
+                        continue;
+                    }
+                    mwh.setResnDscr(mwhExt.getResnDscr());
+                    mwh.setWebpntResnCd(WebPointEnum.WebPntResnCd.ADMIN_MDAT.toString());
+                    mwh.setWebpntDetailResnCd(WebPointEnum.WebPntAdminDtlResnCd.ADMIN_ADIT.toString());
+                    mwh.setWebpntStatCd(WebPointEnum.WebPntStatCd.ACCML_DCSN.toString());
+                    mwh.setRegtrId(loginId);
+                    mwh.setUdterId(loginId);
+                    mwh.setMallId(BOSecurityUtil.getAuthMallId());
+
+                    //P포인트 적립
+                    memberBenefitBOComponent.insertWebPoint(mwh);
+                }
+                totalCnt++;
+            }
+
+            ExcelUploadService.erroFileDB(excelResult, properties, errorList);
+            excelResult.setRequestCount(totalCnt);
+            excelResult.setSuccessCount(totalCnt - errorList.size());
+            excelResult.setFailCount(errorList.size());
+        }
+        model.addAttribute("loginId", loginId);
+        model.addAttribute("result", excelResult);
+        model.addAttribute("errorList", errorList);
+    }
+
+
+    /**
+     * [메서드 설명].
+     *
+     * * P포인트 일괄회수 엑셀등록 템플릿 업로드 처리
+     *
+     * [사용 방법 설명].
+     *
+     * @param files
+     * @param files
+     * @param model
+     * @return
+     * @throws Exception
+     */
+
+    @RequestMapping(value = "/mb/member/popupPurpleCoinRtrvlBulk", method = RequestMethod.POST, produces = { "application/json" })
+    public void popupPurpleCoinRtrvlBulk(@RequestParam("files") MultipartFile[] files, Model model, HttpServletRequest request) throws Exception {
+
+//        SystemPK systemPK = getIdGenService().generateSystemPK("SFM", "WEB", "KOR");
+        String loginId = BOSecurityUtil.getLoginId();
+
+        String[] properties = {
+        		"mallId",		// 몰구분
+                "mbrNo",		// 회원번호
+                "webpntAmt",	// 회수코인
+                "resnDscr",		// 회수사유
+                "validText"		// 오류메시지
+        };
+
+        ExcelFileResult excelResult = null;
+
+        // 일괄처리 오류정보 목록
+        List<MbrWebpntHistExtend> errorList = new ArrayList<MbrWebpntHistExtend>();
+
+        if(files !=null &&  files.length > 0){
+
+            // 엑셀템플릿 파싱처리
+            List<MultipartFile> multipartFiles = Arrays.asList(files);
+            String upfilePath = getConfigService().getProperty("ncp_base.spring.mvc.upload.temp");
+            excelResult = ExcelUploadService.excelUpload(multipartFiles, properties, MbrWebpntHistExtend.class, request, upfilePath);
+
+            // 엑셀업로드 데이터 파싱결과 목록
+            @SuppressWarnings("unchecked")
+            List<MbrWebpntHistExtend> uploadList = (List<MbrWebpntHistExtend>)excelResult.getAllList();
+
+            // 전체 처리카운트
+            int totalCnt = 0;
+
+            List<String> dupMbrNoList = new ArrayList<String>();
+            String mallId = BOSecurityUtil.getAuthMall().get("mallId");
+            
+            // 엑셀업로드 파싱결과목록 처리
+            for(MbrWebpntHistExtend mwhExt : uploadList) {
+
+            	if(mwhExt.getMallId() == null || "".equals(mwhExt.getMallId())) {
+            		mwhExt.setValidText("몰구분이 존재하지 않습니다.");
+                    errorList.add(mwhExt);
+            	}
+            	else if(!mallId.equals(mwhExt.getMallId().toUpperCase())) {
+            		mwhExt.setValidText("몰구분이 맞지 않습니다. 현재 로그인된 담당자의 몰구분은 " + mallId + "입니다.");
+                    errorList.add(mwhExt);
+            	}
+            	else if(mwhExt.getMbrNo() == null || "".equals(mwhExt.getMbrNo())) {
+                    mwhExt.setValidText("회원번호가 존재하지 않습니다.");
+                    errorList.add(mwhExt);
+                }
+            	else if(!dupMbrNoList.isEmpty() && dupMbrNoList.contains(mwhExt.getMbrNo())) {
+            		mwhExt.setValidText("중복되는 회원번호입니다.");
+                    errorList.add(mwhExt);
+            	}
+                else if(mwhExt.getWebpntAmt() == null || mwhExt.getWebpntAmt().compareTo(BigDecimal.ZERO) <= 0) {
+                    mwhExt.setValidText("회수포인트는 필수입력값입니다.");
+                    errorList.add(mwhExt);
+                }
+                else if(mwhExt.getWebpntAmt().compareTo(new BigDecimal(100000)) > 0) {
+                    mwhExt.setValidText("일괄회수시 한번에 회수 가능한 포인트는 최대 10만 포인트입니다.");
+                    errorList.add(mwhExt);
+                }
+                else if(mwhExt.getResnDscr() == null || "".equals(mwhExt.getResnDscr())){
+                    mwhExt.setValidText("회수사유는 필수입력값입니다.");
+                    errorList.add(mwhExt);
+                }
+                else {
+                	if(!dupMbrNoList.contains(mwhExt.getMbrNo())) {
+                		dupMbrNoList.add(mwhExt.getMbrNo());
+                	}
+                	
+                    MbrWebpntHist mwh = new MbrWebpntHist();
+                    mwh.setMbrNo(mwhExt.getMbrNo());
+                    mwh.setWebpntAmt(mwhExt.getWebpntAmt());
+                    mwh.setResnDscr(mwhExt.getResnDscr());
+                    mwh.setWebpntResnCd(WebPointEnum.WebPntResnCd.ADMIN_MDAT.toString());
+                    mwh.setWebpntDetailResnCd(WebPointEnum.WebPntAdminDtlResnCd.ADMIN_DDCT.toString());
+                    mwh.setWebpntStatCd(WebPointEnum.WebPntStatCd.ACCML_DDCT.toString());
+                    mwh.setRegtrId(loginId);
+                    mwh.setUdterId(loginId);
+                    mwh.setMallId(BOSecurityUtil.getAuthMallId());
+
+                    //P포인트 차감
+                    memberBenefitBOComponent.insertWebPoint(mwh);
+                }
+                totalCnt++;
+            }
+
+            ExcelUploadService.erroFileDB(excelResult, properties, errorList);
+            excelResult.setRequestCount(totalCnt);
+            excelResult.setSuccessCount(totalCnt - errorList.size());
+            excelResult.setFailCount(errorList.size());
+        }
+        model.addAttribute("loginId", loginId);
+        model.addAttribute("result", excelResult);
+        model.addAttribute("errorList", errorList);
+    }
+
+
+    private long getDiffOfDate(String beginDateStr, String endDateStr) {
+        long diff = 0L;
+        long diffDays = 0L;
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(DEFAULT_DATE_FORMAT_YYYYMMDD);
+            Date beginDate = formatter.parse(beginDateStr);
+            Date endDate = formatter.parse(endDateStr);
+
+            // 시간차이를 시간,분,초를 곱한 값으로 나누면 하루 단위가 나옴
+            diff = endDate.getTime() - beginDate.getTime();
+            diffDays = diff / (24 * 60 * 60 * 1000);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return diffDays;
+    }
+
+}

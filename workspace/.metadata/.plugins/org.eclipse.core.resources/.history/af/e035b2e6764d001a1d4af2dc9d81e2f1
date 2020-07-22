@@ -1,0 +1,95 @@
+package com.plgrim.ncp.interfaces.external.server.web.crema.service;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import com.plgrim.ncp.framework.commons.JsonService;
+import com.plgrim.ncp.interfaces.crema.data.CremaMemberSDO;
+import com.plgrim.ncp.interfaces.crema.data.CremaSDO;
+import com.plgrim.ncp.interfaces.external.server.web.crema.repository.CremaAuthRepository;
+import com.plgrim.ncp.interfaces.external.server.web.crema.repository.CremaMemberRepository;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Transactional
+@Service
+@Slf4j
+public class CremaMemberService {
+
+	@Autowired
+	CremaAuthRepository cremaAuthRepository;
+
+	@Autowired
+	CremaMemberRepository cremaMemberRepository;
+
+	@Autowired
+	@Qualifier("sessionTemplate1")
+	SqlSession sqlSession1;
+
+	// API URL
+	private @Value("${ncp_base.crema.url}") String url;
+
+	// 상품 URL
+	private @Value("${ncp_base.crema.member}") String uri;
+
+	public List<CremaMemberSDO> sendMemberList(CremaSDO cremaSDO) throws Exception {
+		
+		List<CremaMemberSDO> targetList = cremaMemberRepository.selectMemberList(cremaSDO);
+		String accessToken = cremaAuthRepository.selectAccessToken(cremaSDO);
+
+		for (CremaMemberSDO target : targetList) {
+
+			try {
+
+				target.setAccessToken(accessToken);
+
+				String inputJson = JsonService.marshalling(target);
+				
+				RestTemplate restTemplate = new RestTemplate();
+	            HttpHeaders httpHeaders = new HttpHeaders();
+	            MediaType mediaType = new MediaType("application", "json", Charset.forName("UTF-8"));
+	            httpHeaders.setContentType(mediaType);
+	            HttpEntity<String> sendDataEntity = new HttpEntity<>(inputJson, httpHeaders);
+	            ResponseEntity<String> response = null;
+	            HttpMethod httpMethod = HttpMethod.POST;
+	            
+	            response = restTemplate.exchange(url, httpMethod, sendDataEntity, String.class);
+	            String responseStr = response.getBody();
+	            log.info("> responseStr : {}", responseStr);
+	            
+	            String statusCode = response.getStatusCode().toString();
+	            //net.sf.json.JSONObject resJson = (net.sf.json.JSONObject) JSONSerializer.toJSON(responseStr);
+				
+	            if("200".equals(statusCode) ) {
+
+	            } else {
+	            	log.error("> Failure message : {}", responseStr +" : "+ responseStr);
+	            }
+
+			} catch (Exception e) {
+				StringWriter error = new StringWriter();
+				e.printStackTrace(new PrintWriter(error));
+				log.error("> Failure message : {}", this.getClass().getName() + " : " + error.toString());
+			}
+
+		}
+
+		return targetList;
+	}
+
+}

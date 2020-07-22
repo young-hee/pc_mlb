@@ -1,0 +1,1078 @@
+/* Copyright (c) 2015 plgrim, Inc.
+ * All right reserved.
+ * http://plgrim.com
+ * This software is the confidential and proprietary information of plgrim
+ * , Inc. You shall not disclose such Confidential Information and
+ * shall use it only in accordance with the terms of the license agreement
+ * you entered into with plgrim.
+ *
+ * ------------------------------------------------------------------------
+ * @author      kenshin.kim
+ * @since       2015. 3. 25
+ */
+package com.plgrim.ncp.web.bo.order.web;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.plgrim.ncp.base.abstracts.AbstractController;
+import com.plgrim.ncp.base.entities.datasource1.cso.CsoCnsltMemo;
+import com.plgrim.ncp.base.entities.datasource1.god.GodExtend;
+import com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlivyDrctGod;
+import com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlivyDrctGodExtend;
+import com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrWebpntHist;
+import com.plgrim.ncp.base.entities.datasource1.mbr.MbrWebpntHistExtend;
+import com.plgrim.ncp.base.entities.datasource1.ord.Ord;
+import com.plgrim.ncp.base.entities.datasource1.ord.OrdGodExtend;
+import com.plgrim.ncp.base.entities.datasource1.sys.SysAdminAuthorGrpMapng;
+import com.plgrim.ncp.base.entities.datasource1.sys.SysInflow;
+import com.plgrim.ncp.base.entities.datasource1.sys.SysShop;
+import com.plgrim.ncp.base.enums.DeliveryEnum;
+import com.plgrim.ncp.base.enums.GoodsEnum.GoodsType;
+import com.plgrim.ncp.base.repository.sys.SysShopRepository;
+import com.plgrim.ncp.biz.delivery.data.DeliveryOrderGoodDTO;
+import com.plgrim.ncp.biz.order.data.OrderBoDTO;
+import com.plgrim.ncp.biz.order.result.OrderBoResult;
+import com.plgrim.ncp.biz.order.service.OrderCommandService;
+import com.plgrim.ncp.cmp.member.bo.MemberActivityBOComponent;
+import com.plgrim.ncp.cmp.member.bo.MemberBenefitBOComponent;
+import com.plgrim.ncp.cmp.orderfulfilment.bo.delivery.DeliveryInspectBoComponent;
+import com.plgrim.ncp.cmp.orderfulfilment.bo.delivery.DeliveryReleaseBoComponent;
+import com.plgrim.ncp.cmp.orderfulfilment.bo.delivery.DeliverySearchBoComponent;
+import com.plgrim.ncp.cmp.orderfulfilment.bo.order.OrderBoCommandComponent;
+import com.plgrim.ncp.cmp.orderfulfilment.bo.order.OrderBoSelectComponent;
+import com.plgrim.ncp.cmp.vendor.bo.VendorBOComponent;
+import com.plgrim.ncp.commons.CommonSelectComponentImpl;
+import com.plgrim.ncp.commons.builder.GridBuilder;
+import com.plgrim.ncp.commons.data.order.KcpParamDTO;
+import com.plgrim.ncp.commons.repository.AuthenticationRepository;
+import com.plgrim.ncp.commons.taglib.Functions;
+import com.plgrim.ncp.commons.util.BOSecurityUtil;
+import com.plgrim.ncp.framework.commons.DateService;
+import com.plgrim.ncp.framework.commons.ExcelUploadService;
+import com.plgrim.ncp.framework.data.ExcelFileResult;
+import com.plgrim.ncp.framework.data.ExcelResult;
+import com.plgrim.ncp.framework.data.SystemPK;
+import com.plgrim.ncp.framework.mvc.DownloadObject;
+import com.plgrim.ncp.framework.page.PageParam;
+import com.plgrim.ncp.framework.responsecode.common.CommonResponseCode;
+import com.plgrim.ncp.framework.utils.JsonUtil;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * [클래스 설명]
+ *
+ * <p>
+ *
+ * <ul>
+ * <li>[기능1]
+ * <li>[기능2]
+ * </ul>.
+ *
+ * @author kenshin.kim
+ * @since 2015. 3. 25
+ */
+@Controller
+@RequestMapping("/od")
+@Slf4j
+public class OrderController extends AbstractController {
+
+	@Autowired
+	private GridBuilder gridBuilder;
+
+	@Autowired
+	OrderBoSelectComponent orderBoSelectComponent;
+
+	@Autowired
+	OrderBoCommandComponent orderBoCommandComponent;
+
+	@Autowired
+	@Qualifier(value = "vendorBOComponentImpl")
+	VendorBOComponent vendorBOComponent;
+
+	@Autowired
+	CommonSelectComponentImpl commonSelectComponentImpl;
+
+	@Autowired
+	SysShopRepository sysShopRepository;
+
+	@Autowired
+    AuthenticationRepository authenticationRepository;
+	
+	@Autowired
+	private MemberActivityBOComponent memberActivityBOComponent;
+	
+	@Autowired
+	DeliveryReleaseBoComponent deliveryReleaseBoComponent;
+	
+	@Autowired
+	DeliverySearchBoComponent deliverySearchBoComponent;
+	
+	@Autowired
+	DeliveryInspectBoComponent deliveryInspectBoComponent;
+
+	@Autowired
+	private MemberBenefitBOComponent memberBenefitBOComponent;
+	
+	@Autowired
+	OrderCommandService orderCommandService;
+
+	/**
+	 * 주문 조회 페이지 호출
+	 * @param model
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/list")
+	public String getList(Model model, String mall, String device, String lang, HttpServletRequest request) throws Exception {
+
+		log.info("getList");
+		
+		SysInflow sysInflow = new SysInflow();
+		sysInflow.setMallId(BOSecurityUtil.getAuthMall().get("mallId"));
+		
+		model.addAttribute("sysinflow", commonSelectComponentImpl.selectSysInflowAll(sysInflow));
+
+		return "order/listOrder";
+	}
+
+	/**
+	 * 주문조회 그리드
+	 * @param model
+	 * @param orderDTO
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @param pageNo
+	 * @throws Exception
+	 */
+	@RequestMapping("/jsonlist.json")
+	public void selectBoOrderList(Model model, OrderBoDTO orderDTO, String mall, String device, String lang, HttpServletRequest request,
+			String pageNo) throws Exception {
+
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+
+		PageParam pageParam = getPageService().buildPageParam(orderDTO.getGPageNo(), orderDTO.getGPageSize());
+
+		orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoOrderList(systemPK, orderDTO, pageParam);
+		gridBuilder.build(model, pageParam, list.getContent(), list.getTotalElements());
+
+	}
+
+	@RequestMapping("/listPay")
+	public String gePaytList(Model model, String mall, String device, String lang, HttpServletRequest request) throws Exception {
+
+		return "order/listPay";
+	}
+
+	@RequestMapping("/jsonPaylist.json")
+	public void selectBoPayList(Model model, OrderBoDTO orderDTO, String mall, String device, String lang, HttpServletRequest request,
+			String pageNo) throws Exception {
+
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+
+		PageParam pageParam = getPageService().buildPageParam(orderDTO.getGPageNo(), orderDTO.getGPageSize());
+        orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoPayList(systemPK, orderDTO, pageParam);
+		gridBuilder.build(model, pageParam, list.getContent(), list.getTotalElements());
+
+	}
+	@RequestMapping(value = "/listPayExcel.excel", method = RequestMethod.POST, produces = { "application/xls" })
+	public void listPayExcel(@ModelAttribute OrderBoDTO orderDTO, Model model) throws Exception {
+
+		//mallId
+		//SystemPK systemPK = getIdGenService().generateSystemPK("DXM", "WEB", "KOR"); // System PK
+		log.debug("systemPK mall id : " + BOSecurityUtil.getAuthMall().get("mallId"));
+		SystemPK systemPK = getIdGenService().generateSystemPK(BOSecurityUtil.getAuthMall().get("mallId"), "WEB", "KOR"); // System PK
+
+		// 상품목록 데이터를 조회한다
+		PageParam pageParam = new PageParam(1, 999999999);
+	    orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoPayList(systemPK, orderDTO, pageParam);
+
+		// 엑셀데이터
+		List<Map<String, Object>> ordsList = new ArrayList<>();
+
+		for (OrderBoResult rt : list) {
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+			map.put("주문번호", rt.getOrdNo());
+			map.put("결제번호", rt.getPayNo());
+			map.put("결제일시", Functions.yyyymmddhhmmss(rt.getPayDt()));
+			map.put("결제금액", rt.getPayCrncyPayAmt());
+			map.put("클레임번호", rt.getClmNo());
+			map.put("승인번호", rt.getPgAprvNo());
+			map.put("결제수단", rt.getPayMn());
+			map.put("PG사구분", rt.getPgSectCd());
+			map.put("등록일시", Functions.yyyymmddhhmmss(rt.getRegDt()));
+
+			ordsList.add(map);
+		}
+		// 엑셀결과데이터
+		ExcelResult result = new ExcelResult();
+		// 엑셀헤더생성
+		if (ordsList.size() > 0) {
+			Iterator<String> iterator = ordsList.get(0).keySet().iterator();
+			while (iterator.hasNext()) {
+				result.addHeader(iterator.next());
+			}
+		}
+		// 엑셀파일명
+		result.setFileName("payList_" + DateService.parseString(new Date(), "yyyyMMddHHmm"));
+
+		//컨텐트 데이터 생성
+		result.parse(model, ordsList);
+	}
+	
+	@RequestMapping("/dlvList")
+	public String dlvList(Model model, String mall, String device, String lang, HttpServletRequest request) throws Exception {
+
+		return "order/dlvList";
+	}
+	
+	@RequestMapping("/jsondlvList.json")
+	public void jsondlvList(Model model, OrderBoDTO orderDTO, String mall, String device, String lang, HttpServletRequest request,
+			String pageNo) throws Exception {
+
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+
+		PageParam pageParam = getPageService().buildPageParam(orderDTO.getGPageNo(), orderDTO.getGPageSize());
+	    orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoOrderList(systemPK, orderDTO, pageParam);
+		gridBuilder.build(model, pageParam, list.getContent(), list.getTotalElements());
+
+	}
+
+	/**
+	 * 주문조회 엑셀 다운로드
+	 * @param orderDTO
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/listOrdExcel.excel", method = RequestMethod.POST, produces = { "application/xls" })
+	public void listOrdExcel(@ModelAttribute OrderBoDTO orderDTO, Model model) throws Exception {
+
+		//mallId
+		//SystemPK systemPK = getIdGenService().generateSystemPK("DXM", "WEB", "KOR"); // System PK
+		log.debug("systemPK mall id : " + BOSecurityUtil.getAuthMall().get("mallId"));
+		SystemPK systemPK = getIdGenService().generateSystemPK(BOSecurityUtil.getAuthMall().get("mallId"), "WEB", "KOR"); // System PK
+
+
+		if (orderDTO.getPchNm() != null) {
+
+			orderDTO.setPchNm(URLDecoder.decode(orderDTO.getPchNm(), "UTF-8"));
+		}
+		if (orderDTO.getRcverNm() != null) {
+			orderDTO.setRcverNm(URLDecoder.decode(orderDTO.getRcverNm(), "UTF-8"));
+		}
+
+		// 상품목록 데이터를 조회한다
+		PageParam pageParam = new PageParam(1, 999999999);
+	    orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoOrderList(systemPK, orderDTO, pageParam);
+
+		// 엑셀데이터
+		List<Map<String, Object>> ordsList = new ArrayList<>();
+
+		for (OrderBoResult rt : list) {
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+			map.put("주문번호", rt.getOrdNo());
+			map.put("몰", rt.getMallNm());
+			map.put("언어", rt.getLang());
+			map.put("주문일시", Functions.yyyymmddhhmmss(rt.getOrdDt()));
+			map.put("주문구분", rt.getOrdTp());
+			map.put("주문상태", rt.getOrdStat());
+			map.put("에스크로주문상태", rt.getEscrStatus());
+			map.put("디바이스채널", rt.getDvcNm());
+			map.put("회원유형", rt.getMbrTp());
+			map.put("회원속성", rt.getMbrAtrb());
+			map.put("구매자ID", rt.getPchId());
+		// 권한이 자사이거나 시스템운영자일 경우 노출
+		if( BOSecurityUtil.getAdminTpCd().equals("MCOM") || BOSecurityUtil.getAdminTpCd().equals("SYS_OPRTR")){
+			map.put("회원번호", rt.getMbrNo());
+		}
+			map.put("구매자 이름", rt.getPchNm());
+	        map.put("구매자 국가", rt.getOrdNation());
+			map.put("수취인 이름", rt.getRcverNm ());
+			map.put("결제정보"   , rt.getPayMnGlo());
+			map.put("상품명", rt.getGodNm());
+			map.put("주문금액", rt.getSaleSumAmt());
+			map.put("할인금액", rt.getDcAmt());
+			map.put("배송비", rt.getDlvCstAmt());
+			map.put("주 결제금액", rt.getMainPayAmt());
+			map.put("쿠폰 할인금액", rt.getCpnSumAmt());
+			map.put("기타 할인금액", rt.getEtcDcSumAmt());
+			map.put("마일리지 결제액", rt.getMemPntAmt());
+			map.put("웹포인트 결제액", rt.getWebPntAmt());
+			map.put("적립 마일리지", rt.getSavMemPnt());
+			map.put("적립 웹포인트", rt.getSavWebPnt());
+			map.put("유입번호", rt.getInflowSn());
+			map.put("광고채널", rt.getAdvrtsCh());
+
+			ordsList.add(map);
+		}
+		// 엑셀결과데이터
+		ExcelResult result = new ExcelResult();
+		// 엑셀헤더생성
+		if (ordsList.size() > 0) {
+			Iterator<String> iterator = ordsList.get(0).keySet().iterator();
+			while (iterator.hasNext()) {
+				result.addHeader(iterator.next());
+			}
+		}
+		// 엑셀파일명
+		result.setFileName("ordList_" + DateService.parseString(new Date(), "yyyyMMddHHmm"));
+
+		//컨텐트 데이터 생성
+		result.parse(model, ordsList);
+	}
+
+	/**
+	 * 주문조회 화면 선택된 주문 상품 목록 그리드
+	 * @param model
+	 * @param orderDTO
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @param pageNo
+	 * @throws Exception
+	 */
+	@RequestMapping("/jsonGodlist.json")
+	public void getOrderGodList(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request, String pageNo) throws Exception {
+        orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		List<OrderBoResult> list = orderBoSelectComponent.selectBOGodList(orderDTO);
+		gridBuilder.build(model, new PageParam(1), list, list.size());
+
+
+	}
+
+	/**
+	 * 주문 상세 팝업
+	 * @param model
+	 * @param orderDTO
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @param pageNo
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/popupOrder")
+	public String popupOrder(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request, String pageNo)
+					throws Exception {
+		log.info("popupOrder()" + orderDTO.getOrdNo());
+
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+        orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+
+        OrderBoResult orderBoResult = orderBoSelectComponent.selectBOOrderDt(systemPK, orderDTO);
+
+		try {
+			MbrWebpntHist mbrWebpntHist = new MbrWebpntHist();
+			mbrWebpntHist.setMbrNo(orderBoResult.getMbrNo());
+			mbrWebpntHist.setMallId(BOSecurityUtil.getAuthMallId());
+			MbrWebpntHistExtend mbrWebPoint = memberBenefitBOComponent.selectWebPointInfo(mbrWebpntHist);
+			//MbrWebpntHistExtend mbrWebPoint = memberBenefitBOComponent.selectWebPointInfo(orderBoResult.getMbrNo());
+			if(null != mbrWebPoint){
+				orderBoResult.setWebPntAmt(mbrWebPoint.getUsefulAmt());
+			}
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		model.addAttribute("data", orderBoResult);
+
+		model.addAttribute("clm", orderBoSelectComponent.selectBOOrdClmList(orderDTO));
+
+		model.addAttribute("shopId",orderDTO.getShopId());
+		CsoCnsltMemo csoCnsltMemo = new CsoCnsltMemo();
+		csoCnsltMemo.setOrdNo(orderDTO.getOrdNo());
+		model.addAttribute("memo", orderBoSelectComponent.getCsoCnsltMemo(csoCnsltMemo));
+		return "order/popup/popupOrder";
+	}
+
+	/**
+	 * 주문 상세 기능 [가상배송 완료]
+	 * @param model
+	 * @param orderDTO
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping("/virtlDlvCompt.json")
+	public void virtlDlvCompt(Model model, OrderBoDTO orderDTO, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		Ord ord = new Ord();
+		ord.setOrdNo(orderDTO.getOrdNo());
+		orderBoCommandComponent.virtlDlvCompt(ord);
+	}
+
+	/**
+	 * 주문 상세 기능 [가상배송 완료] : 결제대기
+	 * @param model
+	 * @param orderDTO
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping("/virtlDlvCompt4PayWait.json")
+	public void virtlDlvCompt4PayWait(Model model, OrderBoDTO orderDTO, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		Ord ord = new Ord();
+		ord.setOrdNo(orderDTO.getOrdNo());
+		orderBoCommandComponent.virtlDlvCompt4PayWait(ord);
+	}
+
+	/**
+	 * 주문 상세 기능 [배송지 변경]
+	 * @param model
+	 * @param lgsDlvsp
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping("/updateDeliveryLocationChange.json")
+	public void updateDeliveryLocationChange(@RequestParam(value = "ordTp", required = true) String ordTp, Model model, LgsDlvspExtend lgsDlvsp,
+			String mall, String device, String lang,
+			HttpServletRequest request) throws Exception {
+
+		log.info("updatelagQtyOrdDcsn()");
+
+		//mallId
+		//SystemPK systemPK = getIdGenService().generateSystemPK("DXM", "WEB", "KOR"); // System PK
+		log.debug("systemPK mall id : " + BOSecurityUtil.getAuthMall().get("mallId"));
+		SystemPK systemPK = getIdGenService().generateSystemPK(BOSecurityUtil.getAuthMall().get("mallId"), "WEB", "KOR"); // System PK
+
+		String regtrId = BOSecurityUtil.getLoginId();
+		lgsDlvsp.setUdterId(regtrId);
+		lgsDlvsp.setRegtrId(regtrId);
+		OrderBoDTO orderDTO = new OrderBoDTO();
+
+		orderDTO.setOrdNo(lgsDlvsp.getOrdNo());
+		orderDTO.setDlvPcupspTurn(lgsDlvsp.getDlvPcupspTurn());
+		orderDTO.setValidationType("DLV");
+		orderDTO.setOrdTp(ordTp);
+		HashMap<String, Object> map=  orderBoSelectComponent.ordValidation(orderDTO);
+
+		String rt = (String) map.get("RT");
+
+		if ("S".equals(rt)) {
+			memberActivityBOComponent.updateDeliveryLocationChange(systemPK, lgsDlvsp);
+		}
+
+		model.addAttribute("validation", map);
+	}
+
+	/**
+	 * 주문 상세 기능 [배송정보에 노출되는 상품 단위 배송완료]
+	 * @param model
+	 * @param dto
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping("/drctGodCompt.json")
+	public void drctGodCompt(Model model, DeliveryOrderGoodDTO dto, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+		deliveryReleaseBoComponent.drctGodCompt(systemPK, dto);
+	}
+
+	/**
+	 * 상품별 주문조회 화면
+	 * @param model
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listOrderGod")
+	public String getListGod(Model model, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		log.info("getList()");
+
+		//브랜드매출담당 사용자일 경우
+     	List<SysAdminAuthorGrpMapng>  dataList = authenticationRepository.selectListAdmAuthgrp(BOSecurityUtil.getLoginId());
+ 		Iterator<SysAdminAuthorGrpMapng> iterator = dataList.iterator();
+
+ 		long authorGrpSn = 0;
+
+ 		//권한그룹은 운영자별로 한개로 if문 처리
+ 		if(iterator.hasNext()) {
+ 			SysAdminAuthorGrpMapng rowData = iterator.next();
+ 			authorGrpSn = rowData.getAuthorGrpSn();
+ 		}
+
+ 		request.setAttribute("authorGrpSn", authorGrpSn);
+
+		model.addAttribute("sysinflow", commonSelectComponentImpl.selectSysInflowAll(new SysInflow()));
+		return "order/listOrderGod";
+	}
+
+	/**
+	 * 상품별 주문조회 결과 그리드
+	 * @param model
+	 * @param orderDTO
+	 * @param mall
+	 * @param device
+	 * @param lang
+	 * @param request
+	 * @param pageNo
+	 * @throws Exception
+	 */
+	@RequestMapping("/jsonlistOrderGod.json")
+	public void selectBoOrdGodList(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request, String pageNo) throws Exception {
+
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+
+		PageParam pageParam = getPageService().buildPageParam(orderDTO.getGPageNo(), orderDTO.getGPageSize());
+
+	    orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoOrdGodList(systemPK, orderDTO, pageParam);
+
+		gridBuilder.build(model, pageParam, list.getContent(), list.getTotalElements());
+	}
+
+	@RequestMapping(value = "/listOrderGodExcel.excel", method = RequestMethod.POST, produces = { "application/xls" })
+	public void listOrderGodExcel(@ModelAttribute OrderBoDTO orderDTO, Model model) throws Exception {
+
+		//mallId
+		//SystemPK systemPK = getIdGenService().generateSystemPK("DXM", "WEB", "KOR"); // System PK
+		log.debug("systemPK mall id : " + BOSecurityUtil.getAuthMall().get("mallId"));
+		SystemPK systemPK = getIdGenService().generateSystemPK(BOSecurityUtil.getAuthMall().get("mallId"), "WEB", "KOR"); // System PK
+
+		if (orderDTO.getPchNm() != null) {
+
+			orderDTO.setPchNm(URLDecoder.decode(orderDTO.getPchNm(), "UTF-8"));
+		}
+		if (orderDTO.getRcverNm() != null) {
+			orderDTO.setRcverNm(URLDecoder.decode(orderDTO.getRcverNm(), "UTF-8"));
+		}
+
+		// 상품목록 데이터를 조회한다
+		PageParam pageParam = new PageParam(1, 999999999);
+	    orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoOrdGodList(systemPK, orderDTO, pageParam);
+
+		// 엑셀데이터
+		List<Map<String, Object>> ordsList = new ArrayList<>();
+
+		for (OrderBoResult rt : list) {
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+
+			map.put("주문번호", rt.getOrdNo());
+			map.put("몰", rt.getMallNm());
+			map.put("언어", rt.getLangNm());
+			map.put("구매채널", rt.getDvcNm());
+			map.put("주문일시", Functions.yyyymmddhhmmss(rt.getOrdDt()));
+			map.put("브랜드ID", rt.getBrndId());
+			map.put("대분류 브랜드명", rt.getUpperGrpBrndNm());
+			map.put("브랜드명", rt.getBrndNm());
+			map.put("온라인품번", rt.getGodNo());
+			map.put("ERP품번", rt.getErpGodNo());
+			map.put("상품중량", rt.getGodWt());
+			map.put("상품명", rt.getGodNm());
+			map.put("옵션", rt.getItmNm());
+			map.put("상품유형", rt.getGodTp());
+			map.put("주문구분", rt.getOrdTp());;
+			map.put("주문상태", rt.getOrdStat());
+			map.put("택배사명", rt.getDlvCom());
+			map.put("클레임", rt.getClmYn());
+			map.put("정소가", rt.getRtlPrc());
+			map.put("판매가", rt.getSaleAmt());
+			map.put("수량", rt.getOrdQty());
+			map.put("주결제금액", rt.getOrdAmt());
+			map.put("구매자ID", rt.getPchId());
+		// 권한이 자사이거나 시스템운영자일 경우 노출
+		if( BOSecurityUtil.getAdminTpCd().equals("MCOM") || BOSecurityUtil.getAdminTpCd().equals("SYS_OPRTR")){
+			map.put("회원번호", rt.getMbrNo());
+		}
+			map.put("구매자 이름", rt.getPchNm());
+			map.put("구매자 연락처", rt.getPchMoNo());
+			map.put("구매확정여부", rt.getCstmrPchDcsnYn());
+			map.put("구매확정일시", Functions.yyyymmddhhmmss(rt.getCstmrPchDcsnDt()));
+			map.put("수취인이름", rt.getAddrseNm());
+			map.put("수취인연락처", rt.getAddrseMoNo());
+
+			ordsList.add(map);
+		}
+		// 엑셀결과데이터
+		ExcelResult result = new ExcelResult();
+		// 엑셀헤더생성
+		if (ordsList.size() > 0) {
+			Iterator<String> iterator = ordsList.get(0).keySet().iterator();
+			while (iterator.hasNext()) {
+				result.addHeader(iterator.next());
+			}
+		}
+		// 엑셀파일명
+		result.setFileName("listOrderGod_" + DateService.parseString(new Date(), "yyyyMMddHHmm"));
+
+		//컨텐트 데이터 생성
+		result.parse(model, ordsList);
+	}
+
+	@RequestMapping("/listBulkOrder")
+	public String listbulk(Model model, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		log.info("getList()");
+
+		return "order/listBulkOrder";
+	}
+
+	@RequestMapping("/json/listBulkOrder.json")
+	public void listbulk(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request, String pageNo) throws Exception {
+
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+
+		PageParam pageParam = getPageService().buildPageParam(orderDTO.getGPageNo(), orderDTO.getGPageSize());
+        orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoOrderList(systemPK, orderDTO, pageParam);
+		
+		model.addAttribute("itemCount", orderBoSelectComponent.selectBoOrderListItemCount(orderDTO));
+		
+		gridBuilder.build(model, pageParam, list.getContent(), list.getTotalElements());
+
+	}
+
+	@RequestMapping(value = "/listBulkOrderExcel.excel", method = RequestMethod.POST, produces = { "application/xls" })
+	public void listBulkOrderExcel(@ModelAttribute OrderBoDTO orderDTO, Model model) throws Exception {
+
+		//mallId
+		//SystemPK systemPK = getIdGenService().generateSystemPK("DXM", "WEB", "KOR"); // System PK
+		log.debug("systemPK mall id : " + BOSecurityUtil.getAuthMall().get("mallId"));
+		SystemPK systemPK = getIdGenService().generateSystemPK(BOSecurityUtil.getAuthMall().get("mallId"), "WEB", "KOR"); // System PK
+
+		if (orderDTO.getPchNm() != null) {
+
+			orderDTO.setPchNm(URLDecoder.decode(orderDTO.getPchNm(), "UTF-8"));
+		}
+		if (orderDTO.getRcverNm() != null) {
+			orderDTO.setRcverNm(URLDecoder.decode(orderDTO.getRcverNm(), "UTF-8"));
+		}
+
+		// 상품목록 데이터를 조회한다
+		PageParam pageParam = new PageParam(1, 999999999);
+	    orderDTO.setMaskingYn(BOSecurityUtil.checkMarkingFromAccessUrl());
+		Page<OrderBoResult> list = orderBoSelectComponent.selectBoOrderList(systemPK, orderDTO, pageParam);
+
+		// 엑셀데이터
+		List<Map<String, Object>> ordsList = new ArrayList<>();
+
+		for (OrderBoResult rt : list) {
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+
+			map.put("몰", rt.getMallNm());
+			map.put("주문번호", rt.getOrdNo());
+			map.put("주문일시", Functions.yyyymmddhhmmss(rt.getOrdDt()));
+			map.put("주문구분", rt.getOrdTp());
+			map.put("대량주문확정여부", rt.getLagQtyOrdDcsnYn());
+			map.put("상품명", rt.getGodNm());
+			map.put("결제수단", rt.getPayMn());
+			map.put("주문금액", rt.getOrdAmt());
+			map.put("주문금액", rt.getWebDcSumAmt());
+			map.put("회원유형", rt.getMbrTp());
+			map.put("회원속성", rt.getMbrAtrb());
+			map.put("구매자ID", rt.getPchId());
+			map.put("구매자 이름", rt.getPchNm());
+			map.put("수취인이름", rt.getRcverNm());
+			map.put("수취인연락처", rt.getRcverTelNo());
+			ordsList.add(map);
+		}
+		// 엑셀결과데이터
+		ExcelResult result = new ExcelResult();
+		// 엑셀헤더생성
+		if (ordsList.size() > 0) {
+			Iterator<String> iterator = ordsList.get(0).keySet().iterator();
+			while (iterator.hasNext()) {
+				result.addHeader(iterator.next());
+			}
+		}
+		// 엑셀파일명
+		result.setFileName("listBulkOrder_" + DateService.parseString(new Date(), "yyyyMMddHHmm"));
+
+		//컨텐트 데이터 생성
+		result.parse(model, ordsList);
+	}
+	@RequestMapping("/popupBulkOrder")
+	public String popupBulkOrder(Model model, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		log.info("popupBulkOrder()");
+
+		SysShop sysShop = new SysShop();
+		
+		String mallId = BOSecurityUtil.getAuthMall().get("mallId");
+		String shopId = DeliveryEnum.DLV_ONLINE_SHOP_DISCOVERY.toString();
+		if("MBM".equals(mallId)) {
+			shopId = DeliveryEnum.DLV_ONLINE_SHOP_MLB.toString();
+		} else if("SAM".equals(mallId)) {
+			shopId = DeliveryEnum.DLV_ONLINE_SHOP_SA.toString();
+		}
+		
+		sysShop.setShopId(shopId);
+		model.addAttribute("sysShop", sysShopRepository.selectSysShop(sysShop));
+
+		return "order/popup/popupBulkOrder";
+	}
+
+	@RequestMapping("/updatelagQtyOrdDcsn.json")
+	public void updatelagQtyOrdDcsn(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request)
+					throws Exception {
+
+		log.info("updatelagQtyOrdDcsn()");
+
+		orderBoCommandComponent.updatelagQtyOrdDcsn(orderDTO);
+	}
+
+	@RequestMapping("/confirmDeposit.json")
+	public void confirmDeposit(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request) throws Exception {
+
+		log.info("confirmDeposit()");
+
+		orderBoCommandComponent.confirmDeposit(orderDTO);
+	}
+
+	@RequestMapping("/bulkOrder.json")
+	public void bulkOrder(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request) throws Exception {
+
+		log.info("bulkOrder():"+orderDTO.toJSON());
+
+		
+		orderBoCommandComponent.bulkOrder(orderDTO);
+	}
+
+
+	@RequestMapping(value = "/godUpload")
+	@ResponseBody
+	public String godUpload(Model model, OrderBoDTO orderDTO, @RequestParam List<MultipartFile> files,
+			HttpServletRequest request)
+					throws Exception {
+
+		log.info("godUpload()");
+
+		String[] properties = { "erpGodNo", "itmNm", "payExchgRtCrncyAmt", "ordQty" };
+		String upfilePath = getConfigService().getProperty("ncp_base.spring.mvc.upload.temp");
+		ExcelFileResult excelResult = ExcelUploadService.excelUpload(files, properties, OrdGodExtend.class, request, upfilePath);
+
+		@SuppressWarnings("unchecked")
+		List<OrdGodExtend> ordGodExtends = (List<OrdGodExtend>) excelResult.getAllList();
+
+		List<OrdGodExtend> errOrdGodExtends = new ArrayList<OrdGodExtend>();
+
+		List<OrdGodExtend> rtOrdGodExtends = new ArrayList<OrdGodExtend>();
+
+		int failCount = excelResult.getFailCount();
+
+		for (OrdGodExtend ordGodExtend : ordGodExtends) {
+
+			GodExtend god = orderBoSelectComponent.selectBoBulkOrdGodItmInfo(ordGodExtend);
+
+			if (god != null) {
+				ordGodExtend.setGodNo(god.getGodNo());
+				ordGodExtend.setErpGodNo(god.getErpGodNo());
+				ordGodExtend.setGodNm(god.getGodNm());
+				ordGodExtend.setItmNo(god.getItmNo());
+				ordGodExtend.setItmNm(god.getItmNm());
+				ordGodExtend.setRtlPrc(god.getRtlPrc());
+				ordGodExtend.setSaleAmt(god.getCsmrPrc());
+				if(ordGodExtend.getPayExchgRtCrncyAmt() == null) {
+					ordGodExtend.setPayExchgRtCrncyAmt(god.getRtlPrc());
+				}
+				// 소수점 이하 제거(반올림).
+				ordGodExtend.setPayExchgRtCrncyAmt( ordGodExtend.getPayExchgRtCrncyAmt().setScale(0, BigDecimal.ROUND_HALF_UP) );
+				if(ordGodExtend.getOrdQty() == null) {
+					ordGodExtend.setOrdQty(new Long(1));
+				}
+				
+				if (!GoodsType.GNRL_GOD.toString().equals(god.getGodTpCd())) {
+					ordGodExtend.setErrMsg("일반 상품만 등록 할수 있습니다.");
+					errOrdGodExtends.add(ordGodExtend);
+					failCount++;
+				}
+//				else if(!GoodsAprvState.APRV_COMPT.toString().equals(god.getGodAprvSectCd())) {
+//					ordGodExtend.setErrMsg("승인이 완료된 상품만 등록 할수 있습니다.");
+//					errOrdGodExtends.add(ordGodExtend);
+//					failCount++;
+//				}
+//				else if(!GoodsSaleState.SALE_PROGRS.toString().equals(god.getGodSaleSectCd())
+//						|| !GoodsSaleState.SALE_PROGRS.toString().equals(god.getItmStatCd())) {
+//					ordGodExtend.setErrMsg("판매중인 상품만 등록 할수 있습니다.");
+//					errOrdGodExtends.add(ordGodExtend);
+//					failCount++;
+//				}
+				else {
+					rtOrdGodExtends.add(ordGodExtend);
+				}
+			}
+			else {
+				ordGodExtend.setErrMsg("존재하지 않는 상품입니다.");
+				errOrdGodExtends.add(ordGodExtend);
+				failCount++;
+			}
+		}
+
+		if (errOrdGodExtends.size() > 0) {
+			String[] errProperties = { "erpGodNo", "itmNm", "payExchgRtCrncyAmt", "ordQty", "errMsg" };
+			ExcelUploadService.erroFileDB(excelResult, errProperties, errOrdGodExtends);
+		}
+
+		excelResult.setAllList(rtOrdGodExtends);
+
+		int successCount = excelResult.getRequestCount() - failCount;
+		excelResult.setSuccessCount(successCount);
+
+		excelResult.setFailCount(failCount);
+		return JsonUtil.marshallingJson(excelResult);
+	}
+
+	@RequestMapping("/phoneOrder")
+	public String popupPhoneOrder(Model model, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		log.info("popupBulkOrder()");
+
+		return "order/popup/popupPhoneOrder";
+	}
+
+	@RequestMapping("/phoneOrder.json")
+	public void phoneOrder(Model model, OrderBoDTO orderDTO, String mall, String device, String lang,
+			HttpServletRequest request) throws Exception {
+
+		log.info("phoneOrder()");
+
+		orderBoCommandComponent.phoneOrder(orderDTO);
+
+	}
+
+	@RequestMapping("/insertCsoCnsltMemo.json")
+	public void insertCsoCnsltMemo(Model model, CsoCnsltMemo csoCnsltMemo, HttpServletRequest request)
+			throws Exception {
+
+		log.info("insertCsoCnsltMemo()");
+		String loginId = BOSecurityUtil.getLoginId();
+		csoCnsltMemo.setMemoRegtrId(loginId);
+		csoCnsltMemo.setRegtrId(loginId);
+		csoCnsltMemo.setUdterId(loginId);
+		orderBoCommandComponent.insertCsoCnsltMemo(csoCnsltMemo);
+
+	}
+
+	@RequestMapping("/popupMemo")
+	public String selectCsoCnsltMemoList(Model model, CsoCnsltMemo csoCnsltMemo, HttpServletRequest request) throws Exception {
+
+		model.addAttribute("rows", orderBoSelectComponent.selectCsoCnsltMemoList(csoCnsltMemo));
+		return "order/popup/popupMemo";
+	}
+
+	@RequestMapping("/deliveryLocationChg")
+	public String deliveryLocationChg(Model model, OrderBoDTO orderDTO, HttpServletRequest request) throws Exception {
+		model.addAttribute("count", 0);
+		model.addAttribute("dlvPcupspTurn", orderDTO.getDlvPcupspTurn());
+		model.addAttribute("ordNo", orderDTO.getOrdNo());
+		model.addAttribute("ordTp", orderDTO.getOrdTp());
+		model.addAttribute("mbrTpCd", orderDTO.getTgtMbrTpCd());
+		return "order/popup/deliveryLocationChg";
+	}
+
+	@RequestMapping("/ordValidation.json")
+	public void itmValidation(Model model, OrderBoDTO orderDTO, HttpServletRequest request) throws Exception {
+
+		model.addAttribute("validation", orderBoSelectComponent.ordValidation(orderDTO));
+
+	}
+
+	@RequestMapping("/popupPrm")
+	public String selectOrdPrmList(Model model, OrderBoDTO orderDTO, HttpServletRequest request) throws Exception {
+
+		model.addAttribute("rows", orderBoSelectComponent.selectOrdPrmDtlList(orderDTO));
+		return "order/popup/popupPrm";
+	}
+
+	@RequestMapping("/popupItm")
+	public String selectBoItmHist(Model model, OrderBoDTO orderDTO, HttpServletRequest request) throws Exception {
+
+		List<LgsDlivyDrctGodExtend> lgsDlivyDrctGods = orderBoSelectComponent.selectOrdDlivyDrct(orderDTO);
+		model.addAttribute("drct", lgsDlivyDrctGods);
+		long qty = 0;
+		for (LgsDlivyDrctGod lgsDlivyDrctGod : lgsDlivyDrctGods) {
+			qty += lgsDlivyDrctGod.getDlivyDrctQty() - lgsDlivyDrctGod.getDlivyDrctCnclQty();
+
+		}
+		model.addAttribute("rows", orderBoSelectComponent.selectBoItmHist(orderDTO, qty));
+		model.addAttribute("dto", orderDTO);
+		return "order/popup/popupItm";
+	}
+
+	@RequestMapping("/optionChange.json")
+	public void optionChange(Model model, OrderBoDTO orderDTO, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		log.info("optionChange()");
+
+		//mallId
+		//SystemPK systemPK = getIdGenService().generateSystemPK("DXM", "WEB", "KOR"); // System PK
+		log.debug("systemPK mall id : " + BOSecurityUtil.getAuthMall().get("mallId"));
+		SystemPK systemPK = getIdGenService().generateSystemPK(BOSecurityUtil.getAuthMall().get("mallId"), "WEB", "KOR"); // System PK
+
+		orderDTO.setRegtrId("BO");
+		orderBoCommandComponent.optionChange(orderDTO, systemPK);
+	}
+
+	@RequestMapping("/popupExcel")
+	public String popupAffExcel(Model model, OrderBoDTO orderDTO, String mall, String device, String lang, HttpServletRequest request)
+			throws Exception {
+
+		log.info("popupAffOrder()");
+
+		model.addAttribute("excelType", orderDTO.getExcelType());
+
+		return "order/popup/popupExcel";
+	}
+
+	@RequestMapping(value = "errDownload", method = RequestMethod.POST, produces = { "application/octet-stream" })
+	public void download(Model model, ExcelFileResult excelResult) throws Exception {
+
+		String downloadPath = excelResult.getErrFilePath() + excelResult.getErrFileName();
+		File downloadFile = new File(downloadPath);
+
+		DownloadObject downloadObject = new DownloadObject();
+		downloadObject.setDisplayFileName(excelResult.getErrFileName());
+		downloadObject.setDownloadFile(downloadFile);
+		downloadObject.setCloudFilePath(excelResult.getErrCloudFilePath());
+		
+		model.addAttribute("file", downloadObject);
+
+	}
+
+	@RequestMapping(value = "sampleDownload", method = RequestMethod.POST, produces = { "application/octet-stream" })
+	public void sampleDownload(Model model, ExcelFileResult excelResult, HttpServletRequest request) throws Exception {
+		String regex = File.separator;
+		String filePath = request.getSession().getServletContext().getRealPath("/") + regex + "temp" + regex;
+		String fileName = "";
+		
+		fileName = "SampleBulkGod.xls";
+
+		File downloadFile = new File(filePath + fileName);
+
+		DownloadObject downloadObject = new DownloadObject();
+		downloadObject.setDisplayFileName(fileName);
+		downloadObject.setDownloadFile(downloadFile);
+
+		model.addAttribute("file", downloadObject);
+
+
+	}
+
+
+	@RequestMapping("/excelTime")
+	public String excelTime(Model model, OrderBoDTO orderDTO, HttpServletRequest request) throws Exception {
+
+		return "order/popup/excelTime";
+	}
+
+	/**
+	 * 출고검수여부 수정.
+	 *
+	 * <p/>
+	 *
+	 * [사용 방법 설명].
+	 *
+	 * @param model [설명]
+	 * @param DeliveryOrderGoodDTO [설명]
+	 * @param mall [설명]
+	 * @param device [설명]
+	 * @param lang [설명]
+	 * @param HttpServletRequest [설명]
+	 * @return void [설명]
+	 * @throws Exception the exception
+	 * @since 2016. 7. 13
+	 */
+	@RequestMapping(value = "/updateAcptYn", produces = {"application/json"})
+	public void updateAcptYn(Model model, DeliveryOrderGoodDTO dto, String mall, String device, String lang, HttpServletRequest request) throws Exception {
+		SystemPK systemPK = getIdGenService().generateSystemPK(mall, device, "KOR");
+		deliveryInspectBoComponent.updateAcptYn(systemPK, dto);
+	}
+
+	@RequestMapping("/mlbKcpInfo.json")
+	public void selectBoOrderList(Model model, OrderBoDTO orderDTO, HttpServletRequest request) throws Exception {
+
+		String payNo = orderCommandService.selectDBNumber("SQ_PAY", "ST");
+		KcpParamDTO kcpDTO = new KcpParamDTO();
+		kcpDTO.setOrdr_idxx(payNo);
+		kcpDTO.setReq_tx(getConfigService().getProperty("ncp_base.order.kcp.rex.tx"));
+		kcpDTO.setSite_cd(getConfigService().getProperty("ncp_base.order.kcp.mlb.site.cd"));
+		kcpDTO.setSite_name(getConfigService().getProperty("ncp_base.order.kcp.mlb.site.name"));
+		kcpDTO.setQuota(getConfigService().getProperty("ncp_base.order.kcp.quota.month"));
+		kcpDTO.setCurrency(getConfigService().getProperty("ncp_base.order.kcp.currency"));
+		kcpDTO.setModule_type(getConfigService().getProperty("ncp_base.order.kcp.module.type"));
+		kcpDTO.setEscw_used("Y");
+		kcpDTO.setPay_mod("Y");
+		kcpDTO.setDisp_tax_yn("N");
+		kcpDTO.setDeli_term(getConfigService().getProperty("ncp_base.order.kcp.delivery.term"));
+		//<!-- 2012년 8월 18일 정자상거래법 개정 관련 설정 부분 -->
+		//<!-- 제공 기간 설정 0:일회성 1:기간설정(ex 1:2012010120120131)  -->
+		kcpDTO.setGood_expr("0");
+		kcpDTO.setVcnt_expire_term("7");
+		
+		
+		model.addAttribute("kcpInfo",kcpDTO);
+	
+
+	}
+}

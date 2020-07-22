@@ -1,0 +1,52 @@
+var orderinfo = {
+	
+	
+	load : function(ordNo){
+		
+		$.ajax({
+			type  : 'post',
+			url   : "/order/"+ordNo+"/orderInfo.json",
+			dataType : 'json',
+			async : false,
+			data  : "",
+			contentType: "application/json",
+			beforeSend: function (request)
+            {
+			  // block layer
+              var csrfToken = $("meta[name='_csrf']").attr("content");
+              var csrfName = $("meta[name='_csrf_header']").attr("content");
+              request.setRequestHeader(csrfName, csrfToken);
+            },
+			success : function(data) {
+				JSRENDER_HELPER.otool = otool;
+				JSRENDER_HELPER.pimg = function(imgUrl,size){
+					if(imgUrl){
+						if(size){
+							return BASE.imageUrl+imgUrl+"/dims/resize/"+size;
+						}else{
+							BASE.imageUrl+imgUrl;
+						}
+					}else{
+						if(size){
+							return BASE.imageUrl+"/goods/error/no_image.jpg"+"/dims/resize/"+size;
+						}else{
+							return "";
+						}
+					}
+				}
+				
+
+				$("#orderInfoViewLayer").html("");
+				$("#orderInfoViewLayer").html($("#orderInfoView").render(data,JSRENDER_HELPER));
+				
+			},
+			error : function(xhr) {
+				var data = $.parseJSON(xhr.responseText)
+				alert(data.message);
+				
+			}
+		});
+		
+	}
+};
+

@@ -1,0 +1,214 @@
+var orderpay = {
+	payCount : 0
+	,kcpInfo : ""
+	,orderData : ""
+	,kcpLoad : function(){
+		$.ajax({
+			type:"post"
+			,url:"/od/mlbKcpInfo.json"
+			,data : "" 
+			,dataType: "json"
+			,async : false
+			,success : function(ret) {
+				orderpay.kcpInfo = ret.kcpInfo;
+				orderpay.kcpPayCall();
+			}
+			,error : function(xhr) {
+				if(xhr&&xhr.responseText){
+					var data = $.parseJSON(xhr.responseText);
+					alert(data.message);
+				}else{
+					alert(MESSAGES['common.js.session.over']);
+				}
+				
+			}
+			,complete : function(data) {
+			}
+		});
+	}
+	,kcpPayCall : function(){
+		var kcpInfo = orderpay.kcpInfo;
+		
+		
+		// 에스크로 사용여부
+		kcpInfo.pay_mod = 'N';
+	
+			
+		
+		// kcpInfo.pay_method = 선택된 결제수단으로 
+		kcpInfo.good_name = $('#godSumry').val(); 
+		kcpInfo.good_mny = $("#payExchgRtCrncySumAmt").val();
+		kcpInfo.buyr_name = $("#mbrNm").val();
+		kcpInfo.buyr_mail = $("#mbrEmail").val();
+		kcpInfo.buyr_tel1 = $("#mobilNo").val();
+		kcpInfo.buyr_tel2 = $("#telNo").val();
+		
+		//escrow yn 에스크로는 일단 주문자 정보로  
+		kcpInfo.rcvr_name = $("#dlvAddrseNm").val(); //수신자로 수정할것
+		kcpInfo.rcvr_mail = $("#mbrEmail").val(); 
+		kcpInfo.rcvr_tel1 = $("#mobilNo").val();
+		kcpInfo.rcvr_tel2 = $("#telNo").val();
+		kcpInfo.rcvr_zipx = $("#postNo").val();
+		kcpInfo.rcvr_add1 = $('#lgsdlv').val();
+		kcpInfo.rcvr_add2 =	"";
+		
+		kcpInfo.bask_cntx = "1"; // 상품갯수
+		
+		var chr30 = String.fromCharCode(30);	// ASCII 코드값 30
+        var chr31 = String.fromCharCode(31);	// ASCII 코드값 31
+        var good_info = "";
+//        $.each(orderform.getOrderInfo().cartResultList, function(index, item) {
+//        	good_info += "seq="+(index+1) + chr31 + "ordr_numb="+ escape(item.bskGod.godNo) + chr31 + "good_name="+escape(item.god.godNm) + chr31 + "good_cntx="+ item.bskGod.itmQty + chr31 + "good_amtx="+ item.price;
+//        	if(index!==(orderform.getOrderInfo().cartResultList.length-1)){
+//        		good_info += chr30;
+//        	}
+//        });
+        
+//        kcpInfo.good_info = good_info;
+        kcpInfo.good_info = $('#godSumry').val();
+		
+        
+        
+		
+        kcpInfo.pay_method = "001000000000"; // 가상계좌 하드코딩
+        $("#kcpForm").html("");
+        
+		$.each(kcpInfo, function(key, value) {
+			
+			var iDiv = document.createElement("div");
+			$(iDiv).html("");
+			//$(iDiv).html(key+"=>");
+			var iTag = document.createElement("input");
+			iTag.type="hidden";
+			iTag.name=key;
+			iTag.value=value;
+			$(iDiv).append(iTag);
+			$("#kcpForm").append(iDiv);
+			
+		});
+
+		KCP_Pay_Execute( document.kcpForm );
+
+		
+	}
+	,addNew : function(){
+		//fbq('track', 'AddPaymentInfo');		
+		//block();
+		if(orderpay.payCount!==0){
+			return false;
+		}
+		orderpay.payCount++;
+	
+		var kcpDTO = $('#kcpForm').serializeJSON();
+		$.each(kcpDTO, function(key, value) {
+			
+			var iDiv = document.createElement("div");
+			$(iDiv).html("");
+			//$(iDiv).html(key+"=>");
+			var iTag = document.createElement("input");
+			iTag.type="hidden";
+			iTag.name="kcpDTO[0]."+key;
+			iTag.value=value;
+			$(iDiv).append(iTag);
+			$("#ordRegFrom").append(iDiv);
+			
+		});
+		
+		callAjax({
+	    	   url : "<c:url value='/od/bulkOrder.json'/>",	
+	    	   data: $('#ordRegFrom').serialize(),
+	    	   func :function(obj){
+	    		
+			        alert("등록이 성공 되었습니다.");
+			        self.close();
+	    	   }
+	       });
+		
+		$.ajax({
+			type  : 'post',
+			url   : "/od/bulkOrder.json",
+			dataType : 'json',
+			async : false,
+			data  : $('#ordRegFrom').serialize(),
+			contentType: "application/json",
+			beforeSend: function (request)
+            {
+			  // block layer
+              var csrfToken = $("meta[name='_csrf']").attr("content");
+              var csrfName = $("meta[name='_csrf_header']").attr("content");
+              request.setRequestHeader(csrfName, csrfToken);
+            },
+			success : function(data) {
+				// hide block layer
+				
+				
+				//alert('주문 결제 성공');
+				//if(obj.pay.pgSectCd == "KCP_PAY"){
+				closeEvent();
+				//}
+				//window.location.replace('/order/'+data.orderNumber+'/view');
+				 alert("등록이 성공 되었습니다.");
+			     self.close();
+				
+			},
+			error : function(xhr) {
+				// hide block layer
+				if(xhr&&xhr.responseText){
+					var data = $.parseJSON(xhr.responseText);
+					alert(data.message);
+				}else{
+					alert('세션이 만료 되었습니다.');
+				}
+				// 오류시 메시지 출력후 어디로든 보내야함
+				orderpay.payCount = 0;
+				closeEvent();
+				
+			}
+		});
+
+	}
+	
+	
+	
+	
+		
+}
+// kcp 용 js 관리하지 않음
+/* Payplus Plug-in 실행 */
+/****************************************************************/
+/* m_Completepayment  설명                                      */
+/****************************************************************/
+/* 인증완료시 재귀 함수                                         */
+/* 해당 함수명은 절대 변경하면 안됩니다.                        */
+/* 해당 함수의 위치는 payplus.js 보다먼저 선언되어여 합니다.    */
+/* Web 방식의 경우 리턴 값이 form 으로 넘어옴                   */
+/* EXE 방식의 경우 리턴 값이 json 으로 넘어옴                   */
+/****************************************************************/
+function m_Completepayment( FormOrJson, closeEvent ) 
+{
+    var frm = document.kcpForm; 
+ 
+    /********************************************************************/
+    /* FormOrJson은 가맹점 임의 활용 금지                               */
+    /* frm 값에 FormOrJson 값이 설정 됨 frm 값으로 활용 하셔야 됩니다.  */
+    /* FormOrJson 값을 활용 하시려면 기술지원팀으로 문의바랍니다.       */
+    /********************************************************************/
+    GetField( frm, FormOrJson ); 
+
+    
+    if( frm.res_cd.value == "0000" )
+    {
+	    //alert("결제 승인 요청 전,\n\n반드시 결제창에서 고객님이 결제 인증 완료 후\n\n리턴 받은 ordr_chk 와 업체 측 주문정보를\n\n다시 한번 검증 후 결제 승인 요청하시기 바랍니다."); //업체 연동 시 필수 확인 사항.
+    	//alert('kcp 결제 인증');
+
+    	//$("#jsonTEXT").val(JSON.stringify(obj));
+    	
+    	orderpay.addNew();
+    }
+    else
+    {
+        alert( "[" + frm.res_cd.value + "] " + frm.res_msg.value );
+        
+        closeEvent();
+    }
+}

@@ -1,0 +1,542 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="com.plgrim.ncp.commons.util.BOSecurityUtil"%>
+<%@ include file="/WEB-INF/views/order/include/vendor.jsp"%>
+<script type="text/javascript" src="<c:url value='${_resourceURL}js/com/comAjax.js'/>"></script>
+ <div id="wrap">
+    <div id="container">
+      <div id="contents">
+        <h1 class="page-header">상품별 주문 조회<a href="javascript:undefined;"><span class="favorite <c:if test="${!('bo' eq accessSiteId || 'BO' eq accessSiteId)}">hide</c:if> ">즐겨찾기 등록</span></a></h1>
+        <div class="page-navigator">
+          <ul>
+            <li>주문 관리</li>
+            <li>상품별 주문 조회</li>
+          </ul>
+        </div>
+        <div class="section">
+        <h4 class="section-header">상품별 주문조회</h4>
+          <div class="buttons-wrap right-top">
+            <a href=" javascript:undefined;" class="btn btn-bgray form-folding-btn">검색영역 닫기</a>
+          </div>
+          <div class="form-wrap">
+          <form  id="orderNoForm" action="">
+          </form>
+            <form id="orderForm">
+              <div class="inputs-wrap">
+                <div class="unique-search-form fr w200 ml10">
+                  <table class="basic">
+                    <tbody>
+                      <tr>
+                        <th>
+                          <select id="godNoCom" class="full">
+                            <option value="godNos">온라인품번</option>
+                            <option value="erpGodNos">ERP 상품코드</option>
+                          </select>
+                        </th>
+                      </tr>
+                      <tr>
+                        <td>
+                          <textarea id="godNos" cols="30" rows="3" ></textarea>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr>
+                        <th>주문번호</th>
+                      </tr>
+                      <tr>
+                        <td>
+                          <textarea id="ordNos" cols="30" rows="3"></textarea>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="ofh">
+                  <table class="basic">
+                    <colgroup>
+                      <col class="col_01 head">
+                      <col class="col_02">
+                      <col class="col_03 head">
+                      <col class="col_04">
+                    </colgroup>
+                    <tbody>
+                      <tr>
+                        <th><label for="">몰그룹</label></th>
+                        <td>
+                          <label for=""><%=BOSecurityUtil.getAuthMall().get("mallNm") %></label>
+                          <input type="hidden" name="mallId" id="mallId" value="<%=BOSecurityUtil.getAuthMall().get("mallId") %>">
+                        </td>
+                        <th><label for="">언어</label></th>
+                        <td>
+                          <div class="checkbox-group">
+                          	<ncp:codes group="LANG" name="langCds" id="langCds" type="checkbox" prefix="<span class='checkbox'>" postfix="</span>" def="KOR" />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="">주문기간</label></th>
+                        <td colspan="3">
+                        
+                          <div class="date-range">
+                            <div class="input-date">
+                              <input type="text" id="fromDate" class="date format validate" name="startOrdDt">
+                              <span class="icon icon-calendar"><img src="<c:url value='${_resourceURL}images/common_icons.png'/>" alt="" id="calendar1_icon"></span>
+                            </div>
+                            ~
+                            <div class="input-date">
+                              <input type="text" id="toDate" class="date format validate" name="endOrdDt">
+                              <span class="icon icon-calendar"><img src="<c:url value='${_resourceURL}images/common_icons.png'/>" alt="" id="calendar2_icon"></span>
+                            </div>
+                            <span class="set-range">
+                              <a href="javascript:undefined;" class="btn btn-xsm" onclick="InputUtils.Calendar.setRange( '1d' ) ; ">오늘</a>
+                              <a href="javascript:undefined;" class="btn btn-xsm toggled" onclick="InputUtils.Calendar.setRange( '1w' ) ; ">1주일</a>
+                              <a href="javascript:undefined;" class="btn btn-xsm" onclick="InputUtils.Calendar.setRange( '1m' ) ; ">1개월</a>
+                              <a href="javascript:undefined;" class="btn btn-xsm" onclick="InputUtils.Calendar.setRange( '3m' ) ; ">3개월</a>
+                            </span>
+                          </div>
+                      </tr>
+                      <tr>
+                        <th><label for="">구매채널</label></th>
+                        <td colspan="3">
+                            <a href="javascript:undefined;" onclick="InputUtils.checkAll(this)" class="btn btn-xsm select-all">전체</a>
+                          <div class="checkbox-group">
+                          <ncp:codes group="DVC" id="ln1" def="KOR" type="checkbox" name="devices" prefix="<span class='checkbox'>" postfix="</span>"/>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                      	<th>브랜드</th>
+                        <td colspan="3">
+                         <input type="hidden" name="authorGrpSn" id="authorGrpSn" value="${authorGrpSn}" />
+                         <input type="hidden" name="brndId" id="brndId" value="" />
+                         <select name="searchBrndId1" id="searchBrndId1">
+		                    <option value="">선택</option>
+		                  </select>
+		                   <select name="searchBrndId2" id="searchBrndId2">
+		                    <option value="">선택</option>
+		                  </select>
+		                    <select name="brandIdSelect" id="brandIdSelect">
+		                    <option value="">선택</option>
+		                  </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="ordTp">주문구분</label></th>
+                        <td>
+                          <select name="ordTp" id="ordTp">
+                            <option value="">전체</option>
+                            <ncp:codes group="ORD_TP" def="KOR" type="option"/>
+                          </select>
+                        </td>
+                        <th><label for="ordStat">주문상태</label></th>
+                        <td>
+                          <select name="ordStat" id="ordStat">
+                            <option value="">전체</option>
+                             <ncp:codes group="ORD_STAT" def="KOR" type="option"/>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="">배송상태</label></th>
+                        <td>
+                          <select name="dlvStat" id="dlvStat">
+                            <option value="">전체</option>
+                            <ncp:codes group="DLV_STAT" def="KOR" type="option"/>
+                          </select>
+                        </td>
+						<th><label for="">상품유형</label></th>
+                        <td>
+                          <select name="godTp">
+                            <option value="">전체</option>
+                              <ncp:codes group="GOD_TP" def="KOR" type="option"/>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="">결제수단</label></th>
+                        <td colspan="3">
+                          <a href="javascript:undefined;" onclick="InputUtils.checkAll(this)" class="btn btn-xsm select-all">전체</a>
+                          <div class="checkbox-group">
+                          <ncp:codes group="PAY_MN" id="ln1" def="KOR" type="checkbox" name="payMns" prefix="<span class='checkbox'>" postfix="</span>"/>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="mbrTp">회원유형</label></th>
+                        <td>
+                          <select name="mbrTp" id="mbrTp">
+                            <option value="">전체</option>
+                            <ncp:codes group="MBR_TP" def="KOR" type="option"/>
+                          </select>
+                        </td>
+                        <th> <label for="mbrAtrb">회원속성</label></th>
+                        <td>
+                          <select name="mbrAtrb" id="mbrAtrb">
+                            <option value="">전체</option>
+                            <ncp:codes group="MBR_ATRB" def="KOR" type="option"/>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="pchId">구매자ID</label></th>
+                        <td> <input type="text" name="pchId" id="pchId"></td>
+                        <th><label for="cstmrPchDcsnYn">구매확정여부</label></th>
+                        <td>
+                        	<select name="cstmrPchDcsnYn" id="cstmrPchDcsnYn">
+	                            <option value="">전체</option>
+	                            <option value="Y">확정</option>
+	                            <option value="N">미확정</option>
+                          	</select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="">수취인 이름</label></th>
+                        <td><input type="text" name="rcverNm" id="rcverNm"></td>
+                        <th><label for="">수취인 연락처</label></th>
+                        <td><input type="text"  name="rcverTelNo" id="rcverTelNo"></td>
+                      </tr>
+                      <tr>
+                        <th><label for="pchNm">구매자이름</label></th>
+                        <td><input type="text" name="pchNm" id="pchNm"></td>
+                        <th> <label for="pchTelNo">구매자 연락처</label></th>
+                        <td><input type="text" name="pchTelNo" id="pchTelNo"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </form>
+              <div class="buttons-wrap center-bottom">
+                <a href="javascript:undefined;" class="btn btn-navy submit" id="btnSearch" ><span class="icon icon-lens"><img src="<c:url value="${_resourceURL}images/common_icons.png"/>" alt=""></span> 조회</a>
+                <a href="javascript:undefined;" class="btn reset" id="icon-reset"><span class="icon icon-reset"><img src="<c:url value="${_resourceURL}images/common_icons.png"/>" alt=""></span> 초기화</a>
+              </div>
+            
+          </div>            
+        </div>
+
+        <div class="section search-result" id="event_contents">
+          <div class="grid-header" id="gridHeader">
+            <p class="title">상품 목록 <sub class="desc">(총 <span class="totalRow bold orange">0</span>건)</sub></p>
+
+          </div>
+          <div class="grid-wrap">
+            <div id="grid_01" style="height: 400px; width:100%">그리드 영역</div>
+            <div id="pagingArea"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div> 
+           <form  id="tempOrdForm" style="display: none;">
+    
+          </form>
+  <script type="text/javascript">
+
+
+  $(document).ready(function() {
+
+	  $("#vendorList").vendor();
+	  
+		 grid1 = new GridUtil().parentId("grid_01")
+		.columnRule({mode : 'ro',align : 'center'})
+	    .column({columnId : 'ordNo',          type : 'ro',   align : 'center', width : '150', sorting : 'str', headerLabel : '주문번호'})
+		.column({columnId : 'mallNm',         type : 'ro',   align : 'center', width : '80', sorting : 'str', headerLabel : '몰'})
+		.column({columnId : 'langNm',         type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '언어'})
+		.column({columnId : 'dvcNm',          type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '구매채널'})	
+		.column({columnId : 'ordDt',          type : 'ro',  align : 'center', width : '150', sorting : 'str', headerLabel : '주문일시'})
+		.column({columnId : 'brndId',         type : 'ro',  align : 'center', width : '70', sorting : 'str', headerLabel : '브랜드ID'})
+		.column({columnId : 'upperGrpBrndNm', type : 'ro',  align : 'center', width : '150', sorting : 'str', headerLabel : '대분류 브랜드명'})
+        .column({columnId : 'brndNm',         type : 'ro',  align : 'center', width : '150', sorting : 'str', headerLabel : '브랜드명'})
+		.column({columnId : 'godNo',          type : 'ro',  align : 'center', width : '150', sorting : 'str', headerLabel : '온라인품번'})
+		.column({columnId : 'erpGodNo'     ,  type : 'ro',   align : 'center', width : '180', sorting : 'str', headerLabel : 'ERP품번'})
+		.column({columnId : 'godWt'        ,  type : 'ron',  align : 'center', width : '80', sorting : 'int', headerLabel : '상품중량', numberFormat:'000.0kg'})
+		.column({columnId : 'godNm',          type : 'ro',  align : 'center', width : '250', sorting : 'str', headerLabel : '상품명'})
+		.column({columnId : 'itmNm'        ,  type : 'ro',   align : 'center', width : '80', sorting : 'str', headerLabel : '옵션'})
+		.column({columnId : 'godTp'      ,    type : 'ro',   align : 'center', width : '80', sorting : 'str', headerLabel : '상품유형'})
+		.column({columnId : 'ordTp',          type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '주문구분'})
+		.column({columnId : 'ordStat',        type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '주문상태'})
+		.column({columnId : 'dlvCom',         type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '택배사명'})
+		.column({columnId : 'clmYn',          type : 'ro',   align : 'center', width : '50', sorting : 'str', headerLabel : '클레임'})
+		.column({columnId : 'rtlPrc',         type : 'ron',  align : 'right', width : '100', sorting : 'int', headerLabel : 'ERP가', numberFormat:'0,000'})
+		.column({columnId : 'saleAmt',        type : 'ron',  align : 'right', width : '100', sorting : 'int', headerLabel : 'ERP할인가', numberFormat:'0,000'})
+		.column({columnId : 'ordQty',         type : 'ro',   align : 'center', width : '40', sorting : 'int', headerLabel : '수량'})
+		.column({columnId : 'ordAmt',         type : 'ron',  align : 'right', width : '100', sorting : 'int', headerLabel : '주결제금액', numberFormat:'0,000'})
+		.column({columnId : 'pchId',          type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '구매자ID' , userDataId : 'mbrNo'})
+	// 권한이 자사이거나 시스템운영자일 경우 노출
+	<c:if test="${secSysAdmin.adminTpCd eq 'MCOM' or secSysAdmin.adminTpCd eq 'SYS_OPRTR'}">
+		.column({columnId : 'mbrNo',          type : 'ro',   align : 'center', width : '140', sorting : 'str', headerLabel : '회원번호'})
+	</c:if>
+		.column({columnId : 'pchNm',          type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '구매자 이름'})
+		.column({columnId : 'pchMoNo',       type : 'ro',   align : 'center', width : '130', sorting : 'str', headerLabel : '구매자 연락처'})
+		.column({columnId : 'cstmrPchDcsnYn',  type : 'ro',   align : 'center', width : '130', sorting : 'str', headerLabel : '구매확정여부'})
+		.column({columnId : 'cstmrPchDcsnDt',  type : 'ro',   align : 'center', width : '130', sorting : 'str', headerLabel : '구매확정일시'})
+		.column({columnId : 'addrseNm',        type : 'ro',   align : 'center', width : '100', sorting : 'str', headerLabel : '수취인이름'})
+		.column({columnId : 'addrseMoNo',     type : 'ro',   align : 'center', width : '130', sorting : 'str', headerLabel : '수취인연락처'})
+        .setHeader("gridHeader", {hasExcelDlBtn:true, excelDownloadURL:"/od/listOrderGodExcel.excel", serializeForm:"tempOrdForm", hasPageSizer:true})
+        .setEnableOrderNum(true)
+		.init();
+		 grid1.getGridObject().attachEvent("onRowSelect",doOnRowSelect);
+		$.each($('.icon-calendar'), function(i, v) {
+			var inputId = $(v).parent().find('.date').prop('id');
+			var buttonId = $(v).find('img').prop('id');
+			var calendar = new dhtmlXCalendarObject({ input : inputId , button : buttonId }) ; 
+		    calendar.showWeekNumbers() ;
+		    
+		});
+         
+        $('#ordNos,#godNos').focusin(function(){
+            
+            if($(this).attr('id') == 'ordNos'){
+                $('#godNos').val('');
+                
+            }else{
+                
+                $('#ordNos').val('');
+            }
+            
+            
+        });
+
+
+        $('#btnSearch').click(function(){
+            var ordNos = $('#ordNos').val().trim().split(/\n/g);
+            if(ordNos != '') {
+                var count = ordNos.length;
+
+                if (count > 1000) {
+                    alert('주문번호는 최대 1000개 까지 검색 가능합니다.');
+                    return false;
+                }
+            }
+
+            var param = searchParam(function(id){
+
+                var ordNo = $('#'+id).val().trim().split('\n');
+
+                if(ordNo != ''){
+                    if(id =='godNos'){
+                        id=$('#godNoCom').val();
+                    }
+                    for (var int = 0; int < ordNo.length; int++) {
+                        var element = ordNo[int];
+                        $("#orderNoForm").append('<input type="hidden" name="'+id+'" value="'+element+'">');
+                    }
+                }
+
+             });
+
+            var dataValue = {
+                url : '<c:url value="/od/jsonlistOrderGod.json"/>',
+                param : param.serialize(),
+                callbackSuccess : onCallbackSuccess,
+                callbackError : onCallbackError
+            };
+
+            grid1.sendGridData(dataValue);
+
+            $("#orderNoForm").empty();
+        });
+
+	  $('.form-folding-btn').click(function(){
+		  $('.form-wrap').toggle();
+	  });
+	  
+	  $('#icon-reset').click(function(){
+
+		  $('#brndId').val("");
+		  $('#orderForm').each(function() {
+			  this.reset();
+			 
+		  });
+		    $('.select-all').removeClass('toggled');
+			$('.set-range > a').removeClass('toggled');
+			$('.set-range > a').eq(1).addClass('toggled');
+			InputUtils.Calendar.init();
+		
+	  });
+	  
+	  jQuery("#searchBrndId1").change(function(e){ 
+		actionJS.loadSearchBrnd(1, "searchBrndId",$(this).val()); e.preventDefault();
+	    $("#brandIdSelect").find("option").remove();  
+		$("#brandIdSelect").append("<option value=''>선택</option>"); 
+		$("#brndId").val($(this).val());
+	  });
+	  
+	  jQuery("#searchBrndId2").change(function(e){ 
+			var parentId = $(this).val(); 
+			brngGrpChange(parentId);
+			$("#brndId").val($(this).val());
+	  });
+	  
+	  jQuery("#brandIdSelect").change(function(e){ 
+			$("#brndId").val($(this).val());
+	  });
+	  
+	  actionJS.initialize();
+  });
+
+  function searchParam(fnc) {
+		
+	  fnc('ordNos');
+	  fnc('godNos');
+	  
+	  if($("#orderNoForm").children().is('input')){
+          $("#tempOrdForm").empty();    
+          $("#orderNoForm").children().clone(true).appendTo("#tempOrdForm"); 
+		  return $("#orderNoForm");
+		  
+	  }else{
+          $("#tempOrdForm").empty();    
+          $("#orderForm").children().find('input').clone(true).appendTo("#tempOrdForm");                 
+          $("#orderForm").children().find('select').each(function() {                    
+              $("#tempOrdForm").append('<input type="hidden" name="'+$(this).attr('name')+'" value="'+$(this).val()+'">');               
+          }); 
+		  return $("#orderForm");  
+	  }
+	  
+  }
+	function onCallbackSuccess(result) {
+        $('#grid_01').find('.objbox tbody tr').each(function() {
+            var ordNoIndex =grid1.getGridObject().getColIndexById("ordNo");
+            var pchIdIndex =grid1.getGridObject().getColIndexById("pchId");
+            $(this).children().eq(ordNoIndex).css({"text-decoration":"underline","cursor":"pointer"});
+            $(this).children().eq(pchIdIndex).css({"text-decoration":"underline","cursor":"pointer"});
+        });
+		$(".totalRow").text(result.totalRow);
+	}
+	
+	function onCallbackError() {
+// 		console.log('error');
+	}
+    function doOnRowSelect() {
+        
+        var grid = grid1.getGridObject();
+        
+        var colId=grid.getColumnId(grid.getSelectedCellIndex());
+        var ordNo = grid.cells(grid.getSelectedId(),grid.getColIndexById("ordNo")).getValue();
+        
+        if(colId =='ordNo'){
+           
+
+            window.open("<c:url value='/od/popupOrder'/>?ordNo="+ordNo, "_blank", "scrollbars=1,resizable=1,height=900,width=1750");
+             
+        }else if(colId =='pchId'){
+            
+           var mbrNo =  grid1.getUserData(grid.getSelectedId(),'mbrNo');
+            if(mbrNo != ''){
+                window.open("<c:url value='/mb/member/view'/>?mbrNo="+mbrNo, "_blank", "scrollbars=1,resizable=1,height=900,width=1750");
+
+            }
+
+        }
+      
+        
+          
+    }
+    function callbackComId(data){
+        $('#partmalComCd').val(data.comId);
+    }
+
+  $('#mallId').on("change" , function(){
+     if( $(this).val() == '' ) {
+    	  $("input:checkbox[id='langCdsKOR']").prop("checked", true);
+    	  $("input:checkbox[id='langCdsCHI']").prop("checked", false);
+    	  $("input:checkbox[id='langCdsENG']").prop("checked", false);
+      } else {
+    	  $("input:checkbox[id='langCdsKOR']").prop("checked", true);
+    	  $("input:checkbox[id='langCdsCHI']").prop("checked", false);
+    	  $("input:checkbox[id='langCdsENG']").prop("checked", false);
+      }
+  });
+  
+  var actionJS =  {
+  			
+  			initialize: function(){
+  	   			
+  	   			this.brndMaxDepth = 2;
+  	   			this.loadSearchBrnd(0,"searchBrndId", "");
+  	   			
+  	   		},
+  			loadSearchBrnd:function(depth, baseIdName, objValue){
+  				if( depth > this.brndMaxDepth ) return; 
+  				
+  				//다음 depth 초기화
+  				for( var i = depth+1; i <= this.brndMaxDepth; i++ ){
+  					this.initSearchBrnd ( baseIdName+""+i);
+  					
+  					$("#"+(baseIdName+""+i)).removeAttr("disabled");
+  				}	
+  				
+  				if( objValue == "" && depth > 1){
+  					var idKey = baseIdName+""+(depth-1);
+  					this.searchBrndId = $("#"+idKey).val();
+  				}else if( objValue == "" && depth == 1){
+  					this.searchBrndId = "";
+  				}else{
+  					
+  					this.searchBrndId = objValue;
+  					var idKey = baseIdName+""+(depth+1);
+  					var params = {};
+  					params['selBrndId'] = this.searchBrndId;
+  	  			    params['searchBrndGrpYn'] = "Y";
+  							
+  					var data = comAjaxJS.callAjax("/sc/popup/listBrndFromUpperBrndId.json",params);
+  					if( comAjaxJS.isSucess(data)){ 
+  						if( data.rowData != undefined){
+  							
+  							if( data.rowData.length == 0 ){
+  								//조회된 데이타가 없으면
+  								
+  								for( var i = depth+1; i <= this.brndMaxDepth; i++ ){
+  									disIdKey = baseIdName+""+(depth+1);
+  									$("#"+disIdKey).prop("disabled", true);
+  								}
+  							}else{
+  								for( var i in  data.rowData ){
+  									obj = data.rowData[i].sysBrnd;
+  									$("#"+idKey).append ( "<option value='"+obj.brndId+"'>["+obj.brndId+"] "+obj.brndNm+"</option>");				 
+  								}
+  							}
+  							
+  						}
+  					}
+  					
+  				}
+  				
+  			},
+  			initSearchBrnd:function( id ){
+  				var cnt = 0;
+  				$("#"+id).find("option").each( function(){
+  					if( cnt > 0) $(this).remove();
+  					cnt++;
+  				});
+  			}
+  			
+  	};
+  
+    function brngGrpChange(parentId){  
+		if(parentId){
+	  		$.ajax({
+				type : "GET",
+				dataType : "json",
+				url : '<c:url value="/bi/changeBrndCategory.json"/>', 
+				data : "parentId="+parentId,
+				async : false,
+				success : function(data) {  
+					$("#brandIdSelect").find("option").remove();  
+			 		$("#brandIdSelect").append("<option value=''>전체</option>"); 
+					
+			 		if (data.results){
+				    	for(var i = 0; i < data.results.length; i++) {
+				    		$("#brandIdSelect").append("<option value='"+data.results[i].brndId+"'>"+data.results[i].brndNm+"</option>");
+				  		}
+					}
+				}
+			});
+		} else { 
+			$("#brandIdSelect").find("option").remove();  
+	 		$("#brandIdSelect").append("<option value=''>전체</option>"); 
+		}
+	 }
+  </script>

@@ -1,0 +1,395 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ page import="com.plgrim.ncp.base.enums.GoodsEnum"%>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>
+
+<ncp:prop key="ncp.image.url" var="imageURL"/>
+
+ <acrticle id="container" class="contents-type01">
+	<section id="contents">
+	<div class="contents-type01-box01">
+ 		<c:set var="bnrCount" value="0"/>
+					<div class="main-visual" id="mainVisual">
+						<div class="swiper-container">
+							<ul class="swiper-wrapper">
+							  <c:forEach items="${bnr}" var="contt" >
+							  	 <c:choose>
+					                <c:when test="${contt.conttTpCd eq 'HTML'}">
+										
+					                </c:when>
+					                <c:otherwise>							  
+										<li class="swiper-slide"><a href="${contt.conttCnncUrl }" onclick="return false;" conttCnncUrl="${contt.conttCnncUrl }"  outptTpCd="${contt.outptTpCd }" ><img src="${imageURL}${contt.imgFileUrl}/${contt.imgFileNm }" alt="${contt.imgFileNm }">
+										<div class="main-visual-text roboto-italic" style="color:${contt.imgBcrnColorCd}">${contt.imgDscr }</div></a></li>
+					                </c:otherwise>
+									</c:choose>
+									<c:set var="bnrCount" value="${bnrCount+1 }"/>
+							  </c:forEach>
+							</ul>
+						</div>
+						<div class="main-visual-pagination">
+							<div class="main-visual-page-inner">
+								<div class="main-visual-num"></div>
+								<div class="main-visual-control">
+									<button type="button" class="main-visual-stop">정지</button>
+									<button type="button" class="main-visual-play" style="display: none;">시작</button> 
+								</div>
+							</div>
+						</div>
+						<div class="main-visual-prev-next">
+							<button type="button" class="main-visual-prev">이전</button>
+							<button type="button" class="main-visual-next">다음</button>
+						</div>
+					</div>
+
+					<script>
+					$( document ).ready(function() {
+						var mainVisual = new Swiper('#mainVisual .swiper-container', {
+							slidesPerView: 1,
+							observer: true,
+							observeParents: true,
+							pagination: {
+								el: '#mainVisual .main-visual-pagination .main-visual-num',
+								clickable: true,
+								renderBullet: function (index, className) {
+									return '<span class="' + className + '">' + (index + 1) + '</span>';
+								}
+							},
+							navigation: {
+								nextEl: '#mainVisual .main-visual-next',
+								prevEl: '#mainVisual .main-visual-prev'
+							},
+							autoplay: {
+								delay: 10000,
+								disableOnInteraction: false
+							},
+							preloadImages: false,
+						    // Enable lazy loading
+						    lazy: true,
+							loop: true,
+							on: {
+								slideChange: function() {
+									var _this = this;
+									if ($(_this.slides[_this.activeIndex]).find('video').length > 0) {
+										var videoEl = $(_this.slides[_this.activeIndex]).find('video')[0];
+										videoEl.pause();
+										videoEl.currentTime = 0;
+										videoEl.play();
+									}
+								}
+							}
+						});
+						var bnrCount = "${bnrCount}";
+					    if(bnrCount == null || parseInt(bnrCount) <= 1) {
+							$('#mainVisual').find('.main-visual-prev-next').hide();
+					    };
+						$('#mainVisual .main-visual-play').click(function() {
+							mainVisual.autoplay.start();
+							$(this).hide();
+							$('#mainVisual .main-visual-stop').show();
+						});
+						$('#mainVisual .main-visual-stop').click(function() {
+							mainVisual.autoplay.stop();
+							$(this).hide();
+							$('#mainVisual .main-visual-play').show();
+						});
+						setTimeout(function(){
+							$('.main-visual').css('height',document.body.clientHeight);
+							mainVisual.pagination.render();
+							mainVisual.pagination.update();
+						},1);
+						$('#mainVisual video').bind('loadeddata', function(e) {
+						  setTimeout(function(){
+								$('.main-visual').css('height',document.body.clientHeight);
+								mainVisual.pagination.render();
+								mainVisual.pagination.update();
+							},1);
+						});
+						$(window).resize(function() {
+							$('.main-visual').css('height',document.body.clientHeight);
+						});
+						$('#mainVisual').imagesLoaded().progress( function() {
+							setTimeout(function(){
+									$('.main-visual').css('height',document.body.clientHeight);
+									mainVisual.pagination.render();
+									mainVisual.pagination.update();
+								},1);
+						});
+						/* 1903 추가 | 영상 슬라이드 호버 시 슬라이더 정지 */
+						$('#mainVisual [class*="video"]').find('iframe, a, video').on({
+							mouseenter:function(){
+								mainVisual.autoplay.stop();
+								$('#mainVisual .main-visual-stop').hide();
+								$('#mainVisual .main-visual-play').show();
+							},
+							mouseleave:function(){
+								mainVisual.autoplay.start();
+								$('#mainVisual .main-visual-stop').show();
+								$('#mainVisual .main-visual-play').hide();
+							}
+						})
+					});
+					</script>
+
+				</div>
+				<div class="contents-type01-box02" style="display: none;">
+					<div class="main-contents">
+						<div class="main-contents-gutter"></div>
+						<div class="main-contents-wrap">
+						  <c:forEach items="${newArrival}" var="newArr" >
+						  	 <div class="main-cotents-item">
+								<h2>${newArr.dspCnrNm }</h2>
+								<div id="mainItemList01" class="main-item-list01">
+									<div class="swiper-container">
+										<ul class="swiper-wrapper">
+										  	<c:forEach items="${newArr.dspCnrSetList}" var="setArr" >
+										  	   <c:forEach items="${setArr.cnrConttExList}" var="contt" >
+										  	<li class="swiper-slide">
+												<div class="item-img"><a  href="${contt.godUrl }" onclick="return false;" conttCnncUrl="${contt.godUrl }"  outptTpCd="${contt.outptTpCd }" ><img src="${imageURL }${contt.imgFrontUrl}/dims/resize/<%=String.valueOf(GoodsEnum.GoodsImageReSizeCd.IMG_220x293)%>" alt="${contt.godNm }" onerror="errorImgShow(this,'<%=String.valueOf(GoodsEnum.GoodsImageReSizeCd.IMG_220x293)%>');"></a></div>
+												<div class="item-info">
+													<p class="txt01"><a href="${contt.godUrl}" >${contt.godNm }</a></p>
+													<c:choose>
+													  <c:when test="${contt.rtlPrc > contt.lastSalePrc}">
+													<p class="txt01"><del><fmt:formatNumber value="${contt.rtlPrc }" type="number"/><spring:message code="display.main.text1" /></del><strong><fmt:formatNumber value="${contt.lastSalePrc }" type="number"/><spring:message code="display.main.text1" /></strong></p>
+													  </c:when>
+													  <c:otherwise>
+													 <p class="txt01"><strong><fmt:formatNumber value="${contt.lastSalePrc }" type="number"/><spring:message code="display.main.text1" /></strong></p>
+													  </c:otherwise>
+													</c:choose>
+													
+											
+												</div>
+											</li>
+											  </c:forEach>
+											</c:forEach>
+										</ul>
+									</div>
+									<button type="button" class="item-list-prev">이전</button>
+									<button type="button" class="item-list-next">다음</button>
+								</div>
+							</div>
+						  </c:forEach>
+							<c:forEach items="${contt}" var="conArr" >
+							     <div class="main-cotents-item">
+							         <h2>${conArr.dspCnrNm }</h2>
+							          <c:forEach items="${conArr.dspCnrSetList}" var="setArr" >
+							           <div class="main-item-view">   
+							            <c:set var="godCount" value="0"/>
+							             <c:forEach items="${setArr.cnrConttExList}" var="contt"  varStatus="loop" >							              
+							                   <c:if test="${contt.conttTpCd eq 'IMG_BANNER'}">
+							                   		 <div class="main-item-img"> <a  href="${contt.conttCnncUrl }" onclick="return false;" conttCnncUrl="${contt.conttCnncUrl }"  outptTpCd="${contt.outptTpCd }"  ><img src="${imageURL }${contt.imgFileUrl}/${contt.imgFileNm}" alt=""></a> </div> 
+							                   </c:if>		
+							                    <c:if test="${contt.conttTpCd eq 'HTML'}">
+							                     
+							                    </c:if>
+							                   <c:if test="${contt.conttTpCd eq 'TEXT'}">
+							                    <p class="main-item-${contt.conttSizeCd}">${ contt.conttNm} </p>
+							                   </c:if>	
+							                   <c:if test="${contt.conttTpCd eq 'MOVI'}">
+								               	<div class="main-item-img">
+								               		<a href="javascript_:void(0);" onclick="return false;" conttCnncUrl="${contt.moviFileUrl }"  outptTpCd="MOVPOPUP"  >
+								               			<img src="${imageURL}${contt.moviImgUrl}/${contt.moviImgFileNm}" alt="">
+								               			<span>
+								               				<img src="${_resourceURL}static/images/showing/btn_play.png" alt="play">
+								               			</span>
+								               		</a>
+								               	</div>
+								               	</c:if>
+							                   
+							                   <c:if test="${contt.conttTpCd eq 'GOD'}">
+							                    <c:if test="${godCount eq 0}">
+							                    	 <div class="main-item-list02">
+										                <div class="swiper-container">
+											               <ul class="swiper-wrapper">
+											                <c:set var="godCount" value="1"/>      
+							                    </c:if>
+							                         <li class="swiper-slide">
+													<div class="item-img"><a  href="${contt.godUrl }" onclick="return false;" conttCnncUrl="${contt.godUrl }"  outptTpCd="${contt.outptTpCd }"  ><img src="${imageURL }${contt.imgFrontUrl }/dims/resize/<%=String.valueOf(GoodsEnum.GoodsImageReSizeCd.IMG_220x293)%>" alt="${contt.godNm }" onerror="errorImgShow(this,'<%=String.valueOf(GoodsEnum.GoodsImageReSizeCd.IMG_107x143)%>');"></a></div>
+													<div class="item-info">
+														<p class="txt01"><strong><fmt:formatNumber value="${contt.lastSalePrc }" type="number"/><spring:message code="display.main.text1" /></strong></p>
+													</div>
+												    </li>
+								                  <c:if test="${loop.last}">
+								                  		   </ul>
+										               </div>
+										               <button type="button" class="item-list-prev">이전</button>
+										               <button type="button" class="item-list-next">다음</button>
+									                </div>
+									                <c:set var="godCount" value="0"/>
+								                  </c:if>
+							                   </c:if>	
+							                   			                
+							            </c:forEach>
+							           </div>
+							         </c:forEach>
+							     </div>
+							</c:forEach>
+ 
+						</div>
+					</div>
+					<div class="main-contents-more">
+					<a href="javascript_:void(0);" onclick="return false;"  class="more" id="moreConttAppend">MORE</a>
+					</div>
+					<script>
+					
+						$('.main-item-list01').each(function(){
+							var $this = $(this).find('.swiper-container'),
+								prevBtn = $(this).find('.item-list-prev'),
+								nextBtn = $(this).find('.item-list-next');
+							var mainItemList01 = new Swiper($this, {
+								slidesPerGroup: 2,
+								slidesPerView: 2,
+								observer: true,
+								observeParents: true,
+								spaceBetween: 20,
+								watchOverflow: true,
+								navigation: {
+									nextEl: nextBtn,
+									prevEl: prevBtn
+								}
+							});
+						});
+
+						$('.main-item-list02').each(function(){
+							var $this = $(this).find('.swiper-container'),
+								prevBtn = $(this).find('.item-list-prev'),
+								nextBtn = $(this).find('.item-list-next');
+							var mainItemList02 = new Swiper($this, {
+								slidesPerGroup: 4,
+								slidesPerView: 4,
+								observer: true,
+								observeParents: true,
+								spaceBetween: 10,
+								watchOverflow: true,
+								centeredSlides: false,
+								navigation: {
+									nextEl: nextBtn,
+									prevEl: prevBtn
+								},
+								breakpoints: {
+									1680: {
+										slidesPerGroup: 3,
+										slidesPerView: 3
+									}
+								}
+							});
+						});
+
+						setTimeout(function() {
+						 
+							$('.main-contents').masonry({
+								itemSelector: '.main-cotents-item',
+								percentPosition: true,
+								//horizontalOrder: true,
+								gutter: '.main-contents-gutter',
+							});
+							$('.main-contents').imagesLoaded().progress( function() {
+							    $('.main-contents').masonry('layout');
+							}); 
+							$(window).resize(function() {
+								$('.main-contents').masonry('layout');
+							});
+						 
+						},100);
+						
+						$(document).ready(function() {
+					
+							$('.swiper-container').imagesLoaded().progress( function() {
+								$('.contents-type01-box02').show();
+								$(window).resize();
+							}); 
+							$('#moreConttAppend').click(function(){
+ 
+								 $.ajax({
+							        type:"POST",
+							        url:"/main/mall/conttAppend",
+									beforeSend : function(request) {
+										var csrfToken = $('meta[name="_csrf"]').attr('content') || '';
+										var csrfName = $('meta[name="_csrf_header"]').attr('content') || '';
+										request.setRequestHeader(csrfName, csrfToken);
+									},
+							        success: function(data){
+							        	$('.main-contents').masonry('destroy');
+							    		$('.main-contents-wrap').append(data);
+										setTimeout(function() {
+											 
+											$('.main-contents').masonry({
+												itemSelector: '.main-cotents-item',
+												percentPosition: true,
+												//horizontalOrder: true,
+												gutter: '.main-contents-gutter',
+											});
+											$('.main-contents').imagesLoaded().progress( function() {
+											    $('.main-contents').masonry('layout');
+											}); 
+											$(window).resize(function() {
+												$('.main-contents').masonry('layout');
+											});
+										 
+										},100);
+							    		$('.main-contents-more').remove();
+							    		
+										$('.main-item-list02').each(function(){
+											var $this = $(this).find('.swiper-container'),
+												prevBtn = $(this).find('.item-list-prev'),
+												nextBtn = $(this).find('.item-list-next');
+											var mainItemList02 = new Swiper($this, {
+												slidesPerGroup: 4,
+												slidesPerView: 4,
+												observer: true,
+												observeParents: true,
+												spaceBetween: 10,
+												watchOverflow: true,
+												centeredSlides: false,
+												navigation: {
+													nextEl: nextBtn,
+													prevEl: prevBtn
+												},
+												breakpoints: {
+													1680: {
+														slidesPerGroup: 3,
+														slidesPerView: 3
+													}
+												}
+											});
+										});
+ 
+							        },
+							        error: function() {
+							    
+							        }
+							    });
+									
+								 
+							});
+							
+						});	
+						
+					</script>
+				</div>
+				    <%@ include file="/WEB-INF/views/main/include/aTagLink.jsp"%>
+			</section>
+</acrticle>
+
+<script type="text/javascript">
+// criteo 호출 메인
+window.criteo_q = window.criteo_q || [];
+window.criteo_q.push(
+        { event: "setAccount", account: 45277 },
+        
+        { event: "setSiteType", type: "d" },
+        { event: "viewHome" }
+);
+fnf_appendCriteoScript();
+</script> 
+		<article id="layerYoutue" class="layer-popup layer-type04">
+			<section class="layer-popup-cont" tabindex="0">
+				<div class="layer-popup-wrap02">
+					<div class="youtube-area"> 
+					  <iframe id="youtueiframe" width="932" height="524" src="" frameborder="0" allowfullscreen></iframe>
+					</div>
+				</div>
+				<div class="layer-popup-close">
+					<button type="button" class="youtueiframe d_layer_close">닫기</button>
+				</div>
+			</section>
+		</article>

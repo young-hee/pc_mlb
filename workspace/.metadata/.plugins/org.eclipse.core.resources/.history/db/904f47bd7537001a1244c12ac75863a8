@@ -1,0 +1,294 @@
+package com.plgrim.ncp.interfaces.internal.server.web.member.service;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.plgrim.ncp.base.abstracts.AbstractService;
+import com.plgrim.ncp.base.entities.datasource1.inf.InfDrmcMbrInfoRecptn;
+import com.plgrim.ncp.base.entities.datasource1.inf.InfMbrGrdInfoRecptn;
+import com.plgrim.ncp.base.entities.datasource1.inf.InfRelisDrmcMbrInfoRecptn;
+import com.plgrim.ncp.base.entities.datasource1.inf.InfSecsnMbrInfoRecptn;
+import com.plgrim.ncp.base.entities.datasource1.mbr.Mbr;
+import com.plgrim.ncp.base.enums.MemberEnum;
+import com.plgrim.ncp.framework.commons.DateService;
+import com.plgrim.ncp.framework.commons.JsonService;
+import com.plgrim.ncp.framework.systems.SystemContext;
+import com.plgrim.ncp.interfaces.internal.server.web.member.repository.MemberInterfaceRepository;
+import com.plgrim.ncp.interfaces.member.adapter.InterfaceAdapter;
+import com.plgrim.ncp.interfaces.member.data.DrmncyMemberInformationListSDO;
+import com.plgrim.ncp.interfaces.member.data.DrmncyMemberInformationSDO;
+import com.plgrim.ncp.interfaces.member.data.DropMemberInformationListSDO;
+import com.plgrim.ncp.interfaces.member.data.DropMemberInformationSDO;
+import com.plgrim.ncp.interfaces.member.data.MemberGradeInformationListSDO;
+import com.plgrim.ncp.interfaces.member.data.MemberGradeInformationSDO;
+import com.plgrim.ncp.interfaces.member.data.MemberInformationSDO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class MemberInterfaceService extends AbstractService {
+
+
+    /*
+     * ---------------------------------------------------------------------
+     * Instance fields.
+     * ---------------------------------------------------------------------
+     */
+    @Autowired
+    MemberInterfaceRepository memberInterfaceRepository;
+    
+    @Autowired
+    MemberSecessionService memberSecessionService;
+    
+    @Autowired
+    InterfaceAdapter interfaceAdapter;
+    
+    @Autowired
+    SystemContext systemContext;
+    
+    /*
+     * ---------------------------------------------------------------------
+     * Constructors.
+     * ---------------------------------------------------------------------
+     */
+
+
+    /*
+     * ---------------------------------------------------------------------
+     * public & interface method.
+     * ---------------------------------------------------------------------
+     */
+
+    final static String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    
+    /**
+     * 휴면회원정보 수신
+     * 
+     * @param drmncyMemberInformationListSDO
+     * @return DrmncyMemberInformationSDO
+     */
+    public DrmncyMemberInformationSDO getDrmncyMemberInformationList(DrmncyMemberInformationListSDO drmncyMemberInformationListSDO) {
+    	DrmncyMemberInformationSDO rtnDrmncyMemberInformationSDO = new DrmncyMemberInformationSDO();
+    	
+    	/*
+    	 * 1. INF_DRMC_MBR_INFO_RECPTN 등록
+    	 */
+    	List<DrmncyMemberInformationSDO> list = drmncyMemberInformationListSDO.getSleepMemberList();
+    	try {
+	    	if(list != null && !list.isEmpty()) {
+	        	for(DrmncyMemberInformationSDO sdo : list) {
+	        		InfDrmcMbrInfoRecptn infDrmcMbrInfoRecptn = new InfDrmcMbrInfoRecptn();
+	        		infDrmcMbrInfoRecptn.setErpCstmrNo(sdo.getCid());
+	        		infDrmcMbrInfoRecptn.setDrmcResnCont(sdo.getSleepReason());
+	        		if(sdo.getSleepDtm() != null && !"".equals(sdo.getSleepDtm())) {
+	        			infDrmcMbrInfoRecptn.setDrmcDt(DateService.createDate(sdo.getSleepDtm(), DEFAULT_DATE_FORMAT));
+	        		}
+	        		
+	        		memberInterfaceRepository.insertInfDrmcMbrInfoRecptn(infDrmcMbrInfoRecptn);
+	        	}
+	    	}
+	
+	    	rtnDrmncyMemberInformationSDO.setResultCd("00");
+	    	rtnDrmncyMemberInformationSDO.setResultMsg("SUCCESS");
+    	}
+    	catch(Exception e) {
+    		rtnDrmncyMemberInformationSDO.setResultCd("99");
+    		rtnDrmncyMemberInformationSDO.setResultMsg(e.getMessage());
+    	}
+    	
+    	return rtnDrmncyMemberInformationSDO;
+    }
+    
+    /**
+     * 탈퇴회원정보 수신
+     * 
+     * @param dropMemberInformationListSDO
+     * @return DropMemberInformationSDO
+     */
+    public DropMemberInformationSDO getDropMemberInformationList(DropMemberInformationListSDO dropMemberInformationListSDO) {
+    	DropMemberInformationSDO rtnDropMemberInformationSDO = new DropMemberInformationSDO();
+    	
+    	/*
+    	 * 1. INF_SECSN_MBR_INFO_RECPTN 등록
+    	 */
+    	List<DropMemberInformationSDO> list = dropMemberInformationListSDO.getDropMemberList();
+    	try {
+	    	if(list != null && !list.isEmpty()) {
+	        	for(DropMemberInformationSDO sdo : list) {
+	        		InfSecsnMbrInfoRecptn infSecsnMbrInfoRecptn = new InfSecsnMbrInfoRecptn();
+	        		infSecsnMbrInfoRecptn.setErpCstmrNo(sdo.getCid());
+	        		if(sdo.getDropDate() != null && !"".equals(sdo.getDropDate())) {
+	        			infSecsnMbrInfoRecptn.setSecsnDt(DateService.createDate(sdo.getDropDate(), DEFAULT_DATE_FORMAT));
+	        		}
+	        		
+	        		memberInterfaceRepository.insertInfSecsnMbrInfoRecptn(infSecsnMbrInfoRecptn);
+	        	}
+	    	}
+	
+	    	rtnDropMemberInformationSDO.setResultCd("00");
+	    	rtnDropMemberInformationSDO.setResultMsg("SUCCESS");
+    	}
+    	catch(Exception e) {
+    		rtnDropMemberInformationSDO.setResultCd("99");
+    		rtnDropMemberInformationSDO.setResultMsg(e.getMessage());
+    	}
+    	
+    	return rtnDropMemberInformationSDO;
+    }
+    
+    /**
+     * 온라인 회원탈퇴
+     * 
+     * @param dropMemberInformationSDO
+     * @return DropMemberInformationSDO
+     */
+    public DropMemberInformationSDO getDropMemberInformation(DropMemberInformationSDO dropMemberInformationSDO) {
+    	DropMemberInformationSDO rtnDropMemberInformationSDO = new DropMemberInformationSDO();
+    	
+    	/*
+    	 * 1. ERP 회원번호로 MBR 조회
+    	 * 2. 주문, 클레임 등 진행중인 건 조회
+    	 * 3. 온라인 탈퇴 처리
+    	 */
+    	boolean result = true;
+    	String erpCstmrNo = dropMemberInformationSDO.getCid();
+    	List<Mbr> mbrList = memberSecessionService.selectMemberByErpCstmrNo(erpCstmrNo);
+    	String resultCode = "00";
+    	String secsnResnDetailCont = "";
+    	
+        if(mbrList != null && !mbrList.isEmpty()) {
+        	for(Mbr mbr : mbrList) {
+				if(!MemberEnum.MemberStatCd.SECSN.toString().equals(mbr.getMbrStatCd())) {
+					try {
+						mbr.setSecsnResnCd(MemberEnum.MemberSecsnSectCd.ERP_SECSN.toString());
+						secsnResnDetailCont = dropMemberInformationSDO.getDropReason();
+						if(dropMemberInformationSDO.getRemarkIt() != null && !"".equals(dropMemberInformationSDO.getRemarkIt())) {
+							secsnResnDetailCont += " \n";
+							secsnResnDetailCont += dropMemberInformationSDO.getRemarkIt();
+						}
+						mbr.setSecsnResnDetailCont(secsnResnDetailCont);
+						resultCode = memberSecessionService.deleteMember(mbr);
+					}
+					catch(Exception e) {
+						StringWriter error = new StringWriter();
+						e.printStackTrace(new PrintWriter(error));
+						
+						log.warn("> Failure message : {} : {}", this.getClass().getName(), error.toString());
+						result = false;
+					}
+				}
+        	}
+        }
+        
+        rtnDropMemberInformationSDO.setCid(dropMemberInformationSDO.getCid());
+        if(result && "00".equals(resultCode)) {
+        	rtnDropMemberInformationSDO.setResultCd("00");
+        	rtnDropMemberInformationSDO.setResultMsg("회원탈퇴 결과 성공");        	
+        }
+        else if("98".equals(resultCode)) {
+        	rtnDropMemberInformationSDO.setResultCd("99");
+        	rtnDropMemberInformationSDO.setResultMsg("진행중인 주문/클레임이 존재합니다.");
+        }
+        else if(!result || "99".equals(resultCode)) {
+        	rtnDropMemberInformationSDO.setResultCd("99");
+        	rtnDropMemberInformationSDO.setResultMsg("회원탈퇴 처리 도중 오류가 발생하였습니다.");
+        }
+    	
+    	return rtnDropMemberInformationSDO;
+    }
+    
+    /**
+     * 회원등급 변경정보 수신
+     * 
+     * @param memberGradeInformationListSDO
+     * @return MemberGradeInformationSDO
+     */
+    public MemberGradeInformationSDO getMemberGradeInformation(MemberGradeInformationListSDO memberGradeInformationListSDO) {
+    	MemberGradeInformationSDO rtnMemberGradeInformationSDO = new MemberGradeInformationSDO();
+  
+    	/*
+    	 * 1. INF_MBR_GRD_INFO_RECPTN 등록
+    	 */
+    	List<MemberGradeInformationSDO> list = memberGradeInformationListSDO.getMemberGradeList();
+    	try {
+	    	if(list != null && !list.isEmpty()) {
+	    		String memberGradeChgDtm = "";
+		    	for(MemberGradeInformationSDO sdo : list) {
+		    		InfMbrGrdInfoRecptn infMbrGrdInfoRecptn = new InfMbrGrdInfoRecptn();
+		    		infMbrGrdInfoRecptn.setErpCstmrNo(sdo.getCid());
+		    		if(sdo.getMemberGradeChgDtm() != null && !"".equals(sdo.getMemberGradeChgDtm())) {
+		    			memberGradeChgDtm = sdo.getMemberGradeChgDtm();
+		    			// DX - 8일
+		    			// MLB, SA 1일
+		    			if("X".equals(sdo.getBrandDiv())) {
+		    				infMbrGrdInfoRecptn.setMbrGrdModDt(DateService.createDate(memberGradeChgDtm.substring(0, 4) + "-" + memberGradeChgDtm.substring(4) + "-08 00:00:00", DEFAULT_DATE_FORMAT));
+		    			}
+		    			else {
+		    				// MLB, SA 기존 등급 정보 삭제처리
+		    	        	memberInterfaceRepository.deleteInfMbrGrdInfoRecptn(infMbrGrdInfoRecptn);
+		    				infMbrGrdInfoRecptn.setMbrGrdModDt(DateService.createDate(memberGradeChgDtm.substring(0, 4) + "-" + memberGradeChgDtm.substring(4) + "-01 00:00:00", DEFAULT_DATE_FORMAT));
+		    			}
+		    		}
+		    		infMbrGrdInfoRecptn.setMbrGrdCd(sdo.getMemberGrade());
+		    		infMbrGrdInfoRecptn.setBrndId(sdo.getBrandDiv());
+		    		infMbrGrdInfoRecptn.setPrmTpCd(sdo.getIssuedCouponType());
+		    		infMbrGrdInfoRecptn.setErpCpnId(sdo.getIssuedCouponNo());
+		    		
+		    		memberInterfaceRepository.insertInfMbrGrdInfoRecptn(infMbrGrdInfoRecptn);
+		    	}
+	    	}
+	
+	    	rtnMemberGradeInformationSDO.setResultCd("00");
+	    	rtnMemberGradeInformationSDO.setResultMsg("SUCCESS");
+    	}
+    	catch(Exception e) {
+	    	rtnMemberGradeInformationSDO.setResultCd("99");
+	    	rtnMemberGradeInformationSDO.setResultMsg(e.getMessage());
+    	}
+    	
+    	return rtnMemberGradeInformationSDO;
+    }
+    
+    /**
+     * 휴면 해제 회원 정보 수신
+     * 
+     * @param drmncyMemberInformationListSDO
+     * @return DrmncyMemberInformationSDO
+     */
+    public DrmncyMemberInformationSDO getReleaseDrmncyMemberInfoList(DrmncyMemberInformationListSDO drmncyMemberInformationListSDO) {
+    	DrmncyMemberInformationSDO rtnDrmncyMemberInformationSDO = new DrmncyMemberInformationSDO();
+    	
+    	/*
+    	 * 1. INF_RELIS_DRMC_MBR_INFO_RECPTN 등록
+    	 */
+    	List<MemberInformationSDO> list = drmncyMemberInformationListSDO.getReleaseDrmncyMemberList();
+    	try {
+	    	if(list != null && !list.isEmpty()) {
+	    		String inputJson = "";
+	        	for(MemberInformationSDO sdo : list) {
+	        		inputJson = JsonService.marshalling(sdo);
+	        		InfRelisDrmcMbrInfoRecptn infRelisDrmcMbrInfoRecptn = new InfRelisDrmcMbrInfoRecptn();
+	        		infRelisDrmcMbrInfoRecptn.setErpCstmrNo(sdo.getCid());
+	        		infRelisDrmcMbrInfoRecptn.setMbrInfo(inputJson);
+	        		
+	        		memberInterfaceRepository.insertInfRelisDrmcMbrInfoRecptn(infRelisDrmcMbrInfoRecptn);
+	        	}
+	    	}
+
+	    	rtnDrmncyMemberInformationSDO.setResultCd("00");
+	    	rtnDrmncyMemberInformationSDO.setResultMsg("SUCCESS");
+    	}
+    	catch(Exception e) {
+    		rtnDrmncyMemberInformationSDO.setResultCd("99");
+    		rtnDrmncyMemberInformationSDO.setResultMsg(e.getMessage());
+    	}
+    	
+    	return rtnDrmncyMemberInformationSDO;
+    }
+    
+}

@@ -1,0 +1,459 @@
+var orderform = {
+	
+	load : function() {
+		
+		//alert('ee');
+		
+		$(".order-payment-content").hide();
+		
+		$('[name="paymentBtn"]').click(function(){
+			$(".order-payment-content").hide();
+			$("#order-payment-content_"+$(this).val()).show();
+		});
+		
+		$('.btnCard').click(function(){
+			$('.card-info-box').hide();
+			$('#'+$(this).prop('id')+"_layer").show();
+			$('.btnCard').removeClass('on');
+			$(this).addClass('on');
+		});
+		
+		orderform.initBtn();
+		
+		
+		
+		orderform.loadOrderInfo();
+		
+	}
+	,initBtn : function(){
+		$("#btnWebPointApplyEnt").click(function(){
+			orderform.getOrderInfo().ord.webpntUseSumAmt = 0;
+			orderform.mixupPayment(false);
+			var cashAmount = parseInt($("#orderRegion").data("total_amount"));
+			var dlvAmount = parseInt($("#orderRegion").data("dlv_amount"));
+			orderform.useWebPoint(parseInt($("#orderRegion").data("maxWebPointUse")));
+			
+			
+		});
+		$("#btnWebPointApply").click(function(){
+			orderform.getOrderInfo().ord.webpntUseSumAmt = 0;
+			orderform.mixupPayment(false);
+			orderform.useWebPoint($("#webPointUse").val());
+		});
+		
+		$(".numberOnly").keyup(function (e) {
+			if (!(e.keyCode >=37 && e.keyCode<=40)) {
+				var inputVal = $(this).val();
+				$(this).val(inputVal.replace(/[^0-9]/gi,''));
+			}
+	    });
+				
+	}
+	,useWebPoint : function(val){
+		val = parseInt(val);
+		if(val>parseInt(orderform.getOrderInfo().webPoint)){
+			alert("잔액이상 사용하실수 없습니다");
+			$("#webPointUse").val(0);
+			return false;
+		}
+	
+		if(val<1000){
+			alert('1000P이상 사용하실 수 있습니다.');
+			$("#webPointUse").val(0);
+			return false;
+		}
+		
+		
+		
+		if(parseInt($("#orderRegion").data("maxWebPointUse")) < val){
+			val = parseInt($("#orderRegion").data("maxWebPointUse"));
+		}
+		
+		orderform.getOrderInfo().ord.webpntUseSumAmt = val;
+		$("#webPointUse").val(orderform.getOrderInfo().ord.webpntUseSumAmt);
+		orderform.mixupPayment(true);
+		
+	}
+	,loadOrderInfo : function(){
+		$.ajax({
+			type:"post"
+			,url:"/order/orderform/load.json"
+			,data : "" // cartnation?
+			,dataType: "json"
+			,async : true
+			,beforeSend : function(request) {
+				var csrfToken = $('meta[name="_csrf"]').attr('content') || '';
+				var csrfName = $('meta[name="_csrf_header"]').attr('content') || '';
+				request.setRequestHeader(csrfName, csrfToken);
+			}
+			,success : function(ret) {
+				//alert(JSON.stringify(ret));
+				ret.ord = new Object();
+				$("#jsonTEXT").val(JSON.stringify(ret));
+				$("#orderRegion").data("orderInfo",ret);
+				
+				orderform.buildOrder();
+				orderform.readyForPay();
+				orderform.mixupPayment(true);
+				
+				orderpay.load();
+				
+			}
+			,error : function(xhr) {
+				alert(xhr.responseText);
+				//alert(data.message);
+				
+			}
+			,complete : function(data) {
+				
+			}
+		});
+	}
+	,getOrderInfo : function(){
+		return $("#orderRegion").data("orderInfo");
+	}
+	,buildOrder : function(){
+		
+		var renderHelper = {
+				commaIn: otool.commaInAmount
+				};
+		renderHelper.parseAmount = otool.parseAmount;
+
+		$("#goodsViewLayer").html();
+		$("#goodsViewLayer").html($("#goodsView").render(orderform.getOrderInfo(),renderHelper));
+		
+		// mbmer info
+		if(orderform.getOrderInfo().mbr){
+			$("#memberViewLayer").html($("#memberView").render(orderform.getOrderInfo().mbr));
+		}else{
+			$(".dcInfo").hide();
+		}
+	}
+	,readyForPay : function(){
+		orderform.getOrderInfo().ord.webpntUseSumAmt = 0;
+		
+		$("#card_payment").click();
+		
+		//wep 
+		$("#webPointBalance").html(otool.commaInAmount(orderform.getOrderInfo().webPoint)+"P");
+	}
+	,mixupPayment : function(check){
+		var god_amt = 0;
+		var dc_amt = 0;
+		var dlv_amt = 0;
+		var mileage = 0;
+		
+		var group_god_mount = 0;
+		var local_dmstcDlvCstExmStdrAmt = 0;
+		var local_dmstcDlvCst = 0;
+		
+		var maxWebPointUse = 0;
+		var maxMailUse = 0;
+		var maxMileAccml = 0;
+		
+		
+		// 쿠폰 적용금액 계산
+		
+		
+		// 상품 속성
+		$.each(orderform.getOrderInfo().cartResultList, function(index, item) {
+
+			god_amt += parseInt(item.price)*parseInt(item.bskGod.itmQty);
+			item.applyPrice = parseInt(item.price)*parseInt(item.bskGod.itmQty);
+
+			if(item.dlvGrpRnum===1){
+				group_god_mount = 0;
+				local_dmstcDlvCst = item.dmstcDlvCst;
+				local_dmstcDlvCstExmStdrAmt = item.dmstcDlvCstExmStdrAmt;
+			}
+			
+			group_god_mount += parseInt(item.price)*parseInt(item.bskGod.itmQty);
+			
+			if(item.dlvGrpRnum===item.dlvGrpCnt){
+				if(group_god_mount < item.dmstcDlvCstExmStdrAmt){
+					dlv_amt += item.dmstcDlvCst;
+					$("#dlvGrpSeq_"+item.grpSeq).html(item.dmstcDlvCst+"원");
+				}else{
+					$("#dlvGrpSeq_"+item.grpSeq).html('무료배송');
+				}
+				
+				local_dmstcDlvCst = 0;
+				local_dmstcDlvCstExmStdrAmt = 0;
+			}
+		
+		});
+		
+		// 할인금액 total start
+		$.each(orderform.getOrderInfo().cartResultList, function(index, item) {
+			if(item.god.webpntAccmlYn==='Y'){
+				maxMileAccml += parseInt(item.applyPrice);
+			}
+			if(item.god.webpntUseYn==='Y'){
+				maxWebPointUse += parseInt(item.applyPrice);
+			}
+			if(item.god.pntUseYn==='Y'){
+				maxMailUse += parseInt(item.applyPrice);
+			}
+		});
+		
+		
+		dc_amt += parseInt(orderform.getOrderInfo().ord.webpntUseSumAmt);
+		
+		$("#god_amt").html(otool.commaInAmount(god_amt)+"원");
+		$("#dlv_amt").html("+"+otool.commaInAmount(dlv_amt)+"원");
+		$("#dc_amt").html("-"+otool.commaInAmount(dc_amt)+"원");
+		
+		$("#total_amount").html(otool.commaInAmount(god_amt-dc_amt+dlv_amt));
+		$("#orderRegion").data("total_amount",parseInt(god_amt-dc_amt+dlv_amt));
+		$("#orderRegion").data("dlv_amount",parseInt(dlv_amt));
+		
+		
+
+		$("#orderRegion").data("mile_amount",parseInt(mileage));
+		
+		$("#orderRegion").data("maxWebPointUse",parseInt(maxWebPointUse));
+		$("#orderRegion").data("maxMailUse",parseInt(maxMailUse));
+		$("#orderRegion").data("maxMileAccml",parseInt(maxMileAccml));
+		
+		if($("#orderRegion").data("total_amount")===0){
+			$(".orderPayMethod").hide();
+		}else{
+			$(".orderPayMethod").show();
+		}
+		
+		if(check){
+			orderform.checkOrder();
+		}
+		
+		
+	}
+	,addOrder : function(){
+		
+	
+		var obj = new Object();
+		var bskGodList = [];
+		obj.bskGodList = orderform.getOrderInfo().cartResultList;
+		
+		obj = orderform.dataInjection(obj,true);
+		
+		if(obj.ord.payExchgRtCrncySumAmt>0){
+			// naver or kcp or nomal
+			if($("#naver_payment").is(":checked")){
+				orderpay.naverPayCall(obj);
+			}else{
+				orderpay.kcpPayCall(obj);
+				//orderpay.addNew(obj);
+			}
+		}else{ // pg결제없을때
+			orderpay.addNew(obj);
+		}
+		
+		
+	}
+	,checkOrder : function(){
+		var obj = new Object();
+		var bskGodList = [];
+		obj.bskGodList = orderform.getOrderInfo().cartResultList;
+		
+		obj = orderform.dataInjection(obj);
+		
+		$.ajax({
+			type  : 'post',
+			url   : "/order/checkOrder.json",
+			dataType : 'json',
+			async : true,
+			data  : JSON.stringify(obj),
+			contentType: "application/json",
+			beforeSend: function (request)
+            {
+			  // block layer
+              var csrfToken = $("meta[name='_csrf']").attr("content");
+              var csrfName = $("meta[name='_csrf_header']").attr("content");
+              request.setRequestHeader(csrfName, csrfToken);
+            },
+			success : function(info) {
+				// hide block layer
+				$("#cordText").val(JSON.stringify(info));
+				orderform.orderCheckTransaction(info);
+			},
+			error : function(xhr) {
+				// hide block layer
+				var data = $.parseJSON(xhr.responseText)
+				alert(data.message);
+				// 오류시 메시지 출력후 어디로든 보내야함
+			}
+		});
+		
+	}
+	,orderCheckTransaction :  function(info){
+		var mileage = 0;
+		
+		$.each(orderform.getOrderInfo().cartResultList, function(index, item) {
+			$.each(info, function(cindex, citem) {
+				
+			});
+		});
+		
+	}
+	,dataInjection : function(obj,newOrder){
+		
+		//배송
+		var lgsDlvspDTOList = [];
+		var lgsDlvspDTO = new Object();
+		var lgsDlvsp = new Object();
+		
+		lgsDlvsp.dlvSectCd = "GNRL_DLV";
+		lgsDlvsp.addrsePostNo = "90214";
+		lgsDlvsp.addrseBaseAddr = "베이스주소";
+		lgsDlvsp.addrseDetailAddr = "베이스상세주소";
+		lgsDlvsp.addrseMobilAreaNo = "010";
+		lgsDlvsp.addrseMobilTlofNo = "3477";
+		lgsDlvsp.addrseMobilTlofWthnNo = "0834";
+		lgsDlvspDTO.lgsDlvsp = lgsDlvsp;
+		
+		
+		var ordGodDTOList = [];
+		$.each(orderform.getOrderInfo().cartResultList, function(index, item) {
+			if(index===0){
+				if(orderform.getOrderInfo().cartResultList.length===1){
+					$("#orderRegion").data("productName",item.god.godNm);
+				}else{
+					$("#orderRegion").data("productName",item.god.godNm+" 외"+(orderform.getOrderInfo().cartResultList.length-1));
+				}
+			}
+			
+			var ordGodDTO = new Object();
+			ordGodDTO.bskNo = item.bskGod.bskNo;
+			ordGodDTO.godTurn = item.bskGod.godTurn;
+			ordGodDTO.price = item.god.csmrPrc;
+			
+			ordGodDTO.ordGod = item.god;
+			
+			ordGodDTO.ordGod.saleShopCd = '1111';
+			ordGodDTO.ordGod.ordQty = item.bskGod.itmQty;
+			ordGodDTO.ordGod.itmNo = item.bskGod.itmNo;
+			
+
+			ordGodDTOList.push(ordGodDTO);
+		});
+		
+		
+		lgsDlvspDTO.ordGodDTOList = ordGodDTOList;
+		
+		//쿠폰
+		
+		var couponDTOList = [];
+		$.each(orderform.getOrderInfo().cartResultList, function(index, item) {
+			var couponDTO = new Object();
+			
+			couponDTO.bskNo = item.bskGod.bskNo;
+			couponDTO.godTurn = item.bskGod.godTurn;
+
+			couponDTO.ordGod = item.god;
+			couponDTO.ordGod.itmNo = item.bskGod.itmNo;
+			couponDTO.ordGod.ordQty = item.bskGod.itmQty;
+			
+			
+
+			couponDTO.price = item.god.csmrPrc;
+
+			
+			couponDTO.goodsGiftNo = '';
+			couponDTO.orderGiftNo = '';
+			couponDTO.godNo = item.bskGod.godNo;
+
+			couponDTO.goodsPrmNo = '';
+			couponDTO.goodsCouponNo = '0';
+			couponDTO.goodsCouponAmt = '0';
+			couponDTO.goodsSectCd = ''; 
+			couponDTO.goodsCouponDcRt = '0';
+
+			couponDTO.orderCouponNo = '';
+			couponDTO.orderCouponAmt = '0';
+			couponDTO.orderCouponDupl = '0';
+			couponDTO.orderSectCd = '0';
+			couponDTO.orderCouponDcRt = '0';
+			couponDTO.maxDcPsbAmt = '0';
+			couponDTO.orderStdAmt = '0';
+			
+			couponDTOList.push(couponDTO);
+		});
+		
+		
+		lgsDlvspDTO.couponDTOList = couponDTOList;
+		
+		lgsDlvspDTOList.push(lgsDlvspDTO);
+		
+		obj.lgsDlvspDTOList =  lgsDlvspDTOList;
+		
+		 
+		
+		
+		
+		
+		
+		
+		if(newOrder){
+			alert($("#orderRegion").data("total_amount"));
+		}
+		
+		var ord = new Object();
+		obj.ord = ord;
+		
+		obj.ord.stdrCrncySumAmt = parseInt($("#orderRegion").data("total_amount"));
+		obj.ord.payExchgRtCrncySumAmt = parseInt($("#orderRegion").data("total_amount"));
+		
+		if(orderform.getOrderInfo().mbr){
+			obj.ord.cstmrNm = orderform.getOrderInfo().mbr.mbrNm;
+			obj.ord.cstmrEmail = orderform.getOrderInfo().mbr.mbrEmail;
+			obj.ord.cstmrMobilAreaNo = orderform.getOrderInfo().mbr.mobilAreaNo;
+			obj.ord.cstmrMobilTlofNo = orderform.getOrderInfo().mbr.mobilTlofNo;
+			obj.ord.cstmrMobilTlofWthnNo = orderform.getOrderInfo().mbr.mobilTlofWthnNo;
+			
+			obj.ord.webpntUseSumAmt = orderform.getOrderInfo().ord.webpntUseSumAmt;
+			obj.ord.mileAccmlSumAmt = parseInt($("#orderRegion").data("mile_amount"));
+			
+			
+			
+		}{// 비회원
+			
+		}
+		
+		
+		// 결제
+		var pay = new Object();
+		obj.pay = pay;
+		
+		return obj;
+	}
+	
+};
+
+//1단위 올림
+var ceil10 = function(val) {
+	return Math.ceil(nvl(val) * 0.1) * 10;
+};
+
+//10단위 올림
+var ceil100 = function(val) {
+	return Math.ceil(nvl(val) * 0.01) * 100;
+};
+
+//1단위 반올림
+var round10 = function(val) {
+	return Math.round(nvl(val) * 0.1) * 10;
+};
+
+// 10단위 반올림
+var round100 = function(val) {
+	return Math.round(nvl(val) * 0.01) * 100;
+};
+
+//10단위 절사
+var floor100 = function(val) {
+	return Math.floor(nvl(val) * 0.01) * 100;
+};
+
+var orderAlert = function(str) {
+	commonAlert(str);
+};

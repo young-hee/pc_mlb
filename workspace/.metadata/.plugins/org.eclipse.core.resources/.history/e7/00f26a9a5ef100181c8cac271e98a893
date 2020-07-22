@@ -1,0 +1,77 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>
+ <%@ page import="com.plgrim.ncp.base.enums.GoodsEnum"%>
+<ncp:prop key="ncp.image.url" var="imageURL"/>
+	<acrticle id="container">
+			<section id="contents">
+				<h2 class="title01 d_fixed"><span>${fLocation }</span></h2>
+ 				<div class="item-align">
+					<div class="item-category-filter-sort d_fixed">
+						<!-- 2018-06-07 -->
+						<div class="item-category">
+										<a href="#layerCategory" class="btn-item-category d_layer_open"><span>${fLocation }</span></a>
+						</div>
+ 
+						<div class="item-filter">
+							<a href="#layerFilter" class="filter-open d_layer_open" title="FILTER OPEN"><span>FILTER</span></a>
+						</div>
+					<div class="item-sort">
+                         <ncp:codes group="DSP_GOD_SORT_STDR" var="sortStr" />
+                         	<select id="itemColumn">
+                         <c:forEach items="${sortStr }" var="varSort">
+                             <c:if test="${varSort.cd eq 'SALE_QTY_SEQ'}">
+                                 <option <c:if test="${sortColumn eq varSort.cd || sortColumn eq null || sortColumn eq ''}"> selected="selected" </c:if>  value="${varSort.cd }"> ${varSort.cdNm } </option>
+                             </c:if>
+                             <c:if test="${varSort.cd ne 'SALE_QTY_SEQ'}">
+                                 <option   <c:if test="${sortColumn eq varSort.cd}"> selected="selected" </c:if> value="${varSort.cd }" > ${varSort.cdNm } </option>
+                             </c:if>
+                         </c:forEach>
+                         </select>
+ 
+					 </div>
+					</div>
+				</div>
+ 
+				<div class="item-list04">
+					<ul id="pagination">
+					<c:forEach items="${godList}" var="god" varStatus="i">
+						<li>
+							<input type="hidden" class="criteoGod" value="${god.god.erpGodNo }"/>
+							<div class="item-list-img">
+							 <c:if test="${god.god.godSaleSectCd eq'SLDOUT'}"><div class="item-status">SOLD OUT</div> </c:if>
+							 <c:if test="${god.god.godSaleSectCd eq'SMTM_SLDOUT'}"><div class="item-status">COMING SOON</div></c:if>
+								<a href="${god.godUrl}"> 
+								<img src="${imageURL }${god.imgFrontUrl}/dims/resize/<%=String.valueOf(GoodsEnum.GoodsImageReSizeCd.IMG_465x600)%>" alt="${god.god.godNm }" onerror="errorImgShow(this,'<%=String.valueOf(GoodsEnum.GoodsImageReSizeCd.IMG_465x600)%>');">
+								</a>
+								<div class="item-size">
+					                <a href="#layerPop01" class="item-size-open d_layer_open">SIZE<input type="hidden"  value="${god.optValCd1}"/></a><!-- //2018-06-07 -->
+								</div>
+							</div>
+							<div class="item-list-info">
+								<p class="item-list-txt01"><a href="${god.godUrl}">${god.god.godNm }</a></p>
+								<p class="item-list-txt02">
+							     <c:choose>
+									  <c:when test="${god.dspGodPrc.rtlPrc > god.dspGodPrc.lastSalePrc}">
+									   <del><fmt:formatNumber value="${god.dspGodPrc.rtlPrc  }" type="number"/><spring:message code="display.main.text1" /></del><strong><fmt:formatNumber value="${god.dspGodPrc.lastSalePrc }" type="number"/><spring:message code="display.main.text1" /></strong>
+									  </c:when>
+									  <c:otherwise>
+									 <strong><fmt:formatNumber value="${god.dspGodPrc.lastSalePrc }" type="number"/><spring:message code="display.main.text1" /></strong> 
+									  </c:otherwise>
+									</c:choose>	
+ 
+								</p>
+							</div>
+						</li>					
+					</c:forEach>
+
+					</ul>
+				</div>
+
+			</section>
+			
+		</acrticle>
+ <%@ include file="/WEB-INF/views/display/include/display.page.jsp"%>
+ <%@ include file="/WEB-INF/views/display/include/display.Layer.jsp"%>
+
+ <%@ include file="/WEB-INF/views/main/include/aTagLink.jsp"%>

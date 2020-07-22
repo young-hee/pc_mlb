@@ -1,0 +1,282 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+    http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+		 version="3.0">
+	<display-name>ncp_web_pc_mlb</display-name>
+
+
+	<!-- 시스템 아이디 (설정 하지 않으면 어플리케이션이 구동 하지 않음) -->
+	<env-entry>
+		<env-entry-name>system.id</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>ncp_web_pc_dx</env-entry-value>
+	</env-entry>
+	<env-entry>
+		<env-entry-name>mall.id</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>DXM</env-entry-value>
+	</env-entry>
+
+	<!-- JSP  빈줄(whitespace) 제거를 위한 추가 -->
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<page-encoding>UTF-8</page-encoding>
+			<trim-directive-whitespaces>true</trim-directive-whitespaces>
+		</jsp-property-group>
+	</jsp-config>
+
+	<!-- default deploy mode -->
+	<context-param>
+		<param-name>spring.profiles.default</param-name>
+		<param-value>local</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>ncp_web_pc_dx</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:/META-INF/spring/base.all.xml
+			/WEB-INF/spring/pc.mlb.security.xml
+			/WEB-INF/spring/pc.mlb.hdiv.xml
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>com.sun.faces.sendPoweredByHeader</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	
+	<context-param>
+    	<param-name>contextInitializerClasses</param-name>
+    	<param-value>com.plgrim.ncp.framework.config.profiledcsv.ProfiledCsvPropertySourceInitializer</param-value>
+	</context-param>
+
+	<!-- Spring Framework Context Loader Listener -->
+	<listener>
+		<listener-class>com.plgrim.ncp.framework.web.NCPContextLoaderListner</listener-class>
+	</listener>
+
+	<!--<listener>-->
+		<!--<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>-->
+	<!--</listener>-->
+
+	<!-- session control -->
+	<listener>
+		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+
+	<!-- 보안 필터 리스너 -->
+	<listener>
+		<listener-class>org.hdiv.listener.InitListener</listener-class>
+	</listener>
+
+
+
+	<filter>
+		<filter-name>anonymouseContentsCacheFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>anonymouseContentsCacheFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+    <!-- Spring Session Filter : 이 필터는 모든 filter의 가장 앞에 위치해야 함 -->
+    <filter>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
+    </filter-mapping>
+
+	<filter>
+		<filter-name>requestContextFilter</filter-name>
+		<filter-class>org.springframework.web.filter.RequestContextFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>requestContextFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>HttpPutFormContentFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>HttpPutFormContentFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+	<!-- Context Info Filter -->
+	<filter>
+		<filter-name>contextInfoFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>contextInfoFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>redirectFilter</filter-name>
+		<filter-class>com.plgrim.ncp.framework.filter.RedirectFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>redirectFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!--<filter>-->
+		<!--<filter-name>schedParkingFilter</filter-name>-->
+		<!--<filter-class>com.plgrim.ncp.framework.filter.SchedParkingFilter</filter-class>-->
+		<!--<init-param>-->
+			<!--<param-name>RedirectURL</param-name>-->
+			<!--<param-value>/was.jsp</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>StartDt</param-name>-->
+			<!--<param-value>2018/08/20 18:00:00</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>EndDt</param-name>-->
+			<!--<param-value>2018/08/20 19:00:00</param-value>-->
+		<!--</init-param>-->
+	<!--</filter>-->
+
+	<!--<filter-mapping>-->
+		<!--<filter-name>schedParkingFilter</filter-name>-->
+		<!--<url-pattern>/*</url-pattern>-->
+	<!--</filter-mapping>-->
+
+	<!-- HTTPS 필터 -->
+	<!--<filter>-->
+		<!--<filter-name>httpsFilter</filter-name>-->
+		<!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+	<!--</filter>-->
+
+	<!--<filter-mapping>-->
+		<!--<filter-name>httpsFilter</filter-name>-->
+		<!--<url-pattern>/*</url-pattern>-->
+	<!--</filter-mapping>-->
+
+
+	<!-- 스프링 보안 필터 -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+
+
+	<!-- Togglz configuration -->
+	<!--  togglez-servlet/META-INF/web-fragment.xml에 filter 설정이 기술되어 있기 때문에 자동으로 필터로 등록된다.  -->
+
+
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextInitializerClasses</param-name>
+    		<param-value>com.plgrim.ncp.framework.config.profiledcsv.ProfiledCsvPropertySourceInitializer</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>
+                /WEB-INF/spring/pc.mlb.all.xml
+            </param-value>
+		</init-param>
+		<init-param>
+			<description>turn off auto-scanning for exception handlers</description>
+			<param-name>detectAllHandlerExceptionResolvers</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		
+		
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/errors/not_founded</location>
+	</error-page>
+
+	<error-page>
+		<error-code>403</error-code>
+		<location>/errors/access_denied</location>
+	</error-page>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/errors/runtimeException</location>
+	</error-page>
+
+
+	<welcome-file-list>
+		<welcome-file></welcome-file>
+	</welcome-file-list>
+
+	<security-constraint>
+		<display-name>HTTP Method 비활성화</display-name>
+		<web-resource-collection>
+			<web-resource-name>Forbidden HTTP Method</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>PUT</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+		</web-resource-collection>
+		<!--<web-resource-collection>
+			<web-resource-name>secured page</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>-->
+	</security-constraint>
+	
+</web-app>

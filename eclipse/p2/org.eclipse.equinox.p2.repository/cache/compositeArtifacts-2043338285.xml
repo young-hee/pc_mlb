@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?compositeArtifactRepository version='1.0.0'?>
+<repository name='Mylyn 3.22 for Eclipse 4.5 and 4.6' type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
+  <properties size='2'>
+    <property name='p2.compressed' value='true'/>
+    <property name='p2.timestamp' value='1499294221000'/>
+  </properties>
+  <children size='2'>
+    <child location='../../drops/3.23.1/v20170623-2012/'/>
+    <child location='../../drops/3.23.0/v20170614-2003/'/>
+  </children>
+</repository>

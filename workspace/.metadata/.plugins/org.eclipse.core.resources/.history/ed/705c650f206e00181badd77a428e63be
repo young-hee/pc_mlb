@@ -1,0 +1,153 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>
+
+<link rel="stylesheet" href="${_resourceURL}static/css/order.css">
+
+<script type="text/javascript" src="${_resourceURL}static/js/order/order.util.js"></script>
+<script type="text/javascript" src="${_resourceURL}static/js/order/order.info.js"></script>
+<script type="text/javascript" src="${_resourceURL}static/js/jquery.serializejson.min.js"></script>
+
+
+
+
+<acrticle id="container">
+	<section id="contents">
+		<!-- 2018-05-23 삭제
+		<h2 class="title01">주문완료</h2>
+		<p class="location">
+			<span>Home</span><strong title="현재 위치">주문완료</strong>
+		</p> //2018-05-23 삭제 -->
+		<ul class="step-section">
+			<li class="on">장바구니</li>
+			<li class="on">주문/결제</li>
+			<li class="on">주문완료</li>
+		</ul>
+		<div class="order-complete" id="orderInfoViewLayer">
+		</div>
+			<script id="orderInfoView" type="text/x-jsrender">
+			<!-- 2018-05-09 -->
+			<h3 class="title-order">주문이 완료되었습니다.</h3>
+			<ul class="order-complete-info">
+				<li>주문번호 : {{:info.ordNo}}</li>
+				<li>주문일시 : {{:info.ordDate}}</li><!-- 2018-05-24 -->
+			</ul>
+			<!-- //2018-05-09 -->
+			<h4 class="title06">결제안내</h4>
+			
+			<!-- 2018-05-24 -->
+			<div class="claim-info-section">
+				<div class="claim-info-list claim-total">
+					<span class="left">총 결제금액</span>
+					<div class="right">
+						<p class="total"><strong>{{:~commaIn(info.ord.payExchgRtCrncySumAmt)}}</strong>원</p>
+						<span class="text-color01">적립 마일리지 {{:~commaIn(info.ord.unityPntAccmlSumAmt)}}M</span>
+					</div>
+				</div>
+				{{for info.payList itemVar="~pay" ~payCodeList=payCodeList}}
+				<ul class="claim-info-list02">
+					<li>
+						<span class="left"><em>결제수단</em></span>
+						<div class="right">
+							{{for ~payCodeList itemVar="~item"}}
+								{{if ~pay.payMnCd == ~item.cd}}
+									{{:~item.cdNm}}
+								{{/if}}
+							{{/for}}
+						</div>
+					</li>
+					{{if ~pay.payMnCd == 'VIRTL_BNK_ACCT_PAY'}}
+					<li>
+						{{:~pay.bnkNm}},{{:~pay.bnkAcctNo}},{{:~pay.acnthldrNm}}
+					</li>
+					{{/if}}
+				</ul>
+				{{/for}}
+			</div>
+
+			<div class="order-complete-payment">
+				<div class="claim-info-section">
+					<ul class="claim-info-list">
+						<li>
+							<span class="left">총 상품금액</span>
+							<span class="right">{{:~commaIn(info.ord.saleSumAmt+info.ord.dlvCstSumAmt)}}원</span>
+						</li>
+						<li>
+							<span class="left">상품금액</span>
+							<span class="right">{{:~commaIn(info.ord.saleSumAmt)}}원</span>
+						</li>
+						<li>
+							<span class="left">배송비</span>
+							<span class="right">{{:~commaIn(info.ord.dlvCstSumAmt)}}원</span>
+						</li>
+					</ul>
+				</div>
+				<div class="claim-info-section">
+					<ul class="claim-info-list">
+						<li>
+							<span class="left">총 할인금액</span>
+							<span class="right">{{:~commaIn(info.ord.bskCpnDcSumAmt+info.ord.bundleDcSumAmt+info.ord.dlvCstCpnDcSumAmt+info.ord.godCpnDcSumAmt+info.ord.unityPntUseSumAmt+info.ord.webpntUseSumAmt)}}원</span>
+						</li>
+						<li>
+							<span class="left">쿠폰할인</span>
+							<span class="right">{{:~commaIn(info.ord.bskCpnDcSumAmt+info.ord.bundleDcSumAmt+info.ord.dlvCstCpnDcSumAmt+info.ord.godCpnDcSumAmt)}}원</span>
+						</li>
+<li>
+							<span class="left">사용 마일리지</span>
+							<span class="right">{{:~commaIn(info.ord.unityPntUseSumAmt)}}원</span>
+						</li>
+						<li>
+							<span class="left">사용 포인트</span>
+							<span class="right">{{:~commaIn(info.ord.webpntUseSumAmt)}}원</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<ul class="text-list02 col-type01">
+				<li>매장배송상품이 존재하는 주문입니다.</li>
+				<li>매장 배송상품은 일반배송상품과 다른 송장번호로 발송됩니다. 사은품은 주문 상품과 별도로 배송될 수 있습니다. <a href="#">(주문 확인 하기)</a></li>
+			</ul>
+			<div class="btn-wrap">
+				<a href="#" class="btn-style03">쇼핑 계속하기</a><a href="#" class="btn-style02">주문내역 상세보기</a>
+			</div>
+			<p class="txt-sub-info01 txt-sub-type03">상품리뷰를 작성하고<br />Discovery Expedition 포인트를 추가로 받으세요.</p>
+			<div class="data-tbl04">
+				<table>
+					<caption>포인트 안내.</caption>
+					<colgroup>
+						<col style="width:50%">
+						<col>
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">텍스트 리뷰작성</th>
+							<th scope="col">포토 리뷰작성</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>100 P</td>
+							<td>500 P</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- //2018-05-24 -->
+			</script>
+
+		<div style="margin-top: 80px;">
+			<img src="${_resourceURL}static/images/order/@img_recobell.png" alt="" style="width:100%;">
+		</div>
+	</section>
+</acrticle>
+		
+		
+	
+<script>
+
+	$(document).ready(function() {
+	
+		orderinfo.load('<c:out value="${ordNo}"/>');
+
+	});
+		
+</script>

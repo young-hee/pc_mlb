@@ -1,0 +1,167 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script id="goodsView" type="text/x-jsrender">
+{{for cartResultList itemVar="~item"}}
+<tr>
+	<td class="tleft02">
+		<div class="product-info">
+			<div class="product-info-img"><a href="#"><img src="{{:~pimg(~item.imgUrl,'75x100')}}" alt="{{:~messages['order.js.txt.goods.img']}}"></a></div>
+			<div class="product-info-text">
+				<div class="product-info-box">
+					<div class="product-more-info">
+						{{if ~item.pckageGodTpCd === 'ADIT_CPST_GOD'}}
+							<span class="text-color01">[{{:~messages['order.js.txt.additm']}}]</span>
+						{{/if}}
+						{{if ~item.shopDlvItm === 'Y'}}
+							<span class="text-color01">[{{:~messages['order.js.txt.shop.dlv']}}]</span>
+							<input type="hidden" name="shopDlvItm" value="{{:~item.godItm.itmNo}}"/>
+						{{/if}}
+						{{if ~item.god.resveSaleGodYn === 'Y'}}
+							<span class="text-color01">[{{:~messages['order.js.txt.resve']}}]</span>
+						{{/if}}
+				
+					</div>
+					<p class="product-name"><a href="#">[{{:~recomCd(~item.god.recomendSexCd)}}] {{:~item.god.godNm}}</a></p>
+					<div class="product-price">
+						<span><%-- 가격고려 --%>{{:~otool.commaInAmount(~item.price)}}{{:~messages['common.js.crncy']}}</span>
+					</div>
+				</div>
+				<div class="product-option">
+					{{if ~item.bskGod.pckageGodYn === 'Y' && ~item.pckageGodTpCd !== 'ADIT_CPST_GOD'}}
+						<span>
+							{{for ~item.bskCpstGodCnnc itemVar="~citem"}}
+ 								{{if #getIndex()!==0}} , {{/if}} {{:~citem.godNm}} : {{:~citem.colorCd}}
+ 								{{for ~item.bskCpstGodItmCnnc itemVar="~innerItem"}}
+									{{if ~citem.godNo === ~innerItem.godNo}}
+										/ {{:~innerItem.itmNm}}
+									{{/if}}
+								{{/for}} 
+							{{/for}}
+						</span>
+					{{/if}}
+					{{if ~item.bskGod.pckageGodYn !== 'Y' || ~item.pckageGodTpCd === 'ADIT_CPST_GOD'}}
+						<span> {{:~item.god.colorCd}} / {{:~item.godItm.itmNm}}</span>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+		{{if ~item.shopDlvItm === 'Y'}}
+			<p class="product-info-text02">{{:~messages['order.js.txt.shop.dlv.msg.1.1']}}</p>
+		{{/if}}
+	</td>
+	<td>{{:~item.bskGod.itmQty}}</td>
+	<td>
+		{{if ~item.checkGod}}
+			{{:~otool.commaInAmount(~item.checkGod.allDcAmt)}} {{:~messages['common.js.crncy']}}
+			{{if ~item.checkGod.allDcAmt>0}}
+			<div class="tooltip-wrap d_dropdown">
+				<button type="button" class="tooltip-detail02 d_dropdown_sel" title="{{:~messages['order.js.txt.dc.info.detail']}}">{{:~messages['order.js.txt.tool.tip.open.close']}}</button>
+				<!-- 툴팁 레이어  -->
+				<div class="tooltip-layer d_dropdown_cont">
+					<div class="tooltip-cnt noline">
+						<ul class="save-detail-wrap">
+							{{if ~item.checkGod.bundleDcAmt>0}}
+								<li>
+									<span class="left">{{:~item.bskPrmNm}}</span>
+									<span class="right">{{:~otool.commaInAmount(~item.checkGod.bundleDcAmt)}} {{:~messages['common.js.crncy']}}</span>
+								</li>
+							{{/if}}
+							{{if ~item.checkGod.crsDcAmt>0}}
+								<li>
+									<span class="left">{{:~item.bskPrmNm}}</span>
+									<span class="right">{{:~otool.commaInAmount(~item.checkGod.crsDcAmt)}} {{:~messages['common.js.crncy']}}</span>
+								</li>
+							{{/if}}
+							{{if ~item.applyCpn}}
+								<li>
+									<span class="left">{{:~item.applyCpn.prm.prmNm}}</span>
+									<span class="right">{{:~otool.commaInAmount(~item.checkGod.godCpnDcAmt+~item.checkGod.imdtlDcAmt)}} {{:~messages['common.js.crncy']}}</span>
+								</li>
+							{{/if}}
+							{{if ~item.applyBskCpn}}
+								<li>
+									<span class="left">{{:~item.applyBskCpn.prm.prmNm}}</span>
+									<span class="right">{{:~otool.commaInAmount(~item.checkGod.bskCpnDcAmt)}} {{:~messages['common.js.crncy']}}</span>
+								</li>
+							{{/if}}
+							<li class="save-total">
+								<span class="left">{{:~messages['order.js.txt.total.dc.price']}}</span>
+								<span class="right">{{:~item.checkGod.allDcAmt}} {{:~messages['common.js.crncy']}}</span>
+							</li>
+						</ul>
+					</div>
+					<button type="button" class="tooltip-close d_dropdown_close">{{:~messages['order.js.txt.close']}}</button>
+				</div>
+				<!-- //툴팁 레이어  -->
+			</div>
+			{{/if}}
+		{{/if}}
+		{{if ~item.godGftList}}
+			<br/>
+			{{:~messages['order.js.txt.gift.offer']}}
+			<div class="tooltip-wrap d_dropdown">
+				<button type="button" class="tooltip-detail02 d_dropdown_sel" title="{{:~messages['order.js.txt.dc.info.detail']}}">{{:~messages['order.js.txt.tool.tip.open.close']}}</button>
+				<!-- 툴팁 레이어  -->
+				
+				<div class="tooltip-layer d_dropdown_cont">
+					{{for ~item.godGftList itemVar="~giftItem"}}
+					<div class="tooltip-cnt noline">
+						<div class="product-info free-gift">
+							<div class="product-info-img"><img src="{{:~pimg(~giftItem.imgUrl,'75x100')}}" alt="{{:~messages['order.js.txt.gift.img']}}"></div>
+							<div class="product-info-text">
+								<p class="product-name">{{:~giftItem.godNm}}</p>
+							</div>
+						</div>
+					</div>
+					{{/for}}
+					<button type="button" class="tooltip-close d_dropdown_close">{{:~messages['order.js.txt.close']}}</button>
+				</div>
+				<!-- //툴팁 레이어  -->
+			</div>
+		{{/if}}	
+	</td>
+	{{if ~item.bskGod.dlvSectCd === 'PKUP_DLV'}}
+	<td>
+		{{if ~item.pkupDay == ~item.crntDay}}
+			{{:~messages['order.js.txt.day.pickup']}}
+		{{else}}
+			{{:~messages['order.js.txt.after.pickup']}}
+		{{/if}}
+	</td>
+	{{else ~item.dlvGrpRnum === 1 }}
+	<td rowspan="{{:~item.subGrpCnt}}" id="dlvGrpSeq_{{:~item.grpSeq}}">
+	</td>
+	{{/if}}
+	<td>
+		{{if ~item.checkGod && ~item.checkGod.allDcAmt>0}}
+			<div class="item-price"><strong>{{:~otool.commaInAmount(~otool.parseAmount(~item.price)*~otool.parseAmount(~item.bskGod.itmQty)-~item.checkGod.allDcAmt)}}</strong>{{:~messages['common.js.crncy']}}</div>
+		{{else}}
+			<div class="item-price"><strong>{{:~otool.commaInAmount(~otool.parseAmount(~item.price)*~otool.parseAmount(~item.bskGod.itmQty))}}</strong>{{:~messages['common.js.crncy']}}</div>
+		{{/if}}
+	</td>
+</tr>
+{{/for}}
+{{for giftList itemVar="~giftItem"}}
+<tr>
+	<!-- 주문 사은품 -->
+	<td colspan="5" class="tleft02">
+		<div class="order-gift-box">
+			<div class="order-gift-info">
+				<%--
+				<img src="{{:~pimg(~giftItem.prm.rprstImgPcUrl)}}" alt="">
+				<div class="order-gift-text">
+					<span>{{:~giftItem.prm.prmNm}}<br />{{:~giftItem.prm.prmBegDate}} ~ {{:~giftItem.prm.prmEndDate}}</span>
+				</div>
+				--%>	
+			</div>
+			{{for ~giftItem.god itemVar="~item"}}
+			<div class="product-info">
+				<div class="product-info-img"><img src="{{:~pimg(~item.imgUrl,'75x100')}}" alt="{{:~messages['order.js.txt.gift.img']}}"></div>
+				<div class="product-info-text">
+					<p class="product-name">{{:~item.godNm}} </p>
+				</div>
+			</div>
+			{{/for}}
+	</td>
+</tr>
+{{/for}}
+</script>

@@ -1,0 +1,116 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>
+
+<link rel="stylesheet" href="${_resourceURL}static/css/order.css?v=${_version}">
+
+<script src="https://nsp.pay.naver.com/sdk/js/naverpay.min.js?v=${_version}"></script>
+<script type="text/javascript" src="<ncp:prop key="ncp_base.order.kcp.js.url"/>"></script>
+
+<script type="text/javascript" src="${_resourceURL}static/js/order/order.util.js?v=${_version}"></script>
+<script type="text/javascript" src="${_resourceURL}static/js/order/order.pay.js?v=${_version}"></script>
+<script type="text/javascript" src="${_resourceURL}static/js/order/order.form.js?v=${_version}"></script>
+<script type="text/javascript" src="${_resourceURL}static/js/order/order.coupon.js?v=${_version}"></script>
+<script type="text/javascript" src="${_resourceURL}static/js/jquery.serializejson.min.js"></script>
+
+
+
+
+<acrticle id="container">
+	<section id="contents">
+		<div id="orderRegion"></div>
+		
+		
+		<ul class="step-section">
+			<li class="on">장바구니</li>
+			<li class="on">주문/결제</li>
+			<li>주문완료</li>
+		</ul>
+		
+		<div class="order-wrap margin-t0">
+			<div class="order-left">
+				<h3 class="title06">주문상품정보</h3>
+				<div class="order-detail-wrap d_toggle on">
+					<button type="button" class="btn-open d_toggle_select"><span>Open</span></button>
+					<div class="order-detail-content">
+						<div class="board-list02">
+							<table>
+								<caption>상품정보, 수량, 할인/혜택, 배송정보, 주문금액.</caption>
+								<colgroup>
+									<col>
+									<col style="width:120px;">
+									<col style="width:120px;">
+									<col style="width:120px;">
+									<col style="width:120px;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">상품정보</th>
+										<th scope="col">수량</th>
+										<th scope="col">할인/혜택</th>
+										<th scope="col" id="dlvTypeName">배송정보</th>
+										<th scope="col">주문금액</th>
+									</tr>
+								</thead>
+								<tbody id="goodsViewLayer">
+								</tbody>
+								<%-- product start --%>
+								<%@ include file="/WEB-INF/views/order/orderform/order.form.goods.jspf"%>
+								<%-- product end --%>
+							</table>
+						</div>
+					</div>
+					<button type="button" class="btn-close d_toggle_select"><span>Close</span></button>
+				</div>
+		
+				<h3 class="title06 dcInfo">할인정보</h3>
+				<div class="order-detail-wrap d_toggle on dcInfo">
+					<%@ include file="/WEB-INF/views/order/orderform/order.form.dcinfo.jspf"%>
+				</div>
+		
+				<h3 class="title06">주문자정보</h3>
+				<div class="order-detail-wrap d_toggle on">
+					<%@ include file="/WEB-INF/views/order/orderform/order.form.member.buyer.jspf"%>
+				</div>
+		
+				<h3 class="title06">
+					배송지정보
+					<p class="text-required02">(<span class="required">*</span> 는 필수입력 항목입니다.)</p>
+				</h3>
+				<div class="order-detail-wrap d_toggle on">
+					<%@ include file="/WEB-INF/views/order/orderform/order.form.delivery.jspf"%>
+				</div>
+		
+				<h3 class="title06 orderPayMethod">결제수단</h3>
+				<div class="order-detail-wrap d_toggle on orderPayMethod">
+					<%@ include file="/WEB-INF/views/order/orderform/order.form.payment.jspf"%>
+				</div>
+			</div>
+			<div class="order-right d_fix">
+				<%@ include file="/WEB-INF/views/order/orderform/order.form.pay.info.jspf"%>
+			</div>
+		</div>
+		
+		
+		<div>
+			<br/>order<textarea rows="10" cols="100" id="jsonTEXT"></textarea>
+			<br/>npay<textarea rows="5" cols="100" id="npayText"></textarea>
+			<br/>checkOrder<textarea rows="5" cols="100" id="cordText"></textarea>			
+			<br/>couponText<textarea rows="5" cols="100" id="couponText"></textarea>
+			<br/>couponAppCart<textarea rows="5" cols="100" id="couponAppCartText"></textarea>
+		</div>
+		<div>
+			<form name="kcpForm" id="kcpForm"></form>
+		</div>
+	</section>
+</acrticle>		
+		
+	
+<script>
+
+	$(document).ready(function() {
+	
+		
+		orderform.load();
+	});
+		
+</script>

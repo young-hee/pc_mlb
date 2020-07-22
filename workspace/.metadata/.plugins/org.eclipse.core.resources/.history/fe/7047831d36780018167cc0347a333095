@@ -1,0 +1,59 @@
+/* Copyright (c) 2015 plgrim, Inc.
+ * All right reserved.
+ * http://plgrim.com
+ * This software is the confidential and proprietary information of plgrim
+ * , Inc. You shall not disclose such Confidential Information and
+ * shall use it only in accordance with the terms of the license agreement
+ * you entered into with plgrim.
+ *
+ * ------------------------------------------------------------------------
+ * @author      syvictor.kim 
+ * @since       2015. 4. 3       
+ */
+package com.plgrim.ncp.web.pc.dx.order;
+
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.plgrim.ncp.cmp.orderfulfilment.fo.order.OrderCommandComponent;
+import com.plgrim.ncp.commons.data.order.KcpCommonReceiveDTO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class OrderVirtualAccountController extends OrderController {
+
+	/*
+	 * ---------------------------------------------------------------------
+	 * Instance fields.
+	 * ---------------------------------------------------------------------
+	 */
+	@Autowired
+	@Qualifier("orderCommandComponentImpl")
+	protected OrderCommandComponent orderCommandComponent;
+
+
+    @RequestMapping(value = "/common/get")
+	public String setVirtualAccountDeposit(@ModelAttribute("kcpCommonReceiveDTO") KcpCommonReceiveDTO kcpCommonReceiveDTO,HttpServletRequest request, Model model) throws Exception {
+    	
+		String remoteHost = request.getRemoteHost();
+		String remoteAddr = request.getRemoteAddr();
+		// 지금은 가상계좌 뿐
+		if ( "TX00".equals(kcpCommonReceiveDTO.getTx_cd()) ) {
+			model.addAttribute("resultCode", orderCommandComponent.setVirtualAccountDeposit(kcpCommonReceiveDTO, remoteHost, remoteAddr));
+		}else{
+			model.addAttribute("resultCode", "-1");
+		}
+		return "tiles:order/kcpOrderCommonReturn";
+	}
+}
