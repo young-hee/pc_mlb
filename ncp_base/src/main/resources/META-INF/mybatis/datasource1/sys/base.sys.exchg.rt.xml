@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysExchgRt" parameterType="sysExchgRt" resultType="sysExchgRt">
+		SELECT /* com.plgrim.ncp.base.selectSysExchgRt		Generator(Generator)	2018-05-23 */
+			   CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , EXCHG_RT_APL_END_DT
+			 , STDR_CRNCY_AMT
+			 , EXCHG_RT_CRNCY_AMT
+			 , EXCHG_RT_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_EXCHG_RT
+		 WHERE 1 = 1
+	   	   AND CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+		   AND EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateSysExchgRt" parameterType="sysExchgRt">
+		UPDATE /* com.plgrim.ncp.base.updateSysExchgRt		Generator(Generator)	2018-05-23 */
+		SYS_EXCHG_RT SET
+			   EXCHG_RT_APL_END_DT = #{exchgRtAplEndDt,jdbcType=TIMESTAMP}
+			 , STDR_CRNCY_AMT = #{stdrCrncyAmt,jdbcType=NUMERIC}
+			 , EXCHG_RT_CRNCY_AMT = #{exchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , EXCHG_RT_DSCR = #{exchgRtDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+		   AND EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertSysExchgRt" parameterType="sysExchgRt">
+		INSERT /* com.plgrim.ncp.base.insertSysExchgRt		Generator(Generator)	2018-05-23 */
+		INTO   SYS_EXCHG_RT (
+			   CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , EXCHG_RT_APL_END_DT
+			 , STDR_CRNCY_AMT
+			 , EXCHG_RT_CRNCY_AMT
+			 , EXCHG_RT_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{crncyCd,jdbcType=VARCHAR}
+			 , #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , #{exchgRtAplEndDt,jdbcType=TIMESTAMP}
+			 , #{stdrCrncyAmt,jdbcType=NUMERIC}
+			 , #{exchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , #{exchgRtDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysExchgRt" parameterType="sysExchgRt">
+		DELETE /* com.plgrim.ncp.base.deleteSysExchgRt		Generator(Generator)	2018-05-23 */
+		  FROM SYS_EXCHG_RT
+		 WHERE 1 = 1
+		   AND CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+		   AND EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

@@ -1,0 +1,765 @@
+// gradle Root 빌드 스크립트. 모든 빌드는 이 스크립트를 읽어 들임으로 시작한다.
+
+// 하위 프로젝트 목록은 settings.gradle에 기술되어 있다.
+
+//test
+
+buildscript {
+    repositories {
+        maven {
+         	url "http://dev-web-297670832.ap-northeast-2.elb.amazonaws.com:9081/repository/maven-public/"
+         }
+    }
+
+
+    dependencies {
+        classpath group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.5'
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+    }
+}
+
+
+
+
+// 주요 배포(서버) 프로젝트에 대한 설정
+
+rootProject.ext.SERVER_PROJECTS = [
+        // BO
+        [
+            projectName         : "${gradle.ext.PREFIX}:ncp_web_bo",
+            resourceProjectNames: [],
+
+            appArchiveName      : "ncp_web_bo.zip",
+            app                 : "libs/ncp_web_bo.zip",
+            contentsArchiveName : "ncp_web_bo_content.zip",
+            contents            : "libs/ncp_web_bo_content.zip",
+
+            resourceBucket      : "s3://dev-static-online-mall/webresource/back-office/",
+            webappPath          : "/app/tomcat/webapps",
+            serviceName         : "tomcat",
+        ],
+
+
+        // PC
+        [
+            projectName         : "${gradle.ext.PREFIX}:ncp_web_pc_dx",
+            resourceProjectNames: [],
+
+            appArchiveName      : "ncp_web_dx_pc.zip",
+            app                 : "libs/ncp_web_dx_pc.zip",
+            contentsArchiveName : "ncp_web_dx_pc_content.zip",
+            contents            : "libs/ncp_web_dx_pc_content.zip",
+
+            resourceBucket      : "s3://dev-static-online-mall/webresource/discovery-expedition/pc/",
+            webappPath          : "/app/tomcat/dx_pc/webapps",
+            serviceName         : "tomcat-dx-pc",
+        ],
+
+        // Mobile
+        [
+            projectName         : "${gradle.ext.PREFIX}:ncp_web_mb_dx",
+            resourceProjectNames: [],
+
+            appArchiveName      : "ncp_web_dx_mb.zip",
+            app                 : "libs/ncp_web_dx_mb.zip",
+            contentsArchiveName : "ncp_web_dx_mb_content.zip",
+            contents            : "libs/ncp_web_dx_mb_content.zip",
+
+            resourceBucket      : "s3://dev-static-online-mall/webresource/discovery-expedition/mb/",
+            webappPath          : "/app/tomcat/dx_mo/webapps",
+            serviceName         : "tomcat-dx-mo",
+        ],
+
+        // MLB PC
+        [
+                projectName         : "${gradle.ext.PREFIX}:ncp_web_pc_mlb",
+                resourceProjectNames: [],
+
+                appArchiveName      : "ncp_web_mlb_pc.zip",
+                app                 : "libs/ncp_web_mlb_pc.zip",
+                contentsArchiveName : "ncp_web_mlb_pc_content.zip",
+                contents            : "libs/ncp_web_mlb_pc_content.zip",
+
+                resourceBucket      : "s3://dev-static-online-mall/webresource/mlb-korea/pc/",
+                webappPath          : "/app/tomcat/mlb_pc/webapps",
+                serviceName         : "tomcat-mlb-pc",
+        ],
+
+        // MLB Mobile
+        [
+                projectName         : "${gradle.ext.PREFIX}:ncp_web_mb_mlb",
+                resourceProjectNames: [],
+
+                appArchiveName      : "ncp_web_mlb_mb.zip",
+                app                 : "libs/ncp_web_mlb_mb.zip",
+                contentsArchiveName : "ncp_web_mlb_mb_content.zip",
+                contents            : "libs/ncp_web_mlb_mb_content.zip",
+
+                resourceBucket      : "s3://dev-static-online-mall/webresource/mlb-korea/mb/",
+                webappPath          : "/app/tomcat/mlb_mo/webapps",
+                serviceName         : "tomcat-mlb-mo",
+        ],
+
+        // SA PC
+        [
+                projectName         : "${gradle.ext.PREFIX}:ncp_web_pc_sa",
+                resourceProjectNames: [],
+
+                appArchiveName      : "ncp_web_sa_pc.zip",
+                app                 : "libs/ncp_web_sa_pc.zip",
+                contentsArchiveName : "ncp_web_sa_pc_content.zip",
+                contents            : "libs/ncp_web_sa_pc_content.zip",
+
+                resourceBucket      : "s3://dev-static-online-mall/webresource/stretch-angels/pc/",
+                webappPath          : "/app/tomcat/sa_pc/webapps",
+                serviceName         : "tomcat-sa-pc",
+        ],
+
+        // SA Mobile
+        [
+                projectName         : "${gradle.ext.PREFIX}:ncp_web_mb_sa",
+                resourceProjectNames: [],
+
+                appArchiveName      : "ncp_web_sa_mb.zip",
+                app                 : "libs/ncp_web_sa_mb.zip",
+                contentsArchiveName : "ncp_web_sa_mb_content.zip",
+                contents            : "libs/ncp_web_sa_mb_content.zip",
+
+                resourceBucket      : "s3://dev-static-online-mall/webresource/stretch-angels/mb/",
+                webappPath          : "/app/tomcat/sa_mo/webapps",
+                serviceName         : "tomcat-sa-mo",
+        ],
+
+
+        // IF Internal Server
+        [
+            projectName         : "${gradle.ext.PREFIX}:ncp_if_internal_server",
+            resourceProjectNames: [],
+
+            appArchiveName      : "ncp_if_internal_server.zip",
+            app                 : "libs/ncp_if_internal_server.zip",
+            contentsArchiveName : "ncp_if_internal_server_content.zip",
+            contents            : "libs/ncp_if_internal_server_content.zip",
+
+            resourceBucket      : "",
+            webappPath          : "/app/tomcat/ifgw_int/webapps",
+            serviceName         : "tomcat-ifgw-int",
+        ],
+        // IF External Server
+        [
+            projectName         : "${gradle.ext.PREFIX}:ncp_if_external_server",
+            resourceProjectNames: [],
+
+            appArchiveName      : "ncp_if_external_server.zip",
+            app                 : "libs/ncp_if_external_server.zip",
+            contentsArchiveName : "ncp_if_external_server_content.zip",
+            contents            : "libs/ncp_if_external_server_content.zip",
+
+            resourceBucket      : "",
+            webappPath          : "/app/tomcat/ifgw_ext/webapps",
+            serviceName         : "tomcat-ifgw-ext",
+        ],
+
+        // Batch Server
+        [
+            projectName         : "${gradle.ext.PREFIX}:ncp_batch_server",
+            resourceProjectNames: [],
+
+            appArchiveName      : "ncp_batch_server.zip",
+            app                 : "libs/ncp_batch_server.zip",
+            contentsArchiveName : "ncp_batch_server_content.zip",
+            contents            : "libs/ncp_batch_server_content.zip",
+
+            resourceBucket      : "",
+            webappPath          : "/app/tomcat/batch/webapps",
+            serviceName         : "tomcat-batch",
+        ],
+
+        // Tutorial Server
+        [
+            projectName         : "${gradle.ext.PREFIX}:ncp_web_tutorial",
+            resourceProjectNames: [],
+
+            appArchiveName      : "ncp_web_tutorial.zip",
+            app                 : "libs/ncp_web_tutorial.zip",
+            contentsArchiveName : "ncp_web_tutorial_content.zip",
+            contents            : "libs/ncp_web_tutorial_content.zip",
+
+            resourceBucket      : "",
+            webappPath          : "",
+            serviceName         : "",
+        ]
+
+
+
+]
+
+def WEB_SITE_PROJECTS = [
+        "${gradle.ext.PREFIX}:ncp_batch_server",
+        "${gradle.ext.PREFIX}:ncp_web_bo",
+        "${gradle.ext.PREFIX}:ncp_web_pc_dx",
+        "${gradle.ext.PREFIX}:ncp_web_mb_dx",
+        "${gradle.ext.PREFIX}:ncp_web_pc_mlb",
+        "${gradle.ext.PREFIX}:ncp_web_mb_mlb",
+        "${gradle.ext.PREFIX}:ncp_web_pc_sa",
+        "${gradle.ext.PREFIX}:ncp_web_mb_sa",
+        "${gradle.ext.PREFIX}:ncp_if_internal_server",
+        "${gradle.ext.PREFIX}:ncp_if_external_server",
+        "${gradle.ext.PREFIX}:ncp_web_tutorial"
+]
+
+
+apply from: rootProject.file("svn.gradle")
+
+apply from: rootProject.file("code_gen.gradle")
+
+apply from: rootProject.file("encode.gradle")
+
+//  Gradle wrapper  생성.
+task wrapper(type: Wrapper) {
+}
+
+// 모든 프로젝트(root project + sub project)에 적용될 설정을 여기에 기술한다.
+def artifactGenerator = { targetProject ->
+    def artifact = new NodeBuilder().artifact(type: 'exploded-war', 'build-on-make': "true", name: "${targetProject.name}") {
+        'output-path'("\$PROJECT_DIR\$/build_ide/${targetProject.name}")
+
+        root(id: 'root') {
+            element(id: 'directory', name: 'WEB-INF') {
+                element(id: 'directory', name: 'classes') {
+                    element(id: 'module-output', name: targetProject.name)
+
+                    def DEPS = [
+
+                            "ncp_commons",
+                            "ncp_base",
+                            "ncp_framework",
+                            "ncp_config",
+                    ]
+
+                    if (targetProject.name.contains("ncp_if_internal_server") == true || targetProject.name.contains("ncp_if_external_server") == true) {
+                        DEPS += "ncp_if"
+                    }
+                    else if (targetProject.name.contains("ncp_if_external_server") == false
+                                && targetProject.name.contains("ncp_if_internal_server") == false) {
+                        DEPS += "ncp_cmp"
+                    }
+
+                    DEPS.each { dep ->
+                        element(id: 'module-output', name: dep)
+                    }
+                }
+
+
+                element(id: 'directory', name: 'lib') {
+                    targetProject.configurations.runtime.each {
+                        element(id: 'file-copy', path: it)
+                    }
+                }
+            }
+            
+        }
+    }
+    return artifact
+}
+
+
+def webFacetGenerator = {
+    def builder = new groovy.util.NodeBuilder()
+    def webFacet = builder.facet(type: "web", name: 'Web') {
+        configuration {
+            descriptors {
+                deploymentDescriptor(name: 'web.xml', url: 'file://$MODULE_DIR$/src/main/webapp/WEB-INF/web.xml')
+            }
+            webroots {
+                root(url: 'file://$MODULE_DIR$/src/main/webapp', relative: '/')
+            }
+            sourceRoots {
+                root(url: 'file://$MODULE_DIR$/src/main/resources')
+                root(url: 'file://$MODULE_DIR$/src/main/java')
+            }
+        }
+    }
+    return webFacet
+}
+
+
+apply plugin: "idea"
+
+
+idea {
+    project {
+        languageLevel = "1.8"
+
+        vcs = "git"
+
+        wildcards += "logback*.groovy"
+
+        ipr {
+            withXml { xmlFile ->
+
+                // enable 'Annotation Processors'
+                xmlFile.asNode().component.find { it.@name == 'CompilerConfiguration' }['annotationProcessing'][0].replaceNode {
+                    annotationProcessing {
+                        profile(default: true, name: 'Default', useClasspath: 'true', enabled: true)
+                    }
+                }
+
+                // setup artifact configuration
+                def artifactManager = xmlFile.asNode().component.find { it.@name == 'ArtifactManager' } as Node
+                if (artifactManager) {
+                    Node artifact = artifactManager.artifact.find { it.@type == 'exploded-war' }
+                    if (artifact)
+                        artifactManager.remove(artifact)
+                } else {
+                    artifactManager = xmlFile.asNode().appendNode('component', [name: 'ArtifactManager']);
+                }
+
+
+                WEB_SITE_PROJECTS.each { prjName -> artifactManager.append artifactGenerator(project(prjName)) }
+
+
+            }
+        }
+
+
+    }
+
+   workspace {
+       iws {
+           withXml { provider ->
+               def runManager = provider.asNode().component.find { it.@name == 'RunManager' } as Node
+               def prjNames = []
+               for (prj in WEB_SITE_PROJECTS) {
+                   def prjName = prj.split(":")[1]
+                   prjNames += prjName
+
+                   def builder = new NodeBuilder()
+                   def tomcatRunner = builder.configuration(default: "false", name: prjName, type: "#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory", factoryName: "Local", APPLICATION_SERVER_NAME: "Tomcat 7.0.82", ALTERNATIVE_JRE_ENABLED: "false") {
+                       option(name:"COMMON_VM_ARGUMENTS",value:"-Dfile.encoding=UTF-8 -Dspring.profiles.active=local"){}
+                       option(name: "UPDATING_POLICY", value: "restart-server") {}
+                       deployment() {
+                           artifact(name: prjName) {
+                               settings() {
+                                   option(name: "CONTEXT_PATH", value: "/") {}
+                               }
+                           }
+                       }
+
+
+                       if (prjName.contains("ncp_web_pc_dx") == true) {
+                           "server-settings"() {
+                               option(name: "AJP_PORT", value: "8039") {}
+                               option(name: "BASE_DIRECTORY_NAME", value: prjName) {}
+                               option(name: "HTTP_PORT", value: "8032") {}
+                               option(name: "HTTPS_PORT", value: "8034") {}
+                               option(name: "JNDI_PORT", value: "8038") {}
+                           }
+                       } else if (prjName.contains("ncp_web_mb_dx") == true) {
+                           "server-settings"() {
+                               option(name: "AJP_PORT", value: "8029") {}
+                               option(name: "BASE_DIRECTORY_NAME", value: prjName) {}
+                               option(name: "HTTP_PORT", value: "8022") {}
+                               option(name: "HTTPS_PORT", value: "8024") {}
+                               option(name: "JNDI_PORT", value: "8028") {}
+                           }
+                       } else if (prjName.contains("ncp_web_bo") == true) {
+                           "server-settings"() {
+                               option(name: "AJP_PORT", value: "8019") {}
+                               option(name: "BASE_DIRECTORY_NAME", value: prjName) {}
+                               option(name: "HTTP_PORT", value: "8012") {}
+                               option(name: "HTTPS_PORT", value: "8014") {}
+                               option(name: "JNDI_PORT", value: "8018") {}
+                           }
+                       } else {
+                           "server-settings"() {
+                               option(name: "AJP_PORT", value: "80") {}
+                               option(name: "BASE_DIRECTORY_NAME", value: prjName) {}
+                               option(name: "HTTP_PORT", value: "80") {}
+                               option(name: "HTTPS_PORT", value: "80") {}
+                               option(name: "JNDI_PORT", value: "80") {}
+                           }
+                       }
+
+
+                       predefined_log_file(id: "Tomcat", enabled: "true") {}
+                       predefined_log_file(id: "Tomcat Catalina", enabled: "true") {}
+                       predefined_log_file(id: "Tomcat Manager", enabled: "false") {}
+                       predefined_log_file(id: "Tomcat Host Manager", enabled: "false") {}
+                       predefined_log_file(id: "Tomcat Localhost Access", enabled: "false") {}
+
+                       extension(name: "coverage", enabled: "false", merge: "false", sample_coverage: "true", runner: "idea") {}
+
+                       RunnerSettings(RunnerId: "Debug") {
+                           option(name: "DEBUG_PORT", value: "59370") {}
+                       }
+
+                       ConfigurationWrapper(VM_VAR: "JAVA_OPTS", RunnerId: "Cover") {
+                           option(name: "USE_ENV_VARIABLES", value: "true") {}
+                           STARTUP() {
+                               option(name: "USE_DEFAULT", value: "true") {}
+                               option(name: "SCRIPT", value: "") {}
+                               option(name: "VM_PARAMETERS", value: "") {}
+                               option(name: "PROGRAM_PARAMETERS", value: "") {}
+                           }
+
+                           SHUTDOWN() {
+                               option(name: "USE_DEFAULT", value: "true") {}
+                               option(name: "SCRIPT", value: "") {}
+                               option(name: "VM_PARAMETERS", value: "") {}
+                               option(name: "PROGRAM_PARAMETERS", value: "") {}
+                           }
+
+                       }
+
+                       ConfigurationWrapper(VM_VAR: "JAVA_OPTS", RunnerId: "Debug") {
+                           option(name: "USE_ENV_VARIABLES", value: "true") {}
+                           STARTUP() {
+                               option(name: "USE_DEFAULT", value: "true") {}
+                               option(name: "SCRIPT", value: "") {}
+                               option(name: "VM_PARAMETERS", value: "") {}
+                               option(name: "PROGRAM_PARAMETERS", value: "") {}
+                           }
+
+                           SHUTDOWN() {
+                               option(name: "USE_DEFAULT", value: "true") {}
+                               option(name: "SCRIPT", value: "") {}
+                               option(name: "VM_PARAMETERS", value: "") {}
+                               option(name: "PROGRAM_PARAMETERS", value: "") {}
+                           }
+                       }
+
+                       ConfigurationWrapper(VM_VAR: "JAVA_OPTS", RunnerId: "Run") {
+                           option(name: "USE_ENV_VARIABLES", value: "true") {}
+                           STARTUP() {
+                               option(name: "USE_DEFAULT", value: "true") {}
+                               option(name: "SCRIPT", value: "") {}
+                               option(name: "VM_PARAMETERS", value: "") {}
+                               option(name: "PROGRAM_PARAMETERS", value: "") {}
+                           }
+
+                           SHUTDOWN() {
+                               option(name: "USE_DEFAULT", value: "true") {}
+                               option(name: "SCRIPT", value: "") {}
+                               option(name: "VM_PARAMETERS", value: "") {}
+                               option(name: "PROGRAM_PARAMETERS", value: "") {}
+                           }
+                       }
+
+                       method() {
+                           option(name: "BuildArtifacts", enabled: "true") {
+                               artifact(name: "ncp_web_bo") {}
+                           }
+                       }
+                   }
+                   runManager.append tomcatRunner
+               }
+               def builder = new NodeBuilder()
+               runManager.append builder.list(size: "${prjNames.size}") {
+                   for (int i = 0; i < prjNames.size(); i++) {
+                       item(index: "${i}", classs: "java.lang.String", itemvalue: "")
+                   }
+               }
+
+           }
+
+
+       }
+   }
+}
+
+
+
+
+
+allprojects {
+
+    repositories {
+        maven { url "http://dev-web-297670832.ap-northeast-2.elb.amazonaws.com:9081/repository/maven-public/" }
+    }
+    apply plugin: 'pmd'
+    apply plugin: 'checkstyle'
+    apply plugin: 'findbugs'
+    apply plugin: "idea"
+
+    pmd {
+        toolVersion = "5.3.5"
+        ignoreFailures = true
+        targetJdk = "1.7"
+        ruleSetFiles = files(
+                rootProject.file("config/ncp_pmd_base.xml"),
+                rootProject.file("config/ncp_pmd_except_data.xml")
+        )
+    }
+
+    checkstyle {
+        configFile = rootProject.file("config/checkstyle.xml")
+        ignoreFailures = true
+    }
+
+    findbugs {
+        ignoreFailures = true
+        //Whether or not to allow the build to continue if there are warnings. Example: ignoreFailures = true
+    }
+
+    idea.module.iml {
+        beforeMerged { module ->
+
+            module.excludeFolders += new org.gradle.plugins.ide.idea.model.Path("file://\$MODULE_DIR\$/bin")
+            module.excludeFolders += new org.gradle.plugins.ide.idea.model.Path("file://\$MODULE_DIR\$/out")
+            module.excludeFolders += new org.gradle.plugins.ide.idea.model.Path("file://\$MODULE_DIR\$/build")
+            module.excludeFolders += new org.gradle.plugins.ide.idea.model.Path("file://\$MODULE_DIR\$/build_ide")
+            module.excludeFolders += new org.gradle.plugins.ide.idea.model.Path("file://\$MODULE_DIR\$/servers")
+        }
+    }
+}
+
+// 모든 하위 프로젝트에 적용될 설정을 여기에 기술한다.
+
+subprojects {
+    apply plugin: "java"
+	
+    apply plugin: "war"
+
+    apply plugin: "eclipse"
+    apply plugin: "eclipse-wtp"
+    apply plugin: "idea"
+
+	//apply plugin: 'org.kordamp.gradle.stats'
+	
+	    
+    test {
+	    testLogging {
+	        exceptionFormat = 'full'
+	    }
+	}
+	
+	
+    idea {
+        module { module ->
+            downloadJavadoc = true
+            downloadSources = true
+            iml { iml ->
+                //println "Iml -> ${module.name}"
+                withXml { xmlFile ->
+                    def facetManager = xmlFile.asNode().component.find { it.@name == 'FacetManager' } as Node
+                    if (facetManager) {
+                        // cleanup
+                        Node webFacet = facetManager.facet.find { it.@type == 'web' }
+                        if (webFacet) {
+                            facetManager.remove(webFacet)
+                        }
+                    }
+                    else {
+                        facetManager = xmlFile.asNode().appendNode('component', [name: 'FacetManager']);
+                    }
+
+                    if ("${gradle.ext.PREFIX}:${module.name}" in WEB_SITE_PROJECTS){
+                        def webFacet = webFacetGenerator()
+                        facetManager.append webFacet
+                    }
+
+                    def builder = new NodeBuilder()
+                    def springCfgList = []
+                    // Setup Spring Wiring inspection.
+                    for ( dirPath  in [
+                        'src/main/resources/META-INF/spring',
+                        'src/main/webapp/WEB-INF/spring',
+                        'src/main/resources/META-INF/job',
+                        'src/main/resources/META-INF/cxf',
+                    ]) {
+                        def dirFile = new File("../${module.name}/${dirPath}")
+                        if (dirFile.exists()){
+                            dirFile.listFiles().findAll { f -> f.name.endsWith(".xml")}.each { springXmlFile ->
+                                springCfgList += "file://\$MODULE_DIR\$/${dirPath}/${springXmlFile.name}"
+                            }
+                        }
+
+                    }
+                    if (springCfgList.isEmpty() == false){
+                        def springFacet = builder.facet(type: 'Spring', name: 'Spring') {
+                            configuration {
+                                fileset(id: 'fileset', name: 'Spring Application Context',  removed:'false') {
+                                    for ( cfgPath  in springCfgList ) {
+                                        file(cfgPath){
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        facetManager.append springFacet
+                    }
+                }
+
+            }
+        }
+
+
+    }
+
+    // 의존성 설정
+    apply from: rootProject.file("dependencies.gradle")
+    apply from: rootProject.file("eclipse_java.gradle")
+
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    // 자바 소스 컴파일 옵션 지정
+
+    compileJava {
+        // I only managed to get this working when I forked
+        // and passed "javac" as an executable
+        options.compilerArgs << "-Xlint:-unchecked"
+        options.compilerArgs << "-Xlint:deprecation"
+
+        //  컴파일할때 소스파일의 인코딩 지정
+        options.encoding = "UTF-8"
+        options.fork = true
+        options.forkOptions.with {
+            memoryMaximumSize = "2048m" // try different values
+        }
+    }
+
+    //  gradle eclipse 만 해도  cleanEclipse  까지 실행 되게 함
+    tasks.eclipse.dependsOn(cleanEclipse)
+
+    sourceSets {
+        // Note that just declaring this sourceset creates two configurations.
+        main {
+            java {
+                srcDir "src/main/java"
+            }
+            resources {
+                srcDir "src/main/resources"
+            }
+
+        }
+
+        test {
+            java {
+                srcDir "src/test/java"
+            }
+            resources {
+                srcDir "src/test/resources"
+            }
+        }
+    }
+    // 적용된 프로그래밍 언어 플러그인에 따라 소스 트리 구조 자동 생성
+    task initSrc  {
+    	doLast {
+    		project.sourceSets*.allSource.srcDirTrees.flatten().dir.each { dir ->
+    	        dir.mkdirs()
+	        }
+    	}
+    }
+
+    //
+    // 다음은 배포시에 포함되지 말아야 하는 리소스 목록이다.
+    //
+    processResources {
+        exclude '**/CancelRefund.properties'
+    }
+
+    // 테스트후  결과 HTML  생성을 활성화 함
+    test {
+        reports.html.enabled = true
+    }
+}
+
+apply from: rootProject.file("project_web.gradle")
+apply from: rootProject.file("code_deploy.gradle")
+
+// 프로젝트간 의존성을 기술한다.
+
+// 각 프로젝트마다 build.gradle 을 만들어 기술할수도 있지만,
+
+// 여기에서 공통적인 부분 처리하고, 프로젝트 의존구조 전체를 일람 할수 있게 하는 것이 더 좋다고 판단하였다.
+
+project("${gradle.ext.PREFIX}:ncp_framework") {
+	apply plugin: "groovy"
+	sourceSets {
+	    main {
+	        groovy {
+	            srcDirs = ['src/groovy']
+	        }
+	    }
+	
+	    test {
+	        groovy {
+	            srcDirs = ['test/groovy']
+	        }
+	    }
+	}
+    dependencies {
+        compile(
+                project("${gradle.ext.PREFIX}:ncp_config"))
+    }
+}
+project("${gradle.ext.PREFIX}:ncp_base") {
+    dependencies {
+        compile(
+                project("${gradle.ext.PREFIX}:ncp_framework"))
+    }
+}
+
+project("${gradle.ext.PREFIX}:ncp_if") {
+    dependencies {
+        compile(
+
+                project("${gradle.ext.PREFIX}:ncp_base"))
+    }
+}
+
+project("${gradle.ext.PREFIX}:ncp_commons") {
+    dependencies {
+        compile(
+                project("${gradle.ext.PREFIX}:ncp_if")
+        )
+    }
+}
+
+project("${gradle.ext.PREFIX}:ncp_cmp") {
+    dependencies {
+        compile(project("${gradle.ext.PREFIX}:ncp_commons"))
+    }
+}
+
+// CMP에만 의존하는 프로젝트들 설정
+[
+        "${gradle.ext.PREFIX}:ncp_batch_server",
+        "${gradle.ext.PREFIX}:ncp_web_bo",
+        "${gradle.ext.PREFIX}:ncp_web_pc_dx",
+        "${gradle.ext.PREFIX}:ncp_web_mb_dx",
+        "${gradle.ext.PREFIX}:ncp_web_tutorial",
+        "${gradle.ext.PREFIX}:ncp_web_pc_mlb",
+        "${gradle.ext.PREFIX}:ncp_web_mb_mlb",
+        "${gradle.ext.PREFIX}:ncp_web_pc_sa",
+        "${gradle.ext.PREFIX}:ncp_web_mb_sa",
+
+].each { projectName ->
+    project(projectName) {
+        dependencies {
+            compile(
+                    project("${gradle.ext.PREFIX}:ncp_cmp"))
+        }
+    }
+}
+
+
+project("${gradle.ext.PREFIX}:ncp_if_internal_server") {
+    dependencies {
+        compile(
+                project("${gradle.ext.PREFIX}:ncp_commons"))
+    }
+}
+
+
+// IF External Project
+project("${gradle.ext.PREFIX}:ncp_if_external_server") {
+    dependencies {
+        compile(
+                project("${gradle.ext.PREFIX}:ncp_commons"))
+    }
+}

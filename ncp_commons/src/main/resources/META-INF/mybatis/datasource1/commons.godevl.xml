@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.godevl">
+	
+	<resultMap id="resultGodEvl" type="com.plgrim.ncp.commons.result.GodEvlResult">
+		<result property="no" column="NO" />
+		<result property="godGodEvl.godEvlTurn" column="GOD_EVL_TURN" />
+		<result property="godGodEvl.mallId" column="MALL_ID" />
+		<result property="godGodEvl.langCd" column="LANG_CD" />
+		<result property="godGodEvl.godEvlCont" column="GOD_EVL_CONT" />
+		<result property="god.brndId" column="BRND_ID" />
+		<result property="godGodEvl.godNo" column="GOD_NO" />
+		<result property="god.godNm" column="GOD_NM" />
+		<result property="avrgScore" column="AVRG_SCORE" />
+		<result property="dlvEvlScoreNm" column="DLV_EVL_SCORE_NM" />
+		<result property="qltyEvlScoreNm" column="QLTY_EVL_SCORE_NM" />
+		<result property="pkgEvlScoreNm" column="PKG_EVL_SCORE_NM" />
+		<result property="godEvlTp" column="GOD_EVL_TP" />
+		<result property="godEvlTpNm" column="GOD_EVL_TP_NM" />
+		<result property="godGodEvl.bstGodEvlYn" column="BST_GOD_EVL_YN" />
+		<result property="godGodEvl.badnGodEvlYn" column="BADN_GOD_EVL_YN" />
+		<result property="godGodEvl.sizeEvlCd" column="SIZE_EVL_CD" />
+		<result property="godGodEvl.colorEvlCd" column="COLOR_EVL_CD" />
+		<result property="godGodEvl.ntceYn" column="NTCE_YN" />
+		<result property="ntceYnNm" column="NTCE_YN_NM" />
+		<result property="godGodEvl.mbrNo" column="MBR_NO" />
+		<result property="snsYn" column="SNS_YN" />
+		<result property="mbrNm" column="MBR_NM" />
+		<result property="mbrId" column="MBR_ID" />
+		<result property="mbrStatCd" column="MBR_STAT_CD" />
+		<result property="godGodEvl.regDt" column="REG_DT" />
+		<result property="god.erpGodNo" column="ERP_GOD_NO" />
+		<result property="godEvlContAll" column="GOD_EVL_CONT_ALL" />
+		<result property="webpntRtrvlDt" column="WEBPNT_RTRVL_DT" />
+		<result property="godGodEvl.ordNo" column="ORD_NO" />
+	</resultMap>
+	
+	<!-- 상품평관리 목록 -->
+	<select id="selectGodEvlList" parameterType="com.plgrim.ncp.commons.data.GodEvlDTO" resultMap="resultGodEvl">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [commons.godevl.xml]["selectGodEvlList"][상품평관리 목록 조회][Yoon] */
+		    T.* 
+		FROM (
+		    SELECT
+		        GGE.GOD_EVL_TURN /* 상품평 순번 */
+		        ,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = GGE.MALL_ID) AS MALL_ID /* 몰구분 */
+		        ,CASE
+		            WHEN LENGTH(GGE.GOD_EVL_CONT) > 20 THEN SUBSTR(GGE.GOD_EVL_CONT, 1, 20) || '...'
+		            ELSE GGE.GOD_EVL_CONT
+		         END AS GOD_EVL_CONT /* 상품평 제목 */
+		        , GOD_EVL_CONT AS GOD_EVL_CONT_ALL /*상품평 전체내용(엑셀출력)*/
+		        ,(SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = G.BRND_ID) AS BRND_ID /* 브랜드명 */
+		        ,GGE.GOD_NO /* 상품번호 */
+		        ,G.ERP_GOD_NO /* ERP품번*/
+		        ,G.GOD_NM /* 상품명 */
+		        ,ROUND((NVL(GGE.DLV_EVL_SCORE, 0) * 20 + NVL(GGE.QLTY_EVL_SCORE, 0) * 20 + NVL(GGE.PKG_EVL_SCORE, 0) * 20) / 3, -1) AS AVRG_SCORE /* 총평균점수 */
+		        ,LPAD('★',NVL(GGE.DLV_EVL_SCORE,0),'★') AS DLV_EVL_SCORE_NM /* 배송평가점수 */
+		        ,LPAD('★',NVL(GGE.QLTY_EVL_SCORE,0),'★') AS QLTY_EVL_SCORE_NM /* 품질평가점수 */
+		        ,LPAD('★',NVL(GGE.PKG_EVL_SCORE,0),'★') AS PKG_EVL_SCORE_NM /* 포장평가점수 */
+		        ,CASE 
+		            WHEN (SELECT COUNT(*) FROM GOD_GOD_EVL_ATCH_FILE WHERE GOD_NO = GGE.GOD_NO AND GOD_EVL_TURN = GGE.GOD_EVL_TURN) > 0 THEN 'PHOTO'
+		            ELSE 'GNRL'
+		         END AS GOD_EVL_TP /* 상품평구분 */
+		        ,CASE 
+		            WHEN (SELECT COUNT(*) FROM GOD_GOD_EVL_ATCH_FILE WHERE GOD_NO = GGE.GOD_NO AND GOD_EVL_TURN = GGE.GOD_EVL_TURN) > 0 THEN '포토'
+		            ELSE '일반'
+		         END AS GOD_EVL_TP_NM /* 상품평구분 명*/		         
+		        ,GGE.BST_GOD_EVL_YN /* 베스트여부 */
+				,GGE.BADN_GOD_EVL_YN /* 불량여부 */
+		        ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'SIZE_EVL' AND LANG_CD = 'KOR' AND CD = GGE.SIZE_EVL_CD) AS SIZE_EVL_CD /* 사이즈의견 */
+		        ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'COLOR_EVL' AND LANG_CD = 'KOR' AND CD = GGE.COLOR_EVL_CD) AS COLOR_EVL_CD /* 컬러의견 */
+		        ,GGE.NTCE_YN /* 게시여부 */
+		        ,DECODE(GGE.NTCE_YN, 'Y', '게시', 'N', '미게시') NTCE_YN_NM /* 게시여부 명 */
+		        ,GGE.MBR_NO
+		        ,CASE
+		        	WHEN GGE.CNRS_SNS_CD IS NOT NULL THEN 'Y'
+		        	ELSE 'N'
+		         END AS SNS_YN /* SMS 공유여부 */
+		        ,FN_MASKING('FLNM', M.MBR_NM, '', 'Y') AS MBR_NM /* 회원명 */		        
+		        ,DECODE(INSTR(M.MBR_ID, '@'), 0, FN_MASKING('ID', M.MBR_ID , '', 'Y'), FN_MASKING('EMAIL', M.MBR_ID , '', 'Y')) AS MBR_ID /* 회원ID */
+				,M.MBR_STAT_CD	AS MBR_STAT_CD	/* 회원상태 */
+		        ,GGE.REG_DT /* 등록일시 */
+				,CASE WHEN EXISTS ( (SELECT	OCCUR_DT
+									 FROM 	MBR_WEBPNT_HIST MWH
+									 WHERE	MWH.GOD_NO = GGE.GOD_NO
+									 AND 	MWH.GOD_EVL_TURN = GGE.GOD_EVL_TURN
+									 AND MWH.MBR_NO = M.MBR_NO
+									 AND WEBPNT_RESN_CD = 'ADMIN_MDAT'
+									 AND WEBPNT_DETAIL_RESN_CD = 'ADMIN_DDCT'
+								     AND WEBPNT_STAT_CD = 'USE')
+								  ) THEN 'Y'
+				  	  ELSE 'N'
+				 END AS WEBPNT_RTRVL_DT        /* P포인트 회수 일시 */
+                ,gge.lang_cd
+                ,GGE.ORD_NO    /*주문번호 20160526_주동민_sr#20343 [상품평 관리 화면 조회값 및 컬럼값 추가 요청]*/
+		    FROM GOD_GOD_EVL GGE
+		            ,GOD G
+		            ,MBR M
+		    WHERE 1 = 1
+		    AND GGE.MBR_NO = M.MBR_NO(+)		    
+		    <!-- 회원조회 -->
+			<if test='search.mbrType != null and search.mbrType != ""'>
+				<choose>
+					<when test='search.mbrType == "name"'>
+						<if test='search.mbrValue != null and search.mbrValue != ""'>
+							AND UPPER(M.MBR_NM) = UPPER(#{search.mbrValue}) /* 회원명 */
+						</if>
+					</when>
+					<otherwise>
+						<if test='search.mbrValue != null and search.mbrValue != ""'>
+							AND UPPER(M.MBR_ID) = UPPER(#{search.mbrValue}) /* 회원ID */
+						</if>
+					</otherwise>
+				</choose>
+			</if>
+		    <include refid="selectGodEvlListWhere1"/>
+		    AND GGE.GOD_NO = G.GOD_NO    
+		    <!-- AND GGE.BST_GOD_EVL_YN = 'Y' -->
+		    ORDER BY GGE.BST_GOD_EVL_SORT_SEQ, GGE.REG_DT DESC
+		) T
+		WHERE 1 = 1
+		<include refid="selectGodEvlListWhere2"/>
+		
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 상품평관리 목록 개수 -->
+	<select id="selectGodEvlListCount" resultType="long"> 
+			SELECT /* [commons.godevl.xml]["selectGodEvlList"][상품평관리 목록 개수][Yoon] */
+			    COUNT(*)
+			FROM (
+			    SELECT
+			        GGE.GOD_EVL_TURN /* 상품평 순번 */
+			        ,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = GGE.MALL_ID) AS MALL_ID /* 몰구분 */
+			        ,CASE
+			            WHEN LENGTH(GGE.GOD_EVL_CONT) > 20 THEN SUBSTR(GGE.GOD_EVL_CONT, 1, 20) || '...'
+			            ELSE GGE.GOD_EVL_CONT
+			         END AS GOD_EVL_CONT /* 상품평 제목 */
+			        ,(SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = G.BRND_ID) AS BRND_ID /* 브랜드명 */
+			        ,GGE.GOD_NO /* 상품번호 */
+			        ,G.GOD_NM /* 상품명 */
+			        ,ROUND((NVL(GGE.DLV_EVL_SCORE, 0) * 20 + NVL(GGE.QLTY_EVL_SCORE, 0) * 20 + NVL(GGE.PKG_EVL_SCORE, 0) * 20) / 3, -1) AS AVRG_SCORE /* 총평균점수 */
+			        ,LPAD('★',NVL(GGE.DLV_EVL_SCORE,0),'★') AS DLV_EVL_SCORE_NM /* 배송평가점수 */
+			        ,LPAD('★',NVL(GGE.QLTY_EVL_SCORE,0),'★') AS QLTY_EVL_SCORE_NM /* 품질평가점수 */
+			        ,LPAD('★',NVL(GGE.PKG_EVL_SCORE,0),'★') AS PKG_EVL_SCORE_NM /* 포장평가점수 */
+			        ,CASE 
+			            WHEN (SELECT COUNT(*) FROM GOD_GOD_EVL_ATCH_FILE WHERE GOD_NO = GGE.GOD_NO AND GOD_EVL_TURN = GGE.GOD_EVL_TURN) > 0 THEN 'PHOTO'
+			            ELSE 'GNRL'
+			         END AS GOD_EVL_TP /* 상품평구분 */
+			        ,GGE.BST_GOD_EVL_YN /* 베스트여부 */
+			        ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'SIZE_EVL' AND LANG_CD = 'KOR' AND CD = GGE.SIZE_EVL_CD) AS SIZE_EVL_CD /* 사이즈의견 */
+			        ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'COLOR_EVL' AND LANG_CD = 'KOR' AND CD = GGE.COLOR_EVL_CD) AS COLOR_EVL_CD /* 컬러의견 */
+			        ,GGE.NTCE_YN /* 게시여부 */
+			        ,CASE
+			        	WHEN GGE.CNRS_SNS_CD IS NOT NULL THEN 'Y'
+			        	ELSE 'N'
+			         END AS SNS_YN /* SMS 공유여부 */
+			        ,FN_MASKING('FLNM', M.MBR_NM, '', 'Y') AS MBR_NM /* 회원명 */
+			        ,FN_MASKING('ID', M.MBR_ID, '', 'Y') AS MBR_ID /* 회원ID */
+					,M.MBR_STAT_CD	AS MBR_STAT_CD	/* 회원상태 */
+			        ,GGE.REG_DT /* 등록일시 */
+                    ,GGE.LANG_CD
+			    FROM GOD_GOD_EVL GGE
+			            ,GOD G
+			            ,MBR M
+			    WHERE 1 = 1
+			    AND GGE.MBR_NO = M.MBR_NO(+)
+			    <!-- 회원조회 -->
+				<if test='search.mbrType != null and search.mbrType != ""'>
+					<choose>
+						<when test='search.mbrType == "name"'>
+							<if test='search.mbrValue != null and search.mbrValue != ""'>
+								AND UPPER(M.MBR_NM) = UPPER(#{search.mbrValue}) /* 회원명 */
+							</if>
+						</when>
+						<otherwise>
+							<if test='search.mbrValue != null and search.mbrValue != ""'>
+								AND UPPER(M.MBR_ID) = UPPER(#{search.mbrValue}) /* 회원ID */
+							</if>
+						</otherwise>
+					</choose>
+				</if>
+			    <include refid="selectGodEvlListWhere1"/>
+			    AND GGE.GOD_NO = G.GOD_NO    
+			    <!-- AND GGE.BST_GOD_EVL_YN = 'Y' -->
+			    ORDER BY GGE.BST_GOD_EVL_SORT_SEQ, GGE.REG_DT DESC
+			) T
+			WHERE 1 = 1
+		    <include refid="selectGodEvlListWhere2"/>
+			
+	</select>
+	
+	<!-- 상품평관리 목록 엑셀-->
+	<select id="selectGodEvlListExcel" parameterType="com.plgrim.ncp.commons.data.GodEvlDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [commons.godevl.xml]["selectGodEvlListExcel"][상품평관리 목록 엑셀][Yoon] */
+		    T.* 
+		FROM (
+		    SELECT
+		        GGE.GOD_EVL_TURN /* 상품평 순번 */
+		        ,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = GGE.MALL_ID) AS MALL_ID /* 몰구분 */
+		        ,CASE
+		            WHEN LENGTH(GGE.GOD_EVL_CONT) > 20 THEN SUBSTR(GGE.GOD_EVL_CONT, 1, 20) || '...'
+		            ELSE GGE.GOD_EVL_CONT
+		         END AS GOD_EVL_CONT /* 상품평 제목 */
+		        ,(SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = G.BRND_ID) AS BRND_ID /* 브랜드명 */
+		        ,GGE.GOD_NO /* 상품번호 */
+		        ,G.GOD_NM /* 상품명 */
+		        ,ROUND((NVL(GGE.DLV_EVL_SCORE, 0) * 20 + NVL(GGE.QLTY_EVL_SCORE, 0) * 20 + NVL(GGE.PKG_EVL_SCORE, 0) * 20) / 3, -1) AS AVRG_SCORE /* 총평균점수 */
+		        ,LPAD('★',NVL(GGE.DLV_EVL_SCORE,0),'★') AS DLV_EVL_SCORE_NM /* 배송평가점수 */
+		        ,LPAD('★',NVL(GGE.QLTY_EVL_SCORE,0),'★') AS QLTY_EVL_SCORE_NM /* 품질평가점수 */
+		        ,LPAD('★',NVL(GGE.PKG_EVL_SCORE,0),'★') AS PKG_EVL_SCORE_NM /* 포장평가점수 */
+		        ,CASE 
+		            WHEN (SELECT COUNT(*) FROM GOD_GOD_EVL_ATCH_FILE WHERE GOD_NO = GGE.GOD_NO AND GOD_EVL_TURN = GGE.GOD_EVL_TURN) > 0 THEN '포토'
+		            ELSE '일반'
+		         END AS GOD_EVL_TP /* 상품평구분 */
+		        ,GGE.BST_GOD_EVL_YN /* 베스트여부 */
+		        ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'SIZE_EVL' AND LANG_CD = 'KOR' AND CD = GGE.SIZE_EVL_CD) AS SIZE_EVL_CD /* 사이즈의견 */
+		        ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'COLOR_EVL' AND LANG_CD = 'KOR' AND CD = GGE.COLOR_EVL_CD) AS COLOR_EVL_CD /* 컬러의견 */
+		        ,DECODE(GGE.NTCE_YN, 'Y', '게시', 'N', '미게시') AS NTCE_YN /* 게시여부 */
+		        ,CASE
+		        	WHEN GGE.CNRS_SNS_CD IS NOT NULL THEN 'Y'
+		        	ELSE 'N'
+		         END AS SNS_YN /* SMS 공유여부 */
+		        ,FN_MASKING('FLNM', M.MBR_NM, '', 'Y') AS MBR_NM /* 회원명 */
+		        ,FN_MASKING('ID', M.MBR_ID, '', 'Y') AS MBR_ID /* 회원ID */
+		        ,TO_CHAR(GGE.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT /* 등록일 */
+                ,GGE.LANG_CD
+                ,GGE.ORD_NO    /*주문번호 20160526_주동민_sr#20343 [상품평 관리 화면 조회값 및 컬럼값 추가 요청]*/
+		    FROM GOD_GOD_EVL GGE
+		            ,GOD G
+		            ,MBR M
+		    WHERE 1 = 1
+		    AND GGE.MBR_NO = M.MBR_NO(+)
+		    <!-- 회원조회 -->
+			<if test='search.mbrType != null and search.mbrType != ""'>
+				<choose>
+					<when test='search.mbrType == "name"'>
+						<if test='search.mbrValue != null and search.mbrValue != ""'>
+							AND UPPER(M.MBR_NM) LIKE '%' || UPPER(#{search.mbrValue}) || '%' /* 회원명 */
+						</if>
+					</when>
+					<otherwise>
+						<if test='search.mbrValue != null and search.mbrValue != ""'>
+							AND UPPER(M.MBR_ID) LIKE '%' || UPPER(#{search.mbrValue}) || '%' /* 회원ID */
+						</if>
+					</otherwise>
+				</choose>
+			</if>
+		    <include refid="selectGodEvlListWhere1"/>
+		    AND GGE.GOD_NO = G.GOD_NO    
+		    <!-- AND GGE.BST_GOD_EVL_YN = 'Y' -->
+		    ORDER BY GGE.BST_GOD_EVL_SORT_SEQ, GGE.REG_DT DESC
+		) T
+		WHERE 1 = 1
+		<include refid="selectGodEvlListWhere2"/>
+		
+	</select>
+	
+	<!-- 상품평관리 목록 조건문1 -->
+	<sql id="selectGodEvlListWhere1">
+		<if test='search.regBegDt != null and search.regBegDt != "" and search.regEndDt != null and search.regEndDt != ""'>
+			AND GGE.REG_DT >= TO_DATE(#{search.regBegDt}, 'YYYY-MM-DD') AND GGE.REG_DT &lt;= TO_DATE(#{search.regEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 등록일시 */
+		</if> 
+		<if test='search.mallIds != null and search.mallIds != ""'>
+			AND GGE.MALL_ID IN
+			<foreach item ="item" index="index" collection="search.mallIds" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 몰구분 */
+		</if>
+		<if test='search.ntceYns != null and search.ntceYns != ""'>
+			AND GGE.NTCE_YN IN
+			<foreach item ="item" index="index" collection="search.ntceYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 게시여부 */
+		</if>
+		<if test='search.brndId != null and search.brndId != ""'>
+			AND G.BRND_ID = #{search.brndId,jdbcType=VARCHAR} /* 브랜드ID */
+		</if>
+		<if test='search.brndIds != null'>
+			AND G.BRND_ID IN
+			<foreach item ="item" index="index" collection="search.brndIds" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>			
+		</if>
+		
+		<!-- SR #21177 김병철 비이커 BO 데이터 집계 요청 Start -->
+		<if test="search.upperBrndId != null and search.upperBrndId != ''">
+			AND	EXISTS	(	SELECT	1
+							FROM 	(	SELECT	SB.brnd_id
+            									FROM 	SYS_BRND SB 
+            									WHERE	BRND_GRP_YN = 'N'
+            									AND		LEVEL = 3             
+            									CONNECT BY PRIOR	SB.BRND_ID = SB.UPPER_BRND_ID
+            									START WITH	SB.BRND_ID = #{search.upperBrndId,jdbcType=VARCHAR} 
+            								) AA
+            						WHERE  AA.brnd_id = G.brnd_id ) 
+		</if>				
+		<!-- SR #21177 김병철 비이커 BO 데이터 집계 요청 End -->
+		
+		
+		
+		<if test='search.godNo != null and search.godNo != ""'>
+			<if test='search.godNoGbnCd != null and search.godNoGbnCd != "" and "god_no".equals(search.godNoGbnCd)'>
+			AND GGE.GOD_NO LIKE '%' || #{search.godNo} || '%' /* 상품번호 */
+			</if>
+			<if test='search.godNoGbnCd != null and search.godNoGbnCd != "" and "erp_god_no".equals(search.godNoGbnCd)'>
+			AND G.ERP_GOD_NO LIKE '%' || #{search.godNo} || '%' /* 상품번호 */
+			</if>
+		</if>
+		<if test='search.godNm != null and search.godNm != ""'>
+			AND G.GOD_NM LIKE '%' || #{search.godNm} || '%' /* 상품명 */
+		</if>
+		
+		<if test='search.bstGodEvlYns != null and search.bstGodEvlYns != "" and search.bstGodEvlCndcyYn != null and search.bstGodEvlCndcyYn != ""'>
+			AND (GGE.BST_GOD_EVL_YN IN <foreach item ="item" index="index" collection="search.bstGodEvlYns" open="(" separator="," close=")">#{item}</foreach> /* 베스트여부 */
+			     OR GGE.BST_GOD_EVL_CNDCY_YN = #{search.bstGodEvlCndcyYn, jdbcType=VARCHAR} ) /* 베스트 상품평 후보 여부 */
+		</if>
+		<if test='search.bstGodEvlYns != null and search.bstGodEvlYns != "" and (search.bstGodEvlCndcyYn == null or search.bstGodEvlCndcyYn == "")'>
+			AND GGE.BST_GOD_EVL_YN IN <foreach item ="item" index="index" collection="search.bstGodEvlYns" open="(" separator="," close=")">#{item}</foreach> /* 베스트여부 */
+		</if>
+		<if test='(search.bstGodEvlYns == null or search.bstGodEvlYns == "") and search.bstGodEvlCndcyYn != null and search.bstGodEvlCndcyYn != ""'>
+			AND GGE.BST_GOD_EVL_CNDCY_YN = #{search.bstGodEvlCndcyYn, jdbcType=VARCHAR}  /* 베스트 상품평 후보 여부 */
+		</if>
+		
+		<if test='search.dlvEvlScore != null and search.dlvEvlScore != ""'>
+			AND GGE.DLV_EVL_SCORE = TO_NUMBER(#{search.dlvEvlScore,jdbcType=VARCHAR}) /* 배송점수 */
+		</if>
+		<if test='search.qltyEvlScore != null and search.qltyEvlScore != ""'>
+			AND GGE.QLTY_EVL_SCORE = TO_NUMBER(#{search.qltyEvlScore,jdbcType=VARCHAR}) /* 품질점수 */
+		</if>
+		<if test='search.pkgEvlScore != null and search.pkgEvlScore != ""'>
+			AND GGE.PKG_EVL_SCORE = TO_NUMBER(#{search.pkgEvlScore,jdbcType=VARCHAR}) /* 포장점수 */
+		</if>
+		<if test='search.sizeEvlCd != null and search.sizeEvlCd != ""'>
+			AND GGE.SIZE_EVL_CD = #{search.sizeEvlCd,jdbcType=VARCHAR} /* 사이즈의견 */
+		</if>
+		<if test='search.colorEvlCd != null and search.colorEvlCd != ""'>
+			AND GGE.COLOR_EVL_CD = #{search.colorEvlCd,jdbcType=VARCHAR} /* 컬러의견 */
+		</if>
+		<if test='search.langCd != null and search.langCd != ""'>
+            AND GGE.LANG_CD in
+            <foreach item ="item" index="index" collection="search.langCd" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+		</if>
+		<if test='search.ordNo != null and search.ordNo != ""'>
+			AND GGE.ORD_NO LIKE '%' || #{search.ordNo} || '%' /* 주문번호  */
+		</if>
+	</sql>
+	
+	<!-- 상품평관리 목록 조건문2 -->
+	<sql id="selectGodEvlListWhere2">
+		<if test='search.godEvlTps != null and search.godEvlTps != ""'>
+			AND T.GOD_EVL_TP IN
+			<foreach item ="item" index="index" collection="search.godEvlTps" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 상품평구분 */
+		</if>
+		<if test='search.scoreBeg != null and search.scoreBeg != "" and search.scoreEnd != null and search.scoreEnd != ""'>
+			AND T.AVRG_SCORE >= TO_NUMBER(#{search.scoreBeg}) AND T.AVRG_SCORE &lt;= TO_NUMBER(#{search.scoreEnd}) /* 점수범위 */
+		</if>
+		<if test='search.snsYns != null and search.snsYns != ""'>
+			AND T.SNS_YN IN
+			<foreach item ="item" index="index" collection="search.snsYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* SMS 공유여부 */
+		</if>
+		<if test="search.bstGodEvlYnForCnt != null and search.bstGodEvlYnForCnt == 'Y'.toString() ">
+			AND T.BST_GOD_EVL_YN = 'Y'
+		</if>
+	</sql>
+	
+	<resultMap id="resultGodEvlDetail" type="com.plgrim.ncp.commons.result.GodEvlResult">
+		<id property="godGodEvl.godNo" column="GOD_NO" />
+		<id property="godGodEvl.godEvlTurn" column="GOD_EVL_TURN" />
+		<result property="godGodEvl.mallId" column="MALL_ID" />
+        <result property="godGodEvl.langCd" column="LANG_CD" />
+		<result property="godGodEvl.godEvlSj" column="GOD_EVL_SJ" />
+		<result property="god.brndId" column="BRND_ID" />
+		<result property="god.godNm" column="GOD_NM" />
+		<result property="avrgScore" column="AVRG_SCORE" />
+		<result property="godGodEvl.dlvEvlScore" column="DLV_EVL_SCORE" />
+		<result property="godGodEvl.qltyEvlScore" column="QLTY_EVL_SCORE" />
+		<result property="godGodEvl.pkgEvlScore" column="PKG_EVL_SCORE" />
+		<result property="godEvlTp" column="GOD_EVL_TP" />
+		<result property="godGodEvl.bstGodEvlYn" column="BST_GOD_EVL_YN" />
+		<result property="godGodEvl.badnGodEvlYn" column="BADN_GOD_EVL_YN" />
+		<result property="godGodEvl.sizeEvlCd" column="SIZE_EVL_CD" />
+		<result property="godGodEvl.colorEvlCd" column="COLOR_EVL_CD" />
+		<result property="godGodEvl.ntceYn" column="NTCE_YN" />
+		<result property="godGodEvl.mbrNo" column="MBR_NO" />
+		<result property="godGodEvl.ordNo" column="ORD_NO" />
+		<result property="godGodEvl.ordGodTurn" column="ORD_GOD_TURN" />
+		<result property="snsYn" column="SNS_YN" />
+		<result property="mbrNm" column="MBR_NM" />
+		<result property="mbrId" column="MBR_ID" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+		<result property="godGodEvl.godEvlCont" column="GOD_EVL_CONT" />
+		<result property="godGodEvl.bstGodEvlSortSeq" column="BST_GOD_EVL_SORT_SEQ" />
+		<result property="godGodEvl.godEvlSortSeq" column="GOD_EVL_SORT_SEQ" />
+		<result property="godGodEvl.bstGodEvlCndcyYn" column="BST_GOD_EVL_CNDCY_YN" />
+		<result property="bstGodEvlCnt"     column="BST_GOD_EVL_CNT" />
+		<result property="mbrTpCd" column="MBR_TP_CD" />
+		<result property="accmlWebpntAmt" column="ACCML_WEBPNT_AMT" />
+		<result property="webpntRtrvlDt" column="WEBPNT_RTRVL_DT" />
+		<collection property="godGodEvlAtchFile" ofType="com.plgrim.ncp.base.entities.datasource1.god.GodGodEvlAtchFile">
+			<result property="atchFileTurn" column="ATCH_FILE_TURN"/>
+			<result property="atchFileUrl" column="ATCH_FILE_URL"/>
+			<result property="atchFileNm" column="ATCH_FILE_NM"/>
+		</collection>
+	</resultMap>
+	
+	<!-- 상품평관리 상세 -->
+	<select id="selectGodEvlDetail" parameterType="com.plgrim.ncp.commons.data.GodEvlDTO" resultMap="resultGodEvlDetail">
+		SELECT /* [commons.godevl.xml]["selectGodEvlDetail"][상품평관리 상세][Ed] */
+			GGE.GOD_NO /* 상품번호 */
+	        ,GGE.GOD_EVL_TURN /* 상품평 순번 */
+	        ,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = GGE.MALL_ID) AS MALL_ID /* 몰구분 */
+	        ,CASE
+	            WHEN LENGTH(GGE.GOD_EVL_SJ) > 20 THEN SUBSTR(GGE.GOD_EVL_SJ, 1, 20) || '...'
+	            ELSE GGE.GOD_EVL_SJ
+	         END AS GOD_EVL_SJ /* 상품평 제목 */
+	        ,(SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = G.BRND_ID) AS BRND_ID /* 브랜드명 */
+	        ,G.GOD_NM /* 상품명 */
+	        ,ROUND((NVL(GGE.DLV_EVL_SCORE, 0) * 20 + NVL(GGE.QLTY_EVL_SCORE, 0) * 20 + NVL(GGE.PKG_EVL_SCORE, 0) * 20) / 3, -1) AS AVRG_SCORE /* 총평균점수 */
+	        ,GGE.DLV_EVL_SCORE /* 배송평가점수 */
+	        ,GGE.QLTY_EVL_SCORE /* 품질평가점수 */
+	        ,GGE.PKG_EVL_SCORE /* 포장평가점수 */
+	        ,CASE 
+	            WHEN (SELECT COUNT(*) FROM GOD_GOD_EVL_ATCH_FILE WHERE GOD_NO = GGE.GOD_NO AND GOD_EVL_TURN = GGE.GOD_EVL_TURN) > 0 THEN 'PHOTO'
+	            ELSE 'GNRL'
+	         END AS GOD_EVL_TP /* 상품평구분 */
+	        ,GGE.BST_GOD_EVL_YN /* 베스트여부 */
+	        ,GGE.BADN_GOD_EVL_YN /* 불량여부 */
+	        ,GGE.SIZE_EVL_CD /* 사이즈의견 */
+	        ,GGE.COLOR_EVL_CD /* 컬러의견 */
+	        ,GGE.NTCE_YN /* 게시여부 */
+	        ,GGE.MBR_NO	/* 회원 번호 */
+	        ,GGE.ORD_NO /* 주문 번호 */
+	        ,GGE.ORD_GOD_TURN /* 주문 상품 순번 */
+	        ,CASE
+	        	WHEN GGE.CNRS_SNS_CD IS NOT NULL THEN 'Y'
+	        	ELSE 'N'
+	         END AS SNS_YN /* SMS 공유여부 */
+	        ,FN_MASKING('FLNM', (SELECT MBR_NM FROM MBR WHERE MBR_NO = GGE.MBR_NO), '', 'Y') AS MBR_NM /* 회원명 */
+	        ,FN_MASKING('ID', (SELECT MBR_ID FROM MBR WHERE MBR_NO = GGE.MBR_NO), '', 'Y') AS MBR_ID /* 회원ID */
+	        ,TO_CHAR(GGE.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 등록일 */
+	        ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = GGE.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	        ,TO_CHAR(GGE.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+	        ,GGE.GOD_EVL_CONT /* 상품평내용 */
+	        ,NVL(GGE.BST_GOD_EVL_SORT_SEQ,0)  AS BST_GOD_EVL_SORT_SEQ /* 베스트상품평정렬순서 */
+	        ,GGE.GOD_EVL_SORT_SEQ /* 상품평정렬순서 */
+	        ,GGEAF.ATCH_FILE_TURN /* 첨부파일번호 */
+	        ,GGEAF.ATCH_FILE_URL /* 첨부파일URL */
+	        ,GGEAF.ATCH_FILE_NM /* 첨부파일명 */
+	        ,M.MBR_TP_CD/*회원유형*/
+	        ,NVL((SELECT SUM(WEBPNT_AMT)
+	        	  FROM 	 MBR_WEBPNT_HIST MWH
+	        	  WHERE  MWH.GOD_NO = GGE.GOD_NO
+	        	  AND 	 MWH.GOD_EVL_TURN = GGE.GOD_EVL_TURN
+	        	  AND 	 MWH.MBR_NO = M.MBR_NO
+	        	  AND	 WEBPNT_RESN_CD = 'EVT'
+	        	  AND 	 WEBPNT_DETAIL_RESN_CD = 'GOD_REV'
+	        	  AND 	 WEBPNT_STAT_CD = 'ACCML_DCSN'), 0) AS ACCML_WEBPNT_AMT	/* 적립한 P포인트 금액 */
+		  	,(SELECT 	 MAX(OCCUR_DT)
+  				  FROM 	 MBR_WEBPNT_HIST MWH
+				  WHERE  MWH.GOD_NO = GGE.GOD_NO
+  				  AND 	 MWH.GOD_EVL_TURN = GGE.GOD_EVL_TURN
+  				  AND 	 MWH.MBR_NO = M.MBR_NO
+  				  AND	 WEBPNT_RESN_CD = 'ADMIN_MDAT'
+  				  AND 	 WEBPNT_DETAIL_RESN_CD = 'ADMIN_DDCT'
+  				  AND 	 WEBPNT_STAT_CD = 'USE') AS WEBPNT_RTRVL_DT	/* P포인트 회수 일시 */
+  			, DECODE ( GGE.LANG_CD , 'CHI' , '중국어' , 'ENG' , '영어' , '한국어' ) AS LANG_CD
+  			, GGE.BST_GOD_EVL_CNDCY_YN   /*베스트상품평후보여부 20160526_주동민_sr#20343 [상품평 관리 화면 조회값 및 컬럼값 추가 요청]*/
+  			, (SELECT COUNT(*)
+			     FROM GOD_GOD_EVL G
+			    WHERE G.GOD_NO = GGE.GOD_NO
+			      AND G.BST_GOD_EVL_YN = 'Y') AS BST_GOD_EVL_CNT /*베스트상품평수 20160526_주동민_sr#20343 [상품평 관리 화면 조회값 및 컬럼값 추가 요청]*/
+	    FROM GOD_GOD_EVL GGE
+	        ,GOD G
+	        ,GOD_GOD_EVL_ATCH_FILE GGEAF
+	        ,MBR M
+	    WHERE 1 = 1
+	    AND	GGE.GOD_NO = #{search.godNo,jdbcType=VARCHAR}
+	    AND	GGE.GOD_EVL_TURN = #{search.godEvlTurn,jdbcType=NUMERIC}
+	    AND GGE.GOD_NO = G.GOD_NO
+	    AND	GGE.GOD_NO = GGEAF.GOD_NO(+)
+	    AND	GGE.GOD_EVL_TURN = GGEAF.GOD_EVL_TURN(+)
+	    AND GGE.MBR_NO = M.MBR_NO
+	</select>
+	
+	<!-- 상품평관리 수정 -->
+    <update id="updateGodEvl" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodGodEvl">
+    	UPDATE /* [commons.godevl.xml]["updateSysMallList"][상품평관리 수정][Ed] */
+        GOD_GOD_EVL SET
+                GOD_EVL_CONT = #{godEvlCont,jdbcType=VARCHAR}
+                ,PKG_EVL_SCORE = #{pkgEvlScore,jdbcType=NUMERIC}
+                ,QLTY_EVL_SCORE = #{qltyEvlScore,jdbcType=NUMERIC}
+                ,DLV_EVL_SCORE = #{dlvEvlScore,jdbcType=NUMERIC}
+                ,SIZE_EVL_CD = #{sizeEvlCd,jdbcType=VARCHAR}
+                ,COLOR_EVL_CD = #{colorEvlCd,jdbcType=VARCHAR}
+                ,BST_GOD_EVL_YN = #{bstGodEvlYn,jdbcType=VARCHAR}
+                ,NTCE_YN = #{ntceYn,jdbcType=VARCHAR}
+                ,BADN_GOD_EVL_YN = #{badnGodEvlYn,jdbcType=VARCHAR}
+                ,BST_GOD_EVL_SORT_SEQ = #{bstGodEvlSortSeq,jdbcType=NUMERIC}
+                ,GOD_EVL_SORT_SEQ = #{godEvlSortSeq,jdbcType=NUMERIC}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,BST_GOD_EVL_CNDCY_YN = #{bstGodEvlCndcyYn,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+        AND     GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 베스트상품평노출순서 변경 20160526_주동민_sr#20343 [상품평 관리 화면 조회값 및 컬럼값 추가 요청] -->
+    <update id="updateGodEvlSortSeq" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodGodEvl">
+    	UPDATE /* [commons.godevl.xml]["updateGodEvlSortSeq"][베스트상품평노출순서 변경] */
+        GOD_GOD_EVL SET
+                BST_GOD_EVL_SORT_SEQ = CASE WHEN #{bstGodEvlYn,jdbcType=VARCHAR} = 'Y' THEN NVL(BST_GOD_EVL_SORT_SEQ,0) + 1
+								            WHEN #{bstGodEvlYn,jdbcType=VARCHAR} = 'N' AND NVL(BST_GOD_EVL_SORT_SEQ,0) > 0 THEN NVL(BST_GOD_EVL_SORT_SEQ,0) - 1
+								            ELSE BST_GOD_EVL_SORT_SEQ
+								       END
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   GOD_NO         = #{godNo,jdbcType=VARCHAR}
+        AND 	NVL(BST_GOD_EVL_SORT_SEQ,0) <![CDATA[>=]]> #{bstGodEvlSortSeq,jdbcType=NUMERIC}
+        AND     BST_GOD_EVL_YN = 'Y'
+    </update>
+    
+    <!-- 몰 목록 조회 -->
+	<select id="selectSysMallList" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysMall">
+		SELECT /* [commons.godevl.xml]["selectSysMallList"][몰 조회][Ed] */
+                SM.MALL_ID /* 몰 ID */
+               ,SM.MALL_NM /* 몰 명 */
+        FROM	SYS_MALL SM
+		WHERE	1 = 1
+		AND 	SM.USE_YN = 'Y'
+	</select>
+	
+	<!-- 브랜드 목록 조회 -->
+	<select id="selectSysBrndList" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		SELECT /* [commons.godevl.xml]["selectSysBrndList"][브랜드 조회][Ed] */ 
+			BRND_ID
+			,BRND_NM
+			,UPPER_BRND_ID
+		FROM SYS_BRND
+		WHERE LEVEL = 3
+	   	CONNECT BY PRIOR BRND_ID = UPPER_BRND_ID
+		START WITH BRND_ID = 'plgrim'
+		ORDER BY BRND_NM
+	</select>
+	
+	<!-- 상품평관리 베스트 목록 개수 -->
+	<select id="selectBestGodEvlListCount" resultType="long"> 
+		SELECT /* [commons.godevl.xml]["selectBestGodEvlListCount"][상품평관리 베스트 목록 개수][Ed] */
+			COUNT(*)
+		FROM GOD_GOD_EVL GGE
+		WHERE 1 = 1
+		AND GGE.BST_GOD_EVL_YN = 'Y'
+		AND NOT EXISTS (
+			SELECT 1
+			FROM GOD_GOD_EVL A
+			WHERE A.GOD_NO = #{search.godNo,jdbcType=VARCHAR}
+			AND A.GOD_EVL_TURN = #{search.godEvlTurn,jdbcType=NUMERIC}
+		)
+	</select>
+	
+	<!-- 상품평관리 첨부파일 등록 -->
+	<insert id="insertGodGodEvlAtchFile" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodGodEvlAtchFile">
+	    INSERT /* [commons.godevl.xml]["insertGodGodEvlAtchFile"][상품평관리 첨부파일 등록][Ed] */
+	    INTO GOD_GOD_EVL_ATCH_FILE
+		(
+	        GOD_NO
+	       ,GOD_EVL_TURN
+	       ,ATCH_FILE_TURN
+	       ,ATCH_FILE_URL
+	       ,ATCH_FILE_NM
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{godNo,jdbcType=VARCHAR}
+	       ,#{godEvlTurn,jdbcType=NUMERIC}
+	       ,(SELECT NVL(MAX(ATCH_FILE_TURN)+1,1) FROM GOD_GOD_EVL_ATCH_FILE WHERE GOD_NO = #{godNo,jdbcType=VARCHAR} AND GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC})
+	       ,#{atchFileUrl,jdbcType=VARCHAR}
+	       ,#{atchFileNm,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+</mapper>

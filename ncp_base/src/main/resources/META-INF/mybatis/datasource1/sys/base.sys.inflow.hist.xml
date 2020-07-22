@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysInflowHist" parameterType="sysInflowHist" resultType="sysInflowHist">
+		SELECT /* com.plgrim.ncp.base.selectSysInflowHist		Generator(Generator)	2018-05-23 */
+			   INFLOW_SN
+			 , HIST_DT
+			 , ONLNE_UNT_DSCR
+			 , CREAT_CD
+			 , LP_CD
+			 , ADVT_MATR_NM
+		  FROM SYS_INFLOW_HIST
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateSysInflowHist" parameterType="sysInflowHist">
+		UPDATE /* com.plgrim.ncp.base.updateSysInflowHist		Generator(Generator)	2018-05-23 */
+		SYS_INFLOW_HIST SET
+			   INFLOW_SN = #{inflowSn,jdbcType=NUMERIC}
+			 , HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+			 , ONLNE_UNT_DSCR = #{onlneUntDscr,jdbcType=VARCHAR}
+			 , CREAT_CD = #{creatCd,jdbcType=VARCHAR}
+			 , LP_CD = #{lpCd,jdbcType=VARCHAR}
+			 , ADVT_MATR_NM = #{advtMatrNm,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertSysInflowHist" parameterType="sysInflowHist">
+		INSERT /* com.plgrim.ncp.base.insertSysInflowHist		Generator(Generator)	2018-05-23 */
+		INTO   SYS_INFLOW_HIST (
+			   INFLOW_SN
+			 , HIST_DT
+			 , ONLNE_UNT_DSCR
+			 , CREAT_CD
+			 , LP_CD
+			 , ADVT_MATR_NM
+		)
+		VALUES (
+			   #{inflowSn,jdbcType=NUMERIC}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{onlneUntDscr,jdbcType=VARCHAR}
+			 , #{creatCd,jdbcType=VARCHAR}
+			 , #{lpCd,jdbcType=VARCHAR}
+			 , #{advtMatrNm,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteSysInflowHist" parameterType="sysInflowHist">
+		DELETE /* com.plgrim.ncp.base.deleteSysInflowHist		Generator(Generator)	2018-05-23 */
+		  FROM SYS_INFLOW_HIST
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

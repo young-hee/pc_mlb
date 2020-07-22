@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCtgryLang" parameterType="dspCtgryLang" resultType="dspCtgryLang">
+		SELECT /* com.plgrim.ncp.base.selectDspCtgryLang		Generator(Generator)	2018-05-23 */
+			   DSP_CTGRY_NO
+			 , LANG_CD
+			 , DSP_CTGRY_NM
+			 , RPRST_IMG_FILE_NM
+			 , RPRST_IMG_FILE_URL
+			 , RPRST_IMG_ALTRTV_CONT
+			 , META_SJ_NM
+			 , META_DSCR_CONT
+			 , META_KWD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CTGRY_LANG
+		 WHERE 1 = 1
+	   	   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspCtgryLang" parameterType="dspCtgryLang">
+		UPDATE /* com.plgrim.ncp.base.updateDspCtgryLang		Generator(Generator)	2018-05-23 */
+		DSP_CTGRY_LANG SET
+			   DSP_CTGRY_NM = #{dspCtgryNm,jdbcType=VARCHAR}
+			 , RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+			 , RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+			 , RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+			 , META_SJ_NM = #{metaSjNm,jdbcType=VARCHAR}
+			 , META_DSCR_CONT = #{metaDscrCont,jdbcType=VARCHAR}
+			 , META_KWD = #{metaKwd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspCtgryLang" parameterType="dspCtgryLang">
+		INSERT /* com.plgrim.ncp.base.insertDspCtgryLang		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CTGRY_LANG (
+			   DSP_CTGRY_NO
+			 , LANG_CD
+			 , DSP_CTGRY_NM
+			 , RPRST_IMG_FILE_NM
+			 , RPRST_IMG_FILE_URL
+			 , RPRST_IMG_ALTRTV_CONT
+			 , META_SJ_NM
+			 , META_DSCR_CONT
+			 , META_KWD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dspCtgryNm,jdbcType=VARCHAR}
+			 , #{rprstImgFileNm,jdbcType=VARCHAR}
+			 , #{rprstImgFileUrl,jdbcType=VARCHAR}
+			 , #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{metaSjNm,jdbcType=VARCHAR}
+			 , #{metaDscrCont,jdbcType=VARCHAR}
+			 , #{metaKwd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCtgryLang" parameterType="dspCtgryLang">
+		DELETE /* com.plgrim.ncp.base.deleteDspCtgryLang		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CTGRY_LANG
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

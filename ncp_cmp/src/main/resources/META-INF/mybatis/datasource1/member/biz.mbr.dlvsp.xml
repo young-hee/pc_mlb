@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.dlvsp">
+
+    <resultMap id="mbrDlvspMap" type="com.plgrim.ncp.biz.member.result.MemberBoResult">
+       <result property="mbrDlvsp.mbrNo"               column="MBR_NO" />              <!-- 회원 번호 -->
+       <result property="mbrDlvsp.dlvAdbukTurn"        column="DLV_ADBUK_TURN" />      <!-- 배송 주소록 순번 -->
+       <result property="mbrDlvsp.adbukNm"             column="ADBUK_NM" />            <!-- 배송 주소록 명 -->
+       <result property="mbrDlvsp.addrseNm"            column="ADDRSE_NM" />           <!-- 배송 수취인 명 -->
+       <result property="mbrDlvsp.baseDlvspYn"         column="BASE_DLVSP_YN" />       <!-- 기본 배송지 여부 -->
+       <result property="mbrDlvsp.postNo"              column="POST_NO" />             <!-- 우편번호 -->
+       <result property="mbrDlvsp.dlvAddrSectCd"       column="DLV_ADDR_SECT_CD" />    <!-- 배송 주소 구분 코드 -->
+       <result property="mbrDlvsp.nationCd"            column="NATION_CD" />           <!-- 배송 국가 구분 코드 -->
+       <result property="mbrDlvsp.nationNm"            column="NATION_NM" />           <!-- 배송 국가명 -->
+       <result property="mbrDlvsp.baseAddr"            column="BASE_ADDR" />           <!-- 배송 우편주소 -->
+       <result property="mbrDlvsp.detailAddr"          column="DETAIL_ADDR" />         <!-- 배송 상세주소 -->
+       <result property="mbrDlvsp.ctyNm"               column="CTY_NM" />              <!-- 배송 상세주소 -->
+       <result property="mbrDlvsp.lcltyNm"             column="LCLTY_NM" />            <!-- 배송 상세주소 -->
+       <result property="mbrDlvsp.telNationNo"         column="TEL_NATION_NO" />       <!-- 전화 국가번호 -->
+       <result property="mbrDlvsp.telAreaNo"           column="TEL_AREA_NO" />         <!-- 전화 지역번호 -->
+       <result property="mbrDlvsp.telTlofNo"           column="TEL_TLOF_NO" />         <!-- 전화 국번호 -->
+       <result property="mbrDlvsp.telTlofWthnNo"       column="TEL_TLOF_WTHN_NO" />    <!-- 전화 국내번호 -->
+       <result property="mbrDlvsp.mobilNationNo"       column="MOBIL_NATION_NO" />     <!-- 휴대전화 국가번호 -->
+       <result property="mbrDlvsp.mobilAreaNo"         column="MOBIL_AREA_NO" />       <!-- 휴대전화 지역번호 -->
+       <result property="mbrDlvsp.mobilTlofNo"         column="MOBIL_TLOF_NO" />       <!-- 휴대전화 국번호 -->
+       <result property="mbrDlvsp.mobilTlofWthnNo"     column="MOBIL_TLOF_WTHN_NO" />  <!-- 휴대전화 국내번호 -->
+       <result property="mbrDlvsp.dlvEmail"            column="DLV_EMAIL" />           <!-- 배송 이메일 -->
+       <result property="mbrDlvsp.dlvRm"               column="DLV_RM" />              <!-- 배송 비고 -->
+       <result property="mbrDlvsp.regtrId"             column="REGTR_ID" />            <!-- 등록자 ID -->
+       <result property="mbrDlvsp.regDt"               column="REG_DT" />              <!-- 등록 일시 -->
+       <result property="mbrDlvsp.udterId"             column="UDTER_ID" />            <!-- 수정자 ID -->
+       <result property="mbrDlvsp.udtDt"               column="UDT_DT" />              <!-- 수정 일시 -->
+       <result property="mobilNo"                      column="MOBILE_NO" />           <!-- 휴대전화 번호 -->
+       <result property="telNo"                        column="TEL_NO" />              <!-- 전화 번호 -->
+       <result property="orgBaseDlvspYn"               column="ORG_BASE_DLVSP_YN" />   <!-- 기존 배송지 대표여부 -->
+    </resultMap>
+
+    <!-- 배송지 목록 조회 -->
+    <select id="selectDeliveryLocationList" parameterType="mbrDlvsp" resultMap="mbrDlvspMap">
+        SELECT /* [biz.mbr.dlvsp.xml][selectDeliveryLocationList][조회 : 회원 배송지 목록 ][Jessi] */
+                md.mbr_no                      /* 회원 번호 */
+              , md.dlv_adbuk_turn              /* 배송 주소록 순번 */
+              , md.adbuk_nm                    /* 배송 주소록 명 */
+              , fn_masking('FLNM' , md.addrse_nm, '', #{maskingYn, jdbcType=VARCHAR}) AS addrse_nm
+              , DECODE(md.base_dlvsp_yn, 'Y', '1', '0') AS base_dlvsp_yn              /* 기본 배송지 여부 */
+              , md.base_dlvsp_yn AS org_base_dlvsp_yn              /* 기본 배송지 여부 */
+              , REPLACE(md.post_no,'-','') AS post_no              /* 우편번호 */
+              , md.dlv_addr_sect_cd            /* 배송 주소 구분 코드 */
+              , md.nation_cd                   /* 배송 국가 구분 코드 */
+              , msc.cd_nm AS nation_nm         /* 배송 국가 명 */
+              , fn_masking('ADDR'   , base_addr   , '', #{maskingYn, jdbcType=VARCHAR}) AS base_addr
+              , fn_masking('ADDRDTL', detail_addr, '', #{maskingYn, jdbcType=VARCHAR}) AS detail_addr
+              , md.cty_nm                      /* 해외 수취 도시 명*/
+              , md.lclty_nm                    /* 해외 수취 지방 명 */
+              , md.dlv_rm                      /* 배송 비고 */
+              , md.regtr_id                    /* 등록자 ID */
+              , md.reg_dt                      /* 등록 일시 */
+              , md.udter_id                    /* 수정자 ID */
+              , md.udt_dt                      /* 수정 일시 */
+              , md.mobil_nation_no             /* 휴대전화 국가번호 */
+              , md.mobil_area_no               /* 휴대전화 지역번호 */
+              , md.mobil_tlof_no               /* 휴대전화 국번호 */
+              , md.mobil_tlof_wthn_no          /* 휴대전화 국내번호 */
+              , md.tel_nation_no               /* 전화 국가번호 */
+              , md.tel_area_no                 /* 전화 지역번호 */
+              , md.tel_tlof_no                 /* 전화 국번호 */
+              , md.tel_tlof_wthn_no            /* 전화 국내번호 */
+              , fn_masking('PHON', mobil_nation_no||NVL2(mobil_nation_no, '-', '')||mobil_area_no||NVL2(mobil_area_no, '-', '')|| mobil_tlof_no||NVL2(mobil_tlof_no, '-', '')||mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+              , fn_masking('PHON', tel_nation_no||NVL2(tel_nation_no, '-', '')||tel_area_no||NVL2(tel_area_no, '-', '')||tel_tlof_no||NVL2(tel_tlof_no, '-', '')||tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+          FROM mbr_dlvsp md
+          <!-- ncp 3
+          LEFT OUTER JOIN mv_sys_cd msc ON MD.NATION_CD = MSC.CD AND MSC.LANG_CD = 'KOR'
+           -->
+          LEFT OUTER JOIN mv_sys_cd msc ON UPPER(MD.NATION_CD) = UPPER(MSC.CD)
+			                           AND msc.upper_cd = 'NATION'
+                                       AND msc.LANG_CD = #{lang, jdbcType=VARCHAR}
+
+         WHERE md.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+         <if test='dlvAdbukTurn != "" and dlvAdbukTurn != null'>
+			AND md.dlv_adbuk_turn = #{dlvAdbukTurn ,jdbcType=NUMERIC}
+		 </if>
+         ORDER BY md.base_dlvsp_yn DESC, md.reg_dt DESC
+    </select>
+    
+    <!-- 배송지 목록 조회 Page-->
+    <select id="selectDeliveryLocationPageList" parameterType="mbrDlvsp" resultMap="mbrDlvspMap">
+        <include refid="com.plgrim.ncp.base.beginPage"/>   
+        SELECT /* [biz.mbr.dlvsp.xml][selectDeliveryLocationPageList][조회 : 회원 배송지 목록 Page][Jessi] */
+                md.mbr_no                      /* 회원 번호 */
+              , md.dlv_adbuk_turn              /* 배송 주소록 순번 */
+              , md.adbuk_nm                    /* 배송 주소록 명 */
+              , fn_masking('FLNM' , md.addrse_nm, '', #{maskingYn, jdbcType=VARCHAR}) AS addrse_nm
+              , DECODE(md.base_dlvsp_yn, 'Y', '1', '0') AS base_dlvsp_yn              /* 기본 배송지 여부 */
+              , md.base_dlvsp_yn AS org_base_dlvsp_yn              /* 기본 배송지 여부 */
+              , REPLACE(md.post_no,'-','') AS post_no              /* 우편번호 */
+              , md.dlv_addr_sect_cd            /* 배송 주소 구분 코드 */
+              , md.nation_cd                   /* 배송 국가 구분 코드 */
+              , msc.cd_nm AS nation_nm         /* 배송 국가 명 */
+              , fn_masking('ADDR'   , base_addr   , '', #{maskingYn, jdbcType=VARCHAR}) AS base_addr
+              , fn_masking('ADDRDTL', detail_addr, '', #{maskingYn, jdbcType=VARCHAR}) AS detail_addr
+              , md.cty_nm                      /* 해외 수취 도시 명*/
+              , md.lclty_nm                    /* 해외 수취 지방 명 */
+              , md.dlv_rm                      /* 배송 비고 */
+              , md.regtr_id                    /* 등록자 ID */
+              , md.reg_dt                      /* 등록 일시 */
+              , md.udter_id                    /* 수정자 ID */
+              , md.udt_dt                      /* 수정 일시 */
+              , md.mobil_nation_no             /* 휴대전화 국가번호 */
+              , md.mobil_area_no               /* 휴대전화 지역번호 */
+              , md.mobil_tlof_no               /* 휴대전화 국번호 */
+              , md.mobil_tlof_wthn_no          /* 휴대전화 국내번호 */
+              , md.tel_nation_no               /* 전화 국가번호 */
+              , md.tel_area_no                 /* 전화 지역번호 */
+              , md.tel_tlof_no                 /* 전화 국번호 */
+              , md.tel_tlof_wthn_no            /* 전화 국내번호 */
+              , fn_masking('PHON', mobil_nation_no||NVL2(mobil_nation_no, '-', '')||mobil_area_no||NVL2(mobil_area_no, '-', '')|| mobil_tlof_no||NVL2(mobil_tlof_no, '-', '')||mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+              , fn_masking('PHON', tel_nation_no||NVL2(tel_nation_no, '-', '')||tel_area_no||NVL2(tel_area_no, '-', '')||tel_tlof_no||NVL2(tel_tlof_no, '-', '')||tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+          FROM mbr_dlvsp md
+          <!-- ncp 3
+          LEFT OUTER JOIN mv_sys_cd msc ON MD.NATION_CD = MSC.CD AND MSC.LANG_CD = 'KOR'
+           -->
+          LEFT OUTER JOIN mv_sys_cd msc ON UPPER(MD.NATION_CD) = UPPER(MSC.CD)
+			                           AND msc.upper_cd = 'NATION'
+                                       AND msc.LANG_CD = #{lang, jdbcType=VARCHAR}
+
+         WHERE md.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+         <if test='dlvAdbukTurn != "" and dlvAdbukTurn != null'>
+			AND md.dlv_adbuk_turn = #{dlvAdbukTurn ,jdbcType=NUMERIC}
+		 </if>
+         ORDER BY md.base_dlvsp_yn DESC, md.reg_dt DESC
+         <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    
+    <!-- 배송지 목록 Count -->
+    <select id="selectDeliveryLocationCnt"  parameterType="mbrDlvsp" resultType="Integer">
+      SELECT /* [biz.mbr.dlvsp.xml][selectDeliveryLocationCnt][조회 : 회원 배송지 목록 Count][Jessi] */
+            COUNT(1) as cnt
+      FROM  (    
+        SELECT 
+                md.mbr_no                      /* 회원 번호 */
+              , md.dlv_adbuk_turn              /* 배송 주소록 순번 */
+              , md.adbuk_nm                    /* 배송 주소록 명 */
+              , fn_masking('FLNM' , md.addrse_nm, '', #{maskingYn, jdbcType=VARCHAR}) AS addrse_nm
+              , DECODE(md.base_dlvsp_yn, 'Y', '1', '0') AS base_dlvsp_yn              /* 기본 배송지 여부 */
+              , md.base_dlvsp_yn AS org_base_dlvsp_yn              /* 기본 배송지 여부 */
+              , REPLACE(md.post_no,'-','') AS post_no              /* 우편번호 */
+              , md.dlv_addr_sect_cd            /* 배송 주소 구분 코드 */
+              , md.nation_cd                   /* 배송 국가 구분 코드 */
+              , msc.cd_nm AS nation_nm         /* 배송 국가 명 */
+              , fn_masking('ADDR'   , base_addr   , '', #{maskingYn, jdbcType=VARCHAR}) AS base_addr
+              , fn_masking('ADDRDTL', detail_addr, '', #{maskingYn, jdbcType=VARCHAR}) AS detail_addr
+              , md.cty_nm                      /* 해외 수취 도시 명*/
+              , md.lclty_nm                    /* 해외 수취 지방 명 */
+              , md.dlv_rm                      /* 배송 비고 */
+              , md.regtr_id                    /* 등록자 ID */
+              , md.reg_dt                      /* 등록 일시 */
+              , md.udter_id                    /* 수정자 ID */
+              , md.udt_dt                      /* 수정 일시 */
+              , md.mobil_nation_no             /* 휴대전화 국가번호 */
+              , md.mobil_area_no               /* 휴대전화 지역번호 */
+              , md.mobil_tlof_no               /* 휴대전화 국번호 */
+              , md.mobil_tlof_wthn_no          /* 휴대전화 국내번호 */
+              , md.tel_nation_no               /* 전화 국가번호 */
+              , md.tel_area_no                 /* 전화 지역번호 */
+              , md.tel_tlof_no                 /* 전화 국번호 */
+              , md.tel_tlof_wthn_no            /* 전화 국내번호 */
+              , fn_masking('PHON', mobil_nation_no||NVL2(mobil_nation_no, '-', '')||mobil_area_no||NVL2(mobil_area_no, '-', '')|| mobil_tlof_no||NVL2(mobil_tlof_no, '-', '')||mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+              , fn_masking('PHON', tel_nation_no||NVL2(tel_nation_no, '-', '')||tel_area_no||NVL2(tel_area_no, '-', '')||tel_tlof_no||NVL2(tel_tlof_no, '-', '')||tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+          FROM mbr_dlvsp md
+          <!-- ncp 3
+          LEFT OUTER JOIN mv_sys_cd msc ON MD.NATION_CD = MSC.CD AND MSC.LANG_CD = 'KOR'
+           -->
+          LEFT OUTER JOIN mv_sys_cd msc ON UPPER(MD.NATION_CD) = UPPER(MSC.CD)
+			                           AND msc.upper_cd = 'NATION'
+                                       AND msc.LANG_CD = #{lang, jdbcType=VARCHAR}
+
+         WHERE md.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+         <if test='dlvAdbukTurn != "" and dlvAdbukTurn != null'>
+			AND md.dlv_adbuk_turn = #{dlvAdbukTurn ,jdbcType=NUMERIC}
+		 </if>
+         
+         )
+    </select>
+    
+
+    <!-- 대표배송지 제거 -->
+    <update id="updateBaseDeliveryLocationRevome" parameterType="mbrDlvsp">
+        UPDATE /* [biz.mbr.dlvsp.xml][updateBaseDeliveryLocationRevome][대표배송지 설정 제거][Jessi] */
+                mbr_dlvsp
+           SET 
+                base_dlvsp_yn = 'N'                      /* 기본 배송지 여부 */
+              , udter_id = #{udterId ,jdbcType=VARCHAR}
+              , udt_dt = SYSDATE
+         WHERE mbr_no = #{mbrNo ,jdbcType=VARCHAR}
+           AND base_dlvsp_yn = 'Y'
+         <!-- 다국어 구분없이 전체조회 2018.08.22 ryan -->
+         <!-- <choose>
+             <when test="lang == 'KOR'">
+               AND dlv_addr_sect_cd IN ('LNM_ADDR', 'RD_ADDR')
+             </when>
+             <otherwise>
+               AND dlv_addr_sect_cd = 'OVSEA_ADDR'
+             </otherwise>
+         </choose> -->
+    </update>
+    
+    <!-- 대표배송지 설정 -->
+    <update id="updateBaseDeliveryLocationSet" parameterType="mbrDlvsp">
+        UPDATE /* [biz.mbr.dlvsp.xml][updateBaseDeliveryLocationSet][대표배송지 설정][Jessi] */
+                 mbr_dlvsp
+           SET 
+                base_dlvsp_yn = 'Y'                       /* 기본 배송지 여부 */
+              , udter_id = #{udterId ,jdbcType=VARCHAR}
+              , udt_dt = SYSDATE
+         WHERE mbr_no = #{mbrNo ,jdbcType=VARCHAR}
+           AND dlv_adbuk_turn = #{dlvAdbukTurn ,jdbcType=NUMERIC}
+         <!-- 다국어 구분없이 전체조회 2018.08.22 ryan -->
+         <!-- <choose>
+             <when test="lang == 'KOR'">
+               AND dlv_addr_sect_cd IN ('LNM_ADDR', 'RD_ADDR')
+             </when>
+             <otherwise>
+               AND dlv_addr_sect_cd = 'OVSEA_ADDR'
+             </otherwise>
+         </choose> -->
+    </update>
+    
+    <!-- 배송지 저장 -->
+    <update id="mergeDeliveryLocation" parameterType="mbrDlvsp">
+        MERGE /* [biz.mbr.dlvsp.xml][mergeDeliveryLocation][배송지 저장][Jessi] */
+         INTO mbr_dlvsp md
+        USING (
+                SELECT
+                        #{mbrNo,jdbcType=VARCHAR} AS mbrNo
+                      , #{dlvAdbukTurn ,jdbcType=NUMERIC} AS dlvAdbukTurn
+                  FROM DUAL                
+              ) ch ON (md.mbr_no = ch.mbrNo AND md.dlv_adbuk_turn = ch.dlvAdbukTurn )
+        WHEN MATCHED THEN 
+                UPDATE
+                   SET 
+                        adbuk_nm = #{adbukNm, jdbcType=VARCHAR}                      /* 배송 주소록 명 */
+                      , addrse_nm = #{addrseNm, jdbcType=VARCHAR}                    /* 배송 수취인 명 */
+                      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(baseDlvspYn)"> /* 배송지목록에 추가만 하는경우 기존기본배송지 여부 유지 */
+                        , base_dlvsp_yn = #{baseDlvspYn, jdbcType=VARCHAR}                    /* 기본 배송지 여부 */
+                      </if>
+                      , post_no = #{postNo, jdbcType=VARCHAR}                               /* 우편번호 */
+                      , dlv_addr_sect_cd = #{dlvAddrSectCd, jdbcType=VARCHAR}               /* 배송 주소 구분 코드 */
+                      , nation_cd = #{nationCd, jdbcType=VARCHAR}                           /* 배송 국가 구분 코드 */
+                      , base_addr = #{baseAddr, jdbcType=VARCHAR}                           /* 배송 우편주소 */
+                      , detail_addr = #{detailAddr, jdbcType=VARCHAR}                       /* 배송 상세주소 */
+                      , cty_nm = #{ctyNm,jdbcType=VARCHAR}                                  /* 해외 수취 도시 명*/
+                      , lclty_nm = #{lcltyNm,jdbcType=VARCHAR}                              /* 해외 수취 지방 명 */
+                      , tel_nation_no = #{telNationNo, jdbcType=VARCHAR}                    /* 전화 국가번호 */
+                      , tel_area_no = #{telAreaNo, jdbcType=VARCHAR}                        /* 전화 지역번호 */
+                      , tel_tlof_no = #{telTlofNo, jdbcType=VARCHAR}                        /* 전화 국번호 */
+                      , tel_tlof_wthn_no = #{telTlofWthnNo, jdbcType=VARCHAR}               /* 전화 국내번호 */
+                      , mobil_nation_no = #{mobilNationNo, jdbcType=VARCHAR}                /* 휴대전화 국가번호 */
+                      , mobil_area_no = #{mobilAreaNo, jdbcType=VARCHAR}                    /* 휴대전화 지역번호 */
+                      , mobil_tlof_no = #{mobilTlofNo, jdbcType=VARCHAR}                    /* 휴대전화 국번호 */
+                      , mobil_tlof_wthn_no = #{mobilTlofWthnNo, jdbcType=VARCHAR}           /* 휴대전화 국내번호 */
+                      , dlv_email = #{dlvEmail, jdbcType=VARCHAR}                           /* 배송 이메일 */
+                      , dlv_rm = #{dlvRm, jdbcType=VARCHAR}                                 /* 배송 비고 */
+                      , udter_id = #{udterId, jdbcType=VARCHAR}
+                      , udt_dt = SYSDATE
+        WHEN NOT MATCHED THEN 
+                INSERT (
+                        mbr_no
+                      , dlv_adbuk_turn
+                      , adbuk_nm
+                      , addrse_nm
+                      , base_dlvsp_yn
+                      , post_no
+                      , dlv_addr_sect_cd
+                      , nation_cd
+                      , base_addr
+                      , detail_addr
+                      , cty_nm
+                      , lclty_nm
+                      , tel_nation_no
+                      , tel_area_no
+                      , tel_tlof_no
+                      , tel_tlof_wthn_no
+                      , mobil_nation_no
+                      , mobil_area_no
+                      , mobil_tlof_no
+                      , mobil_tlof_wthn_no
+                      , dlv_email
+                      , dlv_rm
+                      , regtr_id
+                      , reg_dt
+                      , udter_id
+                      , udt_dt
+                ) VALUES (
+                        #{mbrNo, jdbcType=VARCHAR}                   /* 회원 번호 */
+                      , (
+                         SELECT NVL(MAX(dlv_adbuk_turn),0)+1 
+                           FROM mbr_dlvsp 
+                          WHERE mbr_no = #{mbrNo,jdbcType =VARCHAR}
+                        )                                            /* 배송 주소록 순번 */
+                      , #{adbukNm, jdbcType=VARCHAR}                 /* 배송 주소록 명 */
+                      , #{addrseNm, jdbcType=VARCHAR}                /* 배송 수취인 명 */
+                      , #{baseDlvspYn, jdbcType=VARCHAR}             /* 기본 배송지 여부 */
+                      , #{postNo, jdbcType=VARCHAR}                  /* 우편번호 */
+                      , #{dlvAddrSectCd, jdbcType=VARCHAR}           /* 배송 주소 구분 코드 */
+                      , #{nationCd, jdbcType=VARCHAR}                /* 배송 국가 구분 코드 */
+                      , #{baseAddr, jdbcType=VARCHAR}                /* 배송 우편주소 */
+                      , #{detailAddr, jdbcType=VARCHAR}              /* 배송 상세주소 */
+                      , #{ctyNm,jdbcType=VARCHAR}                    /* 해외 수취 도시 명*/
+                      , #{lcltyNm,jdbcType=VARCHAR}                  /* 해외 수취 지방 명 */
+                      , #{telNationNo, jdbcType=VARCHAR}             /* 전화 국가번호 */
+                      , #{telAreaNo, jdbcType=VARCHAR}               /* 전화 지역번호 */
+                      , #{telTlofNo, jdbcType=VARCHAR}               /* 전화 국번호 */
+                      , #{telTlofWthnNo, jdbcType=VARCHAR}           /* 전화 국내번호 */
+                      , #{mobilNationNo, jdbcType=VARCHAR}           /* 휴대전화 국가번호 */
+                      , #{mobilAreaNo, jdbcType=VARCHAR}             /* 휴대전화 지역번호 */
+                      , #{mobilTlofNo, jdbcType=VARCHAR}             /* 휴대전화 국번호 */
+                      , #{mobilTlofWthnNo, jdbcType=VARCHAR}         /* 휴대전화 국내번호 */
+                      , #{dlvEmail, jdbcType=VARCHAR}                /* 배송 이메일 */
+                      , #{dlvRm, jdbcType=VARCHAR}                   /* 배송 비고 */
+                      , #{regtrId, jdbcType=VARCHAR}
+                      , SYSDATE
+                      , #{udterId, jdbcType=VARCHAR}
+                      , SYSDATE
+                )   
+    </update>
+    
+    <!-- 배송지 삭제 -->
+    <update id="deleteDeliveryLocation" parameterType="mbrDlvsp">
+        DELETE /* [biz.mbr.dlvsp.xml][deleteDeliveryLocation][배송지 삭제 ][Jessi] */
+                 mbr_dlvsp
+         WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+           AND dlv_adbuk_turn = #{dlvAdbukTurn ,jdbcType=NUMERIC}
+    </update>
+    
+   <select id="getDeliveryLocationCount" parameterType="mbrDlvsp" resultType="Integer" >
+		SELECT COUNT(1)	/* [biz.mbr.dlvsp.xml][getDeliveryLocationCount][특정배송지수량조회][seed] */
+			FROM MBR_DLVSP 	
+			WHERE MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+				AND ADDRSE_NM = #{addrseNm, jdbcType=VARCHAR}
+				AND BASE_ADDR = #{baseAddr, jdbcType=VARCHAR}
+				AND POST_NO = #{postNo, jdbcType=VARCHAR}
+				<if test='nationCd != "" and nationCd != null'>
+				AND NATION_CD = #{nationCd, jdbcType=VARCHAR}
+				</if>
+				<if test='detailAddr != "" and detailAddr != null'>
+				AND DETAIL_ADDR = #{detailAddr, jdbcType=VARCHAR}
+				</if>
+				<if test='ctyNm != "" and ctyNm != null'>
+				AND CTY_NM = #{ctyNm, jdbcType=VARCHAR}
+				</if>
+				<if test='lcltyNm != "" and lcltyNm != null'>
+				AND LCLTY_NM = #{lcltyNm, jdbcType=VARCHAR}
+				</if>
+				<if test='dlvAdbukTurn > 0'>
+				AND dlv_adbuk_turn &lt;> #{dlvAdbukTurn ,jdbcType=NUMERIC}
+				</if>
+   </select>
+   
+   <select id="getMbrDeliveryAdbukTurn" parameterType="mbrDlvsp" resultType="Integer" >
+		SELECT dlv_adbuk_turn	/* [biz.mbr.dlvsp.xml][getMbrDeliveryAdbukTurn][회원배송지순번][cannon] */
+		  FROM MBR_DLVSP 	
+		 WHERE MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		   AND ADDRSE_NM = #{addrseNm, jdbcType=VARCHAR}
+		   AND BASE_ADDR = #{baseAddr, jdbcType=VARCHAR}
+		   AND DETAIL_ADDR = #{detailAddr, jdbcType=VARCHAR}
+               AND dlv_addr_sect_cd IN ('LNM_ADDR', 'RD_ADDR')
+         AND ROWNUM = 1
+   </select>
+   
+</mapper>

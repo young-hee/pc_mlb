@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodItm" parameterType="godItm" resultType="godItm">
+		SELECT /* com.plgrim.ncp.base.selectGodItm		Generator(Generator)	2018-06-03 */
+			   ITM_NO
+			 , GOD_NO
+			 , SKU_NO
+			 , ITM_STAT_CD
+			 , ITM_NM
+			 , OPT_CD_1
+			 , OPT_NM_1
+			 , OPT_VAL_CD_1
+			 , OPT_VAL_NM_1
+			 , OPT_CD_2
+			 , OPT_NM_2
+			 , OPT_VAL_CD_2
+			 , OPT_VAL_NM_2
+			 , OPT_CD_3
+			 , OPT_NM_3
+			 , OPT_VAL_CD_3
+			 , OPT_VAL_NM_3
+			 , OPT_CD_4
+			 , OPT_NM_4
+			 , OPT_VAL_CD_4
+			 , OPT_VAL_NM_4
+			 , OPT_CD_5
+			 , OPT_NM_5
+			 , OPT_VAL_CD_5
+			 , OPT_VAL_NM_5
+			 , TOT_USEFUL_INV_QTY
+			 , USEFUL_INV_QTY_SHOP_ID
+			 , SALE_PREARNGE_QTY
+			 , SAFE_INV_USE_YN
+			 , SAFE_INV_QTY
+			 , ONLNE_LMTT_INV_QTY
+			 , AFF_COM_LMTT_INV_QTY
+			 , RESVE_QTY
+			 , RESVE_INV_QTY
+			 , PARTMAL_COM_INV_NTCN_YN
+			 , PARTMAL_COM_INV_NTCN_QTY
+			 , WRHS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_ITM
+		 WHERE 1 = 1
+	   	   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodItm" parameterType="godItm">
+		UPDATE /* com.plgrim.ncp.base.updateGodItm		Generator(Generator)	2018-06-03 */
+		GOD_ITM SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , SKU_NO = #{skuNo,jdbcType=VARCHAR}
+			 , ITM_STAT_CD = #{itmStatCd,jdbcType=VARCHAR}
+			 , ITM_NM = #{itmNm,jdbcType=VARCHAR}
+			 , OPT_CD_1 = #{optCd1,jdbcType=VARCHAR}
+			 , OPT_NM_1 = #{optNm1,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_1 = #{optValCd1,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_1 = #{optValNm1,jdbcType=VARCHAR}
+			 , OPT_CD_2 = #{optCd2,jdbcType=VARCHAR}
+			 , OPT_NM_2 = #{optNm2,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_2 = #{optValCd2,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_2 = #{optValNm2,jdbcType=VARCHAR}
+			 , OPT_CD_3 = #{optCd3,jdbcType=VARCHAR}
+			 , OPT_NM_3 = #{optNm3,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_3 = #{optValCd3,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_3 = #{optValNm3,jdbcType=VARCHAR}
+			 , OPT_CD_4 = #{optCd4,jdbcType=VARCHAR}
+			 , OPT_NM_4 = #{optNm4,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_4 = #{optValCd4,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_4 = #{optValNm4,jdbcType=VARCHAR}
+			 , OPT_CD_5 = #{optCd5,jdbcType=VARCHAR}
+			 , OPT_NM_5 = #{optNm5,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_5 = #{optValCd5,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_5 = #{optValNm5,jdbcType=VARCHAR}
+			 , TOT_USEFUL_INV_QTY = #{totUsefulInvQty,jdbcType=NUMERIC}
+			 , USEFUL_INV_QTY_SHOP_ID = #{usefulInvQtyShopId,jdbcType=VARCHAR}
+			 , SALE_PREARNGE_QTY = #{salePrearngeQty,jdbcType=NUMERIC}
+			 , SAFE_INV_USE_YN = #{safeInvUseYn,jdbcType=VARCHAR}
+			 , SAFE_INV_QTY = #{safeInvQty,jdbcType=NUMERIC}
+			 , ONLNE_LMTT_INV_QTY = #{onlneLmttInvQty,jdbcType=NUMERIC}
+			 , AFF_COM_LMTT_INV_QTY = #{affComLmttInvQty,jdbcType=NUMERIC}
+			 , RESVE_QTY = #{resveQty,jdbcType=NUMERIC}
+			 , RESVE_INV_QTY = #{resveInvQty,jdbcType=NUMERIC}
+			 , PARTMAL_COM_INV_NTCN_YN = #{partmalComInvNtcnYn,jdbcType=VARCHAR}
+			 , PARTMAL_COM_INV_NTCN_QTY = #{partmalComInvNtcnQty,jdbcType=NUMERIC}
+			 , WRHS_DT = #{wrhsDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodItm" parameterType="godItm">
+		INSERT /* com.plgrim.ncp.base.insertGodItm		Generator(Generator)	2018-06-03 */
+		INTO   GOD_ITM (
+			   ITM_NO
+			 , GOD_NO
+			 , SKU_NO
+			 , ITM_STAT_CD
+			 , ITM_NM
+			 , OPT_CD_1
+			 , OPT_NM_1
+			 , OPT_VAL_CD_1
+			 , OPT_VAL_NM_1
+			 , OPT_CD_2
+			 , OPT_NM_2
+			 , OPT_VAL_CD_2
+			 , OPT_VAL_NM_2
+			 , OPT_CD_3
+			 , OPT_NM_3
+			 , OPT_VAL_CD_3
+			 , OPT_VAL_NM_3
+			 , OPT_CD_4
+			 , OPT_NM_4
+			 , OPT_VAL_CD_4
+			 , OPT_VAL_NM_4
+			 , OPT_CD_5
+			 , OPT_NM_5
+			 , OPT_VAL_CD_5
+			 , OPT_VAL_NM_5
+			 , TOT_USEFUL_INV_QTY
+			 , USEFUL_INV_QTY_SHOP_ID
+			 , SALE_PREARNGE_QTY
+			 , SAFE_INV_USE_YN
+			 , SAFE_INV_QTY
+			 , ONLNE_LMTT_INV_QTY
+			 , AFF_COM_LMTT_INV_QTY
+			 , RESVE_QTY
+			 , RESVE_INV_QTY
+			 , PARTMAL_COM_INV_NTCN_YN
+			 , PARTMAL_COM_INV_NTCN_QTY
+			 , WRHS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{itmNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{skuNo,jdbcType=VARCHAR}
+			 , #{itmStatCd,jdbcType=VARCHAR}
+			 , #{itmNm,jdbcType=VARCHAR}
+			 , #{optCd1,jdbcType=VARCHAR}
+			 , #{optNm1,jdbcType=VARCHAR}
+			 , #{optValCd1,jdbcType=VARCHAR}
+			 , #{optValNm1,jdbcType=VARCHAR}
+			 , #{optCd2,jdbcType=VARCHAR}
+			 , #{optNm2,jdbcType=VARCHAR}
+			 , #{optValCd2,jdbcType=VARCHAR}
+			 , #{optValNm2,jdbcType=VARCHAR}
+			 , #{optCd3,jdbcType=VARCHAR}
+			 , #{optNm3,jdbcType=VARCHAR}
+			 , #{optValCd3,jdbcType=VARCHAR}
+			 , #{optValNm3,jdbcType=VARCHAR}
+			 , #{optCd4,jdbcType=VARCHAR}
+			 , #{optNm4,jdbcType=VARCHAR}
+			 , #{optValCd4,jdbcType=VARCHAR}
+			 , #{optValNm4,jdbcType=VARCHAR}
+			 , #{optCd5,jdbcType=VARCHAR}
+			 , #{optNm5,jdbcType=VARCHAR}
+			 , #{optValCd5,jdbcType=VARCHAR}
+			 , #{optValNm5,jdbcType=VARCHAR}
+			 , #{totUsefulInvQty,jdbcType=NUMERIC}
+			 , #{usefulInvQtyShopId,jdbcType=VARCHAR}
+			 , #{salePrearngeQty,jdbcType=NUMERIC}
+			 , #{safeInvUseYn,jdbcType=VARCHAR}
+			 , #{safeInvQty,jdbcType=NUMERIC}
+			 , #{onlneLmttInvQty,jdbcType=NUMERIC}
+			 , #{affComLmttInvQty,jdbcType=NUMERIC}
+			 , #{resveQty,jdbcType=NUMERIC}
+			 , #{resveInvQty,jdbcType=NUMERIC}
+			 , #{partmalComInvNtcnYn,jdbcType=VARCHAR}
+			 , #{partmalComInvNtcnQty,jdbcType=NUMERIC}
+			 , #{wrhsDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodItm" parameterType="godItm">
+		DELETE /* com.plgrim.ncp.base.deleteGodItm		Generator(Generator)	2018-06-03 */
+		  FROM GOD_ITM
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

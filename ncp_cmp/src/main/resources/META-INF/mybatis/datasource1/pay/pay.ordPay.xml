@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.pay">
+
+
+	
+	<select id="getOrdPayInfo" parameterType="String" resultType="pay">
+		SELECT PAY_NO,
+		       UPPER_PAY_NO,
+		       PAY_MN_CD,
+		       DEAL_TP_CD,
+		       PAY_DT,
+		       PAY_TMLMT_DT,
+		       STDR_CRNCY_PAY_AMT,
+		       PAY_CRNCY_CD,
+		       PAY_CRNCY_PAY_AMT,
+		       CNCL_ACMTL_AMT,
+		       MPAY_MN_YN,
+		       USE_CPN_PRM_NO,
+		       PAY_TP_CD,
+		       ORD_NO,
+		       CLM_NO,
+		       EVT_NO,
+		       PRM_NO,
+		       PG_APRV_NO,
+		       PG_SECT_CD,
+		       PG_STORE_ID,
+		       ACNTHLDR_NM,
+		       BNK_CD,
+		       BNK_ACCT_NO,
+		       VIRTL_BNK_ACCT_VALID_DT,
+		       PAY_MOBIL_NATION_NO,
+		       PAY_MOBIL_AREA_NO,
+		       PAY_MOBIL_TLOF_NO,
+		       PAY_MOBIL_TLOF_WTHN_NO,
+		       PKG_CRYPTO.DECRYPT(RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO,
+		       RFD_BNK_CD,
+		       RFD_ACNTHLDR_NM,
+		       REGTR_ID,
+		       REG_DT,
+		       UDTER_ID,
+		       UDT_DT
+		  FROM PAY
+		 WHERE 1=1
+		 and ORD_NO = #{ordNo}
+		 and pay_tp_cd = 'ORD'	/*주문타입의*/
+		 and mpay_mn_yn = 'Y'	/*주결제수단*/
+         and rownum = 1
+	</select>
+																	
+
+   <update id="confirmDepositPay" parameterType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+      UPDATE PAY
+         SET deal_tp_cd = #{dealTpCd}
+           , pay_dt  =  SYSDATE
+           , udter_id = #{udterId,jdbcType=VARCHAR}
+           , udt_dt = SYSDATE
+      WHERE  ord_no = #{ordNo}
+   </update>
+   
+   
+
+   
+   	<select id="selectInfOrdGodErpDstbForClmRefund"
+   	parameterType="com.plgrim.ncp.biz.pay.data.ClmRefundSearchDTO" resultType="com.plgrim.ncp.biz.pay.data.ClmRefundResultDTO">   	
+   	/* [pay.ordPay.xml][selectInfOrdGodErpDstbForClmRefund][주문 전체취소 부분취소 환불금 계산][Aether] */
+	<choose>
+		<when test='ordGodList !=null'>
+		SELECT 
+			paymncd
+		     , sum(paycrncypayamt)
+		     , sum(remainpayamt)
+		     , sum(prc)
+		     , refundStatus
+		FROM
+			<foreach collection="ordGodList" open="(" close=")" item="list" separator="UNION ALL">
+			<include refid="selectInfOrdGodErpDstbForClmRefundSql"></include>
+			</foreach>
+			GROUP BY paymncd, refundStatus				
+			ORDER BY upperpayno DESC
+		</when>
+		<otherwise>
+			<include refid="selectInfOrdGodErpDstbForClmRefundSql"></include>
+			ORDER BY upperpayno DESC
+		</otherwise>
+	</choose>
+	</select>
+	
+	<select id="selectOrdClmPay" parameterType="pay" resultType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+        SELECT /* com.plgrim.ncp.base.repository.pay.selectPay jackie 20150511 */
+                PAY_NO
+               ,UPPER_PAY_NO
+               ,PAY_MN_CD
+               ,DEAL_TP_CD
+               ,PAY_DT
+               ,PAY_TMLMT_DT
+               ,STDR_CRNCY_PAY_AMT
+               ,PAY_CRNCY_CD
+               ,PAY_CRNCY_PAY_AMT
+               ,CNCL_ACMTL_AMT
+               ,MPAY_MN_YN
+               ,USE_CPN_PRM_NO
+               ,mbr_cpn_no
+               ,PAY_TP_CD
+               ,ORD_NO
+               ,CLM_NO
+               ,EVT_NO
+               ,PRM_NO
+               ,PG_APRV_NO
+               ,PG_SECT_CD
+               ,PG_STORE_ID
+               ,PG_CRS_KEY
+               ,ACNTHLDR_NM
+               ,BNK_CD
+               ,BNK_ACCT_NO
+               ,VIRTL_BNK_ACCT_VALID_DT
+               ,PAY_MOBIL_NATION_NO
+               ,PAY_MOBIL_AREA_NO
+               ,PAY_MOBIL_TLOF_NO
+               ,PAY_MOBIL_TLOF_WTHN_NO
+               ,PKG_CRYPTO.DECRYPT(RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+               ,RFD_BNK_CD
+               ,RFD_ACNTHLDR_NM               
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    PAY t
+        WHERE   1 = 1
+        <if test="(clmNo == null || clmNo == '') and (payNo == null || payNo == '') and (ordNo == null || ordNo == '') and (mpayMnYn == null || mpayMnYn == '')">
+            AND 1=0
+        </if>
+        <if test='clmNo != null and clmNo != ""'>
+        	AND CLM_NO = #{clmNo}
+        </if>        
+        <if test='mpayMnYn != null and mpayMnYn != ""'>
+        	AND MPAY_MN_YN = #{mpayMnYn} /*주결제만*/
+        </if>        	
+        <if test='payNo != null and payNo != ""'>
+        	AND PAY_NO = #{payNo}
+        </if>
+        <if test='ordNo != null and ordNo != ""'>
+        	AND ORD_NO = #{ordNo}
+        </if>
+        <if test='dealTpCd != null and dealTpCd != ""'>
+        	AND DEAL_TP_CD = #{dealTpCd}
+        </if>
+        <if test='payTpCd != null and payTpCd != ""'>
+        	AND PAY_TP_CD = #{payTpCd}
+        </if>          
+    </select>
+    
+    
+    
+    
+    
+	<select id="selectOrdClmPayForClm" parameterType="pay" resultType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+        SELECT /* com.plgrim.ncp.base.repository.pay.selectPay jackie 20150511 */
+                p.PAY_NO
+               ,p.UPPER_PAY_NO
+               ,p.PAY_MN_CD
+               ,p.DEAL_TP_CD
+               ,p.PAY_DT
+               ,p.PAY_TMLMT_DT
+               ,p.STDR_CRNCY_PAY_AMT
+               ,p.PAY_CRNCY_CD
+               ,p.PAY_CRNCY_PAY_AMT
+               ,p.CNCL_ACMTL_AMT
+               ,p.MPAY_MN_YN
+               ,p.USE_CPN_PRM_NO
+               ,p.mbr_cpn_no
+               ,p.PAY_TP_CD
+               ,p.ORD_NO
+               ,p.CLM_NO
+               ,p.EVT_NO
+               ,p.PRM_NO
+               ,p.PG_APRV_NO
+               ,p.PG_SECT_CD
+               ,p.PG_STORE_ID
+               ,p.PG_CRS_KEY
+               ,p.ACNTHLDR_NM
+               ,p.BNK_CD
+               ,p.BNK_ACCT_NO
+               ,p.VIRTL_BNK_ACCT_VALID_DT
+               ,p.PAY_MOBIL_NATION_NO
+               ,p.PAY_MOBIL_AREA_NO
+               ,p.PAY_MOBIL_TLOF_NO
+               ,p.PAY_MOBIL_TLOF_WTHN_NO
+               ,PKG_CRYPTO.DECRYPT(p.RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+               ,p.RFD_BNK_CD
+               ,p.RFD_ACNTHLDR_NM               
+               ,p.REGTR_ID
+               ,p.REG_DT
+               ,p.UDTER_ID
+               ,p.UDT_DT
+               ,mic.cpn_crtfc_cd as cpnCrtfcCd
+               ,prm.erp_cmpg_id
+               ,pc.cpn_knd_cd as cpnKndCd
+               ,prm.dc_sect_cd AS dcSectCd
+              FROM pay p
+                   left outer JOIN ord o ON o.ord_no = p.ord_no
+                   left outer JOIN mbr_issu_cpn mic ON mic.mbr_no = o.mbr_no AND mic.mbr_cpn_no = p.mbr_cpn_no
+                   left outer JOIN prm_cpn pc ON pc.prm_no = mic.prm_no AND pc.cpn_knd_cd = 'ONOFLNE_CPN'
+                   left outer JOIN prm prm ON prm.prm_no = pc.prm_no
+        WHERE   1 = 1
+        <if test='clmNo != null and clmNo != ""'>
+        	AND p.CLM_NO = #{clmNo}
+        </if>        
+        <if test='mpayMnYn != null and mpayMnYn != ""'>
+        	AND p.MPAY_MN_YN = #{mpayMnYn} /*주결제만*/
+        </if>        	
+        <if test='payNo != null and payNo != ""'>
+        	AND p.PAY_NO = #{payNo}
+        </if>
+        <if test='ordNo != null and ordNo != ""'>
+        	AND p.ORD_NO = #{ordNo}
+        </if>
+        <if test='dealTpCd != null and dealTpCd != ""'>
+        	AND p.DEAL_TP_CD = #{dealTpCd}
+        </if>
+        <if test='payTpCd != null and payTpCd != ""'>
+        	AND p.PAY_TP_CD = #{payTpCd}
+        </if>               
+    </select>    
+	
+	<select id="selectOrdClmPayExtend" parameterType="pay" resultType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+      SELECT   /* com.plgrim.ncp.base.repository.pay.selectPay jackie 20150511 */
+               DISTINCT T.PAY_NO
+               ,T.UPPER_PAY_NO
+               ,T.PAY_MN_CD
+               ,T.DEAL_TP_CD
+               ,T.PAY_DT
+               ,T.PAY_TMLMT_DT
+               ,T.STDR_CRNCY_PAY_AMT
+               ,T.PAY_CRNCY_CD
+               ,T.PAY_CRNCY_PAY_AMT
+               ,NVL(T.CNCL_ACMTL_AMT,0) as CNCL_ACMTL_AMT
+               ,T.MPAY_MN_YN
+               ,T.USE_CPN_PRM_NO
+               ,T.mbr_cpn_no
+               ,T.PAY_TP_CD
+               ,T.ORD_NO
+               ,T.CLM_NO
+               ,T.EVT_NO
+               ,T.PRM_NO
+               ,T.PG_APRV_NO
+               ,T.PG_SECT_CD
+               ,T.PG_STORE_ID
+               ,T.PG_CRS_KEY
+               ,T.ACNTHLDR_NM
+               ,T.BNK_CD
+               ,T.BNK_ACCT_NO
+               ,T.VIRTL_BNK_ACCT_VALID_DT
+               ,T.PAY_MOBIL_NATION_NO
+               ,T.PAY_MOBIL_AREA_NO
+               ,T.PAY_MOBIL_TLOF_NO
+               ,T.PAY_MOBIL_TLOF_WTHN_NO
+               ,PKG_CRYPTO.DECRYPT(T.RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+               ,T.RFD_BNK_CD
+               ,T.RFD_ACNTHLDR_NM
+               ,T.KKO_PAY_TOKN_ID
+               ,T.REGTR_ID
+               ,T.REG_DT
+               ,T.UDTER_ID
+               ,T.UDT_DT
+               ,RFDSTAT.CD_NM AS RFD_STAT_CD_NM
+      FROM PAY t
+          LEFT OUTER JOIN  (
+                SELECT P.ORD_NO
+                       ,PR.RFD_STAT_CD 
+                FROM PAY P, PAY_RFD PR
+                WHERE 1=1
+                   <if test='ordNo != null and ordNo != ""'>
+			      	AND P.ORD_NO = #{ordNo}
+			       </if>
+                   <if test='rfdStatClmNo != null and rfdStatClmNo != ""'>
+        	        AND P.CLM_NO = #{rfdStatClmNo}
+                    </if>   
+                    AND P.PAY_TP_CD='CLM'
+                   AND P.PG_APRV_NO IS NOT NULL
+                   AND P.PAY_NO=PR.PAY_NO
+                   AND PR.RFD_TURN = 1
+                )  PR
+            ON (T.ORD_NO=PR.ORD_NO)
+          LEFT OUTER JOIN MV_SYS_CD RFDSTAT
+	          ON (    RFDSTAT.CD = PR.RFD_STAT_CD
+	              AND RFDSTAT.UPPER_CD = 'RFD_STAT'
+	              AND RFDSTAT.LANG_CD = 'KOR')
+          WHERE     1 = 1
+        <if test='clmNo != null and clmNo != ""'>
+        	AND T.CLM_NO = #{clmNo}
+        </if>        
+        <if test='mpayMnYn != null and mpayMnYn != ""'>
+        	AND T.MPAY_MN_YN = #{mpayMnYn} /*주결제만*/
+        </if>        	
+        <if test='payNo != null and payNo != ""'>
+        	AND T.PAY_NO = #{payNo}
+        </if>
+        <if test='ordNo != null and ordNo != ""'>
+        	AND T.ORD_NO = #{ordNo}
+        </if>
+        <if test='dealTpCd != null and dealTpCd != ""'>
+        	AND T.DEAL_TP_CD = #{dealTpCd}
+        </if>
+        <if test='payTpCd != null and payTpCd != ""'>
+        	AND T.PAY_TP_CD = #{payTpCd}
+        </if>
+        ORDER BY T.MPAY_MN_YN DESC         
+    </select>
+    
+    <select id="selectOrdClmRefundPayExtend" parameterType="pay" resultType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+      SELECT   /* com.plgrim.ncp.base.repository.pay.selectOrdClmRefundPayExtend  */
+               DISTINCT T.PAY_NO
+               ,T.UPPER_PAY_NO
+               ,T.PAY_MN_CD
+               ,T.DEAL_TP_CD
+               ,T.PAY_DT
+               ,T.PAY_TMLMT_DT
+               ,T.STDR_CRNCY_PAY_AMT
+               ,T.PAY_CRNCY_CD
+               ,T.PAY_CRNCY_PAY_AMT
+               ,NVL(T.CNCL_ACMTL_AMT,0) as CNCL_ACMTL_AMT
+               ,T.MPAY_MN_YN
+               ,T.USE_CPN_PRM_NO
+               ,T.mbr_cpn_no
+               ,T.PAY_TP_CD
+               ,T.ORD_NO
+               ,T.CLM_NO
+               ,T.EVT_NO
+               ,T.PRM_NO
+               ,T.PG_APRV_NO
+               ,T.PG_SECT_CD
+               ,T.PG_STORE_ID
+               ,T.PG_CRS_KEY
+               ,T.ACNTHLDR_NM
+               ,T.BNK_CD
+               ,T.BNK_ACCT_NO
+               ,T.VIRTL_BNK_ACCT_VALID_DT
+               ,T.PAY_MOBIL_NATION_NO
+               ,T.PAY_MOBIL_AREA_NO
+               ,T.PAY_MOBIL_TLOF_NO
+               ,T.PAY_MOBIL_TLOF_WTHN_NO
+               ,PKG_CRYPTO.DECRYPT(T.RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+               ,T.RFD_BNK_CD
+               ,T.RFD_ACNTHLDR_NM
+               ,T.REGTR_ID
+               ,T.REG_DT
+               ,T.UDTER_ID
+               ,T.UDT_DT
+               ,T.ESCR_YN
+       FROM PAY t
+       WHERE     1 = 1
+        <if test='clmNo != null and clmNo != ""'>
+        	AND T.CLM_NO = #{clmNo}
+        </if>        
+        <if test='mpayMnYn != null and mpayMnYn != ""'>
+        	AND T.MPAY_MN_YN = #{mpayMnYn} /*주결제만*/
+        </if>        	
+        <if test='payNo != null and payNo != ""'>
+        	AND T.PAY_NO = #{payNo}
+        </if>
+        <if test='ordNo != null and ordNo != ""'>
+        	AND T.ORD_NO = #{ordNo}
+        </if>
+        <if test='dealTpCd != null and dealTpCd != ""'>
+        	AND T.DEAL_TP_CD = #{dealTpCd}
+        </if>
+        <if test='payTpCd != null and payTpCd != ""'>
+        	AND T.PAY_TP_CD = #{payTpCd}
+        </if>
+        ORDER BY T.MPAY_MN_YN DESC          
+    </select>
+	
+	<select id="selectOrdClmRefundPayReprocess" parameterType="com.plgrim.ncp.base.entities.datasource1.clm.Clm" resultType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+	      SELECT   /* com.plgrim.ncp.base.repository.pay.selectOrdClmRefundPayReprocess  */
+               DISTINCT T.PAY_NO
+               ,T.UPPER_PAY_NO
+               ,T.PAY_MN_CD
+               ,T.DEAL_TP_CD
+               ,T.PAY_DT
+               ,T.PAY_TMLMT_DT
+               ,T.STDR_CRNCY_PAY_AMT
+               ,T.PAY_CRNCY_CD
+               ,T.PAY_CRNCY_PAY_AMT
+               , NVL((SELECT 
+                        SUM(a.stdr_crncy_pay_amt)
+                    FROM pay a
+                        INNER JOIN pay_rfd b ON a.pay_no = b.pay_no
+                    WHERE a.upper_pay_no = t.pay_no 
+                        AND a.deal_tp_cd IN ('ALL_CNCL', 'PART_CNCL')
+                        AND b.rfd_stat_cd = 'RFD_COMPT'
+                ), 0) AS cncl_acmtl_amt
+               ,T.MPAY_MN_YN
+               ,T.USE_CPN_PRM_NO
+               ,T.mbr_cpn_no
+               ,T.PAY_TP_CD
+               ,T.ORD_NO
+               ,T.CLM_NO
+               ,T.EVT_NO
+               ,T.PRM_NO
+               ,T.PG_APRV_NO
+               ,T.PG_SECT_CD
+               ,T.PG_STORE_ID
+               ,T.PG_CRS_KEY
+               ,T.ACNTHLDR_NM
+               ,T.BNK_CD
+               ,T.BNK_ACCT_NO
+               ,T.VIRTL_BNK_ACCT_VALID_DT
+               ,T.PAY_MOBIL_NATION_NO
+               ,T.PAY_MOBIL_AREA_NO
+               ,T.PAY_MOBIL_TLOF_NO
+               ,T.PAY_MOBIL_TLOF_WTHN_NO
+               ,PKG_CRYPTO.DECRYPT(a.RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+               ,a.RFD_BNK_CD
+               ,a.RFD_ACNTHLDR_NM
+               ,T.REGTR_ID
+               ,T.REG_DT
+               ,T.UDTER_ID
+               ,T.UDT_DT
+               ,T.ESCR_YN
+               ,a.pay_no AS new_pay_no
+       FROM PAY t
+       		INNER JOIN pay a ON a.upper_pay_no = t.pay_no
+       		INNER JOIN pay_rfd b ON a.pay_no = b.pay_no 
+       WHERE     1 = 1
+        	AND T.ord_no = #{ordNo}
+        	AND a.clm_no = #{clmNo}
+        	AND a.deal_tp_cd IN ('ALL_CNCL', 'PART_CNCL')
+        	AND b.rfd_stat_cd = 'RFD_ERR'
+        ORDER BY T.MPAY_MN_YN DESC
+	</select>
+	
+	<select id="selectUpperPayNo" parameterType="pay" resultType="String">
+		SELECT /* [pay.ordPay.xml][selectUpperPayNo][결제 정보조회][khan] */
+			   pay_no AS payNo
+		  FROM pay
+		 WHERE 1 = 1
+		   AND ord_no = #{ordNo,jdbcType=VARCHAR}
+		   AND mpay_mn_yn = 'Y'
+    </select>
+    
+    <select id="selectbeforePartCancelCnt" parameterType="pay" resultType="int">
+		SELECT count(1) /* [pay.ordPay.xml][selectbeforePartCancelCnt][주문번호로 이전 부분취소 카운트 조회][aether] */
+		FROM pay p
+		WHERE 1=1
+		AND p.ord_no = #{ordNo,jdbcType=VARCHAR}
+		AND p.pay_tp_cd = 'CLM'
+		AND p.deal_tp_cd = 'PART_CNCL'
+	</select>
+	
+	 <select id="selectbeforePartCancelCnt2" parameterType="pay" resultType="int">
+		SELECT count(1) /* [pay.ordPay.xml][selectbeforePartCancelCnt][주문번호로 환불용][K2] */
+		FROM pay p , (select ord_no,pay_dt,pg_aprv_no from pay where ord_no= #{ordNo,jdbcType=VARCHAR} and mpay_mn_yn='Y') q, clm c
+		WHERE 1=1
+		AND p.ord_no = #{ordNo,jdbcType=VARCHAR}
+		AND p.pay_tp_cd = 'CLM'
+		AND p.deal_tp_cd = 'PART_CNCL'
+		AND p.pay_mn_cd='MOBIL_PON_PAY'
+	    AND p.clm_no=c.clm_no
+        AND c.clm_stat_cd='COMPT' 
+	    AND p.ord_no=q.ord_no
+	    AND trim(p.pg_aprv_no) <![CDATA[<>]]> trim(q.pg_aprv_no) 
+        AND to_char(p.pay_dt,'yyyymm')=to_char(q.pay_dt,'yyyymm')
+	</select>
+
+	<select id="getClmRefundInfoList" parameterType="String" resultType="com.plgrim.ncp.biz.pay.data.ClmRefundResultDTO">
+		SELECT p.pay_mn_cd AS paymncd /* [pay.ordPay.xml][getClmRefundInfoList][클레임 관리 상세페이지 환불정보 조회][Aether] */
+		     , (SELECT msc.cd_nm
+		          FROM mv_sys_cd msc
+		         WHERE     msc.upper_cd = 'PAY_MN'
+		               AND msc.cd = p.pay_mn_cd
+		               AND msc.lang_cd = 'KOR')
+		           AS paymncdnm
+		     , op.stdr_crncy_pay_amt AS paycrncypayamt
+		     , op.pay_crncy_pay_amt AS paycrncypayamtEx
+		     , (op.stdr_crncy_pay_amt - op.cncl_acmtl_amt) AS remainpayamt
+		     , p.stdr_crncy_pay_amt AS prc
+		     , p.pay_crncy_pay_amt AS prcEx
+		     , pr.rfd_stat_cd AS rfdstatcd
+		     , nvl((SELECT msc.cd_nm
+		          FROM mv_sys_cd msc
+		         WHERE     msc.upper_cd = 'RFD_STAT'
+		               AND msc.cd = pr.rfd_stat_cd
+		               AND msc.lang_cd = 'KOR'),'환불대기')
+		           AS rfdstatcdnm
+		     , pr.rfd_err_cont AS rfdErrCont      
+		  FROM pay p
+		       LEFT OUTER JOIN pay_rfd pr ON pr.pay_no = p.pay_no
+		       JOIN pay op ON op.pay_no = p.upper_pay_no
+		 WHERE p.clm_no = #{clmNo}
+		   AND p.deal_tp_cd != 'PAY_COMPT'	/* 배송비 추가결제 금액은 제외 */
+		   AND p.pay_mn_cd not in ('GOD_CPN','BSK_CPN','DLV_CST_CPN','QDLV_CST_CPN') /* 상세페이지에서는 쿠폰정보 안보여줌 */	
+	</select>	
+   
+   <update id="updatePayForCancel" parameterType="com.plgrim.ncp.base.entities.datasource1.pay.Pay">
+      UPDATE PAY /* [pay.ordPay.xml][updatePayForCancel][클레임 모빌리언 결제 취소 후 승인번호 pg 거래번호 갱신][Aether] */
+         SET udt_dt = SYSDATE
+         <if test='pgAprvNo != null and pgAprvNo != ""'>
+         	,pg_aprv_no = #{pgAprvNo}
+         </if>
+         <if test='pgDealNo != null and pgDealNo != ""'>
+         	,pg_deal_no = #{pgDealNo}
+         </if>         
+      WHERE  pay_no = #{payNo}
+   </update>		  
+   
+   
+   <insert id="insertPayForClmWthdrawDlvFee" parameterType="com.plgrim.ncp.base.entities.datasource1.pay.Pay">
+		INSERT INTO pay (pay_mn_cd
+		               , deal_tp_cd
+		               , mpay_mn_yn
+		               , pay_tp_cd
+		               , pg_sect_cd
+		               , pg_store_id
+		               , pg_crs_key
+		               , escr_yn
+		               , acnthldr_nm
+		               , pay_no
+		               , pay_dt
+		               , pay_tmlmt_dt
+		               , stdr_crncy_pay_amt
+		               , pay_crncy_pay_amt
+		               , use_cpn_prm_no
+		               , ord_no
+		               , reg_dt
+		               , upper_pay_no
+		               , pay_crncy_cd
+		               , cncl_acmtl_amt
+		               , card_sv_deal_yn
+		               , pay_card_nm
+		               , mbr_cpn_no
+		               , clm_no
+		               , evt_no
+		               , prm_no
+		               , pg_aprv_no
+		               , bnk_cd
+		               , bnk_nm
+		               , bnk_acct_no
+		               , virtl_bnk_acct_valid_dt
+		               , pay_mobil_nation_no
+		               , pay_mobil_area_no
+		               , pay_mobil_tlof_no
+		               , pay_mobil_tlof_wthn_no
+		               , rfd_bnk_acct_no
+		               , rfd_bnk_cd
+		               , rfd_acnthldr_nm
+		               , regtr_id
+		               , udter_id
+		               , udt_dt
+		               , pg_deal_no)
+		    SELECT pay_mn_cd
+		         , 'ALL_CNCL' deal_tp_cd
+		         , mpay_mn_yn
+		         , 'CLM' as pay_tp_cd
+		         , pg_sect_cd
+		         , pg_store_id
+		         , pg_crs_key
+		         , escr_yn
+		         , acnthldr_nm
+		         , #{payNo} as pay_no
+		         , sysdate as pay_dt
+		         , pay_tmlmt_dt
+		         , stdr_crncy_pay_amt
+		         , pay_crncy_pay_amt
+		         , use_cpn_prm_no
+		         , ord_no
+		         , sysdate as reg_dt
+		         , pay_no as upper_pay_no
+		         , pay_crncy_cd
+		         , '0' as cncl_acmtl_amt
+		         , card_sv_deal_yn
+		         , pay_card_nm
+		         , mbr_cpn_no
+		         , clm_no
+		         , evt_no
+		         , prm_no
+		         , pg_aprv_no
+		         , bnk_cd
+		         , bnk_nm
+		         , bnk_acct_no
+		         , virtl_bnk_acct_valid_dt
+		         , pay_mobil_nation_no
+		         , pay_mobil_area_no
+		         , pay_mobil_tlof_no
+		         , pay_mobil_tlof_wthn_no
+		         , rfd_bnk_acct_no
+		         , rfd_bnk_cd
+		         , rfd_acnthldr_nm
+		         , #{regtrId,jdbcType=VARCHAR} as regtr_id
+		         , #{regtrId,jdbcType=VARCHAR} as udter_id
+		         , sysdate as udt_dt
+		         , pg_deal_no
+		      FROM pay
+		      where 1=1 
+		      and clm_no = #{clmNo} 
+		      <if test='clmNo == null or clmNo == ""'>
+		      and 0=1
+		      </if>
+   </insert> 
+   
+   <update id="updatePayForClmWthdrawDlvFee">
+      UPDATE PAY
+         SET udt_dt = SYSDATE
+			, CNCL_ACMTL_AMT = PAY_CRNCY_PAY_AMT         
+      WHERE  clm_no = #{clmNo}
+   </update>
+   
+
+	
+	
+	<!-- 							sql 							-->
+	
+	   <sql id="selectInfOrdGodErpDstbForClmRefundSql">
+		SELECT (SELECT c.cd_nm
+		          FROM mv_sys_cd c
+		         WHERE     c.cd = inq.paymncd
+		               AND c.upper_cd = 'PAY_MN'
+		               AND c.lang_cd = 'KOR')
+		           AS paymncd
+		     , inq.paycrncypayamt AS paycrncypayamt
+		     , inq.paycrncypayamt - inq.prc AS remainpayamt
+		     , inq.prc AS prc
+		     , inq.upperpayno
+		     , 'W' as refundStatus
+		  FROM (  SELECT p.pay_mn_cd AS paymncd
+		               , p.pay_crncy_pay_amt AS paycrncypayamt
+		               , CASE
+		                     WHEN p.upper_pay_no IS NULL
+		                     THEN
+		                         SUM (i.pay_exchg_rt_crncy_unt_prc)
+		                     WHEN p.pay_mn_cd = 'UNITY_SAV_MNY_PAY'
+		                     THEN
+		                         SUM (i.unity_pnt_use_unt_prc)
+		                     WHEN p.pay_mn_cd = 'WEB_PNT_PAY'
+		                     THEN
+		                         SUM (i.webpnt_use_unt_prc)
+		                     ELSE
+		                         0
+		                 END
+		                     AS prc
+		               , p.upper_pay_no AS upperpayno
+		            FROM inf_ord_god_erp_dstb i JOIN pay p ON i.ord_no = p.ord_no
+		           WHERE i.ord_no = #{ordNo}
+		           AND i.clm_no IS NULL
+					<if test='ordGodList != null'>
+			           	and i.ord_god_turn = #{list.ordGodTurn}		                 
+			        	and rownum <![CDATA[<=]]> #{list.ordQty}
+					</if>	
+		        GROUP BY p.pay_mn_cd, p.pay_crncy_pay_amt, p.upper_pay_no) inq   
+   </sql>
+	
+	
+
+</mapper>

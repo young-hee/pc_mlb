@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrBnefPymntHist" parameterType="mbrBnefPymntHist" resultType="mbrBnefPymntHist">
+		SELECT /* com.plgrim.ncp.base.selectMbrBnefPymntHist		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , BNEF_PYMNT_TURN
+			 , BNEF_SN
+			 , BNEF_DETAIL_TURN
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , MOBILE_APP_SECT_CD
+			 , BNEF_PYMNT_TP_CD
+			 , PNT_PYMNT_AMT
+			 , PRM_NO
+			 , RECOMENDR_MBR_NO
+			 , RECOMENDE_MBR_NO
+			 , PYMNT_DT
+			 , BF_PYMNT_MBR_NO
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , BNEF_PYMNT_SUCCES_YN
+			 , BNEF_PYMNT_FAILR_RESN_CONT
+			 , TGT_MBR_IP
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_BNEF_PYMNT_HIST
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND BNEF_PYMNT_TURN = #{bnefPymntTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrBnefPymntHist" parameterType="mbrBnefPymntHist">
+		UPDATE /* com.plgrim.ncp.base.updateMbrBnefPymntHist		Generator(Generator)	2018-05-23 */
+		MBR_BNEF_PYMNT_HIST SET
+			   BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+			 , BNEF_DETAIL_TURN = #{bnefDetailTurn,jdbcType=NUMERIC}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , MOBILE_APP_SECT_CD = #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , BNEF_PYMNT_TP_CD = #{bnefPymntTpCd,jdbcType=VARCHAR}
+			 , PNT_PYMNT_AMT = #{pntPymntAmt,jdbcType=NUMERIC}
+			 , PRM_NO = #{prmNo,jdbcType=VARCHAR}
+			 , RECOMENDR_MBR_NO = #{recomendrMbrNo,jdbcType=VARCHAR}
+			 , RECOMENDE_MBR_NO = #{recomendeMbrNo,jdbcType=VARCHAR}
+			 , PYMNT_DT = #{pymntDt,jdbcType=TIMESTAMP}
+			 , BF_PYMNT_MBR_NO = #{bfPymntMbrNo,jdbcType=VARCHAR}
+			 , TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , TGT_MBR_ATRB_CD = #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , BNEF_PYMNT_SUCCES_YN = #{bnefPymntSuccesYn,jdbcType=VARCHAR}
+			 , BNEF_PYMNT_FAILR_RESN_CONT = #{bnefPymntFailrResnCont,jdbcType=VARCHAR}
+			 , TGT_MBR_IP = #{tgtMbrIp,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND BNEF_PYMNT_TURN = #{bnefPymntTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrBnefPymntHist" parameterType="mbrBnefPymntHist">
+		INSERT /* com.plgrim.ncp.base.insertMbrBnefPymntHist		Generator(Generator)	2018-05-23 */
+		INTO   MBR_BNEF_PYMNT_HIST (
+			   MBR_NO
+			 , BNEF_PYMNT_TURN
+			 , BNEF_SN
+			 , BNEF_DETAIL_TURN
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , MOBILE_APP_SECT_CD
+			 , BNEF_PYMNT_TP_CD
+			 , PNT_PYMNT_AMT
+			 , PRM_NO
+			 , RECOMENDR_MBR_NO
+			 , RECOMENDE_MBR_NO
+			 , PYMNT_DT
+			 , BF_PYMNT_MBR_NO
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , BNEF_PYMNT_SUCCES_YN
+			 , BNEF_PYMNT_FAILR_RESN_CONT
+			 , TGT_MBR_IP
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{bnefPymntTurn,jdbcType=NUMERIC}
+			 , #{bnefSn,jdbcType=NUMERIC}
+			 , #{bnefDetailTurn,jdbcType=NUMERIC}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , #{bnefPymntTpCd,jdbcType=VARCHAR}
+			 , #{pntPymntAmt,jdbcType=NUMERIC}
+			 , #{prmNo,jdbcType=VARCHAR}
+			 , #{recomendrMbrNo,jdbcType=VARCHAR}
+			 , #{recomendeMbrNo,jdbcType=VARCHAR}
+			 , #{pymntDt,jdbcType=TIMESTAMP}
+			 , #{bfPymntMbrNo,jdbcType=VARCHAR}
+			 , #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , #{bnefPymntSuccesYn,jdbcType=VARCHAR}
+			 , #{bnefPymntFailrResnCont,jdbcType=VARCHAR}
+			 , #{tgtMbrIp,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrBnefPymntHist" parameterType="mbrBnefPymntHist">
+		DELETE /* com.plgrim.ncp.base.deleteMbrBnefPymntHist		Generator(Generator)	2018-05-23 */
+		  FROM MBR_BNEF_PYMNT_HIST
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND BNEF_PYMNT_TURN = #{bnefPymntTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

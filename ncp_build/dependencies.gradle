@@ -1,0 +1,343 @@
+// 의존성 설정
+
+
+def SPRING_RELEASE_VERSION			='4.1.6.RELEASE'
+def SPRING_SECURITY_RELEASE_VERSION	='4.0.0.RELEASE'
+def SPRING_BATCH_VERSION			='3.0.3.RELEASE'
+def HYSTRTIX_VERSION				='1.5.9'
+
+def POI_VERSION = System.properties['poi_version'] == null ? "3.16" : System.properties['poi_version'];
+//println "POI_VERSION: ${POI_VERSION}"
+
+dependencies {
+
+	compile (
+
+		[group: 'org.springframework', 				name: 'spring-expression', 					version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-beans', 						version: SPRING_RELEASE_VERSION],
+		
+		[group: 'org.springframework', 				name: 'spring-aop', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-context', 					version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-context-support', 			version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-core', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-tx', 							version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-jdbc', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-orm', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-oxm', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-web', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-webmvc', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-aspects', 					version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework', 				name: 'spring-beans', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework.mobile', 		name: 'spring-mobile-device', 				version: '1.1.4.RELEASE'],
+
+		[group: 'org.springframework.data', 		name: 'spring-data-commons', 				version: "1.9.2.RELEASE"],
+		//[group: 'org.springframework.data', 		name: 'spring-data-redis', 					version: "1.7.11.RELEASE"],
+		[group: 'org.springframework.data', 		name: 'spring-data-redis', 					version: "1.8.14.RELEASE"],
+		[group: 'org.springframework.session', 		name: 'spring-session', 					version: "1.3.1.RELEASE"],
+
+		[group: 'org.springframework.security', 	name: 'spring-security-core', 				version: SPRING_SECURITY_RELEASE_VERSION],
+		[group: 'org.springframework.security', 	name: 'spring-security-web', 				version: SPRING_SECURITY_RELEASE_VERSION],
+		[group: 'org.springframework.security', 	name: 'spring-security-config', 			version: SPRING_SECURITY_RELEASE_VERSION],
+		[group: 'org.springframework.security', 	name: 'spring-security-taglibs', 			version: SPRING_SECURITY_RELEASE_VERSION],
+
+
+
+		[group: 'org.springframework.batch', 		name: 'spring-batch-core', 					version: SPRING_BATCH_VERSION],
+		[group: 'org.springframework.batch', 		name: 'spring-batch-integration', 			version: SPRING_BATCH_VERSION],
+		[group: 'org.springframework.batch', 		name: 'spring-batch-infrastructure', 		version: SPRING_BATCH_VERSION],
+
+		[group: 'org.springframework', 				name: 'spring-test', 						version: SPRING_RELEASE_VERSION],
+		[group: 'org.springframework.batch', 		name: 'spring-batch-test', 					version: SPRING_BATCH_VERSION],
+
+
+		[group: 'org.quartz-scheduler', 			name: 'quartz', 							version: "2.2.1"],
+		[group: 'org.quartz-scheduler', 			name: 'quartz-jobs', 						version: "2.2.1"],
+
+
+		[group: 'com.amazonaws', 					name: 'aws-java-sdk-s3', 					version: "1.11.303"],
+		[group: 'com.amazonaws', 					name: 'aws-java-sdk-sns', 					version: '1.11.359'],
+		[group: 'com.amazonaws', 					name: 'aws-java-sdk-ses', 					version: '1.11.359'],
+		[group: 'redis.clients', 					name: 'jedis',			 					version: "3.1.0"],
+		//[group: 'io.lettuce', 						name: 'lettuce-core',			 			version: "5.0.3.RELEASE"],
+		[group: 'biz.paluch.redis', 				name: 'lettuce',			 				version: "4.2.2.Final"],
+
+
+		[group: 'com.fasterxml.uuid', 				name: 'java-uuid-generator', 				version: "3.1.3"],
+		[group: 'org.mybatis', 						name: 'mybatis', 							version: "3.2.8"],
+		[group: 'org.mybatis', 						name: 'mybatis-spring', 					version: "1.2.2"],
+		[group: 'org.bouncycastle', 				name: 'bcprov-jdk16', 						version: "1.45"],
+		[group: 'net.sf.json-lib', 					name: 'json-lib', 							version: "2.4", 		classifier:'jdk15'],
+
+
+
+
+
+		[group: "aopalliance",						name: "aopalliance",						version: "1.0"],
+		[group: "cglib",							name: "cglib",								version: "3.1"],
+		[group: "asm",								name: "asm",								version: "3.3.1"],
+		[group: "org.aspectj",						name: "aspectjrt",							version: "1.8.5"],
+		[group: "org.aspectj",						name: "aspectjtools",						version: "1.8.5"],
+		[group: "org.aspectj",						name: "aspectjweaver",						version: "1.8.5"],
+		[group: "org.aspectj",						name: "aspectjlib",							version: "1.6.2"],
+		[group: "com.fasterxml.jackson.core",		name: "jackson-core",						version: "2.8.3"],
+		[group: "com.fasterxml.jackson.core",		name: "jackson-databind",					version: "2.8.3"],
+		[group: "com.fasterxml.jackson.core",		name: "jackson-annotations",				version: "2.8.3"],
+		[group: "com.fasterxml.jackson.jaxrs",		name: "jackson-jaxrs-json-provider",		version: "2.8.3"],
+
+
+		[group: "org.json",							name: "json",								version: "20090211"],
+
+
+		[group: "org.slf4j",						name: "slf4j-api",							version: "1.7.10"],
+		[group: "ch.qos.logback",					name: "logback-classic",					version: "1.1.7"],
+		[group: "ch.qos.logback",					name: "logback-core",						version: "1.1.7"],
+		[group: "ch.qos.logback",					name: "logback-access",						version: "1.1.7"],
+
+		[group: 'org.slf4j', 						name: 'jcl-over-slf4j', 					version: "1.7.21"],
+		[group: 'org.slf4j', 						name: 'jul-to-slf4j', 						version: "1.7.21"],
+		[group: 'org.slf4j', 						name: 'log4j-over-slf4j', 					version: "1.7.21"],
+		[group: 'org.logback-extensions', 			name: 'logback-ext-spring', 				version: '0.1.4'],
+		[group: 'net.logstash.logback', 			name: 'logstash-logback-encoder', 			version: '4.5.1'],
+		[group: "ch.qos.logback",					name: "logback-gaffer-sift",				version: "0.0.1"],
+
+
+		[group: "org.codehaus.groovy",				name: "groovy",								version: "2.4.5"],
+
+
+
+		[group: "joda-time",						name: "joda-time",							version: "2.7"],
+		[group: "org.threeten",						name: "threetenbp",							version: "1.3.2"],
+
+
+		[group: "com.google.guava",					name: "guava",								version:"19.0"],
+
+
+		[group: "org.apache.commons",				name: "commons-lang3",						version: "3.3.2"],
+		[group: "commons-lang",						name: "commons-lang",						version: "2.6"],
+		[group: "commons-fileupload",				name: "commons-fileupload",					version: "1.3.1"],
+	    [group: "commons-httpclient",		    	name: "commons-httpclient",		    		version: "3.1"],
+		[group: "commons-io",						name: "commons-io",							version: "2.4"],
+		[group: "commons-configuration",			name: "commons-configuration",				version: "1.10"],
+		[group: "commons-codec",					name: "commons-codec",						version: "1.10"],
+		[group: "commons-net",						name: "commons-net",						version: "3.3"],
+		[group: "commons-beanutils",				name: "commons-beanutils-bean-collections",	version: "1.8.3"],
+		[group: "org.apache.commons",				name: "commons-collections4",				version: "4.0"],
+		[group: "commons-validator",				name: "commons-validator",					version: "1.4.1"],
+		[group: "org.codehaus.plexus",				name: "plexus-utils",						version: "3.0.21"],
+
+		[group: "org.apache.httpcomponents",		name: "httpclient",							version: "4.3.6"],
+
+
+		[group: "org.projectlombok",				name:"lombok",								version: "1.16.0"],
+
+
+		[group: "org.apache.poi",					name: "poi",								version: POI_VERSION],
+
+		//  jxl이 사용하는 log4j에 대한 의존성은 전역적으로 제거 되었음
+		[group: "net.sourceforge.jexcelapi",		name: "jxl",								version: "2.6.12"],
+
+
+		[group: "javax.validation",					name: "validation-api",						version: "1.1.0.Final"],
+		[group: "org.hibernate",					name: "hibernate-validator",				version: "5.1.3.Final"],
+		[group: "org.jboss.logging",				name: "jboss-logging",						version: "3.2.1.Final"],
+		[group: "com.fasterxml",					name: "classmate",							version: "1.1.0"],
+
+
+		[group: "org.apache.axis",					name: "axis",								version: "1.4"],
+
+
+		[group: "commons-discovery",				name: "commons-discovery",					version: "0.2"],
+
+
+		[group: "javax.xml",						name: "jaxrpc",								version: "1.1"],
+		[group: "com.ncp",			 				name: "jsoup",			 					version: "1.7.2"],
+
+		// 계좌 확인
+		[group: 'com.ncp', 							name: 'dcaIche', 							version: '1.0'],
+
+		// hdiv
+		[group: 'org.hdiv', 						name: 'hdiv-config', 						version: '2.1.10'],
+		[group: 'org.hdiv', 						name: 'hdiv-spring-mvc', 					version: '2.1.10'],
+		[group: 'org.hdiv', 						name: 'hdiv-jstl-taglibs-1.2', 				version: '2.1.10'],
+
+		// 국제 전화번호 포맷팅
+		[group: 'com.googlecode.libphonenumber', 	name: 'libphonenumber', 					version: '6.2'],
+
+
+
+		[group: 'org.twitter4j', 					name: 'twitter4j-core', 					version: '4.0.4'],
+
+		// Barcode
+		[group: 'net.sf.barcode4j', 				name: 'barcode4j', 							version: '2.1'],
+
+		//  cache
+		[group: 'net.sf.ehcache',					name: 'ehcache-core', 						version: '2.5.0'],
+
+
+		[group: 'org.apache.tomcat',				name: 'tomcat-jdbc', 						version: '7.0.57'],
+		[group: 'commons-dbcp', 					name: 'commons-dbcp', 						version: '1.4'],
+		[group: 'ojdbc6', 							name: 'ojdbc6', 							version: '1.1'],
+
+		// SQL Server JDBC Driver 6.0에 포함된 sqljdbc4.1.jar
+		[group: "com.microsoft.sqlserver.jdbc",     name: "sqljdbc",         			        version: "6.4.2"],
+
+
+		[group: 'org.scala-lang', 					name: 'scala-library', 						version: '2.9.1'],
+
+		[group: 'org.apache.cxf', 					name: 'cxf-core', 							version: '3.1.7'],
+		[group: 'org.apache.cxf', 					name: 'cxf-rt-frontend-jaxws', 				version: '3.1.7'],
+		[group: 'org.apache.cxf', 					name: 'cxf-rt-transports-http', 			version: '3.1.7'],
+		[group: 'org.apache.cxf', 					name: 'cxf-rt-frontend-jaxrs', 				version: '3.1.7'],
+		[group: 'org.apache.cxf', 					name: 'cxf-rt-rs-client', 					version: '3.1.7'],
+		[group: 'org.apache.cxf', 					name: 'cxf-rt-rs-extension-providers',		version: '3.1.7'],
+
+		// Json Simple
+		[group: 'com.googlecode.json-simple', 		name: 'json-simple', 						version: '1.1'],
+
+
+		[group: 'org.jdom', 						name: 'jdom2', 								version: '2.0.6'],
+		[group: 'jaxen', 							name: 'jaxen', 								version: '1.1.6'],
+
+		// Batch에서 사용
+		[group: 'org.jdom', 						name: 'jdom', 								version: '1.1.3'],
+
+		// Tiles
+		[group: 'org.apache.tiles', 				name: 'tiles-core', 						version: '3.0.5'],
+		[group: 'org.apache.tiles', 				name: 'tiles-api', 							version: '3.0.5'],
+		[group: 'org.apache.tiles', 				name: 'tiles-compat', 						version: '3.0.5'],
+
+
+		[group: "jstl",			 					name: "jstl",			 					version: "1.2"],
+
+		[group: "com.ncp",			 				name: "seed-util",			 				version: "1.0"],
+
+		[group: "com.googlecode.htmlcompressor",	name: "htmlcompressor",			 			version: "1.5.2"],
+		[group: "com.yahoo.platform.yui",			name: "yuicompressor",			 			version: "2.3.6"],
+
+
+		[group: "org.assertj",           			name: "assertj-core",         				version: "2.6.0"],
+		[group: "org.assertj",           			name: "assertj-joda-time",         			version: "1.1.0"],
+
+
+		[group: "org.reflections",           		name: "reflections",         				version: "0.9.10"],
+
+		// NICE 신용평가
+		[group: "NiceID",			 				name: "NiceID",			 					version: "1.0"],
+		[group: "MCheckPlus",			 			name: "MCheckPlus",			 				version: "1.0"],
+		[group: "IPIN2Client",			 			name: "IPIN2Client",			 			version: "1.0"],
+
+
+        // KCP 결제
+        [group: "ConnectionKCP",			 		name: "ConnectionKCP",			 			version: "1.0"],
+        [group: "jPpcliE",			 				name: "jPpcliE",			 				version: "1.0"],
+
+
+		// SFTP  지원을 위해
+		[group: "com.jcraft",           			name: "jsch",         						version: "0.1.49"],
+
+
+		[group: "org.apache.commons",           	name: "commons-csv",         				version: "1.4"],
+
+		[group: "io.springfox",           			name: "springfox-swagger2",         		version: "2.6.1"],
+		[group: "io.springfox",           			name: "springfox-swagger-ui",         		version: "2.6.1"],
+		
+		
+		[group: "com.netflix.hystrix",           	name: "hystrix-core",         				version: HYSTRTIX_VERSION],
+//		[group: "com.netflix.hystrix",           	name: "hystrix-dashboard",         		    version: HYSTRTIX_VERSION],
+		[group: "com.netflix.hystrix",           	name: "hystrix-serialization",         		version: HYSTRTIX_VERSION],
+		
+
+		[group: "com.atomikos",              		name: "transactions-jta",           		version: "4.0.4"],
+		[group: "com.atomikos",              		name: "transactions-jdbc",           		version: "4.0.4"],
+		[group: "com.atomikos",              		name: "transactions",           			version: "4.0.4"],
+		[group: "com.atomikos",              		name: "atomikos-util",           			version: "4.0.4"],
+		[group: "com.atomikos",              		name: "transactions-api",           		version: "4.0.4"],
+		[group: "javax.transaction",              	name: "javax.transaction-api",          	version: "1.2"],
+
+		[group: "com.maxmind.geoip2",              	name: "geoip2",          					version: "2.8.0"],
+	)
+	compile(
+			// Feature Toggle
+			[group: "org.togglz",			 		name: "togglz-core",			 			version: "2.3.0.Final"],
+			[group: "org.togglz",           		name: "togglz-servlet",          			version: "2.3.0.Final"],
+			[group: "org.togglz",          			name: "togglz-spring-web",         			version: "2.3.0.Final"],
+			[group: "org.togglz",           		name: "togglz-jsf",          				version: "2.3.0.Final"],
+			[group: "org.togglz",           		name: "togglz-jsp",          				version: "2.3.0.Final"],
+			[group: "org.togglz",           		name: "togglz-spring-security",         	version: "2.3.0.Final"],
+			[group: "org.togglz",           		name: "togglz-console",         			version: "2.3.0.Final"],
+		)
+
+
+
+
+	//   모듈 단위 이행적 의존성을 제거하기 위한 선언
+	[
+		//SWAGGER
+		[group: "com.knappsack",					name: "swagger4spring-web",					version: "0.2.0"],
+		[group: "com.wordnik",						name: "swagger-core_2.9.1",					version: "1.0.2"],
+		[group: "com.wordnik",						name: "swagger-annotations_2.9.1",			version: "1.0.2"],
+		[group: "com.wordnik",						name: "swagger-annotations_2.9.1",			version: "1.0.2"],
+		[group: "com.wordnik",						name: "swagger-jaxrs_2.9.1",				version: "1.0.2"],
+		[group: "org.lazyluke",						name: "log4jdbc-remix",						version: "0.2.7"],
+
+		[group: "org.apache.poi",					name: "poi-ooxml",							version: POI_VERSION],
+		[group: "org.apache.poi",					name: "poi-ooxml-schemas",					version: POI_VERSION],
+		[group: "org.apache.xmlbeans",				name: "xmlbeans",							version: "2.6.0"],
+		[group: "dom4j",							name: "dom4j",								version: "1.6.1"],
+
+	//	[group: "com.google.guava",					name: "guava",								version:"21.0"],	
+		
+	].each { module ->
+		compile( module ) {		exclude  group: "*"		}
+	}
+
+
+	testCompile (
+		[group: "junit",							name: "junit",								version: "4.11"],
+		[group: "org.mockito",						name: "mockito-all",						version: "1.10.19"],
+//		[group: "org.assertj",           			name: "assertj-db",         				version: "1.0.1"],
+
+		[group: "org.apache.geronimo.specs", 		name: "geronimo-servlet_3.0_spec", 			version: "1.0"],
+		[group: "org.apache.geronimo.specs", 		name: "geronimo-jsp_2.2_spec", 				version: "1.0"],
+		[group: "com.netflix.hystrix",           	name: "hystrix-junit",         				version: HYSTRTIX_VERSION],
+	)
+
+	testCompile (
+		[group: "org.unitils",						name: "unitils-core",						version: "3.4.2"],
+
+	){		exclude  group: "*"		}
+
+
+	// 컴파일 할때는 필요하지만  실행중에 있으면 않되는 라이브러리
+	compileOnly (
+		[group: "org.apache.geronimo.specs", 		name: "geronimo-servlet_3.0_spec", 			version: "1.0"],
+		[group: "org.apache.geronimo.specs", 		name: "geronimo-jsp_2.2_spec", 				version: "1.0"],
+	)
+
+	// 이행(transive) 의존성중 제거되어야 할 것을 기술함
+	// 참조: http://www.gradle.org/docs/current/userguide/dependency_management.html 의 50.2.2 Manage transitive dependencies
+
+	configurations {
+		// 프로젝트에서는  SLF4j + Logback 을 사용하는데 의존하는 라이브러리중에 이행 의존성으로  commons-logging 을 사용하는 경우가 있으며 이를 배제하기 위한 설정
+		all*.exclude group: 'commons-logging'
+
+		//  log4j에 의존하는 라이브러리중 이행 의존성으로 sfl4j-log4j 를 사용하는 경우가 있는데
+		// http://www.slf4j.org/legacy.html#log4jRecursion 에 따르면  log4j-over-slf4j 와 slf4j-log4j 는 충돌을 일으키므로  slf4j-log4j12 를 제거한다.
+		all*.exclude group: 'log4j', module:'log4j'
+		all*.exclude group: 'org.apache.logging.log4j'
+		all*.exclude group: 'com.sun.jersey'
+		all*.exclude group: 'org.slf4j', module:'slf4j-log4j12'
+
+		// servlet 3.0 은  javax.servlet-api 또는  geronimo-servlet_3.0_spec 로 함
+		all*.exclude group: 'javax.servlet', module:'servlet-api'
+
+		// JDK 7에는 stax를 포함하고 있음
+		all*.exclude group: 'stax', module:'stax-api'
+		all*.exclude group: 'javax.xml.stream', module:'stax-api'
+
+
+		all*.exclude group: 'xml-apis', module:'xml-apis'
+
+
+	}
+}	

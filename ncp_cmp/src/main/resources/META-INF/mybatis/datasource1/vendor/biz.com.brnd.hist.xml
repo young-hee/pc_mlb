@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.vendor.brndhist">
+
+
+	<resultMap id="comBrndHistResultMap" type="com.plgrim.ncp.biz.vendor.result.ComBrndHistResult">
+	   <result property="comBrndHist.comId"                    column="COM_ID" />                      <!-- 업체 ID -->
+	   <result property="comBrndHist.brndId"                   column="BRND_ID" />                     <!-- 브랜드 ID -->
+	   <result property="comBrndHist.histBegDt"                column="HIST_BEG_DT" />                 <!-- 이력 시작 일시 -->
+	   <result property="comBrndHist.histEndDt"                column="HIST_END_DT" />                 <!-- 이력 종료 일시 -->
+	   <result property="brndNm"                   			   column="BRND_NM" />                     <!-- 브랜드 ID -->	   
+	   <result property="baseFeeRt"                            column="BASE_FEE_RT" />         <!-- 브랜드수수료율 -->
+	   <result property="comBrndHist.affComInvDstbRt"          column="AFF_COM_INV_DSTB_RT" />         <!-- 제휴 업체 재고 분배 율 -->
+	   <result property="comBrndHist.affComPrcRdctnRt"         column="AFF_COM_PRC_RDCTN_RT" />        <!-- 제휴 업체 가격 인하 율 -->
+	   <result property="comBrndHist.relateBrndAutoExpsrYn"    column="RELATE_BRND_AUTO_EXPSR_YN" />   <!-- 연관 브랜드 자동 노출 여부 -->
+	   <result property="comBrndHist.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+	   <result property="comBrndHist.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="comBrndHist.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+	   <result property="comBrndHist.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+	</resultMap>
+
+    <!-- 수수료율 이력 조회를 위한 조건 쿼리 -->
+    <sql id="whereBrndHist">
+        AND BRND_ID = #{brndId}
+        <if test='searchStartDate != "" and searchStartDate != null'>
+            AND HIST_BEG_DT BETWEEN TO_DATE(REPLACE(#{searchStartDate}, '-'), 'YYYYMMDD') AND TO_DATE(REPLACE(#{searchEndDate}, '-'), 'YYYYMMDD') + 0.99999    /* 이력 일자 */
+        </if>    
+    </sql>
+    
+    <!-- 수수료율 이력 조회를 위한 카운트 쿼리 (order by, 불핑요한 컬럼 삭제) -->
+    <select id="selectBrndHistListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+        /* [biz.com.brnd.xml][selectBrndHistListCount][조회 : 수수료율 이력 목록 건수 ][Izabel] */
+                SELECT 
+                       COUNT(*)
+                  FROM COM_BRND_HIST
+                 WHERE 0 = 0  
+				        AND     EXCP_GOD_TP_CD = CASE WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_SELR' THEN 'AFF_COM_FEE_RT'  
+									                  WHEN #{comTpCd,jdbcType=VARCHAR} = 'PARTMAL_COM' THEN 'PARTMAL_COM_FEE_RT'
+<!-- 									                  WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_AGNC' THEN 'AFF_VRSC_COM_FEE_RT' -->
+									                  ELSE 'PARTMAL_COM_FEE_RT'
+									             END                 
+        <include refid="com.plgrim.ncp.biz.vendor.brndhist.whereBrndHist"/>             
+    </select>
+    
+
+    <!-- 수수료율 이력 목록 조회 -->
+    <select id="selectBrndHistList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comBrndHistResultMap">
+        /* [biz.com.brnd.xml][selectBrndHistList][조회 : 수수료율 이력 목록 ][Izabel] */
+        SELECT 
+                 B.COM_ID
+               , B.BRND_ID
+               , B.HIST_BEG_DT
+               , B.HIST_END_DT
+	           , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = B.BRND_ID) BRND_NM  
+	           , CASE WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_SELR' THEN B.AFF_COM_FEE_RT  
+	                   WHEN #{comTpCd,jdbcType=VARCHAR} = 'PARTMAL_COM' THEN B.PARTMAL_COM_FEE_RT
+<!-- 	                   WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_AGNC' THEN B.AFF_VRSC_COM_FEE_RT -->
+	                   ELSE B.PARTMAL_COM_FEE_RT
+	              END AS BASE_FEE_RT 
+               , B.AFF_COM_INV_DSTB_RT
+               , B.AFF_COM_PRC_RDCTN_RT
+               , B.RELATE_BRND_AUTO_EXPSR_YN
+               , B.REGTR_ID
+               , B.REG_DT
+               , B.UDTER_ID
+               , B.UDT_DT
+          FROM (
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+				        SELECT /* com.plgrim.ncp.base.repository.com.selectComBrndHist jackie 20150427 */
+				                COM_ID
+				               ,BRND_ID
+				               ,HIST_BEG_DT
+				               ,HIST_END_DT
+				               ,PARTMAL_COM_FEE_RT
+				               ,AFF_COM_FEE_RT
+<!-- 				               ,AFF_VRSC_COM_FEE_RT -->
+				               ,AFF_COM_INV_DSTB_RT
+				               ,AFF_COM_PRC_RDCTN_RT
+				               ,RELATE_BRND_AUTO_EXPSR_YN
+				               ,REGTR_ID
+				               ,REG_DT
+				               ,UDTER_ID
+				               ,UDT_DT
+				        FROM    COM_BRND_HIST t
+				        WHERE   1 = 1
+				        AND     EXCP_GOD_TP_CD = CASE WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_SELR' THEN 'AFF_COM_FEE_RT'  
+									                  WHEN #{comTpCd,jdbcType=VARCHAR} = 'PARTMAL_COM' THEN 'PARTMAL_COM_FEE_RT'
+<!-- 									                  WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_AGNC' THEN 'AFF_VRSC_COM_FEE_RT' -->
+									                  ELSE 'PARTMAL_COM_FEE_RT'
+									             END
+		            <include refid="com.plgrim.ncp.biz.vendor.brndhist.whereBrndHist"/>        
+		                     ORDER BY t.HIST_BEG_DT DESC
+		        <include refid="com.plgrim.ncp.base.endPage"/>
+		        ) B
+    </select>
+    
+    <!-- 수수료율 이력 목록 조회 엑셀 -->
+    <select id="selectBrndHistListExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="java.util.LinkedHashMap">
+        /* [biz.com.brnd.xml][selectBrndHistListExcel][조회 : 수수료율 이력 목록 엑셀 ][Izabel] */
+        SELECT 
+<!-- 			   rownum	 -->
+<!-- 	           , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = B.BRND_ID) BRND_NM   -->
+	            CASE WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_SELR' THEN B.AFF_COM_FEE_RT  
+	                   WHEN #{comTpCd,jdbcType=VARCHAR} = 'PARTMAL_COM' THEN B.PARTMAL_COM_FEE_RT
+<!-- 	                   WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_AGNC' THEN B.AFF_VRSC_COM_FEE_RT -->
+	                   ELSE B.PARTMAL_COM_FEE_RT
+	              END AS BASE_FEE_RT 
+               , B.HIST_BEG_DT
+               , B.HIST_END_DT	              
+<!--                , B.AFF_COM_INV_DSTB_RT -->
+<!--                , B.AFF_COM_PRC_RDCTN_RT -->
+<!--                , B.RELATE_BRND_AUTO_EXPSR_YN -->
+<!--                , B.REGTR_ID -->
+<!--                , B.REG_DT -->
+<!--                , B.UDTER_ID -->
+<!--                , B.UDT_DT -->
+          FROM (
+				        SELECT /* com.plgrim.ncp.base.repository.com.selectComBrndHist jackie 20150427 */
+				                COM_ID
+				               ,BRND_ID
+				               ,HIST_BEG_DT
+				               ,HIST_END_DT
+				               ,PARTMAL_COM_FEE_RT
+				               ,AFF_COM_FEE_RT
+<!-- 				               ,AFF_VRSC_COM_FEE_RT -->
+				        FROM    COM_BRND_HIST t
+				        WHERE   1 = 1
+				        AND     EXCP_GOD_TP_CD = CASE WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_SELR' THEN 'AFF_COM_FEE_RT'  
+									                  WHEN #{comTpCd,jdbcType=VARCHAR} = 'PARTMAL_COM' THEN 'PARTMAL_COM_FEE_RT'
+<!-- 									                  WHEN #{comTpCd,jdbcType=VARCHAR} = 'AFF_AGNC' THEN 'AFF_VRSC_COM_FEE_RT' -->
+									                  ELSE 'PARTMAL_COM_FEE_RT'
+									             END
+		            <include refid="com.plgrim.ncp.biz.vendor.brndhist.whereBrndHist"/>        
+		                     ORDER BY t.HIST_BEG_DT DESC
+		        ) B
+    </select>    
+
+    <update id="updateComBrndHist">
+        UPDATE /* com.plgrim.ncp.base.repository.com.updateComBrndHist jackie 20150427 */  
+        COM_BRND_HIST SET
+                 HIST_END_DT = #{histEndDt,jdbcType=DATE}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     COM_ID = #{comId,jdbcType=VARCHAR}
+        AND     BRND_ID = #{brndId,jdbcType=VARCHAR}
+        AND     HIST_BEG_DT = #{histBegDt,jdbcType=DATE}
+    </update>
+	
+     
+     
+</mapper>

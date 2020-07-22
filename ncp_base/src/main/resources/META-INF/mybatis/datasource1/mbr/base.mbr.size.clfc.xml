@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrSizeClfc" parameterType="mbrSizeClfc" resultType="mbrSizeClfc">
+		SELECT /* com.plgrim.ncp.base.selectMbrSizeClfc		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , MBR_SIZE_TURN
+			 , MBR_SIZE_CLFC_CD
+			 , MBR_SIZE_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_SIZE_CLFC
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrSizeClfc" parameterType="mbrSizeClfc">
+		UPDATE /* com.plgrim.ncp.base.updateMbrSizeClfc		Generator(Generator)	2018-05-23 */
+		MBR_SIZE_CLFC SET
+			   MBR_SIZE_CLFC_CD = #{mbrSizeClfcCd,jdbcType=VARCHAR}
+			 , MBR_SIZE_NM = #{mbrSizeNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrSizeClfc" parameterType="mbrSizeClfc">
+		INSERT /* com.plgrim.ncp.base.insertMbrSizeClfc		Generator(Generator)	2018-05-23 */
+		INTO   MBR_SIZE_CLFC (
+			   MBR_NO
+			 , MBR_SIZE_TURN
+			 , MBR_SIZE_CLFC_CD
+			 , MBR_SIZE_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{mbrSizeTurn,jdbcType=NUMERIC}
+			 , #{mbrSizeClfcCd,jdbcType=VARCHAR}
+			 , #{mbrSizeNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrSizeClfc" parameterType="mbrSizeClfc">
+		DELETE /* com.plgrim.ncp.base.deleteMbrSizeClfc		Generator(Generator)	2018-05-23 */
+		  FROM MBR_SIZE_CLFC
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

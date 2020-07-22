@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.com">
+	
+	<resultMap id="resultShopId" type="com.plgrim.ncp.commons.result.ComPopupResult">
+		<result property="sysShop.shopId" column="shop_id" />
+		<result property="sysShop.shopNm" column="shop_nm" />
+		<result property="sysShop.drtstorDrdlShopYn" column="drtstor_drdl_shop_yn" />
+		<result property="sysShop.wrhusYn" column="wrhus_yn" />
+	</resultMap>
+	
+	<resultMap id="resultComId" type="com.plgrim.ncp.commons.result.ComPopupResult">
+		<result property="com.comId" column="com_id" />
+		<result property="com.comNm" column="com_nm" />
+		<result property="com.rprstivNm" column="rprstiv_nm" />
+		<result property="com.krCprRegNo" column="kr_cpr_reg_no" />
+		<result property="com.krBmanRegNo" column="kr_bman_reg_no" />
+		<result property="com.lnmAddrPostNo" column="lnm_addr_post_no" />
+		<result property="com.lnmAddrBaseAddr" column="lnm_addr_base_addr" />
+		<result property="com.lnmAddrDetailAddr" column="lnm_addr_detail_addr" />
+		<result property="com.rdAddrPostNo" column="rd_addr_post_no" />
+		<result property="com.rdAddrBaseAddr" column="rd_addr_base_addr" />
+		<result property="com.rdAddrDetailAddr" column="rd_addr_detail_addr" />
+	</resultMap>
+	
+	<resultMap id="resultBrndId" type="com.plgrim.ncp.commons.result.ComPopupResult">
+		<result property="sysBrnd.brndId" column="brnd_id" />
+		<result property="sysBrnd.upperBrndId" column="upper_brnd_id" />
+		<result property="sysBrnd.brndNm" column="brnd_nm" />
+		<result property="sysBrnd.erpBrndGrpId" column="erp_brnd_grp_id" />
+		<result property="naBrndNm" column="na_brnd_nm" />
+		<result property="sysBrnd.upperBrndId" column="upper_brnd_id" />
+		<result property="brndLevel" column="brnd_level" />
+		
+		<result property="sysBrnd.pntUseYn" column="pnt_use_yn" />
+		<result property="sysBrnd.pntAccmlYn" column="pnt_accml_yn" />
+		<result property="sysBrnd.pntAccmlRt" column="pnt_accml_rt" />
+		<result property="sysBrnd.webpntUseYn" column="webpnt_use_yn" />
+		<result property="sysBrnd.webpntAccmlYn" column="webpnt_accml_yn" />
+		<result property="sysBrnd.webpntAccmlRt" column="webpnt_accml_rt" />
+		
+	</resultMap>
+	
+	
+	<select id="selectListShopId" parameterType="java.util.Map" resultMap="resultShopId"> 
+		
+		<![CDATA[
+		SELECT /* [commons.com.xml][selectListShopId][매장정보 조회][Tam] */
+			ss.shop_id, ss.shop_nm, ss.drtstor_drdl_shop_yn, ss.wrhus_yn
+		FROM 
+			sys_shop ss
+		WHERE 
+			ss.use_yn = 'Y'
+		]]>
+			<choose>
+				<when test="searchField != null and searchField eq '2'.toString()">
+					AND ss.shop_id = #{searchText} 
+				</when>
+				<otherwise>
+					AND ss.shop_nm like #{searchText}||'%'
+				</otherwise>
+			</choose>
+			  
+		<![CDATA[ 
+		ORDER BY ss.sort_seq ASC, ss.shop_nm ASC
+		]]>
+	</select>
+	
+	<select id="selectListComId" parameterType="com.plgrim.ncp.commons.data.FormComPopupDTO" resultMap="resultComId">
+		<![CDATA[
+			SELECT /* [commons.com.xml][selectListComId][업체정보 조회][Tam] */
+			   c.com_id, c.com_nm, c.rprstiv_nm,
+			   c.kr_cpr_reg_no, c.kr_bman_reg_no,
+			   c.lnm_addr_post_no, c.lnm_addr_base_addr, c.lnm_addr_detail_addr,
+			   c.rd_addr_post_no, c.rd_addr_base_addr, c.rd_addr_detail_addr
+			FROM 
+				com c
+			WHERE
+				c.com_stat_cd = 'USE'
+				AND
+				c.delete_yn = 'N'
+		]]>
+			<choose>
+				<when test="searchField != null and searchField eq '2'.toString() " >
+					AND c.com_id like '%'||#{searchText}||'%'
+				</when>
+				<otherwise>
+					AND c.com_nm like '%'||#{searchText}||'%'
+				</otherwise>
+			</choose>
+         <if test="searchComTpCd != null and searchComTpCd != ''">
+        	AND    com_tp_cd = #{searchComTpCd}
+        </if> 			
+		<![CDATA[ 
+		ORDER BY c.com_id ASC
+		]]>
+	</select>
+	
+	<select id="selectListBrndId" parameterType="java.util.Map" resultMap="resultBrndId">
+		<![CDATA[  
+			SELECT   /* [commons.com.xml][selectListBrndId][브랜드정보 조회][Tam] */
+				sb1.*
+			FROM
+			(
+				SELECT 
+				sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm, sb.erp_brnd_grp_id,
+				sb.pnt_use_yn,
+                sb.pnt_accml_yn,
+                sb.pnt_accml_rt,
+                sb.webpnt_use_yn,
+                sb.webpnt_accml_yn,
+                sb.webpnt_accml_rt,				
+				NVL(SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ') ,' &#47; ',-1)   ),7),sb.brnd_nm)  na_brnd_nm,
+				level as brnd_level
+				FROM
+				sys_brnd sb
+				WHERE
+				sb.use_yn = 'Y'
+		]]>	
+				<if test='brandList != null'>
+				AND brnd_id IN				
+					<foreach collection="brandList" item="brd"  open="(" close=")" separator=",">
+						#{brd}
+	 				</foreach>
+ 				</if>
+ 		<![CDATA[  
+				START WITH 
+					sb.upper_brnd_id is null
+				CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id
+				ORDER SIBLINGS BY sb.sort_seq
+			) sb1
+			INNER JOIN
+			(
+				SELECT 
+					sb.brnd_id, sb.brnd_nm
+				FROM 
+					sys_brnd sb
+				WHERE
+					sb.use_yn = 'Y'
+				START WITH 
+		 ]]>		
+			<choose>
+				<when test="searchBrndId != null and !''.equals(searchBrndId)">
+                    sb.brnd_id = #{searchBrndId}
+				</when>
+				<otherwise>
+					sb.upper_brnd_id is null
+				</otherwise>
+			</choose>
+		<![CDATA[		
+		
+				CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id
+				ORDER SIBLINGS BY sb.sort_seq
+			) sb2
+			ON
+				sb1.brnd_id = sb2.brnd_id
+		 ]]>		
+			<choose>
+				<when test="searchField != null and searchField eq '2'.toString()">
+					AND (
+						<foreach collection="searchTextArr" item="sTxt" index="index" separator="or" open=" (" close=")">
+            				sb2.brnd_id LIKE '%' || UPPER (#{sTxt}) || '%'
+        				</foreach>
+					)
+				</when>
+				<when test="searchField != null and searchField eq '3'.toString()">
+					AND ( sb2.brnd_id in
+						<foreach collection="searchTextArr" item="sTxt" index="index" separator="," open=" (" close=")">
+            				UPPER (#{sTxt})
+        				</foreach>
+					)
+				</when>				
+				<otherwise>
+					AND (
+						<foreach collection="searchTextArr" item="sTxt" index="index" separator="or" open=" (" close=")">
+            				upper(sb2.brnd_nm) LIKE '%' || UPPER (#{sTxt}) || '%'
+        				</foreach>
+					)
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="searchFirstBrndGrpYn != null and searchFirstBrndGrpYn eq 'Y'.toString()">
+					AND sb1.brnd_level = 1 
+				</when>
+                <when test="searchBrndGrpYn != null and searchBrndGrpYn eq 'Y'.toString()">
+					AND sb1.brnd_level = 1 
+				</when>
+				<otherwise>
+					AND sb1.brnd_level = 2
+				</otherwise>
+			</choose>
+			<if test='searchComId != null and searchComId != ""'>
+				AND sb2.brnd_id in (SELECT brnd_id FROM com_brnd WHERE com_id = #{searchComId})
+			</if>
+            <if test='affComId != null and affComId != ""'>
+                AND sb2.brnd_id in ( SELECT DISTINCT sb.brnd_id 
+                                       FROM COM_AFF_VRSC_COM_BRND cb
+                                       JOIN sys_brnd sb 
+                                         ON cb.brnd_id = sb.brnd_id
+                                        AND sb.use_yn = 'Y'
+                                      WHERE cb.AFF_VRSC_COM_ID =  #{affComId}
+                                      
+                                      )
+            </if>
+	</select>
+	
+	<select id="selectListBrndFromUpperBrndId" parameterType="java.util.Map" resultMap="resultBrndId">
+		<![CDATA[  
+			
+			SELECT   /* [commons.com.xml][selectListBrndFromUpperBrndId][브랜드그룹 조회][Tam] */
+				sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm  
+			FROM
+				sys_brnd sb
+			WHERE 
+				sb.use_yn = 'Y' 
+		]]>		
+			<choose>
+				<when test="upperBrndId != null and !''.equals(upperBrndId)">
+					AND sb.upper_brnd_id = #{upperBrndId}
+					AND
+						brnd_grp_yn =#{brndGrpYn}						 
+				</when>
+				<otherwise>
+<!-- 				<if test="brndGrpYn != 'Y' "> -->
+					AND sb.upper_brnd_id is null
+<!-- 				</if>	 -->
+				</otherwise>
+			</choose>
+		<![CDATA[
+			ORDER BY 
+				sb.sort_seq, UPPER(sb.brnd_nm)
+		]]>
+	</select>
+	
+	<select id="selectListAffBrndFromUpperBrndId" parameterType="java.util.Map" resultMap="resultBrndId">
+		<![CDATA[  
+	  SELECT /* [commons.com.xml][selectListAffBrndFromUpperBrndId][제휴대행사 브랜드그룹 조회][izabel] */
+	  		sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm  
+	    FROM (    
+	    		  SELECT *
+                  FROM sys_brnd
+               	  WHERE use_yn = 'Y'
+		          CONNECT BY PRIOR UPPER_brnd_id = brnd_id
+		          START WITH brnd_id IN (  SELECT brnd_id
+		                                     FROM COM_AFF_VRSC_COM_BRND
+		                                    WHERE AFF_VRSC_COM_ID = #{comId}
+		                                 GROUP BY brnd_id
+		                                 )
+             ) sb where 1=1
+		]]>		
+			<choose>
+				<when test="upperBrndId != null and !''.equals(upperBrndId)">
+					AND upper_brnd_id = #{upperBrndId}
+					AND
+						brnd_grp_yn =#{brndGrpYn}						 
+				</when>
+				<otherwise>
+					AND upper_brnd_id is null
+				</otherwise>
+			</choose>                                 
+		<![CDATA[
+		    GROUP BY sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm
+			ORDER BY UPPER(sb.brnd_nm)
+		]]>
+	</select>	
+	
+	
+	
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminBukmk" parameterType="sysAdminBukmk" resultType="sysAdminBukmk">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminBukmk		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , MENU_SN
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_ADMIN_BUKMK
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND MENU_SN = #{menuSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysAdminBukmk" parameterType="sysAdminBukmk">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminBukmk		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_BUKMK SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND MENU_SN = #{menuSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysAdminBukmk" parameterType="sysAdminBukmk">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminBukmk		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_BUKMK (
+			   ADMIN_ID
+			 , MENU_SN
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{menuSn,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAdminBukmk" parameterType="sysAdminBukmk">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminBukmk		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_BUKMK
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND MENU_SN = #{menuSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

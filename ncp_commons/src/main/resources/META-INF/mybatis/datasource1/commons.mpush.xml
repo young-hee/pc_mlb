@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.mpush">
+
+	<select id="selectNtcnTalkUseYn" parameterType="String" resultType="String">
+		SELECT /* [commons.mpush.xml][selectNtcnTalkUseYn][몰별 알림톡 사용여부 확인][YOON] */
+	           sm.NTCN_TAK_USE_YN
+		  FROM SYS_MALL sm
+		 WHERE sm.USE_YN = 'Y'
+		   AND sm.MALL_ID = #{mallId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectMbrInforNtcnRecptnTp" parameterType="String" resultType="String">
+		SELECT /* [commons.mpush.xml][selectMbrInforNtcnRecptnTp][회원 정보성 알림 수신 유형 확인][YOON] */
+	           mbr.INFOR_NTCN_RECPTN_TP_CD
+		  FROM MBR mbr
+		 WHERE mbr.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectMPushTxt" parameterType="String" resultType="sysSmsEmailTxtExtend">
+		SELECT /* [commons.mpush.xml][selectHumusonTxtList][휴머스온 알림톡/문자 문구 조회][YOON] */
+			   sset.TXT_CONT AS smsMsg					/* SMS 발송 문구 */
+			  ,sset.TXT_SJ								/* SMS 제목 문구 */
+			  ,sseta.TXT_TMPLAT_NO AS txtTmplatNo   	/* 알림톡 템플릿 번호 */
+			  ,sseta.TXT_CONT AS alimTlakMsg			/* 알림톡 발송 문구*/
+			  ,sseta.LINK_URL AS linkUrl
+		  FROM SYS_SMS_EMAIL_TXT sset
+		  LEFT JOIN SYS_SMS_EMAIL_TXT sseta on sset.NTCN_TAK_MANAGE_NO = sseta.NTCN_TAK_MANAGE_NO AND sseta.SMS_EMAIL_SECT_CD = 'NTCN_TAK'
+		 WHERE 1 = 1
+		   AND sset.SMS_EMAIL_SECT_CD = 'SMS'
+ 		   AND sset.TXT_USE_SECT_CD = 'INFOR'
+ 		   AND sset.NTCN_TAK_MANAGE_NO = #{ntcnTakManageNo,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

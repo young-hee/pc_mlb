@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodCpstGodCnnc" parameterType="godCpstGodCnnc" resultType="godCpstGodCnnc">
+		SELECT /* com.plgrim.ncp.base.selectGodCpstGodCnnc		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , CPST_GOD_NO
+			 , CPST_GOD_NM
+			 , PCKAGE_GOD_TP_CD
+			 , ESSNTL_PCH_YN
+			 , ADIT_PCH_PSB_YN
+			 , CPST_GOD_QTY
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_CPST_GOD_CNNC
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND CPST_GOD_NO = #{cpstGodNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodCpstGodCnnc" parameterType="godCpstGodCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateGodCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		GOD_CPST_GOD_CNNC SET
+			   CPST_GOD_NM = #{cpstGodNm,jdbcType=VARCHAR}
+			 , PCKAGE_GOD_TP_CD = #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , ESSNTL_PCH_YN = #{essntlPchYn,jdbcType=VARCHAR}
+			 , ADIT_PCH_PSB_YN = #{aditPchPsbYn,jdbcType=VARCHAR}
+			 , CPST_GOD_QTY = #{cpstGodQty,jdbcType=NUMERIC}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND CPST_GOD_NO = #{cpstGodNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodCpstGodCnnc" parameterType="godCpstGodCnnc">
+		INSERT /* com.plgrim.ncp.base.insertGodCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		INTO   GOD_CPST_GOD_CNNC (
+			   GOD_NO
+			 , CPST_GOD_NO
+			 , CPST_GOD_NM
+			 , PCKAGE_GOD_TP_CD
+			 , ESSNTL_PCH_YN
+			 , ADIT_PCH_PSB_YN
+			 , CPST_GOD_QTY
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{cpstGodNo,jdbcType=VARCHAR}
+			 , #{cpstGodNm,jdbcType=VARCHAR}
+			 , #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , #{essntlPchYn,jdbcType=VARCHAR}
+			 , #{aditPchPsbYn,jdbcType=VARCHAR}
+			 , #{cpstGodQty,jdbcType=NUMERIC}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodCpstGodCnnc" parameterType="godCpstGodCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteGodCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		  FROM GOD_CPST_GOD_CNNC
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND CPST_GOD_NO = #{cpstGodNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

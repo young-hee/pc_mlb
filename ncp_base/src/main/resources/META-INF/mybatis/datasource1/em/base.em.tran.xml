@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEmTran" parameterType="emTran" resultType="emTran">
+		SELECT /* com.plgrim.ncp.base.selectEmTran		Generator(Generator)	2018-05-23 */
+			   TRAN_PR
+			 , TRAN_REFKEY
+			 , TRAN_ID
+			 , TRAN_PHONE
+			 , TRAN_CALLBACK
+			 , TRAN_STATUS
+			 , TRAN_DATE
+			 , TRAN_RSLTDATE
+			 , TRAN_REPORTDATE
+			 , TRAN_RSLT
+			 , TRAN_NET
+			 , TRAN_MSG
+			 , TRAN_ETC1
+			 , TRAN_ETC2
+			 , TRAN_ETC3
+			 , TRAN_ETC4
+			 , TRAN_TYPE
+		  FROM EM_TRAN
+		 WHERE 1 = 1
+	   	   AND TRAN_PR = #{tranPr,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEmTran" parameterType="emTran">
+		UPDATE /* com.plgrim.ncp.base.updateEmTran		Generator(Generator)	2018-05-23 */
+		EM_TRAN SET
+			   TRAN_REFKEY = #{tranRefkey,jdbcType=VARCHAR}
+			 , TRAN_ID = #{tranId,jdbcType=VARCHAR}
+			 , TRAN_PHONE = #{tranPhone,jdbcType=VARCHAR}
+			 , TRAN_CALLBACK = #{tranCallback,jdbcType=VARCHAR}
+			 , TRAN_STATUS = #{tranStatus,jdbcType=CHAR}
+			 , TRAN_DATE = #{tranDate,jdbcType=TIMESTAMP}
+			 , TRAN_RSLTDATE = #{tranRsltdate,jdbcType=TIMESTAMP}
+			 , TRAN_REPORTDATE = #{tranReportdate,jdbcType=TIMESTAMP}
+			 , TRAN_RSLT = #{tranRslt,jdbcType=CHAR}
+			 , TRAN_NET = #{tranNet,jdbcType=VARCHAR}
+			 , TRAN_MSG = #{tranMsg,jdbcType=VARCHAR}
+			 , TRAN_ETC1 = #{tranEtc1,jdbcType=VARCHAR}
+			 , TRAN_ETC2 = #{tranEtc2,jdbcType=VARCHAR}
+			 , TRAN_ETC3 = #{tranEtc3,jdbcType=VARCHAR}
+			 , TRAN_ETC4 = #{tranEtc4,jdbcType=NUMERIC}
+			 , TRAN_TYPE = #{tranType,jdbcType=NUMERIC}
+		 WHERE 1 = 1
+		   AND TRAN_PR = #{tranPr,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEmTran" parameterType="emTran">
+		INSERT /* com.plgrim.ncp.base.insertEmTran		Generator(Generator)	2018-05-23 */
+		INTO   EM_TRAN (
+			   TRAN_PR
+			 , TRAN_REFKEY
+			 , TRAN_ID
+			 , TRAN_PHONE
+			 , TRAN_CALLBACK
+			 , TRAN_STATUS
+			 , TRAN_DATE
+			 , TRAN_RSLTDATE
+			 , TRAN_REPORTDATE
+			 , TRAN_RSLT
+			 , TRAN_NET
+			 , TRAN_MSG
+			 , TRAN_ETC1
+			 , TRAN_ETC2
+			 , TRAN_ETC3
+			 , TRAN_ETC4
+			 , TRAN_TYPE
+		)
+		VALUES (
+			   #{tranPr,jdbcType=NUMERIC}
+			 , #{tranRefkey,jdbcType=VARCHAR}
+			 , #{tranId,jdbcType=VARCHAR}
+			 , #{tranPhone,jdbcType=VARCHAR}
+			 , #{tranCallback,jdbcType=VARCHAR}
+			 , #{tranStatus,jdbcType=CHAR}
+			 , #{tranDate,jdbcType=TIMESTAMP}
+			 , #{tranRsltdate,jdbcType=TIMESTAMP}
+			 , #{tranReportdate,jdbcType=TIMESTAMP}
+			 , #{tranRslt,jdbcType=CHAR}
+			 , #{tranNet,jdbcType=VARCHAR}
+			 , #{tranMsg,jdbcType=VARCHAR}
+			 , #{tranEtc1,jdbcType=VARCHAR}
+			 , #{tranEtc2,jdbcType=VARCHAR}
+			 , #{tranEtc3,jdbcType=VARCHAR}
+			 , #{tranEtc4,jdbcType=NUMERIC}
+			 , #{tranType,jdbcType=NUMERIC}
+        )
+    </insert>
+
+    <delete id="deleteEmTran" parameterType="emTran">
+		DELETE /* com.plgrim.ncp.base.deleteEmTran		Generator(Generator)	2018-05-23 */
+		  FROM EM_TRAN
+		 WHERE 1 = 1
+		   AND TRAN_PR = #{tranPr,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

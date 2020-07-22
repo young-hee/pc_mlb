@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrPsnlInfoUsefMbd" parameterType="mbrPsnlInfoUsefMbd" resultType="mbrPsnlInfoUsefMbd">
+		SELECT /* com.plgrim.ncp.base.selectMbrPsnlInfoUsefMbd		Generator(Generator)	2018-05-23 */
+			   PSNL_INFO_USEF_SN
+			 , PSNL_INFO_USEF_MBD_TURN
+			 , PSNL_INFO_USEF_MBD_CD
+			 , ADMIN_ID
+			 , MBR_NO
+			 , PSNL_INFO_USEF_COM_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_PSNL_INFO_USEF_MBD
+		 WHERE 1 = 1
+	   	   AND PSNL_INFO_USEF_SN = #{psnlInfoUsefSn,jdbcType=NUMERIC}
+		   AND PSNL_INFO_USEF_MBD_TURN = #{psnlInfoUsefMbdTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrPsnlInfoUsefMbd" parameterType="mbrPsnlInfoUsefMbd">
+		UPDATE /* com.plgrim.ncp.base.updateMbrPsnlInfoUsefMbd		Generator(Generator)	2018-05-23 */
+		MBR_PSNL_INFO_USEF_MBD SET
+			   PSNL_INFO_USEF_MBD_CD = #{psnlInfoUsefMbdCd,jdbcType=VARCHAR}
+			 , ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , PSNL_INFO_USEF_COM_CD = #{psnlInfoUsefComCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PSNL_INFO_USEF_SN = #{psnlInfoUsefSn,jdbcType=NUMERIC}
+		   AND PSNL_INFO_USEF_MBD_TURN = #{psnlInfoUsefMbdTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrPsnlInfoUsefMbd" parameterType="mbrPsnlInfoUsefMbd">
+		INSERT /* com.plgrim.ncp.base.insertMbrPsnlInfoUsefMbd		Generator(Generator)	2018-05-23 */
+		INTO   MBR_PSNL_INFO_USEF_MBD (
+			   PSNL_INFO_USEF_SN
+			 , PSNL_INFO_USEF_MBD_TURN
+			 , PSNL_INFO_USEF_MBD_CD
+			 , ADMIN_ID
+			 , MBR_NO
+			 , PSNL_INFO_USEF_COM_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{psnlInfoUsefSn,jdbcType=NUMERIC}
+			 , #{psnlInfoUsefMbdTurn,jdbcType=NUMERIC}
+			 , #{psnlInfoUsefMbdCd,jdbcType=VARCHAR}
+			 , #{adminId,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{psnlInfoUsefComCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrPsnlInfoUsefMbd" parameterType="mbrPsnlInfoUsefMbd">
+		DELETE /* com.plgrim.ncp.base.deleteMbrPsnlInfoUsefMbd		Generator(Generator)	2018-05-23 */
+		  FROM MBR_PSNL_INFO_USEF_MBD
+		 WHERE 1 = 1
+		   AND PSNL_INFO_USEF_SN = #{psnlInfoUsefSn,jdbcType=NUMERIC}
+		   AND PSNL_INFO_USEF_MBD_TURN = #{psnlInfoUsefMbdTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

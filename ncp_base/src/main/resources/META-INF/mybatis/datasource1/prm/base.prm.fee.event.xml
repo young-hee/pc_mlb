@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmFeeEvent" parameterType="prmFeeEvent" resultType="prmFeeEvent">
+		SELECT /* com.plgrim.ncp.base.selectPrmFeeEvent		Generator(Generator)	2018-05-23 */
+			   FEE_EVENT_SN
+			 , FEE_EVENT_TP_CD
+			 , FEE_EVENT_NM
+			 , EVENT_BEG_DT
+			 , EVENT_END_DT
+			 , ADIT_FEE_RT
+			 , USE_YN
+			 , EVENT_APL_TGT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM_FEE_EVENT
+		 WHERE 1 = 1
+	   	   AND FEE_EVENT_SN = #{feeEventSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updatePrmFeeEvent" parameterType="prmFeeEvent">
+		UPDATE /* com.plgrim.ncp.base.updatePrmFeeEvent		Generator(Generator)	2018-05-23 */
+		PRM_FEE_EVENT SET
+			   FEE_EVENT_TP_CD = #{feeEventTpCd,jdbcType=VARCHAR}
+			 , FEE_EVENT_NM = #{feeEventNm,jdbcType=VARCHAR}
+			 , EVENT_BEG_DT = #{eventBegDt,jdbcType=TIMESTAMP}
+			 , EVENT_END_DT = #{eventEndDt,jdbcType=TIMESTAMP}
+			 , ADIT_FEE_RT = #{aditFeeRt,jdbcType=NUMERIC}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , EVENT_APL_TGT_CD = #{eventAplTgtCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND FEE_EVENT_SN = #{feeEventSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertPrmFeeEvent" parameterType="prmFeeEvent">
+		INSERT /* com.plgrim.ncp.base.insertPrmFeeEvent		Generator(Generator)	2018-05-23 */
+		INTO   PRM_FEE_EVENT (
+			   FEE_EVENT_SN
+			 , FEE_EVENT_TP_CD
+			 , FEE_EVENT_NM
+			 , EVENT_BEG_DT
+			 , EVENT_END_DT
+			 , ADIT_FEE_RT
+			 , USE_YN
+			 , EVENT_APL_TGT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{feeEventSn,jdbcType=NUMERIC}
+			 , #{feeEventTpCd,jdbcType=VARCHAR}
+			 , #{feeEventNm,jdbcType=VARCHAR}
+			 , #{eventBegDt,jdbcType=TIMESTAMP}
+			 , #{eventEndDt,jdbcType=TIMESTAMP}
+			 , #{aditFeeRt,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{eventAplTgtCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrmFeeEvent" parameterType="prmFeeEvent">
+		DELETE /* com.plgrim.ncp.base.deletePrmFeeEvent		Generator(Generator)	2018-05-23 */
+		  FROM PRM_FEE_EVENT
+		 WHERE 1 = 1
+		   AND FEE_EVENT_SN = #{feeEventSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

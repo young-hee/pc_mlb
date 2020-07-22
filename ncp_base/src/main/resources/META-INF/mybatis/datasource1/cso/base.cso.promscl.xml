@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoPromscl" parameterType="csoPromscl" resultType="csoPromscl">
+		SELECT /* com.plgrim.ncp.base.selectCsoPromscl		Generator(Generator)	2018-05-23 */
+			   PROMSCL_SN
+			 , PROMSCL_STAT_CD
+			 , PROMSCL_COMPT_DT
+			 , PROMSCL_CNCL_DT
+			 , PROMSCL_CONFIG_YN
+			 , CHRGER_CNFIRM_YN
+			 , PROMS_TGT_NM
+			 , PROMSCL_NATION_NO
+			 , PROMSCL_AREA_NO
+			 , PROMSCL_TLOF_NO
+			 , PROMSCL_TLOF_WTHN_NO
+			 , PROMSCL_DT
+			 , PROMSCL_MEMO_CONT
+			 , CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_PROMSCL
+		 WHERE 1 = 1
+	   	   AND PROMSCL_SN = #{promsclSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoPromscl" parameterType="csoPromscl">
+		UPDATE /* com.plgrim.ncp.base.updateCsoPromscl		Generator(Generator)	2018-05-23 */
+		CSO_PROMSCL SET
+			   PROMSCL_STAT_CD = #{promsclStatCd,jdbcType=VARCHAR}
+			 , PROMSCL_COMPT_DT = #{promsclComptDt,jdbcType=TIMESTAMP}
+			 , PROMSCL_CNCL_DT = #{promsclCnclDt,jdbcType=TIMESTAMP}
+			 , PROMSCL_CONFIG_YN = #{promsclConfigYn,jdbcType=VARCHAR}
+			 , CHRGER_CNFIRM_YN = #{chrgerCnfirmYn,jdbcType=VARCHAR}
+			 , PROMS_TGT_NM = #{promsTgtNm,jdbcType=VARCHAR}
+			 , PROMSCL_NATION_NO = #{promsclNationNo,jdbcType=VARCHAR}
+			 , PROMSCL_AREA_NO = #{promsclAreaNo,jdbcType=VARCHAR}
+			 , PROMSCL_TLOF_NO = #{promsclTlofNo,jdbcType=VARCHAR}
+			 , PROMSCL_TLOF_WTHN_NO = #{promsclTlofWthnNo,jdbcType=VARCHAR}
+			 , PROMSCL_DT = #{promsclDt,jdbcType=TIMESTAMP}
+			 , PROMSCL_MEMO_CONT = #{promsclMemoCont,jdbcType=VARCHAR}
+			 , CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+			 , CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROMSCL_SN = #{promsclSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoPromscl" parameterType="csoPromscl">
+		INSERT /* com.plgrim.ncp.base.insertCsoPromscl		Generator(Generator)	2018-05-23 */
+		INTO   CSO_PROMSCL (
+			   PROMSCL_SN
+			 , PROMSCL_STAT_CD
+			 , PROMSCL_COMPT_DT
+			 , PROMSCL_CNCL_DT
+			 , PROMSCL_CONFIG_YN
+			 , CHRGER_CNFIRM_YN
+			 , PROMS_TGT_NM
+			 , PROMSCL_NATION_NO
+			 , PROMSCL_AREA_NO
+			 , PROMSCL_TLOF_NO
+			 , PROMSCL_TLOF_WTHN_NO
+			 , PROMSCL_DT
+			 , PROMSCL_MEMO_CONT
+			 , CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{promsclSn,jdbcType=NUMERIC}
+			 , #{promsclStatCd,jdbcType=VARCHAR}
+			 , #{promsclComptDt,jdbcType=TIMESTAMP}
+			 , #{promsclCnclDt,jdbcType=TIMESTAMP}
+			 , #{promsclConfigYn,jdbcType=VARCHAR}
+			 , #{chrgerCnfirmYn,jdbcType=VARCHAR}
+			 , #{promsTgtNm,jdbcType=VARCHAR}
+			 , #{promsclNationNo,jdbcType=VARCHAR}
+			 , #{promsclAreaNo,jdbcType=VARCHAR}
+			 , #{promsclTlofNo,jdbcType=VARCHAR}
+			 , #{promsclTlofWthnNo,jdbcType=VARCHAR}
+			 , #{promsclDt,jdbcType=TIMESTAMP}
+			 , #{promsclMemoCont,jdbcType=VARCHAR}
+			 , #{cnsltSn,jdbcType=NUMERIC}
+			 , #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoPromscl" parameterType="csoPromscl">
+		DELETE /* com.plgrim.ncp.base.deleteCsoPromscl		Generator(Generator)	2018-05-23 */
+		  FROM CSO_PROMSCL
+		 WHERE 1 = 1
+		   AND PROMSCL_SN = #{promsclSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

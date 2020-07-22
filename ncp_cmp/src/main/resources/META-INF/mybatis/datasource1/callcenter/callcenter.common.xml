@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.helpdesk.search">
+
+
+
+<resultMap id="InquiryEmailMap" type="com.plgrim.ncp.biz.helpdesk.result.HelpdeskEmailResult">
+
+	   <result property="orgztOrdAffInqSn"      								    column="ORGZT_ORD_AFF_INQ_SN" />         
+	   <result property="orgztOrdAffInqTpCd"          	      						column="ORGZT_ORD_AFF_INQ_TP_CD" />        
+	   <result property="orgztOrdAffInqDetailTpCd"                 					column="ORGZT_ORD_AFF_INQ_DETAIL_TP_CD" />           
+	   <result property="orgztNm"   			 			 						column="ORGZT_NM" />			 
+	   <result property="orgztInqerNm"             	 								column="ORGZT_INQER_NM" />             
+	   <result property="orgztInqCont"            									column="ORGZT_INQ_CONT" />           
+	   <result property="orgztInqerEmail"        		  							column="ORGZT_INQER_EMAIL" />            
+	   <result property="orgztRegDt"                   								column="ORGZT_REG_DT" />             
+	   <result property="orgztAnsCont"                								column="ORGZT_ANS_CONT" />            
+	   <result property="orgztAnsDt"          		  								column="ORGZT_ANS_DT" />
+	   <result property="orgztFileNm"                								column="OAIFN" />            
+	   <result property="orgztFileUrl"          		  							column="OAIATCH" />        
+	   </resultMap>
+	
+	
+	
+	
+		<!-- 메일 템플릿 입력 정보 1:1 문의 -->
+    <select id="getSendEmailTemplateInfo" parameterType="com.plgrim.ncp.biz.callcenter.data.SendMailDTO" resultType="com.plgrim.ncp.biz.helpdesk.result.HelpdeskEmailResult">
+  	   /* [callcenter.common.xml][getSendEmailTemplateInfo][메일 템플릿 입력 정보 1:1 문의][Brandon] */	      
+  	  
+  	   SELECT S.*
+  	   FROM(
+  	   SELECT 
+  	   		cmi.inq_mbr_no AS INQ_MBR_NO,	     
+	        cmi.mtm_inq_sn AS INQ_SN,
+	        cmi.inq_tp_cd AS INQ_TP_CD,
+	        cmi.inq_sj AS INQ_SJ,
+	        cmi.inq_cont AS INQ_CONT,	         
+	        TO_CHAR(cmi.inq_dt , 'YYYY-MM-DD HH24:MI')  AS INQ_DT, 
+	        cmi.god_no AS INQ_GOD_NO,
+	        cmi.erp_god_no AS INQ_ERP_GOD_NO,
+	        TO_CHAR(cmi.reg_dt , 'YYYY-MM-DD HH24:MI') AS INQ_REG_DT,         
+	        cmiog.ord_no AS INQ_ORD_NO,
+	        mbr.mbr_nm AS INQ_MBR_NM,
+	        mbr.mbr_tp_cd AS INQ_MBR_TP_CD,
+	        cmiaf.mtm_inq_atch_file_nm AS INQ_ATCH_FILE_NM,
+	        cmiaf.mtm_inq_atch_file_url  AS INQ_ATCH_FILE_URL,
+	        cmia.ans_sj AS INQ_ANSSJ,
+	        cmia.ans_cont AS INQ_ANSCONT,
+	        TO_CHAR(cmia.ans_dt , 'YYYY-MM-DD HH24:MI') AS INQ_ANS_DT
+	    FROM
+	        CSO_MTM_INQ cmi left outer join CSO_MTM_INQ_ATCH_FILE cmiaf on cmi.mtm_inq_sn = cmiaf.mtm_inq_sn
+	        left outer join CSO_MTM_INQ_ORD_GOD cmiog on cmi.mtm_inq_sn = cmiog.mtm_inq_sn
+	        left outer join MBR mbr on cmi.inq_mbr_no = mbr.mbr_no	 
+	        left outer join CSO_MTM_INQ_ANS cmia on cmi.mtm_inq_sn = cmia.mtm_inq_sn	            
+	   WHERE 1=1	  
+	   <if test="langCd != null">
+	   AND	 cmi.LANG_CD = #{langCd,jdbcType=VARCHAR}
+	   </if>
+	   <if test="mallId != null">
+	   AND	 cmi.MALL_ID = #{mallId,jdbcType=VARCHAR}
+	   </if>
+	    AND	 cmi.MTM_INQ_SN = #{csoMtmInq.mtmInqSn,jdbcType=NUMERIC} 
+	    	) S
+	     WHERE S.INQ_ANS_DT IN(SELECT 
+	     							MAX(TO_CHAR(cmiaB.ans_dt , 'YYYY-MM-DD HH24:MI'))  KEEP (DENSE_RANK FIRST ORDER BY cmiaB.ans_dt DESC)  
+	    						 FROM 
+	    						 	CSO_MTM_INQ_ANS cmiaB 
+	    						 WHERE 
+	    						 	cmiaB.MTM_INQ_SN = #{csoMtmInq.mtmInqSn,jdbcType=NUMERIC}  )
+           
+	   
+	   
+	   	   	     
+    </select>
+    
+    	<!-- 메일 템플릿 입력 정보 단체제휴 -->
+    <select id="getSendAffOrdEmailTemplateInfo" parameterType="com.plgrim.ncp.biz.callcenter.data.SendMailDTO" resultMap="InquiryEmailMap">
+  	   /* [callcenter.common.xml][getSendAffOrdEmailTemplateInfo][메일 템플릿 입력 정보 단체 제휴][Brandon] */	      
+  	  
+  	 SELECT 
+            oai.ORGZT_ORD_AFF_INQ_SN,
+            oai.ORGZT_ORD_AFF_INQ_TP_CD,
+            oai.ORGZT_ORD_AFF_INQ_DETAIL_TP_CD,
+            oai.INQ_ORGZT_NM AS ORGZT_NM,
+            oai.INQER_NM AS ORGZT_INQER_NM,
+            oai.INQ_CONT AS ORGZT_INQ_CONT,
+            oai.INQER_EMAIL AS ORGZT_INQER_EMAIL,
+            oai.REG_DT AS ORGZT_REG_DT,
+            oaia.ANS_CONT AS ORGZT_ANS_CONT,
+            oaia.ANS_DT AS ORGZT_ANS_DT,
+            atch.ORGZT_ORD_AFF_INQ_ATCH_FILE_NM AS OAIFN,   
+            atch.ORGZT_ORD_AFF_INQ_ATCH_FILE_UR AS OAIATCH     
+        FROM 
+            CSO_ORGZT_ORD_AFF_INQ oai LEFT OUTER JOIN CSO_ORGZT_ORD_AFF_INQ_ANS oaia ON oai.ORGZT_ORD_AFF_INQ_SN = oaia.ORGZT_ORD_AFF_INQ_SN
+                                      LEFT OUTER JOIN CSO_ORGZT_ORD_AFF_INQ_ATCHMNFL atch ON oai.ORGZT_ORD_AFF_INQ_SN = atch.ORGZT_ORD_AFF_INQ_SN 
+        WHERE 1=1	  
+         <if test="langCd != null">
+	     AND	 oai.LANG_CD = 'KOR'
+	     </if>
+	     <if test="mallId != null">
+	     AND	 oai.MALL_ID = 'DXM'
+	     </if>
+         AND	 oai.ORGZT_ORD_AFF_INQ_SN = #{orgztInqSn,jdbcType=NUMERIC}
+	   	   	   	     
+    </select>
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="getHelpdeskShopList" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultType="sysShopExtends">	
+		<include refid="com.plgrim.ncp.base.beginPage"/>    
+		
+		SELECT /* [goods.search.xml][getHelpdeskShopList][매장 조회][Brandon] */
+			   T.*
+		     , CASE
+		        WHEN NVL(T.OPER_BEG_HHMM, T.WKDY_OPER_BEG_HHMM) IS NOT NULL THEN SUBSTR(NVL(T.OPER_BEG_HHMM, T.WKDY_OPER_BEG_HHMM), 0,2)||':'||SUBSTR(NVL(T.OPER_BEG_HHMM, T.WKDY_OPER_BEG_HHMM), 3,2)
+		       END AS BSN_BEG_HHMM 
+		     , CASE
+		        WHEN NVL(T.OPER_END_HHMM, T.WKDY_OPER_END_HHMM) IS NOT NULL THEN SUBSTR(NVL(T.OPER_END_HHMM, T.WKDY_OPER_END_HHMM), 0,2)||':'||SUBSTR(NVL(T.OPER_END_HHMM, T.WKDY_OPER_END_HHMM), 3,2)
+		       END AS BSN_END_HHMM
+	         , CASE
+	            WHEN TO_NUMBER(TO_CHAR(SYSDATE, 'HH')) <![CDATA[<]]> 14 THEN 
+	                '1' 											<!-- 당일~1일 내 수령 가능 -->
+	            ELSE
+	                '2'												<!-- 1일~2일 내 수령 가능 -->
+	           END AS RECPT_PDRG_SECT
+		 FROM (
+		        <!-- (1:일, 2:월, 3:화, 4:수, 5:목, 6:금, 7:토) -->
+		        SELECT 
+		               SS.SHOP_ID
+		              , NVL(CASE
+                       WHEN #{lang}  = 'ENG' THEN 
+                            SSL.SHOP_NM
+                        ELSE
+                            SS.SHOP_NM
+                       END, SS.SHOP_NM) AS SHOP_NM
+		            /*, SS.SHOP_NM*/
+		             , SS.POST_NO
+		             , SS.SIDO_CD
+		             , NVL(CASE
+                        WHEN #{lang}  = 'ENG' THEN 
+                            SSL.BASE_ADDR
+                        ELSE
+                            SS.BASE_ADDR                        
+                       END, SS.BASE_ADDR) AS BASE_ADDR
+                     ,NVL(CASE
+                        WHEN #{lang} = 'ENG' THEN 
+                            SSL.DETAIL_ADDR
+                        ELSE
+                            SS.DETAIL_ADDR                        
+                       END, SS.DETAIL_ADDR) AS DETAIL_ADDR		             
+		            /* , SS.BASE_ADDR*/
+		            /* , SS.DETAIL_ADDR*/
+		             , SS.SHOP_TEL_NATION_NO
+		             , SS.SHOP_TEL_AREA_NO
+		             , SS.SHOP_TEL_TLOF_NO
+		             , SS.SHOP_TEL_TLOF_WTHN_NO
+		             , SS.LTTD
+		             , SS.LGTD
+		             , SS.WKDY_OPER_BEG_HHMM
+		             , SS.WKDY_OPER_END_HHMM
+		             , CASE
+		                WHEN TO_CHAR(SYSDATE, 'd') = 7 THEN  SS.SAT_OPER_BEG_HHMM
+		                WHEN TO_CHAR(SYSDATE, 'd') = 1 THEN  SS.HLDY_OPER_BEG_HHMM
+		                WHEN TO_CHAR(SYSDATE, 'd') != 1 AND TO_CHAR(SYSDATE, 'd') != 7 THEN  SS.WKDY_OPER_BEG_HHMM    
+		               END AS OPER_BEG_HHMM
+		             , CASE
+		                WHEN TO_CHAR(SYSDATE, 'd') = 7 THEN  SS.SAT_OPER_END_HHMM
+		                WHEN TO_CHAR(SYSDATE, 'd') = 1 THEN  SS.HLDY_OPER_END_HHMM
+		                WHEN TO_CHAR(SYSDATE, 'd') != 1 AND TO_CHAR(SYSDATE, 'd') != 7 THEN  SS.WKDY_OPER_END_HHMM    
+		               END AS OPER_END_HHMM      
+		               , SSB.PKUP_SHOP_YN              
+		         FROM SYS_SHOP SS
+		         JOIN SYS_SHOP_BRND SSB ON (SS.SHOP_ID = SSB.SHOP_ID)
+		         LEFT OUTER JOIN SYS_SHOP_LANG SSL ON (SS.SHOP_ID = SSL.SHOP_ID)
+		        WHERE SS.POST_NO IS NOT NULL
+		          AND SS.USE_YN = 'Y' 		
+		          AND SSB.USE_YN = 'Y'   
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndId)">
+		          AND SSB.ERP_BRND_ID = #{brndId}
+		        </if>         
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sidocd)">
+		        	AND SS.SIDO_CD = #{sidocd}
+		        </if>
+		        /* 온라인매장은 제외 */
+		        AND SS.SHOP_ID NOT IN ('X30004', 'M510', 'I50002', 'A30003') AND SS.SHOP_ID NOT LIKE 'A2%'
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(srchKeyword)">		          
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lang)">
+				    	<choose>
+				    		<when test="lang == 'ENG'">
+				    			AND (SSL.SHOP_NM LIKE '%'||#{srchKeyword}||'%' OR SSL.BASE_ADDR LIKE '%'||#{srchKeyword}||'%')
+				    		</when>
+				    		<otherwise>
+				    			AND (SS.SHOP_NM LIKE '%'||#{srchKeyword}||'%' OR SS.BASE_ADDR LIKE '%'||#{srchKeyword}||'%')
+				    		</otherwise>
+				    	</choose>
+				    </if>          
+				</if>	
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo)">				
+		          AND EXISTS (
+		            SELECT 1
+		             FROM GOD_SHOP_ITM_INV GSII
+		            WHERE GSII.SHOP_ID = SS.SHOP_ID
+		              AND (GSII.INV_QTY - GSII.SALE_PREARNGE_QTY) > 0
+		              AND GSII.ITM_NO = #{itmNo} 
+		          )				
+				</if>
+		    ) T	
+		    
+		     <include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- Faq 리스트 카운트 -->
+    <select id="getHelpdeskShopListCount" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultType="long">
+            /* [goods.search.xml][getHelpdeskShopListCount][매장 조회 카운트][Brandon] */
+		
+		        SELECT 
+		            COUNT(*)                  
+		         FROM SYS_SHOP SS
+		         JOIN SYS_SHOP_BRND SSB ON (SS.SHOP_ID = SSB.SHOP_ID)
+		         LEFT OUTER JOIN SYS_SHOP_LANG SSL ON (SS.SHOP_ID = SSL.SHOP_ID)
+		        WHERE SS.POST_NO IS NOT NULL
+		          AND SS.USE_YN = 'Y' 		
+		          AND SSB.USE_YN = 'Y'   
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndId)">
+		          AND SSB.ERP_BRND_ID = #{brndId}
+		        </if>         
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sidocd)">
+		        	AND SS.SIDO_CD = #{sidocd}
+		        </if>
+		        /* 온라인매장은 제외 */
+		        AND SS.SHOP_ID NOT IN ('X30004', 'M510', 'I50002', 'A30003') AND SS.SHOP_ID NOT LIKE 'A2%'
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(srchKeyword)">		          
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lang)">
+				    	<choose>
+				    		<when test="lang == 'ENG'">
+				    			AND (SSL.SHOP_NM LIKE '%'||#{srchKeyword}||'%' OR SSL.BASE_ADDR LIKE '%'||#{srchKeyword}||'%')
+				    		</when>
+				    		<otherwise>
+				    			AND (SS.SHOP_NM LIKE '%'||#{srchKeyword}||'%' OR SS.BASE_ADDR LIKE '%'||#{srchKeyword}||'%')
+				    		</otherwise>
+				    	</choose>
+				    </if>          
+				</if>	
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo)">				
+		          AND EXISTS (
+		            SELECT 1
+		             FROM GOD_SHOP_ITM_INV GSII
+		            WHERE GSII.SHOP_ID = SS.SHOP_ID
+		              AND (GSII.INV_QTY - GSII.SALE_PREARNGE_QTY) > 0
+		              AND GSII.ITM_NO = #{itmNo} 
+		          )				
+				</if>
+    </select>
+    
+    
+	
+	
+	
+</mapper>

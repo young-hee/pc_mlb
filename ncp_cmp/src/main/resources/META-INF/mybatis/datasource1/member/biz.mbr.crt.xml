@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.crt">
+
+	<resultMap id="checkMemberCertifyResultMap" type="com.plgrim.ncp.biz.member.result.MemberFoResult">
+		<result property="mbr.mbrNo"				column="mbr_no" />					<!-- 회원 번호 -->
+		<result property="mbr.mbrId"				column="mbr_id" />					<!-- 회원 ID -->
+		<result property="mbr.mbrStatCd"			column="mbr_stat_cd" />			<!-- 회원 상태 코드 -->
+		<result property="mbr.mbrNm"				column="mbr_nm" />				<!-- 회원 명 -->
+		<result property="mbr.erpCstmrNo"		column="erp_cstmr_no" />		<!-- ERP 고객번호 -->
+		<result property="joinDtStr"					column="join_dt_str" />				<!-- 회원 가입일(String) -->
+	</resultMap>    
+	<select id="checkMemberCertify" parameterType="String" resultMap="checkMemberCertifyResultMap" >
+		/* [biz.mbr.crt.xml][checkMemberCertify][조회 : 본인인증 회원 중복체크][Id] */
+ 		SELECT 
+ 			m.mbr_no
+		  , m.mbr_id
+		  , m.mbr_stat_cd
+		  , m.mbr_nm
+		  , m.erp_cstmr_no
+		  , TO_CHAR(m.join_dt, 'YYYY-MM-DD') AS join_dt_str
+		FROM mbr m
+			INNER JOIN mbr_crtfc crt
+			ON m.mbr_no = crt.mbr_no
+			AND crt.rlnm_crtfc_di = #{di}
+		WHERE m.mbr_tp_cd = 'UNITY_MBR'
+		<if test="joinMallId != null and joinMallId != ''">
+			AND m.SSO_GRP_CD IN (SELECT SSO_GRP_CD FROM SYS_MALL WHERE MALL_ID = #{joinMallId})
+		</if>
+	</select>
+
+	<select id="selectMbrCrtfc" parameterType="mbrCrtfc" resultType="mbrCrtfc">
+        SELECT /* com.plgrim.ncp.base.repository.mbr.selectMbrCrtfc jackie 20150406 */
+                MBR_NO
+               ,MBR_CRTFC_TURN
+               ,MBR_CRTFC_TP_CD
+               ,MBR_CRTFC_YN
+               ,MBR_CRTFC_DATE
+               ,RLNM_CRTFC_RESULT_CD
+               ,RLNM_CRTFC_DI
+               ,RLNM_CRTFC_CI
+               ,RLNM_CRTFC_VER
+               ,RLNM_CRTFC_IPIN
+               ,MBR_EMAIL
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    MBR_CRTFC t
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+        AND     MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </select>
+    
+	<update id="insertMbrCrtfc" parameterType="mbrCrtfc" >
+	    MERGE /* insertMbrCrtfc  */  
+	    INTO MBR_CRTFC crt
+	    USING(
+	    	SELECT 
+	    		m.mbr_no
+               ,mcrt.mbr_crtfc_turn
+               ,mcrt.mbr_crtfc_tp_cd
+               ,mcrt.mbr_crtfc_yn
+               ,mcrt.mbr_crtfc_date
+               ,mcrt.rlnm_crtfc_result_cd
+               ,mcrt.rlnm_crtfc_di
+               ,mcrt.rlnm_crtfc_ci
+               ,mcrt.rlnm_crtfc_ver
+               ,mcrt.rlnm_crtfc_ipin
+	    	FROM mbr m 
+	    		LEFT OUTER JOIN mbr_crtfc mcrt 
+	    		ON m.mbr_no = mcrt.mbr_no
+		    	AND mcrt.mbr_crtfc_yn = 'Y'
+		    	AND mcrt.mbr_crtfc_tp_cd = #{mbrCrtfcTpCd,jdbcType=VARCHAR}
+			    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rlnmCrtfcResultCd)">
+			    AND mcrt.rlnm_crtfc_result_cd IS NOT NULL
+			    </if>
+			    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rlnmCrtfcIpin)">
+			    AND mcrt.rlnm_crtfc_ipin IS NOT NULL
+			    </if>
+			    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmail)">
+			    AND mcrt.mbr_email IS NOT NULL
+			    </if>
+	    	WHERE m.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+	    	 )crt1
+	    ON ( 
+	    	crt.mbr_no = crt1.mbr_no
+	    	AND crt.mbr_crtfc_turn = crt1.mbr_crtfc_turn
+	    	)
+	    WHEN MATCHED THEN
+	    	UPDATE SET 
+	    		crt.udter_id = #{udterId,jdbcType=VARCHAR}
+	    		,crt.udt_dt = SYSDATE
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCrtfcYn)">
+	    		,crt.mbr_crtfc_yn = #{mbrCrtfcYn}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCrtfcDate)">
+	    		,crt.mbr_crtfc_date = #{mbrCrtfcDate}
+	    		</if>
+	    		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCrtfcDate)">
+	    		,crt.mbr_crtfc_date = SYSDATE
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rlnmCrtfcResultCd)">
+	    		,crt.rlnm_crtfc_result_cd = #{rlnmCrtfcResultCd,jdbcType=VARCHAR}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rlnmCrtfcDi)">
+	    		,crt.rlnm_crtfc_di = #{rlnmCrtfcDi,jdbcType=VARCHAR}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rlnmCrtfcCi)">
+	    		,crt.rlnm_crtfc_ci = #{rlnmCrtfcCi,jdbcType=VARCHAR}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rlnmCrtfcVer)">
+	    		,crt.rlnm_crtfc_ver = #{rlnmCrtfcVer,jdbcType=VARCHAR}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rlnmCrtfcIpin)">
+	    		,crt.rlnm_crtfc_ipin = #{rlnmCrtfcIpin,jdbcType=VARCHAR}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmail)">
+	    		,crt.mbr_email = #{mbrEmail,jdbcType=VARCHAR}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmailCrtfcToknId)">
+	    		,crt.mbr_email_crtfc_tokn_id = #{mbrEmailCrtfcToknId,jdbcType=VARCHAR}
+	    		</if>
+	    		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmailCrtfcTmlmtDt)">
+	    		,crt.mbr_email_crtfc_tmlmt_dt = #{mbrEmailCrtfcTmlmtDt}
+	    		</if>
+    		WHERE crt.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+    		AND crt.mbr_crtfc_turn = crt1.mbr_crtfc_turn
+	    	
+	    WHEN NOT MATCHED THEN 
+	    
+	    
+		    INSERT 
+			(
+		        crt.MBR_NO
+		       ,crt.MBR_CRTFC_TURN
+		       ,crt.MBR_CRTFC_TP_CD
+		       ,crt.MBR_CRTFC_YN
+		       ,crt.MBR_CRTFC_DATE
+		       ,crt.RLNM_CRTFC_RESULT_CD
+		       ,crt.RLNM_CRTFC_DI
+		       ,crt.RLNM_CRTFC_CI
+		       ,crt.RLNM_CRTFC_VER
+		       ,crt.RLNM_CRTFC_IPIN
+			   ,crt.MBR_EMAIL
+			   ,crt.mbr_email_crtfc_tokn_id
+			   ,crt.mbr_email_crtfc_tmlmt_dt
+		       ,crt.REGTR_ID
+		       ,crt.UDTER_ID
+	           ,crt.REG_DT
+	           ,crt.UDT_DT
+			)
+			VALUES
+			(
+		        #{mbrNo,jdbcType=VARCHAR}
+		       ,#{mbrCrtfcTurn,jdbcType=NUMERIC}
+		       ,#{mbrCrtfcTpCd,jdbcType=VARCHAR}
+		       ,#{mbrCrtfcYn,jdbcType=VARCHAR}
+		       <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCrtfcDate)">
+	    		,#{mbrCrtfcDate}
+    		   </if>
+    		    <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCrtfcDate)">
+    		    ,SYSDATE
+    		    </if>
+		       ,#{rlnmCrtfcResultCd,jdbcType=VARCHAR}
+		       ,#{rlnmCrtfcDi,jdbcType=VARCHAR}
+		       ,#{rlnmCrtfcCi,jdbcType=VARCHAR}
+		       ,#{rlnmCrtfcVer,jdbcType=VARCHAR}
+		       ,#{rlnmCrtfcIpin,jdbcType=VARCHAR}
+			   ,#{mbrEmail,jdbcType=VARCHAR}
+			   ,#{mbrEmailCrtfcToknId,jdbcType=VARCHAR}
+			   ,#{mbrEmailCrtfcTmlmtDt}
+		       ,#{regtrId,jdbcType=VARCHAR}
+		       ,#{udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+			)   
+    </update>
+    
+    <delete id="deleteMbrCrtfc" parameterType="mbrCrtfc">
+        DELETE /* com.plgrim.ncp.base.repository.mbr.deleteMbrCrtfc jackie 20150406 */  
+        FROM MBR_CRTFC 
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+        AND     MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </delete>
+
+
+	<resultMap id="mbrCrtfcMap" type="com.plgrim.ncp.biz.member.result.MemberBoResult">
+	   <result property="mbrCrtfc.mbrNo"                    column="MBR_NO" />                   <!-- 회원 번호 -->
+	   <result property="mbrCrtfc.mbrCrtfcTurn"             column="MBR_CRTFC_TURN" />           <!-- 회원 인증 순번 -->
+	   <result property="mbrCrtfc.mbrCrtfcTpCd"             column="MBR_CRTFC_TP_CD" />          <!-- 회원 인증 유형 코드 -->
+	   <result property="mbrCrtfc.mbrCrtfcYn"               column="MBR_CRTFC_YN" />             <!-- 회원 인증 여부 -->
+	   <result property="mbrCrtfc.mbrCrtfcDate"             column="MBR_CRTFC_DATE" />           <!-- 회원 인증 일자 -->
+	   <result property="mbrCrtfc.rlnmCrtfcMobilNationNo"   column="RLNM_CRTFC_MOBIL_NATION_NO" /><!-- 실명인증 휴대전화 국가번호 -->
+	   <result property="mbrCrtfc.rlnmCrtfcMobilAreaNo"     column="RLNM_CRTFC_MOBIL_AREA_NO" /> <!-- 실명인증 휴대전화 지역번호 -->
+	   <result property="mbrCrtfc.rlnmCrtfcMobilTlofNo"     column="RLNM_CRTFC_MOBIL_TLOF_NO" /> <!-- 실명인증 휴대전화 국번호 -->
+	   <result property="mbrCrtfc.rlnmCrtfcMobilTlofWthnNo" column="RLNM_CRTFC_MOBIL_TLOF_WTHN_NO" /><!-- 실명인증 휴대전화 국내번호 -->
+	   <result property="mbrCrtfc.rlnmCrtfcResultCd"        column="RLNM_CRTFC_RESULT_CD" />     <!-- 실명인증 결과 코드 -->
+	   <result property="mbrCrtfc.rlnmCrtfcDi"              column="RLNM_CRTFC_DI" />            <!-- 실명인증 DI -->
+	   <result property="mbrCrtfc.rlnmCrtfcCi"              column="RLNM_CRTFC_CI" />            <!-- 실명인증 CI -->
+	   <result property="mbrCrtfc.rlnmCrtfcVer"             column="RLNM_CRTFC_VER" />           <!-- 실명인증 버전 -->
+	   <result property="mbrCrtfc.rlnmCrtfcIpin"            column="RLNM_CRTFC_IPIN" />          <!-- 실명인증IPIN -->
+	   <result property="mbrCrtfc.mbrEmail"         	    column="MBR_EMAIL" />          		 <!-- 인증 EMAIL -->
+	   <result property="mbrCrtfc.mbr_email_crtfc_tokn_id"  column="mbrEmailCrtfcToknId" />      <!-- 인증 EMAIL TOKEN ID -->
+	   <result property="mbrCrtfc.mbr_email_crtfc_tmlmt_dt" column="mbrEmailCrtfcTmlmtDt" />     <!-- TOKEN 유효 일자 -->
+	   <result property="mbrCrtfc.regtrId"                  column="REGTR_ID" />                 <!-- 등록자 ID -->
+	   <result property="mbrCrtfc.regDt"                    column="REG_DT" />                   <!-- 등록 일시 -->
+	   <result property="mbrCrtfc.udterId"                  column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="mbrCrtfc.udtDt"                    column="UDT_DT" />                   <!-- 수정 일시 -->
+	   
+	   <result property="mobilNo"                           column="MOBIL_NO" />                 <!-- 실명인증 휴대전화 번호 -->
+	</resultMap>
+
+    <!-- 회원 인증 정보 조회 -->
+    <select id="selectMemberCertification" parameterType="mbrCrtfc" resultMap="mbrCrtfcMap">
+        SELECT /* [biz.mbr.ctrfc.xml][selectMemberCertification][조회 : 회원 인증 정보][Jessi] */
+              *
+          FROM (
+            SELECT 
+			        mc.mbr_no                      /* 회원 번호 */
+			      , mc.mbr_crtfc_turn              /* 회원 인증 순번 */
+			      , mc.mbr_crtfc_tp_cd             /* 회원 인증 유형 코드 */
+			      , mc.mbr_crtfc_yn                /* 회원 인증 여부 */
+			      , mc.mbr_crtfc_date              /* 회원 인증 일자 */
+			      , fn_masking('PHON' , mc.rlnm_crtfc_mobil_nation_no
+					                     ||NVL2(mc.rlnm_crtfc_mobil_nation_no, '-', '')||mc.rlnm_crtfc_mobil_area_no
+					                     ||NVL2(mc.rlnm_crtfc_mobil_area_no, '-', '')||mc.rlnm_crtfc_mobil_tlof_no
+					                     ||NVL2(mc.rlnm_crtfc_mobil_tlof_no, '-', '')||mc.rlnm_crtfc_mobil_tlof_wthn_no
+			                          , ''
+			                          , #{maskingYn, jdbcType=VARCHAR}) AS mobil_no
+			      , mc.rlnm_crtfc_result_cd        /* 실명인증 결과 코드 */
+			      , mc.rlnm_crtfc_di               /* 실명인증 DI */
+			      , mc.rlnm_crtfc_ci               /* 실명인증 CI */
+			      , mc.rlnm_crtfc_ver              /* 실명인증 버전 */
+			      , mc.rlnm_crtfc_ipin             /* 실명인증IPIN */
+			      , mc.mbr_email             	   /* 인증 EMAIL */
+				  , mc.mbr_email_crtfc_tokn_id	   /* 인증 EMAIL TOKEN ID */
+				  , mc.mbr_email_crtfc_tmlmt_dt		/* TOKEN 유효 일자 */
+			      , mc.regtr_id                    /* 등록자 ID */
+			      , mc.reg_dt                      /* 등록 일시 */
+			      , mc.udter_id                    /* 수정자 ID */
+			      , mc.udt_dt                      /* 수정 일시 */
+              FROM mbr_crtfc mc
+             WHERE mc.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCrtfcTpCd)">
+               AND mc.mbr_crtfc_tp_cd = #{mbrCrtfcTpCd, jdbcType=VARCHAR}
+            </if>
+            <if test='@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(mbrCrtfcYn, "Y")'>
+               AND mc.mbr_crtfc_yn = 'Y'                                      /* 회원 인증 여부 */
+            </if>   
+             ORDER BY mc.mbr_crtfc_turn DESC 
+              )
+         WHERE rownum = 1           
+    </select>
+    
+	<resultMap id="mbrResultMap" type="com.plgrim.ncp.biz.member.result.MemberFoResult">
+		<result property="mbr.mbrNo"				column="MBR_NO" />				<!-- 회원 번호 -->
+		<result property="mbr.mbrId"				column="MBR_ID" />					<!-- 회원 ID -->
+		<result property="mbr.mbrEmail"			column="MBR_EMAIL" />			<!-- 회원 이메일 -->
+		<result property="mbr.mbrNm"				column="MBR_NM" />				<!-- 회원 명 -->
+		<result property="maskMobilNo"			column="MASK_MOBIL_NO" />	<!-- 회원 휴대폰 번호(마스킹) -->
+		<result property="maskEmail"				column="MASK_EAMIL" />			<!-- 회원 이메일(마스킹) -->
+	</resultMap>
+     <select id="selectMemberForPassword" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultMap="mbrResultMap" >
+ 		SELECT /*[com.plgrim.ncp.biz.mbr.crt.selectMemberForPassword]*/
+ 			m.mbr_no
+ 			,m.mbr_id
+ 			, fn_masking('PHON' , mobil_area_no||'-'||mobil_tlof_no||'-'||mobil_tlof_wthn_no, '', 'Y') AS MASK_MOBIL_NO
+ 			,mobil_area_no||mobil_tlof_no||mobil_tlof_wthn_no	AS mobilNo
+ 			,m.mbr_email
+ 			,fn_masking('EMAIL', m.mbr_email, '', 'Y') AS MASK_EMAIL
+ 			,m.mbr_nm
+		FROM mbr m
+			INNER JOIN mbr_crtfc crt
+				ON m.mbr_no = crt.mbr_no
+				AND crt.rlnm_crtfc_di = #{mbrCrtfc.rlnmCrtfcDi}
+		WHERE m.mbr_tp_cd = 'UNITY_MBR'
+		AND m.mbr_id = #{mbr.mbrId}
+		AND m.SSO_GRP_CD IN (SELECT SSO_GRP_CD FROM SYS_MALL WHERE MALL_ID = #{mallId})
+    </select>
+
+	<select id="selectMbrEmailCrtfc" parameterType="String" resultType="mbrCrtfc">
+		SELECT	/* [com.plgrim.ncp.biz.mbr.crt.selectMbrEmailCrtfc] [회원 인증 조회] yoon */
+			  mc.mbr_no                      /* 회원 번호 */
+			  , mc.mbr_crtfc_turn              /* 회원 인증 순번 */
+			  , mc.mbr_crtfc_tp_cd             /* 회원 인증 유형 코드 */
+			  , mc.mbr_crtfc_yn                /* 회원 인증 여부 */
+			  , mc.mbr_crtfc_date              /* 회원 인증 일자 */
+			  , mc.rlnm_crtfc_result_cd        /* 실명인증 결과 코드 */
+			  , mc.rlnm_crtfc_di               /* 실명인증 DI */
+			  , mc.rlnm_crtfc_ci               /* 실명인증 CI */
+			  , mc.rlnm_crtfc_ver              /* 실명인증 버전 */
+			  , mc.rlnm_crtfc_ipin             /* 실명인증IPIN */
+			  , mc.mbr_email             	   /* 인증 EMAIL */
+			  , mc.mbr_email_crtfc_tokn_id	   /* 인증 EMAIL TOKEN ID */
+			  , mc.mbr_email_crtfc_tmlmt_dt		/* TOKEN 유효 일자 */
+			  , mc.regtr_id                    /* 등록자 ID */
+			  , mc.reg_dt                      /* 등록 일시 */
+			  , mc.udter_id                    /* 수정자 ID */
+			  , mc.udt_dt                      /* 수정 일시 */
+		FROM mbr_crtfc mc
+		WHERE mc.mbr_email_crtfc_tokn_id = #{mbrEmailToken,jdbcType=VARCHAR}
+		  AND mc.mbr_crtfc_tp_cd = 'EMAIL_CRTFC'
+		  and mc.mbr_email_crtfc_tmlmt_dt <![CDATA[>=]]> SYSDATE
+	</select>
+
+	<select id="selectEmailTokenId" parameterType="String" resultType="String">
+		SELECT MBR_EMAIL_CRTFC_TOKN_ID /*임시 토큰아이디 조회*/
+		  FROM (  SELECT *
+					FROM mbr_crtfc
+				   WHERE     mbr_no = #{mbrNo,jdbcType=VARCHAR}
+						 AND mbr_crtfc_tp_cd = 'EMAIL_CRTFC'
+						 AND MBR_EMAIL_CRTFC_TMLMT_DT IS NOT NULL
+				ORDER BY MBR_EMAIL_CRTFC_TMLMT_DT DESC)
+		 WHERE ROWNUM = 1
+	</select>
+
+	<update id="updateMbrIdCntcDeleteYn" parameterType="String">
+		UPDATE MBR_ID_CNTC /* [biz.mbr.crt.xml][updateMbrIdCntcDeleteYn][탈퇴 회원ID연계정보이력 UPDATE][Yoon] */
+		   SET TOKN_ID = NULL
+		     , DELETE_YN = 'Y'
+		     , UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+		     , UDT_DT = SYSDATE
+		 WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	</update>
+
+	<insert id="insertMbrIdCntcHist" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+		INSERT INTO mbr_id_cntc_hist ( /* [biz.mbr.crt.xml][insertMbrIdCntcHist][탈퇴 회원ID연계정보이력생성][Yoon] */
+			  mbr_no
+			, id_cntc_tp_cd
+			, hist_dt
+			, tokn_id
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+			, login_id
+			, delete_yn
+			, pw_reconfig_yn
+		)
+		SELECT
+			  mbr_no
+			, id_cntc_tp_cd
+			, SYSTIMESTAMP
+			, tokn_id
+			, regtr_id
+			, SYSDATE
+			, udter_id
+			, SYSDATE
+			, login_id
+			, delete_yn
+			, pw_reconfig_yn
+		FROM mbr_id_cntc
+		WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+		AND delete_yn = 'Y'
+		AND udt_dt > SYSDATE - 0.001 /* 약 1분 이전*/
+	</insert>
+
+</mapper>

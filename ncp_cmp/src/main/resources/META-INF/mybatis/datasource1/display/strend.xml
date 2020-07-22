@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+
+	<!-- S-TREND update -->
+    <update id="updateStrndForGrid" parameterType="dspStrnd">
+        UPDATE  /*[strend.xml][updateStrndForGrid][S-TREND update][Dian]*/
+        DSP_STRND SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		<if test="strndNm != null and strndNm != ''"> 
+                ,STRND_NM = #{strndNm,jdbcType=VARCHAR}
+                </if>
+                <if test="strndDscr != null and strndDscr != ''"> 
+                ,STRND_DSCR = #{strndDscr,jdbcType=VARCHAR}
+                </if>
+                <if test="strndTpCd != null and strndTpCd != ''"> 
+                ,STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="dspBegDt != null and dspBegDt != ''"> 
+                ,DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspEndDt != null and dspEndDt != ''"> 
+                ,DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspYn != null and dspYn != ''"> 
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''"> 
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+                <if test="brndId != null and brndId != ''"> 
+                ,BRND_ID = #{brndId,jdbcType=VARCHAR}
+                </if>
+                <if test="sesonCd != null and sesonCd != ''"> 
+                ,SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     STRND_SN = #{strndSn,jdbcType=NUMERIC}
+    </update>
+    
+	
+
+	<!-- S-TREND 정보 update -->
+	<update id="updateStrndInfo" parameterType="dspStrnd">
+        UPDATE  /*[strend.xml][updateStrndInfo][S-TREND 정보 update][Dian]*/
+        DSP_STRND SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		<if test="strndNm != null and strndNm != ''"> 
+                ,STRND_NM = #{strndNm,jdbcType=VARCHAR}
+                </if>
+                <if test="strndDscr != null and strndDscr != ''"> 
+                ,STRND_DSCR = #{strndDscr,jdbcType=VARCHAR}
+                </if>
+                <if test="strndTpCd != null and strndTpCd != ''"> 
+                ,STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="dspBegDt != null and dspBegDt != ''"> 
+                ,DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspEndDt != null and dspEndDt != ''"> 
+                ,DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspYn != null and dspYn != ''"> 
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''"> 
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+                <if test="brndId != null and brndId != ''"> 
+                ,BRND_ID = #{brndId,jdbcType=VARCHAR}
+                </if>
+                <if test="sesonCd != null and sesonCd != ''"> 
+                ,SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+	            ,RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+	            ,RPRST_IMG_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+	            ,RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+	            ,RPRST_IMG_FILE_URL = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+	            ,RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+	            ,RPRST_IMG_ALTRTV_CONT = null
+	            </if>
+	            
+	            	            
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileNm)">
+	            ,RPRST_IMG2_FILE_NM = #{rprstImg2FileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileNm)">
+	            ,RPRST_IMG2_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileUrl)">
+	            ,RPRST_IMG2_FILE_URL = #{rprstImg2FileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileUrl)">
+	            ,RPRST_IMG2_FILE_URL = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2AltrtvCont)">
+	            ,RPRST_IMG2_ALTRTV_CONT = #{rprstImg2AltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2AltrtvCont)">
+	            ,RPRST_IMG2_ALTRTV_CONT = null
+	            </if>
+        WHERE   1 = 1
+        AND     STRND_SN = #{strndSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- S-TREND 언어 merge --> 
+    <update id="saveDspStrndLangInfo" parameterType="dspStrndLang" >
+    	MERGE INTO /*[strend.xml][saveDspStrndLang][S-TREND 언어 merge][Dian]*/ 
+    	DSP_STRND_LANG dpl
+		USING (
+		        SELECT
+		             #{strndSn,jdbcType=NUMERIC} as strnd_sn
+		            ,#{langCd,jdbcType=VARCHAR} as lang_cd
+		        FROM DUAL    			
+		) fch ON (dpl.strnd_sn = fch.strnd_sn and dpl.lang_cd = fch.lang_cd)
+		WHEN MATCHED THEN 
+		    UPDATE SET
+		    	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		        ,UDT_DT = SYSDATE
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndNm)">
+	            ,STRND_NM = #{strndNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndNm)">
+	            ,STRND_NM = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndDscr)">
+	            ,STRND_DSCR = #{strndDscr,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndDscr)">
+	            ,STRND_DSCR = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+	            ,RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+	            ,RPRST_IMG_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+	            ,RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+	            ,RPRST_IMG_FILE_URL = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+	            ,RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+	            ,RPRST_IMG_ALTRTV_CONT = null
+	            </if>
+		WHEN NOT MATCHED THEN 
+		    INSERT   (
+		        STRND_SN
+		       ,LANG_CD
+		       ,STRND_NM
+		       ,STRND_DSCR
+		       ,RPRST_IMG_FILE_NM
+		       ,RPRST_IMG_FILE_URL
+		       ,RPRST_IMG_ALTRTV_CONT
+		       ,REGTR_ID
+		       ,UDTER_ID
+	           ,REG_DT
+	           ,UDT_DT
+		    )
+		    VALUES
+		    (
+		        #{strndSn,jdbcType=NUMERIC}
+		       ,#{langCd,jdbcType=VARCHAR}
+		       ,#{strndNm,jdbcType=VARCHAR}
+		       ,#{strndDscr,jdbcType=VARCHAR}
+		       ,#{rprstImgFileNm,jdbcType=VARCHAR}
+		       ,#{rprstImgFileUrl,jdbcType=VARCHAR}
+		       ,#{rprstImgAltrtvCont,jdbcType=VARCHAR}
+		       ,#{regtrId,jdbcType=VARCHAR}
+		       ,#{udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+		    ) 
+    </update>
+
+    
+     <!-- S-TREND(언어) 등록여부 체크 -->
+    <select id="selectDspStrndLangCnt" parameterType="dspStrndLang" resultType="Integer">
+    	SELECT /*[strend.xml][selectDspStrndLangCnt][S-TREND 언어 등록여부 체크][Dian]*/  
+    		count(*)
+    	FROM dsp_strnd_lang
+    	WHERE 1=1
+	    AND strnd_sn =  #{strndSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- S-TREND(언어) - S-TREND명 수정 -->
+    <update id="updateDspStrndLangNm" parameterType="dspStrndLang" >
+    	UPDATE /*[strend.xml][updateDspStrndLangNm][S-TREND 언어 S-TREND명 수정][Dian]*/  
+    	dsp_strnd_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndNm)">
+	        ,strnd_NM = #{strndNm,jdbcType=VARCHAR}
+	        </if>
+	        <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndNm)">
+	        ,strnd_NM = null
+	        </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndDscr)">
+            ,strnd_DSCR = #{strndDscr,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndDscr)">
+            ,strnd_DSCR = null
+            </if>
+	    WHERE 1=1
+	    AND strnd_sn =  #{strndSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- S-TREND(언어) - S-TREND PC 이미지 수정 -->
+	<update id="updateDspStrndLangImg" parameterType="dspStrndLang" >
+    	UPDATE /*[strend.xml][updateDspStrndLangImg][S-TREND 언어 S-TREND 이미지 수정][Dian]*/  
+    	dsp_strnd_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+            ,RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+            ,RPRST_IMG_FILE_NM = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+            ,RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+            ,RPRST_IMG_FILE_URL = null
+            </if>
+               <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+            ,RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+            ,RPRST_IMG_ALTRTV_CONT = null
+            </if>
+	    WHERE 1=1
+	    AND strnd_sn =  #{strndSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- S-TREND(언어) - S-TREND Mobile 이미지 수정 -->
+	<update id="updateDspStrndLangImg2" parameterType="dspStrndLang" >
+    	UPDATE /*[strend.xml][updateDspStrndLangImg2][S-TREND 언어 S-TREND 이미지2 수정][Dian]*/  
+    	dsp_strnd_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileNm)">
+            ,RPRST_IMG2_FILE_NM = #{rprstImg2FileNm,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileNm)">
+            ,RPRST_IMG2_FILE_NM = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileUrl)">
+            ,RPRST_IMG2_FILE_URL = #{rprstImg2FileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2FileUrl)">
+            ,RPRST_IMG2_FILE_URL = null
+            </if>
+               <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2AltrtvCont)">
+            ,RPRST_IMG2_ALTRTV_CONT = #{rprstImg2AltrtvCont,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImg2AltrtvCont)">
+            ,RPRST_IMG2_ALTRTV_CONT = null
+            </if>
+	    WHERE 1=1
+	    AND strnd_sn =  #{strndSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+	
+    
+    <!-- S-TREND(언어) 삭제 -->
+    <delete id="deleteDspStrndLangInfo" parameterType="dspStrndLang">
+        DELETE /*[corner.xml][deleteDspStrndLangInfo][S-TREND(언어) 삭제][Dian]*/ 
+        FROM DSP_STRND_LANG 
+        WHERE   1 = 1
+        AND     STRND_SN = #{strndSn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- S-TREND 전시대상 삭제 -->
+    <delete id="deleteDspStrndDspTgtInfo" parameterType="dspStrndDspTgt">
+        DELETE /*[strnd.xml][deleteDspStrndtDspTgtInfo][S-TREND 전시대상 삭제][Dian]*/ 
+        FROM DSP_STRND_DSP_TGT 
+        WHERE   1 = 1
+        AND     STRND_SN = #{strndSn,jdbcType=NUMERIC}
+    </delete>	
+    
+</mapper>

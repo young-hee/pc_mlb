@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminCrtfc" parameterType="sysAdminCrtfc" resultType="sysAdminCrtfc">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminCrtfc		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , FIRST_CRTFC_YN
+			 , FIRST_CRTFC_DT
+			 , LAST_CRTFC_NO
+			 , LAST_CRTFC_NO_ISSU_DT
+			 , LAST_CRTFC_SUCCES_DT
+			 , LAST_CRTFC_SUCCES_YN
+			 , LAST_CRTFC_FAILR_DT
+			 , ACMTL_CRTFC_FAILR_COUNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_ADMIN_CRTFC
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysAdminCrtfc" parameterType="sysAdminCrtfc">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminCrtfc		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_CRTFC SET
+			   FIRST_CRTFC_YN = #{firstCrtfcYn,jdbcType=VARCHAR}
+			 , FIRST_CRTFC_DT = #{firstCrtfcDt,jdbcType=TIMESTAMP}
+			 , LAST_CRTFC_NO = #{lastCrtfcNo,jdbcType=VARCHAR}
+			 , LAST_CRTFC_NO_ISSU_DT = #{lastCrtfcNoIssuDt,jdbcType=TIMESTAMP}
+			 , LAST_CRTFC_SUCCES_DT = #{lastCrtfcSuccesDt,jdbcType=TIMESTAMP}
+			 , LAST_CRTFC_SUCCES_YN = #{lastCrtfcSuccesYn,jdbcType=VARCHAR}
+			 , LAST_CRTFC_FAILR_DT = #{lastCrtfcFailrDt,jdbcType=TIMESTAMP}
+			 , ACMTL_CRTFC_FAILR_COUNT = #{acmtlCrtfcFailrCount,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysAdminCrtfc" parameterType="sysAdminCrtfc">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminCrtfc		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_CRTFC (
+			   ADMIN_ID
+			 , FIRST_CRTFC_YN
+			 , FIRST_CRTFC_DT
+			 , LAST_CRTFC_NO
+			 , LAST_CRTFC_NO_ISSU_DT
+			 , LAST_CRTFC_SUCCES_DT
+			 , LAST_CRTFC_SUCCES_YN
+			 , LAST_CRTFC_FAILR_DT
+			 , ACMTL_CRTFC_FAILR_COUNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{firstCrtfcYn,jdbcType=VARCHAR}
+			 , #{firstCrtfcDt,jdbcType=TIMESTAMP}
+			 , #{lastCrtfcNo,jdbcType=VARCHAR}
+			 , #{lastCrtfcNoIssuDt,jdbcType=TIMESTAMP}
+			 , #{lastCrtfcSuccesDt,jdbcType=TIMESTAMP}
+			 , #{lastCrtfcSuccesYn,jdbcType=VARCHAR}
+			 , #{lastCrtfcFailrDt,jdbcType=TIMESTAMP}
+			 , #{acmtlCrtfcFailrCount,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAdminCrtfc" parameterType="sysAdminCrtfc">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminCrtfc		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_CRTFC
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

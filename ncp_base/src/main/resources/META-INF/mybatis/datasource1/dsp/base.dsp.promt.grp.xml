@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspPromtGrp" parameterType="dspPromtGrp" resultType="dspPromtGrp">
+		SELECT /* com.plgrim.ncp.base.selectDspPromtGrp		Generator(Generator)	2019-02-01 */
+			   PROMT_SN
+			 , PROMT_GRP_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_PROMT
+		 WHERE 1 = 1
+	   	   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspPromtGrp" parameterType="dspPromtGrp">
+		UPDATE /* com.plgrim.ncp.base.updateDspPromtGrp		Generator(Generator)	2019-02-01 */
+		DSP_PROMT SET
+			   PROMT_GRP_SN = #{promtGrpSn,jdbcType=NUMERIC}
+			 , PROMT_GRP_NM = #{promtGrpNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspPromtGrp" parameterType="dspPromtGrp">
+		INSERT /* com.plgrim.ncp.base.insertDspPromtGrp		Generator(Generator)	2019-02-01 */
+		INTO   DSP_PROMT (
+			   PROMT_GRP_SN
+			 , PROMT_GRP_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{promtGrpSn,jdbcType=NUMERIC}
+			 , #{promtGrpNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspPromtGrp" parameterType="dspPromt">
+		DELETE /* com.plgrim.ncp.base.deleteDspPromtGrp		Generator(Generator)	2019-02-01 */
+		  FROM DSP_PROMT_GRP
+		 WHERE 1 = 1
+		   AND PROMT_GRP_SN = #{promtGrpSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

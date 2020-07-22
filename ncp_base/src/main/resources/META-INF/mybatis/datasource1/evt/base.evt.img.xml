@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtImg" parameterType="evtImg" resultType="evtImg">
+		SELECT /* com.plgrim.ncp.base.selectEvtImg		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , IMG_TURN
+			 , DVC_SECT_CD
+			 , EVT_IMG_SECT_CD
+			 , IMG_FILE_NM
+			 , IMG_FILE_URL
+			 , IMG_ALTRTV_CONT
+			 , IMG_EXPSR_TXT1_CONT
+			 , IMG_EXPSR_TXT2_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_IMG
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND IMG_TURN = #{imgTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEvtImg" parameterType="evtImg">
+		UPDATE /* com.plgrim.ncp.base.updateEvtImg		Generator(Generator)	2018-05-23 */
+		EVT_IMG SET
+			   DVC_SECT_CD = #{dvcSectCd,jdbcType=VARCHAR}
+			 , EVT_IMG_SECT_CD = #{evtImgSectCd,jdbcType=VARCHAR}
+			 , IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+			 , IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+			 , IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+			 , IMG_EXPSR_TXT1_CONT = #{imgExpsrTxt1Cont,jdbcType=VARCHAR}
+			 , IMG_EXPSR_TXT2_CONT = #{imgExpsrTxt2Cont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND IMG_TURN = #{imgTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEvtImg" parameterType="evtImg">
+		INSERT /* com.plgrim.ncp.base.insertEvtImg		Generator(Generator)	2018-05-23 */
+		INTO   EVT_IMG (
+			   EVT_NO
+			 , IMG_TURN
+			 , DVC_SECT_CD
+			 , EVT_IMG_SECT_CD
+			 , IMG_FILE_NM
+			 , IMG_FILE_URL
+			 , IMG_ALTRTV_CONT
+			 , IMG_EXPSR_TXT1_CONT
+			 , IMG_EXPSR_TXT2_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{imgTurn,jdbcType=NUMERIC}
+			 , #{dvcSectCd,jdbcType=VARCHAR}
+			 , #{evtImgSectCd,jdbcType=VARCHAR}
+			 , #{imgFileNm,jdbcType=VARCHAR}
+			 , #{imgFileUrl,jdbcType=VARCHAR}
+			 , #{imgAltrtvCont,jdbcType=VARCHAR}
+			 , #{imgExpsrTxt1Cont,jdbcType=VARCHAR}
+			 , #{imgExpsrTxt2Cont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtImg" parameterType="evtImg">
+		DELETE /* com.plgrim.ncp.base.deleteEvtImg		Generator(Generator)	2018-05-23 */
+		  FROM EVT_IMG
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND IMG_TURN = #{imgTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

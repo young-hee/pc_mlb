@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrDlvsp" parameterType="mbrDlvsp" resultType="mbrDlvsp">
+		SELECT /* com.plgrim.ncp.base.selectMbrDlvsp		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , DLV_ADBUK_TURN
+			 , ADBUK_NM
+			 , ADDRSE_NM
+			 , BASE_DLVSP_YN
+			 , DLV_ADDR_SECT_CD
+			 , NATION_CD
+			 , POST_NO
+			 , BASE_ADDR
+			 , DETAIL_ADDR
+			 , CTY_NM
+			 , LCLTY_NM
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , DLV_EMAIL
+			 , DLV_RM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_DLVSP
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND DLV_ADBUK_TURN = #{dlvAdbukTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrDlvsp" parameterType="mbrDlvsp">
+		UPDATE /* com.plgrim.ncp.base.updateMbrDlvsp		Generator(Generator)	2018-05-23 */
+		MBR_DLVSP SET
+			   ADBUK_NM = #{adbukNm,jdbcType=VARCHAR}
+			 , ADDRSE_NM = #{addrseNm,jdbcType=VARCHAR}
+			 , BASE_DLVSP_YN = #{baseDlvspYn,jdbcType=VARCHAR}
+			 , DLV_ADDR_SECT_CD = #{dlvAddrSectCd,jdbcType=VARCHAR}
+			 , NATION_CD = #{nationCd,jdbcType=VARCHAR}
+			 , POST_NO = #{postNo,jdbcType=VARCHAR}
+			 , BASE_ADDR = #{baseAddr,jdbcType=VARCHAR}
+			 , DETAIL_ADDR = #{detailAddr,jdbcType=VARCHAR}
+			 , CTY_NM = #{ctyNm,jdbcType=VARCHAR}
+			 , LCLTY_NM = #{lcltyNm,jdbcType=VARCHAR}
+			 , TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+			 , TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+			 , MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , DLV_EMAIL = #{dlvEmail,jdbcType=VARCHAR}
+			 , DLV_RM = #{dlvRm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND DLV_ADBUK_TURN = #{dlvAdbukTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrDlvsp" parameterType="mbrDlvsp">
+		INSERT /* com.plgrim.ncp.base.insertMbrDlvsp		Generator(Generator)	2018-05-23 */
+		INTO   MBR_DLVSP (
+			   MBR_NO
+			 , DLV_ADBUK_TURN
+			 , ADBUK_NM
+			 , ADDRSE_NM
+			 , BASE_DLVSP_YN
+			 , DLV_ADDR_SECT_CD
+			 , NATION_CD
+			 , POST_NO
+			 , BASE_ADDR
+			 , DETAIL_ADDR
+			 , CTY_NM
+			 , LCLTY_NM
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , DLV_EMAIL
+			 , DLV_RM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{dlvAdbukTurn,jdbcType=NUMERIC}
+			 , #{adbukNm,jdbcType=VARCHAR}
+			 , #{addrseNm,jdbcType=VARCHAR}
+			 , #{baseDlvspYn,jdbcType=VARCHAR}
+			 , #{dlvAddrSectCd,jdbcType=VARCHAR}
+			 , #{nationCd,jdbcType=VARCHAR}
+			 , #{postNo,jdbcType=VARCHAR}
+			 , #{baseAddr,jdbcType=VARCHAR}
+			 , #{detailAddr,jdbcType=VARCHAR}
+			 , #{ctyNm,jdbcType=VARCHAR}
+			 , #{lcltyNm,jdbcType=VARCHAR}
+			 , #{telNationNo,jdbcType=VARCHAR}
+			 , #{telAreaNo,jdbcType=VARCHAR}
+			 , #{telTlofNo,jdbcType=VARCHAR}
+			 , #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , #{mobilNationNo,jdbcType=VARCHAR}
+			 , #{mobilAreaNo,jdbcType=VARCHAR}
+			 , #{mobilTlofNo,jdbcType=VARCHAR}
+			 , #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{dlvEmail,jdbcType=VARCHAR}
+			 , #{dlvRm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrDlvsp" parameterType="mbrDlvsp">
+		DELETE /* com.plgrim.ncp.base.deleteMbrDlvsp		Generator(Generator)	2018-05-23 */
+		  FROM MBR_DLVSP
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND DLV_ADBUK_TURN = #{dlvAdbukTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

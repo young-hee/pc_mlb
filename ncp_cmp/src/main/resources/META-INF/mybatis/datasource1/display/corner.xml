@@ -1,0 +1,868 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+    
+    <update id="updateDspCnrInfo" parameterType="dspCnr">
+        UPDATE  /*[corner.xml][updateDspCnrInfo][코너 정보 update][Dian]*/
+        DSP_CNR SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="dspCnrNm != null and dspCnrNm != ''"> 
+                ,DSP_CNR_NM = #{dspCnrNm,jdbcType=VARCHAR}
+                </if>
+                <if test="dspCnrDscr != null and dspCnrDscr != ''"> 
+                ,DSP_CNR_DSCR = #{dspCnrDscr,jdbcType=VARCHAR}
+                </if>
+                <if test="useYn != null and useYn != ''"> 
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 코너 컨텐츠 유형을 사용 중인 세트 조회 -->
+    <select id="selectUseCnrTpCnt" parameterType="dspCnrTpGrp" resultType="Integer">
+        select /*[corner.xml][selectUseCnrTpCnt][코너 컨텐츠 유형을 사용 중인 세트 조회][Dian]*/ 
+            count(cnr_set_sn) 
+        from dsp_cnr_set tt 
+        where tt.rev_sn = #{revSn,jdbcType=NUMERIC}
+        and  tt.cnr_sn = #{cnrSn,jdbcType=NUMERIC}
+        and tt.cnr_tp_grp_sn = #{upperCnrTpGrpSn,jdbcType=NUMERIC}
+    </select>
+    
+    <!-- 코너 컨텐츠 유형 그룹 삭제 -->
+    <delete id="deleteDspCnrTpGrpByCnrSn" parameterType="dspCnrTpGrp">
+        DELETE /*[corner.xml][deleteDspCnrTpGrpByCnrSn][코너 컨텐츠 유형 그룹 삭제][Dian]*/
+        FROM DSP_CNR_TP_GRP 
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        <if test="upperCnrTpGrpSn == null or upperCnrTpGrpSn == 0" >
+        AND     UPPER_CNR_TP_GRP_SN is null
+        </if>
+        <if test="upperCnrTpGrpSn != null and upperCnrTpGrpSn != 0" >
+        AND     UPPER_CNR_TP_GRP_SN is not null
+        </if>
+    </delete>
+    
+    <!-- 하위 컨텐츠 유형 삭제 -->
+    <delete id="deleteDspCnrTpGrpByUpper" parameterType="dspCnrTpGrp">
+        DELETE /*[corner.xml][deleteDspCnrTpGrpByUpper][하위 컨텐츠 유형 삭제][Dian]*/
+        FROM DSP_CNR_TP_GRP 
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        <if test="upperCnrTpGrpSn != null and upperCnrTpGrpSn != 0" >
+        AND     UPPER_CNR_TP_GRP_SN = #{upperCnrTpGrpSn,jdbcType=NUMERIC}
+        </if>
+    </delete>
+    
+    
+    
+    <!-- 코너 세트 수정 -->
+    <update id="updateDspCnrSetInfo" parameterType="dspCnrSet">
+        UPDATE  /*[corner.xml][updateDspCnrSetInfo][코너 세트 수정][Dian]*/ 
+        DSP_CNR_SET SET
+                 SET_NM = #{setNm,jdbcType=VARCHAR}
+                ,SET_DSCR = #{setDscr,jdbcType=VARCHAR}
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                ,RND_YN = #{rndYn,jdbcType=VARCHAR}
+                ,ALTRTV_DSP_GOD_TP_CD = #{altrtvDspGodTpCd,jdbcType=VARCHAR}
+                <if test="cnrTpGrpSn != null and cnrTpGrpSn != ''" >
+                ,CNR_TP_GRP_SN = #{cnrTpGrpSn,jdbcType=VARCHAR}
+                </if>
+                <if test="dspBrndId != null and dspBrndId != ''" >
+                ,DSP_BRND_CTGRY_NO = #{dspBrndCtgryNo,jdbcType=VARCHAR}
+                ,DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+                </if>
+                <if test="(dspBrndId == null or dspBrndId == '') and (dspCtgryNo != null and dspCtgryNo != '')" >
+                ,DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+                </if>
+                <if test="promtSn != null and promtSn != 0" >
+                ,PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+                </if>
+                <if test="evtNo != null and evtNo != ''" >
+                ,EVT_NO = #{evtNo,jdbcType=VARCHAR}
+                </if>
+                <if test="strndSn != null and strndSn != 0" >
+                ,STRND_SN = #{strndSn,jdbcType=NUMERIC}
+                </if>
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+    </update>
+    
+   
+    <!-- 코너 세트명 (언어) 수정 -->
+    <update id="updateDspCnrSetLangNm" parameterType="dspCnrSetLang">
+        UPDATE  /*[corner.xml][updateDspCnrSetLangNm][코너 세트명(언어) 수정][Dian]*/ 
+        DSP_CNR_SET_LANG SET
+                 SET_NM = #{setNm,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+    
+
+    <!-- 코너 세트설명 (언어) 수정 -->
+    <update id="updateDspCnrSetLangDscr" parameterType="dspCnrSetLang">
+        UPDATE /*[corner.xml][updateDspCnrSetLangDscr][코너 세트설명(언어) 수정][Dian]*/ 
+        DSP_CNR_SET_LANG SET
+                 SET_DSCR = #{setDscr,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="saveDspCnrSetLangInfo" parameterType="dspCnrSetLang" >
+        MERGE /*[corner.xml][saveDspCnrSetLangInfo][코너 세트(언어) 수정][Dian]*/  
+        INTO DSP_CNR_SET_LANG dcl
+        USING (
+                SELECT
+                     #{revSn,jdbcType=NUMERIC} as rev_sn
+                    ,#{cnrSn,jdbcType=NUMERIC} as cnr_sn
+                    ,#{cnrSetSn,jdbcType=NUMERIC} as cnr_set_sn 
+                    ,#{langCd,jdbcType=VARCHAR} as lang_cd
+                FROM DUAL               
+        ) fch ON (dcl.rev_sn = fch.rev_sn and dcl.cnr_sn = fch.cnr_sn and dcl.cnr_set_sn = fch.cnr_set_sn and dcl.lang_cd = fch.lang_cd)
+        WHEN MATCHED THEN 
+            UPDATE SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="setNm != null and setNm != ''" >
+                ,SET_NM = #{setNm,jdbcType=VARCHAR}
+                </if>  
+                <if test="setDscr != null and setDscr != ''" >
+                ,SET_DSCR = #{setDscr,jdbcType=VARCHAR}
+                </if>  
+        WHEN NOT MATCHED THEN 
+            INSERT   (
+                REV_SN
+               ,CNR_SN
+               ,CNR_SET_SN
+               ,LANG_CD
+               ,SET_NM
+               ,SET_DSCR
+               ,REGTR_ID
+               ,UDTER_ID
+               ,REG_DT
+               ,UDT_DT
+            )
+            VALUES
+            (
+                #{revSn,jdbcType=NUMERIC}
+               ,#{cnrSn,jdbcType=NUMERIC}
+               ,#{cnrSetSn,jdbcType=NUMERIC}
+               ,#{langCd,jdbcType=VARCHAR}
+               ,#{setNm,jdbcType=VARCHAR}
+               ,#{setDscr,jdbcType=VARCHAR}
+               ,#{regtrId,jdbcType=VARCHAR}
+               ,#{udterId,jdbcType=VARCHAR}
+               ,SYSDATE
+               ,SYSDATE
+            ) 
+    </update>
+    
+    <!-- 코너 세트(언어) 삭제 -->
+    <delete id="deleteDspCnrSetLangInfo" parameterType="dspCnrSetLang">
+        DELETE /*[corner.xml][deleteDspCnrSetLangInfo][코너 세트(언어) 삭제][Dian]*/ 
+        FROM DSP_CNR_SET_LANG 
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 코너컨텐츠 수 조회 -->
+    <select id="selectDspCnrConttCnt" parameterType="dspCnrSet" resultType="Integer">
+        select /*[corner.xml][selectDspCnrConttCnt][코너 컨텐츠 수 조회][Dian]*/ 
+            count(contt_turn) 
+        from dsp_cnr_contt tt 
+        where tt.cnr_sn = #{cnrSn,jdbcType=NUMERIC} 
+        and tt.rev_sn = #{revSn,jdbcType=NUMERIC}
+        and tt.cnr_set_sn = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     tt.REV_SN = #{revSn,jdbcType=NUMERIC}
+    </select>
+    
+    <!-- 코너 컨텐츠 수정 -->
+    <update id="updateDspCnrConttInfo" parameterType="dspCnrContt">
+        UPDATE  /*[corner.xml][updateDspCnrConttInfo][코너 컨텐츠 수정][Dian]*/ 
+        DSP_CNR_CONTT SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,CONTT_NM = #{conttNm,jdbcType=VARCHAR}
+                ,IMG_NM = #{imgNm,jdbcType=VARCHAR}
+                ,IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+                ,IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+                ,IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+                ,IMG_OV_FILE_NM = #{imgOvFileNm,jdbcType=VARCHAR}
+                ,IMG_OV_FILE_URL = #{imgOvFileUrl,jdbcType=VARCHAR}
+                ,IMG_OV_ALTRTV_CONT = #{imgOvAltrtvCont,jdbcType=VARCHAR}
+                ,IMG_BCRN_COLOR_CD = #{imgBcrnColorCd,jdbcType=VARCHAR}
+                ,IMG_MAP_CONT = #{imgMapCont,jdbcType=CLOB}
+                ,IMG_DSCR = #{imgDscr,jdbcType=VARCHAR}
+                ,CONTT_CNNC_URL = #{conttCnncUrl,jdbcType=VARCHAR}
+                ,MOVI_NM = #{moviNm,jdbcType=VARCHAR}
+                ,MOVI_FILE_URL = #{moviFileUrl,jdbcType=VARCHAR}
+                ,MOVI_IMG_FILE_NM = #{moviImgFileNm,jdbcType=VARCHAR}
+                ,MOVI_IMG_URL = #{moviImgUrl,jdbcType=VARCHAR}
+                ,MOVI_IMG_ALTRTV_CONT = #{moviImgAltrtvCont,jdbcType=VARCHAR}
+                ,HTML_SJ = #{htmlSj,jdbcType=VARCHAR}
+                ,HTML_DSCR = #{htmlDscr,jdbcType=VARCHAR}
+                ,HTML_CONT = #{htmlCont,jdbcType=CLOB}
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                ,DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+                ,DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+                ,MD_BRND_CD = #{mdBrndCd,jdbcType=VARCHAR}
+                ,CONTT_SIZE_CD = #{conttSizeCd,jdbcType=VARCHAR}
+                , MOVI_KND_CD = #{moviKndCd,jdbcType=VARCHAR}
+                
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+    </update>
+    
+    
+    
+    
+    
+    
+    <!-- 코너 컨텐츠 수정 - Grid저장 -->
+    <update id="updateDspCnrConttForGrid" parameterType="dspCnrContt">
+        UPDATE  /*[corner.xml][updateDspCnrConttForGrid][코너 컨텐츠 수정][Dian]*/ 
+        DSP_CNR_CONTT SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE               
+                <!-- 20160517_sr#19452 PLGRIM SHOP 메인개편 스티커 상품 추가][BC]-->
+                ,STK_EXPSR_YN = #{stkExpsrYn,jdbcType=VARCHAR}
+				,STK_LBL_CD = #{stkLblCd,jdbcType=VARCHAR}
+				,STK_DC_RT = #{stkDcRt,jdbcType=NUMERIC}
+                <!-- 20160517_sr#19452 PLGRIM SHOP 메인개편 스티커 상품 추가][BC]-->
+                ,CONTT_NM = #{conttNm,jdbcType=VARCHAR}
+                ,OUTPT_TP_CD = #{outptTpCd,jdbcType=VARCHAR}
+<!--                 ,CONTT_CNNC_URL = #{conttCnncUrl,jdbcType=VARCHAR} -->
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                ,DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+                ,DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+                <if test="imgTurn == null" >
+                ,IMG_TURN = null
+                </if>
+                <if test="imgTurn != null" >
+                ,IMG_TURN = (select nvl((select distinct img_turn 
+                                 from god_img where god_no = #{godNo,jdbcType=VARCHAR} 
+                				 and img_tp_cd = 'THNAIL' 
+                				 and img_turn = #{imgTurn,jdbcType=NUMERIC})
+                		 	,null) from dual)
+                </if>
+                <if test="mdBrndCd != null and mdBrndCd != ''" >
+                ,MD_BRND_CD = #{mdBrndCd,jdbcType=VARCHAR}
+                </if>
+                <if test="conttSizeCd != null and conttSizeCd != ''" >
+                ,CONTT_SIZE_CD = #{conttSizeCd,jdbcType=VARCHAR}
+                </if>
+                <if test="moviKndCd != null and moviKndCd != ''" >
+                ,MOVI_KND_CD = #{moviKndCd,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+    </update>
+    
+   
+    
+    
+    
+    
+    <!-- 코너 컨텐츠 언어 수정 -->
+    <update id="updateDspCnrConttLangInfo" parameterType="dspCnrConttLang">
+        UPDATE  /*[corner.xml][updateDspCnrConttLangInfo][코너 컨텐츠 언어 수정][Dian]*/ 
+        DSP_CNR_CONTT_LANG SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="conttNm != null and conttNm != ''" >
+                ,CONTT_NM = #{conttNm,jdbcType=VARCHAR}
+                </if>  
+                <if test="imgFileNm != null and imgFileNm != ''" >
+                ,IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+                </if>  
+                <if test="imgFileUrl != null and imgFileUrl != ''" >
+                ,IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+                </if>  
+                <if test="imgAltrtvCont != null and imgAltrtvCont != ''" >
+                ,IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+                </if>  
+                <if test="moviImgFileNm != null and moviImgFileNm != ''" >
+                ,MOVI_IMG_FILE_NM = #{moviImgFileNm,jdbcType=VARCHAR}
+                </if>  
+                <if test="moviImgUrl != null and moviImgUrl != ''" >
+                ,MOVI_IMG_URL = #{moviImgUrl,jdbcType=VARCHAR}
+                </if>  
+                <if test="moviImgAltrtvCont != null and moviImgAltrtvCont != ''" >
+                ,MOVI_IMG_ALTRTV_CONT = #{moviImgAltrtvCont,jdbcType=VARCHAR}
+                </if>
+                <if test="htmlCont != null " >
+                ,HTML_CONT = #{htmlCont,jdbcType=CLOB}
+                </if>
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+        AND     LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="saveDspCnrConttLangInfo" parameterType="dspCnrConttLang" >
+        MERGE /*[corner.xml][saveDspCnrConttLangInfo][코너 컨텐츠 언어 수정][Dian]*/ 
+        INTO dsp_cnr_contt_lang dcl
+        USING (
+                SELECT
+                     #{revSn,jdbcType=NUMERIC} as rev_sn
+                    ,#{cnrSn,jdbcType=NUMERIC} as cnr_sn
+                    ,#{cnrSetSn,jdbcType=NUMERIC} as cnr_set_sn 
+                    ,#{conttTurn,jdbcType=NUMERIC} as contt_turn 
+                    ,#{langCd,jdbcType=VARCHAR} as lang_cd
+                FROM DUAL               
+        ) fch ON (dcl.rev_sn = fch.rev_sn and dcl.cnr_sn = fch.cnr_sn and dcl.cnr_set_sn = fch.cnr_set_sn and dcl.contt_turn = fch.contt_turn and dcl.lang_cd = fch.lang_cd)
+        WHEN MATCHED THEN 
+            UPDATE SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,CONTT_NM = #{conttNm,jdbcType=VARCHAR}
+                ,IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+                ,IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+                ,IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+                ,IMG_OV_FILE_NM = #{imgOvFileNm,jdbcType=VARCHAR}
+                ,IMG_OV_FILE_URL = #{imgOvFileUrl,jdbcType=VARCHAR}
+                ,IMG_OV_ALTRTV_CONT = #{imgOvAltrtvCont,jdbcType=VARCHAR}
+                ,MOVI_IMG_FILE_NM = #{moviImgFileNm,jdbcType=VARCHAR}
+                ,MOVI_IMG_URL = #{moviImgUrl,jdbcType=VARCHAR}
+                ,MOVI_IMG_ALTRTV_CONT = #{moviImgAltrtvCont,jdbcType=VARCHAR}
+                
+        WHEN NOT MATCHED THEN 
+            INSERT   (
+                REV_SN
+               ,CNR_SN
+               ,CNR_SET_SN
+               ,CONTT_TURN
+               ,LANG_CD
+               ,CONTT_NM
+               ,IMG_FILE_NM
+               ,IMG_FILE_URL
+               ,IMG_ALTRTV_CONT
+               ,IMG_OV_FILE_NM
+               ,IMG_OV_FILE_URL
+               ,IMG_OV_ALTRTV_CONT
+               ,MOVI_IMG_FILE_NM
+               ,MOVI_IMG_URL
+               ,MOVI_IMG_ALTRTV_CONT
+               ,REGTR_ID
+               ,UDTER_ID
+               ,REG_DT
+               ,UDT_DT
+            )
+            VALUES
+            (
+                #{revSn,jdbcType=NUMERIC}
+               ,#{cnrSn,jdbcType=NUMERIC}
+               ,#{cnrSetSn,jdbcType=NUMERIC}
+               ,#{conttTurn,jdbcType=NUMERIC}
+               ,#{langCd,jdbcType=VARCHAR}
+               ,#{conttNm,jdbcType=VARCHAR}
+               ,#{imgFileNm,jdbcType=VARCHAR}
+               ,#{imgFileUrl,jdbcType=VARCHAR}
+               ,#{imgAltrtvCont,jdbcType=VARCHAR}
+               ,#{imgOvFileNm,jdbcType=VARCHAR}
+               ,#{imgOvFileUrl,jdbcType=VARCHAR}
+               ,#{imgOvAltrtvCont,jdbcType=VARCHAR}
+               ,#{moviImgFileNm,jdbcType=VARCHAR}
+               ,#{moviImgUrl,jdbcType=VARCHAR}
+               ,#{moviImgAltrtvCont,jdbcType=VARCHAR}
+               ,#{regtrId,jdbcType=VARCHAR}
+               ,#{udterId,jdbcType=VARCHAR}
+               ,SYSDATE
+               ,SYSDATE
+            ) 
+    </update>
+    
+    <update id="saveConttLangImg" parameterType="dspCnrConttLang" >
+        MERGE /*[corner.xml][saveConttLangImg][코너 컨텐츠 언어 이미지 수정][Dian]*/ 
+        INTO dsp_cnr_contt_lang dcl
+        USING (
+                SELECT
+                     #{revSn,jdbcType=NUMERIC} as rev_sn
+                    ,#{cnrSn,jdbcType=NUMERIC} as cnr_sn
+                    ,#{cnrSetSn,jdbcType=NUMERIC} as cnr_set_sn 
+                    ,#{conttTurn,jdbcType=NUMERIC} as contt_turn 
+                    ,#{langCd,jdbcType=VARCHAR} as lang_cd
+                FROM DUAL               
+        ) fch ON (dcl.rev_sn = fch.rev_sn and dcl.cnr_sn = fch.cnr_sn and dcl.cnr_set_sn = fch.cnr_set_sn and dcl.contt_turn = fch.contt_turn and dcl.lang_cd = fch.lang_cd)
+        WHEN MATCHED THEN 
+            UPDATE SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+                ,IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+                ,IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+                ,MOVI_IMG_FILE_NM = #{moviImgFileNm,jdbcType=VARCHAR}
+                ,MOVI_IMG_URL = #{moviImgUrl,jdbcType=VARCHAR}
+                ,MOVI_IMG_ALTRTV_CONT = #{moviImgAltrtvCont,jdbcType=VARCHAR}
+                ,MOVI_FILE_URL = #{moviFileUrl,jdbcType=VARCHAR}
+        WHEN NOT MATCHED THEN
+            INSERT   (
+                REV_SN
+               ,CNR_SN
+               ,CNR_SET_SN
+               ,CONTT_TURN
+               ,LANG_CD
+               ,IMG_FILE_NM
+               ,IMG_FILE_URL
+               ,IMG_ALTRTV_CONT
+               ,MOVI_IMG_FILE_NM
+               ,MOVI_IMG_URL
+               ,MOVI_IMG_ALTRTV_CONT
+               ,MOVI_FILE_URL
+               ,REGTR_ID
+               ,UDTER_ID
+               ,REG_DT
+               ,UDT_DT
+            )
+            VALUES
+            (
+                #{revSn,jdbcType=NUMERIC}
+               ,#{cnrSn,jdbcType=NUMERIC}
+               ,#{cnrSetSn,jdbcType=NUMERIC}
+               ,#{conttTurn,jdbcType=NUMERIC}
+               ,#{langCd,jdbcType=VARCHAR}
+               ,#{imgFileNm,jdbcType=VARCHAR}
+               ,#{imgFileUrl,jdbcType=VARCHAR}
+               ,#{imgAltrtvCont,jdbcType=VARCHAR}
+               ,#{moviImgFileNm,jdbcType=VARCHAR}
+               ,#{moviImgUrl,jdbcType=VARCHAR}
+               ,#{moviImgAltrtvCont,jdbcType=VARCHAR}
+               ,#{moviFileUrl,jdbcType=VARCHAR}
+               ,#{regtrId,jdbcType=VARCHAR}
+               ,#{udterId,jdbcType=VARCHAR}
+               ,SYSDATE
+               ,SYSDATE
+            ) 
+    </update>
+    
+    <update id="saveConttLangOvImg" parameterType="dspCnrConttLang" >
+        MERGE /*[corner.xml][saveConttLangOvImg][코너 컨텐츠 언어 오버이미지 수정][Dian]*/ 
+        INTO dsp_cnr_contt_lang dcl
+        USING (
+                SELECT
+                     #{revSn,jdbcType=NUMERIC} as rev_sn
+                    ,#{cnrSn,jdbcType=NUMERIC} as cnr_sn
+                    ,#{cnrSetSn,jdbcType=NUMERIC} as cnr_set_sn 
+                    ,#{conttTurn,jdbcType=NUMERIC} as contt_turn 
+                    ,#{langCd,jdbcType=VARCHAR} as lang_cd
+                FROM DUAL               
+        ) fch ON (dcl.cnr_sn = fch.cnr_sn and dcl.cnr_set_sn = fch.cnr_set_sn and dcl.contt_turn = fch.contt_turn and dcl.lang_cd = fch.lang_cd)
+        WHEN MATCHED THEN 
+            UPDATE SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,IMG_OV_FILE_NM = #{imgOvFileNm,jdbcType=VARCHAR}
+                ,IMG_OV_FILE_URL = #{imgOvFileUrl,jdbcType=VARCHAR}
+                ,IMG_OV_ALTRTV_CONT = #{imgOvAltrtvCont,jdbcType=VARCHAR}
+        WHEN NOT MATCHED THEN 
+            INSERT   (
+                REV_SN
+               ,CNR_SN
+               ,CNR_SET_SN
+               ,CONTT_TURN
+               ,LANG_CD
+               ,IMG_OV_FILE_NM
+               ,IMG_OV_FILE_URL
+               ,IMG_OV_ALTRTV_CONT             
+               ,REGTR_ID
+               ,UDTER_ID
+               ,REG_DT
+               ,UDT_DT
+            )
+            VALUES
+            (
+                #{revSn,jdbcType=NUMERIC}
+               ,#{cnrSn,jdbcType=NUMERIC}
+               ,#{cnrSetSn,jdbcType=NUMERIC}
+               ,#{conttTurn,jdbcType=NUMERIC}
+               ,#{langCd,jdbcType=VARCHAR}
+               ,#{imgOvFileNm,jdbcType=VARCHAR}
+               ,#{imgOvFileUrl,jdbcType=VARCHAR}
+               ,#{imgOvAltrtvCont,jdbcType=VARCHAR}
+               ,#{regtrId,jdbcType=VARCHAR}
+               ,#{udterId,jdbcType=VARCHAR}
+               ,SYSDATE
+               ,SYSDATE
+            ) 
+    </update>
+       
+    
+    
+    <update id="saveConttLangContents" parameterType="dspCnrConttLang" >        
+        /*[corner.xml][saveConttLangContents][sr#19452 코너 컨텐츠 언어 기타 다국어 정보 수정][BC]*/ 
+		UPDATE	DSP_CNR_CONTT_LANG
+		SET		UDTER_ID 		= #{udterId, jdbcType=VARCHAR},
+             	UDT_DT 			= SYSDATE,
+             	IMG_MAP_CONT 	= #{imgMapCont, jdbcType=CLOB},
+             	IMG_DSCR 		= #{imgDscr, jdbcType=VARCHAR}
+		WHERE	REV_SN 			= #{revSn,jdbcType=NUMERIC}
+		AND		CNR_SN 			= #{cnrSn,jdbcType=NUMERIC}
+		AND		CNR_SET_SN 		= #{cnrSetSn,jdbcType=NUMERIC} 
+		AND		CONTT_TURN 		= #{conttTurn,jdbcType=NUMERIC} 
+		AND		LANG_CD 		= #{langCd,jdbcType=VARCHAR}
+    </update>
+    
+    
+
+    <!-- 코너 컨텐츠 전시대상 수정 -->
+    <update id="updateDspCnrConttDspTgtInfo" parameterType="dspCnrConttDspTgt">
+        UPDATE  /*[corner.xml][updateDspCnrConttDspTgtInfo][코너 컨텐츠 전시대상 수정][Dian]*/ 
+        DSP_CNR_CONTT_DSP_TGT SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="dspTgtTpCd != null and dspTgtTpCd != ''" >
+                ,DSP_TGT_TP_CD = #{dspTgtTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="mallId != null and mallId != ''" >
+                ,MALL_ID = #{mallId,jdbcType=VARCHAR}
+                </if>
+                <if test="langCd != null and langCd != ''" >
+                ,LANG_CD = #{langCd,jdbcType=VARCHAR}
+                </if>
+                <if test="dvcCd != null and dvcCd != ''" >
+                ,DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+                </if>
+                <if test="tgtMbrAtrbCd != null and tgtMbrAtrbCd != ''" >
+                ,TGT_MBR_ATRB_CD = #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+                </if>
+                <if test="tgtMbrTpCd != null and tgtMbrTpCd != ''" >
+                ,TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="grpcoId != null and grpcoId != ''" >
+                ,GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+        AND     DSP_TGT_TURN = #{dspTgtTurn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 코너 컨텐츠(언어) 삭제 -->
+    <delete id="deleteDspCnrConttLangInfo" parameterType="dspCnrConttLang">
+        DELETE /*[corner.xml][deleteDspCnrConttLangInfo][코너 컨텐츠(언어) 삭제][Dian]*/ 
+        FROM DSP_CNR_CONTT_LANG 
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 코너 컨텐츠 전시대상 삭제 -->
+    <delete id="deleteDspCnrConttDspTgtInfo" parameterType="dspCnrConttDspTgt">
+        DELETE /*[corner.xml][deleteDspCnrConttDspTgtInfo][코너 컨텐츠 전시대상 삭제][Dian]*/ 
+        FROM DSP_CNR_CONTT_DSP_TGT 
+        WHERE   1 = 1
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+    </delete>
+
+    <!-- 코너 컨텐츠 전시대상 삭제 -->
+    <delete id="deleteDspCnrConttDspTgtTp" parameterType="dspCnrConttDspTgt">
+        DELETE /*[corner.xml][deleteDspCnrConttDspTgtTp][코너 컨텐츠 전시대상 삭제 - 유형별][Dian]*/ 
+        FROM DSP_CNR_CONTT_DSP_TGT 
+        WHERE   1 = 1
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND 	DSP_TGT_TP_CD = #{dspTgtTpCd,jdbcType=VARCHAR}
+    </delete>   
+    
+    <select id="selectValidConttForLang" parameterType="dspCnrConttDspTgt" resultType="dspCnrConttLang">
+		SELECT /* [wb.corner.content.xml][selectValidConttForLang][다국어 체크를 위한 컨텐츠목록][Dian] */
+        	'KOR' as lang_cd, CONTT_NM, img_file_nm, HTML_CONT 
+        FROM    DSP_CNR_CONTT 
+        WHERE   1 = 1
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        union all
+        SELECT 
+        	lang_cd, CONTT_NM, img_file_nm, HTML_CONT 
+        FROM    DSP_CNR_CONTT_LANG 
+        WHERE   1 = 1
+        AND     CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+	</select> 
+    
+    <!-- 기등록 컨텐츠 목록 - 상품, 기획전, S-Trend -->
+    <select id="selectCnrConttCnncedList" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttExt"  resultType="java.util.LinkedHashMap">
+        SELECT /* [corner.xml][selectCnrConttGodList][컨텐츠 상품 목록][Dian] */
+              god_no, promt_sn, strnd_sn 
+        FROM    DSP_CNR_CONTT g
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+        AND     CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+        AND     CONTT_TP_CD = #{conttTpCd,jdbcType=VARCHAR}
+        AND  1 =  CASE WHEN  god_no is null AND  promt_sn  is null AND  strnd_sn  is null THEN 0 ELSE 1 END 
+        <if test="conttTpCd == 'GOD' ">
+            AND EXISTS (
+                        SELECT  1 FROM DSP_CNR_CONTT_DSP_TGT
+                        WHERE   1=1
+                        AND     REV_SN = G.REV_SN
+                        AND     CNR_SN = G.CNR_SN
+                        AND     CNR_SET_SN = G.CNR_SET_SN
+                        AND     CONTT_TP_CD = G.CONTT_TP_CD
+                        AND     DSP_TGT_TP_CD = 'LANG'
+                        AND     LANG_CD = #{scDspTgtLang,jdbcType=VARCHAR}
+                )
+        </if>
+    </select>
+ 
+    <!-- 전시카테고리에 연결되어 있는 상품인지 체크 -->
+    <select id="selectCtgryCnncGodCnt" parameterType="String" resultType="Integer">
+        SELECT count(1) as cnt
+        FROM    DSP_CTGRY_CNNC_GOD g
+        WHERE   1 = 1
+        AND     god_no = #{godNo,jdbcType=VARCHAR}
+    </select>
+   
+    <resultMap type="com.plgrim.ncp.biz.display.result.DspImgUploadResult" id="dspImgUploadResult">
+        <result property="dspConttImg.udterId" column="UDTER_ID"/>
+        <result property="dspConttImg.udtDt" column="UDT_DT"/>
+        <result property="dspConttImg.conttSn" column="CONTT_SN"/>  
+        <result property="dspConttImg.conttImgTurn" column="CONTT_IMG_TURN"/>      
+        <result property="dspConttImg.tmplatTpCd" column="TMPLAT_TP_CD"/>
+        <result property="dspConttImg.imgSjNm" column="IMG_SJ_NM"/>
+        <result property="dspConttImg.imgFileUrl" column="IMG_FILE_URL"/>
+        <result property="dspConttImg.imgFileNm" column="IMG_FILE_NM"/>
+        <result property="conttImgCnt" column="CONTT_IMG_CNT"/>
+        <result property="tmplatTpNm" column="TMPLAT_TP_NM" />
+    </resultMap>
+    
+    <select id="selectImageUploadList" parameterType="com.plgrim.ncp.biz.display.data.DspImgUploadDTO" resultMap="dspImgUploadResult">
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT      contt_sn,
+                    tmplat_tp_cd,
+                    img_sj_nm,
+                    DECODE(tmplat_tp_cd, 'DSP_CTGRY', '전시카테고리', 'THEMA_PGE', '테마페이지', 'PROMT', '기획전', 'STRND', 'S-TREND', 'BRND', '브랜드', 'EVT', '이벤트', NULL) AS tmplat_tp_nm,
+                    COUNT(contt_sn) AS contt_img_cnt
+        FROM        DSP_CONTT_IMG
+        WHERE       1 = 1
+        <if test="dspConttImg.imgSjNm != null and dspConttImg.imgSjNm != ''">
+          AND       img_sj_nm LIKE '%'||#{dspConttImg.imgSjNm, jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="dspConttImg.tmplatTpCd != null and dspConttImg.tmplatTpCd != ''">
+          AND       tmplat_tp_cd = #{dspConttImg.tmplatTpCd, jdbcType=VARCHAR}
+        </if>
+        GROUP BY    contt_sn, tmplat_tp_cd, img_sj_nm
+        ORDER BY    CONTT_SN DESC
+      <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    
+    <select id="selectImageUploadListTotal" parameterType="com.plgrim.ncp.biz.display.data.DspImgUploadDTO" resultType="long">
+        SELECT      COUNT(*)
+        FROM        (
+                        SELECT      contt_sn
+                          FROM      DSP_CONTT_IMG
+                         WHERE      1 = 1
+                         <if test="dspConttImg.imgSjNm != null and dspConttImg.imgSjNm != ''">
+                            AND       img_sj_nm LIKE '%'||#{dspConttImg.imgSjNm, jdbcType=VARCHAR}||'%'
+                         </if>
+                         <if test="dspConttImg.tmplatTpCd != null and dspConttImg.tmplatTpCd != ''">
+                            AND       tmplat_tp_cd = #{dspConttImg.tmplatTpCd, jdbcType=VARCHAR}
+                         </if>
+                         GROUP BY   contt_sn
+                    )
+        WHERE       1 = 1
+    </select>
+    
+    <select id="detailImageUpload" parameterType="com.plgrim.ncp.biz.display.data.DspImgUploadDTO" resultMap="dspImgUploadResult">
+        SELECT      contt_sn,
+                    tmplat_tp_cd,
+                    DECODE(tmplat_tp_cd, 'DSP_CTGRY', '전시카테고리', 'THEMA_PGE', '테마페이지', 'PROMT', '기획전', 'STRND', 'S-TREND', 'BRND', '브랜드', 'EVT', '이벤트', NULL) AS tmplat_tp_nm,
+                    img_sj_nm
+          FROM      DSP_CONTT_IMG
+         WHERE      1 = 1
+           AND      contt_sn = #{dspConttImg.conttSn, jdbcType=NUMERIC}
+      GROUP BY    contt_sn, tmplat_tp_cd, img_sj_nm
+    </select>
+    
+    <select id="selectImageList" parameterType="com.plgrim.ncp.biz.display.data.DspImgUploadDTO" resultMap="dspImgUploadResult">
+        SELECT      contt_sn,
+                    img_file_url,
+                    img_file_nm
+          FROM      DSP_CONTT_IMG
+         WHERE      1 = 1
+           AND      contt_sn = #{dspConttImg.conttSn, jdbcType=NUMERIC}
+    </select>
+    
+    <select id="selectImageCnt" parameterType="com.plgrim.ncp.biz.display.data.DspImgUploadDTO" resultType="Integer">
+        SELECT      COUNT(*)
+          FROM      DSP_CONTT_IMG
+         WHERE      1 = 1
+           AND      img_file_url = #{dspConttImg.imgFileUrl, jdbcType=VARCHAR}
+           AND      img_file_nm = #{dspConttImg.imgFileNm, jdbcType=VARCHAR}
+           AND      img_sj_nm = #{dspConttImg.imgSjNm, jdbcType=VARCHAR}
+    </select>
+    
+    <update id="updateImageUpload" parameterType="com.plgrim.ncp.biz.display.data.DspImgUploadDTO">
+        UPDATE   
+        DSP_CONTT_IMG SET
+                 UDTER_ID = #{dspConttImg.udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND      img_file_url = #{dspConttImg.imgFileUrl, jdbcType=VARCHAR}
+        AND      img_file_nm = #{dspConttImg.imgFileNm, jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 전시코너 연결 상품 전시순서 update -->
+    <update id="updateSortSeqCnrConttGod" parameterType="dspCnrContt">
+        UPDATE /*[corner.xml][updateSortSeqCnrConttGod][전시코너 연결 상품 전시순서 update][Chris]*/ 
+        DSP_CNR_CONTT SET
+			UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			, UDT_DT = SYSDATE
+			, SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+        WHERE   1 = 1
+	        AND REV_SN = #{revSn, jdbcType=NUMERIC}
+	        AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+	        AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+	        AND GOD_NO	= #{godNo,jdbcType=VARCHAR}
+    </update>
+    
+    <resultMap id="dspCnrTmplatInfoCnncResult" type="com.plgrim.ncp.biz.display.result.DspCnrTmplatInfoCnncResult">
+		<result property="dspCnrTmplatInfoCnnc.revSn" column="REV_SN" />
+		<result property="dspCnrTmplatInfoCnnc.cnrSn" column="CNR_SN" />
+		<result property="dspCnrTmplatInfoCnnc.tmplatSn" column="TMPLAT_SN" />
+		<result property="dspCnrTmplatInfoCnnc.dspCnrTmplatTurn" column="DSP_CNR_TMPLAT_TURN" />
+		<result property="dspCnrTmplatInfoCnnc.dspCtgryNo" column="DSP_CTGRY_NO" />
+   		<result property="dspCnrTmplatInfoCnnc.dspBrndCtgryNo" column="DSP_BRND_CTGRY_NO" />
+   		<result property="dspCnrTmplatInfoCnnc.dspBrndId" column="DSP_BRND_ID" />
+   		<result property="dspCnrTmplatInfoCnnc.promtSn" column="PROMT_SN" />
+   		<result property="dspCnrTmplatInfoCnnc.evtNo" column="EVT_NO" />
+   		<result property="dspCnrTmplatInfoCnnc.strndSn" column="STRND_SN" />
+		<result property="dspCnrTmplatInfoCnnc.sortSeq" column="SORT_SEQ" />
+		<result property="dspCnrTmplatInfoCnnc.dspCnrUseYn" column="DSP_CNR_USE_YN" />
+		<result property="dspCnrTmplatInfoCnnc.regtrId" column="REGTR_ID" />
+		<result property="dspCnrTmplatInfoCnnc.regDt" column="REG_DT" />
+		<result property="dspCnrTmplatInfoCnnc.udterId" column="UDTER_ID" />
+		<result property="dspCnrTmplatInfoCnnc.udtDt" column="UDT_DT" />
+		<result property="cnt" column="CNT" />
+    </resultMap>
+    
+	<select id="selectCnrTmplatCnt" parameterType="dspTmplat" resultType="Integer">
+		select /*[corner.xml][selectCnrTmplatCnt][템플릿 연결 코너수 조회][Dian]*/
+		       count(cnr_sn) as cnt 
+		from   DSP_CNR_TMPLAT_INFO_CNNC 
+		where  tmplat_sn = #{tmplatSn, jdbcType=NUMERIC}
+	</select>
+    
+    <select id="selectCnrTmplatInfoCnncList" parameterType="dspCnrTmplatInfoCnnc" resultMap="dspCnrTmplatInfoCnncResult">
+       	SELECT /* [cornere.xml][selectCnrTmplatInfoCnncList][해당템플릿에 연결된 코너정보 목록 조회][Dian] */
+			dct.REV_SN
+		   ,dct.TMPLAT_SN
+		   ,dct.CNR_SN
+		   ,dct.DSP_CNR_TMPLAT_TURN
+		   ,dct.DSP_CTGRY_NO
+		   ,dct.DSP_BRND_CTGRY_NO
+		   ,dct.DSP_BRND_ID
+		   ,dct.PROMT_SN
+		   ,dct.EVT_NO
+		   ,dct.STRND_SN
+		   ,dct.SORT_SEQ
+		   ,dct.DSP_CNR_USE_YN
+		   ,dct.REGTR_ID
+		   ,dct.REG_DT
+		   ,dct.UDTER_ID
+		   ,dct.UDT_DT
+		   ,c.CNT
+		FROM (
+		    select cnnc.REV_SN, cnnc.TMPLAT_SN, cnnc.CNR_SN, max(DSP_CNR_TMPLAT_TURN) AS DSP_CNR_TMPLAT_TURN, count(CNR_SN) AS cnt
+		    from DSP_CNR_TMPLAT_INFO_CNNC cnnc
+		    where cnnc.tmplat_sn = #{tmplatSn,jdbcType=NUMERIC}
+		    and cnnc.rev_sn = #{revSn,jdbcType=NUMERIC}
+		    group by cnnc.REV_SN, cnnc.TMPLAT_SN, cnnc.CNR_SN
+		) c
+		JOIN DSP_CNR_TMPLAT_INFO_CNNC dct
+		ON   (c.REV_SN = dct.REV_SN AND c.TMPLAT_SN = dct.TMPLAT_SN AND c.CNR_SN = dct.CNR_SN AND c.DSP_CNR_TMPLAT_TURN = dct.DSP_CNR_TMPLAT_TURN)
+	</select>
+	
+	<select id="selectCnrTmplatInfoCnncOne" parameterType="dspCnrTmplatInfoCnnc" resultMap="dspCnrTmplatInfoCnncResult">
+       	SELECT /* [cornere.xml][selectCnrTmplatInfoCnncOne][해당 카테고리(기획전,Strend,Evt)의 템플릿 코너 연결정보 조회][Dian] */
+			dct.REV_SN
+		   ,dct.TMPLAT_SN
+		   ,dct.CNR_SN
+		   ,dct.DSP_CNR_TMPLAT_TURN
+		   ,dct.DSP_CTGRY_NO
+		   ,dct.DSP_BRND_CTGRY_NO
+		   ,dct.DSP_BRND_ID
+		   ,dct.PROMT_SN
+		   ,dct.EVT_NO
+		   ,dct.STRND_SN
+		   ,dct.SORT_SEQ
+		   ,dct.DSP_CNR_USE_YN
+		   ,dct.REGTR_ID
+		   ,dct.REG_DT
+		   ,dct.UDTER_ID
+		   ,dct.UDT_DT
+		FROM DSP_CNR_TMPLAT_INFO_CNNC dct
+		WHERE 1=1
+		AND dct.REV_SN = #{revSn,jdbcType=NUMERIC}
+		AND dct.TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+		AND dct.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		<if test="dspCtgryNo != null and dspCtgryNo != ''">
+		AND dct.DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="dspBrndCtgryNo != null and dspBrndCtgryNo != '' and dspBrndId != null and dspBrndId != ''">
+		AND dct.DSP_BRND_CTGRY_NO = #{dspBrndCtgryNo,jdbcType=VARCHAR}  AND dct.DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="promtSn != null and promtSn != 0">
+		AND dct.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="evtNo != null and evtNo != ''">
+		AND dct.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		</if>
+		<if test="strndSn != null and strndSn != 0">
+		AND dct.STRND_SN = #{strndSn,jdbcType=NUMERIC}
+		</if>
+	</select>
+    
+    
+    <delete id="deleteTmplatInfoCnnc" parameterType="dspCnrTmplatInfoCnnc">
+        DELETE /*[corner.xml][deleteTmplatInfoCnnc][코너템플릿연결정보 삭제][Dian]*/
+        FROM DSP_CNR_TMPLAT_INFO_CNNC 
+        WHERE   1 = 1
+        AND     TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+        AND     CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+    </delete>
+</mapper>

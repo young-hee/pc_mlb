@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectLgsDlvHist" parameterType="lgsDlvHist" resultType="lgsDlvHist">
+		SELECT /* com.plgrim.ncp.base.selectLgsDlvHist		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , HIST_DT
+			 , CLM_NO
+			 , DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_CST_PLC_SN
+			 , ZONE_TURN
+			 , GOD_MIN_WT
+			 , DLV_CST_BND_MBD_CD
+			 , DLV_MN_CD
+			 , DLV_COM_CD
+			 , DLV_COM_NM
+			 , GDGP_STAT_CD
+			 , DMSTC_WAYBIL_NO
+			 , DMSTC_WAYBIL_NO_REG_DT
+			 , HBL_NO
+			 , HBL_NO_REG_DT
+			 , OVSEA_WAYBIL_NO
+			 , OVSEA_WAYBIL_NO_REG_DT
+			 , CVNSTOR_HDRY_APRV_NO
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_AMT
+			 , PAY_EXCHG_RT_CRNCY_AMT
+			 , REALITY_DLV_CST
+			 , PLC_DLV_CST
+			 , CNCL_DLV_CST
+			 , RTGOD_DLV_CST
+			 , EXCHG_DLV_CST
+			 , DLV_CST_CPN_DC_AMT
+			 , DLV_CST_CPN_NO
+			 , DLV_CST_CPN_PRM_NO
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_CD
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_ER
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_DT
+			 , WAYBIL_NO_ERP_TRNSMIS_CD
+			 , WAYBIL_NO_ERP_TRNSMIS_ERR_CONT
+			 , WAYBIL_NO_ERP_TRNSMIS_DT
+			 , DLV_COM_TRNSMIS_TGT_YN
+			 , DLV_COM_TRNSMIS_YN
+			 , DLV_COM_TRNSMIS_DT
+			 , DLV_COM_DLV_COMPT_DT
+			 , SHOP_PKUP_SMS_SND_YN
+			 , MAIL_SND_YN
+			 , CAL_DT
+			 , DRTDR_NONGDGP_RESN_CD
+			 , DRTDR_NONDLVR_RESN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , DLV_CHRGE_HIST_TURN
+			 , ORD_CNFIRM_YN
+		  FROM LGS_DLV_HIST
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateLgsDlvHist" parameterType="lgsDlvHist">
+		UPDATE /* com.plgrim.ncp.base.updateLgsDlvHist		Generator(Generator)	2018-05-23 */
+		LGS_DLV_HIST SET
+			   ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , DLV_TURN = #{dlvTurn,jdbcType=NUMERIC}
+			 , HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN = #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , ZONE_TURN = #{zoneTurn,jdbcType=NUMERIC}
+			 , GOD_MIN_WT = #{godMinWt,jdbcType=NUMERIC}
+			 , DLV_CST_BND_MBD_CD = #{dlvCstBndMbdCd,jdbcType=VARCHAR}
+			 , DLV_MN_CD = #{dlvMnCd,jdbcType=VARCHAR}
+			 , DLV_COM_CD = #{dlvComCd,jdbcType=VARCHAR}
+			 , DLV_COM_NM = #{dlvComNm,jdbcType=VARCHAR}
+			 , GDGP_STAT_CD = #{gdgpStatCd,jdbcType=VARCHAR}
+			 , DMSTC_WAYBIL_NO = #{dmstcWaybilNo,jdbcType=VARCHAR}
+			 , DMSTC_WAYBIL_NO_REG_DT = #{dmstcWaybilNoRegDt,jdbcType=TIMESTAMP}
+			 , HBL_NO = #{hblNo,jdbcType=VARCHAR}
+			 , HBL_NO_REG_DT = #{hblNoRegDt,jdbcType=TIMESTAMP}
+			 , OVSEA_WAYBIL_NO = #{ovseaWaybilNo,jdbcType=VARCHAR}
+			 , OVSEA_WAYBIL_NO_REG_DT = #{ovseaWaybilNoRegDt,jdbcType=TIMESTAMP}
+			 , CVNSTOR_HDRY_APRV_NO = #{cvnstorHdryAprvNo,jdbcType=VARCHAR}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , STDR_CRNCY_AMT = #{stdrCrncyAmt,jdbcType=NUMERIC}
+			 , PAY_EXCHG_RT_CRNCY_AMT = #{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , REALITY_DLV_CST = #{realityDlvCst,jdbcType=NUMERIC}
+			 , PLC_DLV_CST = #{plcDlvCst,jdbcType=NUMERIC}
+			 , CNCL_DLV_CST = #{cnclDlvCst,jdbcType=NUMERIC}
+			 , RTGOD_DLV_CST = #{rtgodDlvCst,jdbcType=NUMERIC}
+			 , EXCHG_DLV_CST = #{exchgDlvCst,jdbcType=NUMERIC}
+			 , DLV_CST_CPN_DC_AMT = #{dlvCstCpnDcAmt,jdbcType=NUMERIC}
+			 , DLV_CST_CPN_NO = #{dlvCstCpnNo,jdbcType=VARCHAR}
+			 , DLV_CST_CPN_PRM_NO = #{dlvCstCpnPrmNo,jdbcType=VARCHAR}
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_CD = #{dlivyWaybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_ER = #{dlivyWaybilNoErpTrnsmisEr,jdbcType=VARCHAR}
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_DT = #{dlivyWaybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , WAYBIL_NO_ERP_TRNSMIS_CD = #{waybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+			 , WAYBIL_NO_ERP_TRNSMIS_ERR_CONT = #{waybilNoErpTrnsmisErrCont,jdbcType=VARCHAR}
+			 , WAYBIL_NO_ERP_TRNSMIS_DT = #{waybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , DLV_COM_TRNSMIS_TGT_YN = #{dlvComTrnsmisTgtYn,jdbcType=VARCHAR}
+			 , DLV_COM_TRNSMIS_YN = #{dlvComTrnsmisYn,jdbcType=VARCHAR}
+			 , DLV_COM_TRNSMIS_DT = #{dlvComTrnsmisDt,jdbcType=TIMESTAMP}
+			 , DLV_COM_DLV_COMPT_DT = #{dlvComDlvComptDt,jdbcType=TIMESTAMP}
+			 , SHOP_PKUP_SMS_SND_YN = #{shopPkupSmsSndYn,jdbcType=VARCHAR}
+			 , MAIL_SND_YN = #{mailSndYn,jdbcType=VARCHAR}
+			 , CAL_DT = #{calDt,jdbcType=TIMESTAMP}
+			 , DRTDR_NONGDGP_RESN_CD = #{drtdrNongdgpResnCd,jdbcType=VARCHAR}
+			 , DRTDR_NONDLVR_RESN_CD = #{drtdrNondlvrResnCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+			 , DLV_CHRGE_HIST_TURN = #{dlvChrgeHistTurn,jdbcType=NUMERIC}
+			 , ORD_CNFIRM_YN = #{ordCnfirmYn,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertLgsDlvHist" parameterType="lgsDlvHist">
+		INSERT /* com.plgrim.ncp.base.insertLgsDlvHist		Generator(Generator)	2018-05-23 */
+		INTO   LGS_DLV_HIST (
+			   ORD_NO
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , HIST_DT
+			 , CLM_NO
+			 , DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_CST_PLC_SN
+			 , ZONE_TURN
+			 , GOD_MIN_WT
+			 , DLV_CST_BND_MBD_CD
+			 , DLV_MN_CD
+			 , DLV_COM_CD
+			 , DLV_COM_NM
+			 , GDGP_STAT_CD
+			 , DMSTC_WAYBIL_NO
+			 , DMSTC_WAYBIL_NO_REG_DT
+			 , HBL_NO
+			 , HBL_NO_REG_DT
+			 , OVSEA_WAYBIL_NO
+			 , OVSEA_WAYBIL_NO_REG_DT
+			 , CVNSTOR_HDRY_APRV_NO
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_AMT
+			 , PAY_EXCHG_RT_CRNCY_AMT
+			 , REALITY_DLV_CST
+			 , PLC_DLV_CST
+			 , CNCL_DLV_CST
+			 , RTGOD_DLV_CST
+			 , EXCHG_DLV_CST
+			 , DLV_CST_CPN_DC_AMT
+			 , DLV_CST_CPN_NO
+			 , DLV_CST_CPN_PRM_NO
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_CD
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_ER
+			 , DLIVY_WAYBIL_NO_ERP_TRNSMIS_DT
+			 , WAYBIL_NO_ERP_TRNSMIS_CD
+			 , WAYBIL_NO_ERP_TRNSMIS_ERR_CONT
+			 , WAYBIL_NO_ERP_TRNSMIS_DT
+			 , DLV_COM_TRNSMIS_TGT_YN
+			 , DLV_COM_TRNSMIS_YN
+			 , DLV_COM_TRNSMIS_DT
+			 , DLV_COM_DLV_COMPT_DT
+			 , SHOP_PKUP_SMS_SND_YN
+			 , MAIL_SND_YN
+			 , CAL_DT
+			 , DRTDR_NONGDGP_RESN_CD
+			 , DRTDR_NONDLVR_RESN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , DLV_CHRGE_HIST_TURN
+			 , ORD_CNFIRM_YN
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , #{dlvTurn,jdbcType=NUMERIC}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{zoneTurn,jdbcType=NUMERIC}
+			 , #{godMinWt,jdbcType=NUMERIC}
+			 , #{dlvCstBndMbdCd,jdbcType=VARCHAR}
+			 , #{dlvMnCd,jdbcType=VARCHAR}
+			 , #{dlvComCd,jdbcType=VARCHAR}
+			 , #{dlvComNm,jdbcType=VARCHAR}
+			 , #{gdgpStatCd,jdbcType=VARCHAR}
+			 , #{dmstcWaybilNo,jdbcType=VARCHAR}
+			 , #{dmstcWaybilNoRegDt,jdbcType=TIMESTAMP}
+			 , #{hblNo,jdbcType=VARCHAR}
+			 , #{hblNoRegDt,jdbcType=TIMESTAMP}
+			 , #{ovseaWaybilNo,jdbcType=VARCHAR}
+			 , #{ovseaWaybilNoRegDt,jdbcType=TIMESTAMP}
+			 , #{cvnstorHdryAprvNo,jdbcType=VARCHAR}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , #{stdrCrncyAmt,jdbcType=NUMERIC}
+			 , #{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , #{realityDlvCst,jdbcType=NUMERIC}
+			 , #{plcDlvCst,jdbcType=NUMERIC}
+			 , #{cnclDlvCst,jdbcType=NUMERIC}
+			 , #{rtgodDlvCst,jdbcType=NUMERIC}
+			 , #{exchgDlvCst,jdbcType=NUMERIC}
+			 , #{dlvCstCpnDcAmt,jdbcType=NUMERIC}
+			 , #{dlvCstCpnNo,jdbcType=VARCHAR}
+			 , #{dlvCstCpnPrmNo,jdbcType=VARCHAR}
+			 , #{dlivyWaybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+			 , #{dlivyWaybilNoErpTrnsmisEr,jdbcType=VARCHAR}
+			 , #{dlivyWaybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{waybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+			 , #{waybilNoErpTrnsmisErrCont,jdbcType=VARCHAR}
+			 , #{waybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{dlvComTrnsmisTgtYn,jdbcType=VARCHAR}
+			 , #{dlvComTrnsmisYn,jdbcType=VARCHAR}
+			 , #{dlvComTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{dlvComDlvComptDt,jdbcType=TIMESTAMP}
+			 , #{shopPkupSmsSndYn,jdbcType=VARCHAR}
+			 , #{mailSndYn,jdbcType=VARCHAR}
+			 , #{calDt,jdbcType=TIMESTAMP}
+			 , #{drtdrNongdgpResnCd,jdbcType=VARCHAR}
+			 , #{drtdrNondlvrResnCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{dlvChrgeHistTurn,jdbcType=NUMERIC}
+			 , #{ordCnfirmYn,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteLgsDlvHist" parameterType="lgsDlvHist">
+		DELETE /* com.plgrim.ncp.base.deleteLgsDlvHist		Generator(Generator)	2018-05-23 */
+		  FROM LGS_DLV_HIST
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrBnef" parameterType="mbrBnef" resultType="mbrBnef">
+		SELECT /* com.plgrim.ncp.base.selectMbrBnef		Generator(Generator)	2018-05-23 */
+			   BNEF_SN
+			 , BNEF_SECT_CD
+			 , BNEF_DETAIL_SECT_CD
+			 , BNEF_NM
+			 , BNEF_BEG_DT
+			 , BNEF_END_DT
+			 , APRV_SECT_CD
+			 , APRV_ADMIN_ID
+			 , APRV_DT
+			 , STPGE_ADMIN_ID
+			 , STPGE_DT
+			 , STPGE_RESN_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_BNEF
+		 WHERE 1 = 1
+	   	   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrBnef" parameterType="mbrBnef">
+		UPDATE /* com.plgrim.ncp.base.updateMbrBnef		Generator(Generator)	2018-05-23 */
+		MBR_BNEF SET
+			   BNEF_SECT_CD = #{bnefSectCd,jdbcType=VARCHAR}
+			 , BNEF_DETAIL_SECT_CD = #{bnefDetailSectCd,jdbcType=VARCHAR}
+			 , BNEF_NM = #{bnefNm,jdbcType=VARCHAR}
+			 , BNEF_BEG_DT = #{bnefBegDt,jdbcType=TIMESTAMP}
+			 , BNEF_END_DT = #{bnefEndDt,jdbcType=TIMESTAMP}
+			 , APRV_SECT_CD = #{aprvSectCd,jdbcType=VARCHAR}
+			 , APRV_ADMIN_ID = #{aprvAdminId,jdbcType=VARCHAR}
+			 , APRV_DT = #{aprvDt,jdbcType=TIMESTAMP}
+			 , STPGE_ADMIN_ID = #{stpgeAdminId,jdbcType=VARCHAR}
+			 , STPGE_DT = #{stpgeDt,jdbcType=TIMESTAMP}
+			 , STPGE_RESN_CONT = #{stpgeResnCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrBnef" parameterType="mbrBnef">
+		INSERT /* com.plgrim.ncp.base.insertMbrBnef		Generator(Generator)	2018-05-23 */
+		INTO   MBR_BNEF (
+			   BNEF_SN
+			 , BNEF_SECT_CD
+			 , BNEF_DETAIL_SECT_CD
+			 , BNEF_NM
+			 , BNEF_BEG_DT
+			 , BNEF_END_DT
+			 , APRV_SECT_CD
+			 , APRV_ADMIN_ID
+			 , APRV_DT
+			 , STPGE_ADMIN_ID
+			 , STPGE_DT
+			 , STPGE_RESN_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{bnefSn,jdbcType=NUMERIC}
+			 , #{bnefSectCd,jdbcType=VARCHAR}
+			 , #{bnefDetailSectCd,jdbcType=VARCHAR}
+			 , #{bnefNm,jdbcType=VARCHAR}
+			 , #{bnefBegDt,jdbcType=TIMESTAMP}
+			 , #{bnefEndDt,jdbcType=TIMESTAMP}
+			 , #{aprvSectCd,jdbcType=VARCHAR}
+			 , #{aprvAdminId,jdbcType=VARCHAR}
+			 , #{aprvDt,jdbcType=TIMESTAMP}
+			 , #{stpgeAdminId,jdbcType=VARCHAR}
+			 , #{stpgeDt,jdbcType=TIMESTAMP}
+			 , #{stpgeResnCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrBnef" parameterType="mbrBnef">
+		DELETE /* com.plgrim.ncp.base.deleteMbrBnef		Generator(Generator)	2018-05-23 */
+		  FROM MBR_BNEF
+		 WHERE 1 = 1
+		   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

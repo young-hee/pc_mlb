@@ -1,0 +1,1335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.membergoodsqna">
+
+	<resultMap id="memberGoodsQnaResult" type="com.plgrim.ncp.biz.callcenter.result.MemberGoodsQnaResult">
+		<result property="godInqSn" 		column="god_inq_sn" />
+		<result property="brndNm" 			column="brnd_nm" />
+		<result property="erpGodNo" 		column="erp_god_no" />
+		<result property="godNo" 			column="god_no" />
+		<result property="godNm" 			column="god_nm" />
+		<result property="inqTpNm" 			column="inq_tp_nm" />
+		<result property="inqCont" 			column="inq_cont" />
+		<result property="inqCstmrNm" 		column="inq_cstmr_nm" />
+		<result property="cstmrEmail" 		column="cstmr_email" />
+		<result property="inqDt" 			column="inq_dt" />
+		<result property="ansStatNm" 		column="ans_stat_nm" />
+		<result property="ansDt" 			column="ans_dt" />
+		<result property="ansDelay" 		column="ansDelay" />
+		<result property="cnsltChrgerNm" 	column="cnslt_chrger_nm" />
+		<result property="cnsltStatNm" 		column="cnslt_stat_nm" />
+		<result property="cnsltPrcsComptDt" column="cnslt_prcs_compt_dt" />
+		<result property="updateHistory" 	column="updateHistory" />
+		<result property="dvcNm" 			column="dvc_nm" />
+		<result property="langNm" 			column="lang_nm" />
+		<result property="mallNm" 			column="mall_nm" />
+		<result property="partmalSectCd" column="partmal_sect_cd" />
+		<result property="partmalComNm" column="partmal_com_nm" />
+		<result property="elapseTime" column="elapse_time" />
+		<result property="comId" column="com_id" />
+		<result property="ansEvlCd" 			column="ans_evl_cd" />
+		<result property="ansEvlCdNm" 			column="ans_evl_cd_nm" />
+		<result property="ansEvlCont" 			column="ans_evl_cont" />
+		<result property="ansEvlAdminAns" 		column="ans_evl_admin_ans" />
+		<result property="ansEvlAdminAnsCont" 	column="ans_evl_admin_ans_cont" />
+		<result property="ansDelayWorkTm" 		column="ansDelayWorkTm" />
+		<result property="inqDelay" 			column="inqDelay" />
+		<result property="inqDelayWorkTm" 		column="inqDelayWorkTm" />
+	</resultMap>
+	
+	<resultMap id="detailMemberGoodsQnaResult" type="com.plgrim.ncp.biz.callcenter.result.DetailMemberGoodsQnaResult">
+		<result property="godInqSn" column="GOD_INQ_SN" />
+		<result property="godNo" column="GOD_NO" />
+		<result property="mbrNo" column="MBR_NO" />
+		<result property="inqCstmrNm" column="INQ_CSTMR_NM" />
+		<result property="cstmrEmail" column="CSTMR_EMAIL" />
+		<result property="mbrTpCd" column="MBR_TP_CD" />
+		<result property="mbrTpNm" column="MBR_TP_NM" />
+		<result property="mbrSexSectCd" column="MBR_SEX_SECT_CD" />
+		<result property="mbrId" column="MBR_ID" />
+		<result property="mobilAreaNo" column="mobil_area_no" />
+		<result property="mobilTlofNo" column="mobil_tlof_no" />
+		<result property="mobilTlofWthnNo" column="mobil_tlof_wthn_no" />
+		<result property="godNm" column="GOD_NM" />
+		<result property="erpGodNo" column="ERP_GOD_NO" />
+		<result property="csmrPrc" column="CSMR_PRC" />  
+		<result property="inqDt" column="INQ_DT" />
+		<result property="inqTpCd" column="INQ_TP_CD" />
+		<result property="inqTpNm" column="INQ_TP_NM" />
+		<result property="ansStatCd" column="ANS_STAT_CD" />
+		<result property="ansStatNm" column="ANS_STAT_NM" />
+		<result property="inqCont" column="INQ_CONT" />
+		<result property="cnsltStatCd" column="CNSLT_STAT_CD" />
+		<result property="cnsltStatNm" column="CNSLT_STAT_NM" />
+		<result property="secretsntncYn" column="SECRETSNTNC_YN" />
+		<result property="langCd" column="LANG_CD" />
+		<result property="mallId" column="MALL_ID" />
+		<result property="mallNm" column="MALL_NM" />
+		<result property="joinMallNm" column="JOIN_MALL_NM" />
+		<result property="ansEvlCd" 			column="ans_evl_cd" />
+		<result property="ansEvlCdNm" 			column="ans_evl_cd_nm" />
+		<result property="ansEvlCont" 			column="ans_evl_cont" />
+		<result property="ansEvlAdminAnsCont" 	column="ans_evl_admin_ans_cont" />
+	</resultMap>
+	
+	<resultMap id="selectCnsltDetailResult" type="com.plgrim.ncp.biz.callcenter.result.SelectCnsltDetailResult">
+		<result property="godInqSn" column="god_inq_sn" />
+		<result property="ansStatCd" column="ans_stat_cd" />
+		<result property="ansStatNm" column="ans_stat_nm" />
+		<result property="cnsltSn" column="cnslt_sn" />
+		<result property="cnsltDetailTurn" column="cnslt_detail_turn" />
+		<result property="cnsltKndCd" column="cnslt_knd_cd" />
+		<result property="cnsltKndNm" column="cnslt_knd_nm" />
+		<result property="cnsltTgtCd" column="ccd.cnslt_tgt_cd" />
+		<result property="cnsltTgtNm" column="cnslt_tgt_nm" />
+		<result property="inqTpCd" column="inq_tp_cd" />
+		<result property="inqTpNm" column="inq_tp_nm" />
+		<result property="inqDetailTpCd" column="inq_detail_tp_cd" />
+		<result property="inqDetailTpNm" column="inq_detail_tp_nm" />
+		<result property="ccdRegtrId" column="ccd_regtr_id" />
+		<result property="ccdRegtrNm" column="ccd_regtr_nm" />
+		<result property="ccdRegDt" column="reg_dt" />
+		<result property="cnsltDetailStatCd" column="cnslt_detail_stat_cd" />
+		<result property="cnsltDetailStatNm" column="cnslt_detail_stat_nm" />
+		<result property="cstmrClmCd" column="cstmr_clm_cd" />
+		<result property="cstmrClmNm" column="cstmr_clm_nm" />
+		<result property="cnsltDetailCont" column="cnslt_detail_cont" />
+		<result property="transTgtCd" column="trans_tgt_cd" />
+		<result property="transTgtNm" column="trans_tgt_nm" />
+		<result property="transRqesterId" column="trans_rqester_id" />
+		<result property="transRqesterNm" column="trans_rqester_nm" />
+		<result property="chrgJobTpCd" column="chrg_job_tp_cd" />
+		<result property="chrgJobtpNm" column="chrg_job_tp_nm" />
+		<result property="transRequstTpCd" column="trans_requst_tp_cd" />
+		<result property="transRequstTpNm" column="trans_requst_tp_nm" />
+		<result property="transStatCd" column="trans_stat_cd" />
+		<result property="transStatNm" column="trans_stat_nm" />
+		<result property="cctRegtrId" column="cct_regtr_id" />
+		<result property="cctRegtrNm" column="cct_regtr_nm" />
+		<result property="cctRegDt" column="cct_reg_dt" />
+		<result property="transRequstCont" column="trans_requst_cont" />
+		<result property="promsTgtNm" column="proms_tgt_nm" />
+		<result property="promsclDt" column="promscl_dt" />
+		<result property="promsclStatCd" column="promscl_stat_cd" />
+		<result property="promsclStatNm" column="promscl_stat_nm" />
+		<result property="promsclMemoCont" column="promscl_memo_cont" />
+		<result property="smsSndCount" column="sms_snd_count" />
+		<result property="emailSndCount" column="email_snd_count" />
+	</resultMap>
+	
+	<select id="selectMemberGoodsQnaList" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaSearchDTO" resultMap="memberGoodsQnaResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT	gru.god_inq_sn
+			  , brand.brnd_nm
+              , god.erp_god_no
+              , gru.reg_dt
+              , god.god_no
+              , god.god_nm
+              , (CASE WHEN ccd.inq_detail_tp_cd IS NULL THEN  cd1.cd_nm  ELSE cd1.cd_nm || '>' || cd2.cd_nm END) AS inq_tp_nm
+              , gru.inq_cont
+              , gru.inq_cstmr_nm
+              , gru.cstmr_email
+              , gru.inq_dt
+              , gru.ans_stat_cd
+              , cd3.cd_nm AS ans_stat_nm
+              , gru.ans_dt
+              , gru.ansDelay
+              , sa.admin_nm AS cnslt_chrger_nm
+              , cc.cnslt_stat_cd
+              , gru.secretsntnc_yn
+              , cd7.cd_nm AS cnslt_stat_nm
+              , cc.cnslt_prcs_compt_dt
+              , (CASE WHEN cc.udt_dt IS NULL THEN '' ELSE sa.admin_nm || '(' || cc.udter_id || ') ' || TO_CHAR(cc.udt_dt, 'yyyy-mm-dd HH24:MI') END) AS updateHistory
+              , cd4.cd_nm AS dvc_nm
+              , cd5.cd_nm AS lang_nm
+              , god.partmal_sect_cd
+<!--               , gru.elapseTime -->
+              , CASE WHEN god.partmal_sect_cd = 'PARTMAL' THEN COM.COM_NM
+                 ELSE 'CS' END AS partmal_com_nm
+              , CASE WHEN gru.ans_stat_cd = 'ANS_COMPT' THEN ''
+                 ELSE  (
+                            SELECT fn_sys_delay_time(gru.inq_dt, SYSDATE, 'X30004', NULL)||'시간'
+                             FROM dual
+                              ) END AS elapseTime
+              , com.com_id
+              , (SELECT mall_nm FROM sys_mall WHERE mall_id = gru.mall_id) as mall_nm
+              
+              , gru.ans_evl_cd ans_evl_cd
+		      , cd8.cd_nm || nvl2(gru.ans_evl_cont,' : ' || gru.ans_evl_cont,'') AS ans_evl_cd_nm
+		      , gru.ans_evl_cont as ans_evl_cont
+		      , nvl2(gru.ans_evl_admin_ans_cont,'Y','N') AS ans_evl_admin_ans
+		      , (CASE WHEN gru.inq_dt IS NULL THEN '' ELSE
+                                DECODE(FLOOR(MOD(MONTHS_BETWEEN(sysdate,gru.inq_dt),1)*30.5),0, '', FLOOR(MOD(MONTHS_BETWEEN(sysdate,gru.inq_dt),1)*30.5) ||'일')||
+                                DECODE(TRUNC(MOD(sysdate - gru.inq_dt,1)*24),0,'',TRUNC(MOD(sysdate - gru.inq_dt,1)*24) || '시') ||
+                                 TRUNC(MOD((sysdate - gru.inq_dt)*24,1)*60) || '분' END) AS inqDelay
+              , CASE WHEN gru.ans_stat_cd ='ANS_COMPT' 
+		             THEN FN_ELAPSE_TIME(gru.ans_dt, gru.inq_dt, 'CSHLD')
+		              END AS  ansDelayWorkTm
+		      , FN_ELAPSE_TIME(sysdate, gru.inq_dt, 'CSHLD') as inqDelayWorkTm
+			FROM (
+                SELECT    cgi.god_inq_sn
+                          , cgi.reg_dt
+                          , DBMS_LOB.SUBSTR(cgi.INQ_CONT, 400, 1)  AS inq_cont 
+                          , cgi.inq_cstmr_nm
+                          , cgi.cstmr_email
+                          , cgi.inq_dt
+                          , cgi.ans_stat_cd
+                          , cgi.ans_evl_cd
+		              	  , cgi.ans_evl_cont
+		              	  , cgi.ans_evl_admin_ans_cont
+                          , cgia.ans_dt
+                          , cgi.god_no
+                          , cgi.secretsntnc_yn
+                          , cgi.mbr_no
+                          , cgi.delete_yn
+                          , cgi.inq_tp_cd
+                          , cgi.mall_id
+						  , cgi.dvc_cd
+						  , cgi.lang_cd
+                          , cgia.god_ans_turn
+                          , (CASE WHEN cgia.ans_dt IS NULL THEN '' ELSE
+                                DECODE(FLOOR(MOD(MONTHS_BETWEEN(cgia.ans_dt,cgi.inq_dt),1)*30.5),0, '', FLOOR(MOD(MONTHS_BETWEEN(cgia.ans_dt,cgi.inq_dt),1)*30.5) ||'일')||
+                                DECODE(TRUNC(MOD(cgia.ans_dt - cgi.inq_dt,1)*24),0,'',TRUNC(MOD(cgia.ans_dt - cgi.inq_dt,1)*24) || '시') ||
+                                 TRUNC(MOD((cgia.ans_dt - cgi.inq_dt)*24,1)*60) || '분' END) AS ansDelay
+<!-- 						  , (CASE WHEN cgi.ans_stat_cd = 'ANS_COMPT' THEN '' ELSE -->
+<!--                                 DECODE(FLOOR(MOD(MONTHS_BETWEEN(sysdate,cgi.inq_dt),1)*30.5),0, '', FLOOR(MOD(MONTHS_BETWEEN(sysdate,cgi.inq_dt),1)*30.5) ||'일')|| -->
+<!--                                 DECODE(TRUNC(MOD(sysdate - cgi.inq_dt,1)*24),0,'',TRUNC(MOD(sysdate - cgi.inq_dt,1)*24) || '시') || -->
+<!--                                  TRUNC(MOD((sysdate - cgi.inq_dt)*24,1)*60) || '분' END) AS elapseTime                          -->
+                    FROM cso_god_inq cgi
+                    LEFT OUTER JOIN (select god_inq_sn, MAX(ans_dt) as ans_dt, MAX(god_ans_turn) as god_ans_turn from cso_god_inq_ans group by god_inq_sn ) cgia
+                                 ON (cgi.god_inq_sn = cgia.god_inq_sn)
+
+                    ) gru
+             	LEFT OUTER JOIN god god
+                   					ON (gru.god_no = god.god_no)
+      		 	LEFT OUTER JOIN com com
+                   					ON (god.com_id = com.com_id)
+    		 	LEFT OUTER JOIN cso_cnslt cc
+            	       				ON (gru.god_inq_sn = cc.god_inq_sn)
+      		 	LEFT OUTER JOIN cso_cnslt_detail ccd
+                   					ON (cc.cnslt_sn = ccd.cnslt_sn AND ccd.god_ans_turn = gru.god_ans_turn )
+      			LEFT OUTER JOIN mbr
+                   					ON (gru.MBR_NO = mbr.mbr_no)
+      			LEFT OUTER JOIN sys_brnd brand
+                   					ON (god.brnd_id = brand.brnd_id)
+      			LEFT OUTER JOIN sys_cd cd1
+                   					ON (cd1.cd = gru.inq_tp_cd)
+      			LEFT OUTER JOIN sys_cd cd2
+                   					ON (cd2.cd = ccd.inq_detail_tp_cd)
+      			LEFT OUTER JOIN sys_cd cd3
+                   					ON (cd3.cd = gru.ans_stat_cd)
+      			LEFT OUTER JOIN sys_admin sa
+                   					ON (sa.admin_id = ccd.cnslt_chrger_id)
+      			LEFT OUTER JOIN sys_admin sa2
+                   					ON (sa2.admin_id = cc.udter_id)
+      			LEFT OUTER JOIN sys_cd cd4
+                   					ON (cd4.cd = cc.dvc_cd)
+      			LEFT OUTER JOIN sys_cd cd5
+                   					ON (cd5.cd = cc.lang_cd)
+      			LEFT OUTER JOIN sys_cd cd7
+                   					ON (cd7.cd = cc.cnslt_stat_cd)
+                LEFT OUTER JOIN sys_cd cd8 
+                					ON (cd8.cd = gru.ans_evl_cd)
+     			WHERE 1=1
+       				AND gru.delete_yn='N'
+	       				<choose>
+						<when test="selectGodNoType != null and selectGodNoType !='' and inputGodNo != null and inputGodNo != ''">
+							<if test="selectGodNoType == 'ERP'">
+								AND god.erp_god_no IN (	SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+			                                      		FROM (SELECT #{inputGodNo, jdbcType=VARCHAR} AS param FROM dual) d
+			                                      		CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+							</if>
+							<if test="selectGodNoType == 'ONLINE'">
+								AND gru.god_no IN (	SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+			                                      		FROM (SELECT #{inputGodNo, jdbcType=VARCHAR} AS param FROM dual) d
+			                                      		CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+							</if>
+						</when>
+						<when test="inqCstmrId != null and inqCstmrId != ''">
+							AND mbr.mbr_id = #{inqCstmrId}
+						</when>
+						<otherwise>
+							<if test="mallId != null and mallId != ''">
+								AND gru.mall_id = #{mallId}
+							</if>
+							<if test="langCd != null and langCd != ''">
+								AND gru.lang_cd = #{langCd}
+							</if>
+							<if test="dvcCd != null and dvcCd != ''">
+								AND gru.dvc_cd = #{dvcCd}
+							</if>
+							<if test="searchDateType != null and searchDateType != '' and (dinitFlag == '' or dinitFlag == null)">
+								<if test="searchDateType == 'inqDt'">
+				            		AND gru.reg_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999             /* 온라인 가입 일자 */
+				        		</if>
+				        		<if test="searchDateType == 'ansDt'">
+				            		AND gru.ans_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999             /* 온라인 가입 일자 */
+				        		</if>
+				        		<if test="searchDateType == 'comptDt'">
+				            		AND cc.cnslt_prcs_compt_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999             /* 온라인 가입 일자 */
+				        		</if>
+							</if>
+			        		<if test="inqTpCd != null and inqTpCd != ''">
+			        			AND gru.inq_tp_cd = #{inqTpCd}
+			        		</if>
+			        		<if test="inqDetailTpCd != null and inqDetailTpCd != ''">
+			        			AND ccd.inq_detail_tp_cd = #{inqDetailTpCd}
+			        		</if>
+			        		<if test="cnsltStatCd != null and cnsltStatCd != ''">
+			        			AND cc.cnslt_stat_cd = #{cnsltStatCd}
+			        		</if>
+			        		<if test="ansStatCd != null and ansStatCd != '' and (dinitFlag == '' or dinitFlag == null)">
+			        			AND gru.ans_stat_cd = #{ansStatCd}
+			        		</if>
+			        		<!--<if test="regtrNm != null and regtrNm != ''">
+			        			AND sa.admin_nm = #{regtrNm}
+			        		</if>-->
+			        		<if test="regtrId != null and regtrId != ''">
+			        			AND sa.admin_id = #{regtrId}
+			        		</if>
+							<if test="godNm != null and godNm != ''">
+								AND god.god_nm LIKE '%' || #{godNm} || '%'
+							</if>
+			        		<!-- <if test="elapseDay != null and elapseDay != ''">
+			        			AND gru.ans_stat_cd = 'ANS_BF'
+			        			AND gru.reg_dt BETWEEN TO_DATE(SYSDATE, 'YYYY-MM-DD') AND TO_DATE(SYSDATE, 'YYYY-MM-DD') + (#{elapseDay} + 0.99999)
+			        		</if>
+			        		<if test="godNm != null and godNm !=''">
+			        			AND god.god_nm = #{godNm}
+			        		</if> -->
+			        		<if test="partmalSectCd != null and partmalSectCd != '' ">
+			        			AND	god.partmal_sect_cd = #{partmalSectCd, jdbcType=VARCHAR}
+			        		</if>
+			        		<if test="comId != null and comId != '' ">
+			        			AND	com.com_id = #{comId, jdbcType = VARCHAR}
+			        		</if>
+			        		<if test="dcomId != null and dcomId != '' ">
+				        		AND	com.com_id = #{dcomId, jdbcType = VARCHAR}
+				        	</if>
+				        	<if test="dinitFlag != null and dinitFlag != '' ">
+				        		AND gru.ANS_STAT_CD IN ('ANS_BF','ANS_WAIT')
+				        	</if>
+				        	<if test='dinitFlag != null and dinitFlag == "A"'>
+				        		AND gru.REG_DT > trunc(SYSDATE-1)
+				        	</if>
+			        		<if test="loginId != null and loginId != '' ">
+			        			AND	god.brnd_id IN(SELECT brnd_id
+			        										   FROM sys_admin_brnd
+			        										  WHERE admin_id = #{loginId, jdbcType=VARCHAR})
+			        		</if>
+			        		<if test='godInqSn != null and godInqSn != ""'>
+								AND gru.god_inq_sn = #{godInqSn}
+							</if>
+			        		<if test='ansEvlCd != null and ansEvlCd != ""'>
+								AND gru.ans_evl_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+								FROM (SELECT #{ansEvlCd, jdbcType=VARCHAR} AS param FROM dual) d
+								CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 만족도평가 코드 */
+							</if>
+							<if test='ansEvlAdminAns != null and ansEvlAdminAns != ""'>
+								<if test='ansEvlAdminAns == "Y"'>
+									AND gru.ans_evl_admin_ans_cont is not null
+								</if>
+								<if test='ansEvlAdminAns == "N"'>
+					            	AND gru.ans_evl_admin_ans_cont is null
+					            </if>
+							</if>
+							<if test='ansDelayWorkTm != null and ansDelayWorkTm != ""'>
+								<if test="ansDelayWorkTm !=  5">
+									AND gru.ans_stat_cd = 'ANS_COMPT'
+									AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+									AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}+1, 'CSHLD') 
+								</if>
+								<if test="ansDelayWorkTm ==  5">
+									AND gru.ans_stat_cd = 'ANS_COMPT'
+									AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+								</if>
+							</if>
+							<if test='inqDelayWorkTm != null and inqDelayWorkTm != ""'>
+								<if test="inqDelayWorkTm !=  5">
+									AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+									AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}+1, 'CSHLD') 
+								</if>
+								<if test="inqDelayWorkTm ==  5">
+									AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+								</if>
+							</if>
+						</otherwise>
+					</choose>
+			ORDER BY gru.god_inq_sn DESC
+			<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	
+	<select id="selectMemberGoodsQnaListTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaSearchDTO" resultType="long">
+		SELECT	COUNT(*)
+		FROM (
+						SELECT	cgi.god_inq_sn
+				              , cgi.reg_dt
+				              , DBMS_LOB.SUBSTR(cgi.INQ_CONT, 400, 1)  AS inq_cont
+				              , cgi.inq_cstmr_nm
+				              , cgi.cstmr_email
+				              , cgi.inq_dt
+				              , cgi.ans_stat_cd
+	                          , cgi.ans_evl_cd
+			              	  , cgi.ans_evl_cont
+			              	  , cgi.ans_evl_admin_ans_cont
+				              , cgia.ans_dt AS ans_dt
+				              , cgi.god_no
+				              , cgi.secretsntnc_yn
+				              , cgi.mbr_no
+				              , cgi.delete_yn
+				              , cgi.inq_tp_cd
+							  , cgi.lang_cd
+				              , cgi.mall_id
+							  , cgi.dvc_cd
+				              , cgia.god_ans_turn AS god_ans_turn
+		<!-- 		              , (CASE WHEN MAX(cgia.ans_dt) IS NULL THEN '' ELSE -->
+		<!-- 		              DECODE(FLOOR(MOD(MONTHS_BETWEEN(MAX(cgia.ans_dt),cgi.inq_dt),1)*30.5),0, '', FLOOR(MOD(MONTHS_BETWEEN(MAX(cgia.ans_dt),cgi.inq_dt),1)*30.5) ||'일')|| -->
+		<!-- 		              DECODE(TRUNC(MOD(MAX(cgia.ans_dt) - cgi.inq_dt,1)*24),0,'',TRUNC(MOD(MAX(cgia.ans_dt) - cgi.inq_dt,1)*24) || '시') || -->
+		<!-- 		              TRUNC(MOD((MAX(cgia.ans_dt) - cgi.inq_dt)*24,1)*60) || '분' END) AS ansDelay -->
+				
+				        FROM cso_god_inq cgi
+				        LEFT OUTER JOIN (SELECT god_inq_sn, MAX(ans_dt) AS ans_dt, MAX(god_ans_turn) AS god_ans_turn FROM cso_god_inq_ans GROUP BY god_inq_sn) cgia ON cgi.god_inq_sn = cgia.god_inq_sn
+		               ) gru
+		  LEFT OUTER JOIN god god ON (gru.god_no = god.god_no)
+		  LEFT OUTER JOIN cso_cnslt cc ON (gru.god_inq_sn = cc.god_inq_sn)
+		  LEFT OUTER JOIN cso_cnslt_detail ccd ON (cc.cnslt_sn = ccd.cnslt_sn AND ccd.god_ans_turn = gru.god_ans_turn )
+		  LEFT OUTER JOIN com com ON (god.com_id = com.com_id)
+		  LEFT OUTER JOIN mbr on (gru.MBR_NO = mbr.mbr_no)
+		  LEFT OUTER JOIN sys_brnd brand ON (god.brnd_id = brand.brnd_id)
+		  LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = gru.inq_tp_cd)
+		  LEFT OUTER JOIN sys_cd cd2 ON (cd2.cd = ccd.inq_detail_tp_cd)
+		  LEFT OUTER JOIN sys_cd cd3 ON (cd3.cd = gru.ans_stat_cd)
+		  LEFT OUTER JOIN sys_admin sa ON (sa.admin_id = ccd.cnslt_chrger_id)
+		  LEFT OUTER JOIN sys_admin sa2 ON (sa2.admin_id = cc.udter_id)
+		  LEFT OUTER JOIN sys_cd cd4 ON (cd4.cd = cc.dvc_cd)
+		  LEFT OUTER JOIN sys_cd cd5 ON (cd5.cd = cc.lang_cd)
+		  LEFT OUTER JOIN sys_cd cd7 ON (cd7.cd = cc.cnslt_stat_cd)
+		 WHERE 1=1
+		  AND gru.delete_yn='N'
+			<choose>
+					<when test="selectGodNoType != null and selectGodNoType !='' and inputGodNo != null and inputGodNo != ''">
+						<if test="selectGodNoType == 'ERP'">
+							AND god.erp_god_no IN (	SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+		                                      		FROM (SELECT #{inputGodNo, jdbcType=VARCHAR} AS param FROM dual) d
+		                                      		CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+						</if>
+						<if test="selectGodNoType == 'ONLINE'">
+							AND gru.god_no IN (	SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+		                                      		FROM (SELECT #{inputGodNo, jdbcType=VARCHAR} AS param FROM dual) d
+		                                      		CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+						</if>				
+					</when>
+					<when test="inqCstmrId != null and inqCstmrId != ''">
+						AND mbr.mbr_id = #{inqCstmrId}
+					</when>
+					<otherwise>
+						<if test="mallId != null and mallId != ''">
+							AND gru.mall_id = #{mallId}
+						</if>
+						<if test="langCd != null and langCd != ''">
+							AND gru.lang_cd = #{langCd}
+						</if>
+						<if test="dvcCd != null and dvcCd != ''">
+							AND gru.dvc_cd = #{dvcCd} 
+						</if>
+						<if test="searchDateType != null and searchDateType != '' and (dinitFlag == '' or dinitFlag == null)">
+							<if test="searchDateType == 'inqDt'"> 
+			            		AND gru.reg_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999             /* 온라인 가입 일자 */
+			        		</if>
+			        		<if test="searchDateType == 'ansDt'">
+			            		AND gru.ans_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999             /* 온라인 가입 일자 */
+			        		</if>
+			        		<if test="searchDateType == 'comptDt'">
+			            		AND cc.cnslt_prcs_compt_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999             /* 온라인 가입 일자 */
+			        		</if>
+						</if>
+		        		<if test="inqTpCd != null and inqTpCd != ''">
+		        			AND gru.inq_tp_cd = #{inqTpCd}
+		        		</if>
+		        		<if test="inqDetailTpCd != null and inqDetailTpCd != ''">
+		        			AND ccd.inq_detail_tp_cd = #{inqDetailTpCd}
+		        		</if>
+		        		<if test="cnsltStatCd != null and cnsltStatCd != ''">
+		        			AND cc.cnslt_stat_cd = #{cnsltStatCd}
+		        		</if>
+		        		<if test="ansStatCd != null and ansStatCd != '' and (dinitFlag == '' or dinitFlag == null)">
+		        			AND gru.ans_stat_cd = #{ansStatCd}
+		        		</if>
+		        		<!--<if test="regtrNm != null and regtrNm != ''">
+		        			AND sa.admin_nm = #{regtrNm}
+		        		</if>-->
+		        		<if test="regtrId != null and regtrId != ''">
+		        			AND sa.admin_id = #{regtrId}
+		        		</if>
+						<if test="godNm != null and godNm != ''">
+							AND god.god_nm LIKE '%' || #{godNm} || '%'
+						</if>
+		        		<!-- <if test="elapseDay != null and elapseDay != ''">
+		        			AND gru.ans_stat_cd = 'ANS_BF'
+		        			AND gru.reg_dt BETWEEN TO_DATE(SYSDATE, 'YYYY-MM-DD') AND TO_DATE(SYSDATE, 'YYYY-MM-DD') + (#{elapseDay} + 0.99999)
+		        		</if>
+		        		<if test="godNm != null and godNm !=''">
+		        			AND god.god_nm = #{godNm}
+		        		</if> -->
+		        		<if test="partmalSectCd != null and partmalSectCd != '' ">
+			        		AND	god.partmal_sect_cd = #{partmalSectCd, jdbcType=VARCHAR}
+			        	</if>
+			        	<if test="comId != null and comId != '' ">
+			        		AND	com.com_id = #{comId, jdbcType = VARCHAR}
+			        	</if>
+			        	<if test="dcomId != null and dcomId != '' ">
+			        		AND	com.com_id = #{dcomId, jdbcType = VARCHAR}
+			        	</if>
+			        	<if test="dinitFlag != null and dinitFlag != '' ">
+			        		AND gru.ANS_STAT_CD IN ('ANS_BF','ANS_WAIT')
+			        	</if>
+			        	<if test='dinitFlag != null and dinitFlag == "A"'>
+			        		AND gru.REG_DT > trunc(SYSDATE-1)
+			        	</if>
+			        	<if test="loginId != null and loginId != '' ">
+			        			AND	god.brnd_id IN(SELECT brnd_id
+			        										   FROM sys_admin_brnd
+			        										  WHERE admin_id = #{loginId, jdbcType=VARCHAR})
+			        	</if>
+			        	<if test='godInqSn != null and godInqSn != ""'>
+							AND gru.god_inq_sn = #{godInqSn}
+						</if>
+						<if test='ansEvlCd != null and ansEvlCd != ""'>
+							AND gru.ans_evl_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+							FROM (SELECT #{ansEvlCd, jdbcType=VARCHAR} AS param FROM dual) d
+							CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 만족도평가 코드 */
+						</if>
+						<if test='ansEvlAdminAns != null and ansEvlAdminAns != ""'>
+							<if test='ansEvlAdminAns == "Y"'>
+								AND gru.ans_evl_admin_ans_cont is not null
+							</if>
+							<if test='ansEvlAdminAns == "N"'>
+				            	AND gru.ans_evl_admin_ans_cont is null
+				            </if>
+						</if>
+						<if test='ansDelayWorkTm != null and ansDelayWorkTm != ""'>
+							<if test="ansDelayWorkTm !=  5">
+								AND gru.ans_stat_cd = 'ANS_COMPT'
+								AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+								AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}+1, 'CSHLD') 
+							</if>
+							<if test="ansDelayWorkTm ==  5">
+								AND gru.ans_stat_cd = 'ANS_COMPT'
+								AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+							</if>
+						</if>
+						<if test='inqDelayWorkTm != null and inqDelayWorkTm != ""'>
+							<if test="inqDelayWorkTm !=  5">
+								AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+								AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}+1, 'CSHLD') 
+							</if>
+							<if test="inqDelayWorkTm ==  5">
+								AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+							</if>
+						</if>
+					</otherwise>
+				</choose>
+	</select>
+	
+	
+	<select id="detailMemberGoodsQnaUserInfo" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaSearchDTO" resultMap="detailMemberGoodsQnaResult">
+		select	cgi.god_inq_sn 	
+				, cgi.god_no
+				, cgi.mbr_no
+		        , cgi.inq_cstmr_nm
+		        , cgi.cstmr_email
+		        , mbr.mbr_tp_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = mbr.mbr_tp_cd) AS mbr_tp_nm
+		        , mbr.mbr_sex_sect_cd
+		        , mbr.mbr_id
+		        , mbr.mobil_area_no
+                , mbr.mobil_tlof_no
+                , mbr.mobil_tlof_wthn_no
+                , (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) AS JOIN_MALL_NM
+		        , god.god_nm
+		        , god.erp_god_no
+		        , god.csmr_prc
+		        FROM CSO_GOD_INQ cgi
+		LEFT OUTER JOIN MBR MBR ON cgi.mbr_no = mbr.mbr_no
+		LEFT OUTER JOIN GOD GOD ON cgi.god_no = god.god_no
+		WHERE 1=1
+			AND	cgi.god_inq_sn = #{godInqSn}
+		<if test="loginId != null and loginId != '' ">
+       			AND	god.brnd_id IN(SELECT brnd_id
+								FROM sys_admin_brnd
+								WHERE admin_id = #{loginId, jdbcType=VARCHAR})
+       	</if>
+	</select>
+	
+	<select id="detailMemberGoodsQna" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaSearchDTO" resultMap="detailMemberGoodsQnaResult">
+		SELECT	cgi.god_inq_sn
+				, cgi.inq_dt
+				, cgi.inq_tp_cd
+		        , (SELECT sc.cd_nm FROM sys_cd sc WHERE cd = cgi.inq_tp_cd) AS inq_tp_nm
+		        , cgi.ans_stat_cd
+		        , (SELECT sc.cd_nm FROM sys_cd sc WHERE cd = cgi.ans_stat_cd) AS ans_stat_nm
+		        , cgi.inq_cont
+		        , cgi.secretsntnc_yn
+                , cc.cnslt_stat_cd
+                , (SELECT sc.cd_nm FROM sys_cd sc WHERE cd = cc.cnslt_stat_cd) AS cnslt_stat_nm
+                , cgi.mall_id
+                , (SELECT mall_nm FROM sys_mall WHERE mall_id = cgi.mall_id) as mall_nm
+                , cgi.lang_cd
+                , cgi.ans_evl_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cgi.ANS_EVL_CD) AS ANS_EVL_CD_NM
+				, cgi.ans_evl_cont
+				, cgi.ans_evl_admin_ans_cont
+		from cso_god_inq cgi
+        left outer JOIN cso_cnslt cc ON cgi.god_inq_sn = cc.god_inq_sn
+		WHERE 1=1
+		AND cgi.god_inq_sn = #{godInqSn}
+	</select>
+	
+	<insert id="insertMemberGoodsQnaAns" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaDTO">
+		INSERT  
+	    INTO CSO_GOD_INQ_ANS
+		(
+	        GOD_INQ_SN
+	       ,GOD_ANS_TURN
+	       ,ANS_CONT
+	       ,DETAIL_ANS_STAT_CD
+	       ,ANS_DT
+	       ,ANS_ADMIN_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{godInqSn,jdbcType=NUMERIC}
+	       ,#{godAnsTurn,jdbcType=NUMERIC}
+	       ,#{ansCont,jdbcType=CLOB}
+	       ,#{detailAnsStatCd,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)    
+	</insert>
+	
+	<update id="updateMemberGoodsQna" parameterType="csoGodInq">
+        UPDATE  
+        CSO_GOD_INQ SET
+                ANS_STAT_CD = #{ansStatCd,jdbcType=VARCHAR}
+				<if test="ansStatCd == 'ANS_COMPT'">
+				,PRCS_COMPT_DT = SYSDATE
+				</if>
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+    </update>
+    <update id="updateMemberGoodsQnaAnsEvlAdminAns" parameterType="csoGodInq">
+        UPDATE  
+        CSO_GOD_INQ SET
+                ANS_EVL_ADMIN_ANS_CONT = #{ansEvlAdminAnsCont}
+                ,ANS_EVL_ADMIN_ANS_DT = SYSDATE
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+    </update>
+    <select id="selectMemberGoodsQna" parameterType="long" resultMap="memberGoodsQnaResult">
+    	SELECT	cgi.god_inq_sn
+				, cgi.dsgn_grp_no
+				, cgi.god_no
+				, cgi.inq_tp_cd
+				, cgi.mbr_no
+				, cgi.inq_cstmr_nm
+				, cgi.inq_cont
+				, cgi.inq_dt
+				, cgi.secretsntnc_yn
+				, cgi.ans_stat_cd
+				, cgi.inqire_count
+				, cgi.prcs_compt_dt
+				, cgi.delete_yn
+				, cgi.cstmr_email
+				, cgi.cstmr_email_recptn_yn
+				, cgi.lang_cd
+				, cgi.mall_id
+				, cgi.dvc_cd
+				, cgi.stplat_iem_agr_yn
+				, cgi.stplat_cd
+				, cgi.regtr_id
+				, cgi.reg_dt
+				, cgi.udter_id
+				, cgi.udt_dt
+				, god.god_nm
+				, cgi.ans_evl_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cgi.ANS_EVL_CD) AS ANS_EVL_CD_NM
+				, cgi.ans_evl_cont
+				, cgi.ans_evl_admin_ans_cont
+		  FROM	CSO_GOD_INQ cgi
+		  LEFT OUTER JOIN god god ON cgi.god_no = god.god_no
+		 WHERE	1=1
+		   AND	god_inq_sn=#{godInqSn}
+    </select>
+    
+    <insert id="insertCsoCnslt" parameterType="csoCnslt">
+    	INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoCnslt jackie 20150521 */  
+	    INTO CSO_CNSLT
+		(
+	        CNSLT_SN
+	       ,CSTMR_CLM_CD
+	       ,CNSLT_REQST_MBR_NO
+	       ,CSTMRNM
+	       ,CNSLT_KND_CD
+	       ,INQ_TP_CD
+	       ,CNSLT_STAT_CD
+		<if test="cnsltStatCd == 'PROC_COMPT'">
+			,CNSLT_PRCS_COMPT_DT
+		</if>
+	       ,CSTMR_EMAIL
+	       ,CSTMRTEL_NATION_NO
+	       ,CSTMRTEL_AREA_NO
+	       ,CSTMRTEL_TLOF_NO
+	       ,CSTMRTEL_TLOF_WTHN_NO
+	       ,CSTMRMOBIL_NATION_NO
+	       ,CSTMRMOBIL_AREA_NO
+	       ,CSTMRMOBIL_TLOF_NO
+	       ,CSTMRMOBIL_TLOF_WTHN_NO
+	       ,MALL_ID
+	       ,LANG_CD
+	       ,DVC_CD
+	       ,MTM_INQ_SN
+	      
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cstmrClmCd,jdbcType=VARCHAR}
+	       ,#{cnsltReqstMbrNo,jdbcType=VARCHAR}
+	       ,#{cstmrnm,jdbcType=VARCHAR}
+	       ,#{cnsltKndCd,jdbcType=VARCHAR}
+	       ,#{inqTpCd,jdbcType=VARCHAR}
+	       ,#{cnsltStatCd,jdbcType=VARCHAR}
+		<if test="cnsltStatCd == 'PROC_COMPT'">
+			,SYSDATE
+		</if>
+	       ,#{cstmrEmail,jdbcType=VARCHAR}
+	       ,#{cstmrtelNationNo,jdbcType=VARCHAR}
+	       ,#{cstmrtelAreaNo,jdbcType=VARCHAR}
+	       ,#{cstmrtelTlofNo,jdbcType=VARCHAR}
+	       ,#{cstmrtelTlofWthnNo,jdbcType=VARCHAR}
+	       ,#{cstmrmobilNationNo,jdbcType=VARCHAR}
+	       ,#{cstmrmobilAreaNo,jdbcType=VARCHAR}
+	       ,#{cstmrmobilTlofNo,jdbcType=VARCHAR}
+	       ,#{cstmrmobilTlofWthnNo,jdbcType=VARCHAR}
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{langCd,jdbcType=VARCHAR}
+	       ,#{dvcCd,jdbcType=VARCHAR}
+	       ,#{mtmInqSn,jdbcType=NUMERIC}
+	      
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+    </insert>
+    
+    
+    <insert id="insertCsoCnsltDetail" parameterType="csoCnsltDetail">
+    	INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoCnsltDetail jackie 20150521 */  
+	    INTO CSO_CNSLT_DETAIL
+		(
+	        CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,CNSLT_KND_CD
+	       ,CNSLT_TGT_CD
+	       ,CSTMR_CLM_CD
+	       ,INQ_TP_CD
+	       ,INQ_DETAIL_TP_CD
+	       ,CNSLT_DETAIL_STAT_CD
+	       ,CNSLT_DETAIL_CONT
+	       ,CNSLT_DT
+	       ,CNSLT_CHRGER_ID
+	       ,CNSLT_DETL_TRNSMIS_REQUST_YN
+	       ,SMS_SND_COUNT
+	       ,EMAIL_SND_COUNT
+	       ,DELETE_YN
+	       ,MTM_INQ_SN
+	       ,MTM_INQ_ANS_TURN
+	       ,TRANS_CNSLT_DETAIL_TURN
+	       ,TRANS_REQUST_TURN
+	       ,CNSLT_TMPLAT_NM
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		SELECT	#{cnsltSn,jdbcType=NUMERIC}
+				, #{cnsltDetailTurn,jdbcType=NUMERIC}
+				, #{cnsltKndCd,jdbcType=VARCHAR}
+		      	, #{cnsltTgtCd,jdbcType=VARCHAR}
+				, #{cstmrClmCd,jdbcType=VARCHAR}
+				, #{inqTpCd,jdbcType=VARCHAR}
+				, #{inqDetailTpCd,jdbcType=VARCHAR} 
+				, #{cnsltDetailStatCd,jdbcType=VARCHAR}
+				, #{cnsltDetailCont,jdbcType=VARCHAR}
+				, SYSDATE
+				, #{regtrId,jdbcType=VARCHAR}
+		       	, #{cnsltDetlTrnsmisRequstYn,jdbcType=VARCHAR} 
+		       	, #{smsSndCount,jdbcType=NUMERIC}
+		       	, #{emailSndCount,jdbcType=NUMERIC}
+		       	, #{deleteYn,jdbcType=VARCHAR}	
+		       	, #{mtmInqSn,jdbcType=NUMERIC}
+		       	, #{mtmInqAnsTurn,jdbcType=NUMERIC}
+		       	, #{transCnsltDetailTurn,jdbcType=NUMERIC}
+		       	, #{transRequstTurn,jdbcType=NUMERIC}
+		       	, #{cnsltTmplatNm,jdbcType=VARCHAR}
+		       	, #{regtrId,jdbcType=VARCHAR}
+		       	, #{udterId,jdbcType=VARCHAR}
+		       	,SYSDATE
+		       	,SYSDATE
+		 FROM	CSO_CNSLT
+		WHERE 	1=1
+		AND		CNSLT_SN=#{cnsltSn,jdbcType=NUMERIC}
+    	
+    </insert>
+    
+    <insert id="insertCsoCnsltOrdGod" parameterType="csoCnsltOrdGod">
+    	INSERT  
+	    INTO CSO_CNSLT_ORD_GOD
+		(
+	        CNSLT_SN
+	       ,CNSLT_ORD_GOD_TURN
+	       ,GOD_NM
+	       ,ORD_GOD_SECT_CD
+	       ,GOD_NO
+	       ,ORD_NO
+	       ,ORD_GOD_TURN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltOrdGodTurn,jdbcType=NUMERIC}
+	       ,#{godNm,jdbcType=VARCHAR}
+	       ,#{ordGodSectCd,jdbcType=VARCHAR}
+	       ,#{godNo,jdbcType=VARCHAR}
+	       ,#{ordNo,jdbcType=VARCHAR}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+			
+    </insert>
+    
+    <insert id="insertCsoCnsltDetailJopTp" parameterType="csoCnsltDetailJobTp">
+    	INSERT  
+	    INTO CSO_CNSLT_DETAIL_JOB_TP
+		(
+	        CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,CNSLT_JOB_TP_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{cnsltJobTpCd,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <insert id="insertCsoCnsltDetailOrdGod" parameterType="csoCnsltDetailOrdGod">
+    	INSERT  
+	    INTO CSO_CNSLT_DETAIL_ORD_GOD
+		(
+	        CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,CNSLT_DETAIL_ORD_GOD_TURN
+	       ,GOD_NM
+	       ,ORD_GOD_SECT_CD
+	       ,GOD_NO
+	       ,ORD_NO
+	       ,ORD_GOD_TURN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailOrdGodTurn,jdbcType=NUMERIC}
+	       ,#{godNm,jdbcType=VARCHAR}
+	       ,#{ordGodSectCd,jdbcType=VARCHAR}
+	       ,#{godNo,jdbcType=VARCHAR}
+	       ,#{ordNo,jdbcType=VARCHAR}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		) 
+    </insert>
+    
+    <insert id="insertCsoCnsltDetailHist" parameterType="csoCnsltDetailHist">
+    	INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoCnsltDetailHist jackie 20150413 */  
+	    INTO CSO_CNSLT_DETAIL_HIST
+		(
+	        CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,MOD_INFO_CD
+	       ,HIST_DT
+	       ,MOD_TP_CD
+	       ,MOD_CONT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{modInfoCd,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{modTpCd,jdbcType=VARCHAR}
+	       ,#{modCont,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)  
+    </insert>
+    
+    <insert id="insertCsoCnsltTrans" parameterType="csoCnsltTrans">
+	    INSERT  
+	    INTO CSO_CNSLT_TRANS
+		(
+	        CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,TRANS_REQUST_TURN
+	       ,TRANS_STAT_CD
+	       ,TRANS_TGT_CD
+	       ,CHRG_JOB_TP_CD
+	       ,TRANS_REQUST_TP_CD
+	       ,DOI_CD
+	       ,CHRGER_CNFIRM_YN
+	       ,TRANS_REQUST_SJ
+	       ,TRANS_REQUST_CONT
+	       ,TRANS_COM_ID
+	       ,TRANS_RECR_ID
+	       ,TRANS_REQUST_DT
+	       ,TRANS_CNCL_DT
+	       ,TRANS_COMPT_DT
+	       ,TRANS_RQESTER_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{transRequstTurn,jdbcType=NUMERIC}
+	       ,#{transStatCd,jdbcType=VARCHAR}
+	       ,#{transTgtCd,jdbcType=VARCHAR}
+	       ,#{chrgJobTpCd,jdbcType=VARCHAR}
+	       ,#{transRequstTpCd,jdbcType=VARCHAR}
+	       ,#{doiCd,jdbcType=VARCHAR}
+	       ,#{chrgerCnfirmYn,jdbcType=VARCHAR}
+	       ,#{transRequstSj,jdbcType=VARCHAR}
+	       ,#{transRequstCont,jdbcType=CLOB}
+	       ,#{transComId,jdbcType=VARCHAR}
+	       ,#{transRecrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{transCnclDt,jdbcType=TIMESTAMP}
+	       ,#{transComptDt,jdbcType=TIMESTAMP}
+	       ,#{transRqesterId,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <insert id="insertCsoCnsltTransOrdGod" parameterType="csoCnsltTransOrdGod">
+	    INSERT  
+	    INTO CSO_CNSLT_TRANS_ORD_GOD
+		(
+	        CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,TRANS_REQUST_TURN
+	       ,TRANS_ORD_GOD_TURN
+	       ,GOD_NM
+	       ,ORD_GOD_SECT_CD
+	       ,GOD_NO
+	       ,ORD_NO
+	       ,ORD_GOD_TURN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{transRequstTurn,jdbcType=NUMERIC}
+	       ,#{transOrdGodTurn,jdbcType=NUMERIC}
+	       ,#{godNm,jdbcType=VARCHAR}
+	       ,#{ordGodSectCd,jdbcType=VARCHAR}
+	       ,#{godNo,jdbcType=VARCHAR}
+	       ,#{ordNo,jdbcType=VARCHAR}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <insert id="insertCsoCnsltTransHist" parameterType="csoCnsltTransHist">
+	    INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoCnsltTransHist jackie 20150522 */  
+	    INTO CSO_CNSLT_TRANS_HIST
+		(
+	        CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,TRANS_REQUST_TURN
+	       ,TRANS_MOD_INFO_CD
+	       ,HIST_DT
+	       ,MOD_TP_CD
+	       ,MOD_CONT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{transRequstTurn,jdbcType=NUMERIC}
+	       ,#{transModInfoCd,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{modTpCd,jdbcType=VARCHAR}
+	       ,#{modCont,jdbcType=CLOB}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <insert id="insertCsoJobRequst" parameterType="csoJobRequst">
+	    INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoJobRequst jackie 20150430 */  
+	    INTO CSO_JOB_REQUST
+		(
+	        REQUST_SN
+	       ,TRANS_STAT_CD
+	       ,CHRG_JOB_TP_CD
+	       ,TRANS_REQUST_TP_CD
+	       ,DOI_CD
+	       ,REG_ADMIN_ID
+	       ,REQUST_RCEPT_ADMIN_ID
+	       ,REQUST_SJ
+	       ,REQUST_CONT
+	       ,CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,TRANS_REQUST_TURN
+	       ,MALL_ID
+	       ,LANG_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{requstSn,jdbcType=NUMERIC}
+	       ,#{transStatCd,jdbcType=VARCHAR}
+	       ,#{chrgJobTpCd,jdbcType=VARCHAR}
+	       ,#{transRequstTpCd,jdbcType=VARCHAR}
+	       ,#{doiCd,jdbcType=VARCHAR}
+	       ,#{regAdminId,jdbcType=VARCHAR}
+	       ,#{requstRceptAdminId,jdbcType=VARCHAR}
+	       ,#{requstSj,jdbcType=VARCHAR}
+	       ,#{requstCont,jdbcType=VARCHAR}
+	       ,#{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{transRequstTurn,jdbcType=NUMERIC}
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{langCd,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <insert id="insertCsoJobRequstOrdGod" parameterType="csoJobRequstOrdGod">
+	    INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoJobRequstOrdGod jackie 20150430 */  
+	    INTO CSO_JOB_REQUST_ORD_GOD
+		(
+	        REQUST_SN
+	       ,REQUST_ORD_GOD_TURN
+	       ,GOD_NM
+	       ,ORD_GOD_SECT_CD
+	       ,GOD_NO
+	       ,ORD_NO
+	       ,ORD_GOD_TURN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{requstSn,jdbcType=NUMERIC}
+	       ,#{requstOrdGodTurn,jdbcType=NUMERIC}
+	       ,#{godNm,jdbcType=VARCHAR}
+	       ,#{ordGodSectCd,jdbcType=VARCHAR}
+	       ,#{godNo,jdbcType=VARCHAR}
+	       ,#{ordNo,jdbcType=VARCHAR}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <insert id="insertCsoPromscl" parameterType="csoPromscl">
+	    INSERT  
+	    INTO CSO_PROMSCL
+		(
+	        PROMSCL_SN
+	       ,PROMSCL_STAT_CD
+	       ,PROMSCL_COMPT_DT
+	       ,PROMSCL_CNCL_DT
+	       ,PROMSCL_CONFIG_YN
+	       ,CHRGER_CNFIRM_YN
+	       ,PROMS_TGT_NM
+	       ,PROMSCL_NATION_NO
+	       ,PROMSCL_AREA_NO
+	       ,PROMSCL_TLOF_NO
+	       ,PROMSCL_TLOF_WTHN_NO
+	       ,PROMSCL_DT
+	       ,PROMSCL_MEMO_CONT
+	       ,CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{promsclSn,jdbcType=NUMERIC}
+	       ,#{promsclStatCd,jdbcType=VARCHAR}
+	       ,#{promsclComptDt,jdbcType=TIMESTAMP}
+	       ,#{promsclCnclDt,jdbcType=TIMESTAMP}
+	       ,#{promsclConfigYn,jdbcType=VARCHAR}
+	       ,#{chrgerCnfirmYn,jdbcType=VARCHAR}
+	       ,#{promsTgtNm,jdbcType=VARCHAR}
+	       ,#{promsclNationNo,jdbcType=VARCHAR}
+	       ,#{promsclAreaNo,jdbcType=VARCHAR}
+	       ,#{promsclTlofNo,jdbcType=VARCHAR}
+	       ,#{promsclTlofWthnNo,jdbcType=VARCHAR}
+	       ,#{promsclDt,jdbcType=TIMESTAMP}
+	       ,#{promsclMemoCont,jdbcType=VARCHAR}
+	       ,#{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <select id="selectCnsltDetail" parameterType="String" resultMap="selectCnsltDetailResult">
+    	SELECT	cgi.god_inq_sn
+		    	, cgi.ans_stat_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cgi.ans_stat_cd) AS ans_stat_nm
+				, cc.cnslt_sn
+				, ccd.cnslt_detail_turn
+		        , ccd.cnslt_knd_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = ccd.cnslt_knd_cd) AS cnslt_knd_nm
+		        , ccd.cnslt_tgt_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = ccd.cnslt_tgt_cd) AS cnslt_tgt_nm
+		        , ccd.inq_tp_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = ccd.inq_tp_cd) AS inq_tp_nm
+		        , ccd.inq_detail_tp_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = ccd.inq_detail_tp_cd) AS inq_detail_tp_nm
+		        , ccd.regtr_id AS ccd_regtr_id
+		        , (SELECT mbr.mbr_nm FROM mbr mbr WHERE regtr_id = ccd.regtr_id) AS ccd_regtr_nm
+		        , ccd.reg_dt AS ccd_reg_dt
+		        , ccd.cnslt_detail_stat_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = ccd.cnslt_detail_stat_cd) AS cnslt_detail_stat_nm
+		        , ccd.cstmr_clm_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = ccd.cstmr_clm_cd) AS cstmr_clm_nm
+		        , ccd.cnslt_detail_cont
+		        , ccd.sms_snd_count
+		        , ccd.email_snd_count
+		        , cct.trans_tgt_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.trans_tgt_cd) AS trans_tgt_nm
+		        , cct.trans_rqester_id
+		        , (SELECT mbr.mbr_nm FROM mbr mbr WHERE regtr_id = cct.trans_rqester_id) AS trans_rqester_nm
+		        , cct.chrg_job_tp_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.chrg_job_tp_cd) AS chrg_job_tp_nm
+		        , cct.trans_requst_tp_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.trans_requst_tp_cd) AS trans_requst_tp_nm
+		        , cct.trans_stat_cd
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.trans_stat_cd) AS trans_stat_nm
+		        , cct.regtr_id AS cct_regtr_id
+		        , (SELECT mbr.mbr_nm FROM mbr mbr WHERE regtr_id = cct.regtr_id) AS cct_regtr_nm
+		        , cct.reg_dt AS cct_reg_dt
+		        , cct.trans_requst_cont
+		        , cp.proms_tgt_nm
+                , cp.promscl_dt
+                , cp.promscl_stat_cd
+                , (SELECT mbr.mbr_nm FROM mbr mbr WHERE regtr_id = cp.promscl_stat_cd) AS promscl_stat_nm
+                , cp.promscl_memo_cont
+		  FROM	CSO_GOD_INQ cgi
+		  LEFT OUTER JOIN CSO_CNSLT cc ON cgi.GOD_INQ_SN = cc.god_inq_sn
+		  LEFT OUTER JOIN CSO_CNSLT_DETAIL ccd ON cc.cnslt_sn = ccd.cnslt_sn
+		  LEFT OUTER JOIN CSO_CNSLT_TRANS cct ON cc.cnslt_sn = cct.cnslt_sn
+		  LEFT OUTER JOIN CSO_PROMSCL cp ON cc.cnslt_sn = cp.cnslt_sn
+		 WHERE 1=1
+		   AND cc.god_inq_sn = #{godInqSn}
+    </select>
+
+	<select id="selectCnsltSn" parameterType="long" resultType="long">
+		select nvl((
+			SELECT cnslt_sn
+			FROM cso_cnslt
+			WHERE god_inq_sn = #{godInqSn,jdbcType=NUMERIC}
+		), 0) as cnslt_sn from dual
+	</select>
+
+	<!--<update id="deleteGridQna" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaGridDTO">
+		UPDATE cso_god_inq
+		   SET delete_yn = 'Y'
+		 WHERE god_inq_sn = #{godInqSn,jdbcType=NUMERIC}
+	</update>-->
+
+	<select id="selectGodInqAnsInfo" parameterType="csoGodInqAns" resultType="csoGodInqAns">
+		SELECT /* com.plgrim.ncp.base.repository.cso.selectCsoGodInqAns jackie 20150520 */
+                GOD_INQ_SN
+               ,GOD_ANS_TURN
+               ,ANS_SJ
+               ,ANS_CONT
+               ,DETAIL_ANS_STAT_CD
+               ,ANS_DT
+               ,ANS_ADMIN_ID
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    CSO_GOD_INQ_ANS t
+        WHERE   1 = 1
+        AND     GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+        AND     GOD_ANS_TURN = #{godAnsTurn,jdbcType=NUMERIC}
+	</select>
+
+	<update id="upddateCsoGodInqAns" parameterType="csoGodInqAns">
+		UPDATE /* com.plgrim.ncp.base.repository.cso.updateCsoGodInqAns jackie 20150520 */
+        CSO_GOD_INQ_ANS SET
+                ANS_CONT = #{ansCont,jdbcType=CLOB}
+                ,DETAIL_ANS_STAT_CD = #{detailAnsStatCd,jdbcType=VARCHAR}
+                ,ANS_DT = SYSDATE
+                ,ANS_ADMIN_ID = #{ansAdminId,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+        AND     GOD_ANS_TURN = #{godAnsTurn,jdbcType=NUMERIC}
+	</update>
+
+	<select id="selectCounselCount" parameterType="Long" resultType="String">
+		select cnslt_sn
+		  from cso_cnslt
+		 where god_inq_sn=#{godInqSn}
+	</select>
+	
+	<update id="updateCsoCnsltStat" parameterType="csoCnslt">
+        UPDATE  
+        cso_cnslt SET
+                cnslt_stat_cd = #{cnsltStatCd,jdbcType=VARCHAR}
+				<if test="cnsltStatCd == 'PROC_COMPT'">
+				,CNSLT_PRCS_COMPT_DT = SYSDATE
+				</if>
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     cnslt_sn = #{cnsltSn,jdbcType=NUMERIC}
+    </update>
+
+	<select id="selectAnsStat" parameterType="Long" resultType="String">
+		select ans_stat_cd
+		from cso_god_inq
+		where 1=1
+		and god_inq_sn=#{godInqSn}
+	</select>
+
+	<select id="selectMaxAnsTurn" parameterType="Long" resultType="int">
+		SELECT MAX(god_ans_turn)
+		  FROM cso_god_inq_ans
+		 WHERE god_inq_sn=#{godInqSn}
+		   and detail_ans_stat_cd='ANS_COMPT'
+	</select>
+
+	<update id="updateComptAns" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaDTO">
+		UPDATE cso_god_inq_ans
+		   SET ans_cont = #{ansCont}
+		   		, udter_id = #{udterId}
+		   		, udt_dt = SYSDATE
+		 WHERE 1=1
+		   AND god_inq_sn=#{godInqSn}
+		   AND god_ans_turn=#{godAnsTurn}
+	</update>
+
+	<select id="selectCounselDetailCont" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberGoodsQnaDTO" resultType="CsoCnsltDetail">
+		SELECT	cnslt_sn
+				, cnslt_detail_turn
+				, cnslt_detail_cont
+		  FROM cso_cnslt_detail
+		 WHERE 1=1
+		   AND god_inq_sn = #{godInqSn}
+		   AND god_ans_turn = #{godAnsTurn}
+	</select>
+
+	<update id="updateCsoCnsltDetailCont" parameterType="csoCnsltDetail">
+		UPDATE cso_cnslt_detail
+		   SET cnslt_detail_cont = #{cnsltDetailCont}
+		   		, udter_id = #{udterId}
+		   		, udt_dt = SYSDATE
+		 WHERE 1=1
+		   AND cnslt_sn=#{cnsltSn}
+		   AND cnslt_detail_turn=#{cnsltDetailTurn}
+
+	</update>
+	
+</mapper>

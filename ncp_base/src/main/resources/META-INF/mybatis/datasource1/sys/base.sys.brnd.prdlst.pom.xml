@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBrndPrdlstPom" parameterType="sysBrndPrdlstPom" resultType="sysBrndPrdlstPom">
+		SELECT /* com.plgrim.ncp.base.selectSysBrndPrdlstPom		Generator(Generator)	2018-07-02 */
+			   BRND_ID
+			 , PRDLST_CD
+			 , POM_CD
+			 , POM_CLFC_CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BRND_PRDLST_POM
+		 WHERE 1 = 1
+	   	   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+		   AND POM_CD = #{pomCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysBrndPrdlstPom" parameterType="sysBrndPrdlstPom">
+		UPDATE /* com.plgrim.ncp.base.updateSysBrndPrdlstPom		Generator(Generator)	2018-07-02 */
+		SYS_BRND_PRDLST_POM SET
+			   POM_CLFC_CD = #{pomClfcCd,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+		   AND POM_CD = #{pomCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysBrndPrdlstPom" parameterType="sysBrndPrdlstPom">
+		INSERT /* com.plgrim.ncp.base.insertSysBrndPrdlstPom		Generator(Generator)	2018-07-02 */
+		INTO   SYS_BRND_PRDLST_POM (
+			   BRND_ID
+			 , PRDLST_CD
+			 , POM_CD
+			 , POM_CLFC_CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{prdlstCd,jdbcType=VARCHAR}
+			 , #{pomCd,jdbcType=VARCHAR}
+			 , #{pomClfcCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBrndPrdlstPom" parameterType="sysBrndPrdlstPom">
+		DELETE /* com.plgrim.ncp.base.deleteSysBrndPrdlstPom		Generator(Generator)	2018-07-02 */
+		  FROM SYS_BRND_PRDLST_POM
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+		   AND POM_CD = #{pomCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

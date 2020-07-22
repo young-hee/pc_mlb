@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysPostNoTmpr" parameterType="sysPostNoTmpr" resultType="sysPostNoTmpr">
+		SELECT /* com.plgrim.ncp.base.selectSysPostNoTmpr		Generator(Generator)	2018-05-23 */
+			   POST_NO
+			 , NEW_POST_NO
+			 , RD_ADDR_BASE_ADDR
+			 , LNM_ADDR_BASE_ADDR
+			 , AUD_CD
+			 , SIGNGU_CD
+			 , ROAD_NM
+			 , MJR_BULD_NO
+			 , MNR_BULD_NO
+			 , SUD_NM
+			 , AUD_NM
+			 , LEGALRI_NM
+			 , MJR_LNM
+			 , MNR_LNM
+			 , SIGNGU_BULD_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_POST_NO_TMPR
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateSysPostNoTmpr" parameterType="sysPostNoTmpr">
+		UPDATE /* com.plgrim.ncp.base.updateSysPostNoTmpr		Generator(Generator)	2018-05-23 */
+		SYS_POST_NO_TMPR SET
+			   POST_NO = #{postNo,jdbcType=VARCHAR}
+			 , NEW_POST_NO = #{newPostNo,jdbcType=VARCHAR}
+			 , RD_ADDR_BASE_ADDR = #{rdAddrBaseAddr,jdbcType=VARCHAR}
+			 , LNM_ADDR_BASE_ADDR = #{lnmAddrBaseAddr,jdbcType=VARCHAR}
+			 , AUD_CD = #{audCd,jdbcType=VARCHAR}
+			 , SIGNGU_CD = #{signguCd,jdbcType=VARCHAR}
+			 , ROAD_NM = #{roadNm,jdbcType=VARCHAR}
+			 , MJR_BULD_NO = #{mjrBuldNo,jdbcType=VARCHAR}
+			 , MNR_BULD_NO = #{mnrBuldNo,jdbcType=VARCHAR}
+			 , SUD_NM = #{sudNm,jdbcType=VARCHAR}
+			 , AUD_NM = #{audNm,jdbcType=VARCHAR}
+			 , LEGALRI_NM = #{legalriNm,jdbcType=VARCHAR}
+			 , MJR_LNM = #{mjrLnm,jdbcType=VARCHAR}
+			 , MNR_LNM = #{mnrLnm,jdbcType=VARCHAR}
+			 , SIGNGU_BULD_NM = #{signguBuldNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertSysPostNoTmpr" parameterType="sysPostNoTmpr">
+		INSERT /* com.plgrim.ncp.base.insertSysPostNoTmpr		Generator(Generator)	2018-05-23 */
+		INTO   SYS_POST_NO_TMPR (
+			   POST_NO
+			 , NEW_POST_NO
+			 , RD_ADDR_BASE_ADDR
+			 , LNM_ADDR_BASE_ADDR
+			 , AUD_CD
+			 , SIGNGU_CD
+			 , ROAD_NM
+			 , MJR_BULD_NO
+			 , MNR_BULD_NO
+			 , SUD_NM
+			 , AUD_NM
+			 , LEGALRI_NM
+			 , MJR_LNM
+			 , MNR_LNM
+			 , SIGNGU_BULD_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{postNo,jdbcType=VARCHAR}
+			 , #{newPostNo,jdbcType=VARCHAR}
+			 , #{rdAddrBaseAddr,jdbcType=VARCHAR}
+			 , #{lnmAddrBaseAddr,jdbcType=VARCHAR}
+			 , #{audCd,jdbcType=VARCHAR}
+			 , #{signguCd,jdbcType=VARCHAR}
+			 , #{roadNm,jdbcType=VARCHAR}
+			 , #{mjrBuldNo,jdbcType=VARCHAR}
+			 , #{mnrBuldNo,jdbcType=VARCHAR}
+			 , #{sudNm,jdbcType=VARCHAR}
+			 , #{audNm,jdbcType=VARCHAR}
+			 , #{legalriNm,jdbcType=VARCHAR}
+			 , #{mjrLnm,jdbcType=VARCHAR}
+			 , #{mnrLnm,jdbcType=VARCHAR}
+			 , #{signguBuldNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysPostNoTmpr" parameterType="sysPostNoTmpr">
+		DELETE /* com.plgrim.ncp.base.deleteSysPostNoTmpr		Generator(Generator)	2018-05-23 */
+		  FROM SYS_POST_NO_TMPR
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

@@ -1,0 +1,48 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<button type="button" class="btn-open d_toggle_select"><span>Open</span></button>
+<div class="order-detail-content d_toggle_cont">
+	<section class="agree-section">
+		<h4 class="title05"><spring:message code="order.txt.no.mem.caption1" /></h4>
+		<section class="agree-section-content">
+			<c:out value="${buyerInform.stplatCont }" escapeXml="false" />
+		</section>
+		<ul class="agree-right">
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="rdoAgreeMem-01" name="rdoAgreeMem" checked="checked">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="rdoAgreeMem-01"><spring:message code="order.js.txt.not.agree" /></label>
+			</li>
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="rdoAgreeMem-02" name="rdoAgreeMem" class="input_required" alt="<spring:message code="order.js.txt.person.term3" />">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="rdoAgreeMem-02"><spring:message code="order.js.txt.person.term2" /></label>
+			</li>
+		</ul>
+
+		<h4 class="title05"><spring:message code="order.js.txt.person.term1" /></h4>
+		<section class="agree-section-content">
+			<c:out value="${personalInform.stplatCont }"  escapeXml="false" />
+		</section>
+		<ul class="agree-right">
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="rdoAgreeMem2-01" name="rdoAgreeMem2" checked="checked">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="rdoAgreeMem2-01"><spring:message code="order.js.txt.not.agree" /></label>
+			</li>
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="rdoAgreeMem2-02" name="rdoAgreeMem2" class="input_required" alt="<spring:message code="order.js.txt.person.term1" />">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="rdoAgreeMem2-02"><spring:message code="order.js.txt.person.term2" /></label>
+			</li>
+		</ul>
+	</section>
+</div>
+<button type="button" class="btn-close d_toggle_select"><span>Close</span></button>

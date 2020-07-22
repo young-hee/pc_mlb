@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.bi">	
+    <resultMap id="getMbrMarketingListResult" type="com.plgrim.ncp.biz.bi.result.BiStatisticMbrResult">
+    	<result property="rowNumber"					column="NO"/>
+    	<result property="mbr.mbrNo"					column="MBR_NO"/>
+    	<result property="mbr.joinMallId"				column="JOIN_MALL_ID"/>
+    	<result property="mbr.mbrId"					column="MBR_ID"/>
+    	<result property="mbr.mbrNm"					column="MBR_NM"/>
+    	<result property="mbr.mbrSexSectCd"             column="MBR_SEX_SECT_CD" />
+    	<result property="mbr.mbrBrthdy"               	column="MBR_BRTHDY" />
+    	<result property="mbr.joinDt"               	column="JOIN_DT" />
+    	<result property="logOccurDt"               	column="LOG_OCCUR_DT" />
+    	<result property="mbr.mbrEmail"               	column="MBR_EMAIL" />
+    	<result property="mobile"               		column="MOBILE" />
+    	<result property="mbr.erpCstmrNo"               column="ERP_CSTMR_NO" />
+    	<result property="mbr.emailRecptnAgrYn"         column="EMAIL_RECPTN_AGR_YN" />
+    	<result property="mbr.smsRecptnAgrYn"           column="SMS_RECPTN_AGR_YN" />
+    	<result property="bskGodCnt"           			column="BSK_GOD_CNT" />
+    	<result property="ordCnt"           			column="ORD_CNT" />
+    	<result property="ordGodCnt"           			column="ORD_GOD_CNT" />
+    	<result property="ordSaleAmt"           		column="SALE_AMT" />
+    </resultMap>
+    
+	<select id="getMbrMarketingListCount" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultType="long">
+		SELECT /* [bi.xml][getMbrMarketingListCount][마케팅 회원그룹 목록 수][muba] */
+			COUNT(*)
+		FROM MBR m
+		LEFT OUTER JOIN (
+						SELECT 
+						 MBR_NO
+						,MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+						FROM MBR_LOGIN_LOG
+						WHERE MBR_LOGIN_CD = 'LOGIN'
+						GROUP BY MBR_NO
+						) MLL ON M.MBR_NO = MLL.MBR_NO
+		WHERE 1=1		
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>
+	</select>    
+    
+	<select id="getMbrMarketingList" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultMap="getMbrMarketingListResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [bi.xml][getMbrMarketingList][마케팅 회원그룹 목록][muba] */
+			  m.MBR_NO
+			, m.JOIN_MALL_ID
+			, m.MBR_ID
+			, m.MBR_NM
+			, m.MBR_SEX_SECT_CD
+			, fn_masking('BRTHDY' , REGEXP_REPLACE (m.MBR_BRTHDY, '([0-9]{4})([0-9]{2})([0-9]{2})', '\1-\2-\3' ), '', 'N') AS MBR_BRTHDY
+			, m.JOIN_DT
+			, mll.LOG_OCCUR_DT
+			, m.MBR_EMAIL
+			, m.MOBIL_AREA_NO||'-'||m.MOBIL_TLOF_NO||'-'||m.MOBIL_TLOF_WTHN_NO AS MOBILE
+			, m.ERP_CSTMR_NO
+			, m.EMAIL_RECPTN_AGR_YN
+			, m.SMS_RECPTN_AGR_YN
+		FROM MBR m
+		LEFT OUTER JOIN (
+						SELECT 
+						 MBR_NO
+						,MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+						FROM MBR_LOGIN_LOG
+						WHERE MBR_LOGIN_CD = 'LOGIN'
+						GROUP BY MBR_NO
+						) MLL ON M.MBR_NO = MLL.MBR_NO
+		WHERE 1=1		
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>
+		<include refid="com.plgrim.ncp.base.endPage"/> 		
+	</select>
+
+	<select id="getMbrMarketingListExcel" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultType="java.util.LinkedHashMap">		
+		SELECT /* [bi.xml][getMbrMarketingList][마케팅 회원그룹 목록 엑셀 다운로드][muba] */
+			  m.MBR_NO
+			, m.JOIN_MALL_ID
+			, m.MBR_ID
+			, m.MBR_NM
+			, m.MBR_SEX_SECT_CD
+			, fn_masking('BRTHDY' , REGEXP_REPLACE (m.MBR_BRTHDY, '([0-9]{4})([0-9]{2})([0-9]{2})', '\1-\2-\3' ), '', 'N') AS MBR_BRTHDY
+			, m.JOIN_DT
+			, mll.LOG_OCCUR_DT
+			, m.MBR_EMAIL
+			, m.MOBIL_AREA_NO||'-'||m.MOBIL_TLOF_NO||'-'||m.MOBIL_TLOF_WTHN_NO AS MOBILE
+			, m.ERP_CSTMR_NO
+			, m.EMAIL_RECPTN_AGR_YN
+			, m.SMS_RECPTN_AGR_YN
+		FROM MBR m
+		LEFT OUTER JOIN (
+						SELECT 
+						 MBR_NO
+						,MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+						FROM MBR_LOGIN_LOG
+						WHERE MBR_LOGIN_CD = 'LOGIN'
+						GROUP BY MBR_NO
+						) MLL ON M.MBR_NO = MLL.MBR_NO
+		WHERE 1=1		
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>		
+	</select>
+	
+	<select id="getMbrBasketListCount" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultType="long">
+		SELECT /* [bi.xml][getMbrBasketListCount][장바구니 회원그룹 목록 수][muba] */
+			COUNT(*)
+		FROM MBR m
+		JOIN 
+			(
+			SELECT MBR_NO, COUNT(bg.GOD_NO) AS GOD_CNT
+			FROM BSK b
+			JOIN BSK_GOD bg ON b.BSK_NO = bg.BSK_NO
+			WHERE 1=1
+			AND b.MBR_NO is not null
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+				AND bg.GOD_NO = #{godNo}
+			</if>			
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+				AND bg.GOD_NO in 
+								(
+								SELECT 
+									GOD_NO
+								FROM GOD g
+								WHERE g.ERP_GOD_NO = #{erpGodNo}
+								)
+			 </if>
+			 GROUP BY MBR_NO
+		   ) b ON m.MBR_NO = b.MBR_NO
+		LEFT OUTER JOIN 
+						(
+						SELECT 
+							MBR_NO
+							, MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+						FROM MBR_LOGIN_LOG
+						WHERE MBR_LOGIN_CD = 'LOGIN'
+						GROUP BY MBR_NO
+						) mll
+		ON m.MBR_NO = mll.MBR_NO
+		WHERE 1=1	
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>
+	</select>
+	
+	<select id="getMbrBasketList" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultMap="getMbrMarketingListResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [bi.xml][getMbrBasketList][장바구니 회원그룹 목록 조회][muba] */
+			  m.MBR_NO
+			, m.JOIN_MALL_ID
+			, m.MBR_ID
+			, m.MBR_NM
+			, m.MBR_SEX_SECT_CD
+			, fn_masking('BRTHDY' , REGEXP_REPLACE (m.MBR_BRTHDY, '([0-9]{4})([0-9]{2})([0-9]{2})', '\1-\2-\3' ), '', 'N') AS MBR_BRTHDY
+			, b.GOD_CNT AS BSK_GOD_CNT
+			, mll.LOG_OCCUR_DT
+			, m.MBR_EMAIL
+			, m.MOBIL_AREA_NO||'-'||m.MOBIL_TLOF_NO||'-'||m.MOBIL_TLOF_WTHN_NO AS MOBILE
+			, m.ERP_CSTMR_NO
+			, m.EMAIL_RECPTN_AGR_YN
+			, m.SMS_RECPTN_AGR_YN
+		FROM MBR m
+		JOIN 
+			(
+			SELECT MBR_NO, COUNT(bg.GOD_NO) AS GOD_CNT
+			FROM BSK b
+			JOIN BSK_GOD bg ON b.BSK_NO = bg.BSK_NO
+			WHERE 1=1
+			AND b.MBR_NO is not null
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+				AND bg.GOD_NO = #{godNo}
+			</if>			
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+				AND bg.GOD_NO in 
+								(
+								SELECT 
+									GOD_NO
+								FROM GOD g
+								WHERE g.ERP_GOD_NO = #{erpGodNo}
+								)
+			 </if>
+			 GROUP BY MBR_NO
+		   ) b ON m.MBR_NO = b.MBR_NO
+		LEFT OUTER JOIN 
+						(
+						SELECT 
+							MBR_NO
+							, MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+						FROM MBR_LOGIN_LOG
+						WHERE MBR_LOGIN_CD = 'LOGIN'
+						GROUP BY MBR_NO
+						) mll
+		ON m.MBR_NO = mll.MBR_NO
+		WHERE 1=1	
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>
+		<include refid="com.plgrim.ncp.base.endPage"/> 	
+	</select>
+	
+	<select id="getMbrBasketListExcel" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [bi.xml][getMbrBasketListExcel][장바구니 회원그룹 엑셀 다운로드][muba] */
+			  m.MBR_NO
+			, m.JOIN_MALL_ID
+			, m.MBR_ID
+			, m.MBR_NM
+			, m.MBR_SEX_SECT_CD
+			, fn_masking('BRTHDY' , REGEXP_REPLACE (m.MBR_BRTHDY, '([0-9]{4})([0-9]{2})([0-9]{2})', '\1-\2-\3' ), '', 'N') AS MBR_BRTHDY
+			, b.GOD_CNT AS BSK_GOD_CNT
+			, mll.LOG_OCCUR_DT
+			, m.MBR_EMAIL
+			, m.MOBIL_AREA_NO||'-'||m.MOBIL_TLOF_NO||'-'||m.MOBIL_TLOF_WTHN_NO AS MOBILE
+			, m.ERP_CSTMR_NO
+			, m.EMAIL_RECPTN_AGR_YN
+			, m.SMS_RECPTN_AGR_YN
+		FROM MBR m
+		JOIN 
+			(
+			SELECT MBR_NO, COUNT(bg.GOD_NO) AS GOD_CNT
+			FROM BSK b
+			JOIN BSK_GOD bg ON b.BSK_NO = bg.BSK_NO
+			WHERE 1=1
+			AND b.MBR_NO IS NOT NULL
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+				AND bg.GOD_NO = #{godNo}
+			</if>			
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+				AND bg.GOD_NO in 
+								(
+								SELECT 
+									GOD_NO
+								FROM GOD g
+								WHERE g.ERP_GOD_NO = #{erpGodNo}
+								)
+			 </if>
+			 GROUP BY MBR_NO
+		   ) b ON m.MBR_NO = b.MBR_NO
+		LEFT OUTER JOIN 
+						(
+						SELECT 
+							MBR_NO
+							, MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+						FROM MBR_LOGIN_LOG
+						WHERE MBR_LOGIN_CD = 'LOGIN'
+						GROUP BY MBR_NO
+						) mll
+		ON m.MBR_NO = mll.MBR_NO
+		WHERE 1=1	
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>	
+	</select>	
+	
+	<select id="getMbrOrderListCount" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultType="long">
+		SELECT /* [bi.xml][getMbrOrderListCount][주문 회원그룹 목록 수][muba] */
+			COUNT(*)
+		  FROM MBR m
+		  JOIN 
+			(
+			SELECT 
+				  MBR_NO
+				, COUNT(DISTINCT o.ORD_NO) AS ORD_CNT
+				, COUNT(og.GOD_NO) AS GOD_CNT
+				, SUM(o.SALE_SUM_AMT) AS SALE_AMT
+				FROM ORD o
+				JOIN ORD_GOD og
+				ON o.ORD_NO = og.ORD_NO
+				WHERE 1=1
+				AND o.MBR_NO IS NOT NULL				
+				AND o.ORD_DT <![CDATA[>=]]> TO_DATE(REPLACE(#{regBegDt}, '-')||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND o.ORD_DT <![CDATA[<]]> TO_DATE(REPLACE(#{regEndDt}, '-')||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')	
+	  			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+					AND og.GOD_NO = #{godNo}
+				</if>			
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+					og.ERP_GOD_NO = #{erpGodNo}
+				</if>
+				GROUP BY MBR_NO
+		    ) o
+		    ON m.MBR_NO = o.MBR_NO
+			LEFT OUTER JOIN (
+							SELECT 
+								  MBR_NO
+								, MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+		                    FROM MBR_LOGIN_LOG
+		                    WHERE MBR_LOGIN_CD = 'LOGIN'
+		                    GROUP BY MBR_NO
+		                    ) mll
+		    ON m.MBR_NO = mll.MBR_NO
+		 WHERE 1=1
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>
+	</select>
+	
+	<select id="getMbrOrderList" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultMap="getMbrMarketingListResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [bi.xml][getMbrOrderList][주문 회원그룹 목록 조회][muba] */
+			  m.MBR_NO
+			, m.JOIN_MALL_ID
+			, m.MBR_ID
+			, m.MBR_NM
+			, m.MBR_SEX_SECT_CD
+			, fn_masking('BRTHDY' , REGEXP_REPLACE (m.MBR_BRTHDY, '([0-9]{4})([0-9]{2})([0-9]{2})', '\1-\2-\3' ), '', 'N') AS MBR_BRTHDY
+			, o.ORD_CNT
+			, o.GOD_CNT AS ORD_GOD_CNT
+			, o.SALE_AMT
+			, mll.LOG_OCCUR_DT
+			, m.MBR_EMAIL
+			, m.MOBIL_AREA_NO||'-'||m.MOBIL_TLOF_NO||'-'||m.MOBIL_TLOF_WTHN_NO AS MOBILE
+			, m.ERP_CSTMR_NO
+			, m.EMAIL_RECPTN_AGR_YN
+			, m.SMS_RECPTN_AGR_YN
+		  FROM MBR m
+		  JOIN 
+			(
+			SELECT 
+				  MBR_NO
+				, COUNT(DISTINCT o.ORD_NO) AS ORD_CNT
+				, COUNT(og.GOD_NO) AS GOD_CNT
+				, SUM(o.SALE_SUM_AMT) AS SALE_AMT
+				FROM ORD o
+				JOIN ORD_GOD og
+				ON o.ORD_NO = og.ORD_NO
+				WHERE 1=1
+				AND o.MBR_NO IS NOT NULL				
+				AND o.ORD_DT <![CDATA[>=]]> TO_DATE(REPLACE(#{regBegDt}, '-')||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND o.ORD_DT <![CDATA[<]]> TO_DATE(REPLACE(#{regEndDt}, '-')||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')	
+	  			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+					AND og.GOD_NO = #{godNo}
+				</if>			
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+					og.ERP_GOD_NO = #{erpGodNo}
+				</if>
+				GROUP BY MBR_NO
+		    ) o
+		    ON m.MBR_NO = o.MBR_NO
+			LEFT OUTER JOIN (
+							SELECT 
+								  MBR_NO
+								, MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+		                    FROM MBR_LOGIN_LOG
+		                    WHERE MBR_LOGIN_CD = 'LOGIN'
+		                    GROUP BY MBR_NO
+		                    ) mll
+		    ON m.MBR_NO = mll.MBR_NO
+		 WHERE 1=1	
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>
+		<include refid="com.plgrim.ncp.base.endPage"/> 	
+	</select>
+	
+	<select id="getMbrOrderListExcel" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticMbrDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [bi.xml][getMbrOrderListExcel][주문 회원그룹 목록 엑셀 다운로드][muba] */
+			  m.MBR_NO
+			, m.JOIN_MALL_ID
+			, m.MBR_ID
+			, m.MBR_NM
+			, m.MBR_SEX_SECT_CD
+			, fn_masking('BRTHDY' , REGEXP_REPLACE (m.MBR_BRTHDY, '([0-9]{4})([0-9]{2})([0-9]{2})', '\1-\2-\3' ), '', 'N') AS MBR_BRTHDY
+			, o.ORD_CNT
+			, o.GOD_CNT AS ORD_GOD_CNT
+			, o.SALE_AMT
+			, mll.LOG_OCCUR_DT
+			, m.MBR_EMAIL
+			, m.MOBIL_AREA_NO||'-'||m.MOBIL_TLOF_NO||'-'||m.MOBIL_TLOF_WTHN_NO AS MOBILE
+			, m.ERP_CSTMR_NO
+			, m.EMAIL_RECPTN_AGR_YN
+			, m.SMS_RECPTN_AGR_YN
+		  FROM MBR m
+		  JOIN 
+			(
+			SELECT 
+				  MBR_NO
+				, COUNT(DISTINCT o.ORD_NO) AS ORD_CNT
+				, COUNT(og.GOD_NO) AS GOD_CNT
+				, SUM(o.SALE_SUM_AMT) AS SALE_AMT
+				FROM ORD o
+				JOIN ORD_GOD og
+				ON o.ORD_NO = og.ORD_NO
+				WHERE 1=1
+				AND o.MBR_NO IS NOT NULL				
+				AND o.ORD_DT <![CDATA[>=]]> TO_DATE(REPLACE(#{regBegDt}, '-')||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND o.ORD_DT <![CDATA[<]]> TO_DATE(REPLACE(#{regEndDt}, '-')||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')				
+	  			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+					AND og.GOD_NO = #{godNo}
+				</if>			
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+					og.ERP_GOD_NO = #{erpGodNo}
+				</if>
+				GROUP BY MBR_NO
+		    ) o
+		    ON m.MBR_NO = o.MBR_NO
+			LEFT OUTER JOIN (
+							SELECT 
+								  MBR_NO
+								, MAX(LOG_OCCUR_DT) AS LOG_OCCUR_DT
+		                    FROM MBR_LOGIN_LOG
+		                    WHERE MBR_LOGIN_CD = 'LOGIN'
+		                    GROUP BY MBR_NO
+		                    ) mll
+		    ON m.MBR_NO = mll.MBR_NO
+		 WHERE 1=1	
+		<include refid="com.plgrim.ncp.biz.bi.whereBiStatistic"/>	
+	</select>	
+	
+    <resultMap id="getMvSysCdResult" type="com.plgrim.ncp.biz.bi.result.BiStatisticMvSysCdResult">
+    	<result property="cd"			column="CD"/>
+    	<result property="cdNm"			column="CD_NM"/>
+    	<result property="asstnCd1"		column="ASSTN_CD_1"/>
+    </resultMap>
+    	
+	<select id="getSeasonGrpCd" resultMap="getMvSysCdResult">
+		SELECT /* [bi.xml][getSeasonGrpCd][시즌구분 - 코드 조회][muba] */
+			 CD
+			,CD_NM
+			,ASSTN_CD_1
+		FROM MV_SYS_CD 
+		WHERE UPPER_CD = 'SESON_GRP' AND LANG_CD = 'KOR' AND USE_YN = 'Y'	   
+	</select>
+
+	<select id="getMnfcturYear" resultMap="getMvSysCdResult">
+		SELECT /* [bi.xml][getSeasonGrpCd][시즌구분 - 연도 조회][muba] */
+			 CD
+			,CD_NM
+			,ASSTN_CD_1  
+		FROM MV_SYS_CD 
+		WHERE UPPER_CD = 'MNFCTUR_YEAR' AND LANG_CD = 'KOR' ORDER BY CD DESC     
+	</select>
+	
+    <resultMap id="getOnlineInventoryListResult" type="com.plgrim.ncp.biz.bi.result.BiStatisticOnlineInventoryResult">
+    	<result property="mallNm"			column="MALL_NM"/>
+    	<result property="brndNm"			column="BRND_NM"/>
+    	<result property="godNo"			column="GOD_NO"/>
+    	<result property="erpGodNo"			column="ERP_GOD_NO"/>
+    	<result property="godNm"			column="GOD_NM"/>
+    	<result property="colorCd"			column="COLOR_CD"/>
+    	<result property="optValCd1"		column="OPT_VAL_CD_1"/>
+    	<result property="mnfYearSeaGrpCd"	column="MNFCTUR_YEAR_SEASON_GRP_CD"/>
+    	<result property="rtlPrc"			column="RTL_PRC"/>
+    	<result property="csmrPrc"			column="CSMR_PRC"/>
+    	<result property="allInv"			column="ALL_INV"/>
+    	<result property="onlineComInv"		column="ONLNE_COM_INV"/>
+    	<result property="salePrearngeQty"	column="SALE_PREARNGE_QTY"/>
+    	<result property="onlineInv"		column="ONLNE_INV"/>
+    	<result property="comInv"			column="COM_INV"/>
+    	<result property="shopInv"			column="SHOP_INV"/>
+    	<result property="godSaleSectCd"	column="GOD_SALE_SECT_CD"/>
+    </resultMap>	
+    
+	<select id="getOnlineInventoryListCount" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticOnlineInventoryDTO" resultType="long">
+		SELECT /* [bi.xml][getOnlineInventoryListCount][온라인 재고 현황 목록 개수 조회][muba] */
+			COUNT(*)
+		FROM 
+		(
+		SELECT 
+			  SM.MALL_NM
+			, SB.BRND_NM
+			, G.GOD_NO
+			, G.ERP_GOD_NO
+			, G.GOD_NM
+			, G.COLOR_CD
+			, GI.OPT_VAL_CD_1
+			, G.MNFCTUR_YEAR_CD||G.SESON_GRP_CD AS MNFCTUR_YEAR_SEASON_GRP_CD
+			, G.RTL_PRC
+			, G.CSMR_PRC
+            , NVL(SUM(GSII.INV_QTY + GSII.LC1_INV_QTY), 0) AS ALL_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.INV_QTY + GSII.LC1_INV_QTY END), 0) AS ONLNE_COM_INV
+            , NVL(SUM(GSII.SALE_PREARNGE_QTY), 0) AS SALE_PREARNGE_QTY
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.INV_QTY END), 0) AS ONLNE_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.LC1_INV_QTY END), 0) AS COM_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN GSII.INV_QTY END), 0) AS SHOP_INV
+			, G.GOD_SALE_SECT_CD
+		FROM GOD_SALE_MALL GSM
+			JOIN GOD G ON GSM.GOD_NO = G.GOD_NO
+			JOIN GOD_ITM GI ON G.GOD_NO = GI.GOD_NO
+			JOIN GOD_SHOP_ITM_INV GSII ON GI.ITM_NO = GSII.ITM_NO
+			JOIN SYS_MALL SM ON GSM.MALL_ID = SM.MALL_ID
+			JOIN SYS_BRND SB ON G.BRND_ID = SB.BRND_ID
+			JOIN SYS_SHOP SS ON SS.SHOP_ID = GSII.SHOP_ID
+		WHERE 1=1
+            AND SS.SHOP_ID IN  (
+                               SELECT SHOP_ID
+                               FROM SYS_SHOP_BRND
+                               WHERE DLV_SHOP_YN = 'Y'
+                               )		
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)'>
+	            AND SM.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	        </if>		
+	        <if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndIds) and brndIds.length > 0)">
+				AND SB.BRND_ID IN (<foreach collection="brndIds" item="brndIds" separator=",">#{brndIds, jdbcType=VARCHAR}</foreach>)
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(colorCd)'>
+	            AND G.COLOR_CD = #{colorCd, jdbcType=VARCHAR}
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sizeCd)'>
+	            AND GI.OPT_VAL_CD_1 = #{sizeCd, jdbcType=VARCHAR}
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(seasonGrpCds) and seasonGrpCds.length > 0'>
+            	AND G.SESON_CD IN (<foreach collection="seasonGrpCds" item="seasonGrpCds" separator=",">#{seasonGrpCds, jdbcType=VARCHAR}</foreach>)         
+	        </if>		
+	        <if test="godNos != null and godNos != '' and godNos.length > 0">
+				<choose>
+       				<when test="godNosGbn == 'erp_god_no'">
+       					AND G.ERP_GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'god_no'">
+       					AND G.GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       			</choose>
+       		</if>
+			GROUP BY 
+				  SM.MALL_NM
+				, SB.BRND_NM
+				, G.GOD_NO
+				, G.ERP_GOD_NO
+				, G.GOD_NM
+				, G.COLOR_CD
+				, GI.OPT_VAL_CD_1
+				, G.MNFCTUR_YEAR_CD||G.SESON_GRP_CD
+				, G.RTL_PRC
+				, G.CSMR_PRC
+				, G.GOD_SALE_SECT_CD
+			HAVING 1=1
+			<choose>
+				<when test="invGbn == 'invA'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(GSII.INV_QTY) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(GSII.INV_QTY) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invB'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invC'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(GSII.SALE_PREARNGE_QTY) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(GSII.SALE_PREARNGE_QTY) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invD'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY - LC1_INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY - LC1_INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invE'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN LC1_INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN LC1_INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invF'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+			</choose>	
+	    )		
+	</select>    
+    
+	<select id="getOnlineInventoryList" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticOnlineInventoryDTO" resultMap="getOnlineInventoryListResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [bi.xml][getOnlineInventoryList][온라인 재고 현황 목록 조회][muba] */
+			*
+		FROM 
+		(
+		SELECT 
+			  SM.MALL_NM
+			, SB.BRND_NM
+			, G.GOD_NO
+			, G.ERP_GOD_NO
+			, G.GOD_NM
+			, G.COLOR_CD
+			, GI.OPT_VAL_CD_1
+			, G.MNFCTUR_YEAR_CD||G.SESON_GRP_CD AS MNFCTUR_YEAR_SEASON_GRP_CD
+			, G.RTL_PRC
+			, G.CSMR_PRC
+            , NVL(SUM(GSII.INV_QTY + GSII.LC1_INV_QTY), 0) AS ALL_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.INV_QTY + GSII.LC1_INV_QTY END), 0) AS ONLNE_COM_INV
+            , NVL(SUM(GSII.SALE_PREARNGE_QTY), 0) AS SALE_PREARNGE_QTY
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.INV_QTY END), 0) AS ONLNE_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.LC1_INV_QTY END), 0) AS COM_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN GSII.INV_QTY END), 0) AS SHOP_INV
+			, G.GOD_SALE_SECT_CD
+		FROM GOD_SALE_MALL GSM
+			JOIN GOD G ON GSM.GOD_NO = G.GOD_NO
+			JOIN GOD_ITM GI ON G.GOD_NO = GI.GOD_NO
+			JOIN GOD_SHOP_ITM_INV GSII ON GI.ITM_NO = GSII.ITM_NO
+			JOIN SYS_MALL SM ON GSM.MALL_ID = SM.MALL_ID
+			JOIN SYS_BRND SB ON G.BRND_ID = SB.BRND_ID
+			JOIN SYS_SHOP SS ON SS.SHOP_ID = GSII.SHOP_ID
+		WHERE 1=1
+            AND SS.SHOP_ID IN  (
+                               SELECT SHOP_ID
+                               FROM SYS_SHOP_BRND
+                               WHERE DLV_SHOP_YN = 'Y'
+                               )
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)'>
+	            AND SM.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	        </if>		
+	        <if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndIds) and brndIds.length > 0)">
+				AND SB.BRND_ID IN (<foreach collection="brndIds" item="brndIds" separator=",">#{brndIds, jdbcType=VARCHAR}</foreach>)
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(colorCd)'>
+	            AND G.COLOR_CD = #{colorCd, jdbcType=VARCHAR}
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sizeCd)'>
+	            AND GI.OPT_VAL_CD_1 = #{sizeCd, jdbcType=VARCHAR}
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(seasonGrpCds) and seasonGrpCds.length > 0'>
+            	AND G.SESON_CD IN (<foreach collection="seasonGrpCds" item="seasonGrpCds" separator=",">#{seasonGrpCds, jdbcType=VARCHAR}</foreach>)         
+	        </if>		
+	        <if test="godNos != null and godNos != '' and godNos.length > 0">
+				<choose>
+       				<when test="godNosGbn == 'erp_god_no'">
+       					AND G.ERP_GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'god_no'">
+       					AND G.GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       			</choose>
+       		</if>
+			GROUP BY 
+				  SM.MALL_NM
+				, SB.BRND_NM
+				, G.GOD_NO
+				, G.ERP_GOD_NO
+				, G.GOD_NM
+				, G.COLOR_CD
+				, GI.OPT_VAL_CD_1
+				, G.MNFCTUR_YEAR_CD||G.SESON_GRP_CD
+				, G.RTL_PRC
+				, G.CSMR_PRC
+				, G.GOD_SALE_SECT_CD
+			HAVING 1=1
+			<choose>
+				<when test="invGbn == 'invA'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(GSII.INV_QTY) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(GSII.INV_QTY) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invB'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invC'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(GSII.SALE_PREARNGE_QTY) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(GSII.SALE_PREARNGE_QTY) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invD'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY - LC1_INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY - LC1_INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invE'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN LC1_INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN LC1_INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invF'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+			</choose>	
+	    )	
+	    <include refid="com.plgrim.ncp.base.endPage"/> 		
+	</select>
+	
+	<select id="getOnlineInventoryListExcel" parameterType="com.plgrim.ncp.biz.bi.data.BiStatisticOnlineInventoryDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [bi.xml][getOnlineInventoryListExcel][온라인 재고 현황 엑셀 목록 조회][muba] */
+			*
+		FROM 
+		(
+		SELECT 
+			  SM.MALL_NM
+			, SB.BRND_NM
+			, G.GOD_NO
+			, G.ERP_GOD_NO
+			, G.GOD_NM
+			, G.COLOR_CD
+			, GI.OPT_VAL_CD_1
+			, G.MNFCTUR_YEAR_CD||G.SESON_GRP_CD AS MNFCTUR_YEAR_SEASON_GRP_CD
+			, G.RTL_PRC
+			, G.CSMR_PRC
+            , NVL(SUM(GSII.INV_QTY + GSII.LC1_INV_QTY), 0) AS ALL_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.INV_QTY + GSII.LC1_INV_QTY END), 0) AS ONLNE_COM_INV
+            , NVL(SUM(GSII.SALE_PREARNGE_QTY), 0) AS SALE_PREARNGE_QTY
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.INV_QTY END), 0) AS ONLNE_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN GSII.LC1_INV_QTY END), 0) AS COM_INV
+            , NVL(SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN GSII.INV_QTY END), 0) AS SHOP_INV
+			, g.GOD_SALE_SECT_CD
+		FROM GOD_SALE_MALL GSM
+			JOIN GOD G ON GSM.GOD_NO = G.GOD_NO
+			JOIN GOD_ITM GI ON G.GOD_NO = GI.GOD_NO
+			JOIN GOD_SHOP_ITM_INV GSII ON GI.ITM_NO = GSII.ITM_NO
+			JOIN SYS_MALL SM ON GSM.MALL_ID = SM.MALL_ID
+			JOIN SYS_BRND SB ON G.BRND_ID = SB.BRND_ID
+			JOIN SYS_SHOP SS ON SS.SHOP_ID = GSII.SHOP_ID
+		WHERE 1=1
+            AND SS.SHOP_ID IN  (
+                               SELECT SHOP_ID
+                               FROM SYS_SHOP_BRND
+                               WHERE DLV_SHOP_YN = 'Y'
+                               )		
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)'>
+	            AND SM.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	        </if>		
+	        <if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndIds) and brndIds.length > 0)">
+				AND SB.BRND_ID IN (<foreach collection="brndIds" item="brndIds" separator=",">#{brndIds, jdbcType=VARCHAR}</foreach>)
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(colorCd)'>
+	            AND G.COLOR_CD = #{colorCd, jdbcType=VARCHAR}
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sizeCd)'>
+	            AND GI.OPT_VAL_CD_1 = #{sizeCd, jdbcType=VARCHAR}
+	        </if>			  
+	        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(seasonGrpCds) and seasonGrpCds.length > 0'>
+            	AND G.SESON_CD IN (<foreach collection="seasonGrpCds" item="seasonGrpCds" separator=",">#{seasonGrpCds, jdbcType=VARCHAR}</foreach>)         
+	        </if>		
+	        <if test="godNos != null and godNos != '' and godNos.length > 0">
+				<choose>
+       				<when test="godNosGbn == 'erp_god_no'">
+       					AND G.ERP_GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'god_no'">
+       					AND G.GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       			</choose>
+       		</if>
+			GROUP BY 
+				  SM.MALL_NM
+				, SB.BRND_NM
+				, G.GOD_NO
+				, G.ERP_GOD_NO
+				, G.GOD_NM
+				, G.COLOR_CD
+				, GI.OPT_VAL_CD_1
+				, G.MNFCTUR_YEAR_CD||G.SESON_GRP_CD
+				, G.RTL_PRC
+				, G.CSMR_PRC
+				, G.GOD_SALE_SECT_CD
+			HAVING 1=1
+			<choose>
+				<when test="invGbn == 'invA'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(GSII.INV_QTY) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(GSII.INV_QTY) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invB'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invC'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(GSII.SALE_PREARNGE_QTY) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(GSII.SALE_PREARNGE_QTY) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invD'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY - LC1_INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN INV_QTY - LC1_INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invE'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN LC1_INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'Y' THEN LC1_INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+				<when test="invGbn == 'invF'">
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMinQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN INV_QTY END) <![CDATA[>=]]> #{invMinQty}
+					</if>
+					<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invMaxQty)">
+						AND SUM(CASE WHEN SS.WRHUS_YN = 'N' THEN INV_QTY END) <![CDATA[<]]> #{invMaxQty}
+					</if>							
+				</when>
+			</choose>	
+	    )			
+	</select>	
+	
+	<select id="getGodItmList" parameterType="string" resultType="com.plgrim.ncp.base.entities.datasource1.god.GodItm">
+		SELECT /* [bi.xml][getGodItmList][온라인 재고 현황 - 해당 상품 단품 조회][muba] */
+			*
+		FROM GOD_ITM
+		WHERE 1=1 AND GOD_NO = #{godNo, jdbcType=VARCHAR}
+	</select>
+	
+    <resultMap id="getGodQtyShopListResult" type="com.plgrim.ncp.biz.bi.result.BiStatisticGodQtyShopResult">
+    	<result property="itmNm"			column="ITM_NM"/>
+    	<result property="shopNm"			column="SHOP_NM"/>
+    	<result property="invQty"			column="INV_QTY"/>
+    </resultMap>	
+
+	<select id="getGodQtyShopListCount" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultType="long">
+		SELECT /* [bi.xml][getGodQtyShopListCount][온라인 재고 현황 목록 개수][muba] */
+			COUNT(*)
+		FROM GOD_SHOP_ITM_INV GSII
+			JOIN SYS_SHOP SS ON GSII.SHOP_ID = SS.SHOP_ID
+			JOIN GOD_ITM ITM ON GSII.ITM_NO = ITM.ITM_NO
+		WHERE 1=1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+			AND GSII.GOD_NO = #{godNo, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo)">
+			AND ITM.ITM_NO = #{itmNo, jdbcType=VARCHAR}
+		</if>
+		AND SS.WRHUS_YN = 'N'
+		AND SS.USE_YN = 'Y'
+		AND SS.SHOP_ID IN  (
+						   SELECT SHOP_ID
+		                   FROM SYS_SHOP_BRND
+		                   WHERE DLV_SHOP_YN = 'Y'
+		                   )
+		ORDER BY GSII.ITM_NO	
+	</select>
+	
+	<select id="getGodQtyShopList" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultMap="getGodQtyShopListResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [bi.xml][getGodQtyShopList][온라인 재고 현황 목록 조회][muba] */
+		   ITM.ITM_NM
+		 , SS.SHOP_NM
+		 , GSII.INV_QTY
+		FROM GOD_SHOP_ITM_INV GSII
+			JOIN SYS_SHOP SS ON GSII.SHOP_ID = SS.SHOP_ID
+			JOIN GOD_ITM ITM ON GSII.ITM_NO = ITM.ITM_NO
+		WHERE 1=1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+			AND GSII.GOD_NO = #{godNo, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo)">
+			AND ITM.ITM_NO = #{itmNo, jdbcType=VARCHAR}
+		</if>
+		AND SS.WRHUS_YN = 'N'
+		AND SS.USE_YN = 'Y'
+		AND SS.SHOP_ID IN  (
+						   SELECT SHOP_ID
+		                   FROM SYS_SHOP_BRND
+		                   WHERE DLV_SHOP_YN = 'Y'
+		                   )
+		ORDER BY GSII.ITM_NO	
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	<select id="getGodQtyShopListExcel" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [bi.xml][getGodQtyShopListExcel][온라인 재고 현황 목록 엑셀 다운로드][muba] */
+		   ITM.ITM_NM
+		 , SS.SHOP_NM
+		 , GSII.INV_QTY
+		FROM GOD_SHOP_ITM_INV GSII
+			JOIN SYS_SHOP SS ON GSII.SHOP_ID = SS.SHOP_ID
+			JOIN GOD_ITM ITM ON GSII.ITM_NO = ITM.ITM_NO
+		WHERE 1=1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+			AND GSII.GOD_NO = #{godNo, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo)">
+			AND ITM.ITM_NO = #{itmNo, jdbcType=VARCHAR}
+		</if>
+		AND WRHUS_YN = 'N'
+		AND USE_YN = 'Y'
+		AND SS.SHOP_ID IN  (
+						   SELECT SHOP_ID
+		                   FROM SYS_SHOP_BRND
+		                   WHERE DLV_SHOP_YN = 'Y'
+		                   )
+		ORDER BY GSII.ITM_NO	
+	</select>
+	
+	<select id="getInvBatchEndDt" resultType="String">
+		SELECT 
+			TO_CHAR(BATCH_END_DT, 'YYYY-MM-DD HH24:MI:SS') AS BATCH_END_DT
+		FROM SYS_BATCH_HIST
+		WHERE 1 = 1
+			AND BATCH_CLASS_ID = 'com.plgrim.ncp.batch.server.job.goods.inventory.InventoryJob'
+			AND BATCH_HIST_STAT_CD = 'SUCCESS'
+		ORDER BY BATCH_END_DT DESC
+		FETCH FIRST 1 ROWS ONLY		
+	</select>
+	
+    <!-- 회원 가상 그룹 통계 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereBiStatistic">
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(regTypeDt)">
+			<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(regTypeDt,'2')">
+				AND m.JOIN_DT <![CDATA[>=]]> TO_DATE(REPLACE(#{regBegDt}, '-')||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND m.JOIN_DT <![CDATA[<]]> TO_DATE(REPLACE(#{regEndDt}, '-')||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(regTypeDt,'1')">
+				AND mll.LOG_OCCUR_DT <![CDATA[>=]]> TO_DATE(REPLACE(#{regBegDt}, '-')||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+				AND mll.LOG_OCCUR_DT <![CDATA[<]]> TO_DATE(REPLACE(#{regEndDt}, '-')||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')
+			</if>
+		</if>		  
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(birthBegDt)">
+			AND m.MBR_BRTHDY <![CDATA[>=]]> REPLACE(#{birthBegDt}, '-')
+		</if>		
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(birthEndDt)">
+			AND m.MBR_BRTHDY <![CDATA[<]]> REPLACE(#{birthEndDt}, '-')
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sexSectCd)">
+            AND m.MBR_SEX_SECT_CD IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                      FROM (SELECT #{sexSectCd, jdbcType=VARCHAR} AS param FROM dual) d
+                                      CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))				
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(smsRecptnAgrYn)">
+            AND m.SMS_RECPTN_AGR_YN IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                      FROM (SELECT #{smsRecptnAgrYn, jdbcType=VARCHAR} AS param FROM dual) d
+                                      CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))			
+		</if>		
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnAgrYn)">
+            AND m.EMAIL_RECPTN_AGR_YN IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                      FROM (SELECT #{emailRecptnAgrYn, jdbcType=VARCHAR} AS param FROM dual) d
+                                      CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))			
+		</if>		
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(bskMinQty)">
+			AND b.GOD_CNT <![CDATA[>=]]> #{bskMinQty}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(bskMaxQty)">
+			AND b.GOD_CNT <![CDATA[<]]> #{bskMaxQty}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ordGodCnt)">
+         	<choose>
+        		<when test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(ordGodCnt,'3')">
+					AND o.ORD_CNT <![CDATA[>=]]> 3					
+        		</when>
+				<otherwise>
+					AND o.ORD_CNT = #{ordGodCnt}
+				</otherwise>
+			</choose>		
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ordMinQty)">
+			AND o.GOD_CNT <![CDATA[>=]]> #{ordMinQty}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ordMaxQty)">
+			AND o.GOD_CNT <![CDATA[<]]> #{ordMaxQty}
+		</if>			
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ordMinPrc)">
+			AND o.SALE_AMT <![CDATA[>=]]> #{ordMinPrc}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ordMaxPrc)">
+			AND o.SALE_AMT <![CDATA[<]]> #{ordMaxPrc}
+		</if>			
+    </sql>	
+</mapper>

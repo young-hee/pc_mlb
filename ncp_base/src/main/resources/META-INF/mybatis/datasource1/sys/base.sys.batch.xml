@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBatch" parameterType="sysBatch" resultType="sysBatch">
+		SELECT /* com.plgrim.ncp.base.selectSysBatch		Generator(Generator)	2018-05-23 */
+			   BATCH_CLASS_ID
+			 , BATCH_NM
+			 , BATCH_GRP_NM
+			 , BATCH_EXECUT_CYCL_CONT
+			 , BATCH_BEG_URL
+			 , BATCH_END_URL
+			 , BATCH_REBEG_URL
+			 , IND_EXECUT_URL
+			 , BATCH_DSCR
+			 , BATCH_PRMTR_CONT
+			 , IND_EXECUT_PRMTR_CONT
+			 , BATCH_BEG_DT
+			 , BATCH_END_DT
+			 , BATCH_STAT_CD
+			 , BATCH_EXECUT_STAT_CD
+			 , BATCH_EXECUT_EXPECT_TIME
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BATCH
+		 WHERE 1 = 1
+	   	   AND BATCH_CLASS_ID = #{batchClassId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysBatch" parameterType="sysBatch">
+		UPDATE /* com.plgrim.ncp.base.updateSysBatch		Generator(Generator)	2018-05-23 */
+		SYS_BATCH SET
+			   BATCH_NM = #{batchNm,jdbcType=VARCHAR}
+			 , BATCH_GRP_NM = #{batchGrpNm,jdbcType=VARCHAR}
+			 , BATCH_EXECUT_CYCL_CONT = #{batchExecutCyclCont,jdbcType=VARCHAR}
+			 , BATCH_BEG_URL = #{batchBegUrl,jdbcType=VARCHAR}
+			 , BATCH_END_URL = #{batchEndUrl,jdbcType=VARCHAR}
+			 , BATCH_REBEG_URL = #{batchRebegUrl,jdbcType=VARCHAR}
+			 , IND_EXECUT_URL = #{indExecutUrl,jdbcType=VARCHAR}
+			 , BATCH_DSCR = #{batchDscr,jdbcType=VARCHAR}
+			 , BATCH_PRMTR_CONT = #{batchPrmtrCont,jdbcType=VARCHAR}
+			 , IND_EXECUT_PRMTR_CONT = #{indExecutPrmtrCont,jdbcType=VARCHAR}
+			 , BATCH_BEG_DT = #{batchBegDt,jdbcType=TIMESTAMP}
+			 , BATCH_END_DT = #{batchEndDt,jdbcType=TIMESTAMP}
+			 , BATCH_STAT_CD = #{batchStatCd,jdbcType=VARCHAR}
+			 , BATCH_EXECUT_STAT_CD = #{batchExecutStatCd,jdbcType=VARCHAR}
+			 , BATCH_EXECUT_EXPECT_TIME = #{batchExecutExpectTime,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BATCH_CLASS_ID = #{batchClassId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysBatch" parameterType="sysBatch">
+		INSERT /* com.plgrim.ncp.base.insertSysBatch		Generator(Generator)	2018-05-23 */
+		INTO   SYS_BATCH (
+			   BATCH_CLASS_ID
+			 , BATCH_NM
+			 , BATCH_GRP_NM
+			 , BATCH_EXECUT_CYCL_CONT
+			 , BATCH_BEG_URL
+			 , BATCH_END_URL
+			 , BATCH_REBEG_URL
+			 , IND_EXECUT_URL
+			 , BATCH_DSCR
+			 , BATCH_PRMTR_CONT
+			 , IND_EXECUT_PRMTR_CONT
+			 , BATCH_BEG_DT
+			 , BATCH_END_DT
+			 , BATCH_STAT_CD
+			 , BATCH_EXECUT_STAT_CD
+			 , BATCH_EXECUT_EXPECT_TIME
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{batchClassId,jdbcType=VARCHAR}
+			 , #{batchNm,jdbcType=VARCHAR}
+			 , #{batchGrpNm,jdbcType=VARCHAR}
+			 , #{batchExecutCyclCont,jdbcType=VARCHAR}
+			 , #{batchBegUrl,jdbcType=VARCHAR}
+			 , #{batchEndUrl,jdbcType=VARCHAR}
+			 , #{batchRebegUrl,jdbcType=VARCHAR}
+			 , #{indExecutUrl,jdbcType=VARCHAR}
+			 , #{batchDscr,jdbcType=VARCHAR}
+			 , #{batchPrmtrCont,jdbcType=VARCHAR}
+			 , #{indExecutPrmtrCont,jdbcType=VARCHAR}
+			 , #{batchBegDt,jdbcType=TIMESTAMP}
+			 , #{batchEndDt,jdbcType=TIMESTAMP}
+			 , #{batchStatCd,jdbcType=VARCHAR}
+			 , #{batchExecutStatCd,jdbcType=VARCHAR}
+			 , #{batchExecutExpectTime,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBatch" parameterType="sysBatch">
+		DELETE /* com.plgrim.ncp.base.deleteSysBatch		Generator(Generator)	2018-05-23 */
+		  FROM SYS_BATCH
+		 WHERE 1 = 1
+		   AND BATCH_CLASS_ID = #{batchClassId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

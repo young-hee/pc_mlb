@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
+
+	<!-- ========전체 시스템 cache 설정 영역 (AA 외 핸들링 또는 설정 복사 금지)========== -->
+	<defaultCache eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LRU" />
+
+	<!-- ========Application General Cache Setting================================ -->
+
+	<cache name="displayCategoryRepository.test" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCategoryRepository.dspCtgryDefaultInfo" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="60" memoryStoreEvictionPolicy="LRU" />
+	<cache name="displayCategoryRepository.dspCtgrySubDspCtgryList" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCategoryRepository.popupNoti" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCategoryRepository.godExistDspCtgryList" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCornerRepository.fullDspCnrContents" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="60" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCornerRepository.dspCnrContentsCnncGod" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCornerRepository.dspCnrContentsCnncPromt" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCornerRepository.dspCnrContentsCnncStrnd" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCategoryRepository.dspCnrSetList" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCategoryRepository.TopSellerAutoLoading" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCategoryRepository.NewArrivalAutoLoading" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsImageRepository.selectRprstGodImagePath" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectErpGodNo" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsPcSfRepository.selectB2EPrmotionInfo" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+	<cache name="goodsRepository.getFoGoodsDetail" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectSetCpstList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+
+
+	<cache name="goodsRepository.getGoodsColorList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+	<cache name="goodsRepository.getGoodsSizeList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+	<cache name="goodsRepository.getGoodsImages" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="OrderSelectRepository.selectExchangeRt" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.getCategoryPathByGodNo" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.getCategoryBestGoods" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.getCodiGoods" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectNotiListByLang" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectBrndNotiListByLang" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectGodPromtList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectCardBenefitList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectEvtList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectComAsChrger" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="codeViewRepository.getAddInfoCodeList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectGodAditDetailData" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectGoodsDetailStrendInfo" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+	<cache name="displayCornerRepository.selectDspCnrConttList2" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectGodEventList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectMcomBrandGroupYn" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+	<cache name="goodsRepository.selectGoodsLocationDspCtgryNo" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+
+	<cache name="displayCategoryRepository.selectTestGodList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCornerRepository.selectDspCnrDefaultInfo" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="displayCornerRepository.selectDspCnrConttList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsContentRepository.selectFoReviewList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="30" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsContentRepository.selectFoQnaList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="30" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsContentRepository.selectCountFoQna" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="30" memoryStoreEvictionPolicy="LRU" />
+
+
+	<cache name="goodsContentRepository.selectSizeScoreList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="30" memoryStoreEvictionPolicy="LRU" />
+
+
+	<cache name="goodsContentRepository.selectColorScoreList" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="30" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsContentRepository.selectReviewScore" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="30" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="goodsRepository.selectAccsessTerm" eternal="false" maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+	<cache name="goodsMbSfRepository.getGoodsMetaTagInfo" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+	<cache name="goodsRepository.selectGoodsPartmalSect" eternal="false" maxElementsInMemory="3000" overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+
+</ehcache>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysChckHist" parameterType="sysChckHist" resultType="sysChckHist">
+		SELECT /* com.plgrim.ncp.base.selectSysChckHist		Generator(Generator)	2018-05-23 */
+			   CHCK_DT
+			 , CHCK_JOB_SECT_CD
+			 , CHCK_TGT_SECT_CD
+			 , CHCK_CONT
+			 , CHCK_RESULT_CD
+			 , RM_CONT
+		  FROM SYS_CHCK_HIST
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateSysChckHist" parameterType="sysChckHist">
+		UPDATE /* com.plgrim.ncp.base.updateSysChckHist		Generator(Generator)	2018-05-23 */
+		SYS_CHCK_HIST SET
+			   CHCK_DT = #{chckDt,jdbcType=TIMESTAMP}
+			 , CHCK_JOB_SECT_CD = #{chckJobSectCd,jdbcType=VARCHAR}
+			 , CHCK_TGT_SECT_CD = #{chckTgtSectCd,jdbcType=VARCHAR}
+			 , CHCK_CONT = #{chckCont,jdbcType=VARCHAR}
+			 , CHCK_RESULT_CD = #{chckResultCd,jdbcType=VARCHAR}
+			 , RM_CONT = #{rmCont,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertSysChckHist" parameterType="sysChckHist">
+		INSERT /* com.plgrim.ncp.base.insertSysChckHist		Generator(Generator)	2018-05-23 */
+		INTO   SYS_CHCK_HIST (
+			   CHCK_DT
+			 , CHCK_JOB_SECT_CD
+			 , CHCK_TGT_SECT_CD
+			 , CHCK_CONT
+			 , CHCK_RESULT_CD
+			 , RM_CONT
+		)
+		VALUES (
+			   #{chckDt,jdbcType=TIMESTAMP}
+			 , #{chckJobSectCd,jdbcType=VARCHAR}
+			 , #{chckTgtSectCd,jdbcType=VARCHAR}
+			 , #{chckCont,jdbcType=VARCHAR}
+			 , #{chckResultCd,jdbcType=VARCHAR}
+			 , #{rmCont,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteSysChckHist" parameterType="sysChckHist">
+		DELETE /* com.plgrim.ncp.base.deleteSysChckHist		Generator(Generator)	2018-05-23 */
+		  FROM SYS_CHCK_HIST
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

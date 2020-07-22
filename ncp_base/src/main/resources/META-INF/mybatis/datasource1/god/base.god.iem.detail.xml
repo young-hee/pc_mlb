@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodIemDetail" parameterType="godIemDetail" resultType="godIemDetail">
+		SELECT /* com.plgrim.ncp.base.selectGodIemDetail		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , GOD_IEM_CD
+			 , GOD_IEM_TURN
+			 , GOD_IEM_VAL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_IEM_DETAIL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_IEM_CD = #{godIemCd,jdbcType=VARCHAR}
+		   AND GOD_IEM_TURN = #{godIemTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodIemDetail" parameterType="godIemDetail">
+		UPDATE /* com.plgrim.ncp.base.updateGodIemDetail		Generator(Generator)	2018-05-23 */
+		GOD_IEM_DETAIL SET
+			   GOD_IEM_VAL_CD = #{godIemValCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_IEM_CD = #{godIemCd,jdbcType=VARCHAR}
+		   AND GOD_IEM_TURN = #{godIemTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodIemDetail" parameterType="godIemDetail">
+		INSERT /* com.plgrim.ncp.base.insertGodIemDetail		Generator(Generator)	2018-05-23 */
+		INTO   GOD_IEM_DETAIL (
+			   GOD_NO
+			 , GOD_IEM_CD
+			 , GOD_IEM_TURN
+			 , GOD_IEM_VAL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{godIemCd,jdbcType=VARCHAR}
+			 , #{godIemTurn,jdbcType=NUMERIC}
+			 , #{godIemValCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodIemDetail" parameterType="godIemDetail">
+		DELETE /* com.plgrim.ncp.base.deleteGodIemDetail		Generator(Generator)	2018-05-23 */
+		  FROM GOD_IEM_DETAIL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_IEM_CD = #{godIemCd,jdbcType=VARCHAR}
+		   AND GOD_IEM_TURN = #{godIemTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

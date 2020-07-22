@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComIdSeq" parameterType="comIdSeq" resultType="comIdSeq">
+		SELECT /* com.plgrim.ncp.base.selectComIdSeq		Generator(Generator)	2018-05-23 */
+			   COM_ID
+			 , SEQ
+			 , USE_YN
+		  FROM COM_ID_SEQ
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND SEQ = #{seq,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateComIdSeq" parameterType="comIdSeq">
+		UPDATE /* com.plgrim.ncp.base.updateComIdSeq		Generator(Generator)	2018-05-23 */
+		COM_ID_SEQ SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND SEQ = #{seq,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertComIdSeq" parameterType="comIdSeq">
+		INSERT /* com.plgrim.ncp.base.insertComIdSeq		Generator(Generator)	2018-05-23 */
+		INTO   COM_ID_SEQ (
+			   COM_ID
+			 , SEQ
+			 , USE_YN
+		)
+		VALUES (
+			   #{comId,jdbcType=VARCHAR}
+			 , #{seq,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteComIdSeq" parameterType="comIdSeq">
+		DELETE /* com.plgrim.ncp.base.deleteComIdSeq		Generator(Generator)	2018-05-23 */
+		  FROM COM_ID_SEQ
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND SEQ = #{seq,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

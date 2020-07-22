@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.cart.cps">
+
+	<select id="selectBskInfoByBskNo" parameterType="string" resultType="bsk">
+	
+		SELECT /* com.plgrim.ncp.web.pc.cps.sf.cart.selectBskInfoByBskNo  */
+                BSK_NO
+               ,MALL_ID
+               ,BSK_TP_CD
+               ,MBR_SECT_CD
+               ,MBR_NO
+               ,SESION_ID
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    BSK t
+        WHERE   BSK_NO = #{bskNo,jdbcType=VARCHAR}
+	</select>
+
+
+	<resultMap id="sidoGugunComboResultMap" type="com.plgrim.ncp.biz.cart.result.SidoCdResult">
+		<result property="sido"	         column="SIDO"/><!-- 시도 -->
+		<result property="sidoCd"	     column="SIDO_CD"/><!-- 구군 -->
+	</resultMap>
+
+	<select id="selectSidoShopList" parameterType="com.plgrim.ncp.biz.cart.data.ShopSearchDTO" resultType="sysShop">
+		/*[cart.cps.bsk.xml][selectSidoShopList]*/
+		SELECT SHOP_ID,SHOP_NM FROM  (
+		WITH T AS (
+		SELECT SHOP_ID
+		,SHOP_NM
+		,USE_QTY
+		FROM  (
+		SELECT         T1.SHOP_ID
+		,T1.SHOP_NM
+		,MIN(DECODE(
+		SIGN(T4.inv_qty - nvl(T4.sale_prearnge_qty,0) - nvl(decode(T4.safe_inv_rt_use_yn, 'Y', T2.safe_inv_rt, 'N',T4.safe_inv_qty,0),0))
+		, -1, 0
+		, T4.inv_qty - nvl(T4.sale_prearnge_qty,0) - nvl(decode(T4.safe_inv_rt_use_yn, 'Y', T2.safe_inv_rt, 'N',T4.safe_inv_qty,0),0)
+		)) USE_QTY
+		FROM  SYS_SHOP T1
+		JOIN  SYS_SHOP_BRND T2
+		ON  T1.SHOP_ID = T2.SHOP_ID AND T2.USE_YN = 'Y'
+		JOIN  SYS_BRND T3 ON T2.ERP_BRND_ID = T3.ERP_BRND_ID
+		JOIN  GOD_SHOP_ITM_INV T4 ON T4.SHOP_ID=T1.SHOP_ID and T4.web_sale_psb_yn = 'Y'
+		AND T4.SHOP_ID=T2.SHOP_ID AND T2.PKUP_SHOP_YN = DECODE(T4.SHOP_ID,'X30004',T2.PKUP_SHOP_YN,'Y')
+		WHERE T1.SIDO_CD= DECODE(T4.SHOP_ID,'X30004',T1.SIDO_CD,#{sidoCd,jdbcType=VARCHAR})
+		<if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(godNoList)">
+			AND   T4.GOD_NO IN
+			<foreach collection="godNoList" item="godno" open="(" separator="," close=")">
+				#{godno,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(godItmList)">
+			AND   T4.ITM_NO IN
+			<foreach collection="godItmList" item="goditm" open="(" separator="," close=")">
+				#{goditm,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		AND   T1.FO_EXPSR_YN = 'Y'
+		AND   T1.USE_YN = 'Y'
+		<if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(brndIdList)">
+			AND T3.BRND_ID IN
+			<foreach collection="brndIdList" item="brnd" open="(" separator="," close=")">
+				#{brnd,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		HAVING COUNT(1) = 1
+		GROUP BY T1.SHOP_ID, T1.SHOP_NM
+		)
+		)
+		SELECT T.SHOP_ID
+		,T.SHOP_NM
+		,T.USE_QTY
+		,(SELECT USE_QTY FROM T WHERE t.shop_id = 'X30004') AS cntr_qty
+		FROM T
+		)
+		WHERE USE_QTY+CNTR_QTY > 0
+		AND SHOP_ID != 'X30004'
+
+	</select>
+
+	<select id="selectSidoShopListCart" parameterType="com.plgrim.ncp.biz.cart.data.ShopSearchDTO" resultType="sysShop">
+		/*[cart.cps.bsk.xml][selectSidoShopListCart]*/
+		SELECT SHOP_ID,SHOP_NM FROM  (
+		WITH T AS (
+		SELECT SHOP_ID
+		,SHOP_NM
+		,USE_QTY
+		FROM  (
+		SELECT         T1.SHOP_ID
+		,T1.SHOP_NM
+		,MIN(DECODE(
+		SIGN(T4.inv_qty - nvl(T4.sale_prearnge_qty,0) - nvl(decode(T4.safe_inv_rt_use_yn, 'Y', T2.safe_inv_rt, 'N',T4.safe_inv_qty,0),0))
+		, -1, 0
+		, T4.inv_qty - nvl(T4.sale_prearnge_qty,0) - nvl(decode(T4.safe_inv_rt_use_yn, 'Y', T2.safe_inv_rt, 'N',T4.safe_inv_qty,0),0)
+		)) USE_QTY
+		FROM  SYS_SHOP T1
+		JOIN  SYS_SHOP_BRND T2
+		ON  T1.SHOP_ID = T2.SHOP_ID AND T2.USE_YN = 'Y'
+		JOIN  SYS_BRND T3 ON T2.ERP_BRND_ID = T3.ERP_BRND_ID
+		JOIN  GOD_SHOP_ITM_INV T4 ON T4.SHOP_ID=T1.SHOP_ID and T4.web_sale_psb_yn = 'Y'
+		AND T4.SHOP_ID=T2.SHOP_ID AND T2.PKUP_SHOP_YN = DECODE(T4.SHOP_ID,'X30004',T2.PKUP_SHOP_YN,'Y')
+		WHERE T1.SIDO_CD= DECODE(T4.SHOP_ID,'X30004',T1.SIDO_CD,#{sidoCd,jdbcType=VARCHAR})
+		<if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(godNoList)">
+			AND   T4.GOD_NO IN
+			<foreach collection="godNoList" item="godno" open="(" separator="," close=")">
+				#{godno,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(godItmList)">
+			AND   T4.ITM_NO IN
+			<foreach collection="godItmList" item="goditm" open="(" separator="," close=")">
+				#{goditm,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		AND   T1.FO_EXPSR_YN = 'Y'
+		AND   T1.USE_YN = 'Y'
+		<if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(brndIdList)">
+			AND T3.BRND_ID IN
+			<foreach collection="brndIdList" item="brnd" open="(" separator="," close=")">
+				#{brnd,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		GROUP BY T1.SHOP_ID, T1.SHOP_NM
+		)
+		)
+		SELECT T.SHOP_ID
+		,T.SHOP_NM
+		,T.USE_QTY
+		,(SELECT USE_QTY FROM T WHERE t.shop_id = 'X30004') AS cntr_qty
+		FROM T
+		)
+		WHERE USE_QTY+CNTR_QTY > 0
+		AND SHOP_ID != 'X30004'
+
+	</select>
+
+	<resultMap id="shopInfoResult" type="com.plgrim.ncp.biz.goods.result.GoodsSearchFoResult">
+		<result property="sysShop.shopId"	         column="SHOP_ID"/><!-- 시도 -->
+		<result property="sysShop.shopTelNationNo"	         column="SHOP_TEL_NATION_NO"/><!-- 시도 -->
+		<result property="sysShop.shopTelAreaNo"	         column="SHOP_TEL_AREA_NO"/><!-- 시도 -->
+		<result property="sysShop.shopTelTlofNo"	         column="SHOP_TEL_TLOF_NO"/><!-- 시도 -->
+		<result property="sysShop.shopTelTlofWthnNo"	         column="SHOP_TEL_TLOF_WTHN_NO"/><!-- 시도 -->
+		<result property="sysShop.postNo"	         column="POST_NO"/><!-- 시도 -->
+		<result property="sysShop.baseAddr"	         column="BASE_ADDR"/><!-- 시도 -->
+		<result property="sysShop.detailAddr"	         column="DETAIL_ADDR"/><!-- 시도 -->
+		<result property="sysShop.wkdyOperBegHhmm"	         column="WKDY_OPER_BEG_HHMM"/><!-- 시도 -->
+		<result property="sysShop.wkdyOperEndHhmm"	         column="WKDY_OPER_END_HHMM"/><!-- 시도 -->
+		<result property="sysShop.lgtd"	         column="LGTD"/><!-- 시도 -->
+		<result property="sysShop.lttd"	         column="LTTD"/><!-- 시도 -->
+		<result property="repairShopYn"	         column="REPAIR_SHOP_YN"/><!-- 시도 -->
+	</resultMap>
+
+
+	<select id="selectShopInfo" parameterType="com.plgrim.ncp.biz.cart.data.ShopSearchDTO" resultMap="shopInfoResult">
+		SELECT
+		sh.shop_id,
+		sh.shop_tel_nation_no,
+		sh.shop_tel_area_no,
+		sh.shop_tel_tlof_no,
+		sh.shop_tel_tlof_wthn_no,
+		sh.post_no,
+		sh.base_addr,
+		sh.detail_addr,
+		to_char(to_date(sh.wkdy_oper_beg_hhmm,'HH24MI'),'HH24:MI') AS wkdy_oper_beg_hhmm,
+		to_char(to_date(sh.wkdy_oper_end_hhmm,'HH24MI'),'HH24:MI') AS wkdy_oper_end_hhmm,
+		sh.lttd,
+		sh.lgtd,
+		nvl(ssb.repair_shop_yn, 'N') as repair_shop_yn
+		FROM  SYS_SHOP sh
+		LEFT OUTER JOIN (
+		SELECT
+		SHOP_ID,
+		MAX(REPAIR_SHOP_YN) AS REPAIR_SHOP_YN,
+		MAX(PKUP_SHOP_YN) AS PKUP_SHOP_YN
+		FROM  SYS_SHOP_BRND
+		WHERE  1 = 1
+		<if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(brndIdList)">
+			AND ERP_BRND_ID IN
+			<foreach collection="brndIdList" item="brnd" open="(" separator="," close=")">
+				#{brnd,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		AND  USE_YN = 'Y'
+		GROUP BY SHOP_ID
+		) SSB
+		ON SH.SHOP_ID = SSB.SHOP_ID
+		WHERE sh.shop_id = #{shopId,jdbcType=VARCHAR}
+	</select>
+</mapper>

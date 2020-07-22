@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfTmprAffOrd" parameterType="infTmprAffOrd" resultType="infTmprAffOrd">
+		SELECT /* com.plgrim.ncp.base.selectInfTmprAffOrd		Generator(Generator)	2018-05-23 */
+			   AFF_ORD_SN
+			 , AFF_ORD_TURN
+			 , AFF_VRSC_COM_ID
+			 , MALL_ID
+			 , AFF_COM_NM
+			 , AFF_GOD_ORD_NO
+			 , AFF_ITM_ORD_NO
+			 , CSTMR_NM
+			 , MOBIL_NO
+			 , TEL_NO
+			 , CSTMR_POST_NO
+			 , CSTMR_ADDR
+			 , PCKAGESHAPE_GOD_NO
+			 , PCKAGESHAPE_GOD_ITM_NM
+			 , ERP_GOD_NO
+			 , ITM_NM
+			 , QTY
+			 , DLV_MEMO
+			 , AFF_COM_DLV_TURN
+			 , AFF_COM_DLV_NO
+			 , AFF_COM_SHOP_NM
+			 , CRNCY_CD
+			 , PAY_EXCHG_RT_CRNCY_AMT
+			 , GFT_YN
+			 , TMALL_GLB_LMTT_INV_USE_YN
+			 , TMALL_EVT_LMTT_INV_USE_YN
+		  FROM INF_TMPR_AFF_ORD
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfTmprAffOrd" parameterType="infTmprAffOrd">
+		UPDATE /* com.plgrim.ncp.base.updateInfTmprAffOrd		Generator(Generator)	2018-05-23 */
+		INF_TMPR_AFF_ORD SET
+			   AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+			 , AFF_ORD_TURN = #{affOrdTurn,jdbcType=NUMERIC}
+			 , AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , AFF_COM_NM = #{affComNm,jdbcType=VARCHAR}
+			 , AFF_GOD_ORD_NO = #{affGodOrdNo,jdbcType=VARCHAR}
+			 , AFF_ITM_ORD_NO = #{affItmOrdNo,jdbcType=VARCHAR}
+			 , CSTMR_NM = #{cstmrNm,jdbcType=VARCHAR}
+			 , MOBIL_NO = #{mobilNo,jdbcType=VARCHAR}
+			 , TEL_NO = #{telNo,jdbcType=VARCHAR}
+			 , CSTMR_POST_NO = #{cstmrPostNo,jdbcType=VARCHAR}
+			 , CSTMR_ADDR = #{cstmrAddr,jdbcType=VARCHAR}
+			 , PCKAGESHAPE_GOD_NO = #{pckageshapeGodNo,jdbcType=VARCHAR}
+			 , PCKAGESHAPE_GOD_ITM_NM = #{pckageshapeGodItmNm,jdbcType=VARCHAR}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , ITM_NM = #{itmNm,jdbcType=VARCHAR}
+			 , QTY = #{qty,jdbcType=NUMERIC}
+			 , DLV_MEMO = #{dlvMemo,jdbcType=VARCHAR}
+			 , AFF_COM_DLV_TURN = #{affComDlvTurn,jdbcType=NUMERIC}
+			 , AFF_COM_DLV_NO = #{affComDlvNo,jdbcType=VARCHAR}
+			 , AFF_COM_SHOP_NM = #{affComShopNm,jdbcType=VARCHAR}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , PAY_EXCHG_RT_CRNCY_AMT = #{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , GFT_YN = #{gftYn,jdbcType=VARCHAR}
+			 , TMALL_GLB_LMTT_INV_USE_YN = #{tmallGlbLmttInvUseYn,jdbcType=VARCHAR}
+			 , TMALL_EVT_LMTT_INV_USE_YN = #{tmallEvtLmttInvUseYn,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfTmprAffOrd" parameterType="infTmprAffOrd">
+		INSERT /* com.plgrim.ncp.base.insertInfTmprAffOrd		Generator(Generator)	2018-05-23 */
+		INTO   INF_TMPR_AFF_ORD (
+			   AFF_ORD_SN
+			 , AFF_ORD_TURN
+			 , AFF_VRSC_COM_ID
+			 , MALL_ID
+			 , AFF_COM_NM
+			 , AFF_GOD_ORD_NO
+			 , AFF_ITM_ORD_NO
+			 , CSTMR_NM
+			 , MOBIL_NO
+			 , TEL_NO
+			 , CSTMR_POST_NO
+			 , CSTMR_ADDR
+			 , PCKAGESHAPE_GOD_NO
+			 , PCKAGESHAPE_GOD_ITM_NM
+			 , ERP_GOD_NO
+			 , ITM_NM
+			 , QTY
+			 , DLV_MEMO
+			 , AFF_COM_DLV_TURN
+			 , AFF_COM_DLV_NO
+			 , AFF_COM_SHOP_NM
+			 , CRNCY_CD
+			 , PAY_EXCHG_RT_CRNCY_AMT
+			 , GFT_YN
+			 , TMALL_GLB_LMTT_INV_USE_YN
+			 , TMALL_EVT_LMTT_INV_USE_YN
+		)
+		VALUES (
+			   #{affOrdSn,jdbcType=NUMERIC}
+			 , #{affOrdTurn,jdbcType=NUMERIC}
+			 , #{affVrscComId,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{affComNm,jdbcType=VARCHAR}
+			 , #{affGodOrdNo,jdbcType=VARCHAR}
+			 , #{affItmOrdNo,jdbcType=VARCHAR}
+			 , #{cstmrNm,jdbcType=VARCHAR}
+			 , #{mobilNo,jdbcType=VARCHAR}
+			 , #{telNo,jdbcType=VARCHAR}
+			 , #{cstmrPostNo,jdbcType=VARCHAR}
+			 , #{cstmrAddr,jdbcType=VARCHAR}
+			 , #{pckageshapeGodNo,jdbcType=VARCHAR}
+			 , #{pckageshapeGodItmNm,jdbcType=VARCHAR}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{itmNm,jdbcType=VARCHAR}
+			 , #{qty,jdbcType=NUMERIC}
+			 , #{dlvMemo,jdbcType=VARCHAR}
+			 , #{affComDlvTurn,jdbcType=NUMERIC}
+			 , #{affComDlvNo,jdbcType=VARCHAR}
+			 , #{affComShopNm,jdbcType=VARCHAR}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , #{gftYn,jdbcType=VARCHAR}
+			 , #{tmallGlbLmttInvUseYn,jdbcType=VARCHAR}
+			 , #{tmallEvtLmttInvUseYn,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteInfTmprAffOrd" parameterType="infTmprAffOrd">
+		DELETE /* com.plgrim.ncp.base.deleteInfTmprAffOrd		Generator(Generator)	2018-05-23 */
+		  FROM INF_TMPR_AFF_ORD
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

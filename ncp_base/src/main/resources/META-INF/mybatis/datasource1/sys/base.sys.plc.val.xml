@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysPlcVal" parameterType="sysPlcVal" resultType="sysPlcVal">
+		SELECT /* com.plgrim.ncp.base.selectSysPlcVal		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , PLC_CD
+			 , APL_BEG_DT
+			 , PLC_VAL_TURN
+			 , PLC_VAL_BEG_DT
+			 , PLC_VAL_END_DT
+			 , PLC_VAL
+			 , USE_YN
+			 , PLC_VAL_TP_CD
+			 , PLC_VAL_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_PLC_VAL
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND PLC_CD = #{plcCd,jdbcType=VARCHAR}
+		   AND APL_BEG_DT = #{aplBegDt,jdbcType=TIMESTAMP}
+		   AND PLC_VAL_TURN = #{plcValTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysPlcVal" parameterType="sysPlcVal">
+		UPDATE /* com.plgrim.ncp.base.updateSysPlcVal		Generator(Generator)	2018-05-23 */
+		SYS_PLC_VAL SET
+			   PLC_VAL_BEG_DT = #{plcValBegDt,jdbcType=TIMESTAMP}
+			 , PLC_VAL_END_DT = #{plcValEndDt,jdbcType=TIMESTAMP}
+			 , PLC_VAL = #{plcVal,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , PLC_VAL_TP_CD = #{plcValTpCd,jdbcType=VARCHAR}
+			 , PLC_VAL_UNIT_CD = #{plcValUnitCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND PLC_CD = #{plcCd,jdbcType=VARCHAR}
+		   AND APL_BEG_DT = #{aplBegDt,jdbcType=TIMESTAMP}
+		   AND PLC_VAL_TURN = #{plcValTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysPlcVal" parameterType="sysPlcVal">
+		INSERT /* com.plgrim.ncp.base.insertSysPlcVal		Generator(Generator)	2018-05-23 */
+		INTO   SYS_PLC_VAL (
+			   MALL_ID
+			 , PLC_CD
+			 , APL_BEG_DT
+			 , PLC_VAL_TURN
+			 , PLC_VAL_BEG_DT
+			 , PLC_VAL_END_DT
+			 , PLC_VAL
+			 , USE_YN
+			 , PLC_VAL_TP_CD
+			 , PLC_VAL_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{plcCd,jdbcType=VARCHAR}
+			 , #{aplBegDt,jdbcType=TIMESTAMP}
+			 , #{plcValTurn,jdbcType=NUMERIC}
+			 , #{plcValBegDt,jdbcType=TIMESTAMP}
+			 , #{plcValEndDt,jdbcType=TIMESTAMP}
+			 , #{plcVal,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{plcValTpCd,jdbcType=VARCHAR}
+			 , #{plcValUnitCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysPlcVal" parameterType="sysPlcVal">
+		DELETE /* com.plgrim.ncp.base.deleteSysPlcVal		Generator(Generator)	2018-05-23 */
+		  FROM SYS_PLC_VAL
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND PLC_CD = #{plcCd,jdbcType=VARCHAR}
+		   AND APL_BEG_DT = #{aplBegDt,jdbcType=TIMESTAMP}
+		   AND PLC_VAL_TURN = #{plcValTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

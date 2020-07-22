@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoJobRequstOrdGod" parameterType="csoJobRequstOrdGod" resultType="csoJobRequstOrdGod">
+		SELECT /* com.plgrim.ncp.base.selectCsoJobRequstOrdGod		Generator(Generator)	2018-05-23 */
+			   REQUST_SN
+			 , REQUST_ORD_GOD_TURN
+			 , GOD_NM
+			 , ORD_GOD_SECT_CD
+			 , GOD_NO
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_JOB_REQUST_ORD_GOD
+		 WHERE 1 = 1
+	   	   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND REQUST_ORD_GOD_TURN = #{requstOrdGodTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoJobRequstOrdGod" parameterType="csoJobRequstOrdGod">
+		UPDATE /* com.plgrim.ncp.base.updateCsoJobRequstOrdGod		Generator(Generator)	2018-05-23 */
+		CSO_JOB_REQUST_ORD_GOD SET
+			   GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , ORD_GOD_SECT_CD = #{ordGodSectCd,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND REQUST_ORD_GOD_TURN = #{requstOrdGodTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoJobRequstOrdGod" parameterType="csoJobRequstOrdGod">
+		INSERT /* com.plgrim.ncp.base.insertCsoJobRequstOrdGod		Generator(Generator)	2018-05-23 */
+		INTO   CSO_JOB_REQUST_ORD_GOD (
+			   REQUST_SN
+			 , REQUST_ORD_GOD_TURN
+			 , GOD_NM
+			 , ORD_GOD_SECT_CD
+			 , GOD_NO
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{requstSn,jdbcType=NUMERIC}
+			 , #{requstOrdGodTurn,jdbcType=NUMERIC}
+			 , #{godNm,jdbcType=VARCHAR}
+			 , #{ordGodSectCd,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoJobRequstOrdGod" parameterType="csoJobRequstOrdGod">
+		DELETE /* com.plgrim.ncp.base.deleteCsoJobRequstOrdGod		Generator(Generator)	2018-05-23 */
+		  FROM CSO_JOB_REQUST_ORD_GOD
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND REQUST_ORD_GOD_TURN = #{requstOrdGodTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

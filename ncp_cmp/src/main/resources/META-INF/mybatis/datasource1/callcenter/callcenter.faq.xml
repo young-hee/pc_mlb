@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.faq">
+
+    <resultMap id="faqResult" type="com.plgrim.ncp.biz.callcenter.result.FaqResult">
+        <result property="faqSn" column="FAQ_SN"/>
+        <result property="mallId" column="MALL_ID"/>
+        <result property="mallNm" column="MALL_NM"/>
+        <result property="langCd" column="LANG_CD"/>
+        <result property="langNm" column="LANG_NM"/>
+        <result property="faqSectCd" column="FAQ_SECT_CD"/>
+        <result property="faqSectNm" column="FAQ_SECT_NM"/>
+        <result property="faqDetailSectCd" column="FAQ_DETAIL_SECT_CD"/>
+        <result property="faqDetailSectNm" column="FAQ_DETAIL_SECT_NM"/>
+        <result property="faqSj" column="FAQ_SJ"/>
+        <result property="faqCont" column="FAQ_CONT"/>
+        <result property="sortSeq" column="SORT_SEQ"/>
+        <result property="inqireCount" column="INQIRE_COUNT"/>
+        <result property="dspYn" column="DSP_YN"/>
+        <result property="mainExpsrYn" column="MAIN_EXPSR_YN"/>
+        <result property="regtrId" column="REGTR_ID"/>
+        <result property="regtrNm" column="REGTR_NM"/>
+        <result property="regDt" column="REG_DT"/>
+        <result property="udterId" column="UDTER_ID"/>
+        <result property="udterNm" column="UDTER_NM"/>
+        <result property="udtDt" column="UDT_DT"/>
+        <collection property="csoFaqAtchmnfl" ofType="CsoFaqAtchmnfl">
+            <result property="faqAtchmnflTurn" column="FAQ_ATCHMNFL_TURN"/>
+            <result property="faqAtchFileNm" column="FAQ_ATCH_FILE_NM"/>
+            <result property="faqAtchFileUrl" column="FAQ_ATCH_FILE_URL"/>
+            <result property="faqAtchFileCpcty" column="FAQ_ATCH_FILE_CPCTY"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="selectListFaq" parameterType="com.plgrim.ncp.biz.callcenter.data.FaqSearchDTO" resultMap="faqResult">
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT cf.faq_sn
+        , cf.mall_id
+        , mall.mall_nm
+        , cf.lang_cd
+        , (SELECT cd_nm FROM sys_cd WHERE cd=lang_cd) AS lang_nm
+        , cf.faq_sect_cd
+        , cf.faq_detail_sect_cd
+        , ((SELECT sc.cd_nm FROM sys_cd sc WHERE cd=cf.faq_sect_cd) ||' > '|| (SELECT sc.cd_nm FROM sys_cd sc WHERE
+        cd=cf.faq_detail_sect_cd)) AS faq_sect_nm
+        , (SELECT sc.cd_nm FROM sys_cd sc WHERE cd=cf.faq_detail_sect_cd) AS faq_detail_sect_nm
+        , cf.FAQ_SJ
+        , cf.FAQ_CONT
+        , cf.SORT_SEQ
+        , cf.INQIRE_COUNT
+        , cf.DSP_YN
+        , cf.MAIN_EXPSR_YN
+        , cf.REGTR_ID
+        , sa.admin_nm AS regtr_nm
+        , cf.REG_DT
+        , cf.UDTER_ID
+        , sa2.admin_nm AS udter_nm
+        , cf.UDT_DT
+        FROM cso_faq cf
+        LEFT OUTER JOIN sys_mall mall ON (cf.mall_id = mall.mall_id)
+        LEFT OUTER JOIN sys_admin sa ON (cf.regtr_id = sa.admin_id)
+        LEFT OUTER JOIN sys_admin sa2 ON (cf.UDTER_ID = sa2.admin_id)
+        WHERE 1=1
+        <if test="faqSectCd == 'USE_TIP'">
+            <if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != ''">
+                AND cf.reg_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate},
+                'YYYY-MM-DD') + 0.99999
+            </if>
+        </if>
+        <if test="mallId != null and mallId != ''">
+            AND cf.mall_id = #{mallId}
+        </if>
+        <if test="langCd != null and langCd != ''">
+            AND cf.lang_cd = #{langCd}
+        </if>
+        <if test="faqSectCd != null and faqSectCd != ''">
+            AND cf.faq_sect_cd = #{faqSectCd}
+        </if>
+        <if test="faqDetailSectCd != null and faqDetailSectCd != ''">
+            AND cf.faq_detail_sect_cd = #{faqDetailSectCd}
+        </if>
+        <if test="dspYn != null and dspYn != ''">
+            AND cf.dsp_yn = #{dspYn}
+        </if>
+        <if test="faqSj != null and faqSj != ''">
+            AND cf.faq_sj LIKE '%' || #{faqSj} || '%'
+        </if>
+        <if test="mainExpsrYn != null and mainExpsrYn != ''">
+            AND cf.main_expsr_yn = #{mainExpsrYn}
+        </if>
+        AND cf.FAQ_SECT_CD IN(
+        SELECT fa.FAQ_SECT_CD
+        FROM cso_faq fa
+        , mv_sys_cd msc
+        WHERE fa.FAQ_SECT_CD = msc.CD
+        <choose>
+            <when test="targetTpCd == 'PO' ">
+                AND msc.ASSTN_CD_1 = 'PO')                    <!-- PO에서 접근할 경우 사용 TIP 카테고리만 노출-->
+            </when>
+            <otherwise>
+                )
+            </otherwise>
+        </choose>
+        ORDER BY cf.faq_sn DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+
+    <select id="selectListFaqTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.FaqSearchDTO" resultType="long">
+        SELECT COUNT(*)
+        FROM cso_faq cf
+        LEFT OUTER JOIN sys_mall mall ON (cf.mall_id = mall.mall_id)
+        LEFT OUTER JOIN sys_admin sa ON (cf.regtr_id = sa.admin_id)
+        LEFT OUTER JOIN sys_admin sa2 ON (cf.UDTER_ID = sa2.admin_id)
+        WHERE 1=1
+        <if test="faqSectCd == 'USE_TIP'">
+            <if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != ''">
+                AND cf.reg_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate},
+                'YYYY-MM-DD') + 0.99999
+            </if>
+        </if>
+        <if test="mallId != null and mallId != ''">
+            AND cf.mall_id = #{mallId}
+        </if>
+        <if test="langCd != null and langCd != ''">
+            AND cf.lang_cd = #{langCd}
+        </if>
+        <if test="faqSectCd != null and faqSectCd != ''">
+            AND cf.faq_sect_cd = #{faqSectCd}
+        </if>
+        <if test="faqDetailSectCd != null and faqDetailSectCd != ''">
+            AND cf.faq_detail_sect_cd = #{faqDetailSectCd}
+        </if>
+        <if test="dspYn != null and dspYn != ''">
+            AND cf.dsp_yn = #{dspYn}
+        </if>
+        <if test="faqSj != null and faqSj != ''">
+            AND cf.faq_sj LIKE '%' || #{faqSj} || '%'
+        </if>
+        <if test="mainExpsrYn != null and mainExpsrYn != ''">
+            AND cf.main_expsr_yn = #{mainExpsrYn}
+        </if>
+        AND cf.FAQ_SECT_CD IN(
+        SELECT fa.FAQ_SECT_CD
+        FROM cso_faq fa
+        , mv_sys_cd msc
+        WHERE fa.FAQ_SECT_CD = msc.CD
+        <choose>
+            <when test="targetTpCd == 'PO' ">
+                AND msc.ASSTN_CD_1 = 'PO')
+            </when>
+            <otherwise>
+                )
+            </otherwise>
+        </choose>
+        ORDER BY cf.faq_sn DESC
+    </select>
+
+    <!-- 사용 TIP 이전글 다음글 조회 -->
+    <select id="selectPrevNxtTip" parameterType="long" resultMap="faqResult">
+        SELECT cf.faq_sn
+        ,cf.faq_sj
+        FROM cso_faq cf
+        WHERE cf.faq_sn = (SELECT MIN(faq_sn)
+        FROM cso_faq
+        WHERE faq_sn <![CDATA[>]]> #{faqSn, jdbcType=NUMERIC}
+        AND faq_sect_cd = 'USE_TIP'
+        <if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != ''">
+            AND reg_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') +
+            0.99999
+        </if>
+        <if test="faqDetailSectCd != null and faqDetailSectCd != ''">
+            AND faq_detail_sect_cd = #{faqDetailSectCd, jdbcType=VARCHAR}
+        </if>
+        )
+        UNION
+        SELECT cf.faq_sn
+        ,cf.faq_sj
+        FROM cso_faq cf
+        WHERE cf.faq_sn = (SELECT MAX(faq_sn)
+        FROM cso_faq
+        WHERE faq_sn <![CDATA[<]]> #{faqSn, jdbcType=NUMERIC}
+        AND faq_sect_cd = 'USE_TIP'
+        <if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != ''">
+            AND reg_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') +
+            0.99999
+        </if>
+        <if test="faqDetailSectCd != null and faqDetailSectCd != ''">
+            AND faq_detail_sect_cd = #{faqDetailSectCd, jdbcType=VARCHAR}
+        </if>
+        )
+    </select>
+
+    <update id="updateFaqGrid" parameterType="com.plgrim.ncp.biz.callcenter.data.FaqGridDTO">
+		UPDATE 	CSO_FAQ /* com.plgrim.ncp.base.repository.cso.updateCsoFaq jackie 20150609 */
+        	SET	    SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                   ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                   ,MAIN_EXPSR_YN = #{mainExpsrYn,jdbcType=VARCHAR}
+                   ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                   ,UDT_DT = SYSDATE
+          WHERE   1 = 1
+            AND   FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+	</update>
+
+    <insert id="insertFaq" parameterType="com.plgrim.ncp.biz.callcenter.data.FaqDTO">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoFaq jackie 20150609 */
+	      INTO  CSO_FAQ
+		  (
+	        	 FAQ_SN
+	       		,MALL_ID
+	       		,LANG_CD
+	       		,FAQ_SECT_CD
+	       		,FAQ_DETAIL_SECT_CD
+	       		,FAQ_SJ
+	       		,FAQ_CONT
+	       		,SORT_SEQ
+	       		,INQIRE_COUNT
+	       		,DSP_YN
+	       		,MAIN_EXPSR_YN
+	       		,REGTR_ID
+	       		,UDTER_ID
+           		,REG_DT
+           		,UDT_DT
+		  )
+		VALUES
+		(
+	        	 #{faqSn,jdbcType=NUMERIC}
+	       		,#{mallId,jdbcType=VARCHAR}
+	       		,#{langCd,jdbcType=VARCHAR}
+	       		,#{faqSectCd,jdbcType=VARCHAR}
+	       		,#{faqDetailSectCd,jdbcType=VARCHAR}
+	       		,#{faqSj,jdbcType=VARCHAR}
+	       		,#{faqCont,jdbcType=VARCHAR}
+	       		,#{sortSeq,jdbcType=NUMERIC}
+	       		,#{inqireCount,jdbcType=NUMERIC}
+	       		,#{dspYn,jdbcType=VARCHAR}
+	       		,#{mainExpsrYn,jdbcType=VARCHAR}
+	       		,#{regtrId,jdbcType=VARCHAR}
+	       		,#{udterId,jdbcType=VARCHAR}
+	       		,SYSDATE
+	       		,SYSDATE
+		)
+	</insert>
+
+    <insert id="insertFaqAtchmnfl" parameterType="csoFaqAtchmnfl">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoFaqAtchmnfl jackie 20150609 */
+	      INTO  CSO_FAQ_ATCHMNFL
+		  (
+	        	 FAQ_SN
+	       		,FAQ_ATCHMNFL_TURN
+	       		,FAQ_ATCH_FILE_NM
+	       		,FAQ_ATCH_FILE_URL
+	       		,FAQ_ATCH_FILE_CPCTY
+	       		,REGTR_ID
+	       		,UDTER_ID
+           		,REG_DT
+           		,UDT_DT
+		  )
+		VALUES
+	  	(
+	        	 #{faqSn,jdbcType=NUMERIC}
+	       		,#{faqAtchmnflTurn,jdbcType=NUMERIC}
+	       		,#{faqAtchFileNm,jdbcType=VARCHAR}
+	       		,#{faqAtchFileUrl,jdbcType=VARCHAR}
+	       		,#{faqAtchFileCpcty,jdbcType=NUMERIC}
+	       		,#{regtrId,jdbcType=VARCHAR}
+	       		,#{udterId,jdbcType=VARCHAR}
+	       		,SYSDATE
+	       		,SYSDATE
+		)
+	</insert>
+
+    <select id="selectOneFaq" parameterType="long" resultMap="faqResult">
+		   SELECT    cf.faq_sn/* com.plgrim.ncp.base.repository.cso.selectCsoFaq jackie 20150609 */
+				  	 ,cf.mall_id
+				  	 ,cf.lang_cd
+				  	 ,cf.faq_sect_cd
+				  	 ,cf.faq_detail_sect_cd
+				  	 ,(SELECT sc.cd_nm FROM sys_cd sc WHERE sc.cd=cf.faq_detail_sect_cd) AS faq_detail_sect_nm
+				  	 ,cf.faq_sj
+				  	 ,cf.faq_cont
+				  	 ,cf.sort_seq
+				  	 ,cf.inqire_count
+				  	 ,cf.dsp_yn
+				  	 ,cf.main_expsr_yn
+				  	 ,cf.regtr_id
+				  	 ,min(sa.admin_nm) over(order by cf.reg_dt) AS regtr_nm
+				  	 ,cf.reg_dt
+				  	 ,cf.udter_id
+				  	 ,max(sa2.admin_nm) over(order by cfa.udt_dt desc) AS udter_nm
+				  	 ,cf.udt_dt
+				  	 ,cfa.faq_atchmnfl_turn
+				  	 ,cfa.faq_atch_file_nm
+				  	 ,cfa.faq_atch_file_url
+				  	 ,cfa.faq_atch_file_cpcty
+		  	 FROM    cso_faq cf
+ LEFT OUTER JOIN 	  cso_faq_atchmnfl cfa  ON cf.faq_sn = cfa.faq_sn
+ LEFT OUTER JOIN 	  sys_admin sa 			ON (cf.regtr_id = sa.admin_id)
+ LEFT OUTER JOIN 	  sys_admin sa2 		ON (cfa.udter_id = sa2.admin_id)
+		  	WHERE    1 = 1
+               AND   cf.faq_sn = #{faqSn,jdbcType=NUMERIC}
+	</select>
+
+    <update id="updateFaq" parameterType="com.plgrim.ncp.biz.callcenter.data.FaqDTO">
+		UPDATE 		 CSO_FAQ/* com.plgrim.ncp.base.repository.cso.updateCsoFaq jackie 20150609 */
+		    SET			 MALL_ID = #{mallId,jdbcType=VARCHAR}
+						,LANG_CD = #{langCd,jdbcType=VARCHAR}
+						,FAQ_SECT_CD = #{faqSectCd,jdbcType=VARCHAR}
+						,FAQ_DETAIL_SECT_CD = #{faqDetailSectCd,jdbcType=VARCHAR}
+						,FAQ_SJ = #{faqSj,jdbcType=VARCHAR}
+						,FAQ_CONT = #{faqCont,jdbcType=VARCHAR}
+						,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+						,MAIN_EXPSR_YN = #{mainExpsrYn,jdbcType=VARCHAR}
+						,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+						,UDT_DT = SYSDATE
+		 WHERE   		1 = 1
+		   AND     		FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+	</update>
+
+    <delete id="deleteFaqGrid" parameterType="com.plgrim.ncp.biz.callcenter.data.FaqGridDTO">
+		DELETE /* com.plgrim.ncp.base.repository.cso.deleteCsoFaq jackie 20150609 */
+        FROM CSO_FAQ
+        WHERE   1 = 1
+        AND     FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+	</delete>
+
+    <delete id="deleteFaqAtchmnfl" parameterType="com.plgrim.ncp.biz.callcenter.data.FaqDTO">
+        DELETE
+        FROM cso_faq_atchmnfl
+        WHERE 1=1
+        AND FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+        <if test="faqAtchmnflTurn != null and faqAtchmnflTurn != ''">
+            AND FAQ_ATCHMNFL_TURN = #{faqAtchmnflTurn,jdbcType=NUMERIC}
+        </if>
+    </delete>
+
+</mapper>

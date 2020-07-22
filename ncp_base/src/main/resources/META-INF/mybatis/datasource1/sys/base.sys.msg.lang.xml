@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysMsgLang" parameterType="sysMsgLang" resultType="sysMsgLang">
+		SELECT /* com.plgrim.ncp.base.selectSysMsgLang		Generator(Generator)	2018-05-23 */
+			   MSG_NO
+			 , LANG_CD
+			 , MSG_SJ
+			 , PC_MSG_CONT
+			 , MOBILE_MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_MSG_LANG
+		 WHERE 1 = 1
+	   	   AND MSG_NO = #{msgNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysMsgLang" parameterType="sysMsgLang">
+		UPDATE /* com.plgrim.ncp.base.updateSysMsgLang		Generator(Generator)	2018-05-23 */
+		SYS_MSG_LANG SET
+			   MSG_SJ = #{msgSj,jdbcType=VARCHAR}
+			 , PC_MSG_CONT = #{pcMsgCont,jdbcType=VARCHAR}
+			 , MOBILE_MSG_CONT = #{mobileMsgCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MSG_NO = #{msgNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysMsgLang" parameterType="sysMsgLang">
+		INSERT /* com.plgrim.ncp.base.insertSysMsgLang		Generator(Generator)	2018-05-23 */
+		INTO   SYS_MSG_LANG (
+			   MSG_NO
+			 , LANG_CD
+			 , MSG_SJ
+			 , PC_MSG_CONT
+			 , MOBILE_MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{msgNo,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{msgSj,jdbcType=VARCHAR}
+			 , #{pcMsgCont,jdbcType=VARCHAR}
+			 , #{mobileMsgCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysMsgLang" parameterType="sysMsgLang">
+		DELETE /* com.plgrim.ncp.base.deleteSysMsgLang		Generator(Generator)	2018-05-23 */
+		  FROM SYS_MSG_LANG
+		 WHERE 1 = 1
+		   AND MSG_NO = #{msgNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

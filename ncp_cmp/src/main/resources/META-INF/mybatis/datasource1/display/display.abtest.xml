@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.display">
+	<resultMap id="dspAbTestExpsrRtResult" type="com.plgrim.ncp.biz.display.result.DspAbTestExpsrRtResult">
+		<result property="abTestNm" 			column="abTestNm" />
+		<result property="abTestSn" 			column="abTestSn" />
+		<result property="progrsPsbYn" 			column="progrsPsbYn" />
+		<result property="setUseYn" 			column="setUseYn" />
+		<result property="setExpsrMenmthdCd"	column="setExpsrMenmthdCd" />
+		<result property="abTestDscr" 			column="abTestDscr" />
+		<result property="begDt" 				column="begDt" />
+		<result property="endDt" 				column="endDt" />
+		<result property="setTurn" 				column="setTurn" />		
+		<result property="setExpsrRt" 			column="setExpsrRt" />
+		<result property="revSn" 				column="revSn" />
+		<result property="revCpstTurn" 			column="revCpstTurn" />
+		<result property="abTestGrpCd" 			column="abTestGrpCd" />
+		<result property="abTestRevDscr" 		column="abTestRevDscr" />
+		<result property="modTurn" 				column="modTurn" />
+		<result property="revExpsrRt" 			column="revExpsrRt" />
+		<result property="expsrRt" 				column="expsrRt" />
+		<result property="modBegDt" 			column="modBegDt" />
+		<result property="modEndDt" 			column="modEndDt" />
+		<result property="lastSetTurn" 			column="lastSetTurn" />
+		<result property="lastModTurn" 			column="lastModTurn" />
+		<result property="modResnCont" 			column="modResnCont" />
+		<result property="modRegDt" 			column="modRegDt" />
+		<result property="modRegtrID" 			column="modRegtrID" />
+	</resultMap>
+	<resultMap id="dspAbTestResult" type="com.plgrim.ncp.biz.display.result.DspAbTestAnlResult">
+		<result property="abTestNm" 			column="abTestNm" />
+		<result property="abTestSn" 			column="abTestSn" />
+		<result property="setTurn" 				column="setTurn" />
+		<result property="revSn" 				column="revSn" />
+		<result property="revCpstTurn"			column="revCpstTurn" />
+		<result property="modTurn" 				column="modTurn" />
+		<result property="langCd" 				column="langCd" />
+		<result property="pv" 					column="pv" />
+		<result property="uv" 					column="uv" />
+		<result property="buyerCnt" 			column="buyerCnt" />
+		<result property="salesAmt" 			column="salesAmt" />		
+		<result property="cr" 					column="cr" />
+		<result property="ctr" 					column="ctr" />
+		<result property="abTestGrpCd" 			column="abTestGrpCd" />
+		<result property="abTestRevDscr" 		column="abTestRevDscr" />
+		<result property="tmplatNm" 			column="tmplatNm" />
+		<result property="useYn"				column="USE_YN" />
+		<result property="regDt" 				column="regDt" />
+		<result property="dspCnrNm" 			column="dspCnrNm" />
+		<result property="clickQty" 			column="clickQty" />
+		<result property="expsrRt" 			column="expsrRt" />
+		<result property="deviceType" 			column="deviceType" />
+		<result property="searchStartDate"		column="searchStartDate" />
+		<result property="searchEndDate"		column="searchEndDate" />
+	</resultMap>
+	<select id="selectABTestExpsrRt" parameterType="com.plgrim.ncp.biz.display.data.DspAbTestAnlSearchDTO" resultMap="dspAbTestExpsrRtResult">
+		SELECT  /* [display.abtest.xml][selectABTestExpsrRt][AB-TEST노출율 조회][eunseo1.park] */
+				DAT.AB_TEST_NM				abTestNm			/* AB테스트명 */
+      		  , DAT.AB_TEST_SN              abTestSn            /* AB테스트일련번호 */
+		      , DAT.PROGRS_PSB_YN           progrsPsbYn         /* 진행가능여부 */
+		      , DAT.SET_USE_YN              setUseYn            /* 세트사용여부 */
+		      , DAT.SET_EXPSR_MENMTHD_CD    setExpsrMenmthdCd   /* 세트노출방식코드 CSTMR_SGMT(고객세그먼트), RND(랜덤) */
+		      , DAT.AB_TEST_NM              abTestNm            /* AB테스트명 */
+		      , DAT.AB_TEST_DSCR            abTestDscr          /* AB테스트설명 */
+		      , TO_CHAR(DAT.BEG_DT,'YYYY-MM-DD') begDt          /* AB테스트 시작일시 */
+		      , TO_CHAR(DAT.END_DT,'YYYY-MM-DD') endDt          /* AB테스트 종료일시 */
+		      , DATS.SET_TURN               setTurn             /* 세트순번 */
+		      , DATS.EXPSR_RT               setExpsrRt          /* 세트 노출율 (고객세그먼트 일 경우) */
+		      , DATR.REV_SN                 revSn               /* 개정일련번호 */
+		      , DATR.REV_CPST_TURN          revCpstTurn         /* 개정구성순번 (대조군, 실험군1, 실험군2, ...) */
+		      , DATR.AB_TEST_GRP_CD         abTestGrpCd         /* AB테스트그룹코드 (CTRS_GRP:대조군, EXPM_GRP:실험군, EXCLS:제외) */
+		      , DATR.AB_TEST_REV_DSCR       abTestRevDscr       /* AB테스트개정설명 */
+		      , DATR.MOD_TURN               modTurn             /* 변경 순번 */
+		      , DATR.EXPSR_RT               revExpsrRt          /* 노출율 */
+		      , CASE WHEN DAT.SET_EXPSR_MENMTHD_CD = 'CSTMR_SGMT' THEN DATS.EXPSR_RT
+		             WHEN DAT.SET_EXPSR_MENMTHD_CD = 'RND' THEN DATR.EXPSR_RT
+		        END AS                      expsrRt             /* 표시 노출율 (랜덤일 경우 DSP_AB_TEST_REV 테이블의 노출율 사용, 고객세그먼트일 경우 DSP_AB_TEST_SET 테이블의 노출율 */
+		      , TO_CHAR(DATSM.BEG_DT,'YYYY-MM-DD') modBegDt		/* (변경)시작일 */
+      		  , TO_CHAR(DATSM.END_DT,'YYYY-MM-DD') modEndDt		/* (변경)종료일 */
+		      , (SELECT MAX(SET_TURN) FROM DSP_AB_TEST_REV WHERE AB_TEST_SN = DAT.AB_TEST_SN) lastSetTurn /* 총 세트 개수 */
+      		  , (SELECT MAX(MOD_TURN) FROM DSP_AB_TEST_REV WHERE AB_TEST_SN = DAT.AB_TEST_SN AND SET_TURN = #{setTurn}) lastModTurn /* 총 변경 건수(최초등록포함) */
+		FROM    DSP_AB_TEST DAT 
+        		INNER JOIN DSP_AB_TEST_SET DATS ON (DAT.AB_TEST_SN = DATS.AB_TEST_SN)
+        		INNER JOIN DSP_AB_TEST_REV DATR ON (DATS.AB_TEST_SN = DATR.AB_TEST_SN AND DATS.SET_TURN = DATR.SET_TURN)
+        		INNER JOIN DSP_AB_TEST_SET_MOD DATSM ON (DATSM.AB_TEST_SN = DATS.AB_TEST_SN AND DATSM.SET_TURN = DATS.SET_TURN AND DATSM.MOD_TURN = DATR.MOD_TURN)
+		WHERE   DAT.AB_TEST_SN = DATS.AB_TEST_SN
+		  AND   DATS.AB_TEST_SN = DATR.AB_TEST_SN
+		  AND   DATS.SET_TURN = DATR.SET_TURN
+		  AND   DAT.AB_TEST_SN = #{abTestSn}
+		  AND   DATS.SET_TURN = #{setTurn}
+   		<if test='modTurn == 0'>
+		  AND   DATR.MOD_TURN = (
+	      							SELECT	MAX(MOD_TURN) 
+	      							  FROM 	DSP_AB_TEST_SET_MOD 
+	      							 WHERE 	AB_TEST_SN = #{abTestSn} 
+	      							   AND 	SET_TURN = #{setTurn}
+	      						) 
+   		</if>
+   		<if test='modTurn != 0'>
+   		  AND   DATR.MOD_TURN = #{modTurn}
+   		</if>
+  		  AND   DATR.AB_TEST_GRP_CD <![CDATA[<>]]> 'EXCLS'       
+		ORDER BY DATR.AB_TEST_GRP_CD, DATR.REV_SN ASC
+	</select>
+	<select id="selectABTestExpsrRtForAnotherSet" parameterType="com.plgrim.ncp.biz.display.data.DspAbTestAnlSearchDTO" resultMap="dspAbTestExpsrRtResult">
+		SELECT  /* [display.abtest.xml][selectABTestExpsrRtForAnotherSet][AB-TEST노출율(타세트) 조회][eunseo1.park] */
+				SET_TURN													setTurn
+		      , 'ANT_SET' 													setExpsrMenmthdCd
+		      , CASE WHEN SET_EXPSR_MENMTHD_CD = 'RND' THEN RND_EXPSR_RT
+		        	 ELSE CST_EXPSR_RT 
+		        END 														expsrRt
+		FROM (        
+		    SELECT  DATS.SET_TURN
+		    	  , DAT.SET_EXPSR_MENMTHD_CD
+		    	  , DATS.EXPSR_RT CST_EXPSR_RT
+		    	  , SUM(DATR.EXPSR_RT) RND_EXPSR_RT 
+		    FROM    DSP_AB_TEST DAT 
+		    		INNER JOIN DSP_AB_TEST_SET DATS 
+		            ON 	(DAT.AB_TEST_SN = DATS.AB_TEST_SN)
+		            INNER JOIN DSP_AB_TEST_REV DATR 
+		            ON	(
+		            		DATS.AB_TEST_SN = DATR.AB_TEST_SN 
+		            	AND DATS.SET_TURN = DATR.SET_TURN
+		            	)
+		    WHERE   DAT.AB_TEST_SN = #{abTestSn}
+		      AND   DAT.SET_USE_YN = 'Y'
+		      AND   DATS.SET_TURN <![CDATA[<>]]> #{setTurn}
+		      AND   DATR.MOD_TURN = (
+		      							SELECT	MAX(MOD_TURN) 
+		      							  FROM 	DSP_AB_TEST_SET_MOD 
+		      							 WHERE 	AB_TEST_SN = #{abTestSn} 
+		      							   AND 	SET_TURN = #{setTurn}
+		      						) 
+		    GROUP BY 
+		    		DATS.SET_TURN
+		    	  , DAT.SET_EXPSR_MENMTHD_CD
+		    	  , DATS.EXPSR_RT
+		)
+		ORDER BY SET_TURN
+	</select>
+	<select id="selectABTestModHistory" parameterType="com.plgrim.ncp.biz.display.data.DspAbTestAnlSearchDTO" resultMap="dspAbTestExpsrRtResult">
+		SELECT  /* [display.abtest.xml][selectABTestModHistory][AB-TEST 변경이력 조회][eunseo1.park] */
+				MOD_TURN                        modTurn		/* 변경순번 */
+		      , MOD_RESN_CONT                   modResnCont /* 변경사유 */
+		      , TO_CHAR(BEG_DT,'YYYY-MM-DD')    modBegDt	/* 변경시작일 */
+		      , TO_CHAR(END_DT,'YYYY-MM-DD')    modEndDt	/* 변경종료일 */
+		      , TO_CHAR(REG_DT,'YYYY-MM-DD')    modRegDt	/* 등록일 */
+		      , REGTR_ID                        modRegtrID	/* 등록자ID */
+		FROM    DSP_AB_TEST_SET_MOD 
+		WHERE   AB_TEST_SN 	= #{abTestSn}
+		AND     SET_TURN 	= #{setTurn}
+		AND		MOD_TURN <![CDATA[<>]]> 1
+		ORDER BY 
+		        MOD_TURN DESC
+	</select>
+	
+	<select id="selectAbTestExpsrAnl" parameterType="com.plgrim.ncp.biz.display.data.DspAbTestAnlSearchDTO" resultMap="dspAbTestResult">
+		select 	a.REV_SN,
+				a.REV_SECT_CD,
+				a.AB_TEST_GRP_CD,
+				a.AB_TEST_REV_DSCR,
+				a.DVC_SECT_CD as deviceType,
+				a.EXPSR_RT,
+				a.USE_YN,
+				CASE WHEN a.DVC_SECT_CD = 'MOBILE' THEN a.MOBILE_TMPLAT_SN WHEN a.DVC_SECT_CD != 'MOBILE' THEN a.PC_TMPLAT_SN END AS tmplat_sn,
+				CASE WHEN a.DVC_SECT_CD = 'MOBILE' THEN (SELECT TMPLAT_NM FROM DSP_TMPLAT WHERE TMPLAT_SN = a.MOBILE_TMPLAT_SN) WHEN a.DVC_SECT_CD != 'MOBILE' THEN (SELECT TMPLAT_NM FROM DSP_TMPLAT WHERE TMPLAT_SN = a.PC_TMPLAT_SN) END AS tmplat_nm,
+				CASE WHEN a.SUM_UV_QTY = 0 THEN 0
+					 WHEN a.SUM_UV_QTY != 0 THEN ( ROUND(a.SUM_BUYER_QTY/a.SUM_UV_QTY*100,2) )
+				END as cr
+		  FROM  (
+					SELECT 	dr.REV_SN,
+							dr.REV_SECT_CD,
+							drc.PC_TMPLAT_SN,
+							drc.MOBILE_TMPLAT_SN,
+							drc.USE_YN,
+							datr.AB_TEST_GRP_CD,
+							datr.AB_TEST_REV_DSCR,
+							datr.DVC_SECT_CD,
+							datr.EXPSR_RT,
+							0 AS SUM_UV_QTY,
+							0 AS SUM_BUYER_QTY
+					  FROM DSP_REV dr
+					  JOIN DSP_REV_CPST drc on dr.REV_SN = drc.REV_SN
+					  JOIN DSP_AB_TEST_REV datr on dr.REV_SN = datr.REV_SN and drc.REV_CPST_TURN = datr.REV_CPST_TURN
+					WHERE 1 = 1
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(exclsYn) or exclsYn == 'N'.toString()">
+					  AND DATR.AB_TEST_GRP_CD  <![CDATA[<>]]>  'EXCLS'
+					</if>  
+					  AND DATR.AB_TEST_SN = #{abTestSn}
+					  AND DATR.SET_TURN = #{setTurn}
+					  AND DATR.MOD_TURN = #{modTurn}
+				 ORDER BY DATR.AB_TEST_GRP_CD, DATR.REV_SN ASC
+				) a
+	</select>
+	
+	<select id="selectABTestSegmentExpsrRt" parameterType="com.plgrim.ncp.biz.display.data.DspAbTestAnlSearchDTO" resultMap="dspAbTestExpsrRtResult">
+		SELECT  /* [display.abtest.xml][selectABTestSegmentExpsrRt][고객 세그먼트 노출율 조회][Liam] */
+				DAT.AB_TEST_NM				abTestNm			/* AB테스트명 */
+      		  , DAT.AB_TEST_SN              abTestSn            /* AB테스트일련번호 */
+		      , DAT.PROGRS_PSB_YN           progrsPsbYn         /* 진행가능여부 */
+		      , DAT.SET_USE_YN              setUseYn            /* 세트사용여부 */
+		      , DAT.SET_EXPSR_MENMTHD_CD    setExpsrMenmthdCd   /* 세트노출방식코드 CSTMR_SGMT(고객세그먼트), RND(랜덤) */
+		      , DAT.AB_TEST_NM              abTestNm            /* AB테스트명 */
+		      , DAT.AB_TEST_DSCR            abTestDscr          /* AB테스트설명 */
+		      , TO_CHAR(DAT.BEG_DT,'YYYY-MM-DD') begDt          /* AB테스트 시작일시 */
+		      , TO_CHAR(DAT.END_DT,'YYYY-MM-DD') endDt          /* AB테스트 종료일시 */
+		      , DATS.SET_TURN               setTurn             /* 세트순번 */
+		      , DATS.EXPSR_RT               setExpsrRt          /* 세트 노출율 (고객세그먼트 일 경우) */
+		      , DATR.REV_SN                 revSn               /* 개정일련번호 */
+		      , DATR.REV_CPST_TURN          revCpstTurn         /* 개정구성순번 (대조군, 실험군1, 실험군2, ...) */
+		      , DATR.AB_TEST_GRP_CD         abTestGrpCd         /* AB테스트그룹코드 (CTRS_GRP:대조군, EXPM_GRP:실험군, EXCLS:제외) */
+		      , DATR.AB_TEST_REV_DSCR       abTestRevDscr       /* AB테스트개정설명 */
+		      , DATR.MOD_TURN               modTurn             /* 변경 순번 */
+		      , DATR.EXPSR_RT               revExpsrRt          /* 노출율 */
+		      , CASE WHEN DAT.SET_EXPSR_MENMTHD_CD = 'CSTMR_SGMT' THEN DATS.EXPSR_RT
+		             WHEN DAT.SET_EXPSR_MENMTHD_CD = 'RND' THEN DATR.EXPSR_RT
+		        END AS                      expsrRt             /* 표시 노출율 (랜덤일 경우 DSP_AB_TEST_REV 테이블의 노출율 사용, 고객세그먼트일 경우 DSP_AB_TEST_SET 테이블의 노출율 */
+		      , TO_CHAR(DATSM.BEG_DT,'YYYY-MM-DD') modBegDt		/* (변경)시작일 */
+      		  , TO_CHAR(DATSM.END_DT,'YYYY-MM-DD') modEndDt		/* (변경)종료일 */
+		      , (SELECT MAX(SET_TURN) FROM DSP_AB_TEST_REV WHERE AB_TEST_SN = DAT.AB_TEST_SN) lastSetTurn /* 총 세트 개수 */
+      		  , (SELECT MAX(MOD_TURN) FROM DSP_AB_TEST_REV WHERE AB_TEST_SN = DAT.AB_TEST_SN AND SET_TURN = #{setTurn}) lastModTurn /* 총 변경 건수(최초등록포함) */
+		FROM    DSP_AB_TEST DAT 
+        		INNER JOIN DSP_AB_TEST_SET DATS ON (DAT.AB_TEST_SN = DATS.AB_TEST_SN)
+        		INNER JOIN DSP_AB_TEST_REV DATR ON (DATS.AB_TEST_SN = DATR.AB_TEST_SN AND DATS.SET_TURN = DATR.SET_TURN)
+        		INNER JOIN DSP_AB_TEST_SET_MOD DATSM ON (DATSM.AB_TEST_SN = DATS.AB_TEST_SN AND DATSM.SET_TURN = DATS.SET_TURN AND DATSM.MOD_TURN = DATR.MOD_TURN)
+		WHERE   DAT.AB_TEST_SN = DATS.AB_TEST_SN
+		  AND   DATS.AB_TEST_SN = DATR.AB_TEST_SN
+		  AND   DATS.SET_TURN = DATR.SET_TURN
+		  AND   DAT.AB_TEST_SN = #{abTestSn}
+		  AND	DAT.SET_EXPSR_MENMTHD_CD = 'CSTMR_SGMT'
+		  AND   DATR.MOD_TURN = #{modTurn}
+		ORDER BY DATR.AB_TEST_GRP_CD, DATR.REV_SN ASC
+	</select>
+
+</mapper>

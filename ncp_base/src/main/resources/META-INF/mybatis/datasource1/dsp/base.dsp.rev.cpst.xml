@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspRevCpst" parameterType="dspRevCpst" resultType="dspRevCpst">
+		SELECT /* com.plgrim.ncp.base.selectDspRevCpst		Generator(Generator)	2018-05-23 */
+			   REV_SN
+			 , REV_CPST_TURN
+			 , USE_YN
+			 , DSP_CTGRY_NO
+			 , DSP_BRND_CTGRY_NO
+			 , DSP_BRND_ID
+			 , PROMT_SN
+			 , EVT_NO
+			 , STRND_SN
+			 , PC_MOBILE_TMPLAT_IND_USE_YN
+			 , PC_TMPLAT_SN
+			 , MOBILE_TMPLAT_SN
+			 , PC_PRVW_URL
+			 , MOBILE_PRVW_URL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_REV_CPST
+		 WHERE 1 = 1
+	   	   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspRevCpst" parameterType="dspRevCpst">
+		UPDATE /* com.plgrim.ncp.base.updateDspRevCpst		Generator(Generator)	2018-05-23 */
+		DSP_REV_CPST SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+			 , DSP_BRND_CTGRY_NO = #{dspBrndCtgryNo,jdbcType=VARCHAR}
+			 , DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+			 , PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+			 , EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			 , STRND_SN = #{strndSn,jdbcType=NUMERIC}
+			 , PC_MOBILE_TMPLAT_IND_USE_YN = #{pcMobileTmplatIndUseYn,jdbcType=VARCHAR}
+			 , PC_TMPLAT_SN = #{pcTmplatSn,jdbcType=NUMERIC}
+			 , MOBILE_TMPLAT_SN = #{mobileTmplatSn,jdbcType=NUMERIC}
+			 , PC_PRVW_URL = #{pcPrvwUrl,jdbcType=VARCHAR}
+			 , MOBILE_PRVW_URL = #{mobilePrvwUrl,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspRevCpst" parameterType="dspRevCpst">
+		INSERT /* com.plgrim.ncp.base.insertDspRevCpst		Generator(Generator)	2018-05-23 */
+		INTO   DSP_REV_CPST (
+			   REV_SN
+			 , REV_CPST_TURN
+			 , USE_YN
+			 , DSP_CTGRY_NO
+			 , DSP_BRND_CTGRY_NO
+			 , DSP_BRND_ID
+			 , PROMT_SN
+			 , EVT_NO
+			 , STRND_SN
+			 , PC_MOBILE_TMPLAT_IND_USE_YN
+			 , PC_TMPLAT_SN
+			 , MOBILE_TMPLAT_SN
+			 , PC_PRVW_URL
+			 , MOBILE_PRVW_URL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{revSn,jdbcType=NUMERIC}
+			 , #{revCpstTurn,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{dspBrndCtgryNo,jdbcType=VARCHAR}
+			 , #{dspBrndId,jdbcType=VARCHAR}
+			 , #{promtSn,jdbcType=NUMERIC}
+			 , #{evtNo,jdbcType=VARCHAR}
+			 , #{strndSn,jdbcType=NUMERIC}
+			 , #{pcMobileTmplatIndUseYn,jdbcType=VARCHAR}
+			 , #{pcTmplatSn,jdbcType=NUMERIC}
+			 , #{mobileTmplatSn,jdbcType=NUMERIC}
+			 , #{pcPrvwUrl,jdbcType=VARCHAR}
+			 , #{mobilePrvwUrl,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspRevCpst" parameterType="dspRevCpst">
+		DELETE /* com.plgrim.ncp.base.deleteDspRevCpst		Generator(Generator)	2018-05-23 */
+		  FROM DSP_REV_CPST
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

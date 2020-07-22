@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.reservation">
+
+	<resultMap id="reservationResult" type="com.plgrim.ncp.biz.callcenter.result.ReservationResult">
+		<result property="cnsltSn" column="CNSLT_SN" />
+		<result property="inqTpNm" column="INQ_TP_NM" />
+		<result property="cnsltStatNm" column="CNSLT_STAT_NM" />
+		<result property="promsclDt" column="PROMSCL_DT" />
+		<result property="promsclCallNum" column="PROMSCL_CALL_NUM" />
+		<result property="promsclStatNm" column="PROMSCL_STAT_NM" />
+		<result property="promsclMemoCont" column="PROMSCL_MEMO_CONT" />
+		<result property="regDt" column="REG_DT" />
+		<result property="promsclDelay" column="PROMSCL_DELAY" />		
+		<result property="cnsltNm" column="CNSLT_NM" />
+		<result property="promsclComptDt" column="PROMSCL_COMPT_DT" />
+	</resultMap>
+
+	<select id="getListReservation" parameterType="com.plgrim.ncp.biz.callcenter.data.ReservationSearchDTO" resultMap="reservationResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT
+		/* [callcenter.reservation.xml][getListReservation][약속콜 조회 CS][Henry] */
+		cc.cnslt_sn
+		, (CASE WHEN ccd.inq_detail_tp_cd IS NULL THEN  cd1.cd_nm  ELSE cd1.cd_nm || '>' || cd2.cd_nm END) AS inq_tp_nm
+		, cd3.cd_nm AS cnslt_stat_nm
+		, TO_CHAR(cp.promscl_dt, 'YYYY-MM-DD HH24:MI') AS promscl_dt
+		, DECODE(cp.promscl_nation_no,'82', cp.promscl_area_no ||'-'|| cp.promscl_tlof_no ||'-'|| cp.promscl_tlof_wthn_no
+		, cp.promscl_nation_no ||'-'|| cp.promscl_area_no ||'-'|| cp.promscl_tlof_no ||'-'|| cp.promscl_tlof_wthn_no) AS promscl_call_num
+		<!--, cd4.cd_nm AS promscl_stat_nm-->
+		, CASE	WHEN cp.promscl_stat_cd = 'PROMS_WAIT' AND cp.promscl_dt <![CDATA[>=]]> SYSDATE THEN '약속대기'
+				WHEN cp.promscl_stat_cd = 'PROMS_WAIT' AND cp.promscl_dt <![CDATA[<]]> SYSDATE then '약속지연'
+				WHEN cp.promscl_stat_cd = 'PROMS_COMPT' THEN '약속완료' END AS promscl_stat_nm
+		, cp.promscl_memo_cont
+		, TO_CHAR(cp.reg_dt, 'YYYY-MM-DD HH24:MI') AS reg_dt
+        , CASE WHEN cp.promscl_stat_cd = 'PROMS_COMPT' 
+               THEN CASE WHEN FLOOR(MOD(MONTHS_BETWEEN(cp.promscl_compt_dt,cp.promscl_dt),1)*30.5) > 0 THEN FLOOR(MOD(MONTHS_BETWEEN(cp.promscl_compt_dt,cp.promscl_dt),1)*30.5) ||'일'   
+                                  END ||
+                    CASE WHEN TRUNC(MOD(cp.promscl_compt_dt - cp.promscl_dt,1)*24) > 0 THEN TRUNC(MOD(cp.promscl_compt_dt - cp.promscl_dt,1)*24) ||' 시간'   
+                                  END ||
+                    CASE WHEN TRUNC(MOD((cp.promscl_compt_dt - cp.promscl_dt)*24,1)*60) > 0 THEN TRUNC(MOD((cp.promscl_compt_dt - cp.promscl_dt)*24,1)*60) ||' 분'   
+                                 END
+               ELSE 
+                    CASE WHEN FLOOR(MOD(MONTHS_BETWEEN(SYSDATE,cp.promscl_dt),1)*30.5) > 0 THEN FLOOR(MOD(MONTHS_BETWEEN(SYSDATE,cp.promscl_dt),1)*30.5) ||'일'   
+                                  END ||
+                    CASE WHEN TRUNC(MOD(SYSDATE - cp.promscl_dt,1)*24) > 0 THEN TRUNC(MOD(SYSDATE - cp.promscl_dt,1)*24) ||' 시간'   
+                                  END ||
+                    CASE WHEN TRUNC(MOD((SYSDATE - cp.promscl_dt)*24,1)*60) > 0 THEN TRUNC(MOD((SYSDATE - cp.promscl_dt)*24,1)*60) ||' 분'   
+                                 END
+                END AS promsclDelay
+		, (CASE WHEN cp.regtr_id IS NULL THEN '' ELSE sa.admin_nm || '(' || cp.regtr_id || ')' END) AS cnslt_nm
+		, TO_CHAR(cp.promscl_compt_dt, 'YYYY-MM-DD HH24:MI') AS promscl_compt_dt
+		FROM cso_promscl cp
+		left outer JOIN cso_cnslt cc ON cp.cnslt_sn = cc.cnslt_sn
+		left outer JOIN cso_cnslt_detail ccd ON cp.cnslt_sn = ccd.cnslt_sn AND cp.cnslt_detail_turn = ccd.cnslt_detail_turn
+		left outer JOIN sys_cd cd1 ON (cd1.cd = cc.inq_tp_cd)
+		left outer JOIN sys_cd cd2 ON (cd2.cd = ccd.inq_detail_tp_cd)
+		left outer JOIN sys_cd cd3 ON (cd3.cd = cc.cnslt_stat_cd)
+		<!--left outer JOIN sys_cd cd4 ON (cd4.cd = cp.promscl_stat_cd)-->
+		left outer JOIN sys_admin sa ON (sa.admin_id = cp.regtr_id)
+		WHERE 1=1
+		<choose>
+			<when test="cnsltSn != '' and cnsltSn != null">
+				AND CP.CNSLT_SN = #{cnsltSn}
+			</when>
+			<otherwise>
+				<if test="searchDateType != '' and searchDateType != null">
+					<if test='searchDateType == "promsclDt"'>
+						<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >
+							AND cp.promscl_dt  BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1
+							AND TO_CHAR(cp.promscl_dt,'HH24:MI:SS') BETWEEN TO_CHAR(TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS'),'HH24:MI:SS') AND TO_CHAR(TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1,'HH24:MI:SS')
+						</if>
+					</if>
+					<if test='searchDateType == "regDt"'>
+						<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >
+							AND cp.reg_dt  BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1
+							AND TO_CHAR(cp.reg_dt,'HH24:MI:SS') BETWEEN TO_CHAR(TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS'),'HH24:MI:SS') AND TO_CHAR(TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1,'HH24:MI:SS')
+						</if>
+					</if>
+					<if test='searchDateType == "promsclCompDt"'>
+						<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >
+							AND cp.promscl_compt_dt  BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1
+							AND TO_CHAR(cp.promscl_compt_dt,'HH24:MI:SS') BETWEEN TO_CHAR(TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS'),'HH24:MI:SS') AND TO_CHAR(TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1,'HH24:MI:SS')
+						</if>
+					</if>
+				</if>
+				<if test='inputRegId != "" and inputRegId != null'>
+					AND CP.REGTR_ID = #{inputRegId}
+				</if>
+				<if test='selectPromsclStatCd != "" and selectPromsclStatCd != null'>
+					<if test='selectPromsclStatCd == "PROMS_WAIT" || selectPromsclStatCd == "PROMS_COMPT" || selectPromsclStatCd == "PROMS_CNCL"'>
+						AND CP.PROMSCL_STAT_CD = #{selectPromsclStatCd}
+					</if>
+					<if test='selectPromsclStatCd == "PROMS_DELAY"'>
+						AND CP.PROMSCL_STAT_CD = 'PROMS_WAIT'
+						AND CP.REG_DT <![CDATA[>=]]> TO_DATE(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+					</if>
+				</if>
+				<if test='inqTpCd != "" and inqTpCd != null'>
+					AND CCD.INQ_TP_CD = #{inqTpCd}
+				</if>
+				<if test='inqDetailTpCd != "" and inqDetailTpCd != null'>
+					AND CCD.INQ_DETAIL_TP_CD = #{inqDetailTpCd}
+				</if>
+			</otherwise>
+		</choose>
+		ORDER BY cp.PROMSCL_STAT_CD DESC, cp.promscl_dt ASC, cp.reg_dt DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="getListReservationTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.ReservationSearchDTO" resultType="long">
+		SELECT
+		/* [callcenter.reservation.xml][getListReservation][약속콜 조회 CS][Henry] */
+		COUNT(*)
+		FROM cso_promscl cp
+		LEFT OUTER JOIN cso_cnslt cc ON cp.cnslt_sn = cc.cnslt_sn
+		LEFT OUTER JOIN cso_cnslt_detail ccd ON cp.cnslt_sn = ccd.cnslt_sn
+		LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = cc.inq_tp_cd)
+		LEFT OUTER JOIN sys_cd cd2 ON (cd2.cd = ccd.inq_detail_tp_cd)
+		LEFT OUTER JOIN sys_cd cd3 ON (cd3.cd = cc.cnslt_stat_cd)
+		/*LEFT OUTER JOIN sys_cd cd4 ON (cd4.cd = cp.promscl_stat_cd)*/
+		LEFT OUTER JOIN sys_admin sa ON (sa.admin_id = cp.regtr_id)
+		WHERE 1=1
+		<choose>
+			<when test="cnsltSn != '' and cnsltSn != null">
+				AND CP.CNSLT_SN = #{cnsltSn}
+			</when>
+			<otherwise>
+				<if test="searchDateType != '' and searchDateType != null">
+					<if test='searchDateType == "promsclDt"'>
+						<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >
+							AND cp.promscl_dt  BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1
+							AND TO_CHAR(cp.promscl_dt,'HH24:MI:SS') BETWEEN TO_CHAR(TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS'),'HH24:MI:SS') AND TO_CHAR(TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1,'HH24:MI:SS')
+						</if>
+					</if>
+					<if test='searchDateType == "regDt"'>
+						<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >
+							AND cp.reg_dt  BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1
+							AND TO_CHAR(cp.reg_dt,'HH24:MI:SS') BETWEEN TO_CHAR(TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS'),'HH24:MI:SS') AND TO_CHAR(TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1,'HH24:MI:SS')
+						</if>
+					</if>
+					<if test='searchDateType == "promsclCompDt"'>
+						<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >
+							AND cp.promscl_compt_dt  BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1
+							AND TO_CHAR(cp.promscl_compt_dt,'HH24:MI:SS') BETWEEN TO_CHAR(TO_DATE(#{startDt}, 'YYYY-MM-DD HH24:MI:SS'),'HH24:MI:SS') AND TO_CHAR(TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS') + 1,'HH24:MI:SS')
+						</if>
+					</if>
+				</if>
+				<if test='inputRegId != "" and inputRegId != null'>
+					AND CP.REGTR_ID = #{inputRegId}
+				</if>
+				<if test='selectPromsclStatCd != "" and selectPromsclStatCd != null'>
+					<if test='selectPromsclStatCd == "PROMS_WAIT" || selectPromsclStatCd == "PROMS_COMPT" || selectPromsclStatCd == "PROMS_CNCL"'>
+						AND CP.PROMSCL_STAT_CD = #{selectPromsclStatCd}
+					</if>
+					<if test='selectPromsclStatCd == "PROMS_DELAY"'>
+						AND CP.PROMSCL_STAT_CD = 'PROMS_WAIT'
+						AND CP.REG_DT <![CDATA[>=]]> TO_DATE(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+					</if>
+				</if>
+				<if test='inqTpCd != "" and inqTpCd != null'>
+					AND CCD.INQ_TP_CD = #{inqTpCd}
+				</if>
+				<if test='inqDetailTpCd != "" and inqDetailTpCd != null'>
+					AND CCD.INQ_DETAIL_TP_CD = #{inqDetailTpCd}
+				</if>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getReservationMaxSN" resultType="long">
+		SELECT 
+		/* [callcenter.reservation.xml][getListReservation][약속콜 등록순번 Max CS][Henry] */ 
+		MAX(CNSLT_SN) 
+		FROM CSO_PROMSCL
+	</select>
+	
+</mapper>

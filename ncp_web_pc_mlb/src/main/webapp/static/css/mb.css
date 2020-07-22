@@ -1,0 +1,326 @@
+@charset "utf-8";
+/* 로그인,회원가입 CSS */
+
+.contain.mb .container{ padding-top:120px; }
+
+
+/*로그인*/
+.login-wrap{width:750px;margin:0 auto;}
+.login-cnt{width:400px;margin:78px auto 0;}
+.login-cnt .d_tab02_cont{margin-top:20px;}
+.login-cnt .input-style01{width:100%;}
+.login-cnt .input-style01 + .input-style01{margin-top:5px;}
+.login-cnt .phon-wrap{margin-top:5px;font-size: 0;}
+.login-cnt .phon-wrap .hyphen{display:inline-block;position:relative;width:20px;height:40px;font-size:0;line-height:0;vertical-align:top;}
+.login-cnt .phon-wrap .hyphen:after{position:absolute;top:20px;content:'';left:50%;width:5px;height:1px;margin-left:-2px;background:#ddd;}
+.login-cnt .phon-wrap .input-style01{width:120px;}
+.login-cnt .phon-wrap .input-style01:first-child{	width:120px;}
+.login-cnt .login-check-id{margin-top:17px;}
+.login-cnt .login-btn-lnk{margin:27px -200px 0px -200px;text-align:center;}
+.login-cnt .login-btn-lnk a{display:inline-block;position:relative;padding:0 20px;font-size:13px;}
+.login-cnt .login-btn-lnk a:after{position:absolute;top:3px;left:0;width:1px;height:12px;content:'';background:#ddd;}
+.login-cnt .login-btn-lnk a:first-child:after{display:none;}
+.login-cnt .login-txt-info{margin-top:26px;color:#999;font-size:13px;line-height:18px;}
+.login-cnt .txt-login-info {margin-top:6px;margin-bottom:37px;color:#666;font-size:13px;line-height:18px;text-align: center;}
+.login-cnt .btn-wrap{margin-top:26px;}
+/*.login-cnt .login-btn-lnk + .btn-wrap{margin-top:59px;}*/
+.login-cnt .btn-wrap a + a{margin:5px 0 0;}
+.login-cnt .btn-wrap .btn-style02,
+.login-cnt .btn-wrap .btn-style03{width:100%;}
+.login-cnt .login-cs-info{margin-top:27px;font-size:13px;text-align: center;}
+.login-cnt .login-cs-info strong{padding-right: 8px;font-weight:700;}
+.tab-privacy-cont {margin-top: 60px;}
+.tab-privacy-cont .agree-section-content {height: 600px;}
+.tab-privacy-cont .prev-privacy-wrap {margin-top: 20px;}
+
+
+/* 가입 혜택 안내  */
+.member-benefit-list-join{margin-top:40px; background:#f8f8f8; padding:20px 20px 20px 20px;}
+.member-benefit-list-join h3{margin-top:0;}
+.member-detail-wrap .member-benefit-list-join{margin-top:57px;padding-top:0;border-top:none;}
+.member-detail-wrap .txt-sub-info02+.txt-sub-info01 {margin-top: 6px;}
+.member-benefit-list-join > ul{display: flex;overflow:hidden;margin-top:17px;}
+.member-benefit-list-join > ul li strong{ padding-top:11px; display:inline-block; font-size:13px; }
+.member-benefit-list-join > ul li{width:calc(25%);padding:0px 0px 0px 83px; position:relative;  min-height:38px;}
+.member-benefit-list-join > ul li:before{ content:""; display:block; width:74px; height:38px;background:no-repeat; position:absolute; left:0px; top:0px; }
+.member-benefit-list-join > ul li.deps01:before{ background-image:url(../images/mb/member_benefit_01.png) }
+.member-benefit-list-join > ul li.deps02:before{ background-image:url(../images/mb/member_benefit_02.png) }
+.member-benefit-list-join > ul li.deps03:before{ background-image:url(../images/mb/member_benefit_03.png) }
+.member-benefit-list-join > ul li.deps04:before{ background-image:url(../images/mb/member_benefit_04.png) }
+
+.member-benefit-list{margin-top:70px;padding-top:26px;border-top:1px solid #ddd;}
+.member-benefit-list h3{margin-top:0;}
+.member-detail-wrap .member-benefit-list{margin-top:57px;padding-top:0;border-top:none;}
+.member-detail-wrap .txt-sub-info02+.txt-sub-info01 {margin-top: 6px;}
+.member-benefit-list > ul{display: flex;overflow:hidden;margin-top:17px;}
+.member-benefit-list > ul li{width:calc(33.3% - 5px);margin-left:5px;padding:77px 30px 37px 30px;background:#f8f8f8;background-position:30px 40px;background-repeat:no-repeat;}
+.member-benefit-list > ul li:first-child{width:33.4%;margin-left:0;}
+.member-benefit-list > ul li strong{display: block;margin-top: 14px;font-size:13px;}
+.member-benefit-list > ul li p{margin-top:8px;color:#999;font-size:13px;line-height:18px;}
+.member-benefit-list > ul li.deps01{background-image:url(../images/mb/bg_member_benefit_01.png);}
+.member-benefit-list > ul li.deps02{background-image:url(../images/mb/bg_member_benefit_02.png);}
+.member-benefit-list > ul li.deps03{background-image:url(../images/mb/bg_member_benefit_03.png);}
+
+
+
+
+/* 인증 */
+.member-certification-wrap{width:750px;margin:78px auto 0;}
+.member-certification-cnt{padding-bottom:18px;border-bottom:1px solid #ddd;}
+.member-certification-cnt .text-list02.col-type01{ margin-top:12px; }
+.member-certification-cnt .text-list02 li{ margin-top:3px; }
+.certification-list{overflow:hidden;margin-top:20px;margin-left: -5px;}
+.certification-list li{float:left;width:50%;height:215px;padding-left: 5px;}
+.certification-list li a{display:block;height:100%;padding-top:128px;background:#f8f8f8 url(../images/mb/bg_certification_01.png) no-repeat 50% 71px;text-align:center;}
+.certification-list li + li a{background-image:url(../images/mb/bg_certification_02.png);}
+.cs-number {}
+.cs-number:after {content: '';display: inline-block;width: 1px;height: 14px;margin: 0 10px;background-color: #ddd;vertical-align: middle;}
+
+.member-certification-wrap{}
+.member-certification-wrap .guds{ margin-top:25px; }
+.member-certification-wrap .guds .cs-number{font-weight:bold; font-size:13px;display:inline-block; vertical-align:middle; margin-top:6px; }
+.member-certification-wrap .guds .links{ display:inline-block; vertical-align:middle; }
+.member-certification-wrap .guds .links>li{ display:inline-block; vertical-align:middle;}
+.member-certification-wrap .guds .links>li:after {content: '';display: inline-block;width: 1px;height: 14px;margin: 0 10px;background-color: #ddd;vertical-align: middle;}
+.member-certification-wrap .guds .links>li:last-child:after{ display:none; }
+.member-certification-wrap .guds .links>li>a{ font-size:13px; display:inline-block; vertical-align:middle;}
+.member-certification-wrap .guds .time{ font-size:13px; margin-top:14px; }
+
+
+/* 로그인 팝업 */
+.popLogin{}
+.popLogin .layer-popup-cont{ width:370px; }
+.popLogin .msg{text-align:center; margin:50px 0px 35px 0px;}
+.popLogin .msg p{ color:#666666; line-height:1.4em;}
+.popLogin .inputs{ }
+.popLogin .inputs input{ width:100%; margin-top:5px; }
+.popLogin .inputs input:first-child{margin-top:0px; }
+.popLogin .btn-login{ text-align:center;}
+.popLogin .login-check-id{margin-top:10px; }
+.popLogin .login-btn-lnk{margin-top:15px;text-align:center;}
+.popLogin .login-btn-lnk a{display:inline-block;position:relative;padding:0 15px;font-size:13px;}
+.popLogin .login-btn-lnk a:after{position:absolute;top:3px;left:0;width:1px;height:12px;content:'';background:#ddd;}
+.popLogin .login-btn-lnk a:first-child:after{display:none;}
+.popLogin .btns{ margin-top:25px; }
+.popLogin .btns a{ margin-top:5px; margin-left:0px; display:block; }
+.popLogin .btns a:first-child{ margin-top:0px; }
+.popLogin .text-list02.bulList{ margin-top:15px;}
+.popLogin .text-list02.bulList>li{color:#666666; }
+
+
+/* 아이디 찾기 */
+.popIdFind{}
+.popIdFind .join-date-info{ text-align:center; margin-top:5px; }
+.popIdFind .join-date-info dt{ display:inline-block; vertical-align:middle; }
+.popIdFind .join-date-info dd{ display:inline-block; vertical-align:middle;}
+.popIdFind .layer-popup-cont .layer-popup-wrap02 .layer-txt04 a{ margin-left:10px; display:inline-block; text-decoration:none; border-bottom:1px #000000 solid; line-height:17px;}
+.popIdFind .layer-popup-cont .layer-popup-wrap02 .layer-txt{ color:#000000; }
+.popIdFind .layer-popup-cont .btns{ margin:30px 0 20px 0px; }
+.popIdFind .layer-popup-cont .btns .btn{ display:block;  }
+.popIdFind .layer-popup-cont .layer-footer-info{margin:30px -20px -30px;padding:14px 0 18px;background:#f8f8f8;font-size:13px;text-align:center;}
+.popIdFind .layer-popup-cont .layer-footer-info strong{ font-weight:bold; }
+.popIdFind .layer-popup-cont .links{ display:block; vertical-align:middle; text-align:center; margin-top:25px; font-size:0px; }
+.popIdFind .layer-popup-cont .links>li{ display:inline-block; vertical-align:middle;}
+.popIdFind .layer-popup-cont .links>li:after {content: '';display: inline-block;width: 1px;height: 14px;margin:0 10px 0 11px;background-color: #ddd;vertical-align: middle;}
+.popIdFind .layer-popup-cont .links>li:last-child:after{ display:none; }
+.popIdFind .layer-popup-cont .links>li>a{ font-size:13px; display:inline-block; vertical-align:middle;}
+
+
+
+/* 비밀번호 변경 */
+.popPwFind{}
+.popPwFind .layer-input-box{ margin-top:25px; }
+.popPwFind .layer-input-box .input-style01{ margin-top:5px; }
+.popPwFind .btn-wrap .btn{ display:block; }
+
+
+/* 네이버 인증 완료 팝업 */
+.popNaverCerti{}
+.popNaverCerti .layer-input-box{ margin-top:25px; }
+.popNaverCerti .layer-input-box .input-style01{ margin-top:5px; width:100%; }
+.popNaverCerti .btn-wrap03{ margin-top:30px;}
+.popNaverCerti .btn-wrap03 .btn{ display:block; }
+.popNaverCerti .layer-popup-cont .layer-popup-wrap02 .layer-txt03{ font-weight:bold; }
+.popNaverCerti .layer-popup-cont .layer-popup-wrap02 .layer-txt04{ color:#666666; }
+
+
+
+
+
+/* 회원가입 */
+.join-wrap{ width:750px; margin:auto; }
+.join-wrap .top-info{  padding-top:30px; }
+.join-wrap .top-info .hdt{ font-size:24px; }
+.join-wrap .top-info .ss{ margin-top:30px; color:#666666; font-size:13px; line-height:18px; }
+.join-wrap .top-info .tt{ margin-top:10px; }
+.join-wrap .top-info .tt .t{ display:inline-block;  font-weight:bold; }
+.join-wrap .top-info .tt .t:after{ width:5px; height:7px; display:inline-block; vertical-align:middle; margin:0px 2px 0px 7px; content:""; background:url(../images/cm/bg_arrow_04.png) no-repeat; }
+.join-wrap .member-benefit-list{ border-top-width:0px; margin-top:30px; }
+.join-wrap .sect{ margin-top:50px; }
+.join-wrap .sect .hdt{}
+.join-wrap .sect .hdt .tit{font-size:16px;}
+.join-wrap .sect .hdt .tt{ margin-left:10px; color:#666666; }
+.join-wrap .sect.memInfo{}
+.join-wrap .sect.memInfo .forms{}
+.join-wrap .sect.memInfo .input-style01{  padding:0px 10px; }
+.join-wrap .sect.memInfo .forms .dt-list{}
+.join-wrap .sect.memInfo .forms .dt-list>li{ position:relative; padding:10px 0px 10px 0px; border-top:#dddddd solid 1px; }
+.join-wrap .sect.memInfo .forms .dt-list>li:first-child{}
+.join-wrap .sect.memInfo .forms .dt-list>li:first-child{ padding-top:0px; border-top-width:0px; }
+.join-wrap .sect.memInfo .forms .dt-list>li:last-child{ padding-bottom:0px; }
+.join-wrap .sect.memInfo .forms .dt-list>li .required{ position:absolute; left:0px; top:24px; }
+.join-wrap .sect.memInfo .forms .dt-list>li:first-child .required{ top:14px; }
+.join-wrap .sect.memInfo .forms .rdo{ margin:0 10px; }
+.join-wrap .sect.memInfo .forms .select-style01 ul{ max-height:260px; }
+.sect.memInfo .forms input.name{ margin-right:15px;}
+.join-wrap .sect.memInfo .forms input.pw{ letter-spacing:1px; }
+.sect.memInfo .forms span.birth{ margin-right:15px; font-size:0px; display:inline-block; vertical-align:middle;}
+.sect.memInfo .forms span.birth input.dd{ margin-left:10px; }
+.sect.memInfo .forms span.birth .select-style01.mm{ margin-left:10px !important; }
+.sect.memInfo .forms span.birth + .rdo-skin + label{display:inline-block;}
+.join-wrap .sect.memInfo .forms span.email{ margin-right:15px; font-size:0px; display:inline-block; vertical-align:middle;}
+.join-wrap .sect.memInfo .forms span.email input.email1{}
+.join-wrap .sect.memInfo .forms span.email em.att{ font-size:14px; width:20px; display:inline-block;vertical-align:middle; text-align:center; }
+.join-wrap .sect.memInfo .forms span.email input.email2{}
+.join-wrap .sect.memInfo .forms span.email .select-style01.email3{ margin-left:10px !important; }
+.sect.memInfo .forms .phone{ margin-right:15px; font-size:0px; display:inline-block; vertical-align:middle;}
+.sect.memInfo .forms .phone .phone0{}
+.sect.memInfo .forms .phone em.dash{ font-size:14px; width:20px; display:inline-block;vertical-align:middle; text-align:center; font-size:0px; }
+.sect.memInfo .forms .phone em.dash:before{ width:10px; height:1px; background-color:#dddddd;  content:""; display:inline-block;vertical-align:middle;}
+.sect.memInfo .forms .phone .phone1{ margin-left:10px; }
+.sect.memInfo .forms .phone .phone2{}
+.sect.memInfo .forms .phone .phone3{}
+.board-write.forms .togbox{min-height:30px; padding:5px 0px}
+.board-write.forms .togbox label{ color:#000000; }
+.board-write.forms .togbox .required{ position:absolute;left:0px; top:9px; }
+.board-write.forms .togbox .hbox{ position:relative; min-height:30px; padding-left:0px;}
+.board-write.forms .togbox .hbox .btn-open{ width:30px; height:30px; background:url(../images/mb/mb_join_tog.png) no-repeat; text-indent:-9999px; overflow:hidden; position:absolute; right:0px; top:0px; }
+.board-write.forms .togbox.on .hbox .btn-open{ background-position-y:-30px; }
+.board-write.forms .btnPslCertifi{ min-width:107px;}
+.board-write.forms a.btnPslCertifi{  margin-left:20px;}
+.board-write.forms span.btnPslCertifi{ background:#f8f8f8; border-color:#dddddd; color:#999999; }
+.board-write.forms .dsc{font-size:.9em;margin-top:5px;color:#666}
+.board-write.forms .dsc strong{color:#444}
+
+.board-write.forms .togbox .cbox{}
+.board-write.forms .togbox .cbox .list{ margin-top:20px; }
+.board-write.forms .togbox .cbox .list:after{ content:""; display:table; clear:both; }
+.board-write.forms .togbox .cbox .list>li{ position:relative; width:50%; float:left; margin-top:5px; padding-left:0px; min-height:30px; }
+.board-write.forms .togbox .cbox .list>li:nth-child(odd){ width:260px; }
+.board-write.forms .togbox .cbox .list>li:nth-child(even){ width:250px; float:right;}
+.board-write.forms .togbox .cbox .list>li:nth-child(2n+1) .btnAllView{}
+.board-write.forms .togbox .cbox .list>li label{ width:147px; vertical-align:middle; display:inline-block; height:30px; line-height:30px; margin-left:2px; }
+.board-write.forms .togbox .cbox .list>li .btnAllView{ width:97px; position:absolute; right:0px; top:0px; }
+.board-write.forms .certifiBox{ position:relative; padding-left:0px; margin-top:20px; }
+.board-write.forms .certifiBox .required{position:absolute;left:0px; top:13px; }
+.board-write.forms .certifiBox .num{ position:relative; display:inline-block; }
+.board-write.forms .certifiBox .num input{ width:235px; }
+.board-write.forms .certifiBox .num .time{ position:absolute; right:10px; top:11px; color:#999999; }
+.board-write.forms .certifiBox .bts{ display:inline-block; margin-left:3px;}
+.board-write.forms .certifiBox .bts .btn{ width:134px; margin-left:3px; }
+.board-write.forms .certifiBox .link{ color:#ff3600; display:inline-block;  margin-left:10px; border-bottom:#ff3600 solid 1px; text-decoration:none; line-height:17px; }
+
+
+.join-wrap .sect.receive .togbox{ min-height:30px;}
+.join-wrap .sect.receive .togbox label{ color:#000000; display:inline-block; min-width:160px;  font-size:13px; }
+.join-wrap .sect.receive .togbox .required{ position:absolute;left:0px; top:4px; display:none; }
+.join-wrap .sect.receive .togbox .hbox{ border-bottom:#000000 solid 1px; position:relative; min-height:30px; padding:10px 0px;}
+.join-wrap .sect.receive .togbox .hbox .btn-open{ width:30px; height:30px; background:url(../images/mb/mb_join_tog.png) no-repeat; text-indent:-9999px; overflow:hidden; position:absolute; right:-7px; top:10px; }
+.join-wrap .sect.receive .togbox.on .hbox .btn-open{ background-position-y:-30px; }
+.join-wrap .sect.receive .togbox .hbox .btnAllView{ width:107px; margin-left:20px;}
+.join-wrap .sect.receive .togbox .list{}
+.join-wrap .sect.receive .togbox .list>li{ border-bottom:#dddddd solid 1px; padding:20px 0; position:relative; }
+.join-wrap .sect.receive .togbox .list>li .item{ display:inline-block; position:relative; padding-left:0px; }
+.join-wrap .sect.receive .togbox .list>li .bul-list{ position:absolute; right:0px; top:10px; width:380px;}
+.join-wrap .sect.receive .togbox .list>li .bul-list>li{ color:#999999;  }
+.join-wrap .sect.receive .togbox .list>li .bul-list>li:after{ background-color:#666666; }
+.join-wrap .sect.receive .togbox .list>li.L2{ min-height:80px; }
+.join-wrap .sect.receive .togbox .gud{ margin-top:20px;}
+.join-wrap .sect.receive .togbox .gud .bul-list>li:after{ background-color:#666666; }
+
+.join-wrap .sect.addition{}
+.join-wrap .sect.addition span.birth{ margin-right:15px; margin-left:10px; font-size:0px; display:inline-block; vertical-align:middle;}
+.join-wrap .sect.addition span.birth input{ padding:0 10px; }
+.join-wrap .sect.addition span.birth input.dd{ margin-left:10px; }
+.join-wrap .sect.addition span.birth .select-style01.mm{ margin-left:10px !important; }
+.join-wrap .sect.addition span.birth + .rdo-skin + label{ width:35px; display:inline-block;}
+.join-wrap .sect.addition .board-write.adds{}
+.join-wrap .sect.addition .board-write.adds td{ position:relative; }
+.join-wrap .sect.addition .list{}
+.join-wrap .sect.addition .list>li{ margin-top:10px; }
+.join-wrap .sect.addition .list>li:first-child{ margin-top:0px; }
+.join-wrap .sect.addition .bul-list{ margin-top:20px; }
+.join-wrap .sect.addition .bul-list>li:after{ background-color:#666666; }
+.join-wrap .sect.addition .btnChildAdd{ width:30px; height:30px; position:absolute; right:15px; top:14px; background:url(../images/mb/btnChildAdd.png) no-repeat; font-size:0px;  }
+
+.join-wrap .bot-btns{ margin-top:40px; }
+.join-wrap .bot-btns .btn{ min-width:200px; }
+
+.join-wrap .bot-info{ margin-top:60px; border-top:#dddddd solid 1px; padding-top:20px; }
+.join-wrap .bot-info .bul-list{ margin-top:10px; }
+.join-wrap .bot-info .bul-list>li:after{ background-color:#666666; }
+
+
+/* 회원가입 완료 */
+.join-com{}
+.join-com .top_info{padding-top:100px;width:446px; margin:0px auto 0 auto; text-align:center; }
+.join-com .top_info .hdt{ font-size:20px; }
+.join-com .top_info .hdt br{ display:none; }
+.join-com .top_info .ids{ font-size:14px; margin-top:15px; }
+.join-com .top_info .ids .id{ font-weight:bold; display:inline-block; margin:0 4px;}
+.join-com .top_info .txt{ font-size:14px; margin-top:35px; color:#999999; line-height:22px; }
+.join-com .btns{ width:446px; margin:55px auto 0 auto; }
+.join-com .btns .list{ margin:0 -2px; }
+.join-com .btns .list:after{ content:""; display:table; clear:both; }
+.join-com .btns .list>li{ width:50%; padding:0 2px; float:left; margin-top:4px; }
+.join-com .btns .list>li:first-child{ width:100%;}
+.join-com .btns .list>li .btn{ display:block; line-height:44px; }
+.join-com .btns .list>li .btnGoShop{ color:#ffffff; background-color:#000000; }
+.join-com .btns .list>li .btnNaver{ color:#666666; border-color:#dddddd; }
+.join-com .btns .list>li .btnNaver:before{margin-right:3px; width:24px; height:24px;background:url(../images/mb/mb_ico_naver.png) no-repeat; content:""; display:inline-block; vertical-align:middle; }
+.join-com .btns .list>li .btnPlus{ color:#333333; border-color:#dddddd; background-color:#fae100;}
+.join-com .btns .list>li .btnPlus:before{margin-right:3px; width:24px; height:24px;background:url(../images/mb/mb_ico_kakao.png) no-repeat; content:""; display:inline-block; vertical-align:middle; }
+.join-com .guds{width:446px; margin:25px auto 0 auto; }
+.join-com .guds .link{ color:#ff3600; display:inline-block; vertical-align:middle; margin-left:10px; text-decoration:none; border-bottom:#ff3600 solid 1px; line-height:17px; }
+
+
+
+/* 본인인증 확인결과 */
+.popCertifi{}
+.popCertifi .layer-popup-cont{width:370px}
+.popCertifi .layer-popup-cont .date-info{ text-align:center; margin-top:15px; }
+.popCertifi .layer-popup-cont .date-info strong{ font-weight:bold; }
+.popCertifi .layer-popup-cont .id-info{ margin-top:6px; text-align:center;}
+.popCertifi .layer-popup-cont .id-info strong{ font-weight:bold; }
+.popCertifi .layer-popup-cont .msg-txt{padding-top:55px;color:#000000;font-size:13px;line-height:18px;text-align:center;}
+.popCertifi .layer-popup-cont .btns{ margin:30px 0 10px 0px; }
+.popCertifi .layer-popup-cont .btns .btn{ display:block;  }
+.popCertifi .layer-popup-cont .msg{padding-top:7px;color:#999;font-size:13px;line-height:22px;text-align:center;}
+.popCertifi .layer-popup-cont .msg a.link{ display:inline-block; margin-left:5px; border-bottom:#000000 1px solid; line-height:17px; }
+.popCertifi .layer-popup-cont .bots-info{margin:22px -20px -30px;padding:14px 0 18px;background:#f8f8f8;font-size:13px;text-align:center;}
+.popCertifi .layer-popup-cont .bots-info strong{ font-weight:bold; }
+.popCertifi .layer-popup-cont .links{ display:block; vertical-align:middle; text-align:center; margin-top:15px; font-size:0px; }
+.popCertifi .layer-popup-cont .links>li{ display:inline-block; vertical-align:middle;}
+.popCertifi .layer-popup-cont .links>li:after {content: '';display: inline-block;width: 1px;height: 14px;margin:0 10px 0 11px;background-color: #ddd;vertical-align: middle;}
+.popCertifi .layer-popup-cont .links>li:last-child:after{ display:none; }
+.popCertifi .layer-popup-cont .links>li>a{ font-size:13px; display:inline-block; vertical-align:middle;}
+
+/* 이미가입한 회원 */
+.popCertifiReady{}
+.popCertifiReady .layer-popup-cont{width:370px}
+.popCertifiReady .layer-popup-cont .date-info{ text-align:center; margin-top:15px; }
+.popCertifiReady .layer-popup-cont .date-info strong{ font-weight:bold; }
+.popCertifiReady .layer-popup-cont .id-info{ margin-top:6px; text-align:center;}
+.popCertifiReady .layer-popup-cont .id-info strong{ font-weight:bold; }
+.popCertifiReady .layer-popup-cont .msg-txt{padding-top:55px;color:#000000;font-size:13px;line-height:18px;text-align:center;}
+.popCertifiReady .layer-popup-cont .btns{ margin:30px 0 10px 0px; }
+.popCertifiReady .layer-popup-cont .btns .btn{ display:block;  }
+.popCertifiReady .layer-popup-cont .msg{padding-top:7px;color:#999;font-size:13px;line-height:22px;text-align:center;}
+.popCertifiReady .layer-popup-cont .msg a.link{ display:inline-block; margin-left:5px; border-bottom:#000000 1px solid; line-height:17px;}
+.popCertifiReady .layer-popup-cont .bots-info{margin:22px -20px -30px;padding:14px 0 18px;background:#f8f8f8;font-size:13px;text-align:center;}
+.popCertifiReady .layer-popup-cont .bots-info strong{ font-weight:bold; }
+.popCertifiReady .layer-popup-cont .links{ display:block; vertical-align:middle; text-align:center; margin-top:15px; font-size:0px; }
+.popCertifiReady .layer-popup-cont .links>li{ display:inline-block; vertical-align:middle;}
+.popCertifiReady .layer-popup-cont .links>li:after {content: '';display: inline-block;width: 1px;height: 14px;margin:0 10px 0 11px;background-color: #ddd;vertical-align: middle;}
+.popCertifiReady .layer-popup-cont .links>li:last-child:after{ display:none; }
+.popCertifiReady .layer-popup-cont .links>li>a{ font-size:13px; display:inline-block; vertical-align:middle;}

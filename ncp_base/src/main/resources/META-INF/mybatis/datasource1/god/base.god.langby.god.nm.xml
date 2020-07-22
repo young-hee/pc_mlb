@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodLangbyGodNm" parameterType="godLangbyGodNm" resultType="godLangbyGodNm">
+		SELECT /* com.plgrim.ncp.base.selectGodLangbyGodNm		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , LANG_CD
+			 , TRSLT_STAT_CD
+			 , OVSEA_DSP_STAT_CD
+			 , GOD_NM
+			 , MOBILE_GOD_NM
+			 , TAG_NM
+			 , COLOR_TAG_NM
+			 , THEMA_TAG_NM
+			 , COLOR_NM
+			 , GOD_SRCH_SNM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_LANGBY_GOD_NM
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodLangbyGodNm" parameterType="godLangbyGodNm">
+		UPDATE /* com.plgrim.ncp.base.updateGodLangbyGodNm		Generator(Generator)	2018-05-23 */
+		GOD_LANGBY_GOD_NM SET
+			   TRSLT_STAT_CD = #{trsltStatCd,jdbcType=VARCHAR}
+			 , OVSEA_DSP_STAT_CD = #{ovseaDspStatCd,jdbcType=VARCHAR}
+			 , GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , MOBILE_GOD_NM = #{mobileGodNm,jdbcType=VARCHAR}
+			 , TAG_NM = #{tagNm,jdbcType=VARCHAR}
+			 , COLOR_TAG_NM = #{colorTagNm,jdbcType=VARCHAR}
+			 , THEMA_TAG_NM = #{themaTagNm,jdbcType=VARCHAR}
+			 , COLOR_NM = #{colorNm,jdbcType=VARCHAR}
+			 , GOD_SRCH_SNM = #{godSrchSnm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodLangbyGodNm" parameterType="godLangbyGodNm">
+		INSERT /* com.plgrim.ncp.base.insertGodLangbyGodNm		Generator(Generator)	2018-05-23 */
+		INTO   GOD_LANGBY_GOD_NM (
+			   GOD_NO
+			 , LANG_CD
+			 , TRSLT_STAT_CD
+			 , OVSEA_DSP_STAT_CD
+			 , GOD_NM
+			 , MOBILE_GOD_NM
+			 , TAG_NM
+			 , COLOR_TAG_NM
+			 , THEMA_TAG_NM
+			 , COLOR_NM
+			 , GOD_SRCH_SNM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{trsltStatCd,jdbcType=VARCHAR}
+			 , #{ovseaDspStatCd,jdbcType=VARCHAR}
+			 , #{godNm,jdbcType=VARCHAR}
+			 , #{mobileGodNm,jdbcType=VARCHAR}
+			 , #{tagNm,jdbcType=VARCHAR}
+			 , #{colorTagNm,jdbcType=VARCHAR}
+			 , #{themaTagNm,jdbcType=VARCHAR}
+			 , #{colorNm,jdbcType=VARCHAR}
+			 , #{godSrchSnm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodLangbyGodNm" parameterType="godLangbyGodNm">
+		DELETE /* com.plgrim.ncp.base.deleteGodLangbyGodNm		Generator(Generator)	2018-05-23 */
+		  FROM GOD_LANGBY_GOD_NM
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

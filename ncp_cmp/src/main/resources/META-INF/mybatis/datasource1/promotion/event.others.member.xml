@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.event.others.member">
+
+	<resultMap id="evtApplcnResult" type="com.plgrim.ncp.biz.promotion.result.EventOthersMemberResult">
+	   <result property="evtApplcn.evtPartcptnSn"       column="EVT_PARTCPTN_SN" />          <!-- 이벤트 참여 일련번호 -->
+	   <result property="evtApplcn.applcnMbrSectCd"     column="APPLCN_MBR_SECT_CD" />       <!-- 응모 회원 구분 코드 -->
+	   <result property="evtApplcn.mbrNo"               column="MBR_NO" />                   <!-- 회원 번호 -->
+	   <result property="evtApplcn.applcnDt"            column="APPLCN_DT" />                <!-- 응모 일시 -->
+	   <result property="evtApplcn.ordNo"               column="ORD_NO" />                   <!-- 주문 번호 -->
+	   <result property="evtApplcn.atendDaycnt"         column="ATEND_DAYCNT" />             <!-- 출석 일수 -->
+	   
+	   <result property="evt.evtNo"                    column="EVT_NO" />                   <!-- 이벤트 번호 -->
+	   <result property="evt.upperEvtNo"               column="UPPER_EVT_NO" />             <!-- 상위 이벤트 번호 -->
+	   <result property="evt.rprstLwprtSectCd"         column="RPRST_LWPRT_SECT_CD" />      <!-- 대표 하위 구분 코드 -->
+	   <result property="evt.evtNm"                    column="EVT_NM" />                   <!-- 이벤트 명 -->
+	   <result property="evt.evtTpCd"                  column="EVT_TP_CD" />               <!-- 이벤트 유형 코드 -->
+	   <result property="evt.pcUrl"                    column="PC_URL" />                   <!-- PC URL -->
+	   <result property="evt.mobileUrl"                column="MOBILE_URL" />               <!-- 모바일 URL -->
+	   <result property="evt.pcHtml"                   column="PC_HTML" />                  <!-- PC HTML -->
+	   <result property="evt.mobileHtml"               column="MOBILE_HTML" />              <!-- 모바일 HTML -->
+	   
+	   <result property="evtPrize.prizeTurn"           column="PRIZE_TURN" />               <!-- 당첨 순번 -->
+	   <result property="evtPrize.prizeRank"           column="PRIZE_RANK" />               <!-- 당첨 순위 -->
+	   
+	   <result property="evtDt"           				column="EVT_DT" />                  <!-- 이벤트 기간 -->
+	   <result property="evtStatNm"           			column="EVT_STAT_NM" />             <!-- 이벤트 상태 코드명 -->
+	   <result property="prizeInfo"           			column="PRIZE_INFO" />              <!-- 당첨정보 -->
+	   
+	</resultMap>
+
+    <!-- 회원 이벤트 응모 건수 -->
+    <select id="selectEventApplyListCountForMember" parameterType="evtApplcn" resultType="long">
+		SELECT /* [event.others.member.xml][selectEventApplyListCountForMember][회원 이벤트 응모 건수 조회][Jessi] */
+	        COUNT(*)
+          FROM evt_applcn ea
+          JOIN evt e ON e.evt_no = ea.evt_no
+          JOIN evt_dsp_tgt etg ON ea.evt_no = etg.evt_no and etg.EVT_DSP_TGT_TP_CD = 'MALL_ID' and etg.mall_id = #{mallId, jdbcType=VARCHAR}
+          LEFT OUTER JOIN evt_prize ep ON ep.evt_partcptn_sn = ea.evt_partcptn_sn
+         WHERE ea.mbr_no = #{mbrNo, jdbcType=VARCHAR}  
+    </select>
+
+    <!-- 회원 이벤트 응모 내역 -->
+    <select id="selectEventApplyListForMember" parameterType="evtApplcn" resultMap="evtApplcnResult">
+        SELECT /* [event.others.member.xml][selectEventApplyListForMember][회원 이벤트 응모 내역 조회][Jessi] */
+		        fl.evt_no                      											/* 이벤트 번호 */
+		      , fl.evt_nm                      											/* 이벤트 명 */
+		      , scEvtStat.cd_nm AS evt_stat_nm 											/* 이벤트 상태 코드명 */
+		      , TO_CHAR(fl.evt_beg_dt, 'YYYY-MM-DD HH:MI:SS') 
+		        || ' ~ ' || TO_CHAR(fl.evt_end_dt, 'YYYY-MM-DD HH:MI:SS') AS evt_dt		/* 이벤트 기간 */
+		      , fl.applcn_dt                  											/* 응모 일시 */
+		      , CASE WHEN fl.ep_evt_partcptn_sn IS NOT NULL AND fl.prize_rank IS NOT NULL  /* 당첨자 목록 있고, 당첨 순위 있을 경우*/
+		             THEN TRIM(TO_CHAR(fl.prize_rank, '9,999,999'))
+		             WHEN fl.ep_evt_partcptn_sn IS NOT NULL                                /* 당첨자 목록 있고, 당첨 순위 없을 경우*/
+		             THEN 'Y'                                                           
+		             WHEN fl.ep_evt_partcptn_sn IS NULL AND fl.evt_end_dt > SYSDATE        /* 당첨자 목록 없고, 이벤트 기간 종료된 경우*/
+		             THEN 'N'
+		             ELSE ''
+		         END AS prize_info
+		      , fl.evt_tp_cd   
+		  FROM (
+			<include refid="com.plgrim.ncp.base.beginPage"/>		  
+		        SELECT
+		                e.evt_no                      /* 이벤트 번호 */
+		              , e.evt_nm                      /* 이벤트 명 */
+		              , e.evt_stat_cd                 /* 이벤트 상태 코드 */
+		              , e.evt_beg_dt                  /* 이벤트 시작 일시 */
+		              , e.evt_end_dt                  /* 이벤트 종료 일시 */
+		              , e.evt_tp_cd
+		              , ea.applcn_dt                  /* 응모 일시 */
+		              , ea.evt_partcptn_sn            /* 이벤트 참여 일련번호 */
+		              , ep.evt_partcptn_sn AS ep_evt_partcptn_sn
+		              , ep.prize_rank
+		          FROM evt_applcn ea
+		          JOIN evt e ON e.evt_no = ea.evt_no
+		          JOIN evt_dsp_tgt etg ON ea.evt_no = etg.evt_no and etg.EVT_DSP_TGT_TP_CD = 'MALL_ID' and etg.mall_id = #{mallId, jdbcType=VARCHAR}
+		          LEFT OUTER JOIN evt_prize ep ON ep.evt_partcptn_sn = ea.evt_partcptn_sn
+		         WHERE ea.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+		         ORDER BY ea.applcn_dt DESC
+			<include refid="com.plgrim.ncp.base.endPage"/>		          
+		       )fl
+		  LEFT OUTER JOIN mv_sys_cd scEvtStat
+            ON (scEvtStat.cd = fl.evt_stat_cd AND scEvtStat.upper_cd='EVT_STAT' AND scEvtStat.lang_cd = #{lang, jdbcType=VARCHAR}) /* 답변상태 */
+         ORDER BY fl.applcn_dt DESC
+    </select>
+    
+    <!-- 회원 이벤트 응모 엑셀 -->
+    <select id="selectEventApplyExcelForMember" parameterType="evtApplcn" resultType="java.util.LinkedHashMap">
+        SELECT /* [event.others.member.xml]["selectEventApplyExcelForMember"][회원 이벤트 응모 내역 엑셀 조회][Jessi] */
+		        scEvtStat.cd_nm AS evt_stat_nm 											/* 이벤트 상태 코드명 */
+		      , fl.evt_no                      											/* 이벤트 번호 */
+		      , fl.evt_nm                      											/* 이벤트 명 */
+		      , TO_CHAR(fl.evt_beg_dt, 'YYYY-MM-DD HH:MI:SS') 
+		        || ' ~ ' || TO_CHAR(fl.evt_end_dt, 'YYYY-MM-DD HH:MI:SS') AS evt_dt  	/* 이벤트 기간 */
+		      , fl.applcn_dt                  											/* 응모 일시 */
+		      , CASE WHEN fl.ep_evt_partcptn_sn IS NOT NULL AND fl.prize_rank IS NOT NULL  /* 당첨자 목록 있고, 당첨 순위 있을 경우*/
+		             THEN TRIM(TO_CHAR(fl.prize_rank, '9,999,999'))
+		             WHEN fl.ep_evt_partcptn_sn IS NOT NULL                                /* 당첨자 목록 있고, 당첨 순위 없을 경우*/
+		             THEN 'Y'                                                           
+		             WHEN fl.ep_evt_partcptn_sn IS NULL AND fl.evt_end_dt > SYSDATE        /* 당첨자 목록 없고, 이벤트 기간 종료된 경우*/
+		             THEN 'N'
+		             ELSE ''
+		         END AS prize_info
+		  FROM (
+		        SELECT
+		                e.evt_no                      /* 이벤트 번호 */
+		              , e.evt_nm                      /* 이벤트 명 */
+		              , e.evt_stat_cd                 /* 이벤트 상태 코드 */
+		              , e.evt_beg_dt                  /* 이벤트 시작 일시 */
+		              , e.evt_end_dt                  /* 이벤트 종료 일시 */
+		              , ea.applcn_dt                  /* 응모 일시 */
+		              , ea.evt_partcptn_sn            /* 이벤트 참여 일련번호 */
+		              , ep.evt_partcptn_sn AS ep_evt_partcptn_sn
+		              , ep.prize_rank
+		          FROM evt_applcn ea
+		          JOIN evt e ON e.evt_no = ea.evt_no
+		          JOIN evt_dsp_tgt etg ON ea.evt_no = etg.evt_no and etg.EVT_DSP_TGT_TP_CD = 'MALL_ID' and etg.mall_id = #{mallId, jdbcType=VARCHAR}
+		          LEFT OUTER JOIN evt_prize ep ON ep.evt_partcptn_sn = ea.evt_partcptn_sn
+		         WHERE ea.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+		         ORDER BY ea.applcn_dt DESC
+		       )fl
+		  LEFT OUTER JOIN mv_sys_cd scEvtStat
+            ON (scEvtStat.cd = fl.evt_stat_cd AND scEvtStat.upper_cd='EVT_STAT' AND scEvtStat.lang_cd = #{lang, jdbcType=VARCHAR}) /* 답변상태 */
+         ORDER BY fl.applcn_dt DESC
+    </select>    
+</mapper>

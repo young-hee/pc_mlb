@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysFileUpload" parameterType="sysFileUpload" resultType="sysFileUpload">
+		SELECT /* com.plgrim.ncp.base.selectSysFileUpload		Generator(Generator)	2018-05-23 */
+			   FILE_UPLOAD_DATE
+			 , FILE_UPLOAD_TURN
+			 , FILE_UPLOAD_SECT_CD
+			 , FILE_UPLOAD_TP_CD
+			 , FILE_NM
+			 , PROGRS_STAT_CD
+			 , FAILR_RESN_CONT
+			 , FILE_UPLOAD_CNT
+			 , MOD_BF_CNT
+			 , MOD_AF_CNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_FILE_UPLOAD
+		 WHERE 1 = 1
+	   	   AND FILE_UPLOAD_DATE = #{fileUploadDate,jdbcType=VARCHAR}
+		   AND FILE_UPLOAD_TURN = #{fileUploadTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysFileUpload" parameterType="sysFileUpload">
+		UPDATE /* com.plgrim.ncp.base.updateSysFileUpload		Generator(Generator)	2018-05-23 */
+		SYS_FILE_UPLOAD SET
+			   FILE_UPLOAD_SECT_CD = #{fileUploadSectCd,jdbcType=VARCHAR}
+			 , FILE_UPLOAD_TP_CD = #{fileUploadTpCd,jdbcType=VARCHAR}
+			 , FILE_NM = #{fileNm,jdbcType=VARCHAR}
+			 , PROGRS_STAT_CD = #{progrsStatCd,jdbcType=VARCHAR}
+			 , FAILR_RESN_CONT = #{failrResnCont,jdbcType=VARCHAR}
+			 , FILE_UPLOAD_CNT = #{fileUploadCnt,jdbcType=NUMERIC}
+			 , MOD_BF_CNT = #{modBfCnt,jdbcType=NUMERIC}
+			 , MOD_AF_CNT = #{modAfCnt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND FILE_UPLOAD_DATE = #{fileUploadDate,jdbcType=VARCHAR}
+		   AND FILE_UPLOAD_TURN = #{fileUploadTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysFileUpload" parameterType="sysFileUpload">
+		INSERT /* com.plgrim.ncp.base.insertSysFileUpload		Generator(Generator)	2018-05-23 */
+		INTO   SYS_FILE_UPLOAD (
+			   FILE_UPLOAD_DATE
+			 , FILE_UPLOAD_TURN
+			 , FILE_UPLOAD_SECT_CD
+			 , FILE_UPLOAD_TP_CD
+			 , FILE_NM
+			 , PROGRS_STAT_CD
+			 , FAILR_RESN_CONT
+			 , FILE_UPLOAD_CNT
+			 , MOD_BF_CNT
+			 , MOD_AF_CNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{fileUploadDate,jdbcType=VARCHAR}
+			 , #{fileUploadTurn,jdbcType=NUMERIC}
+			 , #{fileUploadSectCd,jdbcType=VARCHAR}
+			 , #{fileUploadTpCd,jdbcType=VARCHAR}
+			 , #{fileNm,jdbcType=VARCHAR}
+			 , #{progrsStatCd,jdbcType=VARCHAR}
+			 , #{failrResnCont,jdbcType=VARCHAR}
+			 , #{fileUploadCnt,jdbcType=NUMERIC}
+			 , #{modBfCnt,jdbcType=NUMERIC}
+			 , #{modAfCnt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysFileUpload" parameterType="sysFileUpload">
+		DELETE /* com.plgrim.ncp.base.deleteSysFileUpload		Generator(Generator)	2018-05-23 */
+		  FROM SYS_FILE_UPLOAD
+		 WHERE 1 = 1
+		   AND FILE_UPLOAD_DATE = #{fileUploadDate,jdbcType=VARCHAR}
+		   AND FILE_UPLOAD_TURN = #{fileUploadTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

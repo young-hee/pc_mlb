@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectTestAdmin" parameterType="testAdmin" resultType="testAdmin">
+		SELECT /* com.plgrim.ncp.base.selectTestAdmin		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , PW
+			 , ADMIN_TP_CD
+			 , ADMIN_STAT_CD
+			 , APRV_DT
+			 , SECSN_DT
+			 , ADMIN_NM
+			 , ADMIN_EMP_NO
+			 , DEPT_NM
+			 , COM_ID
+			 , SHOP_ID
+			 , EMAIL
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM TEST_ADMIN
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateTestAdmin" parameterType="testAdmin">
+		UPDATE /* com.plgrim.ncp.base.updateTestAdmin		Generator(Generator)	2018-05-23 */
+		TEST_ADMIN SET
+			   PW = #{pw,jdbcType=VARCHAR}
+			 , ADMIN_TP_CD = #{adminTpCd,jdbcType=VARCHAR}
+			 , ADMIN_STAT_CD = #{adminStatCd,jdbcType=VARCHAR}
+			 , APRV_DT = #{aprvDt,jdbcType=TIMESTAMP}
+			 , SECSN_DT = #{secsnDt,jdbcType=TIMESTAMP}
+			 , ADMIN_NM = #{adminNm,jdbcType=VARCHAR}
+			 , ADMIN_EMP_NO = #{adminEmpNo,jdbcType=VARCHAR}
+			 , DEPT_NM = #{deptNm,jdbcType=VARCHAR}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , SHOP_ID = #{shopId,jdbcType=VARCHAR}
+			 , EMAIL = #{email,jdbcType=VARCHAR}
+			 , MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+			 , MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertTestAdmin" parameterType="testAdmin">
+		INSERT /* com.plgrim.ncp.base.insertTestAdmin		Generator(Generator)	2018-05-23 */
+		INTO   TEST_ADMIN (
+			   ADMIN_ID
+			 , PW
+			 , ADMIN_TP_CD
+			 , ADMIN_STAT_CD
+			 , APRV_DT
+			 , SECSN_DT
+			 , ADMIN_NM
+			 , ADMIN_EMP_NO
+			 , DEPT_NM
+			 , COM_ID
+			 , SHOP_ID
+			 , EMAIL
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{pw,jdbcType=VARCHAR}
+			 , #{adminTpCd,jdbcType=VARCHAR}
+			 , #{adminStatCd,jdbcType=VARCHAR}
+			 , #{aprvDt,jdbcType=TIMESTAMP}
+			 , #{secsnDt,jdbcType=TIMESTAMP}
+			 , #{adminNm,jdbcType=VARCHAR}
+			 , #{adminEmpNo,jdbcType=VARCHAR}
+			 , #{deptNm,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{email,jdbcType=VARCHAR}
+			 , #{mobilNationNo,jdbcType=VARCHAR}
+			 , #{mobilAreaNo,jdbcType=VARCHAR}
+			 , #{mobilTlofNo,jdbcType=VARCHAR}
+			 , #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteTestAdmin" parameterType="testAdmin">
+		DELETE /* com.plgrim.ncp.base.deleteTestAdmin		Generator(Generator)	2018-05-23 */
+		  FROM TEST_ADMIN
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

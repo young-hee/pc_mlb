@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfMailTrnsmisResultCd" parameterType="infMailTrnsmisResultCd" resultType="infMailTrnsmisResultCd">
+		SELECT /* com.plgrim.ncp.base.selectInfMailTrnsmisResultCd		Generator(Generator)	2018-05-23 */
+			   CD
+			 , BOUNCE_NM
+			 , EXPLN
+			 , SECSEN_YN
+		  FROM INF_MAIL_TRNSMIS_RESULT_CD
+		 WHERE 1 = 1
+	   	   AND CD = #{cd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateInfMailTrnsmisResultCd" parameterType="infMailTrnsmisResultCd">
+		UPDATE /* com.plgrim.ncp.base.updateInfMailTrnsmisResultCd		Generator(Generator)	2018-05-23 */
+		INF_MAIL_TRNSMIS_RESULT_CD SET
+			   BOUNCE_NM = #{bounceNm,jdbcType=VARCHAR}
+			 , EXPLN = #{expln,jdbcType=VARCHAR}
+			 , SECSEN_YN = #{secsenYn,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   AND CD = #{cd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertInfMailTrnsmisResultCd" parameterType="infMailTrnsmisResultCd">
+		INSERT /* com.plgrim.ncp.base.insertInfMailTrnsmisResultCd		Generator(Generator)	2018-05-23 */
+		INTO   INF_MAIL_TRNSMIS_RESULT_CD (
+			   CD
+			 , BOUNCE_NM
+			 , EXPLN
+			 , SECSEN_YN
+		)
+		VALUES (
+			   #{cd,jdbcType=VARCHAR}
+			 , #{bounceNm,jdbcType=VARCHAR}
+			 , #{expln,jdbcType=VARCHAR}
+			 , #{secsenYn,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteInfMailTrnsmisResultCd" parameterType="infMailTrnsmisResultCd">
+		DELETE /* com.plgrim.ncp.base.deleteInfMailTrnsmisResultCd		Generator(Generator)	2018-05-23 */
+		  FROM INF_MAIL_TRNSMIS_RESULT_CD
+		 WHERE 1 = 1
+		   AND CD = #{cd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

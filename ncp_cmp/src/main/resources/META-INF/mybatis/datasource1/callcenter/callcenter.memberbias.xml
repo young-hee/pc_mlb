@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.memberbias">
+
+	
+	<resultMap id="memberBiasResult" type="com.plgrim.ncp.biz.callcenter.result.MemberBiasResult">
+		<result property="memoSn" column="MEMO_SN" />
+		<result property="regDt" column="REG_DT" />
+		<result property="mbrId" column="MBR_ID"/>
+		<result property="mbrNm" column="MBR_NM" />
+		<result property="cstmrTpNm" column="CSTMR_TP_NM" />
+		<result property="memoCont" column="MEMO_CONT" />
+		<result property="expsrYn" column="EXPSR_YN" />
+		<result property="udterNm" column="UDTER_NM" />
+		<result property="udtDt" column="UDT_DT" />
+		<result property="mallNm" column="MALL_NM" />
+	</resultMap>
+	
+	
+	<select id="selectMemberBias" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberBiasSearchDTO" resultMap="memberBiasResult" >
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+			SELECT	/* [callcenter.memberbias.xml][selectMemberBias][고객성향  조회 CS][Henry] */
+					ccm.memo_sn
+					, ccm.reg_dt
+					, mbr.mbr_id
+					, mbr.mbr_nm
+					, cd1.cd_nm AS cstmr_tp_nm
+					, ccm.memo_cont
+					, ccm.expsr_yn
+					, sa.admin_nm AS udter_nm
+					, ccm.udt_dt
+					, (SELECT mall_nm FROM sys_mall WHERE mall_id = mbr.join_mall_id) AS mall_nm
+			  FROM	cso_cnslt_memo ccm
+			  LEFT OUTER JOIN mbr mbr ON (mbr.mbr_no = ccm.mbr_no)
+			  LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = ccm.cstmr_tp_cd)
+			  LEFT OUTER JOIN sys_admin sa ON (sa.admin_id = ccm.udter_id)
+			 WHERE 1=1
+			   AND	ccm.memo_tp_cd = 'CSTMR_INCLN'
+		   <if test='searchDateType != "" and searchDateType != null'>
+		   	<if test='searchDateType == "regDt"'>
+		   		<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >		   		 
+					AND ccm.reg_dt BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD') AND TO_DATE(#{endDt}, 'YYYY-MM-DD') + 0.99999
+				</if>				
+		   	</if>
+		   </if>
+			<if test="mbrId !='' and mbrId != null">
+			AND mbr.mbr_id = #{mbrId}
+			</if>
+			<if test='expsrYn != "" and expsrYn != null'>
+			AND ccm.expsr_yn = #{expsrYn}
+			</if>
+			<if test='regtrId != "" and regtrId != null'>
+			AND sa.admin_id = #{regtrId}
+			</if>
+			<if test="mallId != '' and mallId != null">
+			AND mbr.join_mall_id = #{mallId, jdbcType=VARCHAR}
+			</if>
+			order by ccm.udt_dt desc
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	<select id="selectMemberBiasTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberBiasSearchDTO" resultType="long" >
+		SELECT 
+		/* [callcenter.memberbias.xml][selectMemberBiasTotal][고객성향  조회 CS][Henry] */ 
+		COUNT(*)
+			FROM cso_cnslt_memo ccm
+			left outer JOIN mbr mbr ON (mbr.mbr_no = ccm.mbr_no)
+			left outer JOIN sys_cd cd1 ON (cd1.cd = ccm.cstmr_tp_cd)
+			left outer JOIN sys_admin sa ON (sa.admin_id = ccm.udter_id)
+			WHERE 1=1
+			AND	ccm.memo_tp_cd = 'CSTMR_INCLN'			
+		   <if test='searchDateType != "" and searchDateType != null'>
+		   	<if test='searchDateType == "regDt"'>
+		   		<if test='startDt != "" and startDt != null and endDt != "" and endDt != null' >		   		 
+					AND ccm.reg_dt BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD') AND TO_DATE(#{endDt}, 'YYYY-MM-DD') + 0.99999
+				</if>				
+		   	</if>
+		   </if>
+		<if test="mbrId !='' and mbrId != null">
+			AND mbr.mbr_id = #{mbrId}
+		</if>
+		<if test='expsrYn != "" and expsrYn != null'>
+			AND ccm.expsr_yn = #{expsrYn}
+		</if>
+		<if test='regtrId != "" and regtrId != null'>
+			AND sa.admin_id = #{regtrId}
+		</if>
+		<if test="mallId != '' and mallId != null">
+			AND mbr.join_mall_id = #{mallId, jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<insert id="insertMemberBias" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberBiasDTO">
+		INSERT  
+	    INTO CSO_CNSLT_MEMO /* [callcenter.memberbias.xml][insertMemberBias][고객성향  조회 CS][Rooter] */ 
+		(
+	        MEMO_SN
+	       ,MEMO_REGTR_ID
+	       ,MEMO_TP_CD
+	       ,CSTMR_TP_CD
+	       ,EXPSR_YN
+	       ,MEMO_CONT
+	       ,ORD_NO
+	       ,CLM_NO
+	       ,MBR_NO
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{memoSn,jdbcType=NUMERIC}
+	       ,#{memoRegtrId,jdbcType=VARCHAR}
+	       ,#{memoTpCd,jdbcType=VARCHAR}
+	       ,#{cstmrTpCd,jdbcType=VARCHAR}
+	       ,#{expsrYn,jdbcType=VARCHAR}
+	       ,#{memoCont,jdbcType=VARCHAR}
+	       ,#{ordNo,jdbcType=VARCHAR}
+	       ,#{clmNo,jdbcType=VARCHAR}
+	       ,#{mbrNo,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   	
+	</insert>
+	
+	<update id="updateMemberBias" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberBiasGridDTO">
+        UPDATE  
+        CSO_CNSLT_MEMO /* [callcenter.memberbias.xml][updateMemberBias][고객성향  조회 CS][Rooter] */  
+        SET   EXPSR_YN = #{expsrYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     MEMO_SN = #{memoSn,jdbcType=NUMERIC}
+    </update>
+    
+    <select id="selectMemberBiasPop" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberBiasSearchDTO" resultMap="memberBiasResult">
+    	SELECT /* [callcenter.memberbias.xml][selectMemberBiasPop][고객성향  조회 CS][Rooter] */
+    			ccm.memo_sn
+    			, ccm.cstmr_tp_cd
+    			, cd.cd_nm AS cstmr_tp_nm
+    			, ccm.memo_cont
+    			, ccm.udt_dt
+    			, ccm.expsr_yn    			    			
+    	  FROM 	cso_cnslt_memo ccm
+    	  LEFT OUTER JOIN SYS_CD cd ON (cd.cd = ccm.cstmr_tp_cd)
+    	 WHERE 	mbr_no = #{mbrNo,jdbcType=VARCHAR}
+    	 ORDER BY udt_dt DESC
+    </select>
+
+	<select id="selectMemberBiasPopTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.MemberBiasSearchDTO" resultType="long">
+		SELECT /* [callcenter.memberbias.xml][selectMemberBiasPopTotal][고객성향  조회 CS][Rooter] */
+		COUNT(*)
+		FROM 	cso_cnslt_memo
+		WHERE 	mbr_no = #{mbrNo,jdbcType=VARCHAR}
+	</select>
+	
+	
+	
+	<update id="updateMemberBiasPop" parameterType="com.plgrim.ncp.biz.callcenter.result.MemberBiasResultExtend">
+        UPDATE  
+        CSO_CNSLT_MEMO /* [callcenter.memberbias.xml][updateMemberBias][고객성향  조회 CS][Rooter] */  
+        SET   EXPSR_YN = #{expsrYn,jdbcType=VARCHAR}
+        		,CSTMR_TP_CD = #{cstmrTpCd,jdbcType=VARCHAR}
+        		,MEMO_CONT = #{memoCont,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     MEMO_SN = #{memoSn,jdbcType=NUMERIC}
+    </update>
+
+	
+
+</mapper>

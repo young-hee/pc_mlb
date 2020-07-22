@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.mall">
+
+	<!-- /* 몰 코드값 조회 */ -->
+	<select id="getMallCodeList" resultType="sysMall">
+	SELECT /* [commons.mall.xml][getMallCodeList][몰코드조회][JESSI] */
+           sm.mall_id, mall_nm, mall_url 
+	  FROM sys_mall sm
+	 WHERE sm.use_yn = 'Y'
+	 ORDER BY mall_id
+	</select>
+
+    <select id="selectCampaginEvtInfo" resultType="java.lang.String">
+    /* [commons.mall.xml][selectCampaginEvtInfo][수신동의 유도 캠페인 이벤트 응모가능여부][Moon.Sungho] */
+		SELECT 
+				CASE WHEN EVT_BEG_DT <![CDATA[<=]]> SYSDATE AND EVT_END_DT <![CDATA[>=]]> SYSDATE THEN 'Y' ELSE 'N' END EVENT_ENTRY_YN
+		  FROM EVT
+		 WHERE 1=1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 수신동의 유도 캠페인쿠폰 카운트 -->
+    <select id = "selectMyCampaginEvtCount" parameterType ="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIssuCpn" resultType="Integer">
+		SELECT  /* [commons.mall.xml][selectMyCampaginEvtCount][조회 : 수신동의 유도 캠페인쿠폰 카운트 ] */   
+		COUNT(*)
+		  FROM EVT_APPLCN MIC JOIN MBR MBR ON MIC.MBR_NO = MBR.MBR_NO JOIN EVT PC ON MIC.EVT_NO = PC.EVT_NO
+		 WHERE 1=1
+		   AND MIC.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MIC.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

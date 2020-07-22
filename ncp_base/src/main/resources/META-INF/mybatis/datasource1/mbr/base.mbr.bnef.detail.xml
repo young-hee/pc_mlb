@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrBnefDetail" parameterType="mbrBnefDetail" resultType="mbrBnefDetail">
+		SELECT /* com.plgrim.ncp.base.selectMbrBnefDetail		Generator(Generator)	2018-05-23 */
+			   BNEF_SN
+			 , BNEF_DETAIL_TURN
+			 , BNEF_TP_CD
+			 , BNEF_BEG_DT
+			 , BNEF_END_DT
+			 , APRV_SECT_CD
+			 , APRV_ADMIN_ID
+			 , APRV_DT
+			 , STPGE_ADMIN_ID
+			 , STPGE_DT
+			 , STPGE_RESN_CONT
+			 , PYMNT_RESN_DSCR
+			 , PYMNT_PSB_COUNT
+			 , PRM_NO
+			 , PNT_AMT
+			 , PNT_APL_RESN_CD
+			 , WEBPNT_AMT
+			 , WEBPNT_VALID_DAYCNT
+			 , WEBPNT_RESN_CD
+			 , WEBPNT_DETAIL_RESN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_BNEF_DETAIL
+		 WHERE 1 = 1
+	   	   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+		   AND BNEF_DETAIL_TURN = #{bnefDetailTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrBnefDetail" parameterType="mbrBnefDetail">
+		UPDATE /* com.plgrim.ncp.base.updateMbrBnefDetail		Generator(Generator)	2018-05-23 */
+		MBR_BNEF_DETAIL SET
+			   BNEF_TP_CD = #{bnefTpCd,jdbcType=VARCHAR}
+			 , BNEF_BEG_DT = #{bnefBegDt,jdbcType=TIMESTAMP}
+			 , BNEF_END_DT = #{bnefEndDt,jdbcType=TIMESTAMP}
+			 , APRV_SECT_CD = #{aprvSectCd,jdbcType=VARCHAR}
+			 , APRV_ADMIN_ID = #{aprvAdminId,jdbcType=VARCHAR}
+			 , APRV_DT = #{aprvDt,jdbcType=TIMESTAMP}
+			 , STPGE_ADMIN_ID = #{stpgeAdminId,jdbcType=VARCHAR}
+			 , STPGE_DT = #{stpgeDt,jdbcType=TIMESTAMP}
+			 , STPGE_RESN_CONT = #{stpgeResnCont,jdbcType=VARCHAR}
+			 , PYMNT_RESN_DSCR = #{pymntResnDscr,jdbcType=VARCHAR}
+			 , PYMNT_PSB_COUNT = #{pymntPsbCount,jdbcType=NUMERIC}
+			 , PRM_NO = #{prmNo,jdbcType=VARCHAR}
+			 , PNT_AMT = #{pntAmt,jdbcType=NUMERIC}
+			 , PNT_APL_RESN_CD = #{pntAplResnCd,jdbcType=VARCHAR}
+			 , WEBPNT_AMT = #{webpntAmt,jdbcType=NUMERIC}
+			 , WEBPNT_VALID_DAYCNT = #{webpntValidDaycnt,jdbcType=NUMERIC}
+			 , WEBPNT_RESN_CD = #{webpntResnCd,jdbcType=VARCHAR}
+			 , WEBPNT_DETAIL_RESN_CD = #{webpntDetailResnCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+		   AND BNEF_DETAIL_TURN = #{bnefDetailTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrBnefDetail" parameterType="mbrBnefDetail">
+		INSERT /* com.plgrim.ncp.base.insertMbrBnefDetail		Generator(Generator)	2018-05-23 */
+		INTO   MBR_BNEF_DETAIL (
+			   BNEF_SN
+			 , BNEF_DETAIL_TURN
+			 , BNEF_TP_CD
+			 , BNEF_BEG_DT
+			 , BNEF_END_DT
+			 , APRV_SECT_CD
+			 , APRV_ADMIN_ID
+			 , APRV_DT
+			 , STPGE_ADMIN_ID
+			 , STPGE_DT
+			 , STPGE_RESN_CONT
+			 , PYMNT_RESN_DSCR
+			 , PYMNT_PSB_COUNT
+			 , PRM_NO
+			 , PNT_AMT
+			 , PNT_APL_RESN_CD
+			 , WEBPNT_AMT
+			 , WEBPNT_VALID_DAYCNT
+			 , WEBPNT_RESN_CD
+			 , WEBPNT_DETAIL_RESN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{bnefSn,jdbcType=NUMERIC}
+			 , #{bnefDetailTurn,jdbcType=NUMERIC}
+			 , #{bnefTpCd,jdbcType=VARCHAR}
+			 , #{bnefBegDt,jdbcType=TIMESTAMP}
+			 , #{bnefEndDt,jdbcType=TIMESTAMP}
+			 , #{aprvSectCd,jdbcType=VARCHAR}
+			 , #{aprvAdminId,jdbcType=VARCHAR}
+			 , #{aprvDt,jdbcType=TIMESTAMP}
+			 , #{stpgeAdminId,jdbcType=VARCHAR}
+			 , #{stpgeDt,jdbcType=TIMESTAMP}
+			 , #{stpgeResnCont,jdbcType=VARCHAR}
+			 , #{pymntResnDscr,jdbcType=VARCHAR}
+			 , #{pymntPsbCount,jdbcType=NUMERIC}
+			 , #{prmNo,jdbcType=VARCHAR}
+			 , #{pntAmt,jdbcType=NUMERIC}
+			 , #{pntAplResnCd,jdbcType=VARCHAR}
+			 , #{webpntAmt,jdbcType=NUMERIC}
+			 , #{webpntValidDaycnt,jdbcType=NUMERIC}
+			 , #{webpntResnCd,jdbcType=VARCHAR}
+			 , #{webpntDetailResnCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrBnefDetail" parameterType="mbrBnefDetail">
+		DELETE /* com.plgrim.ncp.base.deleteMbrBnefDetail		Generator(Generator)	2018-05-23 */
+		  FROM MBR_BNEF_DETAIL
+		 WHERE 1 = 1
+		   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+		   AND BNEF_DETAIL_TURN = #{bnefDetailTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

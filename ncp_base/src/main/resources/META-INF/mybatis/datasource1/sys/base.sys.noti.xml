@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysNoti" parameterType="sysNoti" resultType="sysNoti">
+		SELECT /* com.plgrim.ncp.base.selectSysNoti		Generator(Generator)	2018-05-23 */
+			   NOTI_SN
+			 , NOTI_TP_CD
+			 , NOTI_SECT_CD
+			 , REG_ADMIN_ID
+			 , NOTI_REG_DT
+			 , DSP_YN
+			 , UPEND_FIX_YN
+			 , SORT_SEQ
+			 , LANG_CD
+			 , NOTI_SJ
+			 , NOTI_CONT_USE_SECT_CD
+			 , PC_NOTI_CONT
+			 , MOBILE_NOTI_CONT
+			 , INQIRE_NUM
+			 , POPUP_YN
+			 , POPUP_BEG_DT
+			 , POPUP_END_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_NOTI
+		 WHERE 1 = 1
+	   	   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysNoti" parameterType="sysNoti">
+		UPDATE /* com.plgrim.ncp.base.updateSysNoti		Generator(Generator)	2018-05-23 */
+		SYS_NOTI SET
+			   NOTI_TP_CD = #{notiTpCd,jdbcType=VARCHAR}
+			 , NOTI_SECT_CD = #{notiSectCd,jdbcType=VARCHAR}
+			 , REG_ADMIN_ID = #{regAdminId,jdbcType=VARCHAR}
+			 , NOTI_REG_DT = #{notiRegDt,jdbcType=TIMESTAMP}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , UPEND_FIX_YN = #{upendFixYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , NOTI_SJ = #{notiSj,jdbcType=VARCHAR}
+			 , NOTI_CONT_USE_SECT_CD = #{notiContUseSectCd,jdbcType=VARCHAR}
+			 , PC_NOTI_CONT = #{pcNotiCont,jdbcType=CLOB}
+			 , MOBILE_NOTI_CONT = #{mobileNotiCont,jdbcType=CLOB}
+			 , INQIRE_NUM = #{inqireNum,jdbcType=NUMERIC}
+			 , POPUP_YN = #{popupYn,jdbcType=VARCHAR}
+			 , POPUP_BEG_DT = #{popupBegDt,jdbcType=TIMESTAMP}
+			 , POPUP_END_DT = #{popupEndDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysNoti" parameterType="sysNoti">
+		INSERT /* com.plgrim.ncp.base.insertSysNoti		Generator(Generator)	2018-05-23 */
+		INTO   SYS_NOTI (
+			   NOTI_SN
+			 , NOTI_TP_CD
+			 , NOTI_SECT_CD
+			 , REG_ADMIN_ID
+			 , NOTI_REG_DT
+			 , DSP_YN
+			 , UPEND_FIX_YN
+			 , SORT_SEQ
+			 , LANG_CD
+			 , NOTI_SJ
+			 , NOTI_CONT_USE_SECT_CD
+			 , PC_NOTI_CONT
+			 , MOBILE_NOTI_CONT
+			 , INQIRE_NUM
+			 , POPUP_YN
+			 , POPUP_BEG_DT
+			 , POPUP_END_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{notiSn,jdbcType=NUMERIC}
+			 , #{notiTpCd,jdbcType=VARCHAR}
+			 , #{notiSectCd,jdbcType=VARCHAR}
+			 , #{regAdminId,jdbcType=VARCHAR}
+			 , #{notiRegDt,jdbcType=TIMESTAMP}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{upendFixYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{notiSj,jdbcType=VARCHAR}
+			 , #{notiContUseSectCd,jdbcType=VARCHAR}
+			 , #{pcNotiCont,jdbcType=CLOB}
+			 , #{mobileNotiCont,jdbcType=CLOB}
+			 , #{inqireNum,jdbcType=NUMERIC}
+			 , #{popupYn,jdbcType=VARCHAR}
+			 , #{popupBegDt,jdbcType=TIMESTAMP}
+			 , #{popupEndDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysNoti" parameterType="sysNoti">
+		DELETE /* com.plgrim.ncp.base.deleteSysNoti		Generator(Generator)	2018-05-23 */
+		  FROM SYS_NOTI
+		 WHERE 1 = 1
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

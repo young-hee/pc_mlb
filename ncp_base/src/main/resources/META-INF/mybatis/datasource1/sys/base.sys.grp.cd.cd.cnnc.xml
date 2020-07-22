@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysGrpCdCdCnnc" parameterType="sysGrpCdCdCnnc" resultType="sysGrpCdCdCnnc">
+		SELECT /* com.plgrim.ncp.base.selectSysGrpCdCdCnnc		Generator(Generator)	2018-05-23 */
+			   GRP_CD
+			 , CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , ASSTN_CD_1
+			 , ASSTN_CD_2
+			 , CD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_GRP_CD_CD_CNNC
+		 WHERE 1 = 1
+	   	   AND GRP_CD = #{grpCd,jdbcType=VARCHAR}
+		   AND CD = #{cd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysGrpCdCdCnnc" parameterType="sysGrpCdCdCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateSysGrpCdCdCnnc		Generator(Generator)	2018-05-23 */
+		SYS_GRP_CD_CD_CNNC SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , ASSTN_CD_1 = #{asstnCd1,jdbcType=VARCHAR}
+			 , ASSTN_CD_2 = #{asstnCd2,jdbcType=VARCHAR}
+			 , CD_DSCR = #{cdDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GRP_CD = #{grpCd,jdbcType=VARCHAR}
+		   AND CD = #{cd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysGrpCdCdCnnc" parameterType="sysGrpCdCdCnnc">
+		INSERT /* com.plgrim.ncp.base.insertSysGrpCdCdCnnc		Generator(Generator)	2018-05-23 */
+		INTO   SYS_GRP_CD_CD_CNNC (
+			   GRP_CD
+			 , CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , ASSTN_CD_1
+			 , ASSTN_CD_2
+			 , CD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{grpCd,jdbcType=VARCHAR}
+			 , #{cd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{asstnCd1,jdbcType=VARCHAR}
+			 , #{asstnCd2,jdbcType=VARCHAR}
+			 , #{cdDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysGrpCdCdCnnc" parameterType="sysGrpCdCdCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteSysGrpCdCdCnnc		Generator(Generator)	2018-05-23 */
+		  FROM SYS_GRP_CD_CD_CNNC
+		 WHERE 1 = 1
+		   AND GRP_CD = #{grpCd,jdbcType=VARCHAR}
+		   AND CD = #{cd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

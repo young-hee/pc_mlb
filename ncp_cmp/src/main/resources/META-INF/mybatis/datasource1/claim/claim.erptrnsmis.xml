@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.claim.erptrnsmis">
+
+	<insert id="insertErpTrnsmisForClaim" parameterType="com.plgrim.ncp.biz.claim.data.ClmWrhsGodErpTrnsmisDTO">
+		INSERT INTO clm_wrhs_god_erp_trnsmis (
+			ord_no
+			, clm_no
+			, clm_erp_trnsmis_tp_cd
+			, clm_wrhs_god_turn
+			, qty_turn
+			, erp_trnsmis_cd
+			, erp_trnsmis_dt
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+		)
+		SELECT a.ord_no
+				, b.clm_no
+				, #{clmErpTrnsmisTpCd, jdbcType=VARCHAR}
+				, b.clm_wrhs_god_turn
+				, a.qty_turn
+				, #{erpTrnsmisCd, jdbcType=VARCHAR}
+				, DECODE(#{erpTrnsmisCd, jdbcType=VARCHAR}, 'SUCCES', SYSDATE, '')
+				, #{regtrId, jdbcType=VARCHAR}
+				, SYSDATE
+				, #{regtrId, jdbcType=VARCHAR}
+				, SYSDATE
+			FROM inf_ord_god_erp_dstb a
+				INNER JOIN ord_clm_god_cnnc b ON a.ord_no = b.ord_no AND a.ord_god_turn = b.ord_god_turn 
+			WHERE a.ord_no = #{ordNo, jdbcType=VARCHAR}
+				AND b.clm_no = #{clmNo, jdbcType=VARCHAR}
+				<choose>
+					<when test='clmErpTrnsmisTpCd != null and clmErpTrnsmisTpCd == "SALES_CNCL"'>
+						AND a.clm_no = #{clmNo, jdbcType=VARCHAR}
+						AND b.god_cnnc_tp_cd = 'WRHS_GOD_CNNC'
+						AND EXISTS (SELECT 1 FROM lgs_dlivy_drct_god WHERE dlivy_drct_god_no = a.dlivy_drct_god_no AND dlv_shop_id IS NOT NULL)
+						AND NOT EXISTS (SELECT 1 FROM pay WHERE ord_no = a.ord_no AND mpay_mn_yn = 'Y' AND deal_tp_cd = 'DEPST_WAIT')
+					</when>
+					<when test='clmErpTrnsmisTpCd != null and clmErpTrnsmisTpCd == "SALES"'>
+						AND b.god_cnnc_tp_cd = 'DLIVY_GOD_CNNC'
+                		AND a.ord_god_qty_turn <![CDATA[<=]]> (SELECT dlivy_drct_qty - NVL(dlivy_drct_cncl_qty, 0) FROM lgs_dlivy_drct_god WHERE dlivy_drct_god_no = a.dlivy_drct_god_no)
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
+	</insert>
+</mapper>

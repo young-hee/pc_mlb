@@ -1,0 +1,3622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.cart.select">
+
+	<select id="selectCartNo" parameterType="bsk" resultType="string">
+		SELECT /* [cart.select.xml][selectCartNo][카트번호조회][박문철] */
+		       bsk_no AS bskNo
+		FROM   BSK
+		WHERE  <choose>
+				<when test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNo)">
+				sesion_id = #{sesionId,jdbcType=VARCHAR}
+				</when>
+				<otherwise>
+				mbr_no = #{mbrNo,jdbcType=VARCHAR}
+				</otherwise>
+			   </choose>
+		AND    bsk_tp_cd = #{bskTpCd,jdbcType=VARCHAR}
+		AND    mall_id   = #{mallId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectBskInfo" parameterType="bsk" resultType="bsk">
+		SELECT  /* [cart.select.xml][selectBskInfo][카트마스터정보조회][박문철] */
+			    BSK_NO       AS bskNo
+               ,MALL_ID      AS mallId
+               ,LANG_CD		 AS langCd
+               ,BSK_TP_CD    AS bskTpCd
+               ,MBR_SECT_CD  AS mbrSectCd
+               ,MBR_NO       AS mbrNo
+               ,SESION_ID    AS sesionId
+		FROM   BSK
+		WHERE  <choose>
+					<when test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNo)">
+					sesion_id   = #{sesionId,jdbcType=VARCHAR}
+					</when>
+					<otherwise>
+					mbr_no = #{mbrNo,jdbcType=VARCHAR}
+					</otherwise>
+				</choose>
+	    AND  bsk_tp_cd = #{bskTpCd,jdbcType=VARCHAR}
+	    AND  mall_id   = #{mallId,jdbcType=VARCHAR}
+
+	
+
+	</select>
+
+
+	<select id="selectBskInfoBySession" parameterType="bsk" resultType="bsk">
+		SELECT /* [cart.select.xml][selectBskInfoBySession][세션아이디로 장바구니 조회][박문철] */
+		        BSK_NO       AS bskNo
+               ,MALL_ID      AS mallId
+               ,LANG_CD		 AS langCd
+               ,BSK_TP_CD    AS bskTpCd
+               ,SESION_ID    AS sesionId
+		FROM   BSK
+		WHERE  sesion_id = #{sesionId,jdbcType=VARCHAR}
+		AND    bsk_tp_cd = #{bskTpCd,jdbcType=VARCHAR}
+
+
+
+	</select>
+
+
+
+	<select id="selectBskForUpdate" parameterType="String" resultType="bsk">
+		SELECT /* [cart.select.xml][selectBskForUpdate][중복 주문 방지을 위해서 BSK 테이블에 bsk_no에 대하여 Lock 처리][alan] */
+		        BSK_NO       AS bskNo
+               ,MALL_ID      AS mallId
+               ,LANG_CD		 AS langCd
+               ,BSK_TP_CD    AS bskTpCd
+		FROM   BSK
+		WHERE  mbr_no = #{mbrNo,jdbcType=VARCHAR}
+		AND    rownum = 1
+		FOR UPDATE NOWAIT
+	</select>
+
+	<resultMap id="cpstGodCnncResult" type="com.plgrim.ncp.biz.cart.result.CartCpstGodResult">
+		<result property="bskCpstGodCnnc.bskNo" column="bsk_no" />
+		<result property="bskCpstGodCnnc.godTurn" column="god_turn" />
+		<result property="bskCpstGodCnnc.cpstGodTurn" column="cpst_god_turn" />
+		<result property="bskCpstGodCnnc.pckageGodTpCd" column="pckage_god_tp_cd" />
+		<result property="bskCpstGodCnnc.cpstGodQty" column="cpst_god_qty" />
+		<result property="bskCpstGodCnnc.sortSeq" column="sort_seq" />
+
+		<result property="godNo" column="god_no" />
+		<result property="itmNo" column="itm_no" />
+		<result property="skuNo" column="sku_no" />
+
+		<result property="god.godNo" column="god_no" />
+		<result property="god.godNm" column="god_nm" />
+		<result property="god.erpGodNo" column="erp_god_no" />
+		<result property="god.brndId" column="brnd_id" />
+		<result property="god.rtlPrc" column="rtl_prc" />
+		<result property="god.csmrPrc" column="csmr_prc" />
+		<result property="god.empPrc" column="emp_prc" />
+		<result property="god.colorCd" column="color_cd" />
+		<result property="god.clorChipImgUrl" column="clor_chip_img_url" />
+	</resultMap>
+    <select id="selectBskCpstGodCnnc" parameterType="bskGod" resultMap="cpstGodCnncResult">
+        SELECT /* [cart.select.xml][selectBskCpstGodCnnc][카트구성상품정보조회on카트수량갱신][김성엽] */
+               cpst.bsk_no
+              ,cpst.god_turn
+              ,cpst.cpst_god_turn
+              ,nvl(cpst.pckage_god_tp_cd, '') AS pckage_god_tp_cd
+              ,nvl(cpst.cpst_god_qty, 0) AS cpst_god_qty
+              ,nvl(cpst.sort_seq, 0) AS sort_seq
+			  ,bsk.god_no
+			  ,bsk.itm_no
+			  ,itm.sku_no
+			  ,god.god_nm
+			  ,god.erp_god_no
+			  ,god.brnd_id
+			  ,NVL(resrtlprc.resve_rtl_prc, god.rtl_prc) AS rtl_prc
+              ,NVL(rescsmrprc.resve_csmr_prc, god.csmr_prc) AS csmr_prc
+              ,NVL(resempprc.resve_emp_prc, god.emp_prc) AS emp_prc
+			  ,god.color_cd
+			  ,god.clor_chip_img_url
+          FROM bsk_cpst_god_cnnc cpst
+    		   INNER JOIN bsk_god bsk ON cpst.bsk_no = bsk.bsk_no AND cpst.cpst_god_turn = bsk.god_turn
+    		   INNER JOIN god god ON bsk.god_no = god.god_no
+    		   INNER JOIN god_itm itm ON bsk.itm_no = itm.itm_no
+			   LEFT OUTER JOIN god_prc_resve resrtlprc
+	                   ON god.god_no = resrtlprc.god_no
+	                  AND SYSDATE BETWEEN resrtlprc.resve_beg_dt AND resrtlprc.resve_end_dt
+	                  AND resrtlprc.prc_resve_sect_cd = 'RTL_PRC'
+	                  AND resrtlprc.resve_yn='Y'
+			   LEFT OUTER JOIN god_prc_resve rescsmrprc
+	                   ON god.god_no = rescsmrprc.god_no
+	                  AND SYSDATE BETWEEN rescsmrprc.resve_beg_dt AND rescsmrprc.resve_end_dt
+	                  AND rescsmrprc.prc_resve_sect_cd = 'CSMR_PRC'
+	                  AND rescsmrprc.resve_yn='Y'
+			   LEFT OUTER JOIN god_prc_resve resempprc
+	                   ON god.god_no = resempprc.god_no
+	                  AND SYSDATE BETWEEN resempprc.resve_beg_dt AND resempprc.resve_end_dt
+	                  AND resempprc.prc_resve_sect_cd = 'EMP_PRC'
+	                  AND resempprc.resve_yn='Y'
+         WHERE cpst.bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	       AND cpst.god_turn = #{godTurn,jdbcType=NUMERIC}
+	       AND cpst.pckage_god_tp_cd != 'ADIT_CPST_GOD'
+	     ORDER BY cpst.sort_seq
+    </select>
+
+    <select id="selectCartByMbrNo" parameterType="bsk" resultType="bskGod">
+		   SELECT /* [cart.select.xml][selectCartByMbrNo][회원카트조회][김성엽] */
+                 bsk_no,
+                 (SELECT NVL(MAX(god_turn),0) +1 FROM bsk_god WHERE BSK_NO = t1.bsk_no) as god_turn
+           FROM  BSK t1
+           WHERE mbr_no     = #{mbrNo,jdbcType=VARCHAR}
+           AND   bsk_tp_cd  = #{bskTpCd,jdbcType=VARCHAR}
+           AND   mall_id    = #{mallId,jdbcType=VARCHAR}
+
+		
+
+    </select>
+
+    <select id="selectCartCount" parameterType="String" resultType="Integer">
+		SELECT /* [cart.select.xml][selectCartCount][회원카트수량조회][김성엽] */
+		       count(1)
+		  FROM bsk_god
+		 WHERE bsk_no    = #{bskNo,jdbcType=VARCHAR}
+		   AND bsk_tp_cd = #{bskTpCd,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectCartGodCount" parameterType="String" resultType="Integer">
+    	SELECT /* [cart.select.xml][selectCartCount][장바구니 상품 수량 조회][박문철] */
+		       COUNT(1) AS godCnt
+		FROM   BSK_GOD gd
+		WHERE  gd.bsk_no = #{bskNo,jdbcType=VARCHAR}
+		AND    gd.bsk_tp_cd = #{bskTpCd,jdbcType=VARCHAR}
+		AND    NOT EXISTS (
+		                    SELECT 'Y'
+		                    FROM   BSK_CPST_GOD_CNNC cpst
+		                    WHERE  cpst.bsk_no = gd.bsk_no
+		                    AND    cpst.cpst_god_turn = gd.god_turn
+		                    AND    cpst.pckage_god_tp_cd in ('SET_GOD','PCKAGE_GOD')
+		                  )
+    </select>
+
+    <select id="selectBskGodList" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultType="bskGodExtend">
+       SELECT    /* [cart.select.xml][selectBskGodList][장바구니 상품 조회][박문철] */
+                 t1.bsk_no as bskNo,
+                 t1.parent_god_turn as parentGodTurn,
+                 t1.pckage_god_yn as pckageGodYn,
+                 nvl(t2.cpst_god_turn,t1.parent_god_turn) as godTurn
+          FROM
+          (
+                SELECT
+                         t2.bsk_no,
+                         t2.pckage_god_yn,
+                         t2.parent_god_turn
+                FROM
+                (
+                SELECT
+                        t1.*,
+                        t2.pckage_god_yn,
+                        t2.dlv_sect_cd,
+                        nvl(t2.pkup_shop_sn,1) as pkup_shop_sn
+                FROM
+                (
+                SELECT
+                        bsk_no,
+                        parent_god_turn,
+                        listagg(god_no,',') within group(order by sort_seq) as god_no,
+                        listagg(itm_no,',') within group(order by sort_seq) as itm_no
+                FROM (
+
+                          SELECT
+                               bskgod.bsk_no,
+                               bskgod.god_no,
+                               bskgod.itm_no,
+                               NVL(t1.pckage_god_tp_cd,'MASTER') AS pckage_god_tp_cd,
+                               NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+                               NVL(t1.sort_seq,0) as sort_seq
+
+                          FROM BSK_GOD bskgod
+                          LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+                                       ON bskgod.bsk_no   = t1.bsk_no
+                                      AND bskgod.god_turn = t1.cpst_god_turn
+                          WHERE bskgod.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+                          AND   bskgod.god_turn IN
+                                <foreach collection="bskGodList" item="bskGod" index="idx" open="(" separator="," close=")">
+                                    #{bskGod.godTurn,jdbcType=NUMERIC}
+                                </foreach>
+                ) group by bsk_no,parent_god_turn
+                ) t1
+                JOIN BSK_GOD t2 on t1.bsk_no = t2.bsk_no and t1.parent_god_turn = t2.god_turn
+                ) t1
+                JOIN (
+                        SELECT
+                                t1.*,
+                                t2.pckage_god_yn,
+                                t2.dlv_sect_cd,
+                                nvl(t2.pkup_shop_sn,1) as pkup_shop_sn
+                        FROM
+                        (
+                        SELECT
+                                bsk_no,
+                                parent_god_turn,
+                                listagg(god_no,',') within group(order by sort_seq) as god_no,
+                                listagg(itm_no,',') within group(order by sort_seq) as itm_no
+                        FROM (
+                                  SELECT
+                                       bskgod.bsk_no,
+                                       bskgod.god_no,
+                                       bskgod.itm_no,
+                                       NVL(t1.pckage_god_tp_cd,'MASTER') AS pckage_god_tp_cd,
+                                       NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+                                       NVL(t1.sort_seq,0) as sort_seq
+
+                                  FROM BSK_GOD bskgod
+                                  LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+                                               ON bskgod.bsk_no   = t1.bsk_no
+                                              AND bskgod.god_turn = t1.cpst_god_turn
+                                  WHERE bskgod.bsk_no = #{targetBsk.bskNo,jdbcType=VARCHAR}
+                        ) group by bsk_no,parent_god_turn
+                        ) t1
+                        JOIN BSK_GOD t2 on t1.bsk_no = t2.bsk_no and t1.parent_god_turn = t2.god_turn
+                      ) t2
+                  ON t1.god_no = t2.god_no
+                 AND t1.itm_no = t2.itm_no
+                 AND t1.dlv_sect_cd = t2.dlv_sect_cd
+                 AND t1.pkup_shop_sn = t2.pkup_shop_sn
+        ) t1
+        LEFT OUTER JOIN BSK_CPST_GOD_CNNC t2
+                     ON t1.bsk_no = t2.bsk_no
+                    AND t1.parent_god_turn = t2.god_turn
+    </select>
+
+	<resultMap id="cartGodResult" type="com.plgrim.ncp.biz.cart.result.CartGodResult">
+		<result property="grpSeq" column="grp_seq" />
+		<result property="subGrpSeq" column="sub_grp_seq" />
+		<result property="dlvGrpRnum" column="dlv_grp_rnum" />
+		<result property="dlvGrpCnt" column="dlv_grp_cnt" />
+		<result property="subGrpCnt" column="sub_grp_count" />
+		<result property="rowSpanCount" column="row_span_count" />
+		
+		<result property="parentGodTurn" column="parent_god_turn" />
+		<result property="bskGod.bskNo" column="bsk_no" />
+		<result property="bskGod.godTurn" column="god_turn" />
+		<result property="bskGod.godNo" column="god_no" />
+		<result property="bskGod.itmNo" column="itm_no" />
+		<result property="bskGod.itmQty" column="itm_qty" />
+		<result property="bskGod.pckageGodYn" column="pckage_god_yn" />
+		<result property="bskGod.dlvSectCd" column="dlv_sect_cd" />
+		<result property="bskGod.pkupShopSn" column="pkup_shop_sn" />
+		<result property="bskGod.recomendComCd" column="recomend_com_cd" />
+		<result property="pckageGodTpCd" column="pckage_god_tp_cd"/>
+		<result property="sortSeq" column="sort_seq" />
+
+		<result property="god.godNo" column="god_no" />
+		<result property="god.erpGodNo" column="erp_god_no" />
+		<result property="god.brndId" column="brnd_id" />
+		<result property="god.brndGrpId" column="brnd_grp_id" />
+		<result property="god.godNm" column="god_nm" />
+		<result property="god.mobileGodNm" column="mobile_god_nm" />
+		<result property="god.colorNm" column="color_nm" />
+		<result property="god.colorCd" column="color_cd" />
+		<result property="god.clorChipImgUrl" column="clor_chip_img_url" />
+		<result property="god.godSaleSectCd" column="god_sale_sect_cd" />
+		<result property="god.godTpCd" column="god_tp_cd" />
+		<result property="god.partmalSectCd" column="partmal_sect_cd" />
+		<result property="god.resveSaleGodYn" column="resve_sale_god_yn" />
+		<result property="god.resveOrdPaySectCd" column="resve_ord_pay_sect_cd" />
+		<result property="god.resveOrdPartPayAmt" column="resve_ord_part_pay_amt" />
+		<result property="god.resveOrdPayClosDt" column="resve_ord_pay_clos_dt" />
+		<result property="god.resveOrdDlivyPrearngeDate" column="resve_ord_dlivy_prearnge_date" />
+		<result property="god.dmstcDlvCstPlcSn" column="dmstc_dlv_cst_plc_sn" />
+		<result property="god.ovseaDlvPsbYn" column="ovsea_dlv_psb_yn" />
+		<result property="god.ovseaDlvDmstcDlvCstPlcSn" column="ovsea_dlv_dmstc_dlv_cst_plc_sn" />
+		<result property="god.ovseaDlvCstPlcSn" column="ovsea_dlv_cst_plc_sn" />
+		<result property="god.godWt" column="god_wt" />
+		<result property="god.godVol" column="god_vol" />
+		<result property="god.minOrdQty" column="min_ord_qty" />
+		<result property="god.maxOrdQty" column="max_ord_qty" />
+		<result property="god.pntAccmlYn" column="pnt_accml_yn" />
+		<result property="god.pntAccmlRt" column="pnt_accml_rt" />
+		<result property="god.pntUseYn" column="pnt_use_yn" />
+		<result property="god.recomendSexCd" column="recomend_sex_cd" />
+        <!--P포인트-->
+        <result property="god.webpntAccmlYn" column="webpnt_accml_yn" />
+        <result property="god.webpntAccmlRt" column="webpnt_accml_rt" />
+        <result property="god.webpntUseYn" column="webpnt_use_yn" />
+        <!--P포인트-->
+		<result property="god.imdtlDcRt" column="imdtl_dc_rt" />
+		<result property="god.imdtlDcYn" column="imdtl_dc_yn" />
+
+		<result property="god.invManageYn" column="inv_manage_yn" />
+		<result property="god.lmttInvYn" column="lmtt_inv_yn" />
+
+		<result property="god.rtlPrc" column="rtl_prc" />
+		<result property="god.csmrPrc" column="csmr_prc" />
+		<result property="god.empPrc" column="emp_prc" />
+
+		
+		<result property="god.qdlvPsbYn" column="qdlvPsbYn" />
+		
+		<result property="godItm.skuNo" column="sku_no" />
+		<result property="godItm.itmStatCd" column="itm_stat_cd" />
+		<result property="godItm.itmNm" column="itm_nm" />
+		<result property="godItm.itmNo" column="itm_no" />
+		<result property="godItm.godNo" column="god_no" />
+		<result property="brndNm" column="brnd_nm" />
+
+		<result property="comDmstcDlvCstPlc.dmstcDlvCstPlcSn" column="dmstc_dlv_cst_plc_sn" />
+		<result property="comDmstcDlvCstPlc.dlvCstLevySectCd" column="dlv_cst_levy_sect_cd" />
+		<result property="comDmstcDlvCstPlc.dmstcDlvCstExmStdrAmt" column="dmstc_dlv_cst_exm_stdr_amt" />
+		<result property="comDmstcDlvCstPlc.dmstcDlvCst" column="dmstc_rtgod_dlv_cst" />
+
+		<result property="comDmstcDlvCstPlc.qdlvCstLevySectCd" column="QDLV_CST_LEVY_SECT_CD" />
+		<result property="comDmstcDlvCstPlc.qdlvCstExmStdrAmt" column="QDLV_CST_EXM_STDR_AMT" />
+		<result property="comDmstcDlvCstPlc.qdlvCst" column="QDLV_CST" />
+
+
+		<!-- ncp3차 해외배송관련 추가 -->
+		<result property="ovseaComDmstcDlvCstPlc.dmstcDlvCstPlcSn" column="ovsea_dlv_dmstc_dlv_cst_plc_sn" />
+		<result property="ovseaComDmstcDlvCstPlc.dlvCstLevySectCd" column="ovseaDmstcDlvCstLevySectCd" />
+		<result property="ovseaComDmstcDlvCstPlc.dmstcDlvCstExmStdrAmt" column="ovseaDmstcDlvCstExmStdrAmt" />
+		<result property="ovseaComDmstcDlvCstPlc.dmstcDlvCst" column="ovseaDmstcDlvCst" />
+		<result property="comOvseaDlvCstPlc.ovseaDlvCstPlcSn" column="ovsea_dlv_cst_plc_sn" />
+		<result property="comOvseaDlvCstPlc.dlvCstLevySectCd" column="ovseadlvCstLevySectCd" />
+		<result property="comOvseaDlvCstPlc.ovseaDlvCstExmStdrAmt" column="ovseaDlvCstExmStdrAmt" />
+
+
+
+
+		<result property="realInvQty" column="real_inv_qty" />
+		<result property="hoffInvQty" 	column="hoff_inv_qty" />
+		<result property="etcInvQty" column="etc_inv_qty" />
+		<result property="shopInvQty" column="shop_inv_qty" />
+		
+
+		<result property="shopNm" column="shop_nm" />
+		<result property="shopId" column="shop_id" />
+		<result property="shopTelAreaNo" column="shop_tel_area_no" />
+		<result property="shopTelTlofNo" column="shop_tel_tlof_no" />
+		<result property="shopTelTlofWthnNo" column="shop_tel_tlof_wthn_no" />
+
+
+		<result property="sellYn" column="sell_yn" />
+		<result property="pkupDay" column="pkup_day" />
+		
+		<result property="holdyYn" column="holdy_yn" />
+		<result property="shopBegHhmm" column="shop_beg_hhmm" />
+		<result property="shopEndHhmm" column="shop_end_hhmm" />
+		<result property="shopAddr" column="shop_base_addr" />
+		
+		
+		
+		<result property="invType" column="inv_type" />
+		<result property="crntDay" column="crnt_day" />
+		<result property="sidoCd" column="sido_cd" />
+		<result property="imgUrl" column="img_url" />
+		<result property="sumItmQty" column="sum_itm_qty" />
+		<result property="sumEtcItmQty" column="sum_etc_itm_qty" />
+
+		<result property="ordGodExtend.godNo" column="god_no" />
+		<result property="ordGodExtend.godNm" column="god_nm" />
+		<result property="ordGodExtend.ordQty" column="itm_qty" />
+		<result property="ordGodExtend.rtlPrc" column="rtl_prc" />
+		<result property="ordGodExtend.brndId" column="brnd_id" />
+		<result property="ordGodExtend.colorNm" column="color_nm" />
+		<result property="ordGodExtend.brndNm" column="BRND_NM" />
+		<result property="ordGodExtend.dspCtgryNo" column="DSP_CTGRY_NO" />
+		<result property="ordGodExtend.dspCtgryNm" column="DSP_CTGRY_NM" />
+
+		<!-- #34425 로 추가 2017-01-13 -->
+		<result property="ovseaDspStatCd" column="ovsea_dsp_stat_cd" />
+		<result property="trsltStatCd" column="trslt_stat_cd" />
+		<result property="ovseaDlvPsbYn" column="ovsea_dlv_psb_yn" />
+
+
+		<!-- #45965 로 추가 -->
+		<result property="pkupShopYn" column="pkup_shop_yn" />
+
+
+
+	</resultMap>
+
+	<select id="selectBskListByGods" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="cartGodResult">
+			SELECT /* [cart.select.xml][selectBskListByGods][미니 장바구니 상품 조회][박문철] */
+                   t1.god_turn,
+                   t1.god_no,
+                   t1.itm_no,
+                   t1.itm_qty,
+                   t1.pckage_god_yn,
+                   t1.dlv_sect_cd,
+                   max(t1.udt_dt) over(partition by t1.parent_god_turn) as set_udt_dt,
+                   t1.parent_god_turn,
+                   t1.pckage_god_tp_cd,
+                   t1.sort_seq,
+                   t2.clor_chip_img_url,
+                   case when god_turn = parent_god_turn
+		                then NVL(t4.god_nm,t2.god_nm)
+		                else NVL(t4.god_nm,t2.god_nm)
+		           end  AS god_nm,
+		           case when god_turn = parent_god_turn
+		                then nvl(t4.mobile_god_nm,t2.mobile_god_nm)
+		                else nvl(t4.mobile_god_nm,t2.mobile_god_nm)
+		           end  AS mobile_god_nm,
+                   nvl(gnd.color_dscr,t2.color_nm) as color_nm,  /*색상명*/ /* 고시정보의 색상명으로 가져오도록 수정 2016-09-06 */
+                   t3.itm_nm,
+			       t5.brnd_nm,
+                   img.img_url,
+                   t2.partmal_sect_cd,
+                   t2.erp_god_no,
+                   t2.csmr_prc
+           FROM(
+                SELECT
+                      t1.god_turn,
+                      t1.god_no,
+                      t1.itm_no,
+                      t1.itm_qty,
+                      t1.pckage_god_yn,
+                      t1.dlv_sect_cd,
+                      t1.udt_dt,
+                      nvl(t2.god_turn,t1.god_turn) as parent_god_turn,
+                      t2.pckage_god_tp_cd,
+                      nvl(t2.sort_seq,0) as sort_seq,
+                      NVL(t3.god_no,t1.god_no) as parent_god_no
+                FROM  BSK_GOD t1
+
+                LEFT  OUTER JOIN BSK_CPST_GOD_CNNC t2
+                              ON t1.bsk_no = t2.bsk_no
+                             AND t1.god_turn = t2.cpst_god_turn
+                LEFT OUTER JOIN BSK_GOD t3 ON t2.bsk_no = t3.bsk_no and t2.god_turn = t3.god_turn
+                WHERE t1.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+                ) t1
+            JOIN  GOD t2 ON t1.god_no = t2.god_no
+            JOIN  GOD_ITM t3 ON t1.itm_no = t3.itm_no and t1.god_no = t3.god_no
+            LEFT OUTER JOIN  SYS_BRND t5 ON t2.brnd_grp_id = t5.brnd_id
+			
+
+            LEFT OUTER JOIN GOD_LANGBY_GOD_NM t4                   /*상품 언어별 상품 명*/
+                         ON t1.god_no = t4.god_no
+                        AND t4.lang_cd = #{lang,jdbcType=VARCHAR}
+
+			LEFT OUTER JOIN GOD_NTFC_DETAIL gnd                   /*상품 언어별 색상 명*/
+						 ON t2.god_no = gnd.god_no
+					    AND gnd.lang_cd = #{lang,jdbcType=VARCHAR}
+
+
+            LEFT OUTER JOIN GOD_CPST_GOD_CNNC gdcnnc ON t1.parent_god_no = gdcnnc.god_no and t1.god_no = gdcnnc.cpst_god_no
+            LEFT OUTER JOIN GOD_IMG img
+		                      ON t1.god_no = img.god_no
+		                     AND img.img_tp_cd ='THNAIL'
+		                     AND img.img_turn = 1
+            WHERE  EXISTS (
+                           SELECT 'Y'
+                           FROM
+                               (
+                               SELECT
+                                      bsk_no,
+                                      god_turn,
+                                      god_no
+                               FROM  BSK_GOD t1
+                               WHERE t1.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+                               AND   NOT EXISTS (
+                                                  SELECT 'Y'
+                                                  FROM   BSK_CPST_GOD_CNNC
+                                                  WHERE  bsk_no = t1.bsk_no
+                                                  AND    cpst_god_turn = t1.god_turn
+                                                )
+                           ) target
+                           JOIN  GOD t4 ON target.god_no = t4.god_no
+                           JOIN  GOD_SALE_MALL t5 ON target.god_no = t5.god_no and t5.mall_id = #{mallId,jdbcType=VARCHAR} and t5.use_yn = 'Y'
+                           WHERE target.god_turn = t1.parent_god_turn
+                           AND   t4.dsp_yn = 'Y'
+                          )
+            ORDER BY set_udt_dt desc,parent_god_turn,sort_seq
+	</select>
+
+	<select id="selectGnrlCartList" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="cartGodResult">
+		SELECT /* [cart.select.xml][selectGnrlCartList][장바구니 일반배송 상품 조회][박문철] */
+		       1 AS grp_seq,
+               gd.sub_grp_seq, /*배송유형 내 배송지코드 그룹핑*/
+               row_number() over(partition by gd.dmstc_dlv_cst_plc_sn2 order by num) AS dlv_grp_rnum,
+               count(1) over(partition by dmstc_dlv_cst_plc_sn2) AS dlv_grp_cnt,
+               gd.sub_grp_count,
+               gd.parent_god_turn,
+               gd.bsk_no,
+               gd.god_turn,
+               gd.god_no,
+               gd.itm_no,
+               gd.itm_qty,
+               gd.pckage_god_yn,
+               gd.dlv_sect_cd,
+               gd.recomend_com_cd,
+               gd.recomend_sex_cd,
+               gd.pckage_god_tp_cd,
+               gd.sort_seq,
+               /*(select prdlst_nm from sys_prdlst_cd where prdlst_cd = gd.prdlst_cd) prdlst_nm,*/
+               case when god_turn = parent_god_turn
+	                then NVL(gdnm.god_nm, gd.god_nm)
+	                else NVL(gdnm.god_nm, gd.god_nm)
+	           end  AS god_nm,
+	           gd.erp_god_no,
+	           case when god_turn = parent_god_turn
+	                then nvl(gdnm.mobile_god_nm,gd.mobile_god_nm)
+	                else nvl(gdnm.mobile_god_nm,gd.mobile_god_nm)
+	           end  AS mobile_god_nm,
+               nvl(gdnm.color_nm,gd.color_nm) as color_nm,  /*색상명*/
+               gd.color_cd as color_cd,
+               gd.clor_chip_img_url,
+               gd.god_sale_sect_cd,  /*상품판매구분코드*/
+               gd.god_tp_cd,         /*상품유형코드*/
+               gd.partmal_sect_cd,
+               gd.brnd_id,
+               gd.brnd_grp_id,
+               gd.resve_sale_god_yn, /*예약판매여부*/
+               gd.resve_ord_pay_sect_cd, /*예약주문결제 구분 코드*/
+               gd.resve_ord_part_pay_amt,/*예약주문 부분 결제 금액*/
+               gd.resve_ord_pay_clos_dt, /*예약주문 결제 마감 일시*/
+               gd.resve_ord_dlivy_prearnge_date, /*예약주문 출고 예정 일자*/
+               gd.dmstc_dlv_cst_plc_sn2 as dmstc_dlv_cst_plc_sn,  /*국내 배송비 정책 일련번호*/
+               gd.ovsea_dlv_cst_plc_sn1 AS ovsea_dlv_cst_plc_sn,
+               gd.ovsea_dlv_dmstc_sn AS ovsea_dlv_dmstc_dlv_cst_plc_sn,
+
+               <!-- ncp 3차
+               gd.god_wt,
+               TO_CHAR(gd.god_wt,'99,999.9') AS god_wt, /*상품무게*/
+                -->
+			<!-- ncp 3차 패키지 무게  -->
+		       <!-- CASE
+		       	WHEN gd.god_tp_cd IN ('SET_GOD', 'PCKAGE_GOD') THEN TO_CHAR(NVL(gd.godWtPkg,0) - NVL(gd.god_wt,0), '99,999.9')
+		        ELSE TO_CHAR(gd.god_wt, '99,999.9')
+		       END   AS god_wt, -->
+			<!-- ncp 3차 패키지 무게  -->
+			   TO_CHAR(gd.god_wt, '99,999.9') AS god_wt,/*상품무게 SR 31472 로 수정 2016-12-19 */
+
+               <!-- gd.god_vol, /*상품부피*/ #49874 로 주석처리-->
+               gd.inv_manage_yn,
+               gd.lmtt_inv_yn,
+               nvl(gd.min_ord_qty,1) as min_ord_qty,
+         	   nvl(gd.max_ord_qty,999) as max_ord_qty,
+         	   gd.sku_no,
+               gd.itm_stat_cd,
+               gd.itm_nm,
+               gd.pnt_accml_yn,
+               NVL(gd.pnt_accml_rt,0) AS pnt_accml_rt,
+               gd.pnt_use_yn,
+               gd.webpnt_accml_yn,
+               NVL(gd.webpnt_accml_rt,0) as webpnt_accml_rt,
+               gd.webpnt_use_yn,
+               NVL(gd.imdtl_dc_rt,0) as imdtl_dc_rt,
+               gd.imdtl_dc_yn,
+               NVL(resrtlprc.resve_rtl_prc, gd.rtl_prc)		AS rtl_prc,  /*정소가*/
+               NVL(rescsmrprc.resve_csmr_prc, gd.csmr_prc)	AS csmr_prc, /*실소가*/
+               NVL(resempprc.resve_emp_prc, gd.emp_prc)		AS emp_prc,  /*임직원가*/
+               brnd.brnd_nm,
+               dlv.dlv_cst_levy_sect_cd,
+               dlv.dmstc_dlv_cst_exm_stdr_amt as dmstc_dlv_cst_exm_stdr_amt,  /*국내 배송비 면제 기준 금액*/
+               dlv.dmstc_dlv_cst as dmstc_rtgod_dlv_cst,     /*국배 배송 비용*/
+			   dlv.QDLV_CST_LEVY_SECT_CD,
+			   dlv.QDLV_CST_EXM_STDR_AMT,
+			   dlv.QDLV_CST,
+			   gd.qdlvPsbYn,
+			   
+               /*ncp3차 글로벌 적용*/
+               dlvOvseaDmstc.dlv_cst_levy_sect_cd as ovseaDmstcDlvCstLevySectCd,
+               dlvOvseaDmstc.dmstc_dlv_cst_exm_stdr_amt as ovseaDmstcDlvCstExmStdrAmt,  /*해외배송 국내 배송비 면제 기준 금액*/
+               dlvOvseaDmstc.dmstc_dlv_cst as ovseaDmstcDlvCst,     /*해외배송 국배 배송 비용*/
+               dlvOvsea.dlv_cst_levy_sect_cd as ovseadlvCstLevySectCd,
+               dlvOvsea.ovsea_dlv_cst_exm_stdr_amt as ovseaDlvCstExmStdrAmt,  /*해외 배송비 면제 기준 금액*/
+
+
+
+               case when gd.pckage_god_tp_cd = 'ADIT_CPST_GOD'
+                    then case when grp_stat_seq > 1 then 'N' else decode(grp_stat_seq1,1,'Y','N') end
+                    else decode(grp_stat_seq1,1,'Y','N')
+               end as sell_yn,
+               img.img_url,
+               gd.real_inv_qty,
+               gd.hoff_inv_qty,
+               gd.etc_inv_qty,
+	           case when real_inv_qty <![CDATA[<]]> itm_qty then 0
+	                else sum(case when real_inv_qty <![CDATA[<]]> itm_qty then 0 else itm_qty end) over(partition by itm_no order by num rows  num preceding )
+	           end  as sum_itm_qty,
+	           case when etc_inv_qty <![CDATA[<]]> itm_qty then 0
+	                else sum(case when etc_inv_qty <![CDATA[<]]> itm_qty then 0 else itm_qty end) over(partition by itm_no order by num rows  num preceding )
+	           end  as sum_etc_itm_qty,
+	           <if test='wishSn != null and wishSn != ""'>
+	           case when wish.god_no is not  null then 'Y'
+	                else 'N'
+	           end  as wish_yn
+	           </if>
+	            <if test='wishSn == null or wishSn == ""'>
+	            gd.wish_yn
+	            </if>
+				,nvl((select BRND_NM from SYS_BRND where BRND_ID = gd.BRND_ID and rownum = 1),'') as BRND_NM
+				,nvl((SELECT dc.dsp_ctgry_no
+				FROM dsp_ctgry_cnnc_god dccg
+				    INNER JOIN dsp_ctgry dc ON dc.dsp_ctgry_no	= dccg.dsp_ctgry_no AND dc.dsp_yn = 'Y' AND dc.delete_yn	= 'N'
+				where dccg.GOD_NO = gd.GOD_NO
+				    AND ROWNUM = 1
+				    ),'') as DSP_CTGRY_NO
+				,nvl((SELECT dc.dsp_ctgry_nm
+				FROM dsp_ctgry_cnnc_god dccg
+				    INNER JOIN dsp_ctgry dc ON dc.dsp_ctgry_no	= dccg.dsp_ctgry_no AND dc.dsp_yn = 'Y' AND dc.delete_yn	= 'N'
+				where dccg.GOD_NO = gd.GOD_NO
+				    AND ROWNUM = 1
+				    ),'') as DSP_CTGRY_NM
+		        ,GDNM.OVSEA_DSP_STAT_CD	/*#34425 로 추가 2017-01-13*/
+		        ,GDNM.TRSLT_STAT_CD /*#34425 로 추가 2017-01-13*/
+		        ,GD.OVSEA_DLV_PSB_YN /*#34425 로 추가 2017-01-13*/		        
+        FROM (
+               SELECT
+                     gd.*,
+                      row_number() over(ORDER BY sub_grp_seq,set_udt_dt desc,parent_god_turn,sort_seq ) as num,
+                      'N' as wish_yn
+              FROM (
+                SELECT gd.*,
+                       dense_rank() over(order by grp_stat_seq,sub_grp_udt_dt desc,dmstc_dlv_cst_plc_sn2) as sub_grp_seq,
+                       sum(decode(pckage_god_tp_cd,'',1,'ADIT_CPST_GOD',1,0)) over (partition by grp_stat_seq,sub_grp_udt_dt,dmstc_dlv_cst_plc_sn2) as sub_grp_count
+                FROM (
+                  SELECT
+                        gd.*,
+                        	   (CASE
+				            WHEN gd.RESVE_SALE_GOD_YN = 'Y' THEN NVL(gd.RESVE_INV_QTY,0) /*예약재고여부*/
+				            WHEN gd.pckage_god_tp_cd is null and gd.pckage_god_yn = 'Y' THEN  
+		                          (select 
+		                            min((n.inv_qty+GREATEST(n.LC1_INV_QTY,0))-n.sale_prearnge_qty)
+		                            from
+		                            bsk_god m 
+		                            <!-- join GOD_SHOP_ITM_INV n on m.itm_no = n.itm_no and n.shop_id = 'X30004' -->
+		                            join GOD_SHOP_ITM_INV n on m.itm_no = n.itm_no and n.shop_id IN('X30004', 'M510', 'I50002', 'A30003')
+		                            where
+		                            god_turn in (
+		                            select y.cpst_god_turn from bsk_god x join BSK_CPST_GOD_CNNC y on x.bsk_no = y.bsk_no and x.god_turn = y.god_turn where x.bsk_no = gd.bsk_no and x.god_turn	= gd.god_turn
+		                            ) and bsk_no = gd.bsk_no)
+				            <!-- ELSE nvl((select max((inv_qty+GREATEST(LC1_INV_QTY,0))-sale_prearnge_qty) from GOD_SHOP_ITM_INV where itm_no=gd.itm_no and shop_id = 'X30004'),0) -->
+				            ELSE nvl((select max((inv_qty+GREATEST(LC1_INV_QTY,0))-sale_prearnge_qty) from GOD_SHOP_ITM_INV where itm_no=gd.itm_no and shop_id IN('X30004', 'M510', 'I50002', 'A30003')),0)
+				        END) AS REAL_INV_QTY, /*일반배송재고*/
+				       (CASE
+				            WHEN GD.RESVE_SALE_GOD_YN = 'Y' THEN 0 /*예약재고여부*/
+                    		<!-- ELSE nvl((select max(GREATEST(LC1_INV_QTY,0)) from GOD_SHOP_ITM_INV where itm_no=gd.itm_no and shop_id = 'X30004'),0) -->
+                    		ELSE nvl((select max(GREATEST(LC1_INV_QTY,0)) from GOD_SHOP_ITM_INV where itm_no=gd.itm_no and shop_id IN('X30004', 'M510', 'I50002', 'A30003')),0)
+				        END) AS hoff_inv_qty, /*본사배송재고*/
+             		   (CASE
+				            WHEN GD.RESVE_SALE_GOD_YN = 'Y' THEN 0 /*예약재고여부*/
+				            WHEN pckage_god_yn = 'Y' THEN 0
+				            <!-- ELSE nvl((select max(inv_qty-sale_prearnge_qty) from GOD_SHOP_ITM_INV q where itm_no=gd.itm_no and shop_id != 'X30004' -->
+				            ELSE nvl((select max(inv_qty-sale_prearnge_qty) from GOD_SHOP_ITM_INV q where itm_no=gd.itm_no and shop_id NOT IN('X30004', 'M510', 'I50002', 'A30003')
+				            	and exists (select 1 from SYS_SHOP x join SYS_SHOP_BRND y on x.shop_id = y.shop_id and y.dlv_shop_yn = 'Y' and y.use_yn = 'Y' where  x.shop_id = q.shop_id and x.use_yn = 'Y'  )
+				            ),0)
+				        END) AS etc_inv_qty, /*매장 재고*/
+                        max(udt_dt) over(partition by grp_stat_seq,dmstc_dlv_cst_plc_sn2)  as sub_grp_udt_dt
+                  FROM (
+                    SELECT
+                          gd.*,
+                          max(udt_dt) over(partition by parent_god_turn) as set_udt_dt,
+                          max(stat_seq) over(partition by parent_god_turn) as grp_stat_seq,
+                          max(stat_seq) OVER (PARTITION BY parent_god_turn,stat_type) AS grp_stat_seq1,
+                          MAX(dmstc_dlv_cst_plc_sn1) over (partition by parent_god_turn) as dmstc_dlv_cst_plc_sn2
+                    FROM
+                       (
+                        SELECT
+                             bskgod.*,
+                             gd.erp_god_no,
+                             gd.god_nm, /*상품명*/
+                             gd.mobile_god_nm, /*모바일 상품명*/
+                             gd.color_cd,
+                             gd.color_nm,  /*색상명*/
+                             gd.clor_chip_img_url,
+                             gd.god_sale_sect_cd,  /*상품판매구분코드*/
+                             gd.god_tp_cd, /*상품유형코드*/
+                             gd.partmal_sect_cd,
+                             gd.brnd_id, /*브랜드ID*/
+                             gd.brnd_grp_id,
+                             gd.recomend_sex_cd,
+                             gd.resve_sale_god_yn, /*예약판매여부*/
+                             gd.resve_ord_pay_sect_cd, /*예약주문결제 구분 코드*/
+                             gd.resve_ord_part_pay_amt,/*예약주문 부분 결제 금액*/
+                             gd.resve_ord_pay_clos_dt, /*예약주문 결제 마감 일시*/
+                             gd.resve_ord_dlivy_prearnge_date, /*예약주문 출고 예정 일자*/
+                             <!-- ncp 3
+                             (select gc.god_wt from GOD_STD_CTGRY gc where gc.STD_CTGRY_NO = gd.STD_CTGRY_NO) as god_wt,  /*상품무게*/
+                              -->
+
+							<!-- ncp 3차 패키지 무게
+
+                             (SELECT gc.god_wt FROM inf_tmall_god_wt_mapng gc WHERE gc.prdlst_cd = gd.prdlst_cd) AS god_wt, /*상품무게*/
+							-->
+                             <!-- gd.god_vol, /*상품부피*/ #49874 로 주석처리-->
+                             gd.com_id,
+                             gd.inv_manage_yn,
+                             gd.lmtt_inv_yn,
+                             gd.min_ord_qty,
+                             gd.max_ord_qty,
+                             gd.pnt_accml_yn,
+	                         gd.pnt_accml_rt,
+	                         gd.pnt_use_yn,
+                             gd.webpnt_accml_yn,
+                             gd.webpnt_accml_rt,
+                             gd.webpnt_use_yn,
+	                         gd.imdtl_dc_rt,
+	                         gd.imdtl_dc_yn,
+                             gd.rtl_prc,
+                             gd.csmr_prc,     /*실소가*/
+                             gd.emp_prc,      /*임직원가*/
+                             gd.prdlst_cd,
+                             gditm.sku_no,
+                             gditm.itm_stat_cd,  /*단품 상태코드*/
+                             gditm.itm_nm,
+                             gditm.TOT_USEFUL_INV_QTY,
+                             gditm.sale_prearnge_qty,
+                             gditm.safe_inv_use_yn,
+                             gditm.safe_inv_qty,
+                             gditm.onlne_lmtt_inv_qty,
+                             gditm.resve_inv_qty, <!-- 예약장바구니 기능 추가  : by cannon (2016.04.18) -->
+                             CASE
+                                WHEN bskgod.parent_god_turn = bskgod.god_turn OR bskgod.pckage_god_tp_cd !='ADIT_CPST_GOD'
+                                THEN  1
+                                ELSE  2
+                             END AS stat_type,
+                             case when bskgod.pckage_god_yn = 'Y'
+                                  then case when bskgod.parent_god_turn = bskgod.god_turn and gd.god_sale_sect_cd = 'SALE_PROGRS' then 1
+                                            when bskgod.parent_god_turn != bskgod.god_turn and  gd.god_sale_sect_cd = 'SALE_PROGRS' AND gditm.itm_stat_cd = 'SALE_PROGRS' then 1
+                                            else 2
+                                       end
+                                  else  case when gd.god_sale_sect_cd = 'SALE_PROGRS' AND gditm.itm_stat_cd = 'SALE_PROGRS' then 1
+                                             else 2
+                                        end
+                             end as stat_seq,
+                             case when  bskgod.god_turn = bskgod.parent_god_turn then gd.dmstc_dlv_cst_plc_sn
+                                 else 0
+                             end as dmstc_dlv_cst_plc_sn1,
+                             CASE
+                                 WHEN bskgod.god_turn =
+                                          bskgod.parent_god_turn
+                                 THEN
+                                     gd.ovsea_dlv_dmstc_dlv_cst_plc_sn
+                                 ELSE
+                                     gd.ovsea_dlv_dmstc_dlv_cst_plc_sn
+                             END
+                                 AS ovsea_dlv_dmstc_sn
+                           , CASE
+                                 WHEN bskgod.god_turn =
+                                          bskgod.parent_god_turn
+                                 THEN
+                                     gd.ovsea_dlv_cst_plc_sn
+                                 ELSE
+                                     gd.ovsea_dlv_cst_plc_sn
+                             END
+                                 AS ovsea_dlv_cst_plc_sn1
+
+							<!-- ncp 3차 패키지 무게  -->
+                           , MAX(bskgod.godWtSum) OVER(PARTITION BY bskgod.parent_god_no, bskgod.pckage_god_tp_cd ORDER BY sort_seq) AS godWtPkg
+							<!-- ncp 3차 패키지 무게  -->
+
+                        FROM   (
+                                SELECT
+                                       bskgod.bsk_no,
+                                       bskgod.god_turn,
+                                       bskgod.god_no,
+                                       bskgod.itm_no,
+                                       bskgod.itm_qty,
+                                       bskgod.pckage_god_yn,
+                                       bskgod.dlv_sect_cd,
+                                       bskgod.udt_dt,
+                                       bskgod.recomend_com_cd,
+                                       NVL(bggc.god_turn,bskgod.god_turn) AS parent_god_turn,
+                                       bggc.pckage_god_tp_cd,
+                                       nvl(bggc.sort_seq,0) as sort_seq,
+                                       NVL(t1.god_no,bskgod.god_no) as parent_god_no
+
+									<!-- ncp 3차 패키지 무게  -->
+<!--                                      ,(SELECT gc.god_wt
+                                          FROM SYS_PRDLST_CD gc
+                                         WHERE gc.prdlst_cd = gd.prdlst_cd)
+                                            AS god_wt -->
+                                     , gd.god_wt    AS god_wt /*상품무게 SR 31472 로 수정 2016-12-08 */
+                                     , gd.ovsea_dlv_psb_yn /* #34425 로 추가 2017-01-13 해외전시여부 추가 */
+
+
+									<!--
+                                     , SUM((SELECT gc.god_wt
+                                              FROM SYS_PRDLST_CD gc
+                                             WHERE gc.prdlst_cd = gd.prdlst_cd)) OVER(PARTITION BY NVL(t1.god_no, bskgod.god_no), NVL(bggc.god_turn, bskgod.god_turn) ORDER BY NVL(bggc.sort_seq, 0) desc) AS godWtSum
+									-->
+
+<!-- 									, SUM(
+											(SELECT gc.god_wt
+											FROM sys_prdlst_cd gc
+											WHERE gc.prdlst_cd = gd.prdlst_cd))
+											OVER (
+													PARTITION BY NVL(t1.god_no, bskgod.god_no)
+														, NVL(bggc.god_turn, bskgod.god_turn)
+														, NVL(bggc.pckage_god_tp_cd, DECODE(SUBSTR(NVL(t1.god_no, bskgod.god_no),0,1),'S','SET_GOD','P','PCKAGE_GOD')) ORDER BY NVL(bggc.sort_seq, 0) DESC)
+									AS godWtSum -->
+									, gd.god_wt as godWtSum /*셋트 상품무게 합계 SR 31472 로 수정 2016-12-08 */
+
+									<!-- ncp 3차 패키지 무게  -->
+
+									, gd.qdlv_psb_yn as qdlvPsbYn /*퀵배송으로 추가 2017-12-11 */
+
+                                FROM   BSK_GOD bskgod
+                                LEFT OUTER JOIN BSK_CPST_GOD_CNNC bggc
+                                             ON  bggc.bsk_no = bskgod.bsk_no
+                                            AND  bggc.cpst_god_turn = bskgod.god_turn
+                                LEFT OUTER JOIN BSK_GOD t1
+                                             ON bggc.bsk_no = t1.bsk_no
+                                            AND bggc.god_turn = t1.god_turn
+
+							<!-- ncp 3차 패키지 무게  -->
+                                JOIN god gd ON bskgod.god_no = gd.god_no
+							<!-- ncp 3차 패키지 무게  -->
+
+                                WHERE  bskgod.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+                                <!--AND    bskgod.dlv_sect_cd = 'GNRL_DLV'-->
+
+							<choose>
+								<when test="dlvSectCd == 'QDLV'">
+									AND bskgod.dlv_sect_cd = #{dlvSectCd,jdbcType=VARCHAR}
+								</when>
+								<when test="dlvSectCd == 'RSV'">
+									AND    gd.resve_sale_god_yn = 'Y'
+									AND bskgod.dlv_sect_cd = 'GNRL_DLV'
+								</when>
+								<otherwise>
+									AND    gd.resve_sale_god_yn = 'N'
+									AND bskgod.dlv_sect_cd = 'GNRL_DLV'
+								</otherwise>
+							</choose>
+
+                                ) bskgod
+                                 JOIN  GOD gd ON bskgod.god_no = gd.god_no
+                                 JOIN  GOD_ITM gditm ON bskgod.itm_no = gditm.itm_no and bskgod.god_no = gditm.god_no
+                                 WHERE 1=1
+                                 <if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(bskGodList)">
+								  AND  bskgod.parent_god_turn IN
+									 <foreach collection="bskGodList" item="bskGod" open="(" separator="," close=")">
+										 #{bskGod.godTurn,jdbcType=NUMERIC}
+									 </foreach>
+								 </if>
+							   AND EXISTS (
+                                                SELECT 'Y'
+                                                FROM
+                                                    (
+                                                    SELECT
+                                                           bsk_no,
+                                                           god_turn,
+                                                           god_no
+                                                    FROM  BSK_GOD t1
+                                                    WHERE t1.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+                                                    <choose>
+                                                        <when test="dlvSectCd == 'QDLV'">
+                                                            AND   t1.dlv_sect_cd = #{dlvSectCd,jdbcType=VARCHAR}
+                                                        </when>
+                                                        <otherwise>
+                                                            AND   t1.dlv_sect_cd = 'GNRL_DLV'
+                                                        </otherwise>
+                                                    </choose>
+                                                    AND   NOT EXISTS(
+                                                                       SELECT 'Y'
+                                                                       FROM   BSK_CPST_GOD_CNNC
+                                                                       WHERE  bsk_no = t1.bsk_no
+                                                                       AND    cpst_god_turn = t1.god_turn
+                                                                     )
+                                                    ) t1
+                                                JOIN  GOD t4 ON t1.god_no = t4.god_no
+                                                JOIN  GOD_SALE_MALL t5 ON t1.god_no = t5.god_no and t5.mall_id = #{mallId,jdbcType=VARCHAR} and t5.use_yn = 'Y'
+                                                WHERE t1.god_turn = bskgod.parent_god_turn
+                                                AND   t4.dsp_yn = 'Y'
+                                                <if test='empYn == "N"'>
+				                                AND   t4.emp_only_yn = 'N'
+				                                </if>
+                                            )
+                        ) gd
+                        )gd
+                    ) gd
+                 ) gd
+                 ) gd
+                LEFT OUTER JOIN SYS_BRND brnd ON gd.brnd_grp_id = brnd.brnd_id
+                LEFT OUTER JOIN SYS_BRND brnd1 ON gd.brnd_id = brnd1.brnd_id
+		        LEFT OUTER JOIN GOD_LANGBY_GOD_NM gdnm                   /*상품 언어별 상품 명*/
+		                   ON  gd.god_no = gdnm.god_no
+		                   AND gdnm.lang_cd = #{lang,jdbcType=VARCHAR}
+
+		        LEFT OUTER JOIN COM_DMSTC_DLV_CST_PLC dlv               /*업체국내배송비정책*/
+		                   ON gd.dmstc_dlv_cst_plc_sn1 = dlv.dmstc_dlv_cst_plc_sn
+
+		        /*2016-02-02 글로벌 ncp3차로 추가*/
+		        LEFT OUTER JOIN COM_DMSTC_DLV_CST_PLC dlvOvseaDmstc               /*해외배송업체국내배송비정책*/
+		                   ON gd.ovsea_dlv_dmstc_sn = dlvOvseaDmstc.dmstc_dlv_cst_plc_sn
+		        LEFT OUTER JOIN COM_OVSEA_DLV_CST_PLC dlvOvsea               /*업체해외배송비정책*/
+		                   ON gd.ovsea_dlv_cst_plc_sn1 = dlvOvsea.ovsea_dlv_cst_plc_sn
+		        /*2016-02-02 글로벌 ncp3차로 추가*/
+
+		        /*상품 가격 예약*/
+                LEFT OUTER JOIN god_prc_resve resrtlprc
+                        ON gd.god_no = resrtlprc.god_no
+                       AND SYSDATE BETWEEN resrtlprc.resve_beg_dt AND resrtlprc.resve_end_dt
+                       AND resrtlprc.prc_resve_sect_cd = 'RTL_PRC'
+                       AND resrtlprc.resve_yn='Y'
+                LEFT OUTER JOIN god_prc_resve rescsmrprc
+                        ON gd.god_no = rescsmrprc.god_no
+                       AND SYSDATE BETWEEN rescsmrprc.resve_beg_dt AND rescsmrprc.resve_end_dt
+                       AND rescsmrprc.prc_resve_sect_cd = 'CSMR_PRC'
+                       AND rescsmrprc.resve_yn='Y'
+                LEFT OUTER JOIN god_prc_resve resempprc
+                       ON gd.god_no = resempprc.god_no
+                      AND SYSDATE BETWEEN resempprc.resve_beg_dt AND resempprc.resve_end_dt
+                      AND resempprc.prc_resve_sect_cd = 'EMP_PRC'
+                      AND resempprc.resve_yn='Y'
+		        /*상품 가격 예약*/
+
+                LEFT OUTER JOIN GOD_CPST_GOD_CNNC gdcnnc ON gd.parent_god_no = gdcnnc.god_no and gd.god_no = gdcnnc.cpst_god_no
+                LEFT OUTER JOIN GOD_IMG img
+		                      ON gd.god_no = img.god_no
+		                     AND img.img_tp_cd ='THNAIL'
+		                     AND img.img_turn = 1
+		        <if test='wishSn != null and wishSn != ""'>
+		        LEFT OUTER JOIN (
+                                   SELECT
+                                          GOD_NO
+                                   FROM   BSK_WISHLST_GOD
+                                   WHERE  WISHLST_SN = #{wishSn,jdbcType=NUMERIC}
+                                   GROUP BY GOD_NO
+
+                                 ) wish ON gd.god_no = wish.god_no
+		        </if>
+		        ORDER BY num
+	</select>
+
+	<select id="selectPkupCartList" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="cartGodResult">
+
+   SELECT /* [cart.select.xml][selectPkupCartList][장바구니 매장픽업 상품 조회][박문철] */
+        bas.*,
+       	case when to_char(sysdate,'HH24MISS') <![CDATA[>=]]> '160000' then to_char(sysdate+1,'YYYYMMDD')
+        else to_char(sysdate,'YYYYMMDD') end as   pkup_day,
+        to_char(SYSDATE,'YYYYMMDD') AS crnt_day,
+        case when shop_inv_qty <![CDATA[<]]>  itm_qty then 0
+                    else sum(case when shop_inv_qty <![CDATA[<]]>  itm_qty then 0 else itm_qty end) over(partition by itm_no order by num rows  num preceding )
+        end  as sum_itm_qty
+	FROM (
+		SELECT
+		      bas.*,
+		      case when bas.sell_yn = 'Y'
+		           then case when bas.itm_qty <![CDATA[<=]]> shop_inv_qty then 'SHOP'
+		                     else 'N'
+		                end
+		      end as inv_type,
+		      rownum as num
+		FROM (
+				SELECT
+		               gd.grp_seq,
+		               gd.sub_grp_seq,
+		               gd.sub_grp_count,
+		               gd.parent_god_turn,
+		               gd.bsk_no,
+		               gd.god_turn,
+		               gd.god_no,
+		               gd.itm_no,
+		               gd.itm_qty,
+		               gd.pckage_god_yn,
+		               gd.dlv_sect_cd,
+		               gd.pkup_shop_sn,
+		               gd.recomend_com_cd,
+		               gd.recomend_sex_cd,
+		               gd.pckage_god_tp_cd,
+		               gd.sort_seq,
+               		   /*(select prdlst_nm from sys_prdlst_cd where prdlst_cd = gd.prdlst_cd) prdlst_nm,*/
+		               gd.erp_god_no,
+		               case when god_turn = parent_god_turn
+			                then NVL(gdnm.god_nm, gd.god_nm)
+			                else NVL(gdnm.god_nm, gd.god_nm)
+			           end  AS god_nm,
+			           case when god_turn = parent_god_turn
+			                then nvl(gdnm.mobile_god_nm,gd.mobile_god_nm)
+			                else nvl(gdnm.mobile_god_nm,gd.mobile_god_nm)
+			           end  AS mobile_god_nm,
+		               nvl(gdnm.color_nm,gd.color_nm) as color_nm,  /*색상명*/
+		               gd.clor_chip_img_url,
+                       gd.inv_manage_yn,
+                       gd.lmtt_inv_yn,
+		               nvl(gd.min_ord_qty,1) as min_ord_qty,
+         			   nvl(gd.max_ord_qty,999) as max_ord_qty,
+         			   gd.color_cd as color_cd,
+		               gd.god_sale_sect_cd,  /*상품판매구분코드*/
+		               gd.god_tp_cd,         /*상품유형코드*/
+		               gd.partmal_sect_cd,
+		               gd.brnd_id,
+		               gd.brnd_grp_id,
+		               gd.sku_no,
+		               gd.itm_stat_cd,
+		               gd.itm_nm,
+		               gd.pnt_accml_yn,
+                       nvl(gd.pnt_accml_rt,0) as pnt_accml_rt,
+                       gd.pnt_use_yn,
+                       gd.webpnt_accml_yn,
+                       nvl(gd.webpnt_accml_rt,0) as webpnt_accml_rt,
+                       gd.webpnt_use_yn,
+                       nvl(gd.imdtl_dc_rt,0) as imdtl_dc_rt,
+	                   gd.imdtl_dc_yn,
+	                   gd.dmstc_dlv_cst_plc_sn2 as dmstc_dlv_cst_plc_sn,
+		               NVL(resrtlprc.resve_rtl_prc, gd.rtl_prc)		AS rtl_prc,  /*정소가*/
+		               NVL(rescsmrprc.resve_csmr_prc, gd.csmr_prc)	AS csmr_prc, /*실소가*/
+		               NVL(resempprc.resve_emp_prc, gd.emp_prc)		AS emp_prc,  /*임직원가*/
+		               brnd.brnd_nm,
+                       CASE
+                            WHEN shop.web_sale_psb_yn = 'N' THEN 0
+                            ELSE shop.inv_qty - nvl(shop.sale_prearnge_qty,0) <!-- x- NVL(shop.safe_inv_qty, 0)-->
+                       END shop_inv_qty,
+		               <!-- decode(#{lang,jdbcType=VARCHAR},'KOR',sshop.shop_nm,lsshop.shop_nm) shop_nm,
+		               decode(#{lang,jdbcType=VARCHAR},'KOR',sshop.base_addr,lsshop.base_addr) shop_base_addr, -->
+		               case when #{lang,jdbcType=VARCHAR} = 'KOR'
+		                    THEN sshop.shop_nm
+		                    ELSE (select lsshop.shop_nm from SYS_SHOP_LANG lsshop where lsshop.shop_id = gd.pkup_shop_sn and lsshop.lang_cd = #{lang,jdbcType=VARCHAR} )
+		               end as shop_nm,
+		               case when #{lang,jdbcType=VARCHAR} = 'KOR'
+		                    THEN sshop.base_addr
+		                    ELSE (select lsshop.base_addr from SYS_SHOP_LANG lsshop where lsshop.shop_id = gd.pkup_shop_sn and lsshop.lang_cd = #{lang,jdbcType=VARCHAR} )
+		               end as shop_base_addr,
+		               
+		               sshop.shop_id,
+		               sshop.shop_tel_area_no,
+                       sshop.shop_tel_tlof_no,
+				       sshop.shop_tel_tlof_wthn_no,
+		               case when gd.pckage_god_tp_cd = 'ADIT_CPST_GOD'
+		                    then case when max_stat_seq > 1 then 'N' else decode(grp_stat_seq1,1,'Y','N') end
+		                    else decode(grp_stat_seq1,1,'Y','N')
+		               end as sell_yn,
+		               case when cldr.hldy_yn = 'Y'
+		                    THEN nvl(sshop.hldy_oper_beg_hhmm,'1000')
+		                    ELSE case when cldr.dow_cd = 'SAT'
+		                        then nvl(sshop.sat_oper_beg_hhmm,'1000')
+		                        else nvl(sshop.wkdy_oper_beg_hhmm,'1000')
+		                   end
+		               end as shop_beg_hhmm,
+		               case when cldr.hldy_yn = 'Y'
+		                    THEN nvl(sshop.hldy_oper_end_hhmm,'2000')
+		                    ELSE case when cldr.dow_cd = 'SAT'
+		                        then nvl(sshop.sat_oper_end_hhmm,'2000')
+		                        else nvl(sshop.wkdy_oper_end_hhmm,'2000')
+		                   end
+		               end as shop_end_hhmm,
+			           case when holdy.sys_date is null and dow.dow_cd is null
+			                then 'N'
+			                else 'Y'
+			           end as  holdy_yn,
+			           sshop.sido_cd,
+			           img.img_url,
+			           <if test='wishSn != null and wishSn != ""'>
+			           case when wish.god_no is not  null then 'Y'
+			                else 'N'
+			           end  as wish_yn,
+			           </if>
+			            <if test='wishSn == null or wishSn == ""'>
+			            gd.wish_yn,
+			            </if>
+			           row_number() over(order by gd.grp_seq,gd.sub_grp_seq,gd.set_udt_dt DESC,gd.parent_god_turn,gd.sort_seq) as orderrow
+						,nvl((SELECT dc.dsp_ctgry_no
+						FROM dsp_ctgry_cnnc_god dccg
+						    INNER JOIN dsp_ctgry dc ON dc.dsp_ctgry_no	= dccg.dsp_ctgry_no AND dc.dsp_yn = 'Y' AND dc.delete_yn	= 'N'
+						where dccg.GOD_NO = gd.GOD_NO
+						    AND ROWNUM = 1
+						    ),'') as DSP_CTGRY_NO
+						,nvl((SELECT dc.dsp_ctgry_nm
+						FROM dsp_ctgry_cnnc_god dccg
+						    INNER JOIN dsp_ctgry dc ON dc.dsp_ctgry_no	= dccg.dsp_ctgry_no AND dc.dsp_yn = 'Y' AND dc.delete_yn	= 'N'
+						where dccg.GOD_NO = gd.GOD_NO
+						    AND ROWNUM = 1
+						    ),'') as DSP_CTGRY_NM
+						,SSB.PKUP_SHOP_YN
+		        FROM (SELECT
+		                    dense_rank() over(partition by gd.grp_seq order by gd.max_stat_seq,gd.set_udt_dt desc) as sub_grp_seq, /* grp_seq별 max_stat_seq, set_udt_dt 역순 채번 */
+		                    gd.*,
+		                    'N' as wish_yn
+		              FROM (
+		                SELECT
+		                       dense_rank() over(order by gd.grp_udt_dt desc,gd.pkup_shop_sn) as grp_seq, /* shopId별 대표상품 최종 수정일 역순, shopId순으로 랭킹 채번 */
+		                       gd.*
+		                FROM (
+		                  SELECT
+		                        gd.*,
+		                        max(gd.set_udt_dt) over(partition by gd.pkup_shop_sn)  as grp_udt_dt /* shopId별 대표상품 최종 수정일 */
+		                  FROM (
+		                    SELECT
+		                          gd.*,
+		                          max(gd.udt_dt) over(partition by gd.parent_god_turn) as set_udt_dt, /* 대표상품별 최종 수정일 */
+		                          max(gd.stat_seq) over(partition by gd.parent_god_turn) as max_stat_seq, /* 대표상품별 stat_seq */
+		                          max(gd.stat_seq) OVER (PARTITION BY gd.parent_god_turn,gd.stat_type) AS grp_stat_seq1, /* 대표상품, stat_type별 stat_seq */
+		                          sum(decode(gd.pckage_god_tp_cd,'',1,'ADIT_CPST_GOD',1,0)) over (partition by gd.parent_god_turn) as sub_grp_count, /* 하위그룹 카운트 */
+		                          max(gd.dmstc_dlv_cst_plc_sn1) over (partition by gd.parent_god_turn) as dmstc_dlv_cst_plc_sn2 /* 대표상품별 배송비 정책 번호 */
+		                    FROM
+		                       (
+		                        SELECT
+		                             bskgod.*,
+		                             gd.erp_god_no, /* ERP 상품 번호 */
+		                             gd.god_nm, /*상품명*/
+		                             gd.mobile_god_nm, /*모바일 상품명*/
+		                             gd.color_nm,  /*색상명*/
+		                             gd.color_cd, /* 색상 코드 */
+		                             gd.clor_chip_img_url,
+		                             gd.god_sale_sect_cd,  /*상품판매구분코드*/
+		                             gd.god_tp_cd, /*상품유형코드*/
+		                             gd.partmal_sect_cd,
+		                             gd.brnd_id, /*브랜드ID*/
+		                             gd.brnd_grp_id, /* 브랜드 그룹 ID */
+		                             gd.com_id, /* 업체 ID */
+		                             gd.inv_manage_yn, /* 재고 관리 여부 */
+		                             gd.lmtt_inv_yn, /* 한정 재고 여부 */
+		                             gd.recomend_sex_cd,
+		                             gd.min_ord_qty, /* 최소 주문 수량 */
+                                     gd.max_ord_qty, /* 최대 주문 수량 */
+		                             gd.pnt_accml_yn, /* 포인트 적립 여부 */
+			                         gd.pnt_accml_rt, /* 포인트 적립 율 */
+			                         gd.pnt_use_yn, /* 포인트 사용 여부 */
+                                     gd.webpnt_accml_yn, /* 포인트 적립 여부 */
+                                     gd.webpnt_accml_rt, /* 포인트 적립 율 */
+                                     gd.webpnt_use_yn, /* 포인트 사용 여부 */
+			                         gd.imdtl_dc_rt, /* 즉시 할인 율 */
+			                         gd.imdtl_dc_yn, /* 즉시 할인 여부 */
+		                             gd.rtl_prc,      /* 정소가 */
+		                             gd.csmr_prc,     /*실소가*/
+		                             gd.emp_prc,      /*임직원가*/
+		                             gd.prdlst_cd,
+		                             gditm.sku_no, /* SKU 번호 */
+		                             gditm.itm_stat_cd,  /*단품 상태코드*/
+		                             gditm.itm_nm, /* 단품 명 */
+		                             /* stat_type : 대표상품이거나 추가구성상품이 아닌경우 '1', 아니면 '2' */
+		                             CASE
+		                                WHEN bskgod.parent_god_turn = bskgod.god_turn OR bskgod.pckage_god_tp_cd !='ADIT_CPST_GOD'
+		                                THEN  1
+		                                ELSE  2
+		                             END AS stat_type,
+		                             /* stat_seq : 패키지형 상품인 경우 대표상품이고 상품 판매 구분이 판매중이면 '1' */
+		                             /* stat_seq : 패키지형 상품인 경우 대표상품이 아니고 상품 판매 구분이 판매중이고 단품상태가 판매중이면 '1' */
+		                             /* stat_seq : 패키지형 상품인 경우 그밖의 경우 '2' */
+		                             /* stat_seq : 패키지형 상품이 아닌경우 상품 판매 구분이 판매중이고 단품상태가 판매중이면 '1', 그밖의 경우 '2' */
+		                             case when bskgod.pckage_god_yn = 'Y'
+		                                  then case when bskgod.parent_god_turn = bskgod.god_turn and (gd.god_sale_sect_cd = 'SALE_PROGRS' or gd.god_sale_sect_cd = 'SALE_PROGRS_PKUP') then 1
+		                                            when bskgod.parent_god_turn != bskgod.god_turn and  (gd.god_sale_sect_cd = 'SALE_PROGRS' or gd.god_sale_sect_cd = 'SALE_PROGRS_PKUP') AND (gditm.itm_stat_cd = 'SALE_PROGRS' or gditm.itm_stat_cd = 'SALE_PROGRS_PKUP') then 1
+		                                            else 2
+		                                       end
+		                                  else  case when (gd.god_sale_sect_cd = 'SALE_PROGRS' or gd.god_sale_sect_cd = 'SALE_PROGRS_PKUP') AND (gditm.itm_stat_cd = 'SALE_PROGRS' or gditm.itm_stat_cd = 'SALE_PROGRS_PKUP') then 1
+		                                             else 2
+		                                        end
+		                             end as stat_seq,
+		                             /* 국내 배송비 정책 일련번호 : 대표상품인 경우에만 표시 대표상품이 아닌경우 '0'  */
+		                             case when  bskgod.god_turn = bskgod.parent_god_turn then gd.dmstc_dlv_cst_plc_sn
+		                                 else 0
+		                             end as dmstc_dlv_cst_plc_sn1
+		                        FROM   (
+		                                SELECT
+		                                       bskgod.bsk_no, /* 장바구니 번호 */
+		                                       bskgod.god_turn, /* 상품 순번 */
+		                                       bskgod.god_no, /* 상품 번호 */
+		                                       bskgod.itm_no, /* 단품 번호 */
+		                                       bskgod.itm_qty, /* 단품 수량 */
+		                                       bskgod.pckage_god_yn, /* 패키지형 상품 여부 */
+		                                       bskgod.dlv_sect_cd, /* 배송 구분 코드 */
+		                                       /* shopId가 없으면 '픽업 매장 일련번호', 있으면 shopId */
+		                                       <if test ="@com.plgrim.ncp.framework.commons.StringService@isEmpty(shopId)">
+		                                       bskgod.pkup_shop_sn,
+		                                       </if>
+		                                       <if test ="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(shopId)">
+		                                       #{shopId,jdbcType=VARCHAR} AS pkup_shop_sn,
+		                                       </if>
+		                                       bskgod.udt_dt, /* 수정 일시 */
+		                                       bskgod.recomend_com_cd, /* 추천업체코드 */
+		                                       NVL(bggc.god_turn,bskgod.god_turn) AS parent_god_turn, /* 부모 상품 순번 */
+		                                       bggc.pckage_god_tp_cd, /* 패키지형 상품 유형 코드 */
+		                          			  nvl(bggc.sort_seq,0) as sort_seq, /* 정렬 순서 */
+		                          			  NVL(t1.god_no,bskgod.god_no) as parent_god_no /* 부모 상품 번호 */
+		                                FROM   BSK_GOD bskgod
+		                                LEFT OUTER JOIN BSK_CPST_GOD_CNNC bggc
+		                                             ON  bggc.bsk_no = bskgod.bsk_no
+		                                            AND  bggc.cpst_god_turn = bskgod.god_turn
+		                                LEFT OUTER JOIN BSK_GOD t1
+		                                             ON bggc.bsk_no = t1.bsk_no
+		                                            AND bggc.god_turn = t1.god_turn
+		                                WHERE  bskgod.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+		                                AND    bskgod.dlv_sect_cd = 'PKUP_DLV'
+		                                ) bskgod
+		                                 JOIN  GOD gd ON bskgod.god_no = gd.god_no
+		                                 JOIN  GOD_ITM gditm ON bskgod.itm_no = gditm.itm_no and bskgod.god_no = gditm.god_no
+		                                 WHERE 1=1
+		                                 <if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(bskGodList)">
+		                                 /* 장바구니 상품 번호 리스트가 있는 경우 부모상품 번호로 조회 */
+										  AND  bskgod.parent_god_turn IN
+											 <foreach collection="bskGodList" item="bskGod" open="(" separator="," close=")">
+												 #{bskGod.godTurn,jdbcType=NUMERIC}
+											 </foreach>
+										 </if>
+										 /* 판매상품몰에 해당하는 대표상품이 존재하는 상품만 */
+		                                 AND EXISTS (
+		                                               SELECT 'Y'
+		                                               FROM
+		                                                   (
+		                                                   SELECT
+		                                                          bsk_no,
+		                                                          god_turn,
+		                                                          god_no
+		                                                   FROM  BSK_GOD t1
+		                                                   WHERE t1.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+		                                                   AND   t1.dlv_sect_cd = 'PKUP_DLV'
+		                                                   /* 대표상품 인 경우 */
+		                                                   AND   NOT EXISTS(
+		                                                                      SELECT 'Y'
+		                                                                      FROM   BSK_CPST_GOD_CNNC
+		                                                                      WHERE  bsk_no = t1.bsk_no
+		                                                                      AND    cpst_god_turn = t1.god_turn
+		                                                                    )
+		                                                   ) t1
+		                                               JOIN  GOD t4 ON t1.god_no = t4.god_no
+		                                               JOIN  GOD_SALE_MALL t5 ON t1.god_no = t5.god_no and t5.mall_id = #{mallId,jdbcType=VARCHAR} and t5.use_yn = 'Y'
+		                                               WHERE t1.god_turn = bskgod.parent_god_turn /* 대표상품인 경우 */
+		                                               AND   t4.dsp_yn = 'Y'
+		                                               <if test='empYn == "N"'>
+						                               AND   t4.emp_only_yn = 'N'
+						                               </if>
+		                                             )
+		                        ) gd
+		                        )gd
+		                    ) gd
+		                 ) gd
+		                 )gd
+		                LEFT OUTER JOIN SYS_BRND brnd ON gd.brnd_grp_id = brnd.brnd_id
+		                LEFT OUTER JOIN SYS_BRND brnd1 ON gd.brnd_id = brnd1.brnd_id
+		                LEFT OUTER JOIN GOD_LANGBY_GOD_NM gdnm                   /*상품 언어별 상품 명*/
+		                           ON  gd.god_no = gdnm.god_no
+		                           AND gdnm.lang_cd = #{lang,jdbcType=VARCHAR}
+
+				        /*상품 가격 예약*/
+		                LEFT OUTER JOIN god_prc_resve resrtlprc
+		                        ON gd.god_no = resrtlprc.god_no
+		                       AND SYSDATE BETWEEN resrtlprc.resve_beg_dt AND resrtlprc.resve_end_dt
+		                       AND resrtlprc.prc_resve_sect_cd = 'RTL_PRC'
+		                       AND resrtlprc.resve_yn='Y'
+		                LEFT OUTER JOIN god_prc_resve rescsmrprc
+		                        ON gd.god_no = rescsmrprc.god_no
+		                       AND SYSDATE BETWEEN rescsmrprc.resve_beg_dt AND rescsmrprc.resve_end_dt
+		                       AND rescsmrprc.prc_resve_sect_cd = 'CSMR_PRC'
+		                       AND rescsmrprc.resve_yn='Y'
+		                LEFT OUTER JOIN god_prc_resve resempprc
+		                       ON gd.god_no = resempprc.god_no
+		                      AND SYSDATE BETWEEN resempprc.resve_beg_dt AND resempprc.resve_end_dt
+		                      AND resempprc.prc_resve_sect_cd = 'EMP_PRC'
+		                      AND resempprc.resve_yn='Y'
+				        /*상품 가격 예약*/
+
+		                LEFT OUTER  JOIN GOD_SHOP_ITM_INV shop ON gd.itm_no = shop.itm_no AND gd.pkup_shop_sn = shop.shop_id
+		                LEFT OUTER JOIN SYS_SHOP sshop ON gd.pkup_shop_sn = sshop.shop_id
+		                <!-- LEFT OUTER JOIN SYS_SHOP_LANG lsshop ON gd.pkup_shop_sn = lsshop.shop_id -->
+		                LEFT OUTER JOIN sys_shop_brnd ssb ON ssb.ERP_BRND_ID = brnd1.ERP_BRND_ID AND ssb.SHOP_ID = gd.pkup_shop_sn /*#45965 로 추가*/
+		                LEFT OUTER JOIN sys_shop_holdy holdy ON  gd.pkup_shop_sn = holdy.shop_id and holdy.sys_date = to_char(sysdate,'yyyymmdd') and holdy.use_yn = 'Y'
+		                LEFT OUTER JOIN sys_shop_holdy_dow dow
+		                                  ON gd.pkup_shop_sn = dow.shop_id
+				                         and dow.dow_cd IN (  select CD from sys_grp_cd_cd_cnnc
+				                                              where grp_cd = 'DOW'
+				                                              AND   CD LIKE (SELECT UPPER(TO_CHAR(SYSDATE,'dy')) FROM DUAL) || '%'
+				                                            )
+		               LEFT OUTER JOIN SYS_CLDR cldr ON cldr.sys_date = TO_CHAR(SYSDATE,'YYYYMMDD')
+		               LEFT OUTER JOIN GOD_CPST_GOD_CNNC gdcnnc ON gd.parent_god_no = gdcnnc.god_no and gd.god_no = gdcnnc.cpst_god_no
+		               LEFT OUTER JOIN GOD_IMG img
+		                      ON gd.god_no = img.god_no
+		                     AND img.img_tp_cd ='THNAIL'
+		                     AND img.img_turn = 1
+		                     
+		               <if test='wishSn != null and wishSn != ""'>
+				        LEFT OUTER JOIN (
+		                                   SELECT
+		                                          GOD_NO
+		                                   FROM   BSK_WISHLST_GOD
+		                                   WHERE  WISHLST_SN = #{wishSn,jdbcType=NUMERIC}
+		                                   GROUP BY GOD_NO
+		                                 ) wish ON gd.god_no = wish.god_no
+				        </if>
+		              ORDER BY grp_seq,sub_grp_seq,set_udt_dt desc,parent_god_turn,sort_seq
+    	 ) bas
+) bas
+    order by orderrow
+	</select>
+
+	<resultMap id="prmResult" type="com.plgrim.ncp.biz.cart.result.CartPrmResult">
+	    <result property="grpSeq" column="grp_seq" />
+		<result property="godTurn" column="god_turn" />
+	    <result property="godNo" column="god_no" />
+		<result property="prmNo" column="prm_no" />
+		<result property="prmTpCd" column="prm_tp_cd" />
+		<result property="prmDtlTpCd" column="prm_dtl_tp_cd" />
+		<result property="itmQty" column="itm_qty" />
+		<result property="godGftSectCd" column="god_gft_sect_cd" />
+		<result property="accmlSectCd" column="accml_sect_cd" />
+		<result property="accmlAmt" column="accml_amt" />
+		<result property="accmlRt" column="accml_rt" />
+
+		<collection property="prmBundleDcCndList" ofType="PrmBundleDcCnd">
+			<result property="prmNo" column="prm_no" />
+			<result property="bundleDcCndMinQty" column="bundle_dc_cnd_min_qty" />
+			<result property="bundleDcCndMaxQty" column="bundle_dc_cnd_max_qty" />
+			<result property="bundleDcSectCd" column="bundle_dc_sect_cd" />
+			<result property="bundleDcAmt" column="bundle_dc_amt" />
+			<result property="bundleDcRt" column="bundle_dc_rt" />
+		</collection>
+	</resultMap>
+
+	<select id="selectBskPrmAll" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="prmResult" >
+			/* [cart.select.xml][selectBskPrmAll][장바구니 상품 프모모션 조회][buffer] */
+			SELECT
+					t2.grp_seq
+				  , t2.god_turn
+				  ,	t1.god_no
+				  ,	t2.itm_qty
+				  ,	t1.prm_no
+				  ,	t1.prm_tp_cd
+				  ,	t1.prm_dtl_tp_cd
+				  ,	t1.god_gft_sect_cd
+				  ,	t1.accml_sect_cd
+				  ,	t1.accml_amt
+				  ,	t1.accml_rt
+				  ,	bundle.bundle_dc_cnd_min_qty
+				  ,	bundle.bundle_dc_cnd_max_qty
+				  ,	bundle.bundle_dc_sect_cd
+				  ,	NVL(bundle.bundle_dc_amt,0) AS bundle_dc_amt
+				  ,	NVL(bundle.bundle_dc_rt,0) AS bundle_dc_rt
+				  ,	pat2.lang_cd
+			  FROM (
+					SELECT	/*+ index(p1 ix7_prm)*/
+						   p1.prm_no
+						 , g1.god_no
+						 , p1.prm_tp_cd
+						 , p1.prm_dtl_tp_cd
+						 , p1.accml_sect_cd
+						 , p1.accml_amt
+						 , p1.accml_rt
+						 , p1.god_gft_sect_cd
+						 , NVL(p1.rtl_prc_apl_yn,'N') AS rtl_prc_apl_yn
+						 , g1.mnfctur_year_cd
+						 , g1.seson_grp_cd
+					  FROM prm p1
+					  JOIN prm_apl_god pag1
+						ON p1.prm_no = pag1.prm_no
+				CROSS JOIN god g1
+					 WHERE g1.god_no IN (
+				<foreach collection="bskgodExtendList" item="bskGod"  separator=",">
+											#{bskGod.godNo,jdbcType=VARCHAR}
+				</foreach>				)
+					   AND pag1.god_apl_yn = 'Y'
+					   AND pag1.apl_god_sect_cd = 'ALL'
+					   AND p1.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+					   AND p1.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+					   AND p1.prm_stat_cd = 'APRV'
+					   AND p1.prm_dtl_tp_cd IN (	'SUBD_GOD_DC'
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">,'B2E_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(epUserid)">,'SIGNL_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">,'GOD_CPN','ADIT_SAV', 'DLV_CST_CPN', 'QDLV_CST_CPN'</if>
+													,'BUNDLE_DC','GOD_GFT','ORD_GFT' )
+					   AND EXISTS ( SELECT 1
+									  FROM prm_apl_pd x
+									 WHERE x.prm_no = p1.prm_no
+									   AND x.prm_no = pag1.prm_no
+									   AND x.beg_dt <![CDATA[<=]]> SYSDATE
+									   AND x.end_dt <![CDATA[>=]]> SYSDATE
+									   AND x.apl_pd_cd = 'APL_PD' )
+				<if test = "!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">
+					   AND NOT EXISTS ( SELECT 1
+										  FROM prm_cpn x
+										 WHERE x.prm_no = p1.prm_no
+										   AND x.cpn_issu_mthd_cd != 'IMDTL_DC' )
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">
+					   AND NOT EXISTS ( SELECT 1
+										  FROM PRM x
+										 WHERE x.prm_no = p1.prm_no
+										   AND x.prm_dtl_tp_cd = 'B2E_SPSL'
+										   AND x.b2e_crtfc_key != #{b2eCrtfcKey,jdbcType=VARCHAR} )
+				</if>
+						AND (p1.prm_dtl_tp_cd NOT IN ('QDLV_CST_CPN')
+							OR exists(
+								select 1
+								from prm_apl_god pagx
+								where pagx.prm_no = pag1.prm_no
+								and pagx.god_apl_yn = pag1.god_apl_yn
+								and pagx.apl_god_sect_cd = 'SESON'
+								and pagx.seson_cd = decode(pagx.seson_cd,'ALL','ALL',g1.mnfctur_year_cd||g1.seson_grp_cd)
+							)
+						)
+
+				     UNION
+					SELECT /*+ index(p2 ix7_prm)*/
+						   p2.prm_no
+						 , g2.god_no
+						 , p2.prm_tp_cd
+						 , p2.prm_dtl_tp_cd
+						 , p2.accml_sect_cd
+						 , p2.accml_amt
+						 , p2.accml_rt
+						 , p2.god_gft_sect_cd
+						 , NVL(p2.rtl_prc_apl_yn,'N') AS rtl_prc_apl_yn
+						 , g2.mnfctur_year_cd
+						 , g2.seson_grp_cd
+					  FROM god g2
+					  JOIN sys_brnd sb
+						ON g2.brnd_grp_id = sb.brnd_id
+					  JOIN prm_apl_god pag2
+						ON pag2.brnd_id IN ( g2.brnd_id, g2.brnd_grp_id, sb.upper_brnd_id )
+					  JOIN prm p2
+						ON p2.prm_no = pag2.prm_no
+					 WHERE g2.god_no IN (
+				<foreach collection="bskgodExtendList" item="bskGod"  separator=",">
+											#{bskGod.godNo,jdbcType=VARCHAR}
+				</foreach>				)
+					   AND pag2.god_apl_yn = 'Y'
+					   AND pag2.apl_god_sect_cd = 'BRND'
+					   AND p2.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+					   AND p2.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+					   AND p2.prm_stat_cd = 'APRV'
+					   AND p2.prm_dtl_tp_cd IN (	'SUBD_GOD_DC'
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">,'B2E_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(epUserid)">,'SIGNL_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">,'GOD_CPN','ADIT_SAV', 'DLV_CST_CPN', 'QDLV_CST_CPN'</if>
+													,'BUNDLE_DC','GOD_GFT','ORD_GFT' )
+					   AND EXISTS ( SELECT 1
+									  FROM prm_apl_pd x
+									 WHERE x.prm_no = p2.prm_no
+									   AND x.prm_no = pag2.prm_no
+									   AND x.beg_dt <![CDATA[<=]]> SYSDATE
+									   AND x.end_dt <![CDATA[>=]]> SYSDATE
+									   AND x.apl_pd_cd = 'APL_PD' )
+				<if test = "!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">
+					   AND NOT EXISTS (SELECT 1
+										 FROM prm_cpn x
+										WHERE x.prm_no = p2.prm_no
+										  AND x.prm_no = pag2.prm_no
+										  AND x.cpn_issu_mthd_cd    != 'IMDTL_DC'
+									  )
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">
+					   AND NOT EXISTS ( SELECT 1
+										  FROM PRM x
+										 WHERE x.prm_no = p2.prm_no
+										   AND x.prm_dtl_tp_cd = 'B2E_SPSL'
+										   AND x.b2e_crtfc_key != #{b2eCrtfcKey,jdbcType=VARCHAR} )
+				</if>
+						AND (p2.prm_dtl_tp_cd NOT IN ('QDLV_CST_CPN')
+							OR exists(
+										select 1
+										from prm_apl_god pagx
+										where pagx.prm_no = pag2.prm_no
+										and pagx.god_apl_yn = pag2.god_apl_yn
+										and pagx.apl_god_sect_cd = 'SESON'
+										and pagx.seson_cd = decode(pagx.seson_cd,'ALL','ALL',g2.mnfctur_year_cd||g2.seson_grp_cd)
+							)
+						)
+				 UNION
+				SELECT /*+ index(p3 ix7_prm)*/
+					   p3.prm_no
+					 , dccg3.god_no
+					 , p3.prm_tp_cd
+					 , p3.prm_dtl_tp_cd
+					 , p3.accml_sect_cd
+					 , p3.accml_amt
+					 , p3.accml_rt
+					 , p3.god_gft_sect_cd
+					 , NVL(p3.rtl_prc_apl_yn, 'N') AS rtl_prc_apl_yn
+					 , g3.mnfctur_year_cd
+					 , g3.seson_grp_cd
+				  FROM dsp_ctgry_cnnc_god dccg3
+				  JOIN prm_apl_god pag3
+					ON dccg3.dsp_ctgry_no LIKE pag3.dsp_ctgry_no || '%'
+				  JOIN prm p3
+					ON p3.prm_no = pag3.prm_no
+				  JOIN god g3
+				    ON dccg3.god_no = g3.god_no
+				 WHERE pag3.god_apl_yn = 'Y'
+				   AND pag3.apl_god_sect_cd = 'DSP_CTGRY'
+				   AND dccg3.god_no IN (
+				<foreach collection="bskgodExtendList" item="bskGod"  separator=",">
+											#{bskGod.godNo,jdbcType=VARCHAR}
+				</foreach>			  )
+				   AND p3.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE ,'YYYYMMDD')
+				   AND p3.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE ,'YYYYMMDD')
+				   AND p3.prm_stat_cd = 'APRV'
+				   AND p3.prm_dtl_tp_cd IN (	'SUBD_GOD_DC'
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">,'B2E_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(epUserid)">,'SIGNL_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">,'GOD_CPN','ADIT_SAV', 'DLV_CST_CPN', 'QDLV_CST_CPN'</if>
+												,'BUNDLE_DC','GOD_GFT','ORD_GFT' )
+				   AND EXISTS ( SELECT 1
+								 FROM prm_apl_pd x
+								WHERE x.prm_no = p3.prm_no
+								  AND x.prm_no = pag3.prm_no
+								  AND x.beg_dt <![CDATA[<=]]> SYSDATE
+								  AND x.end_dt <![CDATA[>=]]> SYSDATE
+								  AND x.apl_pd_cd = 'APL_PD' )
+				<if test = "!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">
+				   AND NOT EXISTS ( SELECT 1
+									  FROM prm_cpn x
+									 WHERE x.prm_no = p3.prm_no
+									   AND x.cpn_issu_mthd_cd != 'IMDTL_DC' )
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">
+					   AND NOT EXISTS ( SELECT 1
+										  FROM PRM x
+										 WHERE x.prm_no = p3.prm_no
+										   AND x.prm_dtl_tp_cd = 'B2E_SPSL'
+										   AND x.b2e_crtfc_key != #{b2eCrtfcKey,jdbcType=VARCHAR} )
+				</if>
+						AND (p3.prm_dtl_tp_cd NOT IN ('QDLV_CST_CPN')
+							OR exists(
+										select 1
+										from prm_apl_god pagx
+										where pagx.prm_no = pag3.prm_no
+										and pagx.god_apl_yn = pag3.god_apl_yn
+										and pagx.apl_god_sect_cd = 'SESON'
+										and pagx.seson_cd = decode(pagx.seson_cd,'ALL','ALL',g3.mnfctur_year_cd||g3.seson_grp_cd)
+							)
+						)
+				 UNION
+				SELECT /*+ index(p4 ix7_prm)*/
+					   p4.prm_no
+					 , pag4.god_no
+					 , p4.prm_tp_cd
+					 , p4.prm_dtl_tp_cd
+					 , p4.accml_sect_cd
+					 , p4.accml_amt
+					 , p4.accml_rt
+					 , p4.god_gft_sect_cd
+					 , NVL(p4.RTL_PRC_APL_YN,'N') as RTL_PRC_APL_YN
+					 , g4.mnfctur_year_cd
+					 , g4.seson_grp_cd
+				  FROM prm_apl_god pag4
+				  JOIN prm p4
+					ON p4.prm_no = pag4.prm_no
+				  JOIN god g4
+					ON pag4.GOD_NO = g4.GOD_NO
+				 WHERE pag4.god_apl_yn = 'Y'
+				   AND pag4.apl_god_sect_cd = 'GOD'
+				   AND pag4.god_no IN (
+				<foreach collection="bskgodExtendList" item="bskGod"  separator=",">
+										#{bskGod.godNo,jdbcType=VARCHAR}
+				</foreach>			  )
+				   AND p4.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+				   AND p4.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+				   AND p4.prm_stat_cd = 'APRV'
+				   AND p4.prm_dtl_tp_cd IN (	'SUBD_GOD_DC'
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">,'B2E_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(epUserid)">,'SIGNL_SPSL'</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">,'GOD_CPN','ADIT_SAV', 'DLV_CST_CPN', 'QDLV_CST_CPN'</if>
+												,'BUNDLE_DC','GOD_GFT','ORD_GFT' )
+				   AND EXISTS ( SELECT 1
+								  FROM prm_apl_pd pap4
+								 WHERE pap4.prm_no = p4.prm_no
+								   AND pap4.prm_no = pag4.prm_no
+								   AND pap4.beg_dt <![CDATA[<=]]> SYSDATE
+								   AND pap4.end_dt <![CDATA[>=]]> SYSDATE
+								   AND pap4.apl_pd_cd = 'APL_PD' )
+				<if test = "!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">
+				   AND NOT EXISTS ( SELECT 1
+									  FROM prm_cpn x
+									 WHERE x.prm_no	= p4.prm_no
+									   AND x.cpn_issu_mthd_cd != 'IMDTL_DC' )
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(b2eCrtfcKey)">
+					   AND NOT EXISTS ( SELECT 1
+										  FROM PRM x
+										 WHERE x.prm_no = p4.prm_no
+										   AND x.prm_dtl_tp_cd = 'B2E_SPSL'
+										   AND x.b2e_crtfc_key != #{b2eCrtfcKey,jdbcType=VARCHAR} )
+				</if>
+				) t1
+				JOIN (
+					SELECT gg.grp_seq
+						 , gg.god_turn
+						 , g.god_no
+						 , gg.itm_qty
+						 , g.brnd_id
+						 , g.god_aprv_sect_cd
+						 , g.god_sale_sect_cd
+					     , NVL(resrtlprc.resve_rtl_prc, g.rtl_prc) AS rtl_prc
+		                 , NVL(rescsmrprc.resve_csmr_prc, g.csmr_prc) AS csmr_prc
+		                 , NVL(resempprc.resve_emp_prc, g.emp_prc) AS emp_prc
+						 , g.brnd_grp_id
+						 , sb.upper_brnd_id
+					  FROM (
+				<foreach collection="bskgodExtendList" item="bskGod"  separator="UNION ALL">
+							SELECT #{bskGod.cartSeq,jdbcType=NUMERIC} AS grp_seq,
+								   #{bskGod.godTurn,jdbcType=NUMERIC} AS god_turn,
+								   #{bskGod.godNo,jdbcType=VARCHAR} AS god_no,
+								   #{bskGod.itmQty,jdbcType=NUMERIC} AS itm_qty
+							FROM DUAL
+				</foreach>
+						  ) gg
+					  JOIN god g
+						ON gg.god_no = g.god_no
+					  JOIN sys_brnd sb
+						ON g.brnd_grp_id = sb.brnd_id
+  		   LEFT OUTER JOIN god_prc_resve resrtlprc
+            			ON g.god_no = resrtlprc.god_no
+	                   AND SYSDATE BETWEEN resrtlprc.resve_beg_dt AND resrtlprc.resve_end_dt
+	                   AND resrtlprc.prc_resve_sect_cd = 'RTL_PRC'
+	                   AND resrtlprc.resve_yn='Y'
+	       LEFT OUTER JOIN god_prc_resve rescsmrprc
+                		ON g.god_no = rescsmrprc.god_no
+                 	   AND SYSDATE BETWEEN rescsmrprc.resve_beg_dt AND rescsmrprc.resve_end_dt
+                 	   AND rescsmrprc.prc_resve_sect_cd = 'CSMR_PRC'
+                 	   AND rescsmrprc.resve_yn='Y'
+	       LEFT OUTER JOIN god_prc_resve resempprc
+                  		ON g.god_no = resempprc.god_no
+                 	   AND SYSDATE BETWEEN resempprc.resve_beg_dt AND resempprc.resve_end_dt
+                 	   AND resempprc.prc_resve_sect_cd = 'EMP_PRC'
+                 	   AND resempprc.resve_yn='Y'
+				) t2
+				ON t1.god_no = t2.god_no
+			  JOIN god_sale_mall gsm
+				ON gsm.god_no = t1.god_no
+			   AND gsm.god_no = t2.god_no
+			   AND gsm.use_yn = 'Y'
+			  JOIN prm_apl_tgt pat1
+				ON t1.prm_no = pat1.prm_no
+			   AND pat1.prm_tgt_tp_cd = 'MALL_ID'
+			   AND pat1.mall_id = #{mallId,jdbcType=VARCHAR}
+			   AND gsm.mall_id = pat1.mall_id
+			  JOIN prm_apl_tgt pat2
+				ON t1.prm_no = pat2.prm_no
+			   AND pat2.prm_tgt_tp_cd = 'LANG'
+			   <!-- AND pat2.lang_cd = #{lang,jdbcType=VARCHAR} -->
+			  JOIN sys_mall_lang sml
+				ON sml.mall_id = gsm.mall_id
+			   AND sml.lang_cd = pat2.lang_cd
+			   AND sml.use_yn = 'Y'
+   LEFT OUTER JOIN prm_bundle_dc_cnd bundle
+				ON t1.prm_no = bundle.prm_no
+			 WHERE t2.god_aprv_sect_cd = 'APRV_COMPT'
+			   AND (t2.god_sale_sect_cd = 'SALE_PROGRS' or t2.god_sale_sect_cd = 'SALE_PROGRS_PKUP')
+			   AND t2.emp_prc <![CDATA[>]]> 0
+			   AND t2.rtl_prc <![CDATA[>]]> 0
+			   AND t2.csmr_prc <![CDATA[>]]> 0
+			   AND (   (t1.rtl_prc_apl_yn = 'Y' AND t2.rtl_prc = t2.csmr_prc)
+					OR (t1.rtl_prc_apl_yn = 'N')
+					OR (t1.rtl_prc_apl_yn IS NULL)  )
+			   AND pat2.lang_cd IS NOT NULL
+			   AND NOT EXISTS ( SELECT /*+ no_unnest*/ 1 -- 제외 상품
+								  FROM prm_apl_god pag
+								 WHERE pag.god_apl_yn = 'N'
+								   AND pag.god_no IN (
+				<foreach collection="bskgodExtendList" item="bskGod"  separator=",">
+														#{bskGod.godNo,jdbcType=VARCHAR}
+				</foreach>							 )
+									 AND pag.apl_god_sect_cd = 'GOD'
+									 AND pag.prm_no = t1.prm_no
+									 AND pag.god_no = t1.god_no
+									 AND pag.god_no = t2.god_no )
+			   AND NOT EXISTS ( SELECT /*+ no_unnest*/ 1
+								  FROM prm_apl_god pag
+								 WHERE pag.god_apl_yn = 'N'
+								   AND pag.apl_god_sect_cd = 'BRND'
+								   AND pag.prm_no = t1.prm_no
+								   AND pag.brnd_id IN (t2.brnd_id, t2.brnd_grp_id, t2.upper_brnd_id)	)
+			   AND NOT EXISTS ( SELECT /*+ no_unnest*/ 1
+								  FROM dsp_ctgry_cnnc_god dccg
+								  JOIN dsp_ctgry dc
+									ON dc.dsp_ctgry_no = dccg.dsp_ctgry_no
+								  JOIN prm_apl_god pag
+									ON dc.dsp_ctgry_no LIKE pag.dsp_ctgry_no||'%'
+								 WHERE pag.god_apl_yn = 'N'
+								   AND pag.apl_god_sect_cd = 'DSP_CTGRY'
+								   AND dc.dsp_yn='Y' AND dc.delete_yn='N'
+								   AND dc.apl_mall_id = gsm.mall_id
+								   AND pag.prm_no = t1.prm_no
+								   AND dccg.god_no = t1.god_no
+								   AND dccg.god_no = t2.god_no
+								   AND dccg.god_no IN (
+				<foreach collection="bskgodExtendList" item="bskGod"  separator=",">
+														#{bskGod.godNo,jdbcType=VARCHAR}
+				</foreach>							   )	)
+	</select>
+
+
+	<resultMap id="godPrmResult" type="com.plgrim.ncp.biz.cart.result.CartGodPrmResult">
+		<result property="godNo" column="god_no" />
+		<result property="grpSeq" column="grp_seq" />
+		<result property="prm.prmNo" column="prm_no" />
+		<result property="prm.prmTpCd" column="prm_tp_cd" />
+		<result property="prm.prmDtlTpCd" column="prm_dtl_tp_cd" />
+		<result property="prm.prmNm" column="prm_nm" />
+		<result property="prm.pchLmitQty" column="pch_lmit_qty" />
+		<result property="prm.maxDcPsbAmt" column="max_dc_psb_amt" />
+		<result property="prm.dcSectCd" column="dc_sect_cd" />
+		<result property="prm.dcAmt" column="dc_amt" />
+		<result property="prm.dcRt" column="dc_rt" />
+		<result property="prm.saleUntPrc" column="sale_unt_prc" />
+		<result property="prm.ordDcRelatePromtSn" column="ord_dc_relate_promt_sn"/>
+		<result property="prm.relateUrl" column="relate_url"/>
+		<result property="prm.godDcDplctCd" column="god_dc_dplct_cd" />
+	    <result property="prm.godGftSectCd" column="god_gft_sect_cd" />
+	    <result property="prm.ordGftPchStdrCd" column="ord_gft_pch_stdr_cd" />
+	    <result property="prm.ordGftAplCndQty" column="ord_gft_apl_cnd_qty" />
+		<result property="prm.ordGftAplCndAmt" column="ord_gft_apl_cnd_amt" />
+		<result property="prm.gftChoisePsbQty" column="gft_choise_psb_qty" />
+		<result property="prm.ordGftDscr" column="ord_gft_dscr" />
+		<result property="prm.ordGftAtndmatterCont" column="ord_gft_atndmatter_cont" />
+		<result property="prmDcAmt" column="prm_dc_amt" />
+		<result property="prmAplyAmt" column="prm_aply_amt" />
+		<result property="bundleQty" column="bundle_qty" />
+		<result property="crsGodGrpCd" column="apl_tgt_god_grp_cd" />
+		<result property="grp1Cnt" column="grp1_cnt" />
+		<result property="grp2Cnt" column="grp2_cnt" />
+		<collection property="prmBundleDcCndList" ofType="PrmBundleDcCnd">
+			<result property="bundleDcCndMinQty" column="bundle_dc_cnd_min_qty" />
+			<result property="bundleDcCndMaxQty" column="bundle_dc_cnd_max_qty" />
+			<result property="bundleDcSectCd" column="bundle_dc_sect_cd" />
+			<result property="bundleDcAmt" column="bundle_dc_amt" />
+			<result property="bundleDcRt" column="bundle_dc_rt" />
+		</collection>
+		<collection property="giftList" ofType="BskGodExtend">
+			<result property="godNo"  column="gift_god_no" />
+			<result property="itmNo"  column="gift_itm_no" />
+			<result property="godNm"  column="god_nm" />
+			<result property="imgUrl"  column="img_url" />
+			<result property="erpGodNo"  column="erp_god_no" />
+			<result property="skuNo"  column="sku_no" />
+			<result property="dmstcDlvCstPlcSn"  column="dmstc_dlv_cst_plc_sn" />
+			<result property="partmalSectCd"  column="partmal_sect_cd" />
+		</collection>
+	</resultMap>
+
+	<select id="selectCartGodsGnlPrm" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="godPrmResult">
+		SELECT /* [cart.select.xml][selectCartGodsGnlPrm][장바구니 상품 상품할인 조회][박문철] */
+	          tmp.god_no,
+	          bas.prm_no,
+	          bas.prm_tp_cd,
+	          bas.prm_dtl_tp_cd,
+	          NVL(bas.pch_lmit_qty,999) as pch_lmit_qty,
+	          NVL(bas.max_dc_psb_amt,0) as max_dc_psb_amt,
+	          bas.dc_sect_cd,
+	          NVL(bas.dc_amt,0) as dc_amt,
+	          NVL(bas.dc_rt,0) as dc_rt,
+	          NVL(bas.sale_unt_prc,0) as sale_unt_prc
+	   FROM   PRM bas
+	   JOIN  (
+		<foreach collection="cartPrmResultList" item="prmList"  separator="UNION ALL">
+				SELECT #{prmList.prmNo,jdbcType=VARCHAR} as prm_no,
+					   #{prmList.godNo,jdbcType=VARCHAR} as god_no
+				FROM DUAL
+		</foreach>
+              )  tmp   ON bas.prm_no = tmp.prm_no
+	</select>
+
+
+	<select id="selectCartGodsBundlePrm" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="godPrmResult">
+
+      SELECT  /* [cart.select.xml][selectCartGodsBundlePrm][장바구니 상품 묶음할인 조회][박문철] */
+            tmp.grp_seq,
+            tmp.god_no,
+            tmp.bundle_qty,
+            bas.prm_no,
+            bas.prm_tp_cd,
+            bas.prm_dtl_tp_cd,
+            NVL((SELECT prm_nm  FROM   prm_lang WHERE  prm_no = bas.prm_no AND lang_cd = #{lang,jdbcType=VARCHAR}),bas.prm_nm ) prm_nm,
+            case when dsp.promt_aprv_stat_cd = 'APRV_COMPT' and sysdate between dsp.dsp_beg_dt and dsp.dsp_end_dt and dsp.dsp_yn ='Y'
+                 then bas.ord_dc_relate_promt_sn
+                 else null
+            end as ord_dc_relate_promt_sn,
+            bas.relate_url,
+            bundle.bundle_dc_sect_cd as dc_sect_cd,
+            nvl(bundle.bundle_dc_amt,0) as dc_amt,
+            nvl(bundle.bundle_dc_rt,0) as dc_rt
+       FROM  PRM bas
+       JOIN  (SELECT grp_seq,
+                      prm_no,
+                      god_no,
+                      bundle_qty
+                FROM (
+                  SELECT grp_seq,
+                         prm_no,
+                         god_no,
+                         sum(qty) over(partition by grp_seq,prm_no) as bundle_qty,
+                         row_number() over(PARTITION BY grp_seq,prm_no,god_no order by god_no) AS num
+                  FROM (
+		<foreach collection="cartPrmResultList" item="prmList"  separator="UNION ALL">
+							SELECT #{prmList.grpSeq,jdbcType=INTEGER} as grp_seq,
+								   #{prmList.prmNo,jdbcType=VARCHAR} as prm_no,
+								   #{prmList.godNo,jdbcType=VARCHAR} as god_no,
+								   #{prmList.itmQty,jdbcType=INTEGER} as qty
+							FROM DUAL
+		</foreach>
+                      ) tmp
+                  WHERE 1=1
+                <if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(exclsList)">
+				  AND  tmp.god_no NOT IN
+				<foreach collection="exclsList" item="exclsGodNo"  open="(" separator="," close=")">
+					#{exclsGodNo,jdbcType=VARCHAR}
+				</foreach>
+				</if>
+                )
+               WHERE  num = 1
+             )  tmp
+             ON bas.prm_no = tmp.prm_no
+        LEFT OUTER JOIN dsp_promt dsp on bas.ord_dc_relate_promt_sn= dsp.promt_sn
+        LEFT OUTER JOIN PRM_BUNDLE_DC_CND bundle
+                     ON tmp.prm_no = bundle.prm_no
+                    AND tmp.bundle_qty >= bundle.bundle_dc_cnd_min_qty
+                    AND tmp.bundle_qty <![CDATA[<=]]> bundle.bundle_dc_cnd_max_qty
+	</select>
+
+	<select id="selectCartCrsPrm" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="godPrmResult">
+		   SELECT  /* [cart.select.xml][selectCartCrsPrm][장바구니 상품 교차할인 조회][박문철] */
+             	   grp_seq,
+                   god_no,
+                   prm_no,
+                   DECODE(apl_tgt_god_grp_cd,'APL_TGT_GOD_GRP_1','A','B') as apl_tgt_god_grp_cd,
+                   prm_tp_cd,
+                   prm_dtl_tp_cd,
+                   dc_sect_cd,
+                   nvl(dc_amt,0) as dc_amt,
+                   nvl(dc_rt,0) as dc_rt,
+                   NVL((SELECT prm_nm  FROM   prm_lang WHERE  prm_no = bas.prm_no AND lang_cd = #{lang,jdbcType=VARCHAR}),bas.prm_nm ) prm_nm,
+                   case when dsp.promt_aprv_stat_cd = 'APRV_COMPT' and sysdate between dsp.dsp_beg_dt and dsp.dsp_end_dt and dsp.dsp_yn ='Y'
+		                 then ord_dc_relate_promt_sn
+		                 else null
+		            end as ord_dc_relate_promt_sn,
+		           relate_url,
+                   SUM(DECODE(apl_tgt_god_grp_cd,'APL_TGT_GOD_GRP_1',1,0)) OVER (partition by grp_seq,prm_no) AS grp1_cnt,
+                   SUM(DECODE(apl_tgt_god_grp_cd,'APL_TGT_GOD_GRP_2',1,0)) OVER (partition by grp_seq,prm_no) as grp2_cnt
+             FROM (
+                    SELECT
+                          t1.grp_seq,
+                          t1.god_no,
+                          t2.prm_no,
+                          t2.apl_tgt_god_grp_cd,
+                          t3.prm_tp_cd,
+                          t3.prm_dtl_tp_cd,
+                          t3.dc_sect_cd,
+                          t3.dc_amt as dc_amt,
+                          t3.dc_rt,
+                          t3.prm_nm,
+                          t3.ord_dc_relate_promt_sn,
+                          t3.relate_url
+                    FROM (
+                   			<foreach collection="bskgodExtendList" item="bskGod"  separator="UNION ALL">
+                   				SELECT #{bskGod.cartSeq,jdbcType=NUMERIC} AS grp_seq,
+                   				       #{bskGod.godNo,jdbcType=VARCHAR} AS god_no
+                   				FROM DUAL
+                   			</foreach>
+                       )  t1
+                    JOIN PRM_CRS_DC_APL_GOD t2 ON t1.god_no = t2.god_no
+                    JOIN PRM_APL_TGT tgt ON t2.prm_no = tgt.prm_no AND tgt.prm_tgt_tp_cd='MALL_ID' AND tgt.mall_id = #{mallId,jdbcType=VARCHAR}
+                    JOIN PRM t3 ON t2.prm_no = t3.prm_no
+                    WHERE 1=1
+				    <if test="!@com.plgrim.ncp.framework.commons.CollectionService@isEmpty(exclsList)">
+				    AND  t1.god_no NOT IN
+					<foreach collection="exclsList" item="exclsGodNo"  open="(" separator="," close=")">
+				    #{exclsGodNo,jdbcType=VARCHAR}
+					</foreach>
+					</if>
+					AND   t3.prm_dtl_tp_cd = 'CRS_DC'
+                    AND   t3.prm_stat_cd = 'APRV'
+                    AND   t3.prm_beg_date  <![CDATA[<=]]>  TO_CHAR(SYSDATE,'YYYYMMDD')
+                    AND   t3.prm_end_date  >=  TO_CHAR(SYSDATE,'YYYYMMDD')
+
+                 ) bas
+                 LEFT OUTER JOIN dsp_promt dsp on bas.ord_dc_relate_promt_sn = dsp.promt_sn
+	</select>
+
+	<select id="selectGodGift" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="godPrmResult">
+	SELECT /* [cart.select.xml][selectGodGift][상품 사은품 조회][박문철] */
+          bas.god_no,
+          bas.prm_no,
+          bas.prm_tp_cd,
+          bas.prm_dtl_tp_cd,
+          bas.gift_god_no,
+          bas.gift_itm_no,
+          bas.sku_no,
+          NVL(gdnm.god_nm,gd.god_nm) as god_nm,
+          gd.erp_god_no,
+          gd.dmstc_dlv_cst_plc_sn,
+          gd.partmal_sect_cd,
+          img.img_url
+   FROM (
+          SELECT
+                bas.*,
+                COUNT(1) OVER (PARTITION BY bas.god_no, bas.prm_no) AS inv_gift_cnt
+          FROM (
+               SELECT
+                       bas.*,
+                       COUNT(1) OVER (PARTITION BY god_no,prm_no) AS gift_cnt
+               FROM (
+                        SELECT
+                               bas.*,
+                               ROW_NUMBER() over(PARTITION BY prm_no,god_no,gift_god_no order by inv_cnt desc) as rum
+                        FROM (
+
+                                 SELECT tmp.god_no,
+                                        bas.prm_no,
+                                        bas.prm_tp_cd,
+                                        bas.prm_dtl_tp_cd,
+                                        gft.offer_gft_turn,
+                                        gft.god_no as gift_god_no,
+                                        gifgoditm.itm_no as gift_itm_no,
+                                        gifgoditm.sku_no,
+                                        gifgoditm.tot_useful_inv_qty - NVL(gifgoditm.sale_prearnge_qty,0) - NVL(DECODE(gifgoditm.safe_inv_use_yn,'Y', gifgoditm.safe_inv_qty,0),0) inv_cnt
+                                  FROM PRM bas
+                                       JOIN
+                                       (  SELECT prm_no, god_no
+                                          FROM (
+		<foreach collection="cartPrmResultList" item="prmList"  separator="UNION ALL">
+												SELECT #{prmList.prmNo,jdbcType=VARCHAR} as prm_no,
+													   #{prmList.godNo,jdbcType=VARCHAR} as god_no
+												FROM DUAL
+		</foreach>
+                                               )
+                                          GROUP BY prm_no,god_no
+                                        ) tmp
+                                         ON bas.prm_no = tmp.prm_no
+                                       JOIN PRM_OFFER_GFT gft ON tmp.prm_no = gft.prm_no
+                                       JOIN GOD_ITM gifgoditm ON gft.god_no = gifgoditm.god_no
+                              ) bas
+                        ) bas
+                WHERE rum = 1
+                ) bas
+         WHERE bas.inv_cnt > 0
+         ) bas
+    JOIN GOD gd ON bas.gift_god_no = gd.god_no
+    		   AND (gd.god_sale_sect_cd = 'SALE_PROGRS' or gd.god_sale_sect_cd = 'SALE_PROGRS_PKUP')
+    LEFT OUTER JOIN GOD_LANGBY_GOD_NM gdnm
+                 ON bas.god_no = gdnm.god_no
+                AND gdnm.lang_cd = #{lang,jdbcType=VARCHAR}
+   LEFT OUTER JOIN GOD_IMG img
+                      ON bas.gift_god_no = img.god_no
+                     AND img.img_tp_cd ='THNAIL'
+                     AND img.img_turn = 1
+                     
+  WHERE inv_gift_cnt = gift_cnt
+	</select>
+
+	<resultMap id="giftResult" type="com.plgrim.ncp.biz.cart.result.CartGiftResult">
+		<result property="prm.prmNo" column="prm_no" />
+		<result property="prm.prmTpCd" column="prm_tp_cd" />
+		<result property="prm.prmDtlTpCd" column="prm_dtl_tp_cd" />
+		<result property="prm.prmNm" column="prm_nm" />
+		<result property="prm.prmBegDate" column="prm_beg_date" />
+		<result property="prm.prmEndDate" column="prm_end_date" />
+		<result property="prm.rprstImgUseSectCd" column="rprst_img_use_sect_cd" />
+		<result property="prm.rprstImgPcUrl" column="rprst_img_pc_url" />
+		<result property="prm.rprstImgPcAltrtvCont" column="rprst_img_pc_altrtv_cont" />
+		<result property="prm.rprstImgMobileUrl" column="rprst_img_mobile_url" />
+		<result property="prm.rprstImgMobileAltrtvCont" column="rprst_img_mobile_altrtv_cont" />
+	    <result property="prm.ordGftPchStdrCd" column="ord_gft_pch_stdr_cd" />
+	    <result property="prm.ordGftAplCndQty" column="ord_gft_apl_cnd_qty" />
+		<result property="prm.ordGftAplCndAmt" column="ord_gft_apl_cnd_amt" />
+		<result property="prm.ordGftDscr" column="ord_gft_dscr" />
+		<result property="prm.ordGftAtndmatterCont" column="ord_gft_atndmatter_cont" />
+		<result property="prm.gftChoisePsbQty" column="gft_choise_psb_qty" />
+		<collection property="bskGod" ofType="BskGod">
+		    <result property="godNo" column="god_no" />
+		</collection>
+		<collection property="god" ofType="BskGodExtend">
+			<result property="godNo" column="gft_god_no" />
+			<result property="itmNo" column="gft_itm_no" />
+			<result property="godNm" column="god_nm" />
+			<result property="imgUrl" column="img_url" />
+			<result property="erpGodNo" column="erp_god_no" />
+			<result property="skuNo" column="sku_no" />
+			<result property="dmstcDlvCstPlcSn"  column="dmstc_dlv_cst_plc_sn" />
+			<result property="partmalSectCd"  column="partmal_sect_cd" />
+		</collection>
+	</resultMap>
+	<select id ="selectOrdGift" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="giftResult">
+	SELECT /* [cart.select.xml][selectOrdGift][주문 사은품 조회][박문철] */
+	       t1.prm_no,
+	       t2.prm_tp_cd,
+	       t2.prm_dtl_tp_cd,
+	       t2.prm_nm,
+           TO_CHAR (TO_DATE (t2.prm_beg_date, 'yyyymmdd'), 'yyyy.mm.dd') AS prm_beg_date,
+           TO_CHAR (TO_DATE (t2.prm_end_date, 'yyyymmdd'), 'yyyy.mm.dd') AS prm_end_date,
+	       t2.rprst_img_use_sect_cd,
+	       t2.rprst_img_pc_url,
+	       t2.rprst_img_pc_altrtv_cont,
+	       t2.rprst_img_mobile_url,
+	       t2.rprst_img_mobile_altrtv_cont,
+	       t2.ord_gft_pch_stdr_cd,
+	       t2.ord_gft_apl_cnd_qty,
+	       t2.ord_gft_apl_cnd_amt as ord_gft_apl_cnd_amt,
+	       t2.ord_gft_dscr,
+	       t2.ord_gft_atndmatter_cont,
+	       t2.gft_choise_psb_qty,
+	       t1.god_no,
+	       t1.gft_god_no,
+	       t1.gft_itm_no,
+	       nvl(t4.god_nm,t5.god_nm) as god_nm,
+	       t6.img_url,
+	       t5.erp_god_no,
+	       t5.dmstc_dlv_cst_plc_sn,
+	       t5.partmal_sect_cd,
+	       t7.sku_no
+	FROM (
+	        SELECT
+	              prm_no,
+	              god_no,
+	              gft_god_no,
+	              gft_itm_no,
+	              count(1) over(partition by prm_no,god_no) as gif_cnt
+	        FROM (
+	                SELECT
+	                        prm_no,
+	                        god_no,
+	                        gft_god_no,
+	                        gft_itm_no,
+	                        inv_qty,
+	                        row_number() over(partition by prm_no,god_no,gft_god_no order by inv_qty desc) as num
+	                FROM (
+	                        SELECT
+	                              tmp.prm_no,
+	                              tmp.god_no,
+	                              gft.god_no as gft_god_no,
+	                              gifgoditm.itm_no as gft_itm_no,
+	                              gifgoditm.tot_useful_inv_qty - NVL(gifgoditm.sale_prearnge_qty,0) - NVL(DECODE(gifgoditm.safe_inv_use_yn,'Y',gifgoditm.safe_inv_qty,0),0) as inv_qty
+
+	                        FROM  (
+	                                 SELECT
+	                                        prm_no,
+	                                        god_no,
+	                                        sum(qty) as qty
+	                                  FROM (
+		<foreach collection="cartPrmResultList" item="prmList"  separator="UNION ALL">
+												SELECT #{prmList.prmNo,jdbcType=VARCHAR} as prm_no,
+													   #{prmList.godNo,jdbcType=VARCHAR} as god_no,
+													   #{prmList.itmQty,jdbcType=INTEGER} as qty
+												FROM DUAL
+		</foreach>
+	                                        )tmp
+	                                  GROUP BY prm_no,god_no
+	                              )  tmp
+	                       JOIN PRM bas ON tmp.prm_no = bas.prm_no
+	                       JOIN PRM_OFFER_GFT gft ON tmp.prm_no = gft.prm_no
+	                       JOIN GOD_ITM gifgoditm ON gft.god_no = gifgoditm.god_no
+	                       WHERE 1 = CASE WHEN bas.ORD_GFT_PCH_STDR_CD = 'AMT_STDR' THEN 1
+	                                      ELSE CASE WHEN tmp.qty >= bas.ORD_GFT_APL_CND_QTY THEN 1 ELSE 2 END
+	                                 END
+	                      ) bas
+	                   WHERE inv_qty > 0
+	                  ) bas
+	                  WHERE num = 1
+	     ) t1
+	JOIN PRM t2 ON t1.prm_no = t2.prm_no
+	JOIN GOD t5 ON t1.gft_god_no = t5.god_no
+    		   AND t5.god_sale_sect_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP')
+	JOIN GOD_ITM t7 ON t1.gft_itm_no = t7.itm_no
+	LEFT OUTER JOIN GOD_LANGBY_GOD_NM t4 ON t1.gft_god_no = t4.god_no and lang_cd = #{lang,jdbcType=VARCHAR}
+	LEFT OUTER JOIN GOD_IMG t6
+	                      ON t1.gft_god_no = t6.god_no
+	                     AND t6.img_tp_cd ='THNAIL'
+	                     AND t6.img_turn = 1
+	WHERE t1.gif_cnt >= t2.gft_choise_psb_qty
+	</select>
+
+	<select id="selectImdtlApplcCpn" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultMap="godPrmResult">
+	SELECT /* [cart.select.xml][selectImdtlApplcCpn][장바구니 상품 즉시할인 쿠폰 조회][박문철] */
+	      bas.prm_no,
+	      bas.prm_tp_cd,
+	      bas.prm_dtl_tp_cd,
+	      bas.prm_nm,
+	      NVL(bas.max_dc_psb_amt,0) as max_dc_psb_amt,
+	      bas.dc_sect_cd,
+	      NVL(bas.dc_amt,0) as dc_amt,
+	      NVL(bas.dc_rt,0) as dc_rt,
+	      bas.god_dc_dplct_cd,
+	      tmp.god_no
+	FROM  prm bas JOIN  (SELECT prm_no,
+	                            god_no
+	                     FROM (
+		<foreach collection="cartPrmResultList" item="prmList"  separator="UNION ALL">
+								SELECT #{prmList.prmNo,jdbcType=VARCHAR} as prm_no,
+									   #{prmList.godNo,jdbcType=VARCHAR} as god_no
+								FROM DUAL
+		</foreach>
+	                          )
+	                      GROUP BY prm_no,god_no
+	                    )  tmp
+	              ON bas.prm_no = tmp.prm_no
+	     JOIN PRM_CPN cpn ON tmp.prm_no = cpn.prm_no
+	WHERE cpn.cpn_issu_mthd_cd = 'IMDTL_DC'
+	AND  EXISTS (
+                    SELECT 'Y'
+                    FROM    PRM_APL_PD
+                    WHERE   prm_no = tmp.prm_no
+                    AND     apl_pd_cd = 'APL_PD'
+                    AND     beg_dt <![CDATA[<=]]> SYSDATE
+                    AND     end_dt <![CDATA[>=]]> SYSDATE
+                 )
+	</select>
+
+	<select id="selectOnlineGodInvCount" parameterType="bskGod" resultType="Integer">
+        SELECT /* [cart.select.xml][selectOnlineGodInvCount][상품 재고 조회 장바구니 추가 업데이트시만 조회][박문철] */
+			<!-- max(inv_qty+GREATEST(LC1_INV_QTY,0) - NVL(sale_prearnge_qty,0)) AS inv_qty -->
+			NVL(max(inv_qty+GREATEST(LC1_INV_QTY,0) - NVL(sale_prearnge_qty,0)), 0) AS inv_qty
+		FROM   GOD_SHOP_ITM_INV q /* 상품 매장 단품 재고 */
+		WHERE  itm_no  = #{itmNo,jdbcType=VARCHAR}
+			<!-- and ( shop_id = 'X30004' OR ( shop_id != 'X30004' -->
+			and ( shop_id IN('X30004', 'M510', 'I50002', 'A30003') OR ( shop_id NOT IN('X30004', 'M510', 'I50002', 'A30003')	
+				and exists (select 1 from SYS_SHOP x join SYS_SHOP_BRND y on x.shop_id = y.shop_id and y.dlv_shop_yn = 'Y' and y.use_yn = 'Y' where  x.shop_id = q.shop_id and x.use_yn = 'Y'  )
+				))
+		/*AND    shop_id = 'X30004'  물류창고 수량 */
+	</select>
+
+	<select id="selectShopGodInvCount" parameterType="bskGod" resultType="Integer">
+	SELECT  /* [cart.select.xml][selectShopGodInvCount][매장 판매 상품 재고 조회][박문철] */
+	       SUM(inv_qty)
+	FROM
+		 (
+		 	/* 재고 수량 - 판매 예정 수량 - (안전 재고 율 사용 = 'Y'  안전 재고 수량 : 0) */
+			SELECT
+			       <!-- case when shop_id = 'X30004' then 0 -->
+			       case when shop_id IN('X30004', 'M510', 'I50002', 'A30003') then 0
+			            else inv_qty - NVL(sale_prearnge_qty,0)
+			       end  AS inv_qty
+			FROM   GOD_SHOP_ITM_INV q /* 상품 매장 단품 재고 */
+			WHERE  itm_no  = #{itmNo,jdbcType=VARCHAR}
+			AND    shop_id = #{pkupShopSn,jdbcType=VARCHAR}
+				and exists (select 1 from SYS_SHOP x join SYS_SHOP_BRND y on x.shop_id = y.shop_id and y.dlv_shop_yn = 'Y' and y.use_yn = 'Y' where  x.shop_id = q.shop_id and x.use_yn = 'Y'  )
+		 )
+	</select>
+
+	<select id="selectResvGodInvCount" parameterType="bskGod" resultType="Integer">
+		SELECT  /* [cart.select.xml][selectResvGodInvCount][예약상품 가용 재고 조회][박문철] */
+		      /*
+		          상품 판매 구분 코드
+				ㅁ. 상품 판매 구분 : GOD_SALE_SECT
+				   >. 판매중 : SALE_PROGRS
+				   >. 임시 판매 중지 : TMPR_SALE_STPGE
+				   >. 판매 종료 : SALE_END
+				   >. 품절 : SLDOUT
+				   >. 임시 품절 : TMP_SLDOUT
+                */
+                /*
+                    단품 상태 코드
+				ㅁ. 단품 상태 : ITM_STAT
+				   >. 판매중 : SALE_PROGRS
+				   >. 임시 판매 중지 : TMPR_SALE_STPGE
+				   >. 판매 종료 : SALE_END
+				   >. 품절 : SLDOUT
+				   >. 임시 품절 : TMP_SLDOUT
+                */
+                /* 상품 판매 구분 = 판매중 , 단품 상태 = 판매중 */
+		       CASE WHEN gd.god_sale_sect_cd = 'SALE_PROGRS' AND itm.itm_stat_cd = 'SALE_PROGRS' /*상품,단품 판매 상태*/
+		            THEN nvl(itm.resve_inv_qty,0) /* 예약 재고 수량 */
+		            ELSE 0
+		       END AS inv_qty
+		FROM   GOD gd JOIN GOD_ITM itm ON gd.god_no = itm.god_no
+		WHERE  gd.god_no  = #{godNo,jdbcType=VARCHAR}
+	    AND    itm.itm_no = #{itmNo,jdbcType=VARCHAR}
+	</select>
+
+	<resultMap id="godOptionResult" type="com.plgrim.ncp.biz.cart.result.CartGodOptionResult">
+		<result property="bskGod.bskNo" column="bsk_no" />
+		<result property="bskGod.godTurn" column="god_turn" />
+		<result property="bskGod.godNo" column="god_no" />
+		<result property="bskGod.itmNo" column="itm_no" />
+		<result property="bskGod.itmQty" column="itm_qty" />
+		<result property="bskGod.dlvSectCd" column="dlv_sect_cd" />
+		<result property="bskGod.pkupShopSn" column="pkup_shop_sn" />
+		<result property="godNm" column="god_nm" />
+		<result property="partmalSectCd" column="partmal_sect_cd" />
+		<result property="selectOptCd1" column="select_opt_cd_1" />
+		<result property="selectOptVal1" column="select_opt_val_1" />
+		<result property="selectOptCd2" column="select_opt_cd_2" />
+        <result property="selectOptVal2" column="select_opt_val_2" />
+        <result property="selectOptCd3" column="select_opt_cd_3" />
+        <result property="selectOptVal3" column="select_opt_val_3" />
+        <result property="optNm1" column="opt_nm_1" />
+		<result property="optNm2" column="opt_nm_2" />
+        <result property="optNm3" column="opt_nm_3" />
+		<collection property="godList" ofType="BskGodItmExtend">
+			<result property="godNo" column="cnnc_god_no" />
+			<result property="colorCd" column="color_cd" />
+			<result property="colorNm" column="color_nm" />
+			<result property="prdlstCd" column="prdlst_cd" />
+			<result property="clorChipImgUrl" column="clor_chip_img_url" />
+			<result property="minOrdQty" column="min_ord_qty" />
+			<result property="maxOrdQty" column="max_ord_qty" />
+			<collection property="itmList" ofType="GodItm">
+				<result property="itmNo" column="cnnc_itm_no" />
+				<result property="itmNm" column="itm_nm" />
+				<result property="itmStatCd" column="itm_stat_cd" />
+				<result property="godNo" column="cnnc_itm_god_no"/>
+				<result property="totUsefulInvQty" column="tot_useful_inv_qty" />
+			</collection>
+		</collection>
+	</resultMap>
+	<select id="selectGodOptionList" parameterType="bskGod" resultMap="godOptionResult">
+		SELECT /* [cart.select.xml][selectGodOptionList][상품 옵션 조회][박문철] */
+		       bas.*,
+		    <choose>
+		    	<when test='dlvSectCd == "PKUP_DLV"'>
+					case when bas.god_sale_sect_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP') and bas.itm_stat_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP')
+
+		    	</when>
+		    	<otherwise>
+					case when bas.god_sale_sect_cd = 'SALE_PROGRS' and bas.itm_stat_cd = 'SALE_PROGRS'
+		    	</otherwise>
+		    </choose>
+		       
+		            then
+					       case when bas.dlv_sect_cd = 'PKUP_DLV'
+	                         then
+	                           GREATEST(
+	                               (nvl(shop.inv_qty,0) - nvl(shop.sale_prearnge_qty,0) - nvl(shop.safe_inv_qty,0))
+	                               ,
+	                               (GREATEST(cdcshop.LC1_INV_QTY,cdcshop.LC2_INV_QTY) - nvl(cdcshop.sale_prearnge_qty,0) - nvl(cdcshop.safe_inv_qty,0))
+	                           )
+					            else online_inv_qty
+					       end
+					else 0
+			   end as tot_useful_inv_qty
+		FROM
+		    (
+		    SELECT
+		           bsk.*,
+		           gd.god_no as cnnc_god_no,
+		           gd.clor_chip_img_url,
+		           gd.god_sale_sect_cd,
+		           itm.opt_nm_1,
+	               itm.opt_nm_2,
+	               itm.opt_nm_3,
+		           gd.partmal_sect_cd,    /* 입점업체 구분 */
+		           itm_opt.OPT_VAL_CD_1 AS select_opt_cd_1, /* 선택한 옵션1 코드 */
+		           itm_opt.OPT_VAL_NM_1 AS select_opt_val_1, /* 선택한 옵션1 값 */
+                   itm_opt.OPT_VAL_CD_2 AS select_opt_cd_2, /* 선택한 옵션2 코드 */
+                   itm_opt.OPT_VAL_NM_2 AS select_opt_val_2, /* 선택한 옵션2 값 */
+                   itm_opt.OPT_VAL_CD_3 AS select_opt_cd_3, /* 선택한 옵션3 코드 */
+                   itm_opt.OPT_VAL_NM_3 AS select_opt_val_3, /* 선택한 옵션3 값 */
+		           '' as color_cd,
+               	   '' as color_nm,
+		           itm.itm_no as cnnc_itm_no,
+		           itm.god_no as cnnc_itm_god_no,
+		           itm.itm_nm,
+			       itm.itm_stat_cd,
+			       itm.opt_cd_1,
+			       itm.opt_val_cd_1,
+		    <choose>
+		    	<when test='dlvSectCd == "PKUP_DLV"'>
+		           case when gd.god_sale_sect_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP') and itm.itm_stat_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP')
+		    	</when>
+		    	<otherwise>
+		           case when gd.god_sale_sect_cd = 'SALE_PROGRS' and itm.itm_stat_cd = 'SALE_PROGRS'
+		    	</otherwise>
+		    </choose>		           
+		                then case when gd.lmtt_inv_yn = 'Y' then  itm.onlne_lmtt_inv_qty
+		                		  when gd.resve_sale_god_yn = 'Y' then itm.resve_inv_qty	<!-- 예약장바구니 기능 추가  : by cannon (2016.04.18)  -->
+                                  else  itm.tot_useful_inv_qty - nvl(itm.sale_prearnge_qty,0) - nvl(decode(itm.safe_inv_use_yn,'Y',itm.safe_inv_qty,0),0)
+                              end
+		                else 0
+		           end as online_inv_qty,
+		           nvl(trim(gd.resve_sale_god_yn),'N') as resve_sale_god_yn,
+		           nvl(gd.min_ord_qty,1) as min_ord_qty,
+                   nvl(gd.max_ord_qty,999) as max_ord_qty,
+                   ssb.pkup_shop_yn as pkup_shop_yn
+		    FROM (
+		         SELECT
+		               bsk.bsk_no,
+		               bsk.god_turn,
+		               bsk.god_no,
+		               bsk.itm_no,
+		               bsk.itm_qty,
+		               DECODE(gd.resve_sale_god_yn, 'Y', 'RSV', bsk.dlv_sect_cd) AS dlv_sect_cd,	<!-- 예약장바구니 기능 추가  : by cannon (2016.04.18)  -->
+		               bsk.pkup_shop_sn,
+		               gd.dsgn_grp_no,
+		               nvl((SELECT god_nm FROM god_langby_god_nm a WHERE gd.god_no = a.god_no and lang_cd = #{lang,jdbcType=VARCHAR} and rownum = 1), gd.god_nm) as god_nm,
+                       gd.prdlst_cd
+                       /*,(SELECT s.prdlst_nm FROM sys_prdlst_cd s WHERE s.prdlst_cd = gd.prdlst_cd) as prdlst_nm*/
+		         FROM  BSK_GOD bsk
+		         JOIN GOD gd ON bsk.god_no = gd.god_no
+		         WHERE bsk.bsk_no   = #{bskNo,jdbcType=VARCHAR}
+		         AND   bsk.god_turn = #{godTurn,jdbcType=NUMERIC}
+		         ) bsk
+		         JOIN god gd ON bsk.dsgn_grp_no = gd.dsgn_grp_no <if test='dlvSectCd == "PKUP_DLV"'>and gd.shop_pkup_psb_yn = 'Y'</if>		         
+		         JOIN god_itm itm ON gd.god_no = itm.god_no
+		         JOIN god_itm itm_opt ON bsk.itm_no = itm_opt.itm_no
+		         LEFT OUTER JOIN sys_brnd sb ON sb.BRND_ID = gd.BRND_ID
+                 LEFT OUTER JOIN sys_shop_brnd ssb ON ssb.ERP_BRND_ID = sb.ERP_BRND_ID AND ssb.SHOP_ID = bsk.pkup_shop_sn
+		         LEFT OUTER JOIN god_langby_god_nm gdnm ON gd.god_no = gdnm.god_no and lang_cd = #{lang,jdbcType=VARCHAR}
+
+		    	 WHERE gd.god_aprv_sect_cd = 'APRV_COMPT'
+				 <if test='lang != "KOR"'>
+	    	 	 AND   gdnm.ovsea_dsp_stat_cd = 'DSP_APRV'
+	    	 	 </if>
+		    	 AND   gd.dsp_yn = 'Y'
+		    ) bas
+		    LEFT OUTER JOIN GOD_OPT_VAL optval ON bas.opt_cd_1 = optval.opt_cd and bas.cnnc_god_no = optval.god_no and bas.opt_val_cd_1 = optval.opt_val_cd
+		    LEFT OUTER JOIN god_shop_itm_inv shop ON bas.cnnc_itm_no = shop.itm_no AND bas.pkup_shop_sn = shop.shop_id AND shop.WEB_SALE_PSB_YN = 'Y' AND bas.pkup_shop_yn = 'Y'
+		    <!-- LEFT OUTER JOIN god_shop_itm_inv cdcshop ON bas.cnnc_itm_no = cdcshop.itm_no AND cdcshop.shop_id = 'X30004' AND cdcshop.WEB_SALE_PSB_YN = 'Y' -->
+		    LEFT OUTER JOIN god_shop_itm_inv cdcshop ON bas.cnnc_itm_no = cdcshop.itm_no AND cdcshop.shop_id IN('X30004', 'M510', 'I50002', 'A30003') AND cdcshop.WEB_SALE_PSB_YN = 'Y'
+		    WHERE 1=1
+		    <!-- 예약장바구니 기능 추가  : by cannon (2016.04.18)  -->
+		    <choose>
+		    	<when test='dlvSectCd == "RSV"'>
+		    		AND bas.resve_sale_god_yn = 'Y'
+		    	    AND bas.god_sale_sect_cd = 'SALE_PROGRS'
+		    	</when>
+		    	<when test='dlvSectCd == "PKUP_DLV"'>
+		    		AND bas.resve_sale_god_yn = 'N'
+		    		AND bas.itm_stat_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP')
+		    		AND bas.god_sale_sect_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP')
+		    	</when>
+		    	<otherwise>
+		    		AND bas.resve_sale_god_yn = 'N'
+		    		AND bas.itm_stat_cd in ('SALE_PROGRS')
+		    		AND bas.god_sale_sect_cd = 'SALE_PROGRS'
+		    	</otherwise>
+		    </choose>		       
+		 ORDER BY cnnc_god_no,optval.sort_seq,optval.opt_val_cd
+	</select>
+
+
+
+	<select id="selectGodOptionListForQdlv" parameterType="bskGod" resultMap="godOptionResult">
+	select * from (
+	  select outQry.*
+	  , ROW_NUMBER() OVER (PARTITION BY outQry.cnnc_itm_no ORDER BY outQry.tot_useful_inv_qty desc) as rownm
+	  from(	
+		SELECT /* [cart.select.xml][selectGodOptionListForQdlv][퀵배송 상품 옵션 조회] */
+               bas.*,
+                    case when bas.god_sale_sect_cd = 'SALE_PROGRS' and bas.itm_stat_cd = 'SALE_PROGRS'               
+                    then
+                        <!-- case when bas.shop_id = 'X30004' -->
+                        case when bas.shop_id IN('X30004', 'M510', 'I50002', 'A30003')
+                        then
+                            (nvl(GREATEST(shop.LC1_INV_QTY,shop.LC2_INV_QTY),0) - nvl(shop.sale_prearnge_qty,0) - nvl(shop.safe_inv_qty,0)-nvl(b031.sale_prearnge_qty,0))
+                        else (nvl(shop.inv_qty,0) - nvl(shop.sale_prearnge_qty,0) - nvl(shop.safe_inv_qty,0)-nvl(b031.sale_prearnge_qty,0))
+                        end     
+                    else 0
+                    end as tot_useful_inv_qty
+		FROM
+		    (
+		    SELECT
+		           bsk.*,
+		           gd.god_no as cnnc_god_no,
+		           gd.clor_chip_img_url,
+		           gd.god_sale_sect_cd,
+		           itm.opt_nm_1,
+	               itm.opt_nm_2,
+	               itm.opt_nm_3,
+		           gd.partmal_sect_cd,    /* 입점업체 구분 */
+		           itm_opt.OPT_VAL_CD_1 AS select_opt_cd_1, /* 선택한 옵션1 코드 */
+		           itm_opt.OPT_VAL_NM_1 AS select_opt_val_1, /* 선택한 옵션1 값 */
+                   itm_opt.OPT_VAL_CD_2 AS select_opt_cd_2, /* 선택한 옵션2 코드 */
+                   itm_opt.OPT_VAL_NM_2 AS select_opt_val_2, /* 선택한 옵션2 값 */
+                   itm_opt.OPT_VAL_CD_3 AS select_opt_cd_3, /* 선택한 옵션3 코드 */
+                   itm_opt.OPT_VAL_NM_3 AS select_opt_val_3, /* 선택한 옵션3 값 */
+		           '' as color_cd,
+               	   '' as color_nm,
+		           itm.itm_no as cnnc_itm_no,
+		           itm.god_no as cnnc_itm_god_no,
+		           itm.itm_nm,
+			       itm.itm_stat_cd,
+			       itm.opt_cd_1,
+			       itm.opt_val_cd_1,
+		           nvl(trim(gd.resve_sale_god_yn),'N') as resve_sale_god_yn,
+		           nvl(gd.min_ord_qty,1) as min_ord_qty,
+                   nvl(gd.max_ord_qty,999) as max_ord_qty,
+                   ssb.pkup_shop_yn as pkup_shop_yn,
+                   ssb.shop_id
+		    FROM (
+		         SELECT
+		               bsk.bsk_no,
+		               bsk.god_turn,
+		               bsk.god_no,
+		               bsk.itm_no,
+		               bsk.itm_qty,
+		               DECODE(gd.resve_sale_god_yn, 'Y', 'RSV', bsk.dlv_sect_cd) AS dlv_sect_cd,	<!-- 예약장바구니 기능 추가  : by cannon (2016.04.18)  -->
+		               bsk.pkup_shop_sn,
+		               gd.dsgn_grp_no,
+		               nvl((SELECT god_nm FROM god_langby_god_nm a WHERE gd.god_no = a.god_no and lang_cd = #{lang,jdbcType=VARCHAR} and rownum = 1), gd.god_nm) as god_nm,
+                       gd.prdlst_cd
+                       /*,(SELECT s.prdlst_nm FROM sys_prdlst_cd s WHERE s.prdlst_cd = gd.prdlst_cd) as prdlst_nm*/
+		         FROM  BSK_GOD bsk
+		         JOIN GOD gd ON bsk.god_no = gd.god_no
+		         WHERE bsk.bsk_no   = #{bskNo,jdbcType=VARCHAR}
+		         AND   bsk.god_turn = #{godTurn,jdbcType=NUMERIC}
+		         ) bsk
+		         JOIN god gd ON bsk.dsgn_grp_no = gd.dsgn_grp_no and gd.qdlv_psb_yn = 'Y'
+		         JOIN god_itm itm ON gd.god_no = itm.god_no
+		         JOIN god_itm itm_opt ON bsk.itm_no = itm_opt.itm_no
+		         LEFT OUTER JOIN sys_brnd sb ON sb.BRND_ID = gd.BRND_ID
+                 <!-- LEFT OUTER JOIN sys_shop_brnd ssb ON ssb.ERP_BRND_ID = sb.ERP_BRND_ID AND (ssb.shop_id = 'X30004' OR ssb.qdlv_shop_yn = 'Y') -->
+                 LEFT OUTER JOIN sys_shop_brnd ssb ON ssb.ERP_BRND_ID = sb.ERP_BRND_ID AND (ssb.shop_id IN('X30004', 'M510', 'I50002', 'A30003') OR ssb.qdlv_shop_yn = 'Y')
+		         LEFT OUTER JOIN god_langby_god_nm gdnm ON gd.god_no = gdnm.god_no and lang_cd = #{lang,jdbcType=VARCHAR}
+
+		    	 WHERE gd.god_aprv_sect_cd = 'APRV_COMPT'
+				 <if test='lang != "KOR"'>
+	    	 	 AND   gdnm.ovsea_dsp_stat_cd = 'DSP_APRV'
+	    	 	 </if>
+		    	 AND   gd.dsp_yn = 'Y'
+		    ) bas
+            LEFT OUTER JOIN GOD_OPT_VAL optval ON bas.opt_cd_1 = optval.opt_cd and bas.cnnc_god_no = optval.god_no and bas.opt_val_cd_1 = optval.opt_val_cd
+            LEFT OUTER JOIN god_shop_itm_inv shop ON bas.cnnc_itm_no = shop.itm_no AND shop.WEB_SALE_PSB_YN = 'Y' and shop.shop_id = bas.shop_id
+            LEFT OUTER JOIN god_shop_itm_inv b031 ON b031.itm_no = bas.cnnc_itm_no and b031.shop_id = 'B031'
+		    WHERE 1=1
+		    		AND bas.resve_sale_god_yn = 'N'
+		    		AND bas.itm_stat_cd in ('SALE_PROGRS')
+		    		AND bas.god_sale_sect_cd = 'SALE_PROGRS'
+            		and shop.shop_id not in ( /* 휴일매장제외 */
+	                 	select ssh.shop_id 
+	                 	from sys_shop_holdy ssh 
+	                 	where ssh.sys_date = TO_CHAR (SYSDATE, 'yyyymmdd') AND ssh.use_yn = 'Y'
+             		)		    		       
+		 ORDER BY cnnc_god_no,optval.sort_seq,optval.opt_val_cd
+		 )outQry
+		)a
+		where a.ROWNM = 1
+	</select>
+
+
+
+
+
+	<resultMap id="pckageGodOptionResult" type="com.plgrim.ncp.biz.cart.result.CartGodOptionResult">
+		<result property="bskGod.bskNo" column="bsk_no" />
+		<result property="parentGodTurn" column="god_turn" />
+		<result property="bskGod.godTurn" column="cpst_god_turn" />
+		<result property="bskGod.godNo" column="god_no" />
+		<result property="bskGod.itmNo" column="itm_no" />
+		<result property="bskGod.itmQty" column="itm_Qty" />
+		<result property="bskGod.dlvSectCd" column="dlv_sect_cd" />
+		<result property="bskGod.pkupShopSn" column="pkup_shop_sn" />
+		<result property="itmQty" column="parent_itm_qty" />
+		<result property="godNm" column="god_nm" />
+		<result property="pckageGodNm" column="pckage_god_nm" />
+		<result property="minOrdQty" column="min_ord_qty" />
+		<result property="maxOrdQty" column="max_ord_qty" />
+		<result property="partmalSectCd" column="partmal_sect_cd" />
+		<result property="selectOptCd1" column="select_opt_cd_1" />
+        <result property="selectOptVal1" column="select_opt_val_1" />
+        <result property="selectOptCd2" column="select_opt_cd_2" />
+        <result property="selectOptVal2" column="select_opt_val_2" />
+        <result property="selectOptCd3" column="select_opt_cd_3" />
+        <result property="selectOptVal3" column="select_opt_val_3" />
+		<collection property="godItmList" ofType="GodItm">
+			<result property="itmNo" column="cnnc_itm_no" />
+			<result property="itmNm" column="itm_nm" />
+			<result property="totUsefulInvQty" column="tot_useful_inv_qty" />
+		</collection>
+	</resultMap>
+	<select id="selectPckageGodOptionList" parameterType="bskGod" resultMap="pckageGodOptionResult">
+		SELECT /* [cart.select.xml][selectPckageGodOptionList][패키지형 상품 옵션 조회][박문철] */
+		     bas.*,
+		     NVL(gdcnnc.cpst_god_nm, bas.tmp_god_nm) as god_nm,
+		     CASE WHEN bas.itm_stat_cd = 'SALE_PROGRS'
+		          THEN online_inv_qty					   
+			      ELSE 0
+			 END as tot_useful_inv_qty
+		FROM
+		(
+		    SELECT
+		          cnnc.bsk_no,
+		          cnnc.god_turn,
+		          cnnc.cpst_god_turn,
+		          cnnc.cpst_god_qty as itm_qty,
+		          bgd.god_no,
+		          bgd.itm_no,
+		          bgd.dlv_sect_cd,
+		          bgd.pkup_shop_sn,
+                  gd.prdlst_cd,
+                  /*(SELECT s.prdlst_nm FROM sys_prdlst_cd s WHERE s.prdlst_cd = gd.prdlst_cd) as prdlst_nm,*/
+                  <choose>
+                    <when test="'PC'.equalsIgnoreCase(device)">
+    		          NVL(gdnm.god_nm,gd.god_nm) as tmp_god_nm,
+                      (SELECT NVL(lg.god_nm, g.god_nm)
+                       FROM   god g, bsk_god b,god_langby_god_nm lg
+                       WHERE  g.god_no = b.god_no AND lg.god_no(+) = b.GOD_NO AND lg.lang_cd(+) = gdnm.lang_cd
+                       AND    b.bsk_no = bgd.bsk_no AND b.god_turn = #{godTurn,jdbcType=NUMERIC}) AS pckage_god_nm,
+                    </when>
+                    <otherwise>
+    		          NVL(gdnm.mobile_god_nm,gd.mobile_god_nm) as tmp_god_nm,
+                      (SELECT NVL(lg.mobile_god_nm, g.mobile_god_nm)
+                       FROM   god g, bsk_god b,god_langby_god_nm lg
+                       WHERE  g.god_no = b.god_no AND lg.god_no(+) = b.GOD_NO AND lg.lang_cd(+) = gdnm.lang_cd
+                       AND    b.bsk_no = bgd.bsk_no AND b.god_turn = #{godTurn,jdbcType=NUMERIC}) AS pckage_god_nm,
+                    </otherwise>
+                  </choose>
+		          itm.itm_no as cnnc_itm_no,
+		          itm.itm_nm,
+		          itm.itm_stat_cd,
+		          case when itm.itm_stat_cd = 'SALE_PROGRS'
+		               then case when gd.lmtt_inv_yn = 'Y'
+		                         then  itm.onlne_lmtt_inv_qty
+		                         else  itm.tot_useful_inv_qty - nvl(itm.sale_prearnge_qty,0) - nvl(decode(itm.safe_inv_use_yn,'Y',itm.safe_inv_qty,0),0)
+		                    end
+		            else 0
+		          end as online_inv_qty,
+		          bgmaster.itm_qty AS parent_itm_qty,
+		          bgmaster.god_no as parent_god_no,
+		          nvl(gd.min_ord_qty,1) as min_ord_qty,
+                  nvl(gd.max_ord_qty,999) as max_ord_qty,
+                  gd.partmal_sect_cd,    /* 입점업체 구분 추가 */
+                  itm_opt.OPT_VAL_CD_1 AS select_opt_cd_1, /* 선택한 옵션1 코드 */
+                   itm_opt.OPT_VAL_NM_1 AS select_opt_val_1, /* 선택한 옵션1 값 */
+                   itm_opt.OPT_VAL_CD_2 AS select_opt_cd_2, /* 선택한 옵션2 코드 */
+                   itm_opt.OPT_VAL_NM_2 AS select_opt_val_2, /* 선택한 옵션2 값 */
+                   itm_opt.OPT_VAL_CD_3 AS select_opt_cd_3, /* 선택한 옵션3 코드 */
+                   itm_opt.OPT_VAL_NM_3 AS select_opt_val_3 /* 선택한 옵션3 값 */
+		    FROM  bsk_cpst_god_cnnc cnnc
+		    JOIN  bsk_god bgd on cnnc.bsk_no = bgd.bsk_no and cnnc.cpst_god_turn = bgd.god_turn
+		    JOIN  god gd ON bgd.god_no = gd.god_no
+		    JOIN  bsk_god bgmaster on cnnc.bsk_no= bgmaster.bsk_no and cnnc.god_turn = bgmaster.god_turn
+		    JOIN  god_itm itm ON bgd.god_no = itm.god_no
+		    JOIN  god_itm itm_opt ON bgd.itm_no = itm_opt.itm_no
+		    LEFT OUTER JOIN GOD_OPT_VAL optval ON itm.opt_cd_1 = optval.opt_cd and itm.god_no = optval.god_no and itm.opt_val_cd_1 = optval.opt_val_cd
+		    LEFT OUTER JOIN god_langby_god_nm gdnm ON gd.god_no = gdnm.god_no and lang_cd = #{lang,jdbcType=VARCHAR}
+		    WHERE cnnc.bsk_no   = #{bskNo,jdbcType=VARCHAR}
+		    AND   cnnc.god_turn = #{godTurn,jdbcType=NUMERIC}
+		    AND   cnnc.pckage_god_tp_cd != 'ADIT_CPST_GOD'
+		    ORDER BY cnnc.sort_seq,optval.sort_seq,optval.opt_val_cd
+		) bas
+		  LEFT OUTER JOIN GOD_CPST_GOD_CNNC gdcnnc ON bas.parent_god_no = gdcnnc.god_no and bas.god_no = gdcnnc.cpst_god_no
+		  WHERE 1=1
+		  AND bas.itm_stat_cd in ('SALE_PROGRS')
+	</select>
+
+
+
+
+	<select id="selectBskPckageInfo" parameterType="com.plgrim.ncp.biz.cart.data.CartDTO" resultType="bskGodExtend">
+	SELECT  /* [cart.select.xml][selectBskPckageInfo][패키지형 상품 정보 조회][박문철] */
+	        t1.bsk_no,
+	        t1.god_turn,
+	        t1.god_no,
+	        t1.itm_no,
+	        t1.itm_qty,
+	        t1.parent_god_turn,
+	        t1.pckage_god_tp_cd,
+	        t1.cpst_god_qty
+	FROM (
+	SELECT
+	        t1.*,
+	        dense_rank() over (partition by parent_god_turn order by parent_god_turn desc) as seq
+	FROM  (
+				SELECT
+				        t1.bsk_no,
+				        t1.parent_god_turn,
+				        t1.pckage_god_tp_cd,
+				        t1.cpst_god_qty,
+				        t1.god_turn,
+				        t1.god_no,
+				        t1.itm_no,
+				        t1.itm_qty,
+				        COUNT (1) OVER (PARTITION BY parent_god_turn) cnt
+				FROM  (
+							SELECT
+							        cnnc.bsk_no,
+							        cnnc.god_turn as parent_god_turn,
+							        cnnc.pckage_god_tp_cd,
+							        cnnc.cpst_god_qty,
+							        t1.god_turn,
+							        t1.god_no,
+							        t1.itm_no,
+							        t1.itm_qty
+							FROM   BSK_CPST_GOD_CNNC cnnc
+							JOIN   BSK_GOD t1 ON cnnc.bsk_no = t1.bsk_no and cnnc.cpst_god_turn = t1.god_turn
+							WHERE  (cnnc.bsk_no,cnnc.god_turn) IN (
+							                                        SELECT bskgod.bsk_no,
+							                                               bskgod.god_turn
+							                                        FROM  BSK_GOD bskgod
+							                                        WHERE bskgod.bsk_no  = #{god.bskNo,jdbcType=VARCHAR}
+						                                             AND   bskgod.god_no = #{god.godNo,jdbcType=VARCHAR}
+						                                             AND   bskgod.itm_no = #{god.itmNo,jdbcType=VARCHAR}
+						                                             AND   bskgod.dlv_sect_cd = #{god.dlvSectCd,jdbcType=VARCHAR}
+						                                             <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(god.pkupShopSn)">
+																     AND   bskgod.pkup_shop_sn = #{god.pkupShopSn,jdbcType=NUMERIC}
+																     </if>
+							                                       )
+						) t1
+			    JOIN (
+			    	  <foreach collection="cpstGodList" item="bskGod"  separator="UNION ALL">
+           				SELECT #{bskGod.pckageGodTpCd,jdbcType=VARCHAR} AS pckage_god_tp_cd,
+           				       #{bskGod.godNo,jdbcType=VARCHAR} AS god_no,
+           				       #{bskGod.itmNo,jdbcType=VARCHAR} AS itm_no
+           				FROM DUAL
+           			  </foreach>
+			         ) st1 ON t1.pckage_god_tp_cd = st1.pckage_god_tp_cd and t1.god_no = st1.god_no and t1.itm_no = st1.itm_no
+				) t1
+				WHERE CNT = #{cpstCnt,jdbcType=NUMERIC}
+	) t1
+	WHERE seq =1
+	</select>
+
+	<select id="selectBskMergeTarget" parameterType="com.plgrim.ncp.biz.cart.data.CartDTO" resultType="bskGodExtend">
+        SELECT /* [cart.select.xml][selectBskMergeTarget][장바구니 병합 대상 조회][박문철] */
+              t1.bsk_no,
+              t1.parent_god_turn,
+              t1.pckage_god_yn,
+              nvl(t2.cpst_god_turn,t1.parent_god_turn) as god_turn
+          FROM
+          (
+                SELECT
+                         t2.bsk_no
+                       , t2.parent_god_turn
+                       , t2.pckage_god_yn
+                FROM
+                (
+                SELECT
+                        t1.*,
+                        t2.pckage_god_yn,
+                        t2.dlv_sect_cd,
+                        nvl(t2.pkup_shop_sn,1) as pkup_shop_sn
+                FROM
+                (
+                SELECT
+                        bsk_no,
+                        parent_god_turn,
+                        listagg(itm_no,',') within group(order by sort_seq) as itm_no
+                FROM (
+                          SELECT
+                               bskgod.bsk_no,
+                               bskgod.itm_no,
+                               NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+                               NVL(t1.sort_seq,0) as sort_seq
+                          FROM BSK_GOD bskgod
+                          LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+                                       ON bskgod.bsk_no   = t1.bsk_no
+                                      AND bskgod.god_turn = t1.cpst_god_turn
+                          WHERE bskgod.bsk_no = #{bsk.bskNo,jdbcType=VARCHAR}
+                )
+                group by bsk_no,parent_god_turn
+                ) t1
+                JOIN BSK_GOD t2 on t1.bsk_no = t2.bsk_no and t1.parent_god_turn = t2.god_turn
+                ) t1
+                JOIN (
+                        SELECT
+                                t1.*,
+                                t2.pckage_god_yn,
+                                t2.dlv_sect_cd,
+                                nvl(t2.pkup_shop_sn,1) as pkup_shop_sn
+                        FROM
+                        (
+                        SELECT
+                                bsk_no,
+                                parent_god_turn,
+                                listagg(itm_no,',') within group(order by sort_seq) as itm_no
+                        FROM (
+                                  SELECT
+                                       bskgod.bsk_no,
+                                       bskgod.itm_no,
+                                       NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+                                       NVL(t1.sort_seq,0) as sort_seq
+                                  FROM BSK_GOD bskgod
+                                  LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+                                               ON bskgod.bsk_no   = t1.bsk_no
+                                              AND bskgod.god_turn = t1.cpst_god_turn
+                                  WHERE bskgod.bsk_no = #{targetBsk.bskNo,jdbcType=VARCHAR}
+
+                        ) group by bsk_no,parent_god_turn
+                        ) t1
+                        JOIN BSK_GOD t2 on t1.bsk_no = t2.bsk_no and t1.parent_god_turn = t2.god_turn
+                      ) t2
+                  ON t1.itm_no = t2.itm_no
+                 AND t1.dlv_sect_cd  = t2.dlv_sect_cd
+                 AND t1.pkup_shop_sn = t2.pkup_shop_sn
+        ) t1
+        LEFT OUTER JOIN BSK_CPST_GOD_CNNC t2
+                     ON t1.bsk_no = t2.bsk_no
+                    AND t1.parent_god_turn = t2.god_turn
+	</select>
+
+	<select id="selectBskGodListByMastInfo" parameterType="bskGod" resultType="bskGod">
+	SELECT /* [cart.select.xml][selectBskGodListByMastInfo][상품 순번으로 장바구니 상품조회][박문철] */
+	      bsk_no,
+	      cpst_god_turn as god_turn
+	FROM  bsk_cpst_god_cnnc
+	WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	AND   god_turn = #{godTurn,jdbcType=NUMERIC}
+
+	UNION ALL
+
+	SELECT
+	       bsk_no,
+	       god_turn
+	FROM BSK_GOD
+	WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	AND   god_turn = #{godTurn,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectBskGodItm" parameterType="BskGod" resultType="BskGodExtend">
+		SELECT /* [cart.select.xml][selectBskGodItm][장바구니 상품 단건 조회][박문철] */
+		      t1.god_turn AS godTurn,
+		      t1.god_no AS godNo,
+		      t1.itm_no AS itmNo,
+		      t1.pckage_god_yn AS pckageGodYn,
+		      t1.parent_god_turn AS parentGodTurn,
+		      t2.clor_chip_img_url,
+		      NVL(t3.opt_val_cd_1,replace(t3.sku_no,t2.erp_god_no,'')) AS itmNm,
+		      NVL(t4.god_nm,t2.god_nm) AS godNm,
+		      NVL(t4.color_nm,t2.color_nm) AS colorNm,
+		      t5.brnd_nm AS brndNm,
+		      '' as colorCd,
+		      case when t2.god_sale_sect_cd = 'SALE_PROGRS' AND t3.itm_stat_cd = 'SALE_PROGRS'
+		           then 'Y'
+		           else 'N'
+		      end as sellYn
+		FROM
+		    (
+			    SELECT
+			          t1.god_turn,
+			          t1.god_no,
+			          t1.itm_no,
+			          t1.pckage_god_yn,
+			          NVL(t2.god_turn,t1.god_turn) AS parent_god_turn,
+			          NVL(t2.sort_seq,0) as sort_seq
+			    FROM  bsk_god t1
+			    LEFT OUTER JOIN BSK_CPST_GOD_CNNC t2
+			                 ON t1.bsk_no =  t2.bsk_no
+			                AND t1.god_turn = t2.cpst_god_turn
+			    WHERE t1.bsk_no = #{bskNo,jdbcType=VARCHAR}
+		    ) t1
+		JOIN GOD t2 ON t1.god_no = t2.god_no
+		JOIN GOD_ITM t3 ON t1.itm_no = t3.itm_no
+		LEFT OUTER JOIN GOD_LANGBY_GOD_NM t4
+		             ON t1.god_no = t4.god_no
+		            AND t4.lang_cd = #{lang,jdbcType=VARCHAR}
+		LEFT OUTER JOIN SYS_BRND t5 ON t2.brnd_grp_id = t5.brnd_id
+		WHERE t1.parent_god_turn = #{godTurn,jdbcType=NUMERIC}
+		ORDER BY t1.sort_seq
+	</select>
+
+	<select id="selectStplatList" parameterType="String" resultType="sysStplat">
+		SELECT /* [cart.select.xml][selectStplatList][시스템 약관 조회][박문철] */
+		       t1.stplat_cd,
+		       t1.stplat_cont
+		FROM   SYS_STPLAT t1
+		JOIN   SYS_STPLAT_USE t2 on t1.stplat_cd = t2.stplat_cd
+		WHERE  t2.STPLAT_USE_TP_CD = #{stplatUseTpCd,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectCartTypeCount" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultType="BskGodExtend">
+	  SELECT /* [cart.select.xml][selectCartTypeCount][장바구니 유형별 수량 조회][박문철] */
+            bsk_no as bskNo,
+            dlv_sect_cd as dlvSectCd,
+            god_cnt as godCnt,
+            cart_seq as cartSeq
+      FROM (
+            SELECT
+                   bsk_no,
+                   dlv_sect_cd,
+                   grp_seq,
+                   count(*) OVER (PARTITION BY dlv_sect_cd) AS god_cnt, /* 배송구분별 상품 수량 조회 */
+                   dense_rank() over (order by grp_udt_dt desc) as cart_seq, /* 최근 수정일 순으로 순번 채번 */
+                   dense_rank() over (PARTITION BY dlv_sect_cd order by god_turn) as rnk /* 배송 구분별 상품 순번 채번 */
+            FROM (
+                  SELECT
+                         bskgod.bsk_no,
+                         bskgod.god_turn,
+                         bskgod.god_no,
+                         bskgod.itm_no,
+                         <!-- 예약장바구니 기능추가  : cannon by 2016.04.18 -->
+                         DECODE(gd.resve_sale_god_yn, 'Y', 'RSV', bskgod.dlv_sect_cd) AS dlv_sect_cd,
+                         <!-- 예약장바구니 기능추가  : cannon by 2016.04.18 -->
+                         /* 배송구분 : 일반 1, 픽업 2, 해외 3, 주문제작 3, 예약 4 */
+                         CASE WHEN bskgod.dlv_sect_cd = 'GNRL_DLV' THEN DECODE(gd.resve_sale_god_yn, 'Y', 4, 1)
+                              WHEN bskgod.dlv_sect_cd = 'PKUP_DLV' THEN 2
+                              ELSE 3
+                         END AS grp_seq,
+                         <!-- 예약장바구니 기능추가  : cannon by 2016.04.18 -->
+                         MAX(bskgod.udt_dt) OVER (PARTITION BY DECODE (gd.resve_sale_god_yn, 'Y', 'RSV',bskgod.dlv_sect_cd)) as grp_udt_dt /* 배송 구분별 가장 최근 수정일 */
+                   FROM BSK_GOD bskgod
+                   JOIN GOD gd ON bskgod.god_no = gd.god_no
+                   WHERE  bsk_no   =  #{bsk.bskNo,jdbcType=VARCHAR}                   
+                  ) bas
+                  JOIN GOD gd ON bas.god_no = gd.god_no and gd.dsp_yn = 'Y'
+                  JOIN GOD_ITM itm on bas.itm_no = itm.itm_no and bas.god_no = itm.god_no
+                  JOIN GOD_SALE_MALL t5 ON bas.god_no = t5.god_no and t5.mall_id = #{mallId,jdbcType=VARCHAR} and t5.use_yn = 'Y'
+                  WHERE 1=1
+                  <if test='empYn == "N"'>
+                   AND   gd.emp_only_Yn = 'N'
+                  </if>
+                   AND NOT EXISTS
+                                     ( /* 장바구니 구성상품 연결 데이터가 없는 데이터 : 대표상품만 카운트 - 20171214 퀵작업하며 추가구성품 변경하면 이상한 장바구니로 가는현상 수정 위해 위치변경*/
+                                      SELECT 'Y'
+                                        FROM bsk_cpst_god_cnnc
+                                       WHERE     bsk_no = bas.bsk_no
+                                             AND cpst_god_turn =
+                                                     bas.god_turn)
+
+           ) 
+      WHERE rnk =1 /* 배송 구분별 첫번째 상품만 조회 */
+      ORDER BY cart_seq	 /* grp_seq 배송 구분별로 정렬 => 최근수정일기준으로 정렬 */	<!-- 예약장바구니 기능추가  : cannon by 2016.04.18 -->
+	</select>
+
+	<select id="selectMbrCartCnt" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultType="Integer">
+			 SELECT /* [cart.select.xml][selectMbrCartCnt][장바구니 수량 조회][박문철] */
+			        COUNT(1) AS cnt
+			 FROM (
+			        SELECT
+				            t1.bsk_no,
+				            t2.god_turn,
+				            t2.god_no,
+				            t2.itm_no
+				      FROM  BSk t1
+				      JOIN  BSK_GOD t2
+				        ON  t1.bsk_no = t2.bsk_no
+				     WHERE
+				       <choose>
+							<when test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(bsk.mbrNo)">
+							 t1.sesion_id = #{bsk.sesionId,jdbcType=VARCHAR}
+							</when>
+							<otherwise>
+							 t1.mbr_no = #{bsk.mbrNo,jdbcType=VARCHAR}
+							</otherwise>
+						</choose>
+					   AND  t1.bsk_tp_cd = 'BSK'
+					   AND  t1.mall_id = #{mallId,jdbcType=VARCHAR}
+
+                <!-- ncp 3차 추가 언어별 상품내역 노출-->
+					<if test='lang != null and lang != ""'>
+		               AND t1.lang_cd = #{lang,jdbcType=VARCHAR}
+					</if>
+                <!-- ncp 3차 추가 언어별 상품내역 노출 -->
+
+					   AND  NOT EXISTS (
+				                         SELECT 'Y'
+				                         FROM   BSK_CPST_GOD_CNNC
+				                         WHERE  bsk_no = t2.bsk_no
+				                         AND    cpst_god_turn = t2.god_turn
+		                           		)
+			       ) t1
+			       JOIN GOD gd ON t1.god_no = gd.god_no and gd.dsp_yn = 'Y'
+			       JOIN GOD_ITM itm ON t1.itm_no = itm.itm_no and t1.god_no = itm.god_no
+			       JOIN GOD_SALE_MALL t5 ON t1.god_no = t5.god_no and t5.mall_id = #{mallId,jdbcType=VARCHAR} and t5.use_yn = 'Y'
+			 WHERE 1=1
+			 <if test='empYn == "N"'>
+             AND   gd.emp_only_yn = 'N'
+             </if>
+	</select>
+
+	<select id="selectBskWishlst" parameterType="bskWishlst" resultType="bskWishlst">
+		SELECT  /* [cart.select.xml][selectBskWishlst][회원 위시리스트 번호 조회][박문철] */
+		       WISHLST_SN
+		FROM BSK_WISHLST
+		WHERE MALL_ID = #{mallId,jdbcType=VARCHAR}
+		AND   MBR_NO  = #{mbrNo,jdbcType=VARCHAR}
+		AND   ROWNUM  = 1
+	</select>
+
+
+	<select id="selectPckageOptMergeTarget" parameterType="bskGod" resultType="bskGodExtend">
+	SELECT /* [cart.select.xml][selectPckageOptMergeTarget][상품 옵션 변경시 병합 대상 조회(패키지형 상품 추가구성상품이 있는 경우 병합 제외)][박문철] */
+       t1.bsk_no,
+       t1.parent_god_turn,
+       t1.itm_qty,
+       t2.cpst_god_turn as god_turn
+	FROM (
+	SELECT
+	       bsk_no,
+	       parent_god_turn,
+	       itm_qty
+	FROM (
+			SELECT
+		           t1.*,
+		           sum(t1.tmp_itm_qty) over(partition by t1.bsk_no) as itm_qty
+		    FROM  (
+		        SELECT
+		                bsk_no,
+		                parent_god_turn,
+		                sum(decode(god_turn,parent_god_turn,itm_qty,0)) as tmp_itm_qty,
+		                listagg(god_no,',') within group(order by sort_seq) as god_no,
+		                listagg(itm_no,',') within group(order by sort_seq) as itm_no
+		        FROM (
+		                SELECT
+		                        *
+		                FROM (
+		                      SELECT
+		                           bskgod.bsk_no,
+		                           bskgod.god_turn,
+		                           bskgod.god_no,
+		                           bskgod.itm_no,
+		                           bskgod.itm_qty,
+		                           NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+		                           NVL(t1.sort_seq,0) as sort_seq
+		                      FROM BSK_GOD bskgod
+		                      LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+		                                   ON bskgod.bsk_no   = t1.bsk_no
+		                                  AND bskgod.god_turn = t1.cpst_god_turn
+		                      WHERE bskgod.bsk_no = #{bskNo,jdbcType=VARCHAR}
+		                      AND   bskgod.pckage_god_yn = 'Y'
+		                      AND   bskgod.dlv_sect_cd   = #{dlvSectCd,jdbcType=VARCHAR}
+		                      <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)'>
+		                      AND   bskgod.pkup_shop_sn = #{pkupShopSn,jdbcType=VARCHAR}
+		                      </if>
+		                ) bas
+		                WHERE NOT EXISTS (
+		                                     SELECT 'Y'
+		                                     FROM   BSK_CPST_GOD_CNNC st1
+		                                     WHERE  st1.bsk_no = bas.bsk_no
+		                                     AND    st1.god_turn = bas.parent_god_turn
+		                                     AND    st1.pckage_god_tp_cd = 'ADIT_CPST_GOD'
+		                                  )
+		              )
+		        GROUP BY bsk_no,parent_god_turn
+		        ) t1
+		        WHERE  (bsk_no,god_no,itm_no) = (
+		                                           SELECT
+		                                                    bsk_no,
+		                                                    listagg(god_no,',') within group(order by sort_seq) as god_no,
+		                                                    listagg(itm_no,',') within group(order by sort_seq) as itm_no
+		                                            FROM (
+		                                                    SELECT
+		                                                            *
+		                                                    FROM (
+		                                                          SELECT
+		                                                               bskgod.bsk_no,
+		                                                               bskgod.god_no,
+		                                                               bskgod.itm_no,
+		                                                               NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+		                                                               NVL(t1.sort_seq,0) as sort_seq
+		                                                          FROM BSK_GOD bskgod
+		                                                          LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+		                                                                       ON bskgod.bsk_no   = t1.bsk_no
+		                                                                      AND bskgod.god_turn = t1.cpst_god_turn
+		                                                          WHERE bskgod.bsk_no    = #{bskNo,jdbcType=VARCHAR}
+		                                                    ) bas WHERE parent_god_turn  = #{godTurn,jdbcType=NUMERIC}
+		                                                      AND  NOT EXISTS (
+		                                                                         SELECT 'Y'
+		                                                                         FROM   BSK_CPST_GOD_CNNC st1
+		                                                                         WHERE  st1.bsk_no = bas.bsk_no
+		                                                                         AND    st1.god_turn = bas.parent_god_turn
+		                                                                         AND    st1.pckage_god_tp_cd = 'ADIT_CPST_GOD'
+		                                                                       )
+		                                                    ORDER BY sort_seq
+		                                                  )
+		                                            GROUP BY bsk_no,parent_god_turn
+		                                      )
+		          )
+	         WHERE parent_god_turn != #{godTurn,jdbcType=NUMERIC}
+			 ) t1
+			 LEFT OUTER JOIN BSK_CPST_GOD_CNNC t2 ON t1.bsk_no = t2.bsk_no and t1.parent_god_turn = t2.god_turn
+	</select>
+
+	<select id="selectGnrlOptMergeTarget" parameterType="bskGod" resultType="bskGodExtend">
+
+	SELECT /* [cart.select.xml][selectGnrlOptMergeTarget][상품 옵션 변경시 병합 대상 조회(일반상품)][박문철] */
+	       *
+	FROM (
+			SELECT
+			      bsk_no,
+			      god_turn AS parent_god_turn,
+			      god_turn,
+			      sum(itm_qty) over (partition by bsk_no) as itm_qty
+			FROM BSK_GOD
+			WHERE (bsk_no,god_no,itm_no,dlv_sect_cd) IN (
+			                                                SELECT
+			                                                       bsk_no,
+			                                                       god_no,
+			                                                       itm_no,
+			                                                       dlv_sect_cd
+			                                                FROM   BSK_GOD
+			                                                WHERE  bsk_no   = #{bskNo,jdbcType=VARCHAR}
+			                                                AND    god_turn = #{godTurn,jdbcType=NUMERIC}
+			                                                AND    pckage_god_yn = 'N'
+			                                            )
+			AND  pckage_god_yn = 'N'
+			<if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)'>
+		    AND   pkup_shop_sn = #{pkupShopSn,jdbcType=VARCHAR}
+		    </if>
+		  )
+    WHERE parent_god_turn != #{godTurn,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectMergedTarget" parameterType="bskGod" resultType="bskGodExtend">
+	SELECT
+       t1.bsk_no,
+       t1.parent_god_turn,
+       nvl(t2.cpst_god_turn,t1.parent_god_turn) as god_turn
+	FROM (
+	        SELECT
+	              bsk_no,
+	              parent_god_turn,
+	              god_no,
+	              itm_no,
+	              rnum
+	        FROM (
+	                SELECT
+	                       bsk_no,
+	                       parent_god_turn,
+	                       god_no,
+	                       itm_no,
+	                       count(1) over(partition by god_no,itm_no) as rcnt,
+	                       row_number() over(partition by god_no,itm_no order by udt_dt desc) as rnum
+	                FROM (
+	                            SELECT
+	                                    bsk_no,
+	                                    parent_god_turn,
+	                                    listagg(god_no,',') within group(order by sort_seq) as god_no,
+	                                    listagg(itm_no,',') within group(order by sort_seq) as itm_no,
+	                                    max(udt_dt) as udt_dt
+	                            FROM (
+	                                    SELECT
+	                                            *
+	                                    FROM (
+	                                           SELECT
+	                                               bskgod.bsk_no,
+	                                               bskgod.god_turn,
+	                                               bskgod.god_no,
+	                                               bskgod.itm_no,
+	                                               bskgod.udt_dt,
+	                                               NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+	                                               NVL(t1.sort_seq,0) as sort_seq
+	                                          FROM BSK_GOD bskgod
+	                                          LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+	                                                       ON bskgod.bsk_no   = t1.bsk_no
+	                                                      AND bskgod.god_turn = t1.cpst_god_turn
+	                                          WHERE bskgod.bsk_no = #{bskNo,jdbcType=VARCHAR}
+	                                          AND   bskgod.dlv_sect_cd = #{dlvSectCd,jdbcType=VARCHAR}
+                                              <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)'>
+						                      AND   bskgod.pkup_shop_sn = #{pkupShopSn,jdbcType=VARCHAR}
+						                      </if>
+	                                         ) bas
+	                                    WHERE NOT EXISTS (
+	                                                         SELECT 'Y'
+	                                                         FROM   BSK_CPST_GOD_CNNC st1
+	                                                         WHERE  st1.bsk_no = bas.bsk_no
+	                                                         AND    st1.god_turn = bas.parent_god_turn
+	                                                         AND    st1.pckage_god_tp_cd = 'ADIT_CPST_GOD'
+	                                                      )
+	                                    ORDER BY parent_god_turn,sort_seq
+	                                    )
+	                                    GROUP BY bsk_no,parent_god_turn
+	                     )
+	        )
+	        WHERE   rcnt > 1
+	        AND     rnum > 1
+	 ) t1
+	 LEFT OUTER JOIN  BSK_CPST_GOD_CNNC t2
+	              ON  t1.bsk_no = t2.bsk_no
+	             AND  t1.parent_god_turn  = t2.god_turn
+	</select>
+
+	<select id="selectCleanTargetBsk" parameterType="bsk" resultType="bsk">
+	SELECT BSK_NO
+	FROM BSK
+    WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+      AND BSK_TP_CD = 'BSK'
+      AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+
+	
+
+
+    ORDER BY UDT_DT DESC
+   </select>
+
+
+	<!-- 장바구니 데이터 적재 -->
+	<select id="selectCartGodItmCount" parameterType="bskGod" resultType="Integer">
+		SELECT /* [cart.select.xml][selectCartGodItmCount][장바구니일반상품카운트][이종복] */
+			  COUNT(*) AS CNT
+         FROM BSK_GOD BG
+        WHERE BG.BSK_NO = #{bskNo,jdbcType=VARCHAR}
+          AND BG.GOD_NO = #{godNo,jdbcType=VARCHAR}
+		  AND BG.ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		  AND BG.DLV_SECT_CD = #{dlvSectCd,jdbcType=VARCHAR}
+		  AND NOT EXISTS ( SELECT 1
+		  					 FROM BSK_CPST_GOD_CNNC BCGC
+		  				    WHERE BCGC.BSK_NO			= BG.BSK_NO
+		  				      AND BCGC.CPST_GOD_TURN	= BG.GOD_TURN )
+	</select>
+
+	<!-- 장바구니 데이터 적재 -->
+	<select id="selectCartGodHistTgt" parameterType="bskGod" resultType="com.plgrim.ncp.biz.cart.data.CartGodHistDTO">
+		SELECT /* [cart.select.xml][selectCartGodHistTgt][장비구니이력대상조회][이종복] */
+			  A.BSK_NO
+			, A.MBR_NO
+			, B.GOD_NO
+			, B.ITM_NO
+			, B.BSK_REG_DT
+			, B.PCKAGE_GOD_YN
+			, C.PCKAGE_GOD_TP_CD
+			, B.DLV_SECT_CD
+			, B.PKUP_SHOP_SN
+			, B.PKUP_SHOP_VISIT_DATE
+			, B.REGTR_ID AS REGTR_ID
+			, B.UDTER_ID AS UDTER_ID
+		FROM BSK A, BSK_GOD B, BSK_CPST_GOD_CNNC C
+		WHERE 1=1
+		AND A.BSK_NO			= B.BSK_NO
+		AND A.MBR_SECT_CD		= 'MBR'
+		AND A.BSK_NO			= #{bskNo,jdbcType=VARCHAR}
+		AND ( B.GOD_TURN  = #{godTurn,jdbcType=NUMERIC}
+              OR
+              EXISTS (SELECT 1
+                        FROM BSK_CPST_GOD_CNNC X
+                       WHERE X.BSK_NO			= B.BSK_NO
+                         AND X.GOD_TURN       	= #{godTurn,jdbcType=NUMERIC}
+                         AND X.CPST_GOD_TURN  	= B.GOD_TURN)
+            )
+		AND C.BSK_NO(+)			= B.BSK_NO
+		<!-- AND C.GOD_TURN(+)		= #{godTurn,jdbcType=NUMERIC} -->
+		AND C.CPST_GOD_TURN(+)	= B.GOD_TURN
+		ORDER BY B.GOD_TURN, C.SORT_SEQ
+	</select>
+
+
+
+	<select id="selectBskGodListByBskNo" parameterType="String" resultType="bskGodExtend">
+		SELECT bsk_no /* [cart.select.xml][selectBskGodListByBskNo][카트번호로 카트상품조회] */
+		     , bsk_reg_dt
+		     , dlv_sect_cd
+		     , god_no
+		     , god_turn
+		     , itm_no
+		     , itm_qty
+		     , pckage_god_yn
+		     , pkup_shop_sn
+		     , pkup_shop_visit_date
+		     , recomend_com_cd
+		     , regtr_id
+		     , reg_dt
+		     , udter_id
+		     , udt_dt
+		  FROM bsk_god
+		  where 1=1
+		  and bsk_no = 	#{bskNo,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectBskGodPkupShopList" parameterType="bskGod" resultType="bskGodExtend">
+		  SELECT /* [cart.select.xml][selectBskGodPkupShopList][매장픽업 대표상품제외한 카트상품리스트조회] */
+		       bg.ITM_NO
+		     , bg.ITM_QTY
+		     , CASE
+                    WHEN bg.PCKAGE_GOD_YN = 'Y'
+                    THEN
+                         CASE
+                              WHEN bcgc.BSK_NO IS NULL
+                              THEN 'Y'
+                              ELSE 'N'
+                         END
+                    ELSE 'N'
+               END AS DUMMY_ITM_YN /*대표상품 여부*/
+		  FROM BSK_GOD bg
+		  LEFT OUTER JOIN BSK_CPST_GOD_CNNC bcgc ON bg.BSK_NO = bcgc.BSK_NO AND bg.GOD_TURN = bcgc.CPST_GOD_TURN
+		  WHERE 1=1
+		  AND bg.BSK_NO = 	#{bskNo,jdbcType=VARCHAR}
+		  AND bg.PKUP_SHOP_SN = #{pkupShopSn,jdbcType=VARCHAR}
+		  AND bg.DLV_SECT_CD = 'PKUP_DLV'
+	</select>
+
+	<select id="selectBskGodItmStatList" parameterType="bskGod" resultType="bskGodExtend">
+			SELECT /* [cart.select.xml][selectBskGodPkupShopList][매장픽업 일반배송 변환을 위한 카트 아이템별 상태조회] */
+			      bg.ITM_NO
+			     ,gi.ITM_STAT_CD
+			FROM BSK_GOD bg
+			INNER JOIN GOD_ITM gi ON bg.ITM_NO = gi.ITM_NO AND bg.GOD_NO = gi.GOD_NO
+			WHERE bg.BSK_NO = #{bskNo,jdbcType=VARCHAR}
+			AND bg.PKUP_SHOP_SN = #{pkupShopSn,jdbcType=VARCHAR}
+			AND bg.DLV_SECT_CD = 'PKUP_DLV'
+			GROUP BY bg.ITM_NO, gi.ITM_STAT_CD
+    </select>
+
+	<select id="selectBskCpstGodListByBskNo" parameterType="String" resultType="bskCpstGodCnnc">
+		SELECT bsk_no /* [cart.select.xml][selectBskCpstGodListByBskNo][카트번호로 카트구성상품조회] */
+		     , cpst_god_qty
+		     , cpst_god_turn
+		     , god_turn
+		     , pckage_god_tp_cd
+		     , regtr_id
+		     , reg_dt
+		     , sort_seq
+		     , udter_id
+		     , udt_dt
+		  FROM bsk_cpst_god_cnnc
+		  where 1=1
+		  and bsk_no = 	#{bskNo,jdbcType=VARCHAR}
+	</select>
+
+    <select id="selectGodItmQty" parameterType="com.plgrim.ncp.biz.cart.data.GodItmQtySearchDTO" resultType="com.plgrim.ncp.biz.cart.result.GodItmQtyResult">
+        /*[cart.select.xml][selectGodItmQty][신 재고조회] */
+    	<choose>
+    		<when test='dlvSectCd == "PKUP_DLV"'>
+    			SELECT /*매장픽업*/
+		               ITM_NO
+		              ,ITM_NM
+		              ,GREATEST(SUM(PKUP_SHOP),0) AS SHOP_INV_QTY /*지정매장재고*/
+		              ,MIN_ORD_QTY /* 최소 주문 수량 */
+		              ,MAX_ORD_QTY /* 최대 주문 수량 */
+		        FROM   (
+				       SELECT
+		                       GSII.ITM_NO
+		                      ,GDI.ITM_NM
+		                      ,GSII.SHOP_ID
+                              ,NVL(GSII.INV_QTY,0) - NVL(GSII.SALE_PREARNGE_QTY,0) - NVL(GSII.SAFE_INV_QTY,0) AS PKUP_SHOP
+		                      ,GD.MIN_ORD_QTY /* 최소 주문 수량 */
+		                      ,GD.MAX_ORD_QTY /* 최대 주문 수량 */
+		               FROM GOD_SHOP_ITM_INV GSII
+		               		JOIN GOD_ITM GDI ON GSII.ITM_NO = GDI.ITM_NO AND GSII.GOD_NO=GDI.GOD_NO
+		               		JOIN GOD GD ON GSII.GOD_NO=GD.GOD_NO
+		               WHERE GDI.ITM_STAT_CD IN ('SALE_PROGRS','SALE_PROGRS_PKUP')
+		               		<!-- AND GSII.WEB_SALE_PSB_YN='Y' -->
+	                   <if test='shopId !=null and shopId !=""'>
+	                   		AND	GSII.SHOP_ID = #{shopId}
+	                   </if>
+
+					   <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)'>AND GSII.GOD_NO = #{godNo}</if>
+
+		               <if test='itmNoArr != null'>
+				    		AND <foreach collection="itmNoArr" item="itmNo" index="index" separator="or" open=" (" close=")">
+				     					GSII.ITM_NO = #{itmNo}
+				 				</foreach>
+				       </if> 
+				       and exists (select 1 from SYS_SHOP x join SYS_SHOP_BRND y on x.shop_id = y.shop_id and y.dlv_shop_yn = 'Y' and y.use_yn = 'Y' where  x.shop_id = GSII.shop_id and x.use_yn = 'Y'  )
+				       )
+
+		        GROUP BY ITM_NO,ITM_NM,MIN_ORD_QTY,MAX_ORD_QTY
+		        ORDER BY ITM_NO
+    		</when>
+    		<otherwise>
+    			SELECT /*일반배송*/
+				       GI.ITM_NO
+				      ,GD.MIN_ORD_QTY /* 최소 주문 수량 */
+				      ,GD.MAX_ORD_QTY /* 최대 주문 수량 */
+				      ,(CASE
+				            WHEN GD.RESVE_SALE_GOD_YN = 'Y' THEN NVL(GI.RESVE_INV_QTY,0) /*예약재고여부*/
+				            <!-- ELSE nvl((select max((inv_qty+GREATEST(LC1_INV_QTY,0))-sale_prearnge_qty) from GOD_SHOP_ITM_INV where itm_no=GI.itm_no and shop_id = 'X30004'),0) -->
+				            ELSE nvl((select max((inv_qty+GREATEST(LC1_INV_QTY,0))-sale_prearnge_qty) from GOD_SHOP_ITM_INV where itm_no=GI.itm_no and shop_id IN('X30004', 'M510', 'I50002', 'A30003')),0)
+				        END) AS REAL_INV_QTY /*일반배송재고*/
+				      ,(CASE
+				            WHEN GD.RESVE_SALE_GOD_YN = 'Y' THEN 0 /*예약재고여부*/
+                    		<!-- ELSE nvl((select max(GREATEST(LC1_INV_QTY,0)) from GOD_SHOP_ITM_INV where itm_no=GI.itm_no and shop_id = 'X30004'),0) -->
+                    		ELSE nvl((select max(GREATEST(LC1_INV_QTY,0)) from GOD_SHOP_ITM_INV where itm_no=GI.itm_no and shop_id IN('X30004', 'M510', 'I50002', 'A30003')),0)
+				        END) AS hoff_inv_qty /*본사배송재고*/
+             		 ,(CASE
+				            WHEN GD.RESVE_SALE_GOD_YN = 'Y' THEN 0 /*예약재고여부*/
+				            <!-- ELSE nvl((select max(inv_qty-sale_prearnge_qty) from GOD_SHOP_ITM_INV q where itm_no=GI.itm_no and shop_id != 'X30004' -->
+				            ELSE nvl((select max(inv_qty-sale_prearnge_qty) from GOD_SHOP_ITM_INV q where itm_no=GI.itm_no and shop_id NOT IN('X30004', 'M510', 'I50002', 'A30003')
+				            	and exists (select 1 from SYS_SHOP x join SYS_SHOP_BRND y on x.shop_id = y.shop_id and y.dlv_shop_yn = 'Y' and y.use_yn = 'Y' where  x.shop_id = q.shop_id and x.use_yn = 'Y'  )
+				            ),0)
+				        END) AS etc_inv_qty /*매장 재고*/
+				FROM GOD_ITM GI
+				INNER JOIN GOD GD ON GI.GOD_NO = GD.GOD_NO
+				WHERE 1=1
+				<if test='itmNoArr != null'>
+		    		 AND <foreach collection="itmNoArr" item="itmNo" index="index" separator="or" open=" (" close=")">
+		     			   		GI.ITM_NO = #{itmNo}
+		 				 </foreach>
+		        </if>
+				AND GI.ITM_STAT_CD = 'SALE_PROGRS'
+    		</otherwise>
+    	</choose>
+    </select>
+
+
+    <select id="selectGodItmQtyForQdlv" parameterType="com.plgrim.ncp.biz.cart.data.GodItmQtySearchDTO" resultType="com.plgrim.ncp.biz.cart.result.GodItmQtyResult">
+        /*[cart.select.xml][selectGodItmQtyForQdlv][퀵배송 재고조회] */
+		SELECT inqry.*
+		       ,GD.MIN_ORD_QTY /* 최소 주문 수량 */
+		       ,GD.MAX_ORD_QTY /* 최대 주문 수량 */
+		       ,gdi.itm_nm
+		  FROM (SELECT 'FC08' AS chk_shop_id /*FC08재고*/
+		             , GREATEST (NVL (gsii.lc2_inv_qty, 0)- NVL (gsii.sale_prearnge_qty, 0)- NVL (gsii.safe_inv_qty, 0)- NVL (b031.sale_prearnge_qty, 0), 0)AS inv_qty
+		             , gsii.god_no
+		             , gsii.itm_no
+		             , gsii.shop_id
+		          FROM god_shop_itm_inv gsii
+		          LEFT OUTER JOIN god_shop_itm_inv b031 ON b031.itm_no = gsii.itm_no and b031.shop_id = 'B031'
+		         WHERE     1 = 1
+		               AND gsii.web_sale_psb_yn = 'Y'
+		               <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)'>AND GSII.GOD_NO = #{godNo}</if>
+		               <if test='itmNoArr != null'>
+				    		AND <foreach collection="itmNoArr" item="itmNo" index="index" separator="or" open=" (" close=")">
+				     					GSII.ITM_NO = #{itmNo}
+				 				</foreach>
+				       </if>
+				       <if test='@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo) and itmNoArr == null'>
+				       	and 1=2 /*재고조회시 상품정보 파라메터가 없으면 전체조회할 수 있으므로 방어로직 godNo itmNoArr 둘다없음*/
+				       </if>		               
+		               <!-- AND gsii.shop_id = 'X30004' -->
+		               AND gsii.shop_id IN('X30004', 'M510', 'I50002', 'A30003')
+		        UNION ALL
+		        SELECT 'FC01' AS chk_shop_id /*FC01재고*/
+		             , GREATEST (NVL (gsii.lc1_inv_qty, 0)- NVL (gsii.sale_prearnge_qty, 0)- NVL (gsii.safe_inv_qty, 0)- NVL (b031.sale_prearnge_qty, 0), 0)AS inv_qty                   
+		             , gsii.god_no
+		             , gsii.itm_no
+		             , gsii.shop_id
+		          FROM god_shop_itm_inv gsii
+		          LEFT OUTER JOIN god_shop_itm_inv b031 ON b031.itm_no = gsii.itm_no and b031.shop_id = 'B031'
+		         WHERE     1 = 1
+		               AND gsii.web_sale_psb_yn = 'Y'
+		               <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)'>AND GSII.GOD_NO = #{godNo}</if>
+		               <if test='itmNoArr != null'>
+				    		AND <foreach collection="itmNoArr" item="itmNo" index="index" separator="or" open=" (" close=")">
+				     					GSII.ITM_NO = #{itmNo}
+				 				</foreach>
+				       </if>
+				       <if test='@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo) and itmNoArr == null'>
+				       	and 1=2 /*재고조회시 상품정보 파라메터가 없으면 전체조회할 수 있으므로 방어로직 godNo itmNoArr 둘다없음*/
+				       </if>				       
+		               <!-- AND gsii.shop_id = 'X30004' -->
+		               AND gsii.shop_id IN('X30004', 'M510', 'I50002', 'A30003')
+		        UNION ALL
+		        SELECT gsii.shop_id AS chk_shop_id /*퀵배송매장재고*/
+		             , GREATEST (NVL (gsii.inv_qty, 0)- NVL (gsii.sale_prearnge_qty, 0)- NVL (gsii.safe_inv_qty, 0)- NVL (b031.sale_prearnge_qty, 0), 0)AS inv_qty
+		             , gsii.god_no
+		             , gsii.itm_no
+		             , gsii.shop_id
+		          FROM god_shop_itm_inv gsii
+		          LEFT OUTER JOIN god_shop_itm_inv b031 ON b031.itm_no = gsii.itm_no and b031.shop_id = 'B031'
+		         WHERE     1 = 1
+		               AND gsii.web_sale_psb_yn = 'Y'
+		               <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)'>AND GSII.GOD_NO = #{godNo}</if>
+		               <if test='itmNoArr != null'>
+				    		AND <foreach collection="itmNoArr" item="itmNo" index="index" separator="or" open=" (" close=")">
+				     					GSII.ITM_NO = #{itmNo}
+				 				</foreach>
+				       </if>		
+				       <if test='@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo) and itmNoArr == null'>
+				       	and 1=2 /*재고조회시 상품정보 파라메터가 없으면 전체조회할 수 있으므로 방어로직 godNo itmNoArr 둘다없음*/
+				       </if>
+		               <!-- AND gsii.shop_id != 'X30004' -->
+		               AND gsii.shop_id NOT IN('X30004', 'M510', 'I50002', 'A30003')
+		               and gsii.shop_id not in ( /* 휴일매장제외 */
+			               select ssh.shop_id 
+			               from sys_shop_holdy ssh 
+			               where ssh.sys_date = TO_CHAR (SYSDATE, 'yyyymmdd') 
+			               AND ssh.use_yn = 'Y'
+			               and ssh.shop_id = gsii.shop_id			               
+		               )
+		       ) inqry
+		       INNER JOIN god_itm gdi
+		           ON inqry.itm_no = gdi.itm_no AND inqry.god_no = gdi.god_no
+		       INNER JOIN god gd ON inqry.god_no = gd.god_no
+		       JOIN sys_brnd sb ON sb.brnd_id = gd.brnd_id
+		       JOIN sys_shop_brnd ssb
+		           ON     ssb.erp_brnd_id = sb.erp_brnd_id
+		              <!-- AND (ssb.shop_id = 'X30004' OR ssb.qdlv_shop_yn = 'Y') -->
+		              AND (ssb.shop_id IN('X30004', 'M510', 'I50002', 'A30003') OR ssb.qdlv_shop_yn = 'Y')
+		              AND ssb.shop_id = inqry.shop_id
+		 WHERE gdi.itm_stat_cd IN ('SALE_PROGRS')
+		order by gdi.itm_nm , decode(inqry.chk_shop_id,'FC08',1,'FC01',2,3) 
+    </select>
+
+
+	<select id="selectPckageGodOptionListPickup" parameterType="bskGod" resultMap="pckageGodOptionResult">
+		SELECT /* [cart.select.xml][selectPckageGodOptionList][패키지형 상품 옵션 조회][박문철] */
+		     bas.*,
+		     NVL(gdcnnc.cpst_god_nm, bas.tmp_god_nm) as god_nm,
+		     CASE WHEN bas.itm_stat_cd in ('SALE_PROGRS','SALE_PROGRS_PKUP')
+		          THEN case when bas.dlv_sect_cd = 'PKUP_DLV'
+					          <!-- then case when bas.pkup_shop_sn = 'X30004' -->
+					          then case when bas.pkup_shop_sn IN('X30004', 'M510', 'I50002', 'A30003')
+					                    then (cdcshop.inv_qty - nvl(cdcshop.sale_prearnge_qty,0) - nvl(decode(cdcshop.safe_inv_rt_use_yn,'Y',cdcshop.safe_inv_qty,0),0))
+					                    else (shop.inv_qty - nvl(shop.sale_prearnge_qty,0) - nvl(decode(shop.safe_inv_rt_use_yn,'Y',shop.safe_inv_qty,0),0))
+					                          +
+					                         (cdcshop.inv_qty - nvl(cdcshop.sale_prearnge_qty,0) - nvl(decode(cdcshop.safe_inv_rt_use_yn,'Y',cdcshop.safe_inv_qty,0),0))
+					               end
+					          else online_inv_qty
+					     end
+			      ELSE 0
+			 END as tot_useful_inv_qty
+		FROM
+		(
+		    SELECT
+		          cnnc.bsk_no,
+		          cnnc.god_turn,
+		          cnnc.cpst_god_turn,
+		          cnnc.cpst_god_qty as itm_qty,
+		          bgd.god_no,
+		          bgd.itm_no,
+		          bgd.dlv_sect_cd,
+		          bgd.pkup_shop_sn,
+                  gd.prdlst_cd,
+                  /*(SELECT s.prdlst_nm FROM sys_prdlst_cd s WHERE s.prdlst_cd = gd.prdlst_cd) as prdlst_nm,*/
+                  <choose>
+                    <when test="'PC'.equalsIgnoreCase(device)">
+    		          NVL(gdnm.god_nm,gd.god_nm) as tmp_god_nm,
+                      (SELECT NVL(lg.god_nm, g.god_nm)
+                       FROM   god g, bsk_god b,god_langby_god_nm lg
+                       WHERE  g.god_no = b.god_no AND lg.god_no(+) = b.GOD_NO AND lg.lang_cd(+) = gdnm.lang_cd
+                       AND    b.bsk_no = bgd.bsk_no AND b.god_turn = #{godTurn,jdbcType=NUMERIC}) AS pckage_god_nm,
+                    </when>
+                    <otherwise>
+    		          NVL(gdnm.mobile_god_nm,gd.mobile_god_nm) as tmp_god_nm,
+                      (SELECT NVL(lg.mobile_god_nm, g.mobile_god_nm)
+                       FROM   god g, bsk_god b,god_langby_god_nm lg
+                       WHERE  g.god_no = b.god_no AND lg.god_no(+) = b.GOD_NO AND lg.lang_cd(+) = gdnm.lang_cd
+                       AND    b.bsk_no = bgd.bsk_no AND b.god_turn = #{godTurn,jdbcType=NUMERIC}) AS pckage_god_nm,
+                    </otherwise>
+                  </choose>
+		          itm.itm_no as cnnc_itm_no,
+		          itm.itm_nm,
+		          itm.itm_stat_cd,
+		          case when itm.itm_stat_cd in ('SALE_PROGRS',SALE_PROGRS_PKUP)
+		               then case when gd.lmtt_inv_yn = 'Y'
+		                         then  itm.onlne_lmtt_inv_qty
+		                         else  itm.tot_useful_inv_qty - nvl(itm.sale_prearnge_qty,0) - nvl(decode(itm.safe_inv_use_yn,'Y',itm.safe_inv_qty,0),0)
+		                    end
+		            else 0
+		          end as online_inv_qty,
+		          bgmaster.itm_qty AS parent_itm_qty,
+		          bgmaster.god_no as parent_god_no,
+		          nvl(gd.min_ord_qty,1) as min_ord_qty,
+                  nvl(gd.max_ord_qty,999) as max_ord_qty,
+                  gd.partmal_sect_cd,    /* 입점업체 구분 추가 */
+                  itm_opt.OPT_VAL_CD_1 AS select_opt_cd_1, /* 선택한 옵션1 코드 */
+                   itm_opt.OPT_VAL_NM_1 AS select_opt_val_1, /* 선택한 옵션1 값 */
+                   itm_opt.OPT_VAL_CD_2 AS select_opt_cd_2, /* 선택한 옵션2 코드 */
+                   itm_opt.OPT_VAL_NM_2 AS select_opt_val_2, /* 선택한 옵션2 값 */
+                   itm_opt.OPT_VAL_CD_3 AS select_opt_cd_3, /* 선택한 옵션3 코드 */
+                   itm_opt.OPT_VAL_NM_3 AS select_opt_val_3 /* 선택한 옵션3 값 */
+		    FROM  bsk_cpst_god_cnnc cnnc
+		    JOIN  bsk_god bgd on cnnc.bsk_no = bgd.bsk_no and cnnc.cpst_god_turn = bgd.god_turn
+		    JOIN  god gd ON bgd.god_no = gd.god_no
+		    JOIN  bsk_god bgmaster on cnnc.bsk_no= bgmaster.bsk_no and cnnc.god_turn = bgmaster.god_turn
+		    JOIN  god_itm itm ON bgd.god_no = itm.god_no
+		    JOIN  god_itm itm_opt ON bgd.itm_no = itm_opt.itm_no
+		    LEFT OUTER JOIN GOD_OPT_VAL optval ON itm.opt_cd_1 = optval.opt_cd and itm.god_no = optval.god_no and itm.opt_val_cd_1 = optval.opt_val_cd
+		    LEFT OUTER JOIN god_langby_god_nm gdnm ON gd.god_no = gdnm.god_no and lang_cd = #{lang,jdbcType=VARCHAR}
+		    WHERE cnnc.bsk_no   = #{bskNo,jdbcType=VARCHAR}
+		    AND   cnnc.god_turn = #{godTurn,jdbcType=NUMERIC}
+		    AND   cnnc.pckage_god_tp_cd != 'ADIT_CPST_GOD'
+		    ORDER BY cnnc.sort_seq,optval.sort_seq,optval.opt_val_cd
+		) bas
+		  LEFT OUTER JOIN god_shop_itm_inv shop    ON bas.cnnc_itm_no = shop.itm_no AND bas.pkup_shop_sn = shop.shop_id
+		  <!-- LEFT OUTER JOIN god_shop_itm_inv cdcshop ON bas.cnnc_itm_no = cdcshop.itm_no AND cdcshop.shop_id = 'X30004' -->
+		  LEFT OUTER JOIN god_shop_itm_inv cdcshop ON bas.cnnc_itm_no = cdcshop.itm_no AND cdcshop.shop_id IN('X30004', 'M510', 'I50002', 'A30003')
+		  LEFT OUTER JOIN GOD_CPST_GOD_CNNC gdcnnc ON bas.parent_god_no = gdcnnc.god_no and bas.god_no = gdcnnc.cpst_god_no
+
+	</select>
+
+
+	<select id="selectOptChgCpstList" parameterType="com.plgrim.ncp.biz.cart.data.CartOptChgSearchDTO" resultType="com.plgrim.ncp.biz.cart.result.CartOptChgGodResult">
+		SELECT bg.god_no AS godno /* [cart.select.xml][selectOptChgCpstList][패키지형 구성상품 목록 조회] */
+		     , g.god_nm AS godnm
+		     , bg.god_turn as godTurn
+		     /*, spc.prdlst_nm AS prdlstnm*/
+		     , #{ordQty} AS ordqty
+		     , bg.bsk_no as bskNo
+		     , bg.itm_no as selectedIItmNo
+		     , bg.pkup_shop_sn as pickUpShopCd
+		     , bcgc.god_turn as parentGodTurn
+		  FROM bsk_cpst_god_cnnc bcgc
+		       JOIN bsk_god bg ON bg.bsk_no = bcgc.bsk_no AND bg.god_turn = bcgc.cpst_god_turn
+		       JOIN god g ON g.god_no = bg.god_no
+		       JOIN sys_prdlst_cd spc ON spc.prdlst_cd = g.prdlst_cd
+		 WHERE 1=1
+		   and bcgc.pckage_god_tp_cd != 'ADIT_CPST_GOD'
+		   AND bcgc.bsk_no = #{bskNo,jdbcType=VARCHAR}
+		   and bcgc.god_turn = #{godTurn,jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="selectShopGodInvPkupCount" parameterType="bskGod" resultType="Integer">
+     /* 재고 수량 - 판매 예정 수량 - 안전 재고 수량 */
+     /*매장재고*/
+	    SELECT
+	           <!-- case when gsii.shop_id = 'X30004' then 0 -->
+	           case when gsii.shop_id IN('X30004', 'M510', 'I50002', 'A30003') then 0
+	                else gsii.inv_qty - NVL(gsii.sale_prearnge_qty,0) - NVL(gsii.safe_inv_qty, 0)
+	           end  AS inv_qty
+	    FROM   GOD_SHOP_ITM_INV gsii /* 상품 매장 단품 재고 */
+	    join god g on g.god_no = gsii.god_no
+	    LEFT OUTER JOIN sys_brnd sb ON sb.BRND_ID = g.BRND_ID
+	    LEFT OUTER JOIN sys_shop_brnd ssb ON ssb.ERP_BRND_ID = sb.ERP_BRND_ID AND ssb.SHOP_ID = #{pkupShopSn,jdbcType=VARCHAR}
+	    WHERE  gsii.itm_no  = #{itmNo,jdbcType=VARCHAR}
+	    AND    gsii.shop_id = #{pkupShopSn,jdbcType=VARCHAR}
+	    and gsii.WEB_SALE_PSB_YN = 'Y'
+	    and ssb.pkup_shop_yn = 'Y'
+	         
+
+	</select>
+	
+	
+	<select id="selectShopGodInvQdlvCount" parameterType="bskGod" resultType="Integer">
+	SELECT  /* [cart.select.xml][selectShopGodInvQdlvCount][퀵배송 단품재고조회] */
+           max(inv_qty)
+    FROM
+         (
+             /* 재고 수량 - 판매 예정 수량 - 안전 재고 수량 */
+             /*매장재고*/
+            SELECT
+            	gsii.inv_qty - NVL(gsii.sale_prearnge_qty,0) - NVL(gsii.safe_inv_qty, 0) - NVL(b031.sale_prearnge_qty,0) AS inv_qty
+            FROM   GOD_SHOP_ITM_INV gsii /* 상품 매장 단품 재고 */
+            join god g on g.god_no = gsii.god_no
+            JOIN sys_brnd sb ON sb.BRND_ID = g.BRND_ID
+            JOIN sys_shop_brnd ssb ON ssb.ERP_BRND_ID = sb.ERP_BRND_ID and ssb.shop_id = gsii.shop_id and ssb.qdlv_shop_yn = 'Y'
+            LEFT OUTER JOIN god_shop_itm_inv b031 ON b031.itm_no = gsii.itm_no and b031.shop_id = 'B031' 
+            WHERE  gsii.itm_no  = #{itmNo,jdbcType=VARCHAR}
+            and gsii.WEB_SALE_PSB_YN = 'Y'            
+            <!-- and gsii.shop_id != 'X30004' -->
+            and gsii.shop_id NOT IN('X30004', 'M510', 'I50002', 'A30003')
+			and gsii.shop_id not in ( /* 휴일매장제외 */
+ 				select ssh.shop_id 
+ 				from sys_shop_holdy ssh 
+ 				where ssh.sys_date = TO_CHAR (SYSDATE, 'yyyymmdd') 
+ 				AND ssh.use_yn = 'Y'
+ 				and ssh.shop_id = gsii.shop_id
+ 			)
+
+            UNION ALL
+            /*FC01 재고*/
+            SELECT gsii.lc1_inv_qty - NVL(gsii.sale_prearnge_qty,0) - NVL(gsii.safe_inv_qty, 0) - NVL(b031.sale_prearnge_qty,0) AS inv_qty
+            FROM   GOD_SHOP_ITM_INV gsii /* 상품 매장 단품 재고 */
+            LEFT OUTER JOIN god_shop_itm_inv b031 ON b031.itm_no = gsii.itm_no and b031.shop_id = 'B031'
+            WHERE  gsii.itm_no  = #{itmNo,jdbcType=VARCHAR}
+            <!-- AND    gsii.shop_id = 'X30004' -->
+            AND    gsii.shop_id IN('X30004', 'M510', 'I50002', 'A30003')	/* 물류창고 수량 */
+            and gsii.WEB_SALE_PSB_YN = 'Y'
+
+            UNION ALL
+            /*FC08 재고*/
+            SELECT gsii.lc2_inv_qty - NVL(gsii.sale_prearnge_qty,0) - NVL(gsii.safe_inv_qty, 0) - NVL(b031.sale_prearnge_qty,0) AS inv_qty
+            FROM   GOD_SHOP_ITM_INV gsii /* 상품 매장 단품 재고 */
+            LEFT OUTER JOIN god_shop_itm_inv b031 ON b031.itm_no = gsii.itm_no and b031.shop_id = 'B031'
+            WHERE  gsii.itm_no  = #{itmNo,jdbcType=VARCHAR}
+            <!-- AND    gsii.shop_id = 'X30004' -->
+            AND    gsii.shop_id IN('X30004', 'M510', 'I50002', 'A30003') /* 물류창고 수량 */
+            and gsii.WEB_SALE_PSB_YN = 'Y'
+         )
+
+	</select>	
+	
+	
+
+	<select id="selectPkupShopYn" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO" resultType="Integer">
+		 SELECT /* [cart.select.xml][selectPkupShopYn][픽업가능매장여부 조회] */
+		        SUM(DECODE(PKUP_SHOP_YN,'Y',0,1))
+		 FROM  (SELECT
+		              BGD.BSK_NO
+		         	 ,SSB.PKUP_SHOP_YN
+		    	FROM BSK_GOD BGD
+		    	INNER JOIN GOD GD ON BGD.GOD_NO = GD.GOD_NO
+		    	LEFT OUTER JOIN SYS_BRND SB ON SB.BRND_ID = GD.BRND_ID
+		    	LEFT OUTER JOIN SYS_SHOP_BRND SSB ON SSB.ERP_BRND_ID = SB.ERP_BRND_ID AND SSB.SHOP_ID = BGD.PKUP_SHOP_SN
+		    	WHERE DLV_SECT_CD = 'PKUP_DLV'
+		    	AND BGD.BSK_NO = #{bsk.bskNo}
+		    	UNION ALL
+		    	SELECT #{bsk.bskNo} AS BSK_NO, 'N' AS PKUP_SHOP_YN FROM DUAL) GROUP BY BSK_NO
+
+	</select>
+
+	<select id="selectComQdlvGudTxt" parameterType="comQdlvGudTxtExtend" resultType="com.plgrim.ncp.base.entities.datasource1.com.ComQdlvGudTxtExtend">
+		SELECT MAX(TXT) AS GUD_TXT_CONT
+		  FROM (
+				SELECT CASE WHEN ( SELECT CASE WHEN SUM(DECODE(YN,'Y',1,0)) > 1 THEN 'Y' ELSE 'N' END
+								    FROM (
+										  SELECT CASE WHEN COUNT(1) > 0 THEN 'Y' ELSE 'N' END AS YN
+										    FROM COM_QDLV_OPER
+										   WHERE COM_ID = #{comId, jdbcType=VARCHAR}
+										     AND OPER_YN = 'Y'
+										     AND OPER_DAY_SECT_CD = DECODE(TO_CHAR(SYSDATE,'D'),'1','SUN','7','SAT','WKDY')
+										     AND TO_DATE(TO_CHAR(SYSDATE,'HH24MI'),'HH24MI') <![CDATA[>=]]> TO_DATE(OPER_BEG_HHMM,'HH24MI')
+										     AND TO_DATE(TO_CHAR(SYSDATE,'HH24MI'),'HH24MI') <![CDATA[<=]]> TO_DATE(OPER_END_HHMM,'HH24MI')
+										   UNION ALL
+										  SELECT CASE WHEN COUNT(1) > 0 THEN 'N' ELSE 'Y' END AS YN
+										    FROM COM_QDLV_HOLDY
+										   WHERE COM_ID = 'M00'
+										     AND DELETE_YN = 'N'
+										     AND SYS_DATE = TO_CHAR(TRUNC(SYSDATE),'YYYYMMDD')
+								  	)
+								) = 'Y'
+							THEN (CASE WHEN OPER_TIME_SECT_CD = 'OPER_TIME' THEN DECODE(#{device, jdbcType=VARCHAR},'PC',PC_GUD_TXT_CONT,MOBILE_GUD_TXT_CONT) ELSE '' END)
+							ELSE (CASE WHEN OPER_TIME_SECT_CD = 'NONOPER_TIME' THEN DECODE(#{device, jdbcType=VARCHAR},'PC',PC_GUD_TXT_CONT,MOBILE_GUD_TXT_CONT) ELSE '' END)
+							 END AS TXT
+			FROM COM_QDLV_GUD_TXT
+		 WHERE COM_ID = #{comId, jdbcType=VARCHAR}
+		   AND EXPSR_SCRIN_SECT_CD = #{expsrScrinSectCd, jdbcType=VARCHAR}
+		   AND TO_DATE(TO_CHAR(SYSDATE,'HH24MI'),'HH24MI') <![CDATA[>=]]> TO_DATE(BEG_HHMM,'HH24MI')
+		   AND TO_DATE(TO_CHAR(SYSDATE,'HH24MI'),'HH24MI') <![CDATA[<=]]> TO_DATE(END_HHMM,'HH24MI')
+		)
+	</select>
+
+	<select id="selectEqualCartGoodByNotPackageGodTurn" parameterType="bskGod" resultType="Integer">
+		select /* [cart.select.xml][selectEqualCartGoodByNotPackageGodTurn] */
+			god_turn
+		from bsk_god
+		where
+			bsk_no = #{bskNo,jdbcType=VARCHAR}
+			and god_no = #{godNo,jdbcType=VARCHAR}
+			and itm_no = #{itmNo,jdbcType=VARCHAR}
+			and pckage_god_yn = #{pckageGodYn,jdbcType=VARCHAR}
+			<if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)'>AND pkup_shop_sn = #{pkupShopSn,jdbcType=VARCHAR}</if>
+	</select>
+
+	<select id="selectResvGodYn" parameterType="string" resultType="string">
+		select /* [cart.select.xml][selectResvGodYn] */
+			resve_sale_god_yn
+		from 
+			god
+		where
+			god_no = #{godNo,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

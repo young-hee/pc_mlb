@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectBskWishlst" parameterType="bskWishlst" resultType="bskWishlst">
+		SELECT /* com.plgrim.ncp.base.selectBskWishlst		Generator(Generator)	2018-05-23 */
+			   WISHLST_SN
+			 , MALL_ID
+			 , LANG_CD
+			 , MBR_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM BSK_WISHLST
+		 WHERE 1 = 1
+	   	   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateBskWishlst" parameterType="bskWishlst">
+		UPDATE /* com.plgrim.ncp.base.updateBskWishlst		Generator(Generator)	2018-05-23 */
+		BSK_WISHLST SET
+			   MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertBskWishlst" parameterType="bskWishlst">
+		INSERT /* com.plgrim.ncp.base.insertBskWishlst		Generator(Generator)	2018-05-23 */
+		INTO   BSK_WISHLST (
+			   WISHLST_SN
+			 , MALL_ID
+			 , LANG_CD
+			 , MBR_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{wishlstSn,jdbcType=NUMERIC}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteBskWishlst" parameterType="bskWishlst">
+		DELETE /* com.plgrim.ncp.base.deleteBskWishlst		Generator(Generator)	2018-05-23 */
+		  FROM BSK_WISHLST
+		 WHERE 1 = 1
+		   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

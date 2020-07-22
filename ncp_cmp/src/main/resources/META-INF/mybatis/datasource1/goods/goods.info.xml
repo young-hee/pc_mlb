@@ -1,0 +1,1831 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.goods.info">
+	<select id="getGoods" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultType="god">		
+		SELECT /* [goods.info.xml][getGoods][상품 테이블 조회][Neps] */
+			  G.* ,   FN_SEO_URL(#{mallTpCd, jdbcType=VARCHAR},#{langCd, jdbcType=VARCHAR},G.god_no)  AS godUrl
+		 FROM GOD G
+		WHERE G.GOD_NO IS NOT NULL		
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+		 AND G.ERP_GOD_NO = #{erpGodNo, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+		 AND G.GOD_NO = #{godNo, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(goodsno)">
+		 AND G.GOD_NO IN (
+		 	SELECT 	T1.GOD_NO
+		 	FROM	INF_GOD_ERP_MAPNG T1
+		 	WHERE	TRIM(T1.MAPNG_GOD_NO) = TRIM(#{goodsno, jdbcType=VARCHAR})
+		 			AND ROWNUM = 1
+		 )
+		</if>
+		 AND ROWNUM = 1 				  			 				  
+	</select>
+
+	<select id="isExistErpGodNo" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultType="long">
+	    SELECT /* [goods.info.xml][isExistErpGodNo][상품 테이블 ERP품번 등록 여부 확인][Neps] */
+	    	  COUNT(G.GOD_NO)
+	     FROM GOD G
+	     JOIN SYS_BRND SB
+	     ON (G.BRND_ID = SB.BRND_ID)
+               JOIN GOD_SALE_MALL GSM
+               ON (G.GOD_NO = GSM.GOD_NO)			     
+	    WHERE G.GOD_NO IS NOT NULL
+	    <include refid="com.plgrim.ncp.biz.goods.info.goodsInfoWhere"/>	
+	</select>
+
+	<resultMap id="goodsInfoResult" type="com.plgrim.ncp.biz.goods.result.GoodsInfoResult">
+		<!-- 상품 확장 엔티티 -->
+		<result property="rowNumber" 											column="NO"/>
+		<result property="totalRow" 											column="TOTALROW"/>
+		<result property="godEx.godNo" 											column="GOD_NO"/>							<!-- 상품 번호 -->
+		<result property="godEx.erpGodNo" 										column="ERP_GOD_NO"/>						<!-- ERP 상품 번호 -->
+		<result property="godEx.comGodNo" 										column="COM_GOD_NO"/>						<!-- 업체 상품 번호 토리버치 상품번호-->
+		<result property="godEx.dsgnGrpNo" 										column="DSGN_GRP_NO"/>						<!-- 디자인 그룹 번호 -->		
+		<result property="godEx.godAprvSectCd" 									column="GOD_APRV_SECT_CD"/>					<!-- 상품 승인 구분 코드 -->					
+		<result property="godEx.godAprvSectNm" 									column="GOD_APRV_SECT_NM"/>					<!-- 상품 승인 구분 코드 명 -->
+		<result property="godEx.partmalSectCd" 									column="PARTMAL_SECT_CD"/>					<!-- 상품 입점 구분 코드 -->	
+		<result property="godEx.partmalSectNm" 									column="PARTMAL_SECT_NM"/>					<!-- 상품 입점 구분 명 -->
+		<result property="godEx.godNm" 											column="GOD_NM"/>							<!-- 상품 명 -->
+		<result property="godEx.godEngNm" 										column="GOD_ENG_NM"/>						<!-- 영문 상품 명 -->
+		<result property="godEx.godChiNm" 										column="GOD_CHI_NM"/>						<!-- 중문 상품 명 -->
+		<result property="godEx.mobileGodNm" 									column="MOBILE_GOD_NM"/>					<!-- 모바일 상품 명 -->
+		<result property="godEx.brndId" 										column="BRND_ID"/>							<!-- 상품 브랜드 코드 -->	
+		<result property="godEx.brndGrpId" 										column="BRND_GRP_ID"/>						<!-- 상품 브랜드 그룹 코드 -->
+		<result property="godEx.godSaleSectCd" 									column="GOD_SALE_SECT_CD"/> 				<!-- 상품 판매 구분 코드 -->	
+		<result property="godEx.godSaleSectNm" 									column="GOD_SALE_SECT_NM"/> 				<!-- 상품 판매 구분 명 -->
+		<result property="godEx.saleBegDate" 									column="SALE_BEG_DATE"/>      				<!-- 상품 판매 시작일 -->
+		<result property="godEx.saleEndDate" 									column="SALE_END_DATE"/>					<!-- 상품 판매 종료일 -->
+		<result property="godEx.colorNm" 										column="COLOR_NM"/>							<!-- 색상 명 -->
+		<result property="godEx.colorCd" 										column="COLOR_CD"/>							<!-- 색상 코드 -->
+		<result property="godEx.clorChipImgUrl" 								column="CLOR_CHIP_IMG_URL"/>				<!-- 컬러칩 이미지 URL -->	
+		<result property="godEx.godTpCd" 										column="GOD_TP_CD"/>						<!-- 상품 유형 코드 -->
+		<result property="godEx.godTpNm" 										column="GOD_TP_NM"/>						<!-- 상품 유형 코드명 -->
+		<result property="godEx.stdCtgryNo" 									column="STD_CTGRY_NO"/>     				<!-- 표준 카테고리 코드 -->
+		<result property="godEx.sesonGrpCd" 									column="SESON_GRP_CD"/>						<!-- 시즌 그룹 코드 -->
+		<result property="godEx.sesonCd" 										column="SESON_CD"/>							<!-- 시즌 코드 -->
+		<result property="godEx.prdlstCd" 										column="PRDLST_CD"/>						<!-- 품목 코드 -->
+		<result property="godEx.dspYn" 											column="DSP_YN"/>							<!-- 전시 여부 -->
+		<result property="godEx.dspYnNm" 										column="DSP_YN_NM"/>						<!-- 전시 여부 명 -->
+		<result property="godEx.rtlPrc" 										column="RTL_PRC"/>							<!-- 정소가 -->
+		<result property="godEx.csmrPrc" 										column="CSMR_PRC"/>							<!-- 실소가 -->
+		<result property="godEx.empPrc" 										column="EMP_PRC"/>							<!-- 임직원가 -->
+		<result property="godEx.buyAgeLmtnCd" 									column="BUY_AGE_LMTN_CD"/>					<!-- 구입 연령 제한 코드 -->
+		<result property="godEx.recomendSexCd" 									column="RECOMEND_SEX_CD"/>					<!-- 추천 성별 코드 -->
+		<result property="godEx.recomendAgeCd" 									column="RECOMEND_AGE_CD"/>					<!-- 추천 연령 코드 -->	
+		<result property="godEx.safeCrtfcTgtYn" 								column="SAFE_CRTFC_TGT_YN"/>				<!-- 안전 인증 대상 여부 -->
+		<result property="godEx.kcCrtfcNo" 										column="KC_CRTFC_NO"/>						<!-- KC 인증 번호 -->
+		<result property="godEx.resveSaleGodYn" 								column="RESVE_SALE_GOD_YN"/>				<!-- 예약 판매 상품 여부 -->
+		<result property="godEx.resveSaleGodYnNm" 								column="RESVE_SALE_GOD_YN_NM"/>				<!-- 예약 판매 상품 여부 명 -->
+		<result property="godEx.resveOrdPaySectCd" 								column="RESVE_ORD_PAY_SECT_CD"/>			<!-- 예약 주문 결제 구분 코드 -->
+		<result property="godEx.resveOrdPartPayAmt" 							column="RESVE_ORD_PART_PAY_AMT"/>			<!-- 예약 주문 부분 결제 금액 -->
+		<result property="godEx.resveOrdPayClosDt" 								column="RESVE_ORD_PAY_CLOS_DT"/>			<!-- 예약 주문 결제 마감 일시 -->
+		<result property="godEx.resveOrdDlivyPrearngeDate" 						column="RESVE_ORD_DLIVY_PREARNGE_DATE"/>	<!-- 예약 주문 출고 예정 일자 -->			
+		<result property="godEx.pntAccmlRt" 									column="PNT_ACCML_RT"/>						<!-- 포인트 적립 율 -->
+		<result property="godEx.prcCmprSiteExpsrYn" 							column="PRC_CMPR_SITE_EXPSR_YN"/>			<!-- 가격 비교 사이트 노출 여부 -->
+		<result property="godEx.minOrdQty" 										column="MIN_ORD_QTY"/>						<!-- 최소 주문 수량 -->
+		<result property="godEx.maxOrdQty" 										column="MAX_ORD_QTY"/>						<!-- 최대 주문 수량 -->	
+		<result property="godEx.dmstcDlvCstPlcSn" 								column="DMSTC_DLV_CST_PLC_SN"/>				<!-- 국내 배송비 정책 일련번호 -->
+		<result property="godEx.ovseaDlvCstPlcSn" 								column="OVSEA_DLV_CST_PLC_SN"/>				<!-- 해외 배송비 정책 일련번호 -->	
+		<result property="godEx.ovseaDlvDmstcDlvCstPlcSn" 						column="OVSEA_DLV_DMSTC_DLV_CST_PLC_SN"/>	<!-- 해외 배송 국내 배송비 정책 일련번호 -->
+		<result property="godEx.ovseaDlvPsbYn" 									column="OVSEA_DLV_PSB_YN"/>					<!-- 해외 배송 가능 여부 -->
+		<result property="godEx.shopPkupPsbYn" 									column="SHOP_PKUP_PSB_YN"/>					<!-- 매장 픽업 가능 여부 -->
+		<result property="godEx.otltYn" 										column="OTLT_YN"/> 							<!-- 아울렛 여부 -->
+		<result property="godEx.tdfSect" 										column="TDF_SECT"/>							<!-- 과면세 구분 -->
+		<result property="godEx.firstDspDt" 									column="FIRST_DSP_DT"/>						<!-- 최초 전시 일시 -->
+		<result property="godEx.comId" 											column="COM_ID"/>							<!-- 업체 ID -->		
+		<result property="godEx.regtrId" 										column="REGTR_ID"/>							<!-- 등록자 ID -->
+		<result property="godEx.regDt" 											column="REG_DT"/>							<!-- 등록 일시 -->
+		<result property="godEx.mnfcturNationModYn" 							column="MNFCTUR_NATION_MOD_YN"/>			<!-- 제조국가변경여부 -->
+		<result property="godEx.partmalComFeeRt" 								column="PARTMAL_COM_FEE_RT"/>				<!-- 입점업체 수수료율 -->
+		<result property="godEx.webpntAccmlYn" 									column="WEBPNT_ACCML_YN"/>					<!-- 입점업체 수수료율 -->
+		<result property="godEx.webpntAccmlRt" 									column="WEBPNT_ACCML_RT"/>					<!-- 입점업체 수수료율 -->
+        <result property="godEx.webpntUseYn" 									column="WEBPNT_USE_YN"/>					<!-- 입점업체 수수료율 -->
+		<result property="godEx.onlneOnlyGodYn" 								column="ONLNE_ONLY_GOD_YN"/>				<!-- 온라인 전용 상품 여부 -->
+		<result property="godEx.godWt" 											column="GOD_WT"/>							<!-- 상품 무게 -->		
+		<result property="godEx.lmttInvYn" 								    	column="LMTT_INV_YN"/>						<!-- 한정판매 여부 -->
+		<result property="godEx.erpInvIntrlckYn" 								column="ERP_INV_INTRLCK_YN"/>				<!-- 재고연동 여부 -->
+		<result property="godEx.godSrchSnm" 									column="GOD_SRCH_SNM"/>						<!-- 상품 검색어 -->
+		<result property="godEx.mnfcturYearCd" 									column="MNFCTUR_YEAR_CD"/>					<!-- 제조 년도 코드 -->
+		<result property="godEx.tagNm" 											column="TAG_NM"/>							<!-- 태그명 --> 
+		<result property="godEx.totUsefulInvQty" 								column="GOD_TOT_USEFUL_INV_QTY"/>			<!-- 상품 총 재고-->
+		<result property="godEx.salePrearngeQty" 								column="GOD_SALE_PREARNGE_INV_QTY"/>		<!-- 상품 총 주문 대기 수량-->
+		<result property="godEx.godDetailUrl" 									column="GOD_DETAIL_URL"/>					<!-- 상품 상세 URL-->
+		<result property="godEx.dspCtgryNoList" 								column="DSP_CTGRY_NO_LIST"/>				<!-- 상품 전시 카테고리 번호 목록-->
+		<result property="godEx.optValNmList" 									column="OPT_VAL_NM_LIST"/>					<!-- 옵션명 목록-->
+		
+		<!-- 상품 언어별 상품명 영문 엔티티 -->
+		<result property="godLangbyGodNmEx.godNo" 								column="GOD_NO"/>							<!-- 언어별 상품번호-->
+		<result property="godLangbyGodNmEx.ovseaDspStatCd" 						column="OVSEA_DSP_STAT_CD"/>				<!-- 해외전시승인상태-->
+		<result property="godLangbyGodNmEx.ovseaDspStatCdNm" 					column="OVSEA_DSP_STAT_NM"/>				<!-- 해외전시승인상태 명-->
+		
+		<!-- 상품 언어별 상품명 중문 엔티티 (20181031_ds) -->
+		<result property="godLangbyGodNmExChi.godNo" 							column="GOD_NO"/>							<!-- 언어별 상품번호-->
+		<result property="godLangbyGodNmExChi.ovseaDspStatCd" 					column="OVSEA_DSP_STAT_CD_CHI"/>			<!-- 해외전시승인상태-->
+		<result property="godLangbyGodNmExChi.ovseaDspStatCdNm" 				column="OVSEA_DSP_STAT_NM_CHI"/>			<!-- 해외전시승인상태 명-->
+		
+		<!-- 상품 단품 엔티티 -->
+		<result property="godItmEx.itmNo" 										column="ITM_NO"/>							<!-- 단품번호 -->
+		<result property="godItmEx.itmNm" 										column="ITM_NM"/>							<!-- 단품명 -->
+		<result property="godItmEx.skuNo" 										column="SKU_NO"/>							<!-- SKU번호 ERP상품번호+단품명 -->
+		<result property="godItmEx.totUsefulInvQty" 							column="TOT_USEFUL_INV_QTY"/>				<!-- 총가용재고 -->
+		<result property="godItmEx.safeInvQty" 									column="SAFE_INV_QTY"/>						<!-- 안전재고 -->
+		<result property="godItmEx.itmStatCd" 									column="ITM_STAT_CD"/>						<!-- 단품상태 -->
+		<result property="godItmEx.wrhsDt" 										column="WRHS_DT"/>							<!-- 입고일시 -->
+		
+		<!-- 상품 고시 상세 엔티티 -->
+		<result property="godNtfcDetail.langCd" 								column="LANG_CD"/>							<!-- 언어코드 -->
+		<result property="godNtfcDetail.makrNm" 								column="MAKR_NM" />							<!-- 제조사 명 -->
+		<result property="godNtfcDetail.godKndDscr" 							column="GOD_KND_DSCR" />					<!-- 상품 종류 설명 -->
+		<result property="godNtfcDetail.imprcomNm" 								column="IMPRCOM_NM" />						<!-- 수입사 명-->
+		<result property="godNtfcDetail.mnfcturDate" 							column="MNFCTUR_DATE" />					<!-- 제조일자 -->
+		<result property="godNtfcDetail.matrDscr" 								column="MATR_DSCR" />						<!-- 소재 -->
+		<result property="godNtfcDetail.trtmntAtndMatterDscr" 					column="TRTMNT_ATND_MATTER_DSCR" />			<!-- 취급시주위사항 -->
+		<result property="godNtfcDetail.lndrCd" 								column="LNDR_CD" />							<!-- 세탁코드 -->
+		<result property="godNtfcDetail.lndrMthdDscr" 							column="LNDR_MTHD_DSCR" />					<!-- 세탁코드 상세 설명 -->
+		<result property="godNtfcDetail.mnfcturNationNm" 						column="MNFCTUR_NATION_NM" />				<!-- 제조국가 명 -->
+		<result property="godNtfcDetail.qltyAssrncStdrDscr" 					column="QLTY_ASSRNC_STDR_DSCR" />			<!-- 품질 보증 기준 -->
+		<result property="godNtfcDetail.godSfeturDscr" 							column="GOD_SFETUR_DSCR" />					<!-- 상품 특징 상세 설명 -->
+		<result property="godNtfcDetail.godDetailDscr" 							column="GOD_DETAIL_DSCR" />					<!-- 상품 상세 설명 -->
+		<result property="godNtfcDetail.godDetailAditDscr" 						column="GOD_DETAIL_ADIT_DSCR" />			<!-- 상품 상세 설명 2 -->
+		<result property="godNtfcDetail.godDetailDscrEng" 						column="GOD_DETAIL_DSCR_ENG" />				<!-- 상품 상세 설명 -->
+		<result property="godNtfcDetail.godDetailAditDscrEng" 					column="GOD_DETAIL_ADIT_DSCR_ENG" />		<!-- 상품 상세 설명 2 -->
+		<result property="godNtfcDetail.godDetailDscrChi" 						column="GOD_DETAIL_DSCR_CHI" />				<!-- 상품 상세 설명 -->
+		<result property="godNtfcDetail.godDetailAditDscrChi" 					column="GOD_DETAIL_ADIT_DSCR_CHI" />		<!-- 상품 상세 설명 2 -->
+		<result property="godNtfcDetail.imgAltTagNm" 							column="IMG_ALT_TAG_NM" />					<!-- 이미지 ALT 태그 명 -->
+		<result property="godNtfcDetail.modelInfoDscr" 							column="MODEL_INFO_DSCR" />					<!-- 모델 정보 설명 -->
+		<result property="godNtfcDetail.acmsrSizeDscr" 							column="ACMSR_SIZE_DSCR" />					<!-- 실측 사이즈 설명 -->
+		<result property="godNtfcDetail.sizeLktbHtml" 							column="SIZE_LKTB_HTML" />					<!-- 사이즈 조견표 HTML -->
+		<result property="godNtfcDetail.mobileSizeLktbHtml" 					column="MOBILE_SIZE_LKTB_HTML" />			<!-- 모바일 사이즈 조견표 HTML -->
+		<result property="godNtfcDetail.csmrCnsltRelatDscr" 					column="CSMR_CNSLT_RELAT_DSCR" />			<!-- 소비자 상담 관련 설명 -->
+		<result property="godNtfcDetail.pclMatterDscr" 							column="PCL_MATTER_DSCR" />					<!-- 주요 사항 설명 -->
+		<result property="godNtfcDetail.pclIrdntDscr" 							column="PCL_IRDNT_DSCR" />					<!-- 주요 성분 설명 -->
+		<result property="godNtfcDetail.cpstDscr" 								column="CPST_DSCR" />						<!-- 도서 소개 설명 -->
+		<result property="godNtfcDetail.measrDscr" 								column="MEASR_DSCR" />						<!-- 치수 설명 -->
+		<result property="godNtfcDetail.dtlMatterDscr" 							column="DTL_MATTER_DSCR" />					<!-- 세부 사항 설명 -->
+		<result property="godNtfcDetail.offerMenmthdDscr" 						column="OFFER_MENMTHD_DSCR" />				<!-- 제공 방식 설명 -->
+		<result property="godNtfcDetail.usePdDscr" 								column="USE_PD_DSCR" />						<!-- 사용 기간 설명 -->
+		<result property="godNtfcDetail.crtfcPrmisnDscr" 						column="CRTFC_PRMISN_DSCR" />				<!-- 인증 허가 설명 -->
+		<result property="godNtfcDetail.bukIntrcnDscr" 							column="BUK_INTRCN_DSCR" />					<!-- 도서 소개 설명 -->
+		<result property="godNtfcDetail.dlvInstlCostDscr" 						column="DLV_INSTL_COST_DSCR" />				<!-- 배송 설치 비용 설명 -->
+		<result property="godNtfcDetail.contrTrmnatDscr" 						column="CONTR_TRMNAT_DSCR" />				<!-- 계약 해지 설명 -->
+		<result property="godNtfcDetail.orgPlNm" 								column="ORG_PL_NM" />						<!-- 원산지 명 -->
+		<result property="godNtfcDetail.colorDscr" 								column="COLOR_DSCR" />						<!-- 색상 설명 -->
+		<result property="godNtfcDetail.prdlstGrpCd" 							column="PRDLST_GRP_CD" />					<!-- 품목 그룹 코드 -->
+
+        <result property="godNtfcDetailEng.sizeLktbHtml" 			             column="SIZE_LKTB_HTML_ENG" />				<!-- 영문 사이즈 조견표 HTML -->
+        <result property="godNtfcDetailEng.mobileSizeLktbHtml" 		             column="MOBILE_SIZE_LKTB_HTML_ENG" />		<!-- 영문 모바일 사이즈 조견표 HTML -->
+        <result property="godNtfcDetailEng.mnfcturNationNm"                      column="MNFCTUR_NATION_NM_ENG" />			<!-- 영문 제조국가 명 -->
+        <result property="godNtfcDetailEng.matrDscr"                             column="MATR_DSCR_ENG" />					<!-- 영문 소재 -->
+
+        <result property="godNtfcDetailChi.sizeLktbHtml" 			             column="SIZE_LKTB_HTML_CHI" />				<!-- 중문 사이즈 조견표 HTML -->
+        <result property="godNtfcDetailChi.mobileSizeLktbHtml" 		             column="MOBILE_SIZE_LKTB_HTML_CHI" />		<!-- 중문 모바일 사이즈 조견표 HTML -->
+        <result property="godNtfcDetailChi.mnfcturNationNm"                      column="MNFCTUR_NATION_NM_CHI" />			<!-- 중문 제조국가 명 -->
+        <result property="godNtfcDetailChi.matrDscr"                             column="MATR_DSCR_CHI" />					<!-- 중문 소재 -->
+
+		<!-- 시스템 브랜드 엔티티 -->
+		<result property="sysBrnd.brndNm" 										column="BRND_NM"/>							<!-- 브랜드 명 -->
+
+		<!-- 업체 엔티티 -->
+		<result property="com.comNm" 											column="COM_NM"/>							<!-- 업체 명 -->
+
+		<!-- 전시 상품 가격 엔티티 -->
+		<result property="dspGodPrc.csmrPrc" 									column="CURR_CSMR_PRC"/>					<!-- 현재실소가 -->
+		<result property="dspGodPrc.lastSalePrc" 								column="LAST_SALE_PRC"/>					<!-- 최종할인가 -->
+		<result property="godImg.imgUrl" 										column="IMG_URL"/>							<!-- 상품 이미지 URL-->
+		<result property="imgExistYn" 											column="IMG_EXIST_YN"/>						<!-- 상품 이미지 존재여부-->
+	</resultMap>
+
+	<sql id="goodsInfoWhere">
+		<choose>
+			<!-- 마스터키 검색조건이 존재하는 경우 -->
+			<when test="godNos != null and godNos != '' and godNos.length > 0">
+				<choose>
+       				<when test="godNosGbn == 'erp_god_no'">
+       					AND G.ERP_GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'god_no'">
+       					AND G.GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'god_nm'">
+       					AND G.GOD_NM IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'dsgn_grp_no'">
+       					AND G.DSGN_GRP_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'prdlst_cd'">
+       					AND G.PRDLST_CD IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'seson_cd'">
+       					AND G.SESON_CD IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       			</choose>			
+			</when>
+			<!-- 마스터키 검색조건이 존재하지 않는 경우 -->
+			<otherwise>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(term)">
+					<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'regdt')">			 	
+        				AND G.REG_DT <![CDATA[>=]]> TO_DATE(#{startTermDt}||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+        				AND G.REG_DT <![CDATA[<=]]> TO_DATE(#{endTermDt}||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') 
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'salebegdt')">			 	
+		        		AND G.SALE_BEG_DATE <![CDATA[>=]]> TO_CHAR(TO_DATE(#{startTermDt}, 'YYYY-MM-DD'), 'YYYYMMDD') 
+		        		AND G.SALE_BEG_DATE <![CDATA[<=]]> TO_CHAR(TO_DATE(#{endTermDt}, 'YYYY-MM-DD'), 'YYYYMMDD')
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'saleenddt')">
+		        		AND G.SALE_END_DATE <![CDATA[>=]]> TO_CHAR(TO_DATE(#{startTermDt}, 'YYYY-MM-DD'), 'YYYYMMDD') 
+		        		AND G.SALE_END_DATE <![CDATA[<=]]> TO_CHAR(TO_DATE(#{endTermDt}, 'YYYY-MM-DD'), 'YYYYMMDD')
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'imgRegdt')">
+		        		AND GIM.REG_DT <![CDATA[>=]]> TO_DATE(#{startTermDt}||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+        				AND GIM.REG_DT <![CDATA[<=]]> TO_DATE(#{endTermDt}||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') 
+        				AND GIM.RPRST_IMG_YN = 'Y'
+					</if>			 	
+				</if>
+       			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallTpCd)">
+		         	AND GSM.MALL_ID = #{mallTpCd,jdbcType=VARCHAR}
+		      	</if>				
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+				 	 AND G.ERP_GOD_NO = #{erpGodNo, jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+				 	 AND G.GOD_NO = #{godNo, jdbcType=VARCHAR}
+				</if>				  			 				  
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godTpCd)">
+					 AND G.GOD_TP_CD = #{godTpCd, jdbcType=VARCHAR}
+				</if>	 	
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspYn)">
+					 AND G.DSP_YN = #{dspYn, jdbcType=VARCHAR}
+				</if>			 		
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godAprvSectCd)">
+					 AND G.GOD_APRV_SECT_CD = #{godAprvSectCd, jdbcType=VARCHAR}	
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godSaleSectCd)">
+					 AND G.GOD_SALE_SECT_CD = #{godSaleSectCd, jdbcType=VARCHAR}	
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndId)">
+					 AND G.BRND_ID = #{brndId, jdbcType=VARCHAR}	
+				</if>
+				<if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndIds) and brndIds.length > 0)">
+					AND G.BRND_ID IN (<foreach collection="brndIds" item="brndIds" separator=",">#{brndIds, jdbcType=VARCHAR}</foreach>)
+				</if>		
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNm)">
+					 AND UPPER(G.GOD_NM) LIKE UPPER('%'||#{godNm, jdbcType=VARCHAR}||'%')	
+				</if>			 			 			 			 			 
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dsgnGrpNoLike)">
+					 AND G.DSGN_GRP_NO LIKE ''||#{dsgnGrpNoLike, jdbcType=VARCHAR}||'%'	
+				</if>			 			 			 			 			 
+				<if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspCtgryNos) and dspCtgryNos.length > 0)">
+					AND G.GOD_NO IN (
+									SELECT GOD_NO
+									 FROM DSP_CTGRY_CNNC_GOD
+									WHERE DSP_CTGRY_NO IN (<foreach collection="dspCtgryNos" item="dspCtgryNos" separator=",">#{dspCtgryNos, jdbcType=VARCHAR}</foreach>)
+									)		
+				</if>		
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(aprvRejYn)">
+					 AND G.GOD_APRV_SECT_CD <![CDATA[<>]]> 'APRV_REJ'	
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(shopPkupPsbYn)">
+					 AND G.SHOP_PKUP_PSB_YN = #{shopPkupPsbYn,jdbcType=VARCHAR}	
+				</if>
+				<!-- 검색조건추가 (20181025_ds) -->
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(resveGodYn)">
+					 AND G.RESVE_SALE_GOD_YN = #{resveGodYn,jdbcType=VARCHAR}	
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ovseaDspStatCd)">
+					 AND EXISTS (SELECT 1
+					 			   FROM GOD_LANGBY_GOD_NM GLGM
+					 			  WHERE G.GOD_NO = GLGM.GOD_NO
+					 			    AND GLGM.LANG_CD = 'ENG'
+					 			    AND GLGM.OVSEA_DSP_STAT_CD = #{ovseaDspStatCd,jdbcType=VARCHAR})	
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ovseaDspStatCdChi)">
+					 AND EXISTS (SELECT 1
+					 			   FROM GOD_LANGBY_GOD_NM GLGM
+					 			  WHERE G.GOD_NO = GLGM.GOD_NO
+					 			    AND GLGM.LANG_CD = 'CHI'
+					 			    AND GLGM.OVSEA_DSP_STAT_CD = #{ovseaDspStatCdChi,jdbcType=VARCHAR})	
+				</if>
+			</otherwise>
+		</choose>
+
+	</sql>
+
+	<select id="getGoodsListCount" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultType="long">		
+	    SELECT /* [goods.info.xml][getGoodsListCount][상품 목록 수][Neps] */
+	    	  COUNT(G.GOD_NO)
+	     FROM GOD G
+	     JOIN SYS_BRND SB
+	     ON (G.BRND_ID = SB.BRND_ID)
+         JOIN GOD_SALE_MALL GSM
+         ON (G.GOD_NO = GSM.GOD_NO)		
+         <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godItmShowGbn)">
+         JOIN GOD_ITM GI 
+         ON (G.GOD_NO = GI.GOD_NO)		     
+		 </if>
+		 <if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'imgRegdt')">
+         JOIN GOD_IMG GIM
+         ON (G.GOD_NO = GIM.GOD_NO)		     
+		 </if>
+	     LEFT OUTER JOIN DSP_GOD_PRC DGP
+	     ON (GSM.MALL_ID = DGP.MALL_ID AND GSM.GOD_NO = DGP.GOD_NO AND DGP.PRC_SECT_CD = 'GNRL' AND DGP.LANG_CD = 'KOR' AND DGP.LWET_PRC_SECT_CD = 'CSMR_PRC')
+               <if test="adminTpCd != 'SYS_OPRTR'">                 
+               JOIN SYS_ADMIN_BRND SAB
+               ON (G.BRND_ID = SAB.BRND_ID AND SAB.ADMIN_ID = #{loginId,jdbcType=VARCHAR})
+               </if>
+	    WHERE G.GOD_NO IS NOT NULL
+	    <include refid="com.plgrim.ncp.biz.goods.info.goodsInfoWhere"/>
+	</select>
+
+	<select id="selectGoodsList" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultMap="goodsInfoResult">		
+   		SELECT /* [goods.info.xml][selectGoodsList][상품 목록 검색][Neps] */
+   			   T.*
+   			 , (SELECT GOD_NM FROM GOD_LANGBY_GOD_NM WHERE GOD_NO = T.GOD_NO AND LANG_CD = 'ENG') AS GOD_ENG_NM
+             , (SELECT GOD_NM FROM GOD_LANGBY_GOD_NM WHERE GOD_NO = T.GOD_NO AND LANG_CD = 'CHI') AS GOD_CHI_NM
+   			 , (SELECT MSC.CD_NM FROM MV_SYS_CD MSC WHERE MSC.CD = T.GOD_TP_CD AND MSC.UPPER_CD = 'GOD_TP' AND MSC.LANG_CD = 'KOR') AS GOD_TP_NM
+   			 , (SELECT MSC.CD_NM FROM MV_SYS_CD MSC WHERE MSC.CD = T.GOD_APRV_SECT_CD AND MSC.UPPER_CD = 'GOD_APRV_SECT' AND MSC.LANG_CD = 'KOR') AS GOD_APRV_SECT_NM
+   			 , (SELECT MSC.CD_NM FROM MV_SYS_CD MSC WHERE MSC.CD = T.GOD_SALE_SECT_CD AND MSC.UPPER_CD = 'GOD_SALE_SECT' AND MSC.LANG_CD = 'KOR') AS GOD_SALE_SECT_NM
+   			 , (SELECT MSC.CD_NM FROM MV_SYS_CD MSC WHERE MSC.CD = T.PARTMAL_SECT_CD AND MSC.UPPER_CD = 'PARTMAL_SECT' AND MSC.LANG_CD = 'KOR') AS PARTMAL_SECT_NM
+	         , CASE
+	         	WHEN T.RESVE_SALE_GOD_YN = 'Y' THEN
+	         		'예약판매'
+	         	ELSE
+	         		'일반판매'	
+	           END AS RESVE_SALE_GOD_YN_NM	   			 
+   			 , CASE
+   			 	WHEN T.DSP_YN = 'Y' THEN 
+   			 		'전시'
+   			 	ELSE
+   			 		'미전시'
+   			   END AS DSP_YN_NM	
+   			 , CASE
+			 	WHEN T.GOD_TP_CD = 'SET_GOD' OR T.GOD_TP_CD = 'PCKAGE_GOD' THEN
+		             (
+		                SELECT NVL(SUM (ITM.TOT_USEFUL_INV_QTY), 0)
+		                 FROM GOD_CPST_GOD_CNNC GCGC
+		                 JOIN GOD_ITM ITM
+		                 ON (GCGC.CPST_GOD_NO = ITM.GOD_NO)
+		                WHERE T.GOD_NO = GCGC.GOD_NO
+		                GROUP BY GCGC.GOD_NO                
+		             )                         
+		        ELSE
+		             (
+		                SELECT NVL(SUM (ITM.TOT_USEFUL_INV_QTY), 0) 
+		                 FROM GOD_ITM ITM
+		                WHERE T.GOD_NO = ITM.GOD_NO
+		                GROUP BY ITM.GOD_NO 
+		             )   
+			   END AS GOD_TOT_USEFUL_INV_QTY
+	         , CASE
+	            WHEN T.GOD_TP_CD = 'SET_GOD' OR T.GOD_TP_CD = 'PCKAGE_GOD'
+	            THEN
+	               (  SELECT NVL(SUM (ITM.SALE_PREARNGE_QTY), 0)
+	                    FROM GOD_CPST_GOD_CNNC GCGC
+	                         JOIN GOD_ITM ITM ON (GCGC.CPST_GOD_NO = ITM.GOD_NO)
+	                   WHERE T.GOD_NO = GCGC.GOD_NO
+	                GROUP BY GCGC.GOD_NO)
+	            ELSE
+	               (  SELECT NVL(SUM (ITM.SALE_PREARNGE_QTY), 0)
+	                    FROM GOD_ITM ITM
+	                   WHERE T.GOD_NO = ITM.GOD_NO
+	                GROUP BY ITM.GOD_NO)
+	           END AS GOD_SALE_PREARNGE_INV_QTY			   
+<!--              , (SELECT GI.IMG_URL -->
+<!--                   FROM GOD_IMG GI -->
+<!--                  WHERE GI.GOD_NO = T.GOD_NO AND GI.IMG_TP_CD = 'THNAIL'  AND GI.IMG_TURN = 1  -->
+<!--                ) AS IMG_URL -->
+             , (SELECT LISTAGG(GI.IMG_URL || ',') WITHIN GROUP (ORDER BY IMG_TP_CD DESC, IMG_TURN )
+				 FROM GOD_IMG GI
+                 WHERE GI.GOD_NO = T.GOD_NO AND IMG_USE_YN = 'Y'
+				) AS IMG_URL
+			 , (SELECT OVSEA_DSP_STAT_CD
+			 	 FROM GOD_LANGBY_GOD_NM GLGN
+			 	WHERE T.GOD_NO = GLGN.GOD_NO
+			 	  AND GLGN.LANG_CD = 'ENG'  
+			    ) AS OVSEA_DSP_STAT_CD
+			 , (SELECT MSC.CD_NM
+			 	 FROM GOD_LANGBY_GOD_NM GLGN
+			 	 JOIN MV_SYS_CD MSC
+			 	 ON (MSC.CD = GLGN.OVSEA_DSP_STAT_CD AND MSC.UPPER_CD = 'OVSEA_DSP_STAT' AND MSC.LANG_CD = 'KOR')
+			 	WHERE T.GOD_NO = GLGN.GOD_NO
+			 	  AND GLGN.LANG_CD = 'ENG'
+			   ) AS OVSEA_DSP_STAT_NM 	
+			 , (SELECT OVSEA_DSP_STAT_CD
+			 	 FROM GOD_LANGBY_GOD_NM GLGN
+			 	WHERE T.GOD_NO = GLGN.GOD_NO
+			 	  AND GLGN.LANG_CD = 'CHI'  
+			    ) AS OVSEA_DSP_STAT_CD_CHI
+			 , (SELECT MSC.CD_NM
+			 	 FROM GOD_LANGBY_GOD_NM GLGN
+			 	 JOIN MV_SYS_CD MSC
+			 	 ON (MSC.CD = GLGN.OVSEA_DSP_STAT_CD AND MSC.UPPER_CD = 'OVSEA_DSP_STAT' AND MSC.LANG_CD = 'KOR')
+			 	WHERE T.GOD_NO = GLGN.GOD_NO
+			 	  AND GLGN.LANG_CD = 'CHI'
+			   ) AS OVSEA_DSP_STAT_NM_CHI
+			  , (SELECT LISTAGG(A.DSP_CTGRY_NO,'|') WITHIN GROUP(ORDER BY A.DSP_CTGRY_NO)
+                   FROM DSP_CTGRY_CNNC_GOD A
+                  WHERE A.GOD_NO = T.GOD_NO)  AS  DSP_CTGRY_NO_LIST
+              , (SELECT LISTAGG(GOV.OPT_VAL_NM,',') WITHIN GROUP(ORDER BY GOV.SORT_SEQ, GI.ITM_NO)
+                   FROM GOD_ITM GI
+                      , GOD_OPT_VAL GOV
+                  WHERE GI.GOD_NO = T.GOD_NO
+                    AND GI.GOD_NO = GOV.GOD_NO
+                    AND GI.OPT_CD_1 = GOV.OPT_CD
+                    AND GI.OPT_VAL_CD_1 = GOV.OPT_VAL_CD
+                ) AS OPT_VAL_NM_LIST
+   		 FROM (    		 
+	    	<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(pagingYn,'Y')">
+	    	<include refid="com.plgrim.ncp.base.beginPage"/>    	    
+	    	</if>
+			    SELECT /*+ index(dgp pk_dsp_god_prc) */
+			    	   G.GOD_NO
+			    	 , G.DSGN_GRP_NO  
+			         , G.ERP_GOD_NO
+			         , G.GOD_NM         
+			         , G.PARTMAL_SECT_CD
+			         , G.GOD_TP_CD
+			         , G.BRND_ID
+			         , G.BRND_GRP_ID
+			         , G.COLOR_CD
+			         , G.SESON_CD
+			         , G.COM_ID
+			         , G.GOD_APRV_SECT_CD
+			         , G.GOD_SALE_SECT_CD
+			         , G.SALE_BEG_DATE
+			         , G.SALE_END_DATE
+			         , G.RTL_PRC
+			         , G.CSMR_PRC
+			         , G.RESVE_SALE_GOD_YN
+			         , G.DSP_YN
+			         , G.SHOP_PKUP_PSB_YN
+			         , G.REG_DT         
+			         , SB.BRND_NM
+			         , GSM.MALL_ID
+			         <!-- [DEXC3-190]사이즈조견표 출력기능 2018-10-23 Brandon  Start-->
+			         , GTD.SIZE_LKTB_HTML
+                     , GTD.MOBILE_SIZE_LKTB_HTML
+                     <!-- [DEXC3-190]사이즈조견표 출력기능 2018-10-23 Brandon  End-->
+			         <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godItmShowGbn)">
+			         , GI.ITM_NO
+			         , GI.ITM_NM
+			         </if>
+			         , NVL(DGP.CSMR_PRC, 0)		AS CURR_CSMR_PRC
+			         , DGP.LAST_SALE_PRC
+			         , C.COM_NM
+			         , G.GOD_SRCH_SNM
+                     , GTD.GOD_DETAIL_DSCR
+                     , GTD.GOD_DETAIL_ADIT_DSCR
+                     , GTD_ENG.GOD_DETAIL_DSCR AS GOD_DETAIL_DSCR_ENG
+                     , GTD_ENG.GOD_DETAIL_ADIT_DSCR AS GOD_DETAIL_ADIT_DSCR_ENG
+                     , GTD_CHI.GOD_DETAIL_DSCR AS GOD_DETAIL_DSCR_CHI
+                     , GTD_CHI.GOD_DETAIL_ADIT_DSCR AS GOD_DETAIL_ADIT_DSCR_CHI
+                     , GTD.MNFCTUR_NATION_NM             /* 제조국 */
+                     , GTD.MATR_DSCR                     /* 소재 */
+                     , GTD.MNFCTUR_DATE                  /* 제조일자 */
+                     , GTD.LNDR_CD                       /* 세탁코드 */
+                     , GTD_ENG.MNFCTUR_NATION_NM AS MNFCTUR_NATION_NM_ENG         /* 제조국 영문 */
+                     , GTD_ENG.MATR_DSCR AS MATR_DSCR_ENG                         /* 소재 영문 */
+                     , GTD_ENG.SIZE_LKTB_HTML AS SIZE_LKTB_HTML_ENG               /* 사이즈 조견표 영문 */
+                     , GTD_ENG.MOBILE_SIZE_LKTB_HTML AS MOBILE_SIZE_LKTB_HTML_ENG /* 사이즈 조견표 영문 */
+                     , GTD_CHI.MNFCTUR_NATION_NM AS MNFCTUR_NATION_NM_CHI         /* 제조국 중문 */
+                     , GTD_CHI.MATR_DSCR AS MATR_DSCR_CHI                         /* 소재 중문 */
+                     , GTD_CHI.SIZE_LKTB_HTML AS SIZE_LKTB_HTML_CHI               /* 사이즈 조견표 중문 */
+                     , GTD_CHI.MOBILE_SIZE_LKTB_HTML AS MOBILE_SIZE_LKTB_HTML_CHI /* 사이즈 조견표 중문 */
+			     FROM GOD G
+			     JOIN SYS_BRND SB
+			     ON (G.BRND_ID = SB.BRND_ID)
+			     JOIN COM C
+			     ON (G.COM_ID = C.COM_ID)
+                 JOIN GOD_SALE_MALL GSM
+                 ON (G.GOD_NO = GSM.GOD_NO)	
+                 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godItmShowGbn)">
+                 JOIN GOD_ITM GI 
+                 ON (G.GOD_NO = GI.GOD_NO)		     
+			     </if>
+			     <if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'imgRegdt')">
+		         JOIN GOD_IMG GIM
+		         ON (G.GOD_NO = GIM.GOD_NO)		     
+				 </if>
+			     LEFT OUTER JOIN DSP_GOD_PRC DGP
+			     ON (GSM.MALL_ID = DGP.MALL_ID AND GSM.GOD_NO = DGP.GOD_NO AND DGP.PRC_SECT_CD = 'GNRL' AND DGP.LANG_CD = 'KOR' AND DGP.LWET_PRC_SECT_CD = 'CSMR_PRC')
+			     <!-- [DEXC3-190]사이즈조견표 출력기능 2018-10-23 Brandon -->
+			     LEFT OUTER JOIN GOD_NTFC_DETAIL GTD
+                 ON (G.GOD_NO = GTD.GOD_NO and GTD.LANG_CD ='KOR')
+                 <!-- [DEXC3-190]사이즈조견표 출력기능 2018-10-23 Brandon -->
+                 LEFT OUTER JOIN GOD_NTFC_DETAIL GTD_ENG
+                 ON (G.GOD_NO = GTD_ENG.GOD_NO and GTD_ENG.LANG_CD ='ENG')
+                 LEFT OUTER JOIN GOD_NTFC_DETAIL GTD_CHI
+                 ON (G.GOD_NO = GTD_CHI.GOD_NO and GTD_CHI.LANG_CD ='CHI')
+                 <if test="adminTpCd != 'SYS_OPRTR'">                 
+                 JOIN SYS_ADMIN_BRND SAB
+                 ON (G.BRND_ID = SAB.BRND_ID AND SAB.ADMIN_ID = #{loginId,jdbcType=VARCHAR})
+                 </if>
+			    WHERE G.GOD_NO IS NOT NULL
+			    <include refid="com.plgrim.ncp.biz.goods.info.goodsInfoWhere"/>
+			    <choose>
+			    	<when test="null != ordrGodNos and '' != ordrGodNos and ordrGodNos.length > 0">
+			    		<choose>
+			    			<when test="godNosGbn == 'erp_god_no'">
+		       					ORDER BY CASE G.ERP_GOD_NO <foreach collection="ordrGodNos" item="godNo" index="index" separator=" ">WHEN #{godNo, jdbcType=VARCHAR} THEN (#{index}+1)</foreach> END, G.REG_DT DESC
+		       				</when>
+		       				<when test="godNosGbn == 'god_no'">
+		       					ORDER BY CASE G.GOD_NO <foreach collection="ordrGodNos" item="godNo" index="index" separator=" ">WHEN #{godNo, jdbcType=VARCHAR} THEN (#{index}+1)</foreach> END, G.REG_DT DESC
+		       				</when>
+		       				<when test="godNosGbn == 'god_nm'">
+		       					ORDER BY CASE G.GOD_NM <foreach collection="ordrGodNos" item="godNo" index="index" separator=" ">WHEN #{godNo, jdbcType=VARCHAR} THEN (#{index}+1)</foreach> END, G.REG_DT DESC
+		       				</when>
+		       				<when test="godNosGbn == 'dsgn_grp_no'">
+		       					ORDER BY CASE G.DSGN_GRP_NO <foreach collection="ordrGodNos" item="godNo" index="index" separator=" ">WHEN #{godNo, jdbcType=VARCHAR} THEN (#{index}+1)</foreach> END, G.REG_DT DESC
+		       				</when>
+		       				<when test="godNosGbn == 'prdlst_cd'">
+		       					ORDER BY CASE G.PRDLST_CD <foreach collection="ordrGodNos" item="godNo" index="index" separator=" ">WHEN #{godNo, jdbcType=VARCHAR} THEN (#{index}+1)</foreach> END, G.REG_DT DESC
+		       				</when>
+		       				<when test="godNosGbn == 'seson_cd'">
+		       					ORDER BY CASE G.SESON_CD <foreach collection="ordrGodNos" item="godNo" index="index" separator=" ">WHEN #{godNo, jdbcType=VARCHAR} THEN (#{index}+1)</foreach> END, G.REG_DT DESC
+		       				</when>
+		       				<otherwise>
+		       					ORDER BY G.REG_DT DESC
+		       				</otherwise>
+			    		</choose>
+			    	</when>
+			    	<otherwise>
+			    		ORDER BY G.REG_DT DESC
+			    	</otherwise>
+			    </choose>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(pagingYn,'Y')">    
+			<include refid="com.plgrim.ncp.base.endPage"/>
+			</if>
+   		 ) T   		
+	</select>
+
+	<select id="getGoodsItemList" parameterType="String" resultType="godItmExtend">
+        SELECT /* [goods.info.xml][getGoodsItemList][상품단품목록][Neps] */
+                 GI.ITM_NO
+               , GI.GOD_NO
+               , GI.SKU_NO
+               , GI.ITM_STAT_CD
+               , GI.ITM_NM
+               , GI.OPT_CD_1
+               , GI.OPT_NM_1
+               , GI.OPT_VAL_CD_1
+               , GI.OPT_VAL_NM_1
+               , NVL(GI.TOT_USEFUL_INV_QTY,0) AS TOT_USEFUL_INV_QTY
+               , NVL(GI.SALE_PREARNGE_QTY,0) AS SALE_PREARNGE_QTY
+               , GI.SAFE_INV_USE_YN
+               , NVL(GI.SAFE_INV_QTY,0) AS SAFE_INV_QTY
+               , NVL(GI.ONLNE_LMTT_INV_QTY, 0) AS ONLNE_LMTT_INV_QTY
+               , NVL(GI.AFF_COM_LMTT_INV_QTY, 0) AS AFF_COM_LMTT_INV_QTY
+               , NVL(GI.RESVE_QTY, 0) AS RESVE_QTY
+               , NVL(GI.RESVE_QTY, 0) AS COMPARE_RESVE_QTY
+               , NVL(GI.RESVE_INV_QTY, 0) AS RESVE_INV_QTY
+               , GI.USEFUL_INV_QTY_SHOP_ID
+               , SS.SHOP_NM AS USEFUL_INV_QTY_SHOP_NM
+        FROM GOD_ITM GI
+        JOIN GOD G ON (GI.GOD_NO = G.GOD_NO)
+        JOIN GOD_OPT_VAL GOV ON (GI.GOD_NO = GOV.GOD_NO AND GI.OPT_CD_1 = GOV.OPT_CD AND GI.OPT_VAL_CD_1 = GOV.OPT_VAL_CD)
+        JOIN SYS_SHOP_BRND SSB ON (GI.USEFUL_INV_QTY_SHOP_ID = SSB.SHOP_ID AND G.BRND_ID = SSB.ERP_BRND_ID)
+        JOIN SYS_SHOP SS ON (SSB.SHOP_ID = SS.SHOP_ID)
+        WHERE 1 = 1
+          AND GI.GOD_NO = #{godNo, jdbcType=VARCHAR}
+       	 <if test = "( _parameter != null and !_parameter.equals('GM0019050713788')) and ( _parameter != null and !_parameter.equals('GM0019050713787'))   ">
+        	ORDER BY GOV.SORT_SEQ, GI.ITM_NO
+       	 </if>
+       	 <if test = "( _parameter != null and _parameter.equals('GM0019050713788')) or ( _parameter != null and _parameter.equals('GM0019050713787')) ">
+        	AND NOT REGEXP_LIKE (OPT_VAL_CD,'[a-z]|[A-Z]')    
+            ORDER BY TO_NUMBER(OPT_VAL_CD_1)
+       	 </if>
+	</select>
+
+	<select id="getGoodsItemListByShop" parameterType="godShopItmInv" resultType="godItmExtend">
+        SELECT /* [goods.info.xml][getGoodsItemListByShop][상품별 매장 단품(옵션) 조회][Neps] */
+                 GI.ITM_NO
+               , GI.GOD_NO
+               , GI.SKU_NO
+               , GI.ITM_STAT_CD
+               , GI.ITM_NM
+               , GI.OPT_CD_1
+               , GI.OPT_NM_1
+               , GI.OPT_VAL_CD_1
+               , GI.OPT_VAL_NM_1
+               , NVL(GSII.INV_QTY,0) AS TOT_USEFUL_INV_QTY
+               , NVL(GSII.SALE_PREARNGE_QTY,0) AS SALE_PREARNGE_QTY
+               , GI.SAFE_INV_USE_YN
+               , NVL(GI.SAFE_INV_QTY,0) AS SAFE_INV_QTY
+               , NVL(GI.ONLNE_LMTT_INV_QTY, 0) AS ONLNE_LMTT_INV_QTY
+               , NVL(GI.AFF_COM_LMTT_INV_QTY, 0) AS AFF_COM_LMTT_INV_QTY
+               , NVL(GI.RESVE_QTY, 0) AS RESVE_QTY
+               , NVL(GI.RESVE_QTY, 0) AS COMPARE_RESVE_QTY
+               , NVL(GI.RESVE_INV_QTY, 0) AS RESVE_INV_QTY
+               , GSII.SHOP_ID AS USEFUL_INV_QTY_SHOP_ID
+               , SS.SHOP_NM AS USEFUL_INV_QTY_SHOP_NM
+        FROM GOD_ITM GI
+        JOIN GOD G ON (GI.GOD_NO = G.GOD_NO)
+        JOIN GOD_OPT_VAL GOV ON (GI.GOD_NO = GOV.GOD_NO AND GI.OPT_CD_1 = GOV.OPT_CD AND GI.OPT_VAL_CD_1 = GOV.OPT_VAL_CD)
+        JOIN GOD_SHOP_ITM_INV GSII ON (GI.ITM_NO = GSII.ITM_NO AND GI.GOD_NO = GSII.GOD_NO)
+        JOIN SYS_SHOP_BRND SSB ON (GI.USEFUL_INV_QTY_SHOP_ID = SSB.SHOP_ID AND G.BRND_ID = SSB.ERP_BRND_ID)
+        JOIN SYS_SHOP SS ON (SSB.SHOP_ID = SS.SHOP_ID)
+        WHERE 1 = 1
+          AND GI.GOD_NO = #{godNo, jdbcType=VARCHAR}	
+		  AND GSII.SHOP_ID = #{shopId, jdbcType=VARCHAR}
+		-- ORDER BY GOV.SORT_SEQ, GI.ITM_NO
+		ORDER BY GI.OPT_CD_1, GI.ITM_NO
+	</select>
+
+	<select id="getGoodsCompositionGoodsConnectionList" parameterType="String" resultType="godCpstGodCnncExtend">
+        SELECT  /* [goods.info.xml][getGoodsCompositionGoodsConnectionList][상품 구성 상품 연결 조회][Neps] */
+              GCGC.GOD_NO
+            , GCGC.CPST_GOD_NO
+            , NVL(GCGC.CPST_GOD_NM, GD.GOD_NM) AS CPST_GOD_NM 
+            , NVL(GCGC.PCKAGE_GOD_TP_CD, G.GOD_TP_CD) AS PCKAGE_GOD_TP_CD
+            , GCGC.ESSNTL_PCH_YN
+            , NVL(TRIM(GCGC.ADIT_PCH_PSB_YN), 'N') AS ADIT_PCH_PSB_YN
+            , GCGC.CPST_GOD_QTY
+            , GCGC.SORT_SEQ
+            , GD.MOBILE_GOD_NM
+            , GD.ERP_GOD_NO
+            , GD.RESVE_SALE_GOD_YN
+            , GD.RTL_PRC
+            , GD.CSMR_PRC
+            , GD.KC_CRTFC_NO
+         FROM GOD_CPST_GOD_CNNC GCGC
+         JOIN GOD G ON (GCGC.GOD_NO = G.GOD_NO)
+         JOIN GOD GD ON (GCGC.CPST_GOD_NO = GD.GOD_NO)            
+        WHERE GCGC.GOD_NO = #{godNo, jdbcType=VARCHAR}    
+        ORDER BY GCGC.SORT_SEQ		
+	</select>
+
+	<select id="getGoodsCompositionGoodsConnectionItemList" parameterType="String" resultType="godItmExtend">	    
+	    SELECT /* [goods.info.xml][getGoodsCompositionGoodsConnectionItemList][상품 구성품 연결의 단품 조회][Neps] */ 
+	    	   GI.ITM_NO
+	    	 , GI.GOD_NO
+	    	 , GI.SKU_NO
+	    	 , GI.ITM_STAT_CD
+	    	 , GI.ITM_NM
+	    	 , GI.OPT_CD_1
+	    	 , GI.OPT_NM_1
+	    	 , GI.OPT_VAL_CD_1
+	    	 , GI.OPT_VAL_NM_1
+	    	 , GI.TOT_USEFUL_INV_QTY	    	 
+	    	 , GI.RESVE_QTY	    	 
+	    	 , GI.RESVE_INV_QTY	    	 
+	    	 , GI.SALE_PREARNGE_QTY	    	 
+	     FROM GOD_CPST_GOD_CNNC GCGC
+	     JOIN GOD G ON (GCGC.CPST_GOD_NO = G.GOD_NO)
+	     JOIN GOD_ITM GI ON (G.GOD_NO = GI.GOD_NO)
+	     JOIN GOD_OPT_VAL GOV ON (GI.GOD_NO = GOV.GOD_NO AND GI.OPT_CD_1 = GOV.OPT_CD AND GI.OPT_VAL_CD_1 = GOV.OPT_VAL_CD)     
+	    WHERE GCGC.GOD_NO = #{godNo, jdbcType=VARCHAR}
+	    ORDER BY GCGC.SORT_SEQ, GOV.SORT_SEQ, GI.ITM_NO  	
+	</select>
+	
+	<select id="getGoodsCompositionGoodsConnectionItemListByShop" parameterType="godShopItmInv" resultType="godItmExtend">		
+        SELECT /* [goods.info.xml][getGoodsCompositionGoodsConnectionItemList][상품 구성품 연결의 매장별 단품 조회][Neps] */ 
+               GI.ITM_NO
+             , GI.GOD_NO
+             , GI.ITM_NO
+             , GI.SKU_NO
+             , GI.ITM_STAT_CD
+             , GI.ITM_NM
+             , GI.OPT_CD_1
+             , GI.OPT_NM_1
+             , GI.OPT_VAL_CD_1
+             , GI.OPT_VAL_NM_1
+             , GSII.INV_QTY AS TOT_USEFUL_INV_QTY             
+             , GI.RESVE_QTY             
+             , GI.RESVE_INV_QTY             
+             , GSII.SALE_PREARNGE_QTY
+             , GSII.SHOP_ID AS USEFUL_INV_QTY_SHOP_ID            
+         FROM GOD_CPST_GOD_CNNC GCGC
+         JOIN GOD G ON (GCGC.CPST_GOD_NO = G.GOD_NO)
+         JOIN GOD_ITM GI ON (G.GOD_NO = GI.GOD_NO)
+         JOIN GOD_OPT_VAL GOV ON (GI.GOD_NO = GOV.GOD_NO AND GI.OPT_CD_1 = GOV.OPT_CD AND GI.OPT_VAL_CD_1 = GOV.OPT_VAL_CD)
+         JOIN GOD_SHOP_ITM_INV GSII ON (GI.ITM_NO = GSII.ITM_NO AND GI.GOD_NO = GSII.GOD_NO)
+        WHERE GCGC.GOD_NO = #{godNo, jdbcType=VARCHAR}
+          AND GSII.SHOP_ID = #{shopId, jdbcType=VARCHAR}
+        ORDER BY GCGC.SORT_SEQ, GOV.SORT_SEQ, GI.ITM_NO  	
+	</select>
+	
+	<select id="getGoodsLangByCompositionGoodsNameList" parameterType="String" resultType="godLangbyCpstGodNmExtend">   
+	    SELECT /* [goods.info.xml][getGoodsLangByCompositionGoodsNameList][구성상품 언어별 상품명 조회][Neps] */
+	    	   GCGC.GOD_NO
+	         , GCGC.CPST_GOD_NO
+	         , GLGN.LANG_CD
+	         , GLGN.GOD_NM
+	         , GLGN.MOBILE_GOD_NM AS CPST_MOBILE_GOD_NM
+	     FROM GOD_CPST_GOD_CNNC GCGC
+	     LEFT OUTER JOIN GOD_LANGBY_GOD_NM GLGN
+	     ON (GCGC.CPST_GOD_NO = GLGN.GOD_NO)
+	    WHERE GCGC.GOD_NO = #{godNo,jdbcType=VARCHAR}	   	   
+	</select>
+
+	<select id="getGoodsSaleMallList" parameterType="String" resultType="godSaleMall">
+        SELECT /* [goods.info.xml][getGoodsSaleMallList][판매몰 정보 조회][Neps] */
+                GOD_NO
+               ,MALL_ID
+               ,USE_YN
+        FROM    GOD_SALE_MALL t
+        WHERE   1 = 1
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}	
+	</select>
+
+	<select id="getGoodsLangByGoodsNameList" parameterType="String" resultType="godLangbyGodNm">
+		SELECT /* [goods.info.xml][getGoodsLangByGoodsNameList][언어별 상품명 조회][Neps] */
+			   GOD_NO
+			 , LANG_CD
+			 , TRSLT_STAT_CD
+			 , OVSEA_DSP_STAT_CD
+			 , GOD_NM
+			 , MOBILE_GOD_NM
+			 , TAG_NM
+			 , COLOR_TAG_NM
+			 , THEMA_TAG_NM
+			 , COLOR_NM
+			 , GOD_SRCH_SNM
+		  FROM GOD_LANGBY_GOD_NM
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}	
+	</select>
+
+	<select id="getGoodsNotificationDetailList" parameterType="String" resultType="godNtfcDetail">
+		SELECT /* [goods.info.xml][getGoodsNotificationDetailList][상품 고시정보 조회][Neps] */
+			   GOD_NO
+			 , LANG_CD
+			 , PRDLST_GRP_CD
+			 , PCL_MATTER_DSCR
+			 , KC_CRTFC_DSCR
+			 , IMPR_STTEMNT_DSCR
+			 , KFDA_JDGMN_YN
+			 , USE_AGE_DSCR
+			 , WRGRNTI_OFFER_DSCR
+			 , COLOR_DSCR
+			 , MATR_DSCR
+			 , MG_DSCR
+			 , MEASR_DSCR
+			 , CPST_DSCR
+			 , BUK_INTRCN_DSCR
+			 , PCL_IRDNT_DSCR
+			 , DTL_MATTER_DSCR
+			 , MAKR_NM
+			 , MNFCTUR_NATION_NM
+			 , ORG_PL_NM
+			 , FNCL_CSMT_YN
+			 , LNDR_CD
+			 , LNDR_MTHD_DSCR
+			 , MNFCTUR_DATE
+			 , DLV_INSTL_COST_DSCR
+			 , USE_PD_DSCR
+			 , OFFER_MENMTHD_DSCR
+			 , MIN_SPEC_ESSNTL_SW_DSCR
+			 , CONTR_TRMNAT_DSCR
+			 , QLTY_ASSRNC_STDR_DSCR
+			 , CRTFC_PRMISN_DSCR
+			 , IMPRCOM_NM
+			 , TRTMNT_ATND_MATTER_DSCR
+			 , CSMR_CNSLT_RELAT_DSCR
+			 , GOD_KND_DSCR
+			 , GOD_SFETUR_DSCR
+			 , GOD_DETAIL_DSCR
+			 , GOD_DETAIL_ADIT_DSCR
+			 , AFF_COM_GOD_DETAIL_DSCR
+			 , IMG_ALT_TAG_NM
+			 , MODEL_INFO_DSCR
+			 , ACMSR_SIZE_DSCR
+			 , SIZE_LKTB_HTML
+			 , MOBILE_SIZE_LKTB_HTML
+		  FROM GOD_NTFC_DETAIL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getDesignColorList" parameterType="String" resultType="godExtend">
+	    SELECT /* [goods.info.xml][getDesignColorList][디자인 그룹 목록 조회][Neps] */
+	    	   G.GOD_NO
+	    	 , G.ERP_GOD_NO
+	    	 , G.GOD_NM
+	    	 , G.COLOR_CD
+	    	 , G.COLOR_NM
+	    	 , G.GOD_SALE_SECT_CD 
+	    	 , GI.IMG_URL
+             , ('/goods/'||
+             	CASE WHEN g.brnd_grp_id = 'ML' OR g.brnd_grp_id = 'DX'
+                     THEN (SELECT MSC.CD_NM FROM MV_SYS_CD MSC WHERE MSC.CD = G.RECOMEND_SEX_CD AND MSC.UPPER_CD = 'RECOMEND_SEX' AND MSC.LANG_CD = 'KOR')||'/' 
+                     ELSE '' END
+                ||(SELECT SBP.BRND_PRDLST_NM FROM SYS_BRND_PRDLST SBP WHERE SBP.BRND_ID = G.BRND_ID AND SBP.PRDLST_CD = G.PRDLST_CD)
+                ||'/'||G.ERP_GOD_NO
+                ) AS GOD_DETAIL_URL	    	 
+	     FROM GOD G
+	     LEFT OUTER JOIN GOD_IMG GI ON (G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_SIZE_CD = 'ORIGIN' AND GI.IMG_TURN = 1)
+	    WHERE G.DSGN_GRP_NO IN (SELECT L.DSGN_GRP_NO FROM GOD L WHERE L.GOD_NO = #{godNo,jdbcType=VARCHAR})
+		  AND G.GOD_APRV_SECT_CD = 'APRV_COMPT'  
+		  AND G.GOD_SALE_SECT_CD != 'SALE_END' 
+		  AND G.DSP_YN = 'Y'        	
+	</select>
+	
+	<select id="getSpecificationDesignColorList" parameterType="String" resultType="godExtend">
+	    SELECT /* [goods.info.xml][getSpecificationDesignColorList][특정 상품 디자인 그룹 목록 조회][Neps] */
+	    	   G.GOD_NO
+	    	 , G.ERP_GOD_NO
+	    	 , G.GOD_NM
+	    	 , G.COLOR_CD
+	    	 , G.COLOR_NM
+	    	 , G.GOD_SALE_SECT_CD 
+	    	 , GI.IMG_URL
+             , ('/goods/'||
+             	CASE WHEN g.brnd_grp_id = 'ML' OR g.brnd_grp_id = 'DX'
+                     THEN (SELECT MSC.CD_NM FROM MV_SYS_CD MSC WHERE MSC.CD = G.RECOMEND_SEX_CD AND MSC.UPPER_CD = 'RECOMEND_SEX' AND MSC.LANG_CD = 'KOR')||'/' 
+                     ELSE '' END
+                ||(SELECT SBP.BRND_PRDLST_NM FROM SYS_BRND_PRDLST SBP WHERE SBP.BRND_ID = G.BRND_ID AND SBP.PRDLST_CD = G.PRDLST_CD)
+                ||'/'||G.ERP_GOD_NO
+                ) AS GOD_DETAIL_URL	    	 
+	     FROM GOD G
+	     JOIN GOD_SALE_MALL GSM ON (G.GOD_NO = GSM.GOD_NO)
+         JOIN GOD_CNNC_GRP_GOD GCGC ON (GSM.GOD_NO = GCGC.GOD_NO AND GSM.MALL_ID = GCGC.MALL_ID)
+	     LEFT OUTER JOIN GOD_IMG GI ON (G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_SIZE_CD = 'ORIGIN' AND GI.IMG_TURN = 1)
+	    WHERE 1 = 1
+          AND G.GOD_APRV_SECT_CD = 'APRV_COMPT'  
+		  AND G.GOD_SALE_SECT_CD != 'SALE_END' 
+		  AND G.DSP_YN = 'Y'
+          AND EXISTS (SELECT L.ERP_GOD_CNNC_GRP_NO FROM GOD_CNNC_GRP_GOD L WHERE L.ERP_GOD_CNNC_GRP_NO = GCGC.ERP_GOD_CNNC_GRP_NO AND L.GOD_NO = #{godNo,jdbcType=VARCHAR})	
+	</select>
+
+	<select id="getComDomesticDeliveryCostPolicy" parameterType="Map" resultType="comDmstcDlvCstPlc">
+		SELECT /* [goods.info.xml][getComDomesticDeliveryCostPolicy][업체 국내 배송비 정책 목록 조회][Neps] */
+			   DMSTC_DLV_CST_PLC_SN
+			 , DLV_PLC_NM
+			 , COM_ID
+			 , BASE_DLV_CST_PLC_YN
+			 , RTRVL_DRCT_PSB_YN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_YN
+			 , USE_YN
+			 , DLV_MN_CD
+			 , DLV_COM_CD
+			 , DLV_PSB_DAY
+			 , DLVSP_POST_NO
+			 , DLVSP_BASE_ADDR
+			 , DLVSP_DETAIL_ADDR
+			 , DMSTC_DLV_BOX_PSB_VOL
+			 , DMSTC_DLV_BOX_PSB_WT
+			 , DLV_CST_LEVY_SECT_CD
+			 , DMSTC_DLV_CST_EXM_STDR_AMT
+			 , DMSTC_DLV_CST
+			 , QDLV_CST_LEVY_SECT_CD
+			 , QDLV_CST_EXM_STDR_AMT
+			 , QDLV_CST
+			 , REPAIR_DLV_CST_LEVY_SECT_CD
+			 , REPAIR_DLV_CST
+			 , RETRN_MN_CD
+			 , RETRN_COM_CD
+			 , RETRN_POST_NO
+			 , RETRN_BASE_ADDR
+			 , RETRN_DETAIL_ADDR
+			 , SLR_IMPT_RTGOD_DLV_CST
+			 , SLR_IMPT_EXCHG_DLV_CST
+			 , RTGOD_DLIVY_DLV_CST_INCLS_YN
+			 , BUYER_IMPT_RTGOD_DLV_CST
+			 , BUYER_IMPT_EXCHG_DLV_CST
+			 , DLV_MTHD_DSCR
+			 , MOBILE_DLV_MTHD_DSCR
+			 , GFCT_DSCR
+		  FROM COM_DMSTC_DLV_CST_PLC
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=NUMERIC}
+	   	   AND USE_YN = 'Y'	
+	   	   <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+           AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+           </if>
+         ORDER BY DMSTC_DLV_CST_PLC_SN
+	</select>
+	
+	<select id="getComDomesticDeliveryCostPolicyByLangList" parameterType="String" resultType="comDmstcDlvCstPlcLang">
+        SELECT /* [goods.info.xml][getComDomesticDeliveryCostPolicyByLangList][업체 국내 배송비 정책 목록 언어별 목록 조회][Neps] */
+               CDDCPL.DMSTC_DLV_CST_PLC_SN
+             , CDDCPL.LANG_CD
+             , CDDCPL.DLV_MTHD_DSCR
+             , CDDCPL.MOBILE_DLV_MTHD_DSCR
+          FROM COM_DMSTC_DLV_CST_PLC_LANG CDDCPL
+          JOIN COM_DMSTC_DLV_CST_PLC CDDCP ON (CDDCPL.DMSTC_DLV_CST_PLC_SN = CDDCP.DMSTC_DLV_CST_PLC_SN) 
+         WHERE 1 = 1
+           AND CDDCP.COM_ID = #{comId,jdbcType=NUMERIC}
+           AND CDDCP.USE_YN = 'Y'	
+	</select>
+
+	<select id="getGoodsColorList" parameterType="String" resultType="godColorExtend">
+        SELECT /* [goods.info.xml][getGoodsColorList][상품 컬러 목록 조회][Neps] */
+               GC.COLOR_CD
+             , GC.BRND_GRP_ID
+             , GC.COLOR_NM
+             , GC.COLOR_GRP_CD
+             , GC.USE_YN             
+             , GC.COLOR_STYLE_CONT_1
+             , GC.COLOR_STYLE_CONT_2
+             , GCG.COLOR_GRP_NM
+             , GCG.COLOR_GRP_STYLE_CONT_1
+             , GCG.COLOR_GRP_STYLE_CONT_2             
+          FROM GOD_COLOR GC
+          JOIN GOD_COLOR_GRP GCG ON (GC.COLOR_GRP_CD = GCG.COLOR_GRP_CD)
+         WHERE 1 = 1
+           AND GC.BRND_GRP_ID = #{comId,jdbcType=NUMERIC}
+           AND GCG.USE_YN = 'Y'
+           AND GC.USE_YN = 'Y'
+         ORDER BY GCG.SORT_SEQ, GC.SORT_SEQ   
+	</select>
+
+	<insert id="insertGoodsOption" parameterType="godOpt">
+		INSERT /* [goods.info.xml][insertGoodsOption][상품 옵션 등록][Neps] */
+		INTO GOD_OPT 
+		(
+			   GOD_NO
+			 , OPT_CD
+			 , OPT_NM
+			 , SORT_SEQ
+			 , USE_YN
+			 , COM_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		SELECT R.GOD_NO
+		     , R.OPT_CD
+		     , CGO.OPT_NM
+		     , CGO.SORT_SEQ
+		     , CGO.USE_YN
+		     , CGO.COM_ID
+		     , R.REGTR_ID
+		     , SYSDATE
+		     , R.REGTR_ID
+		     , SYSDATE
+		 FROM (
+		        SELECT GOD_NO, OPT_CD_1 AS OPT_CD, OPT_NM_1 AS OPT_NM, REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+		          AND OPT_CD_1 IS NOT NULL 
+		        UNION
+		        SELECT GOD_NO, OPT_CD_2, OPT_NM_2, REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR} 
+		          AND OPT_CD_2 IS NOT NULL
+		        UNION
+		        SELECT GOD_NO, OPT_CD_3, OPT_NM_3, REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+		          AND OPT_CD_3 IS NOT NULL     
+		        UNION
+		        SELECT GOD_NO, OPT_CD_4, OPT_NM_4, REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR} 
+		          AND OPT_CD_4 IS NOT NULL
+		        UNION
+		        SELECT GOD_NO, OPT_CD_5, OPT_NM_5, REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR} 
+		          AND OPT_CD_5 IS NOT NULL 
+		    )R
+		JOIN COM_GOD_OPT CGO ON (R.OPT_CD = CGO.OPT_CD)        
+    </insert>
+
+	<insert id="insertGoodsOptionValue" parameterType="godOptVal">
+		INSERT /* [goods.info.xml][insertGoodsOptionValue][상품 옵션 값 등록][Neps] */
+		INTO   GOD_OPT_VAL 
+		(
+			   GOD_NO
+			 , OPT_CD
+			 , OPT_VAL_CD
+			 , OPT_VAL_NM
+			 , USE_YN
+			 , SORT_SEQ
+			 , COM_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		SELECT GO.GOD_NO
+		     , CGO.OPT_CD
+		     , CGO.OPT_VAL_CD
+		     , CGO.OPT_VAL_NM
+		     , CGO.USE_YN
+		     , CGO.SORT_SEQ
+		     , CGO.COM_ID
+		     , GO.REGTR_ID
+		     , SYSDATE
+		     , GO.REGTR_ID
+		     , SYSDATE		     
+		 FROM GOD_OPT GO
+		 JOIN COM_GOD_OPT_VAL CGO ON (GO.COM_ID = CGO.COM_ID AND GO.OPT_CD = CGO.OPT_CD)
+		WHERE GO.GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </insert>	
+
+	<insert id="insertGoodsItemOption" parameterType="godItmOpt">
+		INSERT /* [goods.info.xml][insertGoodsItemOption][상품 단품 옵션 등록][Neps] */
+		INTO   GOD_ITM_OPT 
+		(
+			   GOD_NO
+			 , ITM_NO
+			 , OPT_CD
+			 , OPT_VAL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		SELECT GOD_NO
+		     , ITM_NO
+		     , OPT_CD
+		     , OPT_VAL_CD    
+		     , REGTR_ID
+		     , SYSDATE
+		     , REGTR_ID
+		     , SYSDATE      
+		 FROM (
+		        SELECT GOD_NO
+		             , ITM_NO
+		             , OPT_CD_1     AS OPT_CD
+		             , OPT_VAL_CD_1 AS OPT_VAL_CD
+		             , REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR} 
+		          AND OPT_CD_1 IS NOT NULL
+		        UNION
+		        SELECT GOD_NO
+		             , ITM_NO
+		             , OPT_CD_2     AS OPT_CD
+		             , OPT_VAL_CD_2 AS OPT_VAL_CD
+		             , REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+		          AND OPT_CD_2 IS NOT NULL
+		        UNION
+		        SELECT GOD_NO
+		             , ITM_NO
+		             , OPT_CD_3     AS OPT_CD
+		             , OPT_VAL_CD_3 AS OPT_VAL_CD
+		             , REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+		          AND OPT_CD_3 IS NOT NULL
+		        UNION
+		        SELECT GOD_NO
+		             , ITM_NO
+		             , OPT_CD_4     AS OPT_CD
+		             , OPT_VAL_CD_4 AS OPT_VAL_CD
+		             , REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+		          AND OPT_CD_4 IS NOT NULL
+		        UNION
+		        SELECT GOD_NO
+		             , ITM_NO
+		             , OPT_CD_5     AS OPT_CD
+		             , OPT_VAL_CD_5 AS OPT_VAL_CD
+		             , REGTR_ID
+		         FROM GOD_ITM
+		        WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+		          AND OPT_CD_5 IS NOT NULL                
+		      )
+    </insert>	
+
+	<insert id="insertGoodsShopItemInventory" parameterType="String">	
+        INSERT /* [goods.info.xml][insertGoodsShopItemInventory][상품 매장 단품 등록][Neps] */
+        INTO   GOD_SHOP_ITM_INV (
+               ITM_NO
+             , SHOP_ID
+             , GOD_NO
+             , INV_QTY
+             , SALE_PREARNGE_QTY
+             , SAFE_INV_RT_USE_YN
+             , SAFE_INV_QTY
+             , WEB_SALE_PSB_YN
+             , LC1_INV_QTY
+             , LC2_INV_QTY
+             , REGTR_ID
+             , REG_DT
+             , UDTER_ID
+             , UDT_DT
+        ) 
+		 SELECT 
+		        GI.ITM_NO
+		      , SS.SHOP_ID
+		      , GI.GOD_NO
+		      , 0               AS INV_QTY
+		      , 0               AS SALE_PREARNGE_QTY
+		      , 'N'             AS SAFE_INV_RT_USE_YN
+		      , 0               AS SAFE_INV_QTY
+		      , 'Y'             AS WEB_SALE_PSB_YN
+		      , 0               AS LC1_INV_QTY
+		      , 0               AS LC2_INV_QTY
+		      , GI.REGTR_ID     AS REGTR_ID
+		      , SYSDATE         AS REG_DT
+		      , GI.UDTER_ID     AS UDTER_ID
+		      , SYSDATE         AS UDT_DT
+		  FROM SYS_SHOP SS
+		  JOIN SYS_SHOP_BRND SSB
+		  ON (SS.SHOP_ID = SSB.SHOP_ID)
+		  JOIN GOD G
+		  ON (SSB.ERP_BRND_ID = G.BRND_ID)
+		  JOIN GOD_ITM GI
+		  ON (G.GOD_NO = GI.GOD_NO)
+		 WHERE 1 = 1
+		   AND EXISTS (SELECT 1
+		                FROM SYS_BRND SB
+		               WHERE SSB.ERP_BRND_ID = SB.BRND_ID
+		              )
+           AND EXISTS (SELECT 1
+                        FROM INF_GOD_ITM IGI
+                       WHERE G.ERP_GOD_NO = IGI.ERP_GOD_NO
+                         AND GI.OPT_VAL_CD_1 = IGI.OPT_VAL_CD 
+                      )		              
+		   AND SSB.DLV_SHOP_YN = 'Y'
+		   AND G.ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+	</insert>
+
+	<update id="updateGoods" parameterType="god">		
+        UPDATE /* [goods.info.xml][updateGoods][상품 수정][Neps] */
+        GOD SET
+        		  UDT_DT = SYSDATE       
+        		, UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNm)">
+                , GOD_NM = #{godNm,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodNm)">
+                , MOBILE_GOD_NM = #{mobileGodNm,jdbcType=VARCHAR}
+                </if>
+                , TAG_NM = #{tagNm,jdbcType=VARCHAR}
+                , COLOR_TAG_NM = #{colorTagNm,jdbcType=VARCHAR}
+                , THEMA_TAG_NM = #{themaTagNm,jdbcType=VARCHAR}
+                , TEXT_ICON_CONT = #{textIconCont,jdbcType=VARCHAR}
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godAprvSectCd)">
+                , GOD_APRV_SECT_CD = #{godAprvSectCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godSaleSectCd)">
+                , GOD_SALE_SECT_CD = #{godSaleSectCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(saleBegDate)">
+                , SALE_BEG_DATE = #{saleBegDate,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(saleEndDate)">
+                , SALE_END_DATE = #{saleEndDate,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godInfoModCont)">
+                , GOD_INFO_MOD_CONT = #{godInfoModCont,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(colorNm)">
+                , COLOR_NM = #{colorNm,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(colorCd)">
+                , COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(clorChipImgUrl)">
+                , CLOR_CHIP_IMG_URL = #{clorChipImgUrl,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godTpCd)">
+                , GOD_TP_CD = #{godTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(partmalSectCd)">
+                , PARTMAL_SECT_CD = #{partmalSectCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndId)">
+                , BRND_ID = #{brndId,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndGrpId)">
+                , BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndTagCd)">
+                , BRND_TAG_CD = #{brndTagCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(stdCtgryNo)">
+                , STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tdfSect)">
+                , TDF_SECT = #{tdfSect,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mnfcturYearCd)">
+                , MNFCTUR_YEAR_CD = #{mnfcturYearCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sesonGrpCd)">
+                , SESON_GRP_CD = #{sesonGrpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sesonCd)">
+                , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+				</if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prdlstCd)">
+                , PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(styleCd)">
+                , STYLE_CD = #{styleCd,jdbcType=VARCHAR}               
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(empOnlyYn)"> 
+                , EMP_ONLY_YN = #{empOnlyYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ordmkGodYn)">
+                , ORDMK_GOD_YN = #{ordmkGodYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(onlneOnlyGodYn)">
+                , ONLNE_ONLY_GOD_YN = #{onlneOnlyGodYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(freeRepairPsbYn)">
+                , FREE_REPAIR_PSB_YN = #{freeRepairPsbYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(svcOfferYn)">
+                , SVC_OFFER_YN = #{svcOfferYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(qdlvPsbYn)">
+                , QDLV_PSB_YN = #{qdlvPsbYn,jdbcType=VARCHAR} 
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(resveSaleGodYn)">
+                , RESVE_SALE_GOD_YN = #{resveSaleGodYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(resveOrdPaySectCd)">                
+                , RESVE_ORD_PAY_SECT_CD = #{resveOrdPaySectCd,jdbcType=VARCHAR}
+                </if>
+                <if test="resveOrdPartPayAmt != null">
+                , RESVE_ORD_PART_PAY_AMT = #{resveOrdPartPayAmt,jdbcType=NUMERIC}
+                </if>
+                <if test="resveOrdPayClosDt != null">
+                , RESVE_ORD_PAY_CLOS_DT = #{resveOrdPayClosDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(resveOrdDlivyPrearngeDate)">
+                , RESVE_ORD_DLIVY_PREARNGE_DATE = #{resveOrdDlivyPrearngeDate,jdbcType=VARCHAR}
+                </if>
+                <if test="godDlivyWaitTime != null">
+                , GOD_DLIVY_WAIT_TIME = #{godDlivyWaitTime,jdbcType=NUMERIC}
+                </if>
+                <if test="dmstcDlvCstPlcSn != null">
+                , DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ovseaDlvPsbYn)">
+                , OVSEA_DLV_PSB_YN = #{ovseaDlvPsbYn,jdbcType=VARCHAR}
+                </if>
+                <if test="ovseaDlvDmstcDlvCstPlcSn != null">
+                , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN = #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+                </if>
+                <if test="ovseaDlvCstPlcSn != null">
+                , OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+                </if>
+                <if test="godWt != null">
+                , GOD_WT = #{godWt,jdbcType=NUMERIC}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(shopPkupPsbYn)">
+                , SHOP_PKUP_PSB_YN = #{shopPkupPsbYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cvnstorHdryRtrvlPsbYn)">
+                , CVNSTOR_HDRY_RTRVL_PSB_YN = #{cvnstorHdryRtrvlPsbYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(singlShopDlivyYn)">
+                , SINGL_SHOP_DLIVY_YN = #{singlShopDlivyYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspYn)">
+                , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(spcifyUrlDspYn)">
+                , SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="firstDspDt != null">
+                , FIRST_DSP_DT = #{firstDspDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prcCmprSiteExpsrYn)">
+                , PRC_CMPR_SITE_EXPSR_YN = #{prcCmprSiteExpsrYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodDscrExpsrYn)">
+                , MOBILE_GOD_DSCR_EXPSR_YN = #{mobileGodDscrExpsrYn,jdbcType=VARCHAR}
+                </if>
+                , GOD_SRCH_SNM = #{godSrchSnm,jdbcType=VARCHAR}
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(comId)">
+                , COM_ID = #{comId,jdbcType=VARCHAR}
+                </if>
+                <if test="partmalComFeeRt != null">
+                , PARTMAL_COM_FEE_RT = #{partmalComFeeRt,jdbcType=NUMERIC}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(buyAgeLmitCd)">
+                , BUY_AGE_LMIT_CD = #{buyAgeLmitCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(recomendSexCd)">
+                , RECOMEND_SEX_CD = #{recomendSexCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(recomendAgeCd)">
+                , RECOMEND_AGE_CD = #{recomendAgeCd,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(safeCrtfcTgtYn)">
+                , SAFE_CRTFC_TGT_YN = #{safeCrtfcTgtYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(kcCrtfcNo)">
+                , KC_CRTFC_NO = #{kcCrtfcNo,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(invManageYn)">
+                , INV_MANAGE_YN = #{invManageYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lmttInvYn)">
+                , LMTT_INV_YN = #{lmttInvYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpInvIntrlckYn)">
+                , ERP_INV_INTRLCK_YN = #{erpInvIntrlckYn,jdbcType=VARCHAR}
+                </if>
+                <if test="minOrdQty != null">
+                , MIN_ORD_QTY = #{minOrdQty,jdbcType=NUMERIC}
+                </if>
+                <if test="maxOrdQty != null">
+                , MAX_ORD_QTY = #{maxOrdQty,jdbcType=NUMERIC}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otltYn)">
+                , OTLT_YN = #{otltYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pntAccmlYn)">
+                , PNT_ACCML_YN = #{pntAccmlYn,jdbcType=VARCHAR}
+                </if>
+                <if test="pntAccmlRt != null">
+                , PNT_ACCML_RT = #{pntAccmlRt,jdbcType=NUMERIC}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pntUseYn)">
+                , PNT_USE_YN = #{pntUseYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(webpntAccmlYn)">
+                , WEBPNT_ACCML_YN = #{webpntAccmlYn,jdbcType=VARCHAR}
+                </if>
+                <if test="webpntAccmlRt !=null">
+                , WEBPNT_ACCML_RT = #{webpntAccmlRt,jdbcType=NUMERIC}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(webpntUseYn)">
+                , WEBPNT_USE_YN = #{webpntUseYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(imdtlDcYn)">
+                , IMDTL_DC_YN = #{imdtlDcYn,jdbcType=VARCHAR}
+                </if>
+                <if test="imdtlDcRt != null">
+                , IMDTL_DC_RT = #{imdtlDcRt,jdbcType=NUMERIC}
+                </if>
+                <if test="rtlPrc != null">
+                , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+                </if>
+                <if test="csmrPrc != null">
+                , CSMR_PRC = #{csmrPrc,jdbcType=NUMERIC}
+                </if>
+                <if test="empPrc != null">
+                , EMP_PRC = #{empPrc,jdbcType=NUMERIC}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(onlyAffComId)">
+                , ONLY_AFF_COM_ID = #{onlyAffComId,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mnfcturNationModYn)">
+                , MNFCTUR_NATION_MOD_YN = #{mnfcturNationModYn,jdbcType=VARCHAR}            
+                </if>                
+                , EP_GOD_NM = #{epGodNm,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}	
+	</update>
+	
+	<update id="updateGoodsItem" parameterType="godItm">	
+		UPDATE /* [goods.info.xml][updateGoodsItem][상품 단품 수정][Neps] */
+		GOD_ITM SET
+			   UDT_DT = SYSDATE		
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmStatCd)">
+			 , ITM_STAT_CD = #{itmStatCd,jdbcType=VARCHAR}
+			 </if>
+			 <if test="totUsefulInvQty != null">			 
+			 , TOT_USEFUL_INV_QTY = #{totUsefulInvQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="salePrearngeQty != null">			 
+			 , SALE_PREARNGE_QTY = #{salePrearngeQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(safeInvUseYn)">			 
+			 , SAFE_INV_USE_YN = #{safeInvUseYn,jdbcType=VARCHAR}
+			 </if>
+			 <if test="safeInvQty != null">			 
+			 , SAFE_INV_QTY = #{safeInvQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="onlneLmttInvQty != null">			 
+			 , ONLNE_LMTT_INV_QTY = #{onlneLmttInvQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="affComLmttInvQty != null">			 
+			 , AFF_COM_LMTT_INV_QTY = #{affComLmttInvQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="resveQty != null">			 
+			 , RESVE_QTY = #{resveQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="resveQty != null">			 
+			 , RESVE_INV_QTY = #{resveInvQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(partmalComInvNtcnYn)">			 
+			 , PARTMAL_COM_INV_NTCN_YN = #{partmalComInvNtcnYn,jdbcType=VARCHAR}
+			 </if>
+			 <if test="partmalComInvNtcnQty != null">			 
+			 , PARTMAL_COM_INV_NTCN_QTY = #{partmalComInvNtcnQty,jdbcType=NUMERIC}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(wrhsDt)">			 
+			 , WRHS_DT = #{wrhsDt,jdbcType=DATE}
+			 </if>			 
+		 WHERE 1 = 1
+		   <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo)">
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   </if>
+		   <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   </if>
+		   <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo) and @com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+		   AND ITM_NO IS NULL
+		   </if>
+	</update>
+	
+    <update id="updateGoodsLangByGoodsName" parameterType="godLangbyGodNm">
+		UPDATE /* [goods.info.xml][updateGoodsLangByGoodsName][상품 언어별 상품명 수정][Neps] */
+		GOD_LANGBY_GOD_NM SET		
+			   UDT_DT = SYSDATE
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(trsltStatCd)">
+			 , TRSLT_STAT_CD = #{trsltStatCd,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ovseaDspStatCd)">			 
+			 , OVSEA_DSP_STAT_CD = #{ovseaDspStatCd,jdbcType=VARCHAR}
+			 </if>
+			 , GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , MOBILE_GOD_NM = #{mobileGodNm,jdbcType=VARCHAR}			 
+			 , TAG_NM = #{tagNm,jdbcType=VARCHAR}
+			 , COLOR_TAG_NM = #{colorTagNm,jdbcType=VARCHAR}
+			 , THEMA_TAG_NM = #{themaTagNm,jdbcType=VARCHAR}
+			 , COLOR_NM = #{colorNm,jdbcType=VARCHAR}
+			 , GOD_SRCH_SNM = #{godSrchSnm,jdbcType=VARCHAR}			 
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+    	
+	<delete id="deleteGoodsSaleMall" parameterType="String">
+		DELETE  /* [goods.info.xml][deleteGoodsSaleMall][상품 판매몰 삭제][Neps] */ 
+		 FROM GOD_SALE_MALL WHERE GOD_NO = #{godNo, jdbcType=VARCHAR}
+	</delete>
+
+    <update id="updateGoodsNotificationDetail" parameterType="godNtfcDetail">
+		UPDATE /* [goods.info.xml][updateGoodsNotificationDetail][상품 고시상세 수정][Neps] */
+		GOD_NTFC_DETAIL SET
+			   UDT_DT = SYSDATE		
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prdlstGrpCd)">
+			 , PRDLST_GRP_CD = #{prdlstGrpCd,jdbcType=VARCHAR}
+			 </if>
+			 , PCL_MATTER_DSCR = #{pclMatterDscr,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(kcCrtfcDscr)">
+			 , KC_CRTFC_DSCR = #{kcCrtfcDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(imprSttemntDscr)">
+			 , IMPR_STTEMNT_DSCR = #{imprSttemntDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(kfdaJdgmnYn)">
+			 , KFDA_JDGMN_YN = #{kfdaJdgmnYn,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(useAgeDscr)">
+			 , USE_AGE_DSCR = #{useAgeDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(wrgrntiOfferDscr)">
+			 , WRGRNTI_OFFER_DSCR = #{wrgrntiOfferDscr,jdbcType=VARCHAR}
+			 </if>
+			 , COLOR_DSCR = #{colorDscr,jdbcType=VARCHAR}
+			 , MATR_DSCR = #{matrDscr,jdbcType=VARCHAR}
+			 , MG_DSCR = #{mgDscr,jdbcType=VARCHAR}
+			 , MEASR_DSCR = #{measrDscr,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cpstDscr)">
+			 , CPST_DSCR = #{cpstDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(bukIntrcnDscr)">
+			 , BUK_INTRCN_DSCR = #{bukIntrcnDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pclIrdntDscr)">
+			 , PCL_IRDNT_DSCR = #{pclIrdntDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dtlMatterDscr)">
+			 , DTL_MATTER_DSCR = #{dtlMatterDscr,jdbcType=VARCHAR}
+			 </if>
+			 , MAKR_NM = #{makrNm,jdbcType=VARCHAR}
+			 , MNFCTUR_NATION_NM = #{mnfcturNationNm,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(orgPlNm)">
+			 , ORG_PL_NM = #{orgPlNm,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(fnclCsmtYn)">
+			 , FNCL_CSMT_YN = #{fnclCsmtYn,jdbcType=VARCHAR}
+			 </if>
+			 , LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+			 , LNDR_MTHD_DSCR = #{lndrMthdDscr,jdbcType=VARCHAR}
+			 , MNFCTUR_DATE = #{mnfcturDate,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dlvInstlCostDscr)">
+			 , DLV_INSTL_COST_DSCR = #{dlvInstlCostDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(usePdDscr)">
+			 , USE_PD_DSCR = #{usePdDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(offerMenmthdDscr)">
+			 , OFFER_MENMTHD_DSCR = #{offerMenmthdDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(minSpecEssntlSwDscr)">
+			 , MIN_SPEC_ESSNTL_SW_DSCR = #{minSpecEssntlSwDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(contrTrmnatDscr)">
+			 , CONTR_TRMNAT_DSCR = #{contrTrmnatDscr,jdbcType=VARCHAR}
+			 </if>
+			 , QLTY_ASSRNC_STDR_DSCR = #{qltyAssrncStdrDscr,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(crtfcPrmisnDscr)">
+			 , CRTFC_PRMISN_DSCR = #{crtfcPrmisnDscr,jdbcType=VARCHAR}
+			 </if>
+			 , IMPRCOM_NM = #{imprcomNm,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(trtmntAtndMatterDscr)">
+			 , TRTMNT_ATND_MATTER_DSCR = #{trtmntAtndMatterDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(csmrCnsltRelatDscr)">
+			 , CSMR_CNSLT_RELAT_DSCR = #{csmrCnsltRelatDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godKndDscr)">
+			 , GOD_KND_DSCR = #{godKndDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godSfeturDscr)">
+			 , GOD_SFETUR_DSCR = #{godSfeturDscr,jdbcType=VARCHAR}
+			 </if>
+			 , GOD_DETAIL_DSCR = #{godDetailDscr,jdbcType=CLOB}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godDetailAditDscr)">
+			 , GOD_DETAIL_ADIT_DSCR = #{godDetailAditDscr,jdbcType=CLOB}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(affComGodDetailDscr)">
+			 , AFF_COM_GOD_DETAIL_DSCR = #{affComGodDetailDscr,jdbcType=CLOB}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(imgAltTagNm)">
+			 , IMG_ALT_TAG_NM = #{imgAltTagNm,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(modelInfoDscr)">
+			 , MODEL_INFO_DSCR = #{modelInfoDscr,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(acmsrSizeDscr)">
+			 , ACMSR_SIZE_DSCR = #{acmsrSizeDscr,jdbcType=VARCHAR}
+			 </if>
+			 , SIZE_LKTB_HTML = #{sizeLktbHtml,jdbcType=CLOB}
+			 , MOBILE_SIZE_LKTB_HTML = #{mobileSizeLktbHtml,jdbcType=CLOB}
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<select id="getSetGoodsNumber" parameterType="String" resultType="String">
+		SELECT /* [goods.info.xml][getSetGoodsNumber][일반상품번호로 세트상품 번호 조회][Neps] */
+			   GOD_NO
+		 FROM GOD_CPST_GOD_CNNC
+		WHERE CPST_GOD_NO = #{cpstGodNo, jdbcType=VARCHAR}
+		  AND ROWNUM = 1 
+	</select>
+	
+	<update id="updateSetGoodsStatus" parameterType="String">
+		MERGE /* [goods.info.xml][updateSetGoodsStatus][일반상품이 세트의 구성품인 경우 세트의 판매상태 수정][Neps] */
+		INTO GOD TA
+		USING (SELECT 
+                     GCGC.GOD_NO
+                   , GCGC.CPST_GOD_NO
+                   , GS.GOD_SALE_SECT_CD AS SET_SALE_SECT_CD
+                   , G.GOD_SALE_SECT_CD AS CPST_SALE_SECT_CD
+                   , G.UDTER_ID
+                   , ROW_NUMBER() OVER(PARTITION BY GCGC.GOD_NO ORDER BY MSC.SORT_SEQ DESC) AS RNK 
+                FROM GOD_CPST_GOD_CNNC GCGC
+                JOIN GOD GS ON GCGC.GOD_NO = GS.GOD_NO
+                JOIN GOD G ON G.GOD_NO = GCGC.CPST_GOD_NO
+                JOIN MV_SYS_CD MSC ON (G.GOD_SALE_SECT_CD = MSC.CD AND MSC.LANG_CD = 'KOR' AND MSC.UPPER_CD = 'GOD_SALE_SECT')
+               WHERE GCGC.GOD_NO IN (SELECT GOD_NO
+                                       FROM GOD_CPST_GOD_CNNC
+                                      WHERE CPST_GOD_NO = #{cpstGodNo, jdbcType=VARCHAR})
+                 AND GCGC.ESSNTL_PCH_YN = 'Y'
+				) SO 
+			ON (TA.GOD_NO = SO.GOD_NO AND SO.RNK = 1 AND SO.GOD_NO IS NOT NULL)
+		WHEN MATCHED THEN
+			UPDATE SET
+				TA.GOD_SALE_SECT_CD = SO.CPST_SALE_SECT_CD
+			  , TA.UDTER_ID = SO.UDTER_ID	
+			  , TA.UDT_DT   = SYSDATE
+			WHERE TA.GOD_SALE_SECT_CD <![CDATA[<>]]> 'SLDOUT'
+              AND TA.GOD_SALE_SECT_CD <![CDATA[<>]]> 'SALE_END'
+              AND SO.SET_SALE_SECT_CD <![CDATA[<>]]>  SO.CPST_SALE_SECT_CD
+	</update>
+	
+	<update id="updateGoodsItemAllStatusAccordingToGoodsStatus" parameterType="String">
+		MERGE /* [goods.info.xml][updateGoodsItemAllStatusAccordingToGoodsStatus][상품 상태에 따른 단품 상태 모두 수정][Neps] */
+		INTO GOD_ITM TA
+		USING (SELECT 
+					 G.GOD_NO
+			       , G.GOD_SALE_SECT_CD
+			       , G.UDTER_ID
+			     FROM GOD G
+			    WHERE G.GOD_NO = #{godNo, jdbcType=VARCHAR} 
+			) SO ON (TA.GOD_NO = SO.GOD_NO)
+		WHEN MATCHED THEN
+		    UPDATE SET
+		        TA.ITM_STAT_CD = SO.GOD_SALE_SECT_CD
+		      , TA.UDTER_ID = SO.UDTER_ID    
+		      , TA.UDT_DT   = SYSDATE
+			WHERE TA.ITM_STAT_CD <![CDATA[<>]]> 'SLDOUT'
+              AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SALE_END'
+	</update>
+	
+	<select id="checkSetDisplayValidate" parameterType="String" resultType="int">
+		SELECT /* [goods.info.xml][checkSetDisplayValidate][세트상품 전시 가능 체크][Neps] */ 
+			   COUNT(G.GOD_NO) AS DSP_PSB_GOD_CNT                   
+		 FROM GOD G      
+		WHERE 1 = 1
+		  AND G.DSP_YN != 'Y'
+		  AND G.GOD_APRV_SECT_CD != 'APRV_COMPT'      
+		  AND EXISTS (SELECT 1 FROM GOD_CPST_GOD_CNNC GCGC WHERE G.GOD_NO = GCGC.CPST_GOD_NO AND GCGC.GOD_NO = #{godNo, jdbcType=VARCHAR})
+	</select>
+	
+	<select id="getGoodsPointSaveMoney" parameterType="dspGodPrc" resultType="java.util.HashMap">		
+        SELECT /* [goods.info.xml][getGoodsPointSaveMoney][상품 적립율/적립금 조회][Neps] */
+               T.PNT_ACCML_RT AS APL_PNT_ACCML_RT
+             , T.PNT_SAV_MNY  
+         FROM (       
+                SELECT G.GOD_NO  
+                     , G.GOD_TP_CD
+                     , DGP.SALE_PRC
+                     , G.PNT_ACCML_RT           
+                     , TRUNC((DGP.SALE_PRC * G.PNT_ACCML_RT/100), -1) AS PNT_SAV_MNY           
+                 FROM GOD G
+                 JOIN DSP_GOD_PRC DGP ON (G.GOD_NO = DGP.GOD_NO)
+                WHERE G.GOD_NO = #{godNo,jdbcType=VARCHAR}
+                  AND G.GOD_TP_CD = 'GNRL_GOD'       
+		          AND DGP.MALL_ID = #{mallId,jdbcType=VARCHAR}
+		          AND DGP.PRC_SECT_CD = #{prcSectCd,jdbcType=VARCHAR}
+		          AND DGP.LANG_CD = #{langCd,jdbcType=VARCHAR}		          
+                UNION ALL      
+                SELECT G.GOD_NO  
+                     , G.GOD_TP_CD
+                     , DGP.SALE_PRC
+                     , 5           
+                     , CASE WHEN G.BRND_GRP_ID = 'ML' OR G.BRND_GRP_ID = 'SA' THEN TRUNC((DGP.SALE_PRC * G.PNT_ACCML_RT/100), -1)
+                            ELSE TRUNC((DGP.RTL_PRC * 5/100), -1) END AS PNT_SAV_MNY          
+                 FROM GOD G
+                 JOIN DSP_GOD_PRC DGP ON (G.GOD_NO = DGP.GOD_NO)
+                WHERE G.GOD_NO = #{godNo,jdbcType=VARCHAR}
+                  AND G.GOD_TP_CD != 'GNRL_GOD'       
+		          AND DGP.MALL_ID = #{mallId,jdbcType=VARCHAR}
+		          AND DGP.PRC_SECT_CD = #{prcSectCd,jdbcType=VARCHAR}
+		          AND DGP.LANG_CD = #{langCd,jdbcType=VARCHAR}		          
+             ) T
+        WHERE ROWNUM = 1 		
+		
+	</select>
+	
+	<select id="getViewGoodsUrl" parameterType="String" resultType="String">	
+	    SELECT /* [goods.info.xml][getViewGoodsUrl][상품 상세 URL 조회][Neps] */
+	    		'/goods/'
+	    		||
+	    		CASE WHEN g.brnd_grp_id = 'ML' OR g.brnd_grp_id = 'DX'
+                     THEN MSC.CD_NM||'/'
+                     ELSE ''
+                END
+	    		||SBP.BRND_PRDLST_NM||'/'||G.ERP_GOD_NO AS URL
+	     FROM GOD G
+	     JOIN MV_SYS_CD MSC ON (G.RECOMEND_SEX_CD = MSC.CD AND MSC.LANG_CD = 'KOR')
+	     JOIN SYS_BRND_PRDLST SBP ON (G.BRND_ID = SBP.BRND_ID AND G.PRDLST_CD = SBP.PRDLST_CD)
+	    WHERE G.GOD_NO = #{godNo,jdbcType=VARCHAR} 			
+	</select>
+	
+	<select id="getRedirectGoodsUrl" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultMap="goodsInfoResult">
+	    SELECT /* [goods.info.xml][getRedirectGoodsUrl][상품 상세 URL 조회][Neps] */
+	    	GD.GOD_NO
+	    	, FN_SEO_URL(#{mallId, jdbcType=VARCHAR}, #{lang, jdbcType=VARCHAR}, GD.GOD_NO) AS GOD_DETAIL_URL
+	     FROM GOD GD
+	     JOIN INF_GOD_ERP_MAPNG IGEM ON GD.GOD_NO = IGEM.GOD_NO
+	    WHERE IGEM.MAPNG_GOD_NO = RPAD(#{goodsno,jdbcType=VARCHAR}, 18, ' ') 			
+	</select>
+	
+	<select id="getTempGoods" parameterType="String" resultType="god">		
+		<![CDATA[
+			SELECT B.* 
+			 FROM GOD_NTFC_DETAIL A, GOD B 
+			WHERE A.GOD_NO = B.GOD_NO 
+			  AND B.BRND_ID IN ('M') 
+			  AND B.PRDLST_CD = 'SH'		
+		]]>
+	</select>
+	
+	<update id="updateTempNoti" parameterType="godNtfcDetail">
+		UPDATE GOD_NTFC_DETAIL SET 
+			  SIZE_LKTB_HTML = #{sizeLktbHtml,jdbcType=CLOB}
+			, MOBILE_SIZE_LKTB_HTML = #{mobileSizeLktbHtml,jdbcType=CLOB} 
+		WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}  
+		AND LANG_CD = #{langCd,jdbcType=VARCHAR}   
+	</update>
+
+	<delete id="deleteGodRelate" parameterType="String">
+		DELETE  /* [goods.info.xml][deleteGodRelate][연관상품 삭제][Id] */ 
+		FROM GOD_RELATE
+		WHERE GOD_NO = #{godNo, jdbcType=VARCHAR}
+	</delete>
+
+	<update id="updateGoodsApproval" parameterType="god">		
+        UPDATE /* [goods.info.xml][updateGoodsApproval][상품 승인][Neps] */
+        GOD SET
+    		  UDT_DT = SYSDATE       
+    		, UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godAprvSectCd)">
+            , GOD_APRV_SECT_CD = #{godAprvSectCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godSaleSectCd)">
+            , GOD_SALE_SECT_CD = #{godSaleSectCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspYn)">
+            , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+            </if>
+        WHERE   1 = 1
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}	
+	</update>
+
+	<resultMap id="goodsCnncGrpResult" type="com.plgrim.ncp.biz.goods.result.GoodsColorResult">
+		<result property="rowNumber" 												column="NO"/>
+		<result property="totalRow" 												column="TOTALROW"/>	
+		<!-- 상품 연결 상품 엔티티 -->
+		<result property="godCnncGrpGod.erpGodCnncGrpNo"							column="ERP_GOD_CNNC_GRP_NO"/>				<!-- ERP  상품 그룹 일련번호 -->
+		<result property="godCnncGrpGod.erpGodNo"									column="ERP_GOD_NO"/>						<!-- ERP 상품 번호 -->
+		<result property="godCnncGrpGod.godNo"										column="GOD_NO"/>							<!-- 온라인 상품 번호 -->
+		<result property="godCnncGrpGod.mallId"										column="MALL_ID"/>							<!-- 몰 ID -->
+		<result property="godCnncGrpGod.regtrId"									column="REGTR_ID"/>							<!-- 등록자 ID -->
+		<result property="godCnncGrpGod.regDt"										column="REG_DT"/>							<!-- 등록 일시 -->	
+	</resultMap>
+
+	<select id="getStyleConnectionListCount" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultType="long">		
+	    SELECT /* [goods.info.xml][getStyleConnectionListCount][상품 스타일 연결 목록 수][Neps] */
+	    	  COUNT(GCGC.ERP_GOD_CNNC_GRP_NO)
+	     FROM GOD_CNNC_GRP_GOD GCGC
+		 JOIN GOD G ON (GCGC.GOD_NO = G.GOD_NO)
+		WHERE 1 = 1 
+		<include refid="com.plgrim.ncp.biz.goods.info.styleConnectionWhere"/>
+	</select>
+
+	<select id="selectStyleConnectionList" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultMap="goodsCnncGrpResult">		
+	    <include refid="com.plgrim.ncp.base.beginPage"/>
+		    SELECT /* [goods.info.xml][selectStyleConnectionList][상품 스타일 연결 목록 검색][Neps] */
+					GCGC.ERP_GOD_CNNC_GRP_NO
+				  , GCGC.ERP_GOD_NO
+				  , GCGC.GOD_NO
+				  , GCGC.MALL_ID
+				  , GCGC.REGTR_ID
+				  , GCGC.REG_DT
+		     FROM GOD_CNNC_GRP_GOD GCGC
+			 JOIN GOD G ON (GCGC.GOD_NO = G.GOD_NO)			 
+			WHERE 1 = 1
+			<include refid="com.plgrim.ncp.biz.goods.info.styleConnectionWhere"/>
+		    ORDER BY GCGC.REG_DT DESC, GCGC.ERP_GOD_CNNC_GRP_NO DESC
+		<include refid="com.plgrim.ncp.base.endPage"/> 		 
+	</select>
+
+	<sql id="styleConnectionWhere">
+        <if test="adminTpCd != 'SYS_OPRTR' and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(loginId)">                 
+         	AND EXISTS (SELECT 1 FROM SYS_ADMIN_BRND SAB WHERE G.BRND_ID = SAB.BRND_ID AND SAB.ADMIN_ID = #{loginId, jdbcType=VARCHAR})
+        </if>	
+		<choose>
+			<when test="godNos != null and godNos != '' and godNos.length > 0">					             
+	             <if test="godNosGbn == 'erp_god_no'">
+	             	AND GCGC.ERP_GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>) 
+	             </if>
+	             
+	             <if test="godNosGbn == 'erp_god_cnnc_grp_no'">
+	             	AND GCGC.ERP_GOD_CNNC_GRP_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+	             </if>	             
+			</when>		
+			<otherwise>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(term)">
+					<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'regdt')">			 	
+		 				AND GCGC.REG_DT <![CDATA[>=]]> TO_DATE(#{startTermDt}||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+		 				AND GCGC.REG_DT <![CDATA[<=]]> TO_DATE(#{endTermDt}||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') 
+					</if>		
+				</if>
+				<if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndIds) and brndIds.length > 0)">					
+						AND G.BRND_ID IN (<foreach collection="brndIds" item="brndIds" separator=",">#{brndIds, jdbcType=VARCHAR}</foreach>)					
+				</if>				
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<select id="searchStyleCnncView" parameterType="com.plgrim.ncp.biz.goods.data.GoodsSearchDTO" resultMap="goodsCnncGrpResult">		
+		    SELECT /* [goods.info.xml][searchStyleCnncView][상품 스타일 연결 검색][Neps] */
+					GCGC.ERP_GOD_CNNC_GRP_NO
+				  , GCGC.ERP_GOD_NO
+				  , GCGC.GOD_NO
+				  , GCGC.MALL_ID
+				  , GCGC.REGTR_ID
+				  , GCGC.REG_DT
+		     FROM GOD_CNNC_GRP_GOD GCGC
+			 JOIN GOD G ON (GCGC.GOD_NO = G.GOD_NO)			 
+			WHERE 1 = 1
+		      AND ERP_GOD_CNNC_GRP_NO = #{erpGodCnncGrpNo, jdbcType=VARCHAR} 
+ 
+	</select>
+	<select id="getGoodsBrandCount" parameterType="java.util.List" resultType="int">
+		SELECT /* [goods.info.xml][getGoodsBrandCount][상품 브랜드 수 조회][Neps] */
+			   COUNT(DISTINCT G.BRND_ID) AS CNT
+		 FROM GOD G
+		WHERE G.GOD_NO IN (<foreach collection="list" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>) 	
+	</select>
+	
+	<select id="getStyleConnectionTargetList" parameterType="java.util.List" resultType="godCnncGrpGodExtend">
+	    SELECT /* [goods.info.xml][getStyleConnectionTargetList][상품 스타일 연결 등록 대상 목록 조회][Neps] */
+	    	   G.ERP_GOD_NO
+	         , G.GOD_NO
+	         , G.BRND_ID
+	         , GSM.MALL_ID         
+	     FROM GOD G
+	     JOIN GOD_SALE_MALL GSM ON (G.GOD_NO = GSM.GOD_NO)
+	    WHERE G.GOD_NO IN (<foreach collection="list" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)	
+	</select>	
+</mapper>

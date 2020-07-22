@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrm" parameterType="prm" resultType="prm">
+		SELECT /* com.plgrim.ncp.base.selectPrm		Generator(Generator)	2018-05-23 */
+			   PRM_NO
+			 , CNTC_PRM_NO
+			 , CNTC_PRM_TURN
+			 , PRM_TP_CD
+			 , PRM_DTL_TP_CD
+			 , RTL_PRC_APL_YN
+			 , PRM_STAT_CD
+			 , PRM_CNCL_DSCR
+			 , PRM_NM
+			 , PRM_DSCR
+			 , ERP_CMPG_ID
+			 , ERP_CPN_ID
+			 , ERP_CMPG_NM
+			 , PRM_BEG_DATE
+			 , PRM_END_DATE
+			 , PRM_DATEBY_BEG_HOUR
+			 , PRM_DATEBY_END_HOUR
+			 , PRM_APL_DOWSMON
+			 , RPRST_IMG_USE_SECT_CD
+			 , RPRST_IMG_PC_URL
+			 , RPRST_IMG_PC_ALTRTV_CONT
+			 , RPRST_IMG_MOBILE_URL
+			 , RPRST_IMG_MOBILE_ALTRTV_CONT
+			 , PCH_LMIT_QTY
+			 , MAX_DC_PSB_AMT
+			 , DC_SECT_CD
+			 , DC_AMT
+			 , DC_RT
+			 , SALE_UNT_PRC
+			 , ORD_DC_APL_CD
+			 , ORD_DC_RELATE_PROMT_SN
+			 , RELATE_URL
+			 , GOD_GFT_SECT_CD
+			 , ORD_GFT_PCH_STDR_CD
+			 , ORD_GFT_APL_CND_QTY
+			 , ORD_GFT_APL_CND_AMT
+			 , ORD_GFT_DSCR
+			 , ORD_GFT_ATNDMATTER_CONT
+			 , GFT_CHOISE_PSB_QTY
+			 , AFF_COM_APL_CD
+			 , ACCML_SECT_CD
+			 , ACCML_AMT
+			 , ACCML_RT
+			 , DVC_SECT_CD
+			 , NINT_MONS
+			 , GOD_DC_DPLCT_CD
+			 , GOD_CPN_DPLCT_CD
+			 , APL_COM_SECT_CD
+			 , PARTMAL_COM_ID
+			 , PARTMAL_COM_COST_BND_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM
+		 WHERE 1 = 1
+	   	   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updatePrm" parameterType="prm">
+		UPDATE /* com.plgrim.ncp.base.updatePrm		Generator(Generator)	2018-05-23 */
+		PRM SET
+			   CNTC_PRM_NO = #{cntcPrmNo,jdbcType=VARCHAR}
+			 , CNTC_PRM_TURN = #{cntcPrmTurn,jdbcType=NUMERIC}
+			 , PRM_TP_CD = #{prmTpCd,jdbcType=VARCHAR}
+			 , PRM_DTL_TP_CD = #{prmDtlTpCd,jdbcType=VARCHAR}
+			 , RTL_PRC_APL_YN = #{rtlPrcAplYn,jdbcType=VARCHAR}
+			 , PRM_STAT_CD = #{prmStatCd,jdbcType=VARCHAR}
+			 , PRM_CNCL_DSCR = #{prmCnclDscr,jdbcType=VARCHAR}
+			 , PRM_NM = #{prmNm,jdbcType=VARCHAR}
+			 , PRM_DSCR = #{prmDscr,jdbcType=VARCHAR}
+			 , ERP_CMPG_ID = #{erpCmpgId,jdbcType=VARCHAR}
+			 , ERP_CPN_ID = #{erpCpnId,jdbcType=VARCHAR}
+			 , ERP_CMPG_NM = #{erpCmpgNm,jdbcType=VARCHAR}
+			 , PRM_BEG_DATE = #{prmBegDate,jdbcType=VARCHAR}
+			 , PRM_END_DATE = #{prmEndDate,jdbcType=VARCHAR}
+			 , PRM_DATEBY_BEG_HOUR = #{prmDatebyBegHour,jdbcType=VARCHAR}
+			 , PRM_DATEBY_END_HOUR = #{prmDatebyEndHour,jdbcType=VARCHAR}
+			 , PRM_APL_DOWSMON = #{prmAplDowsmon,jdbcType=VARCHAR}
+			 , RPRST_IMG_USE_SECT_CD = #{rprstImgUseSectCd,jdbcType=VARCHAR}
+			 , RPRST_IMG_PC_URL = #{rprstImgPcUrl,jdbcType=VARCHAR}
+			 , RPRST_IMG_PC_ALTRTV_CONT = #{rprstImgPcAltrtvCont,jdbcType=VARCHAR}
+			 , RPRST_IMG_MOBILE_URL = #{rprstImgMobileUrl,jdbcType=VARCHAR}
+			 , RPRST_IMG_MOBILE_ALTRTV_CONT = #{rprstImgMobileAltrtvCont,jdbcType=VARCHAR}
+			 , PCH_LMIT_QTY = #{pchLmitQty,jdbcType=NUMERIC}
+			 , MAX_DC_PSB_AMT = #{maxDcPsbAmt,jdbcType=NUMERIC}
+			 , DC_SECT_CD = #{dcSectCd,jdbcType=VARCHAR}
+			 , DC_AMT = #{dcAmt,jdbcType=NUMERIC}
+			 , DC_RT = #{dcRt,jdbcType=NUMERIC}
+			 , SALE_UNT_PRC = #{saleUntPrc,jdbcType=NUMERIC}
+			 , ORD_DC_APL_CD = #{ordDcAplCd,jdbcType=VARCHAR}
+			 , ORD_DC_RELATE_PROMT_SN = #{ordDcRelatePromtSn,jdbcType=NUMERIC}
+			 , RELATE_URL = #{relateUrl,jdbcType=VARCHAR}
+			 , GOD_GFT_SECT_CD = #{godGftSectCd,jdbcType=VARCHAR}
+			 , ORD_GFT_PCH_STDR_CD = #{ordGftPchStdrCd,jdbcType=VARCHAR}
+			 , ORD_GFT_APL_CND_QTY = #{ordGftAplCndQty,jdbcType=NUMERIC}
+			 , ORD_GFT_APL_CND_AMT = #{ordGftAplCndAmt,jdbcType=NUMERIC}
+			 , ORD_GFT_DSCR = #{ordGftDscr,jdbcType=VARCHAR}
+			 , ORD_GFT_ATNDMATTER_CONT = #{ordGftAtndmatterCont,jdbcType=VARCHAR}
+			 , GFT_CHOISE_PSB_QTY = #{gftChoisePsbQty,jdbcType=NUMERIC}
+			 , AFF_COM_APL_CD = #{affComAplCd,jdbcType=VARCHAR}
+			 , ACCML_SECT_CD = #{accmlSectCd,jdbcType=VARCHAR}
+			 , ACCML_AMT = #{accmlAmt,jdbcType=NUMERIC}
+			 , ACCML_RT = #{accmlRt,jdbcType=NUMERIC}
+			 , DVC_SECT_CD = #{dvcSectCd,jdbcType=VARCHAR}
+			 , NINT_MONS = #{nintMons,jdbcType=NUMERIC}
+			 , GOD_DC_DPLCT_CD = #{godDcDplctCd,jdbcType=VARCHAR}
+			 , GOD_CPN_DPLCT_CD = #{godCpnDplctCd,jdbcType=VARCHAR}
+			 , APL_COM_SECT_CD = #{aplComSectCd,jdbcType=VARCHAR}
+			 , PARTMAL_COM_ID = #{partmalComId,jdbcType=VARCHAR}
+			 , PARTMAL_COM_COST_BND_RT = #{partmalComCostBndRt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPrm" parameterType="prm">
+		INSERT /* com.plgrim.ncp.base.insertPrm		Generator(Generator)	2018-05-23 */
+		INTO   PRM (
+			   PRM_NO
+			 , CNTC_PRM_NO
+			 , CNTC_PRM_TURN
+			 , PRM_TP_CD
+			 , PRM_DTL_TP_CD
+			 , RTL_PRC_APL_YN
+			 , PRM_STAT_CD
+			 , PRM_CNCL_DSCR
+			 , PRM_NM
+			 , PRM_DSCR
+			 , ERP_CMPG_ID
+			 , ERP_CPN_ID
+			 , ERP_CMPG_NM
+			 , PRM_BEG_DATE
+			 , PRM_END_DATE
+			 , PRM_DATEBY_BEG_HOUR
+			 , PRM_DATEBY_END_HOUR
+			 , PRM_APL_DOWSMON
+			 , RPRST_IMG_USE_SECT_CD
+			 , RPRST_IMG_PC_URL
+			 , RPRST_IMG_PC_ALTRTV_CONT
+			 , RPRST_IMG_MOBILE_URL
+			 , RPRST_IMG_MOBILE_ALTRTV_CONT
+			 , PCH_LMIT_QTY
+			 , MAX_DC_PSB_AMT
+			 , DC_SECT_CD
+			 , DC_AMT
+			 , DC_RT
+			 , SALE_UNT_PRC
+			 , ORD_DC_APL_CD
+			 , ORD_DC_RELATE_PROMT_SN
+			 , RELATE_URL
+			 , GOD_GFT_SECT_CD
+			 , ORD_GFT_PCH_STDR_CD
+			 , ORD_GFT_APL_CND_QTY
+			 , ORD_GFT_APL_CND_AMT
+			 , ORD_GFT_DSCR
+			 , ORD_GFT_ATNDMATTER_CONT
+			 , GFT_CHOISE_PSB_QTY
+			 , AFF_COM_APL_CD
+			 , ACCML_SECT_CD
+			 , ACCML_AMT
+			 , ACCML_RT
+			 , DVC_SECT_CD
+			 , NINT_MONS
+			 , GOD_DC_DPLCT_CD
+			 , GOD_CPN_DPLCT_CD
+			 , APL_COM_SECT_CD
+			 , PARTMAL_COM_ID
+			 , PARTMAL_COM_COST_BND_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{prmNo,jdbcType=VARCHAR}
+			 , #{cntcPrmNo,jdbcType=VARCHAR}
+			 , #{cntcPrmTurn,jdbcType=NUMERIC}
+			 , #{prmTpCd,jdbcType=VARCHAR}
+			 , #{prmDtlTpCd,jdbcType=VARCHAR}
+			 , #{rtlPrcAplYn,jdbcType=VARCHAR}
+			 , #{prmStatCd,jdbcType=VARCHAR}
+			 , #{prmCnclDscr,jdbcType=VARCHAR}
+			 , #{prmNm,jdbcType=VARCHAR}
+			 , #{prmDscr,jdbcType=VARCHAR}
+			 , #{erpCmpgId,jdbcType=VARCHAR}
+			 , #{erpCpnId,jdbcType=VARCHAR}
+			 , #{erpCmpgNm,jdbcType=VARCHAR}
+			 , #{prmBegDate,jdbcType=VARCHAR}
+			 , #{prmEndDate,jdbcType=VARCHAR}
+			 , #{prmDatebyBegHour,jdbcType=VARCHAR}
+			 , #{prmDatebyEndHour,jdbcType=VARCHAR}
+			 , #{prmAplDowsmon,jdbcType=VARCHAR}
+			 , #{rprstImgUseSectCd,jdbcType=VARCHAR}
+			 , #{rprstImgPcUrl,jdbcType=VARCHAR}
+			 , #{rprstImgPcAltrtvCont,jdbcType=VARCHAR}
+			 , #{rprstImgMobileUrl,jdbcType=VARCHAR}
+			 , #{rprstImgMobileAltrtvCont,jdbcType=VARCHAR}
+			 , #{pchLmitQty,jdbcType=NUMERIC}
+			 , #{maxDcPsbAmt,jdbcType=NUMERIC}
+			 , #{dcSectCd,jdbcType=VARCHAR}
+			 , #{dcAmt,jdbcType=NUMERIC}
+			 , #{dcRt,jdbcType=NUMERIC}
+			 , #{saleUntPrc,jdbcType=NUMERIC}
+			 , #{ordDcAplCd,jdbcType=VARCHAR}
+			 , #{ordDcRelatePromtSn,jdbcType=NUMERIC}
+			 , #{relateUrl,jdbcType=VARCHAR}
+			 , #{godGftSectCd,jdbcType=VARCHAR}
+			 , #{ordGftPchStdrCd,jdbcType=VARCHAR}
+			 , #{ordGftAplCndQty,jdbcType=NUMERIC}
+			 , #{ordGftAplCndAmt,jdbcType=NUMERIC}
+			 , #{ordGftDscr,jdbcType=VARCHAR}
+			 , #{ordGftAtndmatterCont,jdbcType=VARCHAR}
+			 , #{gftChoisePsbQty,jdbcType=NUMERIC}
+			 , #{affComAplCd,jdbcType=VARCHAR}
+			 , #{accmlSectCd,jdbcType=VARCHAR}
+			 , #{accmlAmt,jdbcType=NUMERIC}
+			 , #{accmlRt,jdbcType=NUMERIC}
+			 , #{dvcSectCd,jdbcType=VARCHAR}
+			 , #{nintMons,jdbcType=NUMERIC}
+			 , #{godDcDplctCd,jdbcType=VARCHAR}
+			 , #{godCpnDplctCd,jdbcType=VARCHAR}
+			 , #{aplComSectCd,jdbcType=VARCHAR}
+			 , #{partmalComId,jdbcType=VARCHAR}
+			 , #{partmalComCostBndRt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrm" parameterType="prm">
+		DELETE /* com.plgrim.ncp.base.deletePrm		Generator(Generator)	2018-05-23 */
+		  FROM PRM
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

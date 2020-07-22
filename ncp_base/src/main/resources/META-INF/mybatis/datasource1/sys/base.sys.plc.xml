@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysPlc" parameterType="sysPlc" resultType="sysPlc">
+		SELECT /* com.plgrim.ncp.base.selectSysPlc		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , PLC_CD
+			 , APL_BEG_DT
+			 , APL_END_DT
+			 , USE_YN
+			 , CMPND_VAL_PSB_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_PLC
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND PLC_CD = #{plcCd,jdbcType=VARCHAR}
+		   AND APL_BEG_DT = #{aplBegDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateSysPlc" parameterType="sysPlc">
+		UPDATE /* com.plgrim.ncp.base.updateSysPlc		Generator(Generator)	2018-05-23 */
+		SYS_PLC SET
+			   APL_END_DT = #{aplEndDt,jdbcType=TIMESTAMP}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , CMPND_VAL_PSB_YN = #{cmpndValPsbYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND PLC_CD = #{plcCd,jdbcType=VARCHAR}
+		   AND APL_BEG_DT = #{aplBegDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertSysPlc" parameterType="sysPlc">
+		INSERT /* com.plgrim.ncp.base.insertSysPlc		Generator(Generator)	2018-05-23 */
+		INTO   SYS_PLC (
+			   MALL_ID
+			 , PLC_CD
+			 , APL_BEG_DT
+			 , APL_END_DT
+			 , USE_YN
+			 , CMPND_VAL_PSB_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{plcCd,jdbcType=VARCHAR}
+			 , #{aplBegDt,jdbcType=TIMESTAMP}
+			 , #{aplEndDt,jdbcType=TIMESTAMP}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{cmpndValPsbYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysPlc" parameterType="sysPlc">
+		DELETE /* com.plgrim.ncp.base.deleteSysPlc		Generator(Generator)	2018-05-23 */
+		  FROM SYS_PLC
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND PLC_CD = #{plcCd,jdbcType=VARCHAR}
+		   AND APL_BEG_DT = #{aplBegDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

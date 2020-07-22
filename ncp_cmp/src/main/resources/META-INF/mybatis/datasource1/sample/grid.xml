@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.example">
+	<update id="mergeExampleGridData">
+			MERGE INTO AA_EMP EMP
+	   		USING (
+					SELECT
+						#{emp.empno} as EMPNO,
+						#{emp.ename} as ENAME,
+						'N' 		 as JOB,
+						'100' 		 as SAL,
+						'10'			 as DEPTNO,
+						#{emp.retireDate} as RETIRED_DATE
+					FROM DUAL    			
+	   		) FCH ON (EMP.EMPNO = FCH.EMPNO)
+	   		WHEN MATCHED THEN 
+	   			UPDATE SET
+		   			ENAME 	= FCH.ENAME,
+		   			JOB 	= FCH.JOB,
+		   			SAL 	= FCH.SAL,
+		   			DEPTNO 	= FCH.DEPTNO,
+		   			RETIREDATE = FCH.RETIRED_DATE
+	   		WHEN NOT MATCHED THEN 
+	   			INSERT 
+	   				(EMPNO, ENAME, JOB, SAL, DEPTNO)
+	     		VALUES 
+	     			(FCH.EMPNO, FCH.ENAME, FCH.JOB, FCH.SAL, FCH.DEPTNO)
+	</update>
+	
+	<update id ="deleteExampleGridData">
+		UPDATE AA_EMP
+		SET ENAME = #{emp.ename}
+		<!-- 실제코드에선 USEYN을 업데이트. -->
+		WHERE
+			EMPNO = #{emp.empno}
+	</update>
+</mapper>

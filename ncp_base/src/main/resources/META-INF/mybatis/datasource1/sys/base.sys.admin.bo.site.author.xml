@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminBoSiteAuthor" parameterType="sysAdminBoSiteAuthor" resultType="sysAdminBoSiteAuthor">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminBoSiteAuthor		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , BO_SITE_ID
+			 , CONECT_PSB_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_ADMIN_BO_SITE_AUTHOR
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysAdminBoSiteAuthor" parameterType="sysAdminBoSiteAuthor">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminBoSiteAuthor		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_BO_SITE_AUTHOR SET
+			   CONECT_PSB_YN = #{conectPsbYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysAdminBoSiteAuthor" parameterType="sysAdminBoSiteAuthor">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminBoSiteAuthor		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_BO_SITE_AUTHOR (
+			   ADMIN_ID
+			 , BO_SITE_ID
+			 , CONECT_PSB_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{boSiteId,jdbcType=VARCHAR}
+			 , #{conectPsbYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAdminBoSiteAuthor" parameterType="sysAdminBoSiteAuthor">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminBoSiteAuthor		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_BO_SITE_AUTHOR
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

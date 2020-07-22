@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodLndrDscr" parameterType="godLndrDscr" resultType="godLndrDscr">
+		SELECT /* com.plgrim.ncp.base.selectGodLndrDscr		Generator(Generator)	2018-05-23 */
+			   LNDR_CD
+			 , LANG_CD
+			 , LNDR_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_LNDR_DSCR
+		 WHERE 1 = 1
+	   	   AND LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodLndrDscr" parameterType="godLndrDscr">
+		UPDATE /* com.plgrim.ncp.base.updateGodLndrDscr		Generator(Generator)	2018-05-23 */
+		GOD_LNDR_DSCR SET
+			   LNDR_MTHD_DSCR = #{lndrMthdDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodLndrDscr" parameterType="godLndrDscr">
+		INSERT /* com.plgrim.ncp.base.insertGodLndrDscr		Generator(Generator)	2018-05-23 */
+		INTO   GOD_LNDR_DSCR (
+			   LNDR_CD
+			 , LANG_CD
+			 , LNDR_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{lndrCd,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{lndrMthdDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodLndrDscr" parameterType="godLndrDscr">
+		DELETE /* com.plgrim.ncp.base.deleteGodLndrDscr		Generator(Generator)	2018-05-23 */
+		  FROM GOD_LNDR_DSCR
+		 WHERE 1 = 1
+		   AND LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

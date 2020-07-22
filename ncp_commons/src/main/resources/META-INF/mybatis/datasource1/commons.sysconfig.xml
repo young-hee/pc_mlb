@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.sysconfig">
+	
+	<resultMap id="resultSysConfig" type="com.plgrim.ncp.commons.result.SysConfigResult">
+		<result property="sysDynmcConfigDetail.mallId" column="MALL_ID" />
+		<result property="mallNm" column="MALL_NM" />
+		<result property="sysDynmcConfigDetail.configNm" column="CONFIG_NM" />
+		<result property="sysDynmcConfigDetail.configBegDt" column="CONFIG_BEG_DT" />
+		<result property="sysDynmcConfig.configEndDt" column="CONFIG_END_DT" />
+		<result property="sysDynmcConfig.configDscr" column="CONFIG_DSCR" />
+		<result property="sysDynmcConfig.configSectCd" column="CONFIG_SECT_CD" />
+		<result property="sysDynmcConfigDetail.configKey" column="CONFIG_KEY" />
+		<result property="sysDynmcConfigDetail.configVal" column="CONFIG_VAL" />
+		<result property="sysDynmcConfigDetail.useYn" column="USE_YN" />
+		<result property="sysDynmcConfigDetail.regtrId" column="REGTR_ID" />
+		<result property="sysDynmcConfigDetail.regDt" column="REG_DT" />
+		<result property="sysDynmcConfigDetail.udterId" column="UDTER_ID" />
+		<result property="sysDynmcConfigDetail.udtDt" column="UDT_DT" />
+		<result property="strBegDt" column="STR_BEG_DT" />
+		<result property="strEndDt" column="STR_END_DT" />
+	</resultMap>
+
+	<select id="selectListSysConfig" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO" resultMap="resultSysConfig"> 
+       <include refid="com.plgrim.ncp.base.beginPage"/>
+       SELECT /* [commons.sysconfig.xml][selectListSysConfig][설정조회 리스트 조회] */
+		    A.MALL_ID
+		    , nvl((SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = A.MALL_ID), '') AS MALL_NM
+		    , A.CONFIG_NM
+		    , A.CONFIG_BEG_DT
+		    , A.CONFIG_END_DT
+		    , A.CONFIG_DSCR
+		    , A.CONFIG_SECT_CD
+		    , B.CONFIG_KEY
+		    , B.CONFIG_VAL
+		    , nvl(B.USE_YN, A.USE_YN) AS USE_YN
+		    , nvl(B.REGTR_ID, A.REGTR_ID) AS REGTR_ID
+		    , nvl(B.REG_DT, A.REG_DT) AS REG_DT
+		    , nvl(B.UDTER_ID, A.UDTER_ID) AS UDTER_ID
+		    , nvl(B.UDT_DT, A.UDT_DT) AS UDT_DT
+		    , to_char(A.CONFIG_BEG_DT, 'YYYYMMDD')  AS STR_BEG_DT
+		    , to_char(A.CONFIG_END_DT, 'YYYYMMDD')  AS STR_END_DT
+		FROM SYS_DYNMC_CONFIG A
+		    LEFT OUTER JOIN SYS_DYNMC_CONFIG_DETAIL B ON (A.MALL_ID = B.MALL_ID AND A.CONFIG_NM = B.CONFIG_NM AND A.CONFIG_BEG_DT = B.CONFIG_BEG_DT)
+		WHERE 1 = 1
+		<include refid="selectSysConfigListWhere"/> 
+		ORDER BY A.MALL_ID, A.CONFIG_NM, A.REG_DT
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectListCountSysConfig" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO" resultType="long"> 
+		SELECT /* [commons.sysconfig.xml][selectListCountSysConfig][설정조회 리스트 총 갯수] */
+		    COUNT(*) as cnt
+		FROM SYS_DYNMC_CONFIG A
+		    LEFT OUTER JOIN SYS_DYNMC_CONFIG_DETAIL B ON (A.MALL_ID = B.MALL_ID AND A.CONFIG_NM = B.CONFIG_NM AND A.CONFIG_BEG_DT = B.CONFIG_BEG_DT)
+		WHERE 1 = 1
+		<include refid="selectSysConfigListWhere"/>
+	</select>
+	
+	<sql id="selectSysConfigListWhere"> 
+		<if test='mallIds != null and mallIds != ""'>
+	    	<foreach collection="mallIds" item ="item" open="AND A.MALL_ID IN (" separator="," close=")">#{item}</foreach>
+	    </if>
+	    <if test='searchListUseYn != null and searchListUseYn != ""'>
+	    	<foreach collection="searchListUseYn" item ="item" open="AND B.USE_YN IN (" separator="," close=")">#{item}</foreach>
+	    </if>
+	    <if test='searchListConfigSectCd != null and searchListConfigSectCd != ""'>
+	    	<foreach collection="searchListConfigSectCd" item ="item" open="AND A.CONFIG_SECT_CD IN (" separator="," close=")">#{item}</foreach>
+	    </if>
+	    <if test="term == 'regDt'">
+	        AND A.REG_DT BETWEEN to_date(#{fromDate,jdbcType=VARCHAR}||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND to_date(#{toDate,jdbcType=VARCHAR}||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')
+	    </if>
+	    <if test="term == 'aplDt'">
+	        AND (A.CONFIG_BEG_DT <![CDATA[<=]]> to_date(#{fromDate,jdbcType=VARCHAR}||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') OR A.CONFIG_END_DT <![CDATA[>=]]> to_date(#{toDate,jdbcType=VARCHAR}||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))
+	    </if>
+	    <if test='searchField != null and searchText != null and searchText != ""'>
+	        <choose>
+	            <when test="searchField eq '1'.toString()">
+	                AND B.CONFIG_NM like  '%'||#{searchText, jdbcType=VARCHAR}||'%'
+	            </when>
+	            <when test="searchField eq '2'.toString()">
+	                AND B.CONFIG_KEY like  '%'||#{searchText, jdbcType=VARCHAR}||'%'
+	            </when>
+	            <when test="searchField eq '3'.toString()">
+	                AND B.CONFIG_VAL like  '%'||#{searchText, jdbcType=VARCHAR}||'%'
+	            </when>
+	        </choose>
+	    </if>
+	</sql>
+	
+	<select id="selectSysConfig" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO" resultMap="resultSysConfig"> 
+       SELECT /* [commons.sysconfig.xml][selectSysConfig][설정조회] */
+		    A.MALL_ID
+		    , nvl((SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = A.MALL_ID), '') AS MALL_NM
+		    , A.CONFIG_NM
+		    , A.CONFIG_BEG_DT
+		    , A.CONFIG_END_DT
+		    , A.CONFIG_DSCR
+		    , A.CONFIG_SECT_CD
+		    , '' AS CONFIG_KEY
+		    , '' AS CONFIG_VAL
+		    , A.USE_YN
+		    , A.REGTR_ID
+		    , A.REG_DT
+		    , A.UDTER_ID
+		    , A.UDT_DT
+		    , to_char(A.CONFIG_BEG_DT, 'YYYYMMDD')  AS STR_BEG_DT
+		    , to_char(A.CONFIG_END_DT, 'YYYYMMDD')  AS STR_END_DT
+		FROM SYS_DYNMC_CONFIG A
+		WHERE 1 = 1
+			<if test='sysDynmcConfig.mallId != null and sysDynmcConfig.mallId != ""'>
+	        	AND A.MALL_ID = #{sysDynmcConfig.mallId}
+	        </if>
+	        <if test='sysDynmcConfig.configNm != null and sysDynmcConfig.configNm != ""'>
+	        	AND A.CONFIG_NM = #{sysDynmcConfig.configNm}
+	        </if>
+	        <if test='sysDynmcConfig.configBegDt != null and sysDynmcConfig.configBegDt != ""'>
+	        	AND to_char(A.CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{sysDynmcConfig.configBegDt}, 'YYYYMMDD') 
+	        </if>
+			AND ROWNUM = 1
+	</select>
+	
+	<resultMap id="resultSysConfigDetail" type="com.plgrim.ncp.commons.result.SysConfigResult">
+		<result property="sysDynmcConfigDetail.mallId" column="MALL_ID" />
+		<result property="sysDynmcConfigDetail.configNm" column="CONFIG_NM" />
+		<result property="sysDynmcConfigDetail.configBegDt" column="CONFIG_BEG_DT" />
+		<result property="sysDynmcConfigDetail.configKey" column="CONFIG_KEY" />
+		<result property="sysDynmcConfigDetail.configVal" column="CONFIG_VAL" />
+		<result property="sysDynmcConfigDetail.useYn" column="USE_YN" />
+		<result property="sysDynmcConfigDetail.regtrId" column="REGTR_ID" />
+		<result property="sysDynmcConfigDetail.regDt" column="REG_DT" />
+		<result property="sysDynmcConfigDetail.udterId" column="UDTER_ID" />
+		<result property="sysDynmcConfigDetail.udtDt" column="UDT_DT" />
+	</resultMap>
+	
+	<select id="selectSysConfigDetailList" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO" resultMap="resultSysConfigDetail"> 
+       SELECT /* [commons.sysconfig.xml][selectSysConfigDetailList][설정상세 리스트 조회] */
+		    A.MALL_ID
+		    , A.CONFIG_NM
+		    , A.CONFIG_BEG_DT
+		    , A.CONFIG_KEY
+		    , A.CONFIG_VAL
+		    , A.USE_YN
+		    , A.REGTR_ID
+		    , A.REG_DT
+		    , A.UDTER_ID
+		    , A.UDT_DT
+		FROM SYS_DYNMC_CONFIG_DETAIL A
+		WHERE 1 = 1
+			<if test='sysDynmcConfig.mallId != null and sysDynmcConfig.mallId != ""'>
+	        	AND A.MALL_ID = #{sysDynmcConfig.mallId}
+	        </if>
+	        <if test='sysDynmcConfig.configNm != null and sysDynmcConfig.configNm != ""'>
+	        	AND A.CONFIG_NM = #{sysDynmcConfig.configNm}
+	        </if>
+	        <if test='sysDynmcConfig.configBegDt != null and sysDynmcConfig.configBegDt != ""'>
+	        	AND to_char(A.CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{sysDynmcConfig.configBegDt}, 'YYYYMMDD') 
+	        </if>
+	        <if test='sysDynmcConfigDetail != null and sysDynmcConfigDetail.configKey != null and sysDynmcConfigDetail.configKey != ""'>
+	        	AND A.CONFIG_KEY = #{sysDynmcConfigDetail.configKey}
+	        </if>
+	</select>
+	
+	<update id="insertSysDynmcConfigDetail" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysDynmcConfigDetail">
+	    /* [commons.sysconfig.xml][insertSysDynmcConfigDetail][설정상세 등록] */
+	    MERGE INTO SYS_DYNMC_CONFIG_DETAIL
+	    USING DUAL
+	    ON (MALL_ID = #{mallId} AND CONFIG_NM = #{configNm} AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{configBegDt}, 'YYYYMMDD') AND CONFIG_KEY = #{configKey})
+	    WHEN MATCHED THEN
+	        UPDATE SET
+	            CONFIG_VAL = #{configVal,jdbcType=VARCHAR}
+	            , USE_YN = #{useYn,jdbcType=VARCHAR}
+	            , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+	            , UDT_DT = SYSDATE
+	    WHEN NOT MATCHED THEN
+	        INSERT
+	        (
+	            MALL_ID
+		       , CONFIG_NM
+		       , CONFIG_BEG_DT
+		       , CONFIG_KEY
+		       , CONFIG_VAL
+		       , USE_YN
+		       , REGTR_ID
+		       , UDTER_ID
+	           , REG_DT
+	           , UDT_DT
+	        )
+	        VALUES
+	        (
+	           #{mallId,jdbcType=VARCHAR}
+		       , #{configNm,jdbcType=VARCHAR}
+		       , #{configBegDt,jdbcType=TIMESTAMP}
+		       , #{configKey,jdbcType=VARCHAR}
+		       , #{configVal,jdbcType=VARCHAR}
+		       , #{useYn,jdbcType=VARCHAR}
+		       , #{regtrId,jdbcType=VARCHAR}
+		       , #{udterId,jdbcType=VARCHAR}
+		       , SYSDATE
+		       , SYSDATE
+	        )
+	</update>
+	
+	<delete id="deleteSysDynmcConfigDetail" parameterType="sysDynmcConfigDetail">
+        DELETE /* [commons.sysconfig.xml][deleteSysDynmcConfigDetail][설정상세 삭제 처리] */
+        FROM SYS_DYNMC_CONFIG_DETAIL
+        WHERE   1 = 1
+        	AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+        	AND CONFIG_NM = #{configNm,jdbcType=VARCHAR}
+	        <if test='configBegDt != null and configBegDt != ""'>
+	        	AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{configBegDt}, 'YYYYMMDD') 
+	        </if>
+	        <if test='configKey != null and configKey != ""'>
+	        	AND CONFIG_KEY = #{configKey}
+	        </if>
+    </delete>
+    
+    <update id="updateSysDynmcConfig" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO">
+        UPDATE /* [commons.sysconfig.xml][updateSysDynmcConfig][설정 수정 처리] */
+        SYS_DYNMC_CONFIG SET
+        	UDT_DT = SYSDATE
+        	<if test="sysDynmcConfig.udterId != null">
+        		, UDTER_ID = #{sysDynmcConfig.udterId}
+        	</if>
+        	<if test="sysDynmcConfig.mallId != null">
+        		, MALL_ID = #{sysDynmcConfig.mallId}
+        	</if>
+        	<if test="sysDynmcConfig.configNm != null">
+        		, CONFIG_NM = #{sysDynmcConfig.configNm}
+        	</if>
+        	<if test="sysDynmcConfig.configBegDt != null">
+        		, CONFIG_BEG_DT = #{sysDynmcConfig.configBegDt}
+        	</if>
+        	<if test="sysDynmcConfig.configEndDt != null">
+        		, CONFIG_END_DT = #{sysDynmcConfig.configEndDt}
+        	</if>
+        	<if test="sysDynmcConfig.configDscr != null">
+        		, CONFIG_DSCR = #{sysDynmcConfig.configDscr}
+        	</if>
+        	<if test="sysDynmcConfig.configSectCd != null">
+                , CONFIG_SECT_CD = #{sysDynmcConfig.configSectCd}
+            </if>
+        	<if test="sysDynmcConfig.useYn != null">
+                , USE_YN = #{sysDynmcConfig.useYn}
+            </if>
+        WHERE   1 = 1
+	        AND MALL_ID = #{agoSysDynmcConfig.mallId,jdbcType=VARCHAR}
+        	AND CONFIG_NM = #{agoSysDynmcConfig.configNm,jdbcType=VARCHAR}
+	        AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{agoSysDynmcConfig.configBegDt}, 'YYYYMMDD') 
+    </update>
+    
+    <update id="updateAgoSysDynmcConfig" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO">
+        /* [commons.sysconfig.xml][updateAgoSysDynmcConfig][이전 설정 수정 처리] */
+		INSERT INTO SYS_DYNMC_CONFIG
+		(
+		    MALL_ID
+		    , CONFIG_NM
+		    , CONFIG_BEG_DT
+		    , CONFIG_END_DT
+		    , USE_YN
+		    , CONFIG_DSCR
+			, CONFIG_SECT_CD
+		    , REGTR_ID
+		    , REG_DT
+		    , UDTER_ID
+		    , UDT_DT
+		)
+		SELECT 
+		    #{sysDynmcConfig.mallId}
+		    , #{sysDynmcConfig.configNm}
+		    , #{sysDynmcConfig.configBegDt}
+		    , #{sysDynmcConfig.configEndDt}
+		    , #{sysDynmcConfig.useYn}
+		    , #{sysDynmcConfig.configDscr}
+		    , #{sysDynmcConfig.configSectCd}
+		    , REGTR_ID
+		    , REG_DT
+		    , #{sysDynmcConfig.udterId}
+		    , SYSDATE 
+		FROM SYS_DYNMC_CONFIG
+		WHERE MALL_ID = #{agoSysDynmcConfig.mallId,jdbcType=VARCHAR}
+		    AND CONFIG_NM = #{agoSysDynmcConfig.configNm,jdbcType=VARCHAR}
+		    AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{agoSysDynmcConfig.configBegDt}, 'YYYYMMDD') 
+    </update>
+    
+    <update id="updateAgoSysDynmcConfigDetail" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO">
+    	UPDATE /* [commons.sysconfig.xml][updateAgoSysDynmcConfigDetail][이전 설정상세 수정 처리] */
+		SYS_DYNMC_CONFIG_DETAIL SET
+		    UDT_DT = SYSDATE
+		    <if test="sysDynmcConfig.udterId != null">
+		        , UDTER_ID = #{sysDynmcConfig.udterId}
+		    </if>
+		    <if test="sysDynmcConfig.mallId != null">
+		        , MALL_ID = #{sysDynmcConfig.mallId}
+		    </if>
+		    <if test="sysDynmcConfig.configNm != null">
+		        , CONFIG_NM = #{sysDynmcConfig.configNm}
+		    </if>
+		    <if test="sysDynmcConfig.configBegDt != null">
+		        , CONFIG_BEG_DT = #{sysDynmcConfig.configBegDt}
+		    </if>
+		WHERE MALL_ID = #{agoSysDynmcConfig.mallId,jdbcType=VARCHAR}
+		    AND CONFIG_NM = #{agoSysDynmcConfig.configNm,jdbcType=VARCHAR}
+		    AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{agoSysDynmcConfig.configBegDt}, 'YYYYMMDD') 
+    </update>
+	
+	<delete id="deleteAgoSysDynmcConfig" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO">
+	    DELETE /* [commons.sysconfig.xml][deleteAgoSysDynmcConfig][이전 설정 삭제 처리] */
+	    FROM SYS_DYNMC_CONFIG
+	    WHERE MALL_ID = #{agoSysDynmcConfig.mallId,jdbcType=VARCHAR}
+	        AND CONFIG_NM = #{agoSysDynmcConfig.configNm,jdbcType=VARCHAR}
+	        AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{agoSysDynmcConfig.configBegDt}, 'YYYYMMDD') 
+	</delete>
+	
+	<resultMap id="resultSysConfigPop" type="com.plgrim.ncp.commons.result.SysConfigResult">
+		<result property="sysDynmcConfig.mallId" column="MALL_ID" />
+		<result property="mallNm" column="MALL_NM" />
+		<result property="sysDynmcConfig.configNm" column="CONFIG_NM" />
+		<result property="sysDynmcConfig.configBegDt" column="CONFIG_BEG_DT" />
+		<result property="sysDynmcConfig.configEndDt" column="CONFIG_END_DT" />
+		<result property="sysDynmcConfig.configDscr" column="CONFIG_DSCR" />
+		<result property="sysDynmcConfig.configSectCd" column="CONFIG_SECT_CD" />
+		<result property="strBegDt" column="STR_BEG_DT" />
+		<result property="strEndDt" column="STR_END_DT" />
+	</resultMap>
+
+	<select id="selectListSysConfigPop" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO" resultMap="resultSysConfigPop"> 
+       <include refid="com.plgrim.ncp.base.beginPage"/>
+       SELECT /* [commons.sysconfig.xml][selectListSysConfigPop][서킷브래이커 스케줄 대상 설정조회 리스트 조회] */
+		    A.MALL_ID
+		    , nvl((SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = A.MALL_ID), '') AS MALL_NM
+		    , A.CONFIG_NM
+		    , A.CONFIG_BEG_DT
+		    , A.CONFIG_END_DT
+		    , A.CONFIG_DSCR
+		    , A.CONFIG_SECT_CD
+		    , to_char(A.CONFIG_BEG_DT, 'YYYYMMDD')  AS STR_BEG_DT
+		    , to_char(A.CONFIG_END_DT, 'YYYYMMDD')  AS STR_END_DT
+		FROM SYS_DYNMC_CONFIG A
+		WHERE 1 = 1
+		<include refid="selectSysConfigListPopWhere"/> 
+		ORDER BY A.MALL_ID, A.CONFIG_NM, A.REG_DT
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectListCountSysConfigPop" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO" resultType="long"> 
+		SELECT /* [commons.sysconfig.xml][selectListCountSysConfigPop][서킷브래이커 스케줄 대상 설정조회 리스트 총 갯수] */
+		    COUNT(*) as cnt
+		FROM SYS_DYNMC_CONFIG A
+		WHERE 1 = 1
+		<include refid="selectSysConfigListPopWhere"/>
+	</select>
+	
+	<sql id="selectSysConfigListPopWhere"> 
+		<if test="sysDynmcConfig.configSectCd != null">
+        	AND A.CONFIG_SECT_CD = #{sysDynmcConfig.configSectCd}
+        </if>
+        <if test="sysDynmcConfig.useYn != null">
+        	AND A.USE_YN = #{sysDynmcConfig.useYn}
+        </if>
+	    <if test='searchField != null and searchText != null and searchText != ""'>
+	        <choose>
+	            <when test="searchField eq '1'.toString()">
+	                AND A.CONFIG_NM like  '%'||#{searchText, jdbcType=VARCHAR}||'%'
+	            </when>
+	            <when test="searchField eq '2'.toString()">
+	                AND A.CONFIG_DSCR like  '%'||#{searchText, jdbcType=VARCHAR}||'%'
+	            </when>
+	        </choose>
+	    </if>
+	</sql>
+
+    <update id="updateSysDynmcConfigDetail" parameterType="sysDynmcConfigDetail">
+        UPDATE /* [commons.sysconfig.xml][updateSysDynmcConfigDetail][설정상세 수정 처리] */
+        SYS_DYNMC_CONFIG_DETAIL SET
+        	  UDT_DT = SYSDATE
+        	, UDTER_ID = #{udterId}
+        	<if test="configVal != null">
+        	,CONFIG_VAL = #{configVal,jdbcType=VARCHAR}
+        	</if>
+        	<if test="useYn != null">
+        	,USE_YN = #{useYn,jdbcType=VARCHAR}
+        	</if>
+        WHERE   1 = 1
+	        AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+        	AND CONFIG_NM = #{configNm,jdbcType=VARCHAR}
+	        AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{configBegDt}, 'YYYYMMDD')
+    </update>
+
+
+    <insert id="insertSysDynmcConfigBySelect" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO">
+        /* [commons.sysconfig.xml][updateAgoSysDynmcConfig][설정등록 - AB테스트진행중 수정시 사용] */
+		INSERT INTO SYS_DYNMC_CONFIG
+		(
+		      MALL_ID
+		    , CONFIG_NM
+		    , CONFIG_BEG_DT
+		    , CONFIG_END_DT
+		    , USE_YN
+		    , CONFIG_DSCR
+			, CONFIG_SECT_CD
+		    , REGTR_ID
+		    , REG_DT
+		    , UDTER_ID
+		    , UDT_DT
+		)
+		SELECT
+		      MALL_ID
+		    , #{sysDynmcConfig.configNm}
+		    , #{sysDynmcConfig.configBegDt}
+		    , CONFIG_END_DT
+		    , #{sysDynmcConfig.useYn}
+		    , 'AB테스트_'||#{sysDynmcConfig.configNm}
+			, CONFIG_SECT_CD
+		    , #{sysDynmcConfig.regtrId}
+		    , REG_DT
+		    , #{sysDynmcConfig.udterId}
+		    , SYSDATE
+		FROM SYS_DYNMC_CONFIG
+		WHERE MALL_ID = #{agoSysDynmcConfig.mallId,jdbcType=VARCHAR}
+		    AND CONFIG_NM = #{agoSysDynmcConfig.configNm,jdbcType=VARCHAR}
+		    AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{agoSysDynmcConfig.configBegDt}, 'YYYYMMDD')
+    </insert>
+
+    <insert id="insertSysDynmcConfigDetailBySelect" parameterType="com.plgrim.ncp.commons.data.SysConfigDTO">
+    	INSERT /* [commons.sysconfig.xml][insertSysDynmcConfigDetailBySelect][설정상세등록 - AB테스트진행중 수정시 사용] */
+    	INTO SYS_DYNMC_CONFIG_DETAIL
+        (
+              MALL_ID
+		    , CONFIG_NM
+		    , CONFIG_BEG_DT
+		    , CONFIG_KEY
+		    , CONFIG_VAL
+		    , USE_YN
+		    , REGTR_ID
+		    , REG_DT
+		    , UDTER_ID
+		    , UDT_DT
+        )
+        SELECT
+		      A.MALL_ID
+		    , #{sysDynmcConfig.configNm}
+		    , #{sysDynmcConfig.configBegDt}
+		    , #{sysDynmcConfig.configNm}||SUBSTR(CONFIG_KEY,(INSTR(CONFIG_KEY,'.',1,2)))
+		    , A.CONFIG_VAL
+		    , 'Y'
+		    , #{sysDynmcConfig.regtrId}
+		    , SYSDATE
+		    , #{sysDynmcConfig.udterId}
+		    , SYSDATE
+		FROM SYS_DYNMC_CONFIG_DETAIL A
+		WHERE 1 = 1
+		AND MALL_ID = #{agoSysDynmcConfig.mallId,jdbcType=VARCHAR}
+		AND CONFIG_NM = #{agoSysDynmcConfig.configNm,jdbcType=VARCHAR}
+		AND to_char(CONFIG_BEG_DT, 'YYYYMMDD') = to_char(#{agoSysDynmcConfig.configBegDt}, 'YYYYMMDD')
+    </insert>
+</mapper>

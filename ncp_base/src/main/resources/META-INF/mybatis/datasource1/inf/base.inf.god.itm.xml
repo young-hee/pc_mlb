@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfGodItm" parameterType="infGodItm" resultType="infGodItm">
+		SELECT /* com.plgrim.ncp.base.selectInfGodItm		Generator(Generator)	2018-07-12 */
+			   SEQ
+			 , BRND_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , ERP_GOD_NO
+			 , BCODE
+			 , GOD_NM
+			 , ENG_GOD_NM
+			 , RTL_PRC
+			 , COLOR_CD
+			 , LNDR_CD
+			 , OPT_VAL_CD
+			 , RECOMEND_SEX_CD
+			 , PRDLST_CD
+			 , PRDC_SECT_CD
+			 , GOD_SECT_CD
+			 , ORG_PL_NM
+			 , ENG_ORG_PL_NM
+			 , MNFCTUR_YM
+			 , KC_CRTFC_NO
+			 , RELAT_ERP_GOD_NO
+			 , FIT_SECT_CD
+			 , FIT_DETAIL_SECT_CD
+			 , IMPRCOM_NM
+			 , TRTMNT_ATND_MATTER_DSCR
+			 , CSMR_PRC_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_GOD_ITM
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfGodItm" parameterType="infGodItm">
+		UPDATE /* com.plgrim.ncp.base.updateInfGodItm		Generator(Generator)	2018-07-12 */
+		INF_GOD_ITM SET
+			   SEQ = #{seq,jdbcType=NUMERIC}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			 , DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , BCODE = #{bcode,jdbcType=VARCHAR}
+			 , GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , ENG_GOD_NM = #{engGodNm,jdbcType=VARCHAR}
+			 , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+			 , COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+			 , LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+			 , OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+			 , RECOMEND_SEX_CD = #{recomendSexCd,jdbcType=VARCHAR}
+			 , PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+			 , PRDC_SECT_CD = #{prdcSectCd,jdbcType=VARCHAR}
+			 , GOD_SECT_CD = #{godSectCd,jdbcType=VARCHAR}
+			 , ORG_PL_NM = #{orgPlNm,jdbcType=VARCHAR}
+			 , ENG_ORG_PL_NM = #{engOrgPlNm,jdbcType=VARCHAR}
+			 , MNFCTUR_YM = #{mnfcturYm,jdbcType=VARCHAR}
+			 , KC_CRTFC_NO = #{kcCrtfcNo,jdbcType=VARCHAR}
+			 , RELAT_ERP_GOD_NO = #{relatErpGodNo,jdbcType=VARCHAR}
+			 , FIT_SECT_CD = #{fitSectCd,jdbcType=VARCHAR}
+			 , FIT_DETAIL_SECT_CD = #{fitDetailSectCd,jdbcType=VARCHAR}
+			 , IMPRCOM_NM = #{imprcomNm,jdbcType=VARCHAR}
+			 , TRTMNT_ATND_MATTER_DSCR = #{trtmntAtndMatterDscr,jdbcType=VARCHAR}
+			 , CSMR_PRC_TP_CD = #{csmrPrcTpCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfGodItm" parameterType="infGodItm">
+		INSERT /* com.plgrim.ncp.base.insertInfGodItm		Generator(Generator)	2018-07-12 */
+		INTO   INF_GOD_ITM (
+			   SEQ
+			 , BRND_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , ERP_GOD_NO
+			 , BCODE
+			 , GOD_NM
+			 , ENG_GOD_NM
+			 , RTL_PRC
+			 , COLOR_CD
+			 , LNDR_CD
+			 , OPT_VAL_CD
+			 , RECOMEND_SEX_CD
+			 , PRDLST_CD
+			 , PRDC_SECT_CD
+			 , GOD_SECT_CD
+			 , ORG_PL_NM
+			 , ENG_ORG_PL_NM
+			 , MNFCTUR_YM
+			 , KC_CRTFC_NO
+			 , RELAT_ERP_GOD_NO
+			 , FIT_SECT_CD
+			 , FIT_DETAIL_SECT_CD
+			 , IMPRCOM_NM
+			 , TRTMNT_ATND_MATTER_DSCR
+			 , CSMR_PRC_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{seq,jdbcType=NUMERIC}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{sesonCd,jdbcType=VARCHAR}
+			 , #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{bcode,jdbcType=VARCHAR}
+			 , #{godNm,jdbcType=VARCHAR}
+			 , #{engGodNm,jdbcType=VARCHAR}
+			 , #{rtlPrc,jdbcType=NUMERIC}
+			 , #{colorCd,jdbcType=VARCHAR}
+			 , #{lndrCd,jdbcType=VARCHAR}
+			 , #{optValCd,jdbcType=VARCHAR}
+			 , #{recomendSexCd,jdbcType=VARCHAR}
+			 , #{prdlstCd,jdbcType=VARCHAR}
+			 , #{prdcSectCd,jdbcType=VARCHAR}
+			 , #{godSectCd,jdbcType=VARCHAR}
+			 , #{orgPlNm,jdbcType=VARCHAR}
+			 , #{engOrgPlNm,jdbcType=VARCHAR}
+			 , #{mnfcturYm,jdbcType=VARCHAR}
+			 , #{kcCrtfcNo,jdbcType=VARCHAR}
+			 , #{relatErpGodNo,jdbcType=VARCHAR}
+			 , #{fitSectCd,jdbcType=VARCHAR}
+			 , #{fitDetailSectCd,jdbcType=VARCHAR}
+			 , #{imprcomNm,jdbcType=VARCHAR}
+			 , #{trtmntAtndMatterDscr,jdbcType=VARCHAR}
+			 , #{csmrPrcTpCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfGodItm" parameterType="infGodItm">
+		DELETE /* com.plgrim.ncp.base.deleteInfGodItm		Generator(Generator)	2018-07-12 */
+		  FROM INF_GOD_ITM
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

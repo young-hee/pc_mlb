@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* 이벤트,프로모션 CSS */
+
+
+/*html/dp/pm_view_event_kakao_down.jsp*/
+.event_kakao_down{  position:relative; overflow:hidden; text-align:left; background:#fdd303; }
+.event_kakao_down .imgs{ position:relative; left:50%; margin-left:-1280px; }
+.event_kakao_down .imgs img{ vertical-align:middle;}
+.event_kakao_down .btns{ position:absolute; width:1280px; left:50%; top:0px; margin-left:-640px;}
+.event_kakao_down .btns .btn_kakao{ position:absolute; left:287px; top:1289px; }

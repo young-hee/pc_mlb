@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.delivery.command.hub">
+	<!--
+		'픽업변경여부' 수정
+	 		- 픽업주문-> 일반주문 변경, 픽업주문 매장 변경 시 사용
+	 		- 픽업주문 변경은 주문단위로 변경되므로 수정 조건에 '주문번호' 만 사용
+	-->
+	<update id="modifyPkupModYn" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryInfErpDTO">
+		UPDATE /* [delivery.command.hub.xml][modifyPkupModYn]['픽업변경여부' 수정][js279.kim] */
+			inf_ord_god_erp_dstb
+		SET pkup_mod_yn = #{pkupModYn, jdbcType=VARCHAR}	/* 픽업변경여부 */
+			, udt_dt = SYSDATE
+		WHERE 1 = 1
+			AND ord_no = #{fpiaOr, jdbcType=VARCHAR}			/* 주문번호  */
+	</update>
+
+	<!--
+		'출고지시 취소 여부' 수정
+	 		- '주문취소' 시 사용
+	 	#50212 [개발]픽업 재진열 대상 알림(매장 Dashboard) 기능 추가
+	 		- '픽업 재진열 코드', '출고지시취소일시' 값 수정
+	-->
+	<update id="modifyDlivyDrctCnclYn" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryInfErpDTO">
+		UPDATE /* [delivery.command.hub.xml][modifyDlivyDrctCnclYn]['출고지시 취소 여부' 수정][js279.kim] */
+			inf_ord_god_erp_dstb
+		SET dlivy_drct_cncl_yn = #{dlivyDrctCnclYn, jdbcType=VARCHAR} /* 출고지시 취소 여부 */
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(pkupRedispCd)">
+			, pkup_redisp_cd = #{pkupRedispCd, jdbcType=VARCHAR} /* 픽업 재진열 코드 */
+		</if>
+			, dlivy_drct_cncl_dt = SYSDATE
+			, udt_dt = SYSDATE
+		WHERE 1 = 1
+			AND ord_no = #{fpiaOr, jdbcType=VARCHAR}			/* 주문번호  */
+			AND ord_god_turn = #{ordGodTurn, jdbcType=NUMERIC}	/* 주문상품순번  */
+			AND qty_turn = #{qtyTurn, jdbcType=NUMERIC}			/* 주문상품 수량 순번  */
+	</update>
+
+	<!--
+		'분배 플래그' 수정
+	 		- 예약영수증HUB전달 : RESVE_RCPTFR_HUB
+	 		- 출고지시취소HUB전달 : DLIVY_DRCT_CNCL_HUB
+	 		- 판매영수증 HUB전달 : SALE_RCPTFR_HUB
+	 		- 출고의뢰 HUB전달 : DLIVY_REQEST_HUB
+	-->
+	<update id="modifyOrdGodErpDstbFlg" parameterType="infOrdGodErpDstbFlg">
+		/* [delivery.command.hub.xml][modifyOrdGodErpDstbFlg]['분배 플래그' 수정][js279.kim] */
+		MERGE INTO INF_ORD_GOD_ERP_DSTB_FLG x
+			USING (
+				SELECT #{ ordNo } 		AS ORD_NO		/* 주문번호  */
+                     , #{ ordGodTurn } 	AS ORD_GOD_TURN	/* 주문상품순번  */
+                     , #{ qtyTurn } 	AS QTY_TURN		/* 주문상품 수량 순번  */
+                     , #{ dstbFlgCd } 	AS DSTB_FLG_CD	/* 분배 플래그 */
+                     , #{ dstbFlgYn } 	AS DSTB_FLG_YN	/* 분배 플래그 여부 */
+                     , SYSDATE 			AS DSTB_FLG_DT	
+                     , 'SYSTEM' 		AS REGTR_ID
+                     , SYSDATE          AS REG_DT
+                     , 'SYSTEM' 		AS UDTER_ID
+                     , SYSDATE         	AS UDT_DT
+				  FROM DUAL
+			) y ON ( x.ORD_NO = y.ORD_NO 
+			   AND x.ORD_GOD_TURN = y.ORD_GOD_TURN
+			   AND x.QTY_TURN = y.QTY_TURN
+			   AND x.DSTB_FLG_CD = y.DSTB_FLG_CD )
+			WHEN MATCHED THEN
+				UPDATE 
+				   SET DSTB_FLG_YN  = y.DSTB_FLG_YN
+                     , DSTB_FLG_DT  = y.DSTB_FLG_DT
+                     , UDTER_ID     = y.UDTER_ID
+                     , UDT_DT       = y.UDT_DT
+			WHEN NOT MATCHED THEN
+				INSERT ( ORD_NO
+                       , ORD_GOD_TURN
+                       , QTY_TURN
+                       , DSTB_FLG_CD
+                       , DSTB_FLG_YN
+                       , DSTB_FLG_DT
+                       , REGTR_ID
+                       , REG_DT
+                       , UDTER_ID
+                       , UDT_DT 
+				)
+				VALUES ( y.ORD_NO
+                       , y.ORD_GOD_TURN
+                       , y.QTY_TURN
+                       , y.DSTB_FLG_CD
+                       , y.DSTB_FLG_YN
+                       , y.DSTB_FLG_DT
+                       , y.REGTR_ID
+                       , y.REG_DT
+                       , y.UDTER_ID
+                       , y.UDT_DT      
+				)
+	</update>
+
+
+	<!--
+		'분배 플래그' 수정 (동일한 ordNo, ordGodTurn 에 대해 전체 처리) 
+	 		- 예약영수증HUB전달 : RESVE_RCPTFR_HUB
+	 		- 출고지시취소HUB전달 : DLIVY_DRCT_CNCL_HUB
+	 		- 판매영수증 HUB전달 : SALE_RCPTFR_HUB
+	 		- 출고의뢰 HUB전달 : DLIVY_REQEST_HUB
+	-->
+	<update id="modifyOrdGodErpDstbFlg4GodTotal" parameterType="infOrdGodErpDstbFlg">
+		/* [batch.delivery.plantorder.hub.xml][modifyOrdGodErpDstbFlg4Assign]['분배 플래그' 수정][] */
+		UPDATE INF_ORD_GOD_ERP_DSTB_FLG
+		   SET DSTB_FLG_YN = #{ dstbFlgYn }
+		     , DSTB_FLG_DT = SYSDATE
+		     , UDTER_ID = #{ udterId }
+		     , UDT_DT = SYSDATE
+		 WHERE ORD_NO = #{ ordNo }
+		   AND ORD_GOD_TURN = #{ ordGodTurn }
+		   AND DSTB_FLG_CD = #{ dstbFlgCd }
+	</update>
+	
+</mapper>

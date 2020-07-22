@@ -1,0 +1,3719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.claim.manage">
+ <sql id="whereClm">
+	AND    C.CLM_TP_CD <![CDATA[<>]]> 'REPAIR'
+	<if test="affVrscComId != null and affVrscComId != ''">
+		AND o.aff_vrsc_com_id = #{affVrscComId}
+	</if>
+
+	<!-- 2015.9.24, Harris, 픽업 주문과 일반 주문에 대한 배송매장 및 픽업매장 조회조건 정정 ( 배송매장과 픽업매장 구분토록 정정 )  -->
+	<if test="shopId != null and shopId != '' ">
+        AND EXISTS  (SELECT og.ord_no
+                  FROM ord_god og
+                  JOIN lgs_dlivy_drct_god lddg ON (og.ord_no = lddg.ord_no AND og.ord_god_turn = lddg.ord_god_turn AND og.dlv_pcupsp_turn = lddg.dlv_pcupsp_turn)
+                  WHERE og.ord_no=c.ord_no AND lddg.DLV_SHOP_ID=#{shopId}
+                  union all
+                  SELECT og.ord_no
+                 FROM ord_god og
+                      JOIN
+                      lgs_dlvsp dlvsp
+                         ON (og.ord_no = dlvsp.ord_no AND og.dlv_pcupsp_turn = dlvsp.dlv_pcupsp_turn)
+                 WHERE og.ord_no = c.ord_no AND dlvsp.PKUP_SHOP_ID =#{shopId} /*출고매장*/
+                 UNION ALL
+                 SELECT og.ord_no
+                 FROM ord_god og
+                      JOIN
+                      lgs_dlvsp dlvsp
+                         ON (og.ord_no = dlvsp.ord_no AND og.dlv_pcupsp_turn = dlvsp.dlv_pcupsp_turn)
+                 WHERE og.ord_no = c.ord_no AND dlvsp.PKUP_SHOP_ID =#{shopId} /*픽업매장*/
+            )
+
+	</if>
+
+
+	<choose>
+		<when test="ordNo != null and ordNo != ''">
+			AND c.ord_no in
+			<foreach collection="ordNos" item="item" separator="," open="(" close=")" index="idx">
+				#{item}
+			</foreach>
+		</when>
+		<when test="saleAffComOrdNo != null and saleAffComOrdNo != ''">
+			AND c.aff_com_ord_no in
+			<foreach collection="saleAffComOrdNos" item="item" separator="," open="(" close=")" index="idx">
+				#{item}
+			</foreach>
+		</when>
+	    <otherwise>
+
+			<if test="clmDtStart != null and clmDtStart != '' and clmDtEnd != null and clmDtEnd != ''">
+		 		AND (c.clm_dt <![CDATA[>=]]> to_date(#{clmDtStart}, 'YYYY-MM-DD HH24:MI:SS')) and (c.clm_dt <![CDATA[<=]]> to_date(#{clmDtEnd}, 'YYYY-MM-DD HH24:MI:SS'))
+			</if>
+			<if test="clmCompDtStart != null and clmCompDtStart != '' and clmCompDtEnd != null and clmCompDtEnd != ''">
+		 		AND (c.compt_dt <![CDATA[>=]]> to_date(#{clmCompDtStart}, 'YYYY-MM-DD HH24:MI:SS')) and (c.clm_dt <![CDATA[<=]]> to_date(#{clmCompDtEnd}, 'YYYY-MM-DD HH24:MI:SS'))
+			</if>
+			<if test="mallId != null and mallId != ''">
+		 		AND o.mall_id = #{mallId}
+			</if>
+			<if test="langCd != null and langCd != ''">
+		 		AND o.lang_cd = #{langCd}
+			</if>
+	    	<if test="partmalSectCd != null and partmalSectCd != ''">
+		 		AND cwg.partmal_sect_cd in
+		 		<foreach collection="partmalSectCdArr" item="item" separator="," open="(" close=")" index="idx">
+					#{item}
+				</foreach>
+			</if>
+			<if test="clmTpCd != null and clmTpCd != ''">
+		 		AND c.clm_tp_cd = #{clmTpCd}
+			</if>
+			<if test="clmStatCd != null and clmStatCd != ''">
+		 		AND c.clm_stat_cd = #{clmStatCd}
+			</if>
+			<if test="clmResnCd != null and clmResnCd != ''">
+		 		AND c.clm_resn_cd = #{clmResnCd}
+			</if>
+			<if test="clmNo != null and clmNo != ''">
+		 		AND c.clm_no = #{clmNo}
+			</if>
+			<if test="cstmrNm != null and cstmrNm != ''">
+		 		AND o.cstmr_nm = #{cstmrNm}
+			</if>
+			<if test="reciverTel != null and reciverTel != ''">
+                AND    DECODE(LD.ADDRSE_MOBIL_NATION_NO ,'82', '', LD.ADDRSE_MOBIL_NATION_NO) || LD.ADDRSE_MOBIL_AREA_NO || LD.ADDRSE_MOBIL_TLOF_NO || LD.ADDRSE_MOBIL_TLOF_WTHN_NO = REPLACE(REPLACE(#{reciverTel},' ',''),'-','')
+			</if>
+			<if test="addrseNm != null and addrseNm != ''">
+		 		AND ld.addrse_nm = #{addrseNm}
+			</if>
+			<if test="comId != null and comId != ''">
+		 		AND cwg.com_id = #{comId}
+			</if>
+			<if test="affComId != null and affComId != ''">
+		 		AND o.aff_com_id = #{affComId}
+			</if>
+			<if test="ordTpCd != null and ordTpCd != ''">
+		 		AND o.ord_tp_cd = #{ordTpCd}
+			</if>
+			<if test="brndId != null and brndId != ''">
+		 		AND cwg.brnd_id in
+		 		<foreach collection="brndIdArr" item="item" separator="," open="(" close=")" index="idx">
+					#{item}
+				</foreach>
+			</if>
+
+			<!-- SR #21177 김병철 비이커 BO 데이터 집계 요청 Start -->
+			<if test="upperBrndId != null and upperBrndId != ''">
+				AND	EXISTS	(	SELECT	1
+								FROM 	(	SELECT	SB.brnd_id
+             									FROM 	SYS_BRND SB
+             									WHERE	BRND_GRP_YN = 'N'
+             									AND		LEVEL = 3
+             									CONNECT BY PRIOR	SB.BRND_ID = SB.UPPER_BRND_ID
+             									AND 	SB.USE_YN = 'Y'
+             									START WITH	SB.BRND_ID = #{upperBrndId,jdbcType=VARCHAR}
+             								) AA
+             						WHERE  AA.brnd_id = cwg.brnd_id )
+			</if>
+			<!-- SR #21177 김병철 비이커 BO 데이터 집계 요청 End -->
+			
+			<!-- [#48750][개발] 불량상품 고객에 대한 교환/반품 Process 개선 요청 -->
+			<if test="comall != null and comall != '' and comall == 'MCOM' ">
+               AND o.aff_com_ord_no IS  NULL
+            </if>
+            <if test="comall != null and comall != '' and comall == 'AFF_COM' ">
+               AND o.aff_com_ord_no IS NOT NULL
+            </if>
+            <if test="clmPreprogrsSectCd != null and clmPreprogrsSectCd != ''">
+		 		AND c.CLM_PREPROGRS_SECT_CD in
+		 		<foreach collection="clmPreprogrsSectCdArr" item="item" separator="," open="(" close=")" index="idx">
+					#{item}
+				</foreach>
+			</if>
+			<if test="erpCnfirmDtStart != null and erpCnfirmDtStart != '' and erpCnfirmDtEnd != null and erpCnfirmDtEnd != ''">
+		 		AND (lgsrdg.erp_cnfirm_dt <![CDATA[>=]]> to_date(#{erpCnfirmDtStart}, 'YYYY-MM-DD HH24:MI:SS')) and (lgsrdg.erp_cnfirm_dt <![CDATA[<=]]> to_date(#{erpCnfirmDtEnd}, 'YYYY-MM-DD HH24:MI:SS'))
+			</if>
+		</otherwise>
+	</choose>
+ </sql>
+
+
+	<resultMap id="claimUserInfoDetailResult" type="com.plgrim.ncp.biz.claim.result.ClaimUserInfoDetailResult">
+		<result property="mbr.mbrTpCd" column="mbrTpCd" />
+		<result property="mbr.mbrAtrbCd" column="mbrAtrbCd" />
+		<result property="mbr.mbrId" column="mbrId" />
+		<result property="ord.cstmrNm" column="cstmrNm" />
+		<result property="cstmrMobile" column="cstmrMobile" />
+		<result property="cstmrTel" column="cstmrTel" />
+		<result property="ord.cstmrEmail" column="cstmrEmail" />
+		<result property="cpnCnt" column="cpnCnt" />
+	</resultMap>
+	<resultMap id="claimInfoDetailResult" type="com.plgrim.ncp.biz.claim.result.ClaimInfoDetailResult">
+		<result property="com.comTpCd" column="comTpCd" />
+		<result property="sysMall.mallNm" column="mallNm" />
+		<result property="sysLang.langCdNm" column="CNSLT_SN" />
+		<result property="ord.ordNo" column="CNSLT_SN" />
+		<result property="clm.clmNo" column="CNSLT_SN" />
+		<result property="clm.clmStatCd" column="CNSLT_SN" />
+		<result property="clm.clmDt" column="CNSLT_SN" />
+		<result property="clm.comptDt" column="CNSLT_SN" />
+		<result property="com.comNm" column="CNSLT_SN" />
+		<result property="mbrRfdBnkAcct.rfdBnkAcctBnkCd" column="CNSLT_SN" />
+		<result property="mbrRfdBnkAcct.rfdBnkAcctNo" column="CNSLT_SN" />
+	</resultMap>
+
+	<select id="getListClaim" parameterType="com.plgrim.ncp.biz.claim.data.ClaimListSearchDTO"
+		resultType="com.plgrim.ncp.biz.claim.result.ClaimListResult">
+		SELECT NO /* [claim.manage.xml][getListClaim]*/
+			  ,CLM_NO
+			  ,ORD_NO
+			  ,PARTMAL_SECT_CD_NM
+			  ,MALL_ID
+			  ,LANG_CD
+			  ,CLM_DT
+			  ,CLM_TP_CD_NM
+			  ,CLM_STAT_CD_NM
+			  ,CLM_RESN_CD_NM
+			  ,CLM_RESN_CONT
+			  ,RFD_STAT_CD_NM
+			  ,RTRVL_STAT_CD_NM
+			  ,SALE_AFF_COM_ID_NM
+			  ,ERP_GOD_NO
+			  ,GOD_NO
+			  ,GOD_NM
+			  ,BRND_ID
+              ,FN_MASKING('FLNM', CSTMR_NM, '', #{maskingYn, jdbcType=VARCHAR}) AS CSTMR_NM
+              ,FN_MASKING('PHON', CSTMR_MOBILE, '', #{maskingYn, jdbcType=VARCHAR}) AS CSTMR_MOBILE
+              ,FN_MASKING('FLNM', ADDRSE_NM, '', #{maskingYn, jdbcType=VARCHAR}) AS ADDRSE_NM
+              ,FN_MASKING('PHON', ADDRSE_MOBILE, '', #{maskingYn, jdbcType=VARCHAR}) AS ADDRSE_MOBILE
+			  ,FN_MASKING('FLNM', CS_ADMIN, '', #{maskingYn, jdbcType=VARCHAR}) AS CS_ADMIN
+			  ,RCEPT_DT
+			  ,COMPT_DT
+			  ,SUBSTR(CPN, 1, INSTR(CPN, '|') - 1) AS CLM_CPN_INFO
+			  ,SUBSTR(CPN, INSTR(CPN, '|') + 1) AS ISSU_ADMIN_ID
+			  ,SALE_AFF_COM_ORD_NO
+			  ,CLM_TP_CD
+			  , 'N' AS GIFT_RTRVL_TGT_YN
+			  ,clmPreprogrsSectCd
+			  ,erpCnfirmDt
+			  ,gdgpStatCd
+		FROM   (SELECT C.NO
+					  ,C.CLM_NO
+					  ,C.ORD_NO
+					  ,(CASE
+						 WHEN C.AFF_COM_ORD_NO IS NULL THEN
+						  '자사'
+						 ELSE
+						  CO.COM_NM
+					   END) PARTMAL_SECT_CD_NM
+					  ,SM.MALL_NM AS MALL_ID /*몰*/
+					  ,LA.CD_NM AS LANG_CD /*언어*/
+					  ,C.CLM_DT /*신청일시*/
+					  ,CLMTP.CD_NM AS CLM_TP_CD_NM /*클레임구분*/
+					  ,CLMSTAT.CD_NM AS CLM_STAT_CD_NM /*클레임상태*/
+					  ,(CASE
+						 WHEN C.CLM_RESN_CD = 'ETC' OR C.CLM_RESN_CD = 'ETC_GOD_INFO_GAP' THEN
+						  CLMRESN.CD_NM || ':' || C.CLM_RESN_CONT
+						 ELSE
+						  CLMRESN.CD_NM
+					   END) AS CLM_RESN_CD_NM /*클레임사유*/
+					  ,C.CLM_RESN_CONT
+					  ,RFDSTAT.CD_NM AS RFD_STAT_CD_NM /*환불상태*/
+					  ,(SELECT MAX(RTRVLSTAT.CD_NM)
+						FROM   LGS_RTRVL_DRCT_GOD LRDG
+						JOIN   MV_SYS_CD RTRVLSTAT
+						ON     (RTRVLSTAT.CD = LRDG.RTRVL_STAT_CD AND RTRVLSTAT.UPPER_CD = 'RTRVL_STAT' AND RTRVLSTAT.LANG_CD = 'KOR')
+						WHERE  LRDG.CLM_NO = C.CLM_NO
+						AND    LRDG.RTRVL_DRCT_TP_CD = C.CLM_TP_CD2
+						AND    LRDG.CLM_WRHS_GOD_TURN = C.CLM_WRHS_GOD_TURN) AS RTRVL_STAT_CD_NM /*회수상태*/
+					  ,AFFCO.COM_NM || '(' || C.AFF_VRSC_COM_ID || ')' AS SALE_AFF_COM_ID_NM /*판매제휴사*/
+					  ,C.ERP_GOD_NO /*상품코드*/
+					  ,C.GOD_NO /*온라인상품코드*/
+					  ,C.GOD_NM /*상품명*/
+					  ,C.BRND_ID /*브랜드*/
+					  ,C.CSTMR_NM /*구매자 이름*/
+					  ,DECODE(C.CSTMR_MOBIL_NATION_NO, '82', C.CSTMR_MOBIL_AREA_NO || '-' || C.CSTMR_MOBIL_TLOF_NO || '-' || C.CSTMR_MOBIL_TLOF_WTHN_NO, C.CSTMR_MOBIL_NATION_NO || '-' || C.CSTMR_MOBIL_AREA_NO || '-' || C.CSTMR_MOBIL_TLOF_NO || '-' || C.CSTMR_MOBIL_TLOF_WTHN_NO) AS CSTMR_MOBILE /*구매자 연락처*/
+					  ,C.ADDRSE_NM /*수취인이름*/
+					  ,C.ADDRSE_MOBILE
+					  ,SA.ADMIN_NM AS CS_ADMIN /*CS접수자*/
+					  ,C.RCEPT_DT /*CS접수일시*/
+					  ,C.COMPT_DT /*완료일시*/
+					  ,(SELECT /*+ ORDERED USE_NL(MIC P SA) */ CASE
+								 WHEN MAX(P.PRM_NM) IS NOT NULL THEN
+								  (MAX(P.PRM_NM) || '외 ' || (COUNT(1) - 1) || '개')
+								 ELSE
+								  NULL
+							   END || '|' || MAX(SA.ADMIN_NM)
+						FROM   MBR_ISSU_CPN MIC
+						JOIN   PRM P
+						ON     MIC.PRM_NO = P.PRM_NO
+						JOIN   SYS_ADMIN SA
+						ON     SA.ADMIN_ID = MIC.ISSU_ADMIN_ID
+						WHERE  MIC.CLM_NO = C.CLM_NO) CPN
+					  ,C.AFF_COM_ORD_NO AS SALE_AFF_COM_ORD_NO /*제휴사주문번호*/
+					  ,C.CLM_TP_CD
+					  ,CLMPRESECT.CD_NM as clmPreprogrsSectCd
+					  ,C.erpCnfirmDt
+					  ,C.gdgpStatCd
+				FROM   (
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+										SELECT C.CLM_NO
+											  ,C.ORD_NO
+											  ,C.AFF_COM_ORD_NO
+											  ,C.CLM_DT
+											  ,C.CLM_TP_CD
+											  ,CASE WHEN c.clm_tp_cd = 'GNRL_EXCHG' THEN 'EXCHG' ELSE c.clm_tp_cd END AS clm_tp_cd2        /* 회수지시상품 유형 */
+											  ,CWG.CLM_RESN_CD
+											  ,C.AFF_COM_ID
+											  ,C.AFF_VRSC_COM_ID
+											  ,C.CLM_STAT_CD
+											  ,C.COMPT_DT
+											  ,C.RCEPT_DT
+											  ,C.RCEPT_ADMIN_ID
+											  ,CWG.CLM_RESN_CONT
+											  ,CWG.CLM_WRHS_GOD_TURN
+											  ,CWG.ERP_GOD_NO
+											  ,CWG.GOD_NO
+											  ,CWG.GOD_NM
+											  ,CWG.BRND_ID
+											  ,O.CSTMR_NM
+											  ,O.LANG_CD
+											  ,O.MALL_ID
+											  ,O.CSTMR_MOBIL_NATION_NO
+											  ,O.CSTMR_MOBIL_AREA_NO
+											  ,O.CSTMR_MOBIL_TLOF_NO
+											  ,O.CSTMR_MOBIL_TLOF_WTHN_NO
+											  ,CWG.ITM_NM
+											  ,CWG.DLV_PCUPSP_TURN
+											  ,LD.ADDRSE_NM
+											  ,DECODE(LD.ADDRSE_MOBIL_NATION_NO
+													 ,'82'
+													 ,LD.ADDRSE_MOBIL_AREA_NO || '-' || LD.ADDRSE_MOBIL_TLOF_NO || '-' || LD.ADDRSE_MOBIL_TLOF_WTHN_NO
+													 ,LD.ADDRSE_MOBIL_NATION_NO || '-' || LD.ADDRSE_MOBIL_AREA_NO || '-' || LD.ADDRSE_MOBIL_TLOF_NO || '-' || LD.ADDRSE_MOBIL_TLOF_WTHN_NO) AS ADDRSE_MOBILE
+											  ,CASE 
+											  	WHEN C.CLM_TP_CD IN ('RTGOD', 'ALL_CNCL', 'PART_CNCL') AND C.CLM_STAT_CD = 'COMPT' THEN 'RFD_COMPT'
+											  	ELSE PR.RFD_STAT_CD
+											  	END AS RFD_STAT_CD
+											  ,PR.RFD_ERR_CONT
+											  ,C.CLM_PREPROGRS_SECT_CD  /* 클레임 선진행 구분 코드 */
+											  ,lgsrdg.erp_cnfirm_dt AS erpCnfirmDt      /* ERP입고확인일시 */
+											  ,CASE WHEN lgsdv.dlv_com_cd = 'CJKEX'
+								               		THEN CASE WHEN lgsdv.gdgp_stat_cd IS NOT NULL
+								                         	  THEN (SELECT NVL(cd_nm, '-')
+								                                    	FROM SYS_EXCP_CD
+								                                    WHERE grp_cd = 'FRGHT_STAT'
+								                                        AND cd = lgsdv.gdgp_stat_cd)
+								                               ELSE '-'
+								                           END
+								                     ELSE '-'    
+								               END AS gdgpStatCd /* 수거상태 */
+										FROM   CLM C
+									    INNER JOIN clm_wrhs_god cwg ON cwg.clm_no = c.clm_no AND cwg.ord_no = c.ord_no
+                                        INNER JOIN ord o ON o.ord_no = c.ord_no AND cwg.ord_no = o.ord_no
+										<if test="cstmrId != null and cstmrId != ''">
+										AND    O.MBR_NO IN (SELECT M.MBR_NO
+															FROM   MBR M
+															WHERE  M.MBR_ID = #{cstmrId})
+		                            	</if>
+										LEFT   OUTER JOIN LGS_DLVSP LD
+										ON     LD.CLM_NO = C.CLM_NO
+										AND    LD.ORD_NO = C.ORD_NO
+										AND    LD.DLV_PCUPSP_SECT_CD = 'CLM_PCUPSP'
+										AND    LD.DLV_PCUPSP_TURN = CWG.DLV_PCUPSP_TURN
+										LEFT   OUTER JOIN PAY P
+										ON     P.CLM_NO = C.CLM_NO
+										AND    P.PAY_TP_CD = 'CLM'
+										AND    P.PG_APRV_NO IS NOT NULL  /* PG 승인 번호 (환불상태조회) */
+										AND    p.deal_tp_cd != 'PAY_COMPT'
+										LEFT   OUTER JOIN PAY_RFD PR
+										ON     (PR.PAY_NO = P.PAY_NO AND PR.RFD_TURN = 1)
+										<!-- [#48750][개발] 불량상품 고객에 대한 교환/반품 Process 개선 요청 -->
+										LEFT   OUTER JOIN LGS_RTRVL_DRCT_GOD lgsrdg
+										  ON (lgsrdg.clm_no = cwg.clm_no
+										  AND lgsrdg.clm_wrhs_god_turn = cwg.clm_wrhs_god_turn
+										  AND lgsrdg.ord_no = cwg.ord_no
+										  AND lgsrdg.dlv_pcupsp_turn = cwg.dlv_pcupsp_turn)
+										LEFT   OUTER JOIN LGS_DLV lgsdv
+										  ON (lgsdv.ord_no = ld.ord_no
+										  AND lgsdv.clm_no = ld.clm_no
+										  AND lgsdv.dlv_pcupsp_turn = ld.dlv_pcupsp_turn
+										  AND lgsdv.dlv_turn = lgsrdg.dlv_turn)
+										WHERE  1 = 1
+		      <include refid="com.plgrim.ncp.biz.claim.manage.whereClm"/>
+										ORDER  BY C.CLM_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>) C
+				LEFT   OUTER JOIN COM CO
+				ON     (CO.COM_ID = C.AFF_COM_ID)
+				LEFT   OUTER JOIN COM AFFCO
+				ON     (AFFCO.COM_ID = C.AFF_VRSC_COM_ID)
+				LEFT   OUTER JOIN MV_SYS_CD LA
+				ON     (C.LANG_CD = LA.CD AND LA.LANG_CD = C.LANG_CD AND LA.UPPER_CD = 'LANG')
+				LEFT   OUTER JOIN MV_SYS_CD CLMTP
+				ON     (CLMTP.CD = C.CLM_TP_CD AND CLMTP.UPPER_CD = 'CLM_TP' AND CLMTP.LANG_CD = 'KOR')
+				LEFT   OUTER JOIN MV_SYS_CD CLMSTAT
+				ON     (CLMSTAT.CD = C.CLM_STAT_CD AND CLMSTAT.UPPER_CD = 'CLM_STAT' AND CLMSTAT.LANG_CD = 'KOR')
+				LEFT   OUTER JOIN MV_SYS_CD CLMRESN
+				ON     (CLMRESN.CD = C.CLM_RESN_CD AND CLMRESN.UPPER_CD = 'CLM_RSN' AND CLMRESN.LANG_CD = 'KOR')
+				LEFT   OUTER JOIN SYS_MALL SM
+				ON     (SM.MALL_ID = C.MALL_ID AND SM.USE_YN = 'Y')
+				LEFT   OUTER JOIN SYS_ADMIN SA
+				ON     (SA.ADMIN_ID = C.RCEPT_ADMIN_ID AND SA.ADMIN_STAT_CD = 'APRV_COMPT')
+				LEFT   OUTER JOIN MV_SYS_CD RFDSTAT
+				ON     (RFDSTAT.CD = C.RFD_STAT_CD AND RFDSTAT.UPPER_CD = 'RFD_STAT' AND RFDSTAT.LANG_CD = 'KOR')
+				LEFT   OUTER JOIN MV_SYS_CD CLMPRESECT
+				ON     (CLMPRESECT.CD = C.CLM_PREPROGRS_SECT_CD AND CLMPRESECT.UPPER_CD = 'CLM_PREPROGRS_SECT' AND CLMPRESECT.LANG_CD = 'KOR')
+		) C
+		ORDER  BY NO
+	</select>
+
+
+
+
+
+	<select id="getListClaimTotalCnt" parameterType="com.plgrim.ncp.biz.claim.data.ClaimListSearchDTO" resultType="long">
+		SELECT COUNT(1)
+		FROM   CLM C
+		INNER  JOIN ORD O
+		ON     O.ORD_NO = C.ORD_NO
+			<if test="cstmrId != null and cstmrId != ''">
+		AND    O.MBR_NO IN (SELECT M.MBR_NO
+							FROM   MBR M
+							WHERE  M.MBR_ID = #{cstmrId})
+			</if>
+		INNER  JOIN CLM_WRHS_GOD CWG
+		ON     CWG.CLM_NO = C.CLM_NO
+		AND    CWG.ORD_NO = C.ORD_NO
+		LEFT   OUTER JOIN LGS_DLVSP LD
+		ON     LD.CLM_NO = C.CLM_NO
+		AND    LD.ORD_NO = C.ORD_NO
+		AND    LD.DLV_PCUPSP_SECT_CD = 'CLM_PCUPSP'
+		AND    LD.DLV_PCUPSP_TURN = CWG.DLV_PCUPSP_TURN
+		LEFT   OUTER JOIN PAY P
+		ON     P.CLM_NO = C.CLM_NO
+		AND    P.PAY_TP_CD = 'CLM'
+		AND    P.PG_APRV_NO IS NOT NULL  /* PG 승인 번호 (환불상태조회) */
+		AND    p.deal_tp_cd != 'PAY_COMPT'
+		LEFT   OUTER JOIN PAY_RFD PR
+		ON     (PR.PAY_NO = P.PAY_NO AND PR.RFD_TURN = 1)
+		<!-- [#48750][개발] 불량상품 고객에 대한 교환/반품 Process 개선 요청 -->
+		LEFT   OUTER JOIN LGS_RTRVL_DRCT_GOD lgsrdg
+		  ON (lgsrdg.clm_no = cwg.clm_no
+		  AND lgsrdg.clm_wrhs_god_turn = cwg.clm_wrhs_god_turn
+		  AND lgsrdg.ord_no = cwg.ord_no
+		  AND lgsrdg.dlv_pcupsp_turn = cwg.dlv_pcupsp_turn)
+		LEFT   OUTER JOIN LGS_DLV lgsdv
+		  ON (lgsdv.ord_no = ld.ord_no
+		  AND lgsdv.clm_no = ld.clm_no
+		  AND lgsdv.dlv_pcupsp_turn = ld.dlv_pcupsp_turn
+		  AND lgsdv.dlv_turn = lgsrdg.dlv_turn)
+		WHERE  1 = 1
+		      <include refid="com.plgrim.ncp.biz.claim.manage.whereClm"/>
+	</select>
+
+	<select id="getClaimUserInfo" parameterType="String" resultType="com.plgrim.ncp.biz.claim.result.ClaimUserInfoDetailResult">
+		 SELECT	/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.getClaimUserInfo][클레임상세 유저정보 조회][Aether] */
+			 mbrTpCd.cd_nm as mbrTpCdNm
+			, O.MBR_TP_CD as mbrTpCd
+			<!-- , O.MBR_ATRB_CD -->
+			, mbrAtrbCd.cd_nm   as mbrStrbCdNm
+			, o.mbr_no      as mbrNo
+			, m.erp_cstmr_no 		as erpNo
+			, m.mbr_id      as mbrid
+			, o.cstmr_nm    as cstmrNm
+<!--
+			, decode(o.cstmr_tel_nation_no,null,'',
+				o.cstmr_tel_nation_no
+			   || '-'
+			   || o.cstmr_tel_area_no
+			   || '-'
+			   || o.cstmr_tel_tlof_no
+			   || '-'
+			   || o.cstmr_tel_tlof_wthn_no)
+			       AS cstmrTel
+			, decode(o.cstmr_mobil_nation_no,'',
+				o.cstmr_mobil_nation_no
+			   || '-'
+			   || o.cstmr_mobil_area_no
+			   || '-'
+			   || o.cstmr_mobil_tlof_no
+			   || '-'
+			   || o.cstmr_mobil_tlof_wthn_no)
+			       AS cstmrMobile
+ -->
+            , fn_masking('PHON' ,CASE WHEN o.cstmr_tel_nation_no IS NULL THEN '' ELSE o.cstmr_tel_nation_no ||'-' END   || o.cstmr_tel_area_no||'-'||o.cstmr_tel_tlof_no ||'-'||o.cstmr_tel_tlof_wthn_no,'', 'N'  ) AS cstmrTel    /*전화번호*/
+            , fn_masking('PHON' ,CASE WHEN o.cstmr_mobil_nation_no IS NULL THEN '' ELSE o.cstmr_mobil_nation_no ||'-' END  || o.cstmr_mobil_area_no||'-'||o.cstmr_mobil_tlof_no ||'-'||o.cstmr_mobil_tlof_wthn_no,'', 'N' ) AS cstmrMobile /*휴대전화번호*/
+			, o.cstmr_email AS cstmrEmail
+			,mic.cnt    as cpnCnt
+		FROM clm c
+		JOIN ord o on C.ORD_NO = O.ORD_NO
+		LEFT OUTER JOIN mbr m ON o.mbr_no = m.mbr_no
+		LEFT OUTER JOIN mv_sys_cd mbrTpCd ON mbrTpCd.CD = O.MBR_TP_CD AND mbrTpCd.UPPER_CD = 'MBR_TP' AND mbrTpCd.LANG_CD = 'KOR'
+		LEFT OUTER JOIN mv_sys_cd mbrAtrbCd ON mbrAtrbCd.CD = O.MBR_ATRB_CD AND mbrAtrbCd.UPPER_CD = 'MBR_ATRB' AND mbrAtrbCd.LANG_CD = 'KOR'
+		LEFT OUTER JOIN(
+		SELECT
+		    SUM(1) as cnt
+		    ,MICIN.MBR_NO
+		FROM mbr_issu_cpn micin
+		WHERE MICIN.CPN_STAT_CD = 'NO_USE'
+		GROUP BY micin.mbr_no
+		)mic  ON o.mbr_no = mic.mbr_no
+		WHERE c.clm_no = #{clmNo}
+	</select>
+
+	<select id="getClaimInfo" parameterType="String" resultType="com.plgrim.ncp.biz.claim.result.ClaimInfoDetailResult">
+        SELECT    /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.getClaimInfo][클레임상세 클레임정보 조회][Aether] */
+                     CASE
+                    WHEN O.ORD_TP_CD = 'AFF_ORD' THEN ('제휴'||'('|| C.COM_NM || ')')
+                    ELSE '자사'
+                    END ordTp
+            , O.ORD_TP_CD         as ordTpCd
+            , O.MALL_ID           as mallId
+            , SM.MALL_NM          as mallNm
+            , SL.LANG_CD_NM       as langCdNm
+            , CLM.CLM_DT          as clmDt
+            , CLM.rcept_dt          as rceptDt
+            , CLM.compt_dt          as comptDt
+            , O.ORD_NO            as ordNo
+            , CLM.CLM_NO          as clmNo
+            , CLM.CLM_STAT_CD     as clmStatCd
+            , MSC.cd_nm            as  clmStatCdNm
+            , case when nvl(lrdg.tgtCntSum,0)-nvl(lrdg.totCntSum,0)=0 and lrdg.totCntSum is not null then 'YES' else 'NO' end hdryYn /* 택배사 수거지시 제외여부 */
+            , clm.virtl_ord_no   as virtlOrdNo
+            , rfdBnk.cd_nm as rfdBnkNm
+            , clm.RFD_BNK_CD 				as rfdBnkCd			/* 환불 은행 코드 */
+            , PKG_CRYPTO.DECRYPT(clm.RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') as rfdBnkAcctNo		/* 환불 계좌 번호 */
+            , clm.RFD_ACNTHLDR_NM as rfdAcnthldrNm	/* 환불 예금주 명 */
+            , decode(CLM.PG_TRNSMIS_TGT_YN,'Y','YES','NO') as pgYn
+            , clm.CLM_PREPROGRS_SECT_CD as clmPreprogrsSectCd /* 클레임 선진행 구분 코드 */
+        FROM CLM CLM
+        LEFT JOIN ORD O ON O.ORD_NO = CLM.ORD_NO
+        LEFT OUTER JOIN MV_SYS_CD MSC ON msc.upper_cd = 'CLM_STAT' AND msc.cd = CLM.CLM_STAT_CD AND msc.lang_cd = 'KOR'
+        LEFT OUTER JOIN COM C ON O.AFF_COM_ID = C.COM_ID
+        LEFT OUTER JOIN SYS_MALL SM ON SM.MALL_ID = O.MALL_ID
+        LEFT OUTER JOIN SYS_LANG SL ON SL.LANG_CD = O.LANG_CD
+        LEFT OUTER JOIN mv_sys_cd rfdBnk ON rfdBnk.cd = clm.RFD_BNK_CD and rfdBnk.upper_cd = 'BNK' and rfdBnk.lang_cd = 'KOR'
+        left outer join(
+            select
+                lrdgin.clm_no
+                ,sum(case when LRDGin.HDRY_COM_TRNSMIS_TGT_YN = 'Y' then 1 else 0 end) as tgtCntSum
+                ,sum(1) as totCntSum
+            from LGS_RTRVL_DRCT_GOD lrdgin
+            group by lrdgin.clm_no
+        )lrdg  on CLM.CLM_NO = LRDG.CLM_NO
+        WHERE CLM.clm_no = #{clmNo}
+	</select>
+
+
+	<select id="getClmRceptCompt" parameterType="com.plgrim.ncp.biz.claim.data.ClaimSearchDTO" resultType="Integer">
+		select nvl(count(1),0)	/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.getClmRceptCompt][클레임접수 주문취소 진행중인 클레임 유무체크][Aether] */
+		from clm c
+		join clm_wrhs_god cwg on c.clm_no = cwg.clm_no
+		where 1=1
+		and C.CLM_STAT_CD <![CDATA[<>]]> 'WTHDRAW' /*철회*/
+		<if test='clmNo != null and clmNo != ""'>
+			AND C.CLM_NO = #{clmNo}
+		</if>
+		<if test='ordNo != null and ordNo != ""'>
+			AND C.ORD_NO = #{ordNo}
+		</if>
+		<if test='dlvspClmOrdGod!=null and dlvspClmOrdGod!=""'>
+			AND CWG.ORD_GOD_TURN IN
+	 		<foreach collection="dlvspClmOrdGod" item="item" separator="," open="(" close=")" index="idx">
+				#{item.ordGodTurn}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="selectOrdGodErpForUpdate" parameterType="String" resultType="Integer">
+		SELECT 1 /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.selectOrdGodErpForUpdate][주문상품erp데이터 lock(클레임 중복방지)] */
+		FROM inf_ord_god_erp_dstb
+		WHERE ord_no = #{ordNo}
+		FOR UPDATE NOWAIT
+	</select>
+
+	<select id="getClmPaySumAmt" parameterType="com.plgrim.ncp.biz.claim.data.ClmPaySumAmtSearchDTO" resultType="com.plgrim.ncp.biz.claim.data.RefundResultDTO">
+		SELECT /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.getClmPaySumAmt][배송지별 주문에 대한 클레임 입고상품의 결제환율가격을 sum하여 리턴][Aether] */
+		      NVL (SUM (I.PAY_EXCHG_RT_CRNCY_UNT_PRC), 0) AS payexchgrtcrncyamtsum
+		     , NVL (SUM (I.stdr_crncy_unt_prc), 0) AS stdrCrncyUntPrcSum
+		     , NVL (sum(C.DLV_CST_SUM_AMT),0) as dlvCstSumAmt
+		     , NVL (SUM (I.UNITY_PNT_USE_UNT_PRC), 0) AS unitypntuseamtsum
+		     , NVL (SUM (I.EVT_PNT_USE_UNT_PRC), 0) AS evtpntuseamtsum
+			 , NVL (SUM (I.WEBPNT_USE_UNT_PRC), 0) AS webpntUseAmtSum
+		  FROM clm c
+		  JOIN clm_wrhs_god cwg ON c.clm_no = cwg.clm_no
+		  JOIN inf_ord_god_erp_dstb i ON i.clm_no = c.clm_no AND i.clm_wrhs_god_turn = cwg.clm_wrhs_god_turn
+		 WHERE 1=1
+		 <if test='clmTpCd != null and clmTpCd != ""'>
+		 	   AND c.clm_tp_cd = #{clmTpCd}
+		 </if>
+		 <if test='clmStatCd != null and clmStatCd != ""'>
+		       AND c.clm_stat_cd = #{clmStatCd}
+		 </if>
+		 <if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+		       AND cwg.dlv_pcupsp_turn = #{dlvPcupspTurn}
+		 </if>
+		 <if test='ordNo != null and ordNo != ""'>
+		 	  AND c.ord_no = #{ordNo}
+		 </if>
+		 <if test='dmstcDlvCstPlcSn != null and dmstcDlvCstPlcSn != ""'>
+            AND cwg.DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn}  /* 2015-12-07 배송정책 일련번호 추가 [AshA] */
+        </if>
+	</select>
+
+	<select id="selectClaimInfo" parameterType="com.plgrim.ncp.biz.claim.data.ClaimSearchDTO" resultType="com.plgrim.ncp.biz.claim.result.OrdDetailClmInfoResult">
+	<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [claim.manage.xml][selectOrdClmList][주문상세페이지 클레임정보][Rooter] */
+			clm.clm_no
+			, cd2.cd_nm AS clmStatNm
+			, cd1.cd_nm AS clmTpNm
+			, cd3.cd_nm AS clmResnNm
+			, dlvnum.dmstc_waybil_no as dmstcWaybilNo
+			, dlvnum.ovsea_waybil_no as ovseaWaybilNo
+			, dlvnum.cvnstor_hdry_aprv_no as cvnstorHdryAprvNo
+			<!-- , (case when (clmsum.clm_qty-clmsum.clm_wthdraw_qty) > 1 then cg.god_nm || ' 외' || (clmsum.clm_qty-clmsum.clm_wthdraw_qty)
+				else cg.god_nm end) AS clmGodNm -->
+			, (CASE WHEN clmsum.clm_qty > 1 THEN cg.god_nm || ' 외' || (clmsum.clm_qty - 1) ELSE cg.god_nm END) AS clmGodNm
+			, clmsum.clm_qty as clmQty
+			, clmsum.clm_wthdraw_qty as clmWthdrawQty
+			, clm.clm_dt as clmDt
+			, pa.rfdStatCdNm AS rfdStatNm
+			, pa.rfdErrCont AS rfdErrCont
+			<!-- , DECODE(clm.regtr_id,NULL,'고객',sa1.admin_nm) AS regNm
+			, DECODE(clm.rcept_admin_id,NULL,'',sa2.admin_nm) AS rceptNm -->
+			, DECODE(sa1.admin_nm,NULL,'고객',sa1.admin_nm) AS regNm
+			, DECODE(sa2.admin_nm,NULL,'고객',sa2.admin_nm) AS rceptNm
+			, clm.clm_tp_cd as clmTpCd
+			, (SELECT cd_dscr FROM mv_sys_cd WHERE cd = dlvnum.DLV_COM_CD AND upper_cd = 'DLV_COM' AND lang_cd = 'KOR' ) AS dmstcWaybilTraceUrl
+			, (case when  (dlvnum.dlv_cst_cpn_no is not null or dlvnum.dlv_cst_cpn_prm_no is not null ) and clm.clm_tp_cd = 'RTGOD' then 'Y' ELSE 'N' END)  as rtGodCpnYn 	/* 무료 반품 교환 쿠폰 	*/
+			, (case when  (dlvnum.dlv_cst_cpn_no is not null or dlvnum.dlv_cst_cpn_prm_no is not null ) and clm.clm_tp_cd = 'GNRL_EXCHG' then 'Y' ELSE 'N' END)  as exchgCpnYn 	/* 무료 반품 교환 쿠폰 	*/
+			, CLMPRESECT.cd_nm as clmPreprogrsSectCd /* 클레임 선진행 구분 코드 */
+            , nvl(dlvnum.gdgpStatCd, '-') as gdgpStatCd /* 수거상태 */
+            , dlvnum.dlv_pcupsp_turn
+            , dlvnum.dlv_turn
+            , clm.ord_no
+            , CASE WHEN ( SELECT lgsDlv.ord_no
+                            FROM LGS_DLV lgsDlv
+                                 JOIN ORD od
+                                   ON od.ord_no = lgsDlv.ord_no
+                                  AND od.LANG_CD = 'KOR'
+                           WHERE 1=1
+                             AND lgsDlv.ord_no 			= clm.ord_no
+                             AND lgsDlv.clm_no 			= clm.clm_no
+                             AND lgsDlv.dlv_pcupsp_turn = dlvnum.dlv_pcupsp_turn
+                             AND lgsDlv.dlv_turn        = dlvnum.dlv_turn
+                             AND lgsDlv.dlv_mn_cd 		= 'APPN_HDRY'
+                             AND lgsDlv.dlv_com_trnsmis_yn = 'Y'
+			 	             AND ( (lgsDlv.gdgp_stat_cd = '01'
+                                    AND TO_CHAR(lgsDlv.dlv_com_trnsmis_dt, 'yyyymmdd') <![CDATA[<=]]> TO_CHAR(sysdate-1, 'yyyymmdd')
+                                   ) 
+                                   OR lgsDlv.gdgp_stat_cd = '12' 
+                                 )
+                             AND clm.clm_stat_cd != 'WTHDRAW'
+                         ) IS NOT NULL
+                   THEN '재수거요청'
+                   ELSE '-'
+                    END AS rePickupFlag
+            , CASE WHEN ( SELECT COUNT(lgsDlvRtrvlDrctHist.clm_no)
+		                    FROM LGS_DLV_RTRVL_DRCT_HIST lgsDlvRtrvlDrctHist
+		                   WHERE 1=1
+		                     AND lgsDlvRtrvlDrctHist.ord_no 			= clm.ord_no
+		                     AND lgsDlvRtrvlDrctHist.clm_no 			= clm.clm_no
+		                     AND lgsDlvRtrvlDrctHist.dlv_pcupsp_turn 	= dlvKey.dlv_pcupsp_turn
+		                     AND lgsDlvRtrvlDrctHist.dlv_turn        	= dlvKey.dlv_turn
+		                ) > 1
+                   THEN '재수거이력'
+                   ELSE '-'
+                    END AS rePickupHistFlag
+           , dlvnum.dlv_com_cd
+		FROM clm
+		left outer JOIN sys_cd cd1 ON (cd1.cd = clm.clm_tp_cd)
+		left outer JOIN sys_cd cd2 ON (cd2.cd = clm.clm_stat_cd)
+		left outer JOIN sys_cd cd3 ON (cd3.cd = clm.clm_resn_cd)
+		left outer JOIN sys_admin sa1 ON (sa1.admin_id = clm.regtr_id)
+		left outer JOIN sys_admin sa2 ON (sa2.admin_id = clm.rcept_admin_id)
+		left outer JOIN (
+<!--
+		    SELECT
+		    lrdg.clm_no
+		    , ld.dlv_com_cd
+		    , LISTAGG(ld.dmstc_waybil_no, ',') WITHIN GROUP (ORDER BY ld.dmstc_waybil_no) AS dmstc_waybil_no
+		    , LISTAGG(ld.ovsea_waybil_no, ',') WITHIN GROUP (ORDER BY ld.ovsea_waybil_no) AS ovsea_waybil_no
+		    , LISTAGG(ld.cvnstor_hdry_aprv_no, ',') WITHIN GROUP (ORDER BY ld.cvnstor_hdry_aprv_no) AS cvnstor_hdry_aprv_no
+		    FROM lgs_rtrvl_drct_god lrdg
+		    left outer JOIN lgs_dlv ld ON (lrdg.clm_no = ld.clm_no AND lrdg.dlv_pcupsp_turn = ld.dlv_pcupsp_turn AND lrdg.dlv_turn = ld.dlv_turn)
+		    WHERE lrdg.rtrvl_stat_cd <![CDATA[<>]]> 'RTRVL_WTHDRAW'
+		    AND lrdg.rtrvl_drct_tp_cd IN ('RTGOD', 'EXCHG', 'GNRL_EXCHG', 'DRT_EXCHG' , 'SHOP_RTGOD')
+		    GROUP BY lrdg.clm_no, ld.dlv_com_cd
+ -->
+
+          SELECT lrdg.clm_no
+               , MAX(ld.dlv_com_cd) AS dlv_com_cd
+               , MAX(ld.dmstc_waybil_no) AS dmstc_waybil_no
+               , MAX(ld.ovsea_waybil_no) AS ovsea_waybil_no
+               , MAX(ld.cvnstor_hdry_aprv_no) AS cvnstor_hdry_aprv_no
+               , MAX(ld.dlv_cst_cpn_no) as dlv_cst_cpn_no	/* 무료 반품 교환 쿠폰 	*/
+			   , MAX(ld.dlv_cst_cpn_prm_no) as dlv_cst_cpn_prm_no	/* 무료 반품 교환 쿠폰 	*/
+			   , MAX(CASE WHEN ld.dlv_com_cd = 'CJKEX'
+	               		  THEN CASE WHEN ld.gdgp_stat_cd IS NOT NULL
+	                         	    THEN (SELECT NVL(cd_nm, '-')
+	                                    	FROM SYS_EXCP_CD
+	                                    WHERE grp_cd = 'FRGHT_STAT'
+	                                        AND cd = ld.gdgp_stat_cd)
+	                                ELSE '-'
+                               END
+	                     ELSE '-'    
+	               	 END) AS gdgpStatCd /* 수거상태 */
+	           , MAX(lrdg.dlv_pcupsp_turn) 	AS dlv_pcupsp_turn
+	           , MAX(lrdg.dlv_turn) 		AS dlv_turn
+            FROM lgs_rtrvl_drct_god lrdg
+                 LEFT OUTER JOIN lgs_dlv ld
+                      ON (lrdg.clm_no = ld.clm_no
+                      AND lrdg.dlv_pcupsp_turn = ld.dlv_pcupsp_turn
+                      AND lrdg.dlv_turn = ld.dlv_turn)
+           WHERE lrdg.rtrvl_stat_cd <![CDATA[<>]]> 'RTRVL_WTHDRAW'
+             AND lrdg.rtrvl_drct_tp_cd IN
+                      ('RTGOD'
+                     , 'EXCHG'
+                     , 'GNRL_EXCHG'
+                     , 'DRT_EXCHG'
+                     , 'SHOP_RTGOD')
+        GROUP BY lrdg.clm_no
+		    ) dlvnum ON (dlvnum.clm_no = clm.clm_no)
+		LEFT JOIN (
+          SELECT lrdg2.clm_no
+               , MAX(ld2.dlv_com_cd) AS dlv_com_cd
+	           , MAX(lrdg2.dlv_pcupsp_turn) 	AS dlv_pcupsp_turn
+	           , MAX(lrdg2.dlv_turn) 		AS dlv_turn
+            FROM lgs_rtrvl_drct_god lrdg2
+                 LEFT JOIN lgs_dlv ld2
+                      ON (lrdg2.clm_no = ld2.clm_no
+                      AND lrdg2.dlv_pcupsp_turn = ld2.dlv_pcupsp_turn
+                      AND lrdg2.dlv_turn = ld2.dlv_turn)
+           WHERE 1=1
+        GROUP BY lrdg2.clm_no
+		    ) dlvKey ON (dlvKey.clm_no = clm.clm_no)
+		left outer JOIN (
+		 SELECT clm_no, god_nm FROM clm_wrhs_god WHERE clm_wrhs_god_turn = 1) cg ON (cg.clm_no = clm.clm_no)
+		left outer JOIN (
+		 SELECT clm_no, SUM(NVL(CLM_QTY,0)) AS CLM_QTY, SUM(NVL(CLM_WTHDRAW_QTY,0)) AS CLM_WTHDRAW_QTY
+		    FROM clm_wrhs_god GROUP BY clm_no) clmsum ON (clmsum.clm_no = clm.clm_no)
+		left outer JOIN
+    		( SELECT
+				p.clm_no
+                <!--, LISTAGG(cd1.cd_nm, ',') WITHIN GROUP (ORDER BY cd1.cd_nm) AS rfdStatCdNm-->
+				, MIN(cd1.cd_nm) AS rfdStatCdNm
+				, MIN(pr.rfd_err_cont) AS rfdErrCont
+				FROM pay p left JOIN pay_rfd pr ON (p.pay_no = pr.pay_no AND p.pay_tp_cd='CLM')
+                left outer JOIN mv_sys_cd cd1 ON (cd1.cd = pr.rfd_stat_cd and cd1.upper_cd = 'RFD_STAT' and cd1.lang_cd = 'KOR')
+             GROUP BY p.clm_no) pa ON (pa.clm_no = clm.clm_no)
+         LEFT   OUTER JOIN MV_SYS_CD CLMPRESECT
+				ON     (CLMPRESECT.CD = clm.CLM_PREPROGRS_SECT_CD AND CLMPRESECT.UPPER_CD = 'CLM_PREPROGRS_SECT' AND CLMPRESECT.LANG_CD = 'KOR')
+		WHERE 1=1
+			AND clm.clm_tp_cd IN ('ALL_CNCL', 'PART_CNCL','RTGOD', 'GNRL_EXCHG', 'DRT_EXCHG' , 'SHOP_RTGOD')
+			AND clm.ord_no = #{ordNo}
+	   ORDER BY clm.clm_dt 
+	<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+
+	<select id="selectClaimInfoCnt" parameterType="com.plgrim.ncp.biz.claim.data.ClaimSearchDTO" resultType="long">
+
+		SELECT /* [claim.manage.xml][selectOrdClmListCnt][주문상세페이지 클레임정보][Rooter] */
+			count(1)
+		FROM clm
+		left outer JOIN sys_cd cd1 ON (cd1.cd = clm.clm_tp_cd)
+		left outer JOIN sys_cd cd2 ON (cd2.cd = clm.clm_stat_cd)
+		left outer JOIN sys_cd cd3 ON (cd3.cd = clm.clm_resn_cd)
+		left outer JOIN sys_admin sa1 ON (sa1.admin_id = clm.regtr_id)
+		left outer JOIN sys_admin sa2 ON (sa2.admin_id = clm.rcept_admin_id)
+		left outer JOIN (
+<!--
+		    SELECT
+		    lrdg.clm_no
+		    , ld.dlv_com_cd
+		    , LISTAGG(ld.dmstc_waybil_no, ',') WITHIN GROUP (ORDER BY ld.dmstc_waybil_no) AS dmstc_waybil_no
+		    , LISTAGG(ld.ovsea_waybil_no, ',') WITHIN GROUP (ORDER BY ld.ovsea_waybil_no) AS ovsea_waybil_no
+		    , LISTAGG(ld.cvnstor_hdry_aprv_no, ',') WITHIN GROUP (ORDER BY ld.cvnstor_hdry_aprv_no) AS cvnstor_hdry_aprv_no
+		    FROM lgs_rtrvl_drct_god lrdg
+		    left outer JOIN lgs_dlv ld ON (lrdg.clm_no = ld.clm_no)
+		    WHERE lrdg.rtrvl_stat_cd <![CDATA[<>]]> 'RTRVL_WTHDRAW'
+		    AND lrdg.rtrvl_drct_tp_cd IN ('RTGOD', 'EXCHG', 'GNRL_EXCHG', 'DRT_EXCHG' , 'SHOP_RTGOD')
+		    GROUP BY lrdg.clm_no, ld.dlv_com_cd
+ -->
+
+          SELECT lrdg.clm_no
+               , MAX(ld.dlv_com_cd) AS dlv_com_cd
+               , MAX(ld.dmstc_waybil_no) AS dmstc_waybil_no
+               , MAX(ld.ovsea_waybil_no) AS ovsea_waybil_no
+               , MAX(ld.cvnstor_hdry_aprv_no) AS cvnstor_hdry_aprv_no
+            FROM lgs_rtrvl_drct_god lrdg
+                 LEFT OUTER JOIN lgs_dlv ld
+                      ON (lrdg.clm_no = ld.clm_no
+                      AND lrdg.dlv_pcupsp_turn = ld.dlv_pcupsp_turn
+                      AND lrdg.dlv_turn = ld.dlv_turn)
+           WHERE lrdg.rtrvl_stat_cd <![CDATA[<>]]> 'RTRVL_WTHDRAW'
+             AND lrdg.rtrvl_drct_tp_cd IN
+                      ('RTGOD'
+                     , 'EXCHG'
+                     , 'GNRL_EXCHG'
+                     , 'DRT_EXCHG'
+                     , 'SHOP_RTGOD')
+        GROUP BY lrdg.clm_no
+		    ) dlvnum ON (dlvnum.clm_no = clm.clm_no)
+		left outer JOIN (
+		 SELECT clm_no, god_nm FROM clm_wrhs_god WHERE clm_wrhs_god_turn = 1) cg ON (cg.clm_no = clm.clm_no)
+		left outer JOIN (
+		 SELECT clm_no, SUM(NVL(CLM_QTY,0)) AS CLM_QTY, SUM(NVL(CLM_WTHDRAW_QTY,0)) AS CLM_WTHDRAW_QTY
+		    FROM clm_wrhs_god GROUP BY clm_no) clmsum ON (clmsum.clm_no = clm.clm_no)
+		left outer JOIN
+    		( SELECT
+				p.clm_no
+                /*, LISTAGG(cd1.cd_nm, ',') WITHIN GROUP (ORDER BY cd1.cd_nm) AS rfdStatCdNm*/
+				, MAX(cd1.cd_nm) AS rfdStatCdNm
+				FROM pay p left JOIN pay_rfd pr ON (p.pay_no = pr.pay_no AND p.pay_tp_cd='CLM')
+                left outer JOIN mv_sys_cd cd1 ON (cd1.cd = pr.rfd_stat_cd and cd1.upper_cd = 'RFD_STAT' and cd1.lang_cd = 'KOR')
+             GROUP BY p.clm_no) pa ON (pa.clm_no = clm.clm_no)
+		WHERE 1=1
+			AND clm.clm_tp_cd IN ('ALL_CNCL', 'PART_CNCL','RTGOD', 'GNRL_EXCHG', 'DRT_EXCHG', 'SHOP_RTGOD')
+			AND clm.ord_no = #{ordNo}
+	</select>
+
+	<resultMap id="ClmDetailDlvSpGodInfoResult" type="com.plgrim.ncp.biz.claim.data.ClmDetailDlvSpGodInfoDTO">
+		<result property="addrs" column="addrs" />
+		<result property="dlvRefundAmt" column="dlvRefundAmt" />
+		<collection property="clmDetailGodInfoList" ofType="com.plgrim.ncp.biz.claim.data.ClmDetailGodInfoDTO">
+			<id property="clmWrhsGodTurn" column="clmWrhsGodTurn" />
+			<result property="rceptDt" column="rceptDt" />
+			<result property="godNm" column="godNm" />
+			<result property="itmNm" column="itmNm" />
+			<result property="ordQty" column="ordQty" />
+			<result property="cnclQty" column="cnclQty" />
+			<result property="saleAmt" column="saleAmt" />
+			<result property="payExchgRtCrncyAmt" column="payExchgRtCrncyAmt" />
+			<result property="stdrCrncyAmt" column="stdrCrncyAmt" />
+			<result property="dcAmt" column="dcAmt" />
+			<result property="unityPntUseAmt" column="unityPntUseAmt" />
+			<result property="evtPntUseAmt" column="evtPntUseAmt" />
+			<result property="webpntUseAmt" column="webpntUseAmt" />
+			<result property="shtgDcsnYn" column="shtgDcsnYn" />
+			<result property="clmResnCd" column="clmResnCd" />
+			<result property="clmResnCdNm" column="clmResnCdNm" />
+		</collection>
+	</resultMap>
+
+	<select id="selectClmDetailGodInfo" parameterType="String" resultMap="ClmDetailDlvSpGodInfoResult">
+		SELECT CWG.CLM_WRHS_GOD_TURN as clmWrhsGodTurn /* [claim.manage.xml][selectClmDetailGodInfo][클레임관리 부분취소 상세페이지 배송지별 상품정보][Aether] */
+		     , to_char(C.RCEPT_DT,'YYYY-MM-DD') as rceptDt
+		     , cwg.god_nm as godNm
+		     , cwg.itm_nm as itmNm
+		     , OG.ORD_QTY AS ordQty
+		     , CWG.CLM_QTY AS cnclQty
+		     , CWG.SALE_AMT as saleAmt
+		     , nvl(cwg.PAY_EXCHG_RT_CRNCY_AMT,0) as payExchgRtCrncyAmt
+		     , nvl(cwg.stdr_crncy_amt,0) as stdrCrncyAmt
+		     , nvl(cwg.ALL_DC_AMT,0) AS dcAmt
+		     , NVL (cwg.UNITY_PNT_USE_AMT, 0) as unityPntUseAmt
+		     , NVL (cwg.EVT_PNT_USE_AMT, 0) as evtPntUseAmt
+		     , NVL (CWG.WEBPNT_USE_AMT, 0) as webpntUseAmt
+		     , min(lddg.shtg_dcsn_yn) as shtgDcsnYn /* 하나라도 N 이면 N인거다*/
+		     , cwg.clm_resn_cd as clmResnCd
+		     , (SELECT msc.cd_nm
+		          FROM mv_sys_cd msc
+		         WHERE     msc.upper_cd = 'CLM_RSN'
+		               AND msc.cd = cwg.clm_resn_cd
+		               AND msc.lang_cd = 'KOR') as clmResnCdNm
+		     , lds.ADDRSE_BASE_ADDR || lds.ADDRSE_DETAIL_ADDR as addrs
+		     , sum(ld.CNCL_DLV_CST) as dlvRefundAmt
+		  FROM
+		       clm c
+		       JOIN clm_wrhs_god cwg
+		           ON     c.clm_no = cwg.clm_no
+		       join ord_clm_god_cnnc ocgc
+		           on OCGC.CLM_NO = cwg.clm_no and cwg.clm_wrhs_god_turn = ocgc.clm_wrhs_god_turn
+		       JOIN lgs_dlivy_drct_god lddg
+		           ON OCGC.ORD_NO = LDDG.ORD_NO and OCGC.ORD_GOD_TURN = lddg.ord_god_turn
+		       join ord_god og on ocgc.ord_no = og.ord_no and ocgc.ord_god_turn = og.ord_god_turn
+		       join lgs_dlvsp lds on lds.DLV_PCUPSP_TURN = cwg.DLV_PCUPSP_TURN and lds.ord_no = cwg.ord_no
+		       join lgs_dlv ld on ld.DLV_PCUPSP_TURN = cwg.DLV_PCUPSP_TURN and ld.ord_no = cwg.ord_no
+		 WHERE 1=1
+		 and c.clm_no = #{clmNo}
+		 group by
+		  CWG.CLM_WRHS_GOD_TURN
+             , C.RCEPT_DT
+             , cwg.god_nm
+             , cwg.itm_nm
+             , OG.ORD_QTY
+             , CWG.CLM_QTY
+             , cwg.PAY_EXCHG_RT_CRNCY_AMT
+             , cwg.stdr_crncy_amt
+             , CWG.SALE_AMT
+             , cwg.ALL_DC_AMT
+             , cwg.UNITY_PNT_USE_AMT
+             , cwg.EVT_PNT_USE_AMT
+             , CWG.WEBPNT_USE_AMT
+             , cwg.clm_resn_cd
+             , lds.ADDRSE_BASE_ADDR
+             , lds.ADDRSE_DETAIL_ADDR
+	</select>
+
+
+
+
+	<insert id="insertClmByOrd" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+        INSERT INTO clm /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertClmByOrd][클레임접수 주문전체취소 주문정보로 클레임insert][Aether] */
+                         (
+                           clm_no
+                         , ord_no
+                         , clm_stat_cd
+                         , pkup_clm_yn
+                         , clm_tp_cd
+                         , clm_dt
+                         , clm_resn_cd
+                         , clm_resn_cont
+                         , rcept_admin_id
+                         , rcept_dt
+                         , compt_dt
+                         , crncy_cd
+                         , stdr_crncy_sum_amt
+                         , pay_exchg_rt_crncy_sum_amt
+                         , rtl_prc_sum_amt
+                         , sale_sum_amt
+                         , web_dc_sum_amt
+                         , svc_sum_amt
+                         , dlv_cst_sum_amt
+                         , god_dc_sum_amt
+                         , emp_dc_sum_amt
+                         , god_cpn_dc_sum_amt
+                         , bsk_cpn_dc_sum_amt
+                         , dlv_cst_cpn_dc_sum_amt
+                         , unity_pnt_use_sum_amt
+                         , evt_pnt_use_sum_amt
+                         , webpnt_use_sum_amt
+                         , unity_pnt_accml_sum_amt
+                         , evt_pnt_accml_sum_amt
+                         , webpnt_accml_sum_amt
+                         , god_sumry
+                         , aff_com_ord_no
+                         , aff_com_id
+                         , advt_aff_com_id
+                         , rcptfr_reqst_prcs_cd
+                         , rcptfr_aprv_no
+                         , virtl_rtgod_yn
+                         , virtl_ord_no
+                         , regtr_id
+                         , reg_dt
+                         , udter_id
+                         , udt_dt
+                         , pg_trnsmis_tgt_yn
+                         , all_dc_sum_amt
+                         , imdtl_dc_sum_amt
+                         , RFD_BNK_ACCT_NO
+                         , RFD_BNK_CD
+                         , RFD_ACNTHLDR_NM
+                         , EXCHG_RT_APL_BEG_DT
+                         , PKAG_TAX_SUM_AMT
+                         , UTID
+                         , BUNDLE_DC_SUM_AMT
+                         , CRS_DC_SUM_AMT
+                         )
+                    SELECT
+                           #{clmNo}               		AS clm_no                      /* 클레임 번호CL || YYYYMMDD || 7자리 Cycle Sequence                                                                                   */
+                         , ord_no                       AS ord_no                      /* 주문 번호OD || YYYYMMDD || 7자리 Cycle Sequence                                                                              */
+                         , #{clmStatCd}               	AS clm_stat_cd                 /* 클레임 상태 코드ㅁ. 클레임상태 : CLM_STAT   >. 신청 : REQST   >. 결제 대기 : PAY_WAIT   >. 접수 : RCEPT   >. 완료 : COMPT   >. 철회 : WTHDRAW  */
+                         , #{pkupClmYn}					AS pkup_clm_yn
+                         , #{clmTpCd}                 	AS clm_tp_cd                   /* 클레임 유형 코드ㅁ. 클레임 유형 : CLM_TP   >. 부분취소 : PART_CNCL   >. 전체취소 : ALL_CNCL   >. 일반교환 : GNRL_EXCHG   >. 맞교환 : DRT_EXCHG   >. 반품 : RTGOD   */
+                         , SYSDATE                      AS clm_dt                      /* 클레임 일시                                                                                                                                                        */
+                         , #{clmResnCd}               	AS clm_resn_cd                 /* 클레임 사유 코드                                                                                                                                                   */
+                         , #{clmResnCont}            	AS clm_resn_cont               /* 클레임 사유 내용                                                                                                                                                   */
+                         , #{adminId}                 	AS rcept_admin_id              /* 접수 관리자 ID                                                                                                    */
+                         , SYSDATE                      AS rcept_dt                    /* 접수 일시                                                                                                                                                          */
+                         , NULL                         AS compt_dt                    /* 완료 일시                                                                                                                                                          */
+                         , crncy_cd                     AS crncy_cd                    /* 통화 코드ISO 4217을 준수사용 코드 : CRNCY    통화KRW    대한민국 원USD    미국 달러CNY     런민비 (위안)JPY    일본 엔                   */
+                         , stdr_crncy_sum_amt           AS stdr_crncy_sum_amt          /* 기준 통화 합계 금액사이트의 기준 통화의 기준이 되는 금액                                                                                                           */
+                         , pay_exchg_rt_crncy_sum_amt   AS pay_exchg_rt_crncy_sum_amt  /* 결제 환율 통화 합계 금액사이트의 기준 통화를 기준으로 기준 통화금액에 환율을 적용한 금액                                                                           */
+                         , rtl_prc_sum_amt              AS rtl_prc_sum_amt             /* 정소가 합계 금액                                                                                                                                                   */
+                         , sale_sum_amt             	AS sale_sum_amt            	   /* 판매가 합계 금액                                                                                                                                                   */
+                         , web_dc_sum_amt             	AS web_dc_sum_amt              /* 판매가 합계 금액                                                                                                                                                 */
+                         , svc_sum_amt                  AS svc_sum_amt                 /* 서비스 합계 금액                                                                                                                                                   */
+                         , dlv_cst_sum_amt              AS dlv_cst_sum_amt             /* 배송비 합계 금액                                                                                                                                                   */
+                         , god_dc_sum_amt               AS god_dc_sum_amt              /* 상품 할인 합계 금액                                                                                                                                                */
+                         , emp_dc_sum_amt               AS emp_dc_sum_amt              /* 임직원 할인 합계 금액                                                                                                                                              */
+                         , god_cpn_dc_sum_amt           AS god_cpn_dc_sum_amt          /* 상품 쿠폰 할인 합계 금액                                                                                                                                           */
+                         , bsk_cpn_dc_sum_amt           AS bsk_cpn_dc_sum_amt          /* 장바구니 쿠폰 할인 합계 금액                                                                                                                                       */
+                         , dlv_cst_cpn_dc_sum_amt       AS dlv_cst_cpn_dc_sum_amt      /* 배송비 쿠폰 할인 합계 금액                                                                                                                                         */
+                         , unity_pnt_use_sum_amt        AS unity_pnt_use_sum_amt       /* 통합 포인트 사용 합계 금액                                                                                                                                         */
+                         , evt_pnt_use_sum_amt          AS evt_pnt_use_sum_amt         /* 이벤트 포인트 사용 합계 금액                                                                                                                                       */
+                         , webpnt_use_sum_amt           AS webpnt_use_sum_amt          /* 웹포인트 사용 합계 금액적립은 되고 있으나 사용 할 수 없는부분                                                                                                      */
+                         , unity_pnt_accml_sum_amt      AS unity_pnt_accml_amt         /* 통합 포인트 적립 금액                                                                                                                                              */
+                         , evt_pnt_accml_sum_amt        AS evt_pnt_accml_amt           /* 이벤트 포인트 적립 금액                                                                                                                                            */
+                         , webpnt_accml_sum_amt         AS webpnt_accml_amt            /* 웹포인트 적립 금액적립은 되고 있으나 사용 할 수 없는부분                                                                                                           */
+                         , god_sumry                    AS god_sumry                   /* 상품 요약                                                                                                                                                          */
+                         , aff_com_ord_no          		AS sale_aff_com_ord_no         /* 판매 제휴사 주문 번호                                                                                                                                              */
+                         , aff_com_id              		AS sale_aff_com_id             /* 판매 제휴사 ID  */
+                         , advt_aff_com_id            	AS advrts_aff_com_id           /* 광고 제휴사 ID */
+                         , rcptfr_reqst_cd              AS rcptfr_reqst_prcs_cd        /* 영수증 신청 처리 코드                                                                                                                                              */
+                         , rcptfr_aprv_no               AS rcptfr_aprv_no              /* 영수증 승인 번호                                                                                                                                                   */
+                         , 'N'                          AS virtl_rtgod_yn              /* 가상 반품 여부                                                                                                                                                     */
+                         , NULL                         AS virtl_ord_no                /* 가상 주문 번호OD || YYYYMMDD || 7자리 Cycle Sequence              */
+                         , #{udterId}                 	AS regtr_id                    /* 등록자 ID등록한 관리자 번호                                                                                                                                        */
+                         , SYSDATE                      AS reg_dt                      /* 등록 일시                                                                                                                                                          */
+                         , #{udterId}                 	AS udter_id                    /* 수정자 ID수정한 관리자 번호                                                                                                                                        */
+                         , SYSDATE                      AS udt_dt                      /* 수정 일시*/
+                         , #{pgTrnsmisTgtYn} 			AS pg_trnsmis_tgt_yn		   /*PG 연동여부*/
+                         , all_dc_sum_amt
+                         , imdtl_dc_sum_amt
+						 , PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo}, 'FNFBNT02-5200001')	AS RFD_BNK_ACCT_NO
+                         , #{rfdBnkCd}					AS RFD_BNK_CD
+                         , #{rfdAcnthldrNm}				AS RFD_ACNTHLDR_NM
+                         , EXCHG_RT_APL_BEG_DT
+                         , PKAG_TAX_SUM_AMT				AS PKAG_TAX_SUM_AMT
+                         , #{userTrackingId}		    AS UTID
+                         , BUNDLE_DC_SUM_AMT
+                         , CRS_DC_SUM_AMT
+                      FROM ord
+                      where 1=1
+		               AND ord_no = #{ordNo}
+	</insert>
+
+	<insert id="insertClmWrhsGodByOrdGod" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+
+	INSERT INTO CLM_WRHS_GOD ( /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertClmWrhsGodByOrdGod][클레임접수 주문전체취소 주문상품정보로 클레임입고상품insert][Aether] */
+	                           BRND_GRP_ID
+	                         , BRND_ID
+	                         , BSK_CPN_DC_AMT
+	                         , CLM_NO
+	                         , CLM_QTY
+	                         , CLM_RESN_CD
+	                         , CLM_RESN_CONT
+	                         , CLM_WRHS_GOD_TURN
+	                         , CLM_WTHDRAW_QTY
+	                         , CLM_WTHDRAW_SECT_CD
+	                         , COLOR_NM
+	                         , COM_ID
+	                         , CRNCY_CD
+	                         , SALE_AMT
+	                         , WEB_DC_AMT
+	                         , DLV_PCUPSP_TURN
+	                         , DMSTC_DLV_CST_PLC_SN
+	                         , EMP_DC_AMT
+	                         , EVT_PNT_ACCML_AMT
+	                         , EVT_PNT_USE_AMT
+	                         , GOD_CPN_DC_AMT
+	                         , GOD_DC_AMT
+	                         , GOD_HIST_TURN
+	                         , GOD_NM
+	                         , GOD_NO
+	                         , GOD_TP_CD
+	                         , GOD_VOL
+	                         , GOD_WT
+	                         , ITM_HIST_TURN
+	                         , ITM_NM
+	                         , ITM_NO
+	                         , LST_IMG_URL
+	                         , MOBILE_GOD_NM
+	                         , ORD_NO
+	                         , OVSEA_DLV_CST_PLC_SN
+	                         , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+	                         , PARTMAL_SECT_CD
+	                         , PAY_EXCHG_RT_CRNCY_AMT
+	                         , REGTR_ID
+	                         , REG_DT
+	                         , REPAIR_YN
+	                         , RTL_PRC
+	                         , ERP_GOD_NO
+	                         , SKU_NO
+	                         , STDR_CRNCY_AMT
+	                         , UDTER_ID
+	                         , UDT_DT
+	                         , UNITY_PNT_ACCML_AMT
+	                         , UNITY_PNT_USE_AMT
+	                         , WEBPNT_ACCML_AMT
+	                         , WEBPNT_USE_AMT
+	                         , ALL_DC_AMT
+	                         , IMDTL_DC_AMT
+	                         , SALE_SHOP_CD
+	                         , EXCHG_RT_APL_BEG_DT
+	                         , PKAG_TAX_AMT
+	                         )
+	                    SELECT BRND_GRP_ID
+	                         , BRND_ID
+	                         , BSK_CPN_DC_AMT
+	                         , #{clmNo} as CLM_NO
+	                         , ORD_QTY as CLM_QTY
+	                         , #{clmResnCd} as CLM_RESN_CD
+	                         , #{clmResnCont} as CLM_RESN_CONT
+	                         , #{clmWrhsGodTurn}+rownum-1   as CLM_WRHS_GOD_TURN
+	                         , '0' as CLM_WTHDRAW_QTY
+	                         , 'NRMLT' as CLM_WTHDRAW_SECT_CD
+	                         , COLOR_NM
+	                         , COM_ID
+	                         , CRNCY_CD
+	                         , SALE_AMT
+	                         , WEB_DC_AMT
+	                         , DLV_PCUPSP_TURN
+	                         , DMSTC_DLV_CST_PLC_SN
+	                         , EMP_DC_AMT
+	                         , EVT_PNT_ACCML_AMT
+	                         , EVT_PNT_USE_AMT
+	                         , GOD_CPN_DC_AMT
+	                         , GOD_DC_AMT
+	                         , GOD_HIST_TURN
+	                         , GOD_NM
+	                         , GOD_NO
+	                         , GOD_TP_CD
+	                         , GOD_VOL
+	                         , GOD_WT
+	                         , ITM_HIST_TURN
+	                         , ITM_NM
+	                         , ITM_NO
+	                         , LST_IMG_URL
+	                         , MOBILE_GOD_NM
+	                         , ORD_NO
+	                         , OVSEA_DLV_CST_PLC_SN
+	                         , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+	                         , PARTMAL_SECT_CD
+	                         , PAY_EXCHG_RT_CRNCY_AMT
+	                         , #{adminId} AS REGTR_ID
+	                         , SYSDATE AS REG_DT
+	                         , 'N' AS REPAIR_YN
+	                         , RTL_PRC
+	                         , ERP_GOD_NO
+	                         , SKU_NO
+	                         , STDR_CRNCY_AMT
+	                         , #{adminId} AS UDTER_ID
+	                         , SYSDATE AS UDT_DT
+	                         , UNITY_PNT_ACCML_AMT
+	                         , UNITY_PNT_USE_AMT
+	                         , WEBPNT_ACCML_AMT
+	                         , WEBPNT_USE_AMT
+	                         , ALL_DC_AMT
+	                         , IMDTL_DC_AMT
+	                         , SALE_SHOP_CD
+	                         , EXCHG_RT_APL_BEG_DT
+	                         , PKAG_TAX_AMT
+	                      FROM ord_god
+	                            WHERE 1=1
+	                              AND ord_no = #{ordNo}
+	                            <if test='ordCancelGodInfo != null and ordCancelGodInfo != ""'>
+	                                AND ORD_GOD_TURN IN
+	                                 <foreach collection="ordCancelGodInfo" item="item" separator="," open="(" close=")" index="idx">
+	                                    #{item.ordGodTurn}
+	                                </foreach>
+	                            </if>
+	</insert>
+
+		<insert id="insertUnitClmWrhsGodByOrdGod" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+        INSERT INTO clm_wrhs_god /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertUnitClmWrhsGodByOrdGod][클레임접수 주문전체취소 주문상품정보로 클레임입고상품insert][Aether] */
+                                (
+                                , clm_no
+                                , clm_wrhs_god_turn
+                                , ord_no
+                                , god_no
+                                , itm_no
+                                , god_hist_turn
+                                , itm_hist_turn
+                                , god_nm
+                                , itm_nm
+                                , erp_god_no
+                                , brnd_id
+                                , brnd_grp_id
+                                , god_vol
+                                , god_wt
+                                , god_tp_cd
+                                , partmal_sect_cd
+                                , lst_img_url
+                                , repair_yn
+                                , com_id
+                                , dmstc_dlv_cst_plc_sn
+                                , ovseadlv_dmstc_dlv_cst_plc_sn
+                                , ovsea_dlv_cst_plc_sn
+                                , clm_qty
+                                , crncy_cd
+                                , stdr_crncy_amt
+                                , pay_exchg_rt_crncy_amt
+                                , rtl_prc
+                                , csmr_prc
+                                , god_dc_amt
+                                , emp_dc_amt
+                                , god_cpn_dc_amt
+                                , bsk_cpn_dc_amt
+                                , unity_pnt_use_amt
+                                , evt_pnt_use_amt
+                                , webpnt_use_amt
+                                , unity_pnt_accml_amt
+                                , evt_pnt_accml_amt
+                                , webpnt_accml_amt
+                                , regtr_id
+                                , reg_dt
+                                , udter_id
+                                , udt_dt
+                                )
+                           SELECT
+                                  #{clmNo}                          AS clm_no                           /* 클레임 번호 CL || YYYYMMDD || 7자리 Cycle Sequence                                                                                                       */
+                                , #{clmWrhsGodTurn}+rownum-1        AS clm_wrhs_god_turn                /* 클레임 입고 상품 순번                                                                                                                                    */
+                                , og.ord_no                         AS ord_no                           /* 주문 번호 OD || YYYYMMDD || 7자리 Cycle Sequence                                                                                                         */
+                                , og.god_no                         AS god_no                           /* 상품 번호 상품 유형 1자리 || 업체 코드 3자리 || YYYYMMDD || 6자리 Cycle Sequence                                                                         */
+                                , og.itm_no                         AS itm_no                           /* 단품 번호 IT || YYYYMMDD || 7자리 Cycle Sequence                                                                                                         */
+                                , og.god_hist_turn                  AS god_hist_turn                    /* 상품 이력 순번                                                                                                                                           */
+                                , og.itm_hist_turn                  AS itm_hist_turn                    /* 단품 이력 순번                                                                                                                                           */
+                                , og.god_nm                         AS god_nm                           /* 상품 명                                                                                                                                                  */
+                                , NULL                              AS mobile_god_nm                    /* 모바일 상품 명                                                                                                                                           */
+                                , og.itm_nm                         AS itm_nm                           /* 단품 명                                                                                                                                                  */
+                                , NULL                              AS color_nm                         /* 색상 명                                                                                                                                                  */
+                                , og.erp_god_no                     AS erp_god_no                       /* ERP 상품 번호                                                                                                                                            */
+                                , og.brnd_id                        AS brnd_id                          /* 브랜드 ID                                                                                                                                                */
+                                , og.brnd_grp_id                    AS brnd_grp_id                      /* 브랜드 그룹 ID                                                                                                                                           */
+                                , og.god_vol                        AS god_vol                          /* 상품 부피ㅁ. SUM(상품.부피)                                                                                                                              */
+                                , og.god_wt                         AS god_wt                           /* 상품 무게ㅁ. SUM(상품.무게)                                                                                                                              */
+                                , og.god_tp_cd                      AS god_tp_cd                        /* 상품 유형 코드 ㅁ. 상품구분 : GOD_TP   >. 일반상품 : GNRL_GOD   >. 사은품 : GFT   >. 세트상품 : SET_GOD   >. 패키지 상품 : PCKAGE_GOD   >. 상품권 : GFCT */
+                                , og.partmal_sect_cd                AS partmal_sect_cd                  /* 입점 구분 코드ㅁ. 입점 구분 : PARTMAL_SECT   >. 자사 : MCOM   >. 입점 : PARTMAL                                                                          */
+                                , og.lst_img_url                    AS lst_img_url                      /* 리스트 이미지 URL                                                                                                                                        */
+                                , 'N'                               AS repair_yn                        /* 수선 여부                                                                                                                                                */
+                                , og.com_id                         AS com_id                           /* 업체 ID                                                                                                                                                  */
+                                , og.dmstc_dlv_cst_plc_sn           AS dmstc_dlv_cst_plc_sn             /* 국내 배송비 정책 일련번호                                                                                                                                */
+                                , og.ovseadlv_dmstc_dlv_cst_plc_sn  AS ovseadlv_dmstc_dlv_cst_plc_sn    /* 해외배송 국내 배송비 정책 일련번호                                                                                                                       */
+                                , og.ovsea_dlv_cst_plc_sn           AS ovsea_dlv_cst_plc_sn             /* 해외 배송비 정책 일련번호                                                                                                                                */
+                                , #{qty}                            AS clm_qty                          /* 클레임 수량                                                                                                                                              */
+                                , 'NRMLT'                           AS clm_wthdraw_sect_cd              /* 클레임 철회 구분 코드ㅁ. 클레임 철회 구분 : CLM_WTHDRAW_SECT   >. 정상 : NRMLT   >. 부분 철회 : PART_WTHDRAW   >. 전체 철회 : ALL_WTHDRAW                */
+                                , 0                                 AS clm_wthdraw_qty                  /* 클레임 철회 수량                                                                                                                                         */
+                                , og.crncy_cd                       AS crncy_cd                         /* 통화 코드  ISO 4217을 준수사용 코드 : CRNCY    통화KRW    대한민국 원USD    미국 달러CNY     런민비 (위안)JPY    일본 엔                                 */
+                                , og.stdr_crncy_amt                 AS stdr_crncy_amt                   /* 기준 통화 금액 사이트의 기준 통화의 기준이 되는 금액                                                                                                     */
+                                , og.pay_exchg_rt_crncy_amt         AS pay_exchg_rt_crncy_amt           /* 결제 환율 통화 금액 사이트의 기준 통화를 기준으로 기준 통화금액에 환율을 적용한 금액                                                                     */
+                                , og.rtl_prc                        AS rtl_prc                          /* 정소가                                                                                                                                                   */
+                                , og.csmr_prc                       AS csmr_prc                         /* 실소가                                                                                                                                                   */
+                                , og.god_dc_amt                     AS god_dc_amt                       /* 상품 할인 금액                                                                                                                                           */
+                                , og.emp_dc_amt                     AS emp_dc_amt                       /* 임직원 할인 금액                                                                                                                                         */
+                                , og.god_cpn_dc_amt                 AS god_cpn_dc_amt                   /* 상품 쿠폰 할인 금액                                                                                                                                      */
+                                , og.bsk_cpn_dc_amt                 AS bsk_cpn_dc_amt                   /* 장바구니 쿠폰 할인 금액                                                                                                                                  */
+                                , og.unity_pnt_use_amt              AS unity_pnt_use_amt                /* 통합 포인트 사용 금액                                                                                                                                    */
+                                , og.evt_pnt_use_amt                AS evt_pnt_use_amt                  /* 이벤트 포인트 사용 금액                                                                                                                                  */
+                                , og.webpnt_use_amt                 AS webpnt_use_amt                   /* 웹포인트 사용 금액                                                                                                                                       */
+                                , og.unity_pnt_accml_amt            AS unity_pnt_accml_amt              /* 통합 포인트 적립 금액                                                                                                                                    */
+                                , og.evt_pnt_accml_amt              AS evt_pnt_accml_amt                /* 이벤트 포인트 적립 금액                                                                                                                                  */
+                                , og.webpnt_accml_amt               AS webpnt_accml_amt                 /* 웹포인트 적립 금액 적립은 되고 있으나 사용 할 수 없는부분                                                                                                */
+                                , #{adminId}                        AS regtr_id                         /* 등록자 ID  등록한 관리자 번호                                                                                                                            */
+                                , SYSDATE                           AS reg_dt                           /* 등록 일시                                                                                                                                                */
+                                , #{adminId}                        AS udter_id                         /* 수정자 ID  수정한 관리자 번호                                                                                                                            */
+                                , SYSDATE                           AS udt_dt                           /* 수정 일시                                                                                                                                                */
+                             FROM ord_god og
+                            WHERE 1=1
+                            	AND og.ord_no = #{ordNo}
+								AND og.ORD_GOD_TURN = #{ordGodTurn}
+
+
+	</insert>
+
+
+
+	<insert id="insertOrdClmGodCnnc" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodFoExtend">
+	INSERT INTO ORD_CLM_GOD_CNNC (	/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertTotalCancelOrdClmGodCnnc][클레임접수 주문전체취소 주문클레임 연결테이블insert][Aether] */
+		ORD_NO, ORD_GOD_TURN, CLM_NO,
+		CLM_WRHS_GOD_TURN, GOD_CNNC_TP_CD, ORD_CLM_QTY,
+		REGTR_ID, REG_DT, UDTER_ID,
+		UDT_DT)
+	SELECT ogo.ord_no AS ord_no
+	     , ogo.ord_god_turn AS ord_god_turn
+	     , cwgo.clm_no AS clm_no
+	     , cwgo.clm_wrhs_god_turn AS clm_wrhs_god_turn
+	     , #{godCnncTpCd} AS god_cnnc_tp_cd
+	     , cwgo.clm_qty AS ord_clm_qty
+	     , #{regtrId} AS regtr_id
+	     , SYSDATE AS reg_dt
+	     , #{regtrId} AS udter_id
+	     , SYSDATE AS udt_dt
+	  FROM clm_wrhs_god cwgo
+	       JOIN ord_god ogo
+	           ON cwgo.ord_no = ogo.ord_no
+	           AND cwgo.itm_no = ogo.itm_no
+	           AND cwgo.dlv_pcupsp_turn = ogo.dlv_pcupsp_turn
+	 WHERE 1 = 1
+	 	AND cwgo.ord_no = #{ordNo}
+	 	AND cwgo.clm_no = #{clmNo}
+	 	AND ogo.ord_god_turn = #{ordGodTurn}
+	 	AND cwgo.clm_wrhs_god_turn = #{clmWrhsGodTurn}
+	</insert>
+
+	<update id="updateClmStatCd" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+		UPDATE CLM
+		       SET CLM_STAT_CD = #{clmStatCd}
+		       <if test='clmStatCd == "COMPT"'>
+		       	,COMPT_DT = sysdate
+		       </if>
+		       , udt_dt = SYSDATE
+		WHERE CLM_NO = #{clmNo}
+	</update>
+
+	<insert id="insertOrdClmAplPrmByOrd" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+    INSERT INTO ORD_CLM_APL_PRM (/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertOrdClmAplPrmByOrd][클레임접수 주문클레임 적용 프로모션 테이블 insert][Aether] */
+       ORD_NO
+	       , APL_PRM_TURN
+	       , CLM_NO
+	       , APL_TP_CD
+	       , APL_UNIT_CD
+	       , PRM_NO
+	       , PRM_TP_CD
+	       , PRM_DTL_TP_CD
+	       , CRNCY_CD
+	       , STDR_CRNCY_AMT
+	       , PAY_EXCHG_RT_CRNCY_AMT
+	       , DC_APL_AMT
+	       , ACCML_AMT
+	       , DLV_CST_CPN_DC_AMT
+	       , GFT_QTY
+	       , GOD_NO
+	       , ITM_NO
+	       , GOD_HIST_TURN
+	       , ITM_HIST_TURN
+	       , GOD_NM, ITM_NM
+	       , ERP_GOD_NO
+	       , BRND_ID
+	       , BRND_GRP_ID
+	       , GOD_VOL
+	       , GOD_WT
+	       , GOD_TP_CD
+	       , LST_IMG_URL
+	       , DLV_PCUPSP_TURN
+	       , DMSTC_DLV_CST_PLC_SN
+	       , OVSEADLV_DMSTC_DLV_CST_PLC_SN
+	       , OVSEA_DLV_CST_PLC_SN
+	       , REGTR_ID
+	       , REG_DT
+	       , UDTER_ID
+	       , UDT_DT
+       )
+    SELECT
+	    ORD_NO
+	    , APL_PRM_TURN
+	    , #{clmNo}
+	    , APL_TP_CD
+	    , APL_UNIT_CD
+	    , PRM_NO
+	    , PRM_TP_CD
+	    , PRM_DTL_TP_CD
+	    , CRNCY_CD
+	    , STDR_CRNCY_AMT
+	    , PAY_EXCHG_RT_CRNCY_AMT
+	    , DC_APL_AMT
+	    , ACCML_AMT
+	    , DLV_CST_CPN_DC_AMT
+	    , GFT_QTY
+	    , GOD_NO
+	    , ITM_NO
+	    , GOD_HIST_TURN
+	    , ITM_HIST_TURN
+	    , GOD_NM
+	    , ITM_NM
+	    , ERP_GOD_NO
+	    , BRND_ID
+	    , BRND_GRP_ID
+	    , GOD_VOL
+	    , GOD_WT
+	    , GOD_TP_CD
+	    , LST_IMG_URL
+	    , DLV_PCUPSP_TURN
+	    , DMSTC_DLV_CST_PLC_SN
+	    , OVSEADLV_DMSTC_DLV_CST_PLC_SN
+	    , OVSEA_DLV_CST_PLC_SN
+	    , #{adminId} AS REGTR_ID
+	    , sysdate AS REG_DT
+	    ,#{adminId} AS UDTER_ID
+	    , sysdate AS UDT_DT
+    FROM ORD_CLM_APL_PRM ocap
+    WHERE ocap.ord_no = #{ordNo}
+    	<if test='aplPrmTurn != null and aplPrmTurn != ""'>
+	 		AND ocap.APL_PRM_TURN in
+	 		<foreach collection="aplPrmTurn" item="item" separator="," open="(" close=")" index="idx">
+				#{item}
+			</foreach>
+		</if>
+	</insert>
+
+
+	<insert id="insertClmWrhsGodAplPrmByOrd" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+		INSERT INTO clm_wrhs_god_apl_prm ( /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertClmWrhsGodAplPrmByOrd][클레임접수 클레임 입고상품 적용 프로모션 테이블insert][Aether] */
+		                                  ord_no
+		                                , apl_prm_turn
+		                                , PRM_NO
+		                                , apl_tp_cd
+		                                , apl_unit_cd
+		                                , apl_amt
+		                                , prm_tp_cd
+		                                , prm_dtl_tp_cd
+		                                , clm_no
+		                                , clm_wrhs_god_turn
+		                                , apl_qty
+		                                , regtr_id
+		                                , reg_dt
+		                                , udter_id
+		                                , udt_dt)
+		    SELECT ogap.ord_no AS ord_no
+		         , ogap.apl_prm_turn AS apl_prm_turn
+		         , OGAP.PRM_NO as PRM_NO
+		         , 'CNCL' as apl_tp_cd
+		         , OGAP.apl_unit_cd as apl_unit_cd
+		         , OGAP.apl_amt as apl_amt
+		         , OGAP.prm_tp_cd as prm_tp_cd
+		         , OGAP.prm_dtl_tp_cd as prm_dtl_tp_cd
+		         , ocgc.clm_no AS clm_no
+		         , ocgc.clm_wrhs_god_turn AS clm_wrhs_god_turn
+		         , ocgc.ord_clm_qty AS apl_qty
+		         , #{adminId} AS regtr_id
+		         , SYSDATE AS reg_dt
+		         , #{adminId} AS udter_id
+		         , SYSDATE AS udt_dt
+		      FROM ord_god_apl_prm ogap
+		           JOIN
+		           ord_clm_god_cnnc ocgc
+		               ON (    ogap.ord_no = ocgc.ord_no
+		                   AND ogap.ord_god_turn = ocgc.ord_god_turn)
+		     WHERE ogap.ord_no = #{ordNo}
+		     AND ocgc.clm_no = #{clmNo}
+	</insert>
+
+
+
+
+	<update id="updateClmWrhsGodToPrcByErp" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+		UPDATE clm_wrhs_god cwg		/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.updateClmWrhsGodToPrcByErp][클레임접수 클레임 입고상품 테이블 가격정보를 update][Aether] */
+		   SET (stdr_crncy_amt
+		      , pay_exchg_rt_crncy_amt
+		      , sale_amt
+		      , web_dc_amt
+		      , god_dc_amt
+		      , emp_dc_amt
+		      , god_cpn_dc_amt
+		      , bsk_cpn_dc_amt
+		      , unity_pnt_use_amt
+		      , evt_pnt_use_amt
+		      , webpnt_use_amt
+		      , imdtl_dc_amt
+		      , all_dc_amt
+		      , unity_pnt_accml_amt
+		      , webpnt_accml_amt
+		      , bundle_dc_amt
+		      , crs_dc_amt
+		      , pkag_tax_amt
+		      ) =
+		           (  SELECT SUM (NVL (iogsd.stdr_crncy_unt_prc, 0)) AS stdr_crncy_amt
+		                   , SUM (NVL (iogsd.pay_exchg_rt_crncy_unt_prc, 0)) AS pay_exchg_rt_crncy_amt
+		                   , SUM (NVL (iogsd.sale_unt_prc, 0)) AS sale_amt
+		                   , SUM (NVL (iogsd.web_dc_unt_prc, 0)) AS web_dc_amt
+		                   , SUM (NVL (iogsd.god_dc_unt_prc, 0)) AS god_dc_amt
+		                   , SUM (NVL (iogsd.emp_dc_unt_prc, 0)) AS emp_dc_amt
+		                   , SUM (NVL (iogsd.god_cpn_dc_unt_prc, 0)) AS god_cpn_dc_amt
+		                   , SUM (NVL (iogsd.bsk_cpn_dc_unt_prc, 0)) AS bsk_cpn_dc_amt
+		                   , SUM (NVL (iogsd.unity_pnt_use_unt_prc, 0)) AS unity_pnt_use_amt
+		                   , SUM (NVL (iogsd.evt_pnt_use_unt_prc, 0)) AS evt_pnt_use_amt
+		                   , SUM (NVL (iogsd.webpnt_use_unt_prc, 0)) AS webpnt_use_amt
+						   , SUM (NVL (iogsd.imdtl_dc_unt_prc, 0)) AS imdtl_dc_amt
+						   , SUM (NVL (iogsd.god_dc_unt_prc, 0))
+						     + SUM (NVL (iogsd.bundle_dc_unt_prc, 0))
+						     + SUM (NVL (iogsd.crs_dc_unt_prc, 0))
+						     + SUM (NVL (iogsd.god_cpn_dc_unt_prc, 0))
+                             + SUM (NVL (iogsd.bsk_cpn_dc_unt_prc, 0)) AS all_dc_amt
+						   , SUM (NVL (iogsd.unity_pnt_accml_unt_prc, 0)) AS unity_pnt_accml_amt
+						   , SUM (NVL (iogsd.webpnt_accml_unt_prc, 0)) AS webpnt_accml_amt
+						   , SUM (NVL (iogsd.bundle_dc_unt_prc, 0)) AS bundle_dc_amt
+						   , SUM (NVL (iogsd.crs_dc_unt_prc, 0)) AS crs_dc_amt
+						   , SUM (NVL (iogsd.pkag_tax_unt_prc, 0)) AS pkag_tax_amt
+		                FROM inf_ord_god_erp_dstb iogsd
+		               WHERE     1 = 1
+		                     AND iogsd.clm_no = cwg.clm_no
+		                     AND iogsd.clm_wrhs_god_turn = cwg.clm_wrhs_god_turn
+		                     AND iogsd.ord_no = #{ordNo}
+		                     AND iogsd.clm_no = #{clmNo}
+		            )
+		      <if test='udterId != null and udterId != ""'>
+				, UDTER_ID = #{udterId}
+			  </if>
+			    , UDT_DT = SYSDATE
+		 WHERE     1 = 1
+		       AND cwg.ord_no = #{ordNo}
+		       AND cwg.clm_no = #{clmNo}
+		       AND EXISTS
+		               (  SELECT 1
+		                    FROM inf_ord_god_erp_dstb iogsd
+		                   WHERE     1 = 1
+		                         AND iogsd.clm_no = cwg.clm_no
+		                         AND iogsd.clm_wrhs_god_turn = cwg.clm_wrhs_god_turn
+		                         AND iogsd.ord_no = #{ordNo}
+		                         AND iogsd.clm_no = #{clmNo}
+		               )
+	</update>
+
+
+
+
+
+	<update id="updateClmToPrcByClmWrhsGod" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+			UPDATE clm c	/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.updateClmToPrcByClmWrhsGod][클레임접수 클레임 테이블 가격정보를 update][Aether] */
+			   SET (stdr_crncy_sum_amt
+			      , pay_exchg_rt_crncy_sum_amt
+			      , rtl_prc_sum_amt
+			      , sale_sum_amt
+			      , web_dc_sum_amt
+			      , god_dc_sum_amt
+			      , emp_dc_sum_amt
+			      , god_cpn_dc_sum_amt
+			      , bsk_cpn_dc_sum_amt
+			      , unity_pnt_use_sum_amt
+			      , evt_pnt_use_sum_amt
+			      , webpnt_use_sum_amt
+			      , dlv_cst_sum_amt
+			      , dlv_cst_cpn_dc_sum_amt
+			      , imdtl_dc_sum_amt
+			      , unity_pnt_accml_sum_amt
+			      , webpnt_accml_sum_amt
+			      , all_dc_sum_amt
+			      , bundle_dc_sum_amt
+			      , crs_dc_sum_amt
+			      , pkag_tax_sum_amt
+			      ) =
+			           (  SELECT
+
+						<choose>
+							<when test='clmTpCd == "ALL_CNCL"'>
+								SUM (NVL (cwg.stdr_crncy_amt, 0))
+								+      MAX(nvl(ld.cncl_dlv_cst,0))
+								AS stdr_crncy_sum_amt
+							</when>
+							<when test='clmTpCd == "PART_CNCL"'>
+								SUM (NVL (cwg.stdr_crncy_amt, 0))
+								+ NVL(#{realityDlvCst},0)
+								AS stdr_crncy_sum_amt
+							</when>
+							<otherwise>
+								SUM (NVL (cwg.stdr_crncy_amt, 0))
+								+ (     MAX(nvl(ld.cncl_dlv_cst,0))
+								-  MAX(nvl(ld.reality_dlv_cst,0))
+								)
+								AS stdr_crncy_sum_amt
+							</otherwise>
+						</choose>
+
+						<choose>
+							<when test='clmTpCd == "ALL_CNCL"'>
+								, SUM (NVL (cwg.pay_exchg_rt_crncy_amt, 0))
+								+       MAX(nvl(ld.cncl_dlv_cst,0))
+								AS pay_exchg_rt_crncy_sum_amt
+							</when>
+							<when test='clmTpCd == "PART_CNCL"'>
+								, SUM (NVL (cwg.pay_exchg_rt_crncy_amt, 0))
+								<choose>
+									<when test='realityDlvCstEx != null and realityDlvCstEx != ""'>+ nvl(#{realityDlvCstEx},0)</when>
+									<otherwise>+ nvl(#{realityDlvCst},0)</otherwise>
+								</choose>
+								AS pay_exchg_rt_crncy_sum_amt
+							</when>
+							<otherwise>
+								, SUM (NVL (cwg.pay_exchg_rt_crncy_amt, 0))
+								<choose>
+									<when test='realityDlvCstEx != null and realityDlvCstEx != ""'>+ nvl(#{realityDlvCstEx},0)</when>
+									<otherwise>
+									+ (
+										MAX(
+											nvl(ld.cncl_dlv_cst,0)
+										) -
+										MAX(
+											nvl(ld.reality_dlv_cst,0)
+										)
+									)
+									</otherwise>
+								</choose>
+
+								AS pay_exchg_rt_crncy_sum_amt
+							</otherwise>
+						</choose>
+
+                               , SUM (NVL (cwg.rtl_prc, 0) * NVL (cwg.clm_qty, 0)) AS rtl_prc_sum_amt
+                               , SUM (NVL (cwg.sale_amt, 0)) AS sale_sum_amt
+                               , SUM (NVL (cwg.web_dc_amt, 0)) AS web_dc_sum_amt
+                               , SUM (NVL (cwg.god_dc_amt, 0)) AS god_dc_sum_amt
+                               , SUM (NVL (cwg.emp_dc_amt, 0)) AS emp_dc_sum_amt
+                               , SUM (NVL (cwg.god_cpn_dc_amt, 0)) AS god_cpn_dc_sum_amt
+                               , SUM (NVL (cwg.bsk_cpn_dc_amt, 0)) AS bsk_cpn_dc_sum_amt
+                               , SUM (NVL (cwg.unity_pnt_use_amt, 0))
+                                     AS unity_pnt_use_sum_amt
+                               , SUM (NVL (cwg.evt_pnt_use_amt, 0)) AS evt_pnt_use_sum_amt
+                               , SUM (NVL (cwg.webpnt_use_amt, 0)) AS webpnt_use_sum_amt
+
+						<choose>
+							<when test='clmTpCd == "ALL_CNCL"'>
+								, 	MAX(NVL(ld.cncl_dlv_cst,0))
+								 AS dlv_cst_sum_amt
+							</when>
+							<when test='clmTpCd == "PART_CNCL"'>
+								, 	nvl(#{realityDlvCst},0)
+								  AS dlv_cst_sum_amt
+							</when>
+							<otherwise>
+								, (             MAX(NVL(ld.cncl_dlv_cst,0))
+								-  MAX(nvl(ld.reality_dlv_cst,0))
+								) AS dlv_cst_sum_amt
+							</otherwise>
+						</choose>
+
+                               , SUM(NVL(ld.dlv_cst_cpn_dc_amt,0)) AS dlv_cst_cpn_dc_sum_amt
+                               , SUM(NVL(cwg.imdtl_dc_amt,0)) AS imdtl_dc_sum_amt
+                               , SUM(NVL(cwg.unity_pnt_accml_amt,0)) AS unity_pnt_accml_sum_amt
+                               , SUM(NVL(cwg.webpnt_accml_amt,0)) AS webpnt_accml_sum_amt
+                               , SUM(NVL(cwg.all_dc_amt,0)) AS all_dc_sum_amt
+                               , SUM(NVL(cwg.bundle_dc_amt,0)) AS bundle_dc_sum_amt
+                               , SUM(NVL(cwg.crs_dc_amt,0)) AS crs_dc_sum_amt
+                               , SUM(NVL(cwg.pkag_tax_amt,0)) AS pkag_tax_sum_amt
+
+			                FROM clm_wrhs_god cwg
+			                left outer join (
+                                           select
+                                                sum(nvl(ldin.cncl_dlv_cst,0)) as cncl_dlv_cst
+                                               ,sum(nvl(ldin.rtgod_dlv_cst,0)) as rtgod_dlv_cst
+                                               ,sum(nvl(ldin.exchg_dlv_cst,0)) as exchg_dlv_cst
+                                               ,sum(nvl(ldin.reality_dlv_cst,0)) as reality_dlv_cst
+                                               ,sum(nvl(ldin.dlv_cst_cpn_dc_amt,0)) as dlv_cst_cpn_dc_amt
+                                               ,ldin.clm_no
+                                           from
+                                               lgs_dlv ldin
+                                           where ldin.clm_no = #{clmNo}
+                                           group by ldin.clm_no
+
+                            ) ld on ld.clm_no = cwg.clm_no
+			               WHERE     1 = 1
+			                     AND cwg.clm_no = c.clm_no
+			                     AND cwg.clm_no = #{clmNo}
+			                     AND CWG.GOD_TP_CD <![CDATA[<>]]> 'SET_GOD'
+			                     AND CWG.GOD_TP_CD <![CDATA[<>]]> 'PCKAGE_GOD'
+			                     AND NVL(cwg.clm_wthdraw_sect_cd,'NRMLT') = 'NRMLT')
+			 WHERE     1 = 1
+			       AND c.clm_no = #{clmNo}
+
+	</update>
+
+
+	<update id="updateRepairClmToPrcByClmWrhsGod" parameterType="com.plgrim.ncp.biz.claim.data.ClaimReceiptDTO">
+		UPDATE clm c	/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.updateRepairClmToPrcByClmWrhsGod][클레임접수 클레임 테이블 가격정보를 update][Yoon] */
+		SET ( 	stdr_crncy_sum_amt
+			  , rtl_prc_sum_amt
+			  , sale_sum_amt
+			  , web_dc_sum_amt
+			  , emp_dc_sum_amt
+			  , pkag_tax_sum_amt
+			  , all_dc_sum_amt
+			  , god_dc_sum_amt
+			  , bundle_dc_sum_amt
+			  , crs_dc_sum_amt
+			  , god_cpn_dc_sum_amt
+			  , dlv_cst_cpn_dc_sum_amt
+			  , imdtl_dc_sum_amt
+			  , unity_pnt_use_sum_amt
+			  , evt_pnt_use_sum_amt
+			  , webpnt_use_sum_amt
+			  , unity_pnt_accml_sum_amt
+			  , webpnt_accml_sum_amt
+			) =
+			(
+			  SELECT  c.stdr_crncy_sum_amt - iogsd.stdr_crncy_unt_prc AS stdrCrncySumAmt
+				    , c.rtl_prc_sum_amt - iogsd.rtl_prc AS rtlPrcSumAmt
+				    , c.sale_sum_amt - iogsd.sale_unt_prc AS saleSumAmt
+				    , c.web_dc_sum_amt - iogsd.web_dc_unt_prc AS webDcSumAmt
+				    , c.emp_dc_sum_amt - iogsd.emp_dc_unt_prc AS empDcSumAmt
+				    , c.pkag_tax_sum_amt - iogsd.pkag_tax_unt_prc AS pkag_tax_sum_amt
+				    , c.all_dc_sum_amt - (
+									      iogsd.god_dc_unt_prc +
+									      iogsd.bundle_dc_unt_prc +
+									      iogsd.crs_dc_unt_prc +
+									      iogsd.god_cpn_dc_unt_prc +
+									      iogsd.bsk_cpn_dc_unt_prc
+									    ) AS all_dc_sum_amt
+				    , c.god_dc_sum_amt - iogsd.god_dc_unt_prc AS godDcSumAmt
+				    , c.bundle_dc_sum_amt - iogsd.bundle_dc_unt_prc AS bundleDcSumAmt
+				    , c.crs_dc_sum_amt - iogsd.crs_dc_unt_prc AS crsDcSumAmt
+				    , c.god_cpn_dc_sum_amt - iogsd.god_cpn_dc_unt_prc AS godCpnDcSumAmt
+				    , c.bsk_cpn_dc_sum_amt - iogsd.bsk_cpn_dc_unt_prc AS dlvCstCpnDcSumAmt
+				    , c.imdtl_dc_sum_amt - iogsd.imdtl_dc_unt_prc AS imdtlDcSumAmt
+				    , c.unity_pnt_use_sum_amt - iogsd.unity_pnt_use_unt_prc AS unityPntUseSumAmt
+				    , c.evt_pnt_use_sum_amt - iogsd.evt_pnt_use_unt_prc AS evtPntUseSumAmt
+				    , c.webpnt_use_sum_amt - iogsd.webpnt_use_unt_prc AS webpntUseSumAmt
+				    , c.unity_pnt_accml_sum_amt - iogsd.unity_pnt_accml_unt_prc AS unityPntAccmlSumAmt
+				    , c.webpnt_accml_sum_amt - iogsd.webpnt_accml_unt_prc AS webpntAccmlSumAmt
+			  FROM inf_ord_god_erp_dstb iogsd
+			  WHERE 1 = 1
+		        AND iogsd.clm_no = c.clm_no
+		        AND iogsd.clm_no = #{clmNo}
+		        AND iogsd.qty_turn = #{qtyTurn}
+			)
+			WHERE 1 = 1
+			      AND c.clm_no = #{clmNo}
+	</update>
+
+
+
+
+	<select id="checkResveOrdDate" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.Ord" resultType="int">
+		SELECT CASE
+		           WHEN TO_DATE (NVL (o.resve_ord_dlivy_prearnge_date, '29990101')
+		                       , 'YYYYMMDD') > SYSDATE
+		           THEN
+		               1
+		           ELSE
+		               0
+		       END
+		           resultcnt
+		  FROM ord o
+		 WHERE o.ord_no = #{ordNo}
+		 and rownum = 1
+	</select>
+
+
+	<select id="selectOrdGodAplPrm" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBoDTO" resultType="ordGodAplPrm">
+		SELECT ogap.prm_no /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.selectOrdGodAplPrm][클레임 접수화면 주문사은품 미리보여주기][Aether] */
+		     , ogap.ord_god_gft_turn
+		     , ogap.ord_no
+		  FROM ord_god_apl_prm ogap
+		  WHERE 1=1
+		  AND ogap.ord_no = #{ordNo}
+		  AND ogap.prm_tp_cd = 'GFT'
+		  AND ogap.prm_dtl_tp_cd = 'ORD_GFT'
+		  GROUP BY ord_no, prm_no, ord_god_gft_turn
+	</select>
+
+	<select id="selectCnclTgtGodGftPrm" parameterType="com.plgrim.ncp.biz.claim.data.ClmDlvOrdGodInfoDTO" resultType="com.plgrim.ncp.biz.claim.data.ClmDlvOrdGodInfoDTO">
+		SELECT /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.selectCnclTgtGodGftPrm][취소대상 상품사은품 조회] */
+				og.dlv_pcupsp_turn
+				, og.ord_god_turn
+				, dg.dlivy_drct_god_no
+				, dg.dlv_turn
+				, og.god_tp_cd
+			FROM ORD_GOD_APL_PRM prm
+				INNER JOIN ord_god og ON prm.ord_no = og.ord_no AND prm.ord_god_gft_turn = og.ord_god_turn
+				INNER JOIN lgs_dlivy_drct_god dg ON og.ord_no = dg.ord_no AND og.ord_god_turn = dg.ord_god_turn
+			WHERE prm.ord_no = #{ordNo}
+				AND prm.ord_god_turn = #{ordGodTurn}
+				AND prm.prm_tp_cd = 'GFT'
+				AND prm.prm_dtl_tp_cd = 'GOD_GFT'
+	</select>
+	
+	<select id="selectRtnTgtGodGftPrm" parameterType="com.plgrim.ncp.base.entities.datasource1.clm.ClmWrhsGodExtend" resultType="com.plgrim.ncp.base.entities.datasource1.clm.ClmWrhsGodExtend">
+		SELECT /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.selectRtnTgtGodGftPrm][반품대상 상품사은품 조회] */
+				og.dlv_pcupsp_turn
+				, og.ord_god_turn
+                , og.god_tp_cd
+				, og.god_tp_cd
+                , og.god_no
+                , og.god_nm
+                , og.itm_no
+                , dg.dlivy_drct_god_no
+				, dg.dlv_turn
+                , dg.dlv_shop_id
+                , ld.dmstc_dlv_cst_plc_sn
+			FROM ORD_GOD_APL_PRM prm
+				INNER JOIN ord_god og ON prm.ord_no = og.ord_no AND prm.ord_god_gft_turn = og.ord_god_turn
+				INNER JOIN lgs_dlivy_drct_god dg ON og.ord_no = dg.ord_no AND og.ord_god_turn = dg.ord_god_turn
+				INNER JOIN lgs_dlv ld ON dg.ord_no = ld.ord_no AND dg.dlv_pcupsp_turn = ld.dlv_pcupsp_turn AND dg.dlv_turn = ld.dlv_turn
+			WHERE prm.ord_no = #{ordNo}
+				AND prm.ord_god_turn = #{ordGodTurn}
+				AND prm.prm_tp_cd = 'GFT'
+				AND prm.prm_dtl_tp_cd = 'GOD_GFT'
+	</select>
+
+	<select id="selectOrdGodByOrdGft" parameterType="ordGodAplPrm" resultType="ordGod">
+		SELECT og.aff_com_ord_god_no /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.selectOrdGodByOrdGft][클레임 접수화면 주문사은품 미리보여주기][Aether] */
+		     , og.all_dc_amt
+		     , og.brnd_grp_id
+		     , og.brnd_id
+		     , og.bsk_cpn_dc_amt
+		     , og.bundle_dc_amt
+		     , og.cal_dt
+		     , og.clor_chip_img_url
+		     , og.color_cd
+		     , og.color_nm
+		     , og.com_id
+		     , og.crncy_cd
+		     , og.crs_dc_amt
+		     , og.dlv_pcupsp_turn
+		     , og.dmstc_dlv_cst_plc_sn
+		     , og.emp_dc_amt
+		     , og.evt_pnt_accml_amt
+		     , og.evt_pnt_use_amt
+		     , og.god_cpn_dc_amt
+		     , og.god_dc_amt
+		     , og.god_hist_turn
+		     , og.god_nm
+		     , og.god_no
+		     , og.god_tp_cd
+		     , og.god_vol
+		     , og.god_wt
+		     , og.imdtl_dc_amt
+		     , og.itm_hist_turn
+		     , og.itm_nm
+		     , og.itm_no
+		     , og.lst_img_url
+		     , og.mobile_god_nm
+		     , og.ord_god_turn
+		     , og.ord_no
+		     , og.ord_qty
+		     , og.ovsea_dlv_cst_plc_sn
+		     , og.ovsea_dlv_dmstc_dlv_cst_plc_sn
+		     , og.partmal_sect_cd
+		     , og.pay_exchg_rt_crncy_amt
+		     , og.regtr_id
+		     , og.reg_dt
+		     , og.rtl_prc
+		     , og.sale_amt
+		     , og.sale_shop_cd
+		     , og.erp_god_no
+		     , og.sku_no
+		     , og.stdr_crncy_amt
+		     , og.udter_id
+		     , og.udt_dt
+		     , og.unity_pnt_accml_amt
+		     , og.unity_pnt_use_amt
+		     , og.webpnt_accml_amt
+		     , og.webpnt_use_amt
+		     , og.web_dc_amt
+		  FROM ord_god og
+		  JOIN ord_god_apl_prm ogap ON ogap.ord_no = og.ord_no AND ogap.ord_god_turn = og.ord_god_turn
+		  WHERE 1=1
+		  AND ogap.prm_no = #{prmNo}
+		  AND ogap.ord_no = #{ordNo}
+	</select>
+
+	<select id="selectClmWrhsGodForOrdGft" parameterType="com.plgrim.ncp.biz.claim.data.ClaimOrdGftSearchDTO" resultType="clmWrhsGod">
+		/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.selectClmWrhsGodForOrdGft][클레임 접수화면 주문사은품 미리보여주기][Aether] */
+		SELECT cwg.aff_com_ord_god_no
+		     , cwg.all_dc_amt
+		     , cwg.brnd_grp_id
+		     , cwg.brnd_id
+		     , cwg.bsk_cpn_dc_amt
+		     , cwg.bundle_dc_amt
+		     , cwg.cal_dt
+		     , cwg.clm_no
+		     , cwg.clm_qty
+		     , cwg.clm_resn_cd
+		     , cwg.clm_resn_cont
+		     , cwg.clm_wrhs_god_turn
+		     , cwg.clm_wthdraw_qty
+		     , cwg.clm_wthdraw_sect_cd
+		     , cwg.clor_chip_img_url
+		     , cwg.color_cd
+		     , cwg.color_nm
+		     , cwg.com_id
+		     , cwg.crncy_cd
+		     , cwg.crs_dc_amt
+		     , cwg.dlv_pcupsp_turn
+		     , cwg.dmstc_dlv_cst_plc_sn
+		     , cwg.emp_dc_amt
+		     , cwg.evt_pnt_accml_amt
+		     , cwg.evt_pnt_use_amt
+		     , cwg.god_cpn_dc_amt
+		     , cwg.god_dc_amt
+		     , cwg.god_hist_turn
+		     , cwg.god_nm
+		     , cwg.god_no
+		     , cwg.god_tp_cd
+		     , cwg.god_vol
+		     , cwg.god_wt
+		     , cwg.imdtl_dc_amt
+		     , cwg.itm_hist_turn
+		     , cwg.itm_nm
+		     , cwg.itm_no
+		     , cwg.lst_img_url
+		     , cwg.mobile_god_nm
+		     , cwg.ord_no
+		     , cwg.ovsea_dlv_cst_plc_sn
+		     , cwg.ovsea_dlv_dmstc_dlv_cst_plc_sn
+		     , cwg.partmal_sect_cd
+		     , cwg.pay_exchg_rt_crncy_amt
+		     , cwg.regtr_id
+		     , cwg.reg_dt
+		     , cwg.repair_yn
+		     , cwg.rtl_prc
+		     , cwg.sale_amt
+		     , cwg.sale_shop_cd
+		     , cwg.erp_god_no
+		     , cwg.sku_no
+		     , cwg.stdr_crncy_amt
+		     , cwg.udter_id
+		     , cwg.udt_dt
+		     , cwg.unity_pnt_accml_amt
+		     , cwg.unity_pnt_use_amt
+		     , cwg.webpnt_accml_amt
+		     , cwg.webpnt_use_amt
+		     , cwg.web_dc_amt
+		  FROM clm_wrhs_god cwg
+		  INNER JOIN clm c ON cwg.clm_no = c.clm_no
+		  INNER JOIN ord_clm_god_cnnc ocgc ON ocgc.clm_no = cwg.clm_no AND ocgc.clm_wrhs_god_turn = cwg.clm_wrhs_god_turn
+		  WHERE 1=1
+			AND c.clm_stat_cd NOT IN ('WTHDRAW')
+		<!-- 자사만 해당 -->
+		<if test='partmalSectCd!=null and partmalSectCd!=""'>
+			AND cwg.partmal_sect_cd = #{partmalSectCd}
+		</if>
+		<!-- 자사만 해당 -->
+
+		  AND ocgc.god_cnnc_tp_cd = 'WRHS_GOD_CNNC'
+		  AND ocgc.ord_no = #{ordNo}
+		  AND ocgc.ord_god_turn IN
+  	 		<foreach collection="ordGodList" item="item" separator="," open="(" close=")" index="idx">
+				#{item.ordGodTurn}
+			</foreach>
+	</select>
+
+
+	<update id="updateLgsDlvCst" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlv">
+	/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.updateLgsDlvCst] */
+		UPDATE LGS_DLV
+		   SET CLM_NO = #{clmNo}
+		<if test='stdrCrncyAmt != null and stdrCrncyAmt != ""'>
+			, STDR_CRNCY_AMT = #{stdrCrncyAmt}
+		</if>
+		<if test='payExchgRtCrncyAmt != null and payExchgRtCrncyAmt != ""'>
+			, PAY_EXCHG_RT_CRNCY_AMT = #{payExchgRtCrncyAmt}
+		</if>
+		<if test='realityDlvCst != null and realityDlvCst != ""'>
+		        , REALITY_DLV_CST = #{realityDlvCst}
+		</if>
+		<if test='plcDlvCst != null and plcDlvCst != ""'>
+		   	    , PLC_DLV_CST = #{plcDlvCst}
+		</if>
+		<if test='cnclDlvCst != null and cnclDlvCst != ""'>
+				, CNCL_DLV_CST = #{cnclDlvCst}
+		</if>
+		<if test='udterId != null and udterId != ""'>
+				, UDTER_ID = #{udterId}
+		</if>
+			    , UDT_DT = SYSDATE
+		WHERE ORD_NO = #{ordNo}
+		  AND DLV_PCUPSP_TURN = #{dlvPcupspTurn}
+		  AND DLV_TURN = #{dlvTurn}
+	</update>
+
+	<insert id="insertLgsDlvCstForGlovalCancel" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlv">
+		/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertLgsDlvCstForGlovalCancel] */
+			INSERT INTO LGS_DLV (
+				ord_no
+				, dlv_pcupsp_turn
+				, dlv_turn
+				, clm_no
+				, ovsea_dlv_cst_plc_sn
+				, zone_turn
+				, god_min_wt
+				, dlv_cst_bnd_mbd_cd
+				, dlv_mn_cd
+				, dlv_com_cd
+				, dlv_com_nm
+				, gdgp_stat_cd
+				, hbl_no
+				, hbl_no_reg_dt
+				, ovsea_waybil_no
+				, ovsea_waybil_no_reg_dt
+				, cvnstor_hdry_aprv_no
+				, crncy_cd
+				, exchg_rt_apl_beg_dt
+				, stdr_crncy_amt
+				, pay_exchg_rt_crncy_amt
+				, reality_dlv_cst
+				, plc_dlv_cst
+				, cncl_dlv_cst
+				, dlv_cst_cpn_dc_amt
+				, dlv_cst_cpn_no
+				, waybil_no_erp_trnsmis_cd
+				, waybil_no_erp_trnsmis_err_cont
+				, waybil_no_erp_trnsmis_dt
+				, dlv_com_trnsmis_tgt_yn
+				, dlv_com_trnsmis_yn
+				, dlv_com_trnsmis_dt
+				, mail_snd_yn
+				, cal_dt
+				, regtr_id
+				, reg_dt
+				, udter_id
+				, udt_dt
+			)
+			SELECT
+					ord_no
+					, dlv_pcupsp_turn
+					, (SELECT MAX(dlv_turn) + 1 FROM lgs_dlv WHERE ord_no = l.ord_no AND dlv_pcupsp_turn = l.dlv_pcupsp_turn) AS dlv_turn
+					, #{clmNo} AS clm_no
+					, ovsea_dlv_cst_plc_sn
+					, zone_turn
+					, #{godMinWt} AS god_min_wt
+					, dlv_cst_bnd_mbd_cd
+					, dlv_mn_cd
+					, dlv_com_cd
+					, dlv_com_nm
+					, gdgp_stat_cd
+					, hbl_no
+					, hbl_no_reg_dt
+					, ovsea_waybil_no
+					, ovsea_waybil_no_reg_dt
+					, cvnstor_hdry_aprv_no
+					, crncy_cd
+					, exchg_rt_apl_beg_dt
+					, #{stdrCrncyAmt} AS stdr_crncy_amt
+					, #{payExchgRtCrncyAmt} AS pay_exchg_rt_crncy_amt
+					, 0 AS reality_dlv_cst
+					, #{plcDlvCst} AS plc_dlv_cst
+					, #{cnclDlvCst} AS cncl_dlv_cst
+					, dlv_cst_cpn_dc_amt
+					, dlv_cst_cpn_no
+					, waybil_no_erp_trnsmis_cd
+					, waybil_no_erp_trnsmis_err_cont
+					, waybil_no_erp_trnsmis_dt
+					, dlv_com_trnsmis_tgt_yn
+					, dlv_com_trnsmis_yn
+					, dlv_com_trnsmis_dt
+					, mail_snd_yn
+					, cal_dt
+					, #{regtrId} AS regtr_id
+					, SYSDATE AS reg_dt
+					, #{udterId} AS udter_id
+					, SYSDATE AS udt_dt
+				FROM lgs_dlv l
+				WHERE ord_no = #{ordNo}
+					AND dlv_pcupsp_turn = #{dlvPcupspTurn}
+					AND dlv_turn = #{dlvTurn}
+	</insert>
+
+	<update id="updateRtrvlStatCd" parameterType="map">
+		UPDATE LGS_RTRVL_DRCT_GOD
+		SET
+		       UDT_DT                   = SYSDATE,
+		       UDTER_ID                 = #{udtId, jdbcType=VARCHAR},
+		       ERP_INV_TRNSMIS_SECT_CD  = 'plgrim_INV',      					<!--플그림재고-->
+		       RTRVL_STAT_CD            = 'RTRVL_COMPT',    					<!--회수완료-->
+		       RTRVL_GOD_STAT_DETAIL_CD = #{statDetailCd, jdbcType=VARCHAR},  	<!--소각/자가소비-->
+		       RTRVL_GOD_STAT_CD        = 'NORM_WRHS',      					<!--정상입고-->
+		       RTRVL_COMPT_DT           = SYSDATE           					<!--회수완료일-->
+		WHERE clm_no = #{clmNo}
+	</update>
+
+	<select id="getTotalOrdQty" parameterType="String" resultType="int">
+		SELECT /* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.getTotalOrdQty][주문상품수량합계조회][정재민] */
+			SUM(ord_qty)
+		  FROM ord_god og
+		 WHERE og.ord_no = #{ordNo}
+	</select>
+
+
+	<select id="selectOvseaLgsDlvByClmNo" parameterType="String" resultType="lgsDlv">
+		SELECT cal_dt /* [claim.manage.xml][selectOvseaLgsDlvByClmNo][클레임번호로 해외배송의 물류배송 row 를 구한다] */
+		     , clm_no
+		     , cncl_dlv_cst
+		     , crncy_cd
+		     , cvnstor_hdry_aprv_no
+		     , dlv_com_cd
+		     , dlv_com_nm
+		     , dlv_com_trnsmis_dt
+		     , dlv_com_trnsmis_tgt_yn
+		     , dlv_com_trnsmis_yn
+		     , dlv_cst_bnd_mbd_cd
+		     , dlv_cst_cpn_dc_amt
+		     , dlv_cst_cpn_no
+		     , dlv_mn_cd
+		     , dlv_pcupsp_turn
+		     , dlv_turn
+		     , dmstc_dlv_cst_plc_sn
+		     , dmstc_waybil_no
+		     , dmstc_waybil_no_reg_dt
+		     , exchg_dlv_cst
+		     , exchg_rt_apl_beg_dt
+		     , gdgp_stat_cd
+		     , god_min_wt
+		     , hbl_no
+		     , hbl_no_reg_dt
+		     , mail_snd_yn
+		     , ord_no
+		     , ovsea_dlv_cst_plc_sn
+		     , ovsea_dlv_dmstc_dlv_cst_plc_sn
+		     , ovsea_waybil_no
+		     , ovsea_waybil_no_reg_dt
+		     , pay_exchg_rt_crncy_amt
+		     , plc_dlv_cst
+		     , reality_dlv_cst
+		     , regtr_id
+		     , reg_dt
+		     , rtgod_dlv_cst
+		     , stdr_crncy_amt
+		     , udter_id
+		     , udt_dt
+		     , waybil_no_erp_trnsmis_cd
+		     , waybil_no_erp_trnsmis_dt
+		     , waybil_no_erp_trnsmis_err_cont
+		     , zone_turn
+		  FROM lgs_dlv ld
+		  where ld.ovsea_dlv_cst_plc_sn is not null
+		  and ld.clm_no = #{clmNo}
+	</select>
+
+	<select id="selectDmstcLgsDlvByClmNo" parameterType="String" resultType="lgsDlv">
+		SELECT cal_dt /* [claim.manage.xml][selectDmstcLgsDlvByClmNo][클레임번호로 국내배송의 물류배송 row 를 구한다] */
+		     , clm_no
+		     , cncl_dlv_cst
+		     , crncy_cd
+		     , cvnstor_hdry_aprv_no
+		     , dlv_com_cd
+		     , dlv_com_nm
+		     , dlv_com_trnsmis_dt
+		     , dlv_com_trnsmis_tgt_yn
+		     , dlv_com_trnsmis_yn
+		     , dlv_cst_bnd_mbd_cd
+		     , dlv_cst_cpn_dc_amt
+		     , dlv_cst_cpn_no
+		     , dlv_mn_cd
+		     , dlv_pcupsp_turn
+		     , dlv_turn
+		     , dmstc_dlv_cst_plc_sn
+		     , dmstc_waybil_no
+		     , dmstc_waybil_no_reg_dt
+		     , exchg_dlv_cst
+		     , exchg_rt_apl_beg_dt
+		     , gdgp_stat_cd
+		     , god_min_wt
+		     , hbl_no
+		     , hbl_no_reg_dt
+		     , mail_snd_yn
+		     , ord_no
+		     , ovsea_dlv_cst_plc_sn
+		     , ovsea_dlv_dmstc_dlv_cst_plc_sn
+		     , ovsea_waybil_no
+		     , ovsea_waybil_no_reg_dt
+		     , pay_exchg_rt_crncy_amt
+		     , plc_dlv_cst
+		     , reality_dlv_cst
+		     , regtr_id
+		     , reg_dt
+		     , rtgod_dlv_cst
+		     , stdr_crncy_amt
+		     , udter_id
+		     , udt_dt
+		     , waybil_no_erp_trnsmis_cd
+		     , waybil_no_erp_trnsmis_dt
+		     , waybil_no_erp_trnsmis_err_cont
+		     , zone_turn
+		  FROM lgs_dlv ld
+		  where ld.ovsea_dlv_cst_plc_sn is null
+		  and ld.clm_no = #{clmNo}
+		  and rownum = 1
+	</select>
+
+
+	<update id="updateOvseaWaybilNoPop" parameterType="lgsDlv">
+		UPDATE LGS_DLV /* [claim.manage.xml][updateOvseaWaybilNoPop][해외송장번호update] */
+		SET
+		       udt_dt                   = SYSDATE,
+		       ovsea_waybil_no			= #{ovseaWaybilNo, jdbcType=VARCHAR}
+		WHERE ord_no = #{ordNo}
+		AND dlv_pcupsp_turn = #{dlvPcupspTurn}
+		AND dlv_turn = #{dlvTurn}
+		<if test="ordNo == null and dlvPcupspTurn == null and dlvTurn == null">
+
+		</if>
+	</update>
+
+	<select id="selectOrdGodListForAllCancel" parameterType="String" resultType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGod">
+        SELECT /* [claim.manage.xml][selectOrdGodListForAllCancel][전체취소를위한주문상품조회] */
+                ORD_NO
+               ,ORD_GOD_TURN
+               ,ORD_QTY
+        FROM    ORD_GOD t
+        WHERE   1 = 1
+        AND     ORD_NO = #{ordNo,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="selectAddPayDlvAmtByPartCncl" parameterType="com.plgrim.ncp.base.entities.datasource1.clm.Clm" resultType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+		SELECT /* [claim.manage.xml][selectAddPayDlvAmtByPartCncl][부분취소로 인해 부과된 초도 배송비 조회] */
+			a.pay_no AS payNo
+			, MAX(a.pay_mn_cd) AS payMnCd
+            , MAX(a.pg_aprv_no) AS pgAprvNo
+            , MAX(a.pg_sect_cd) AS pgSectCd
+            , MAX(a.escr_yn) AS escrYn
+            , MAX(a.pay_crncy_cd) AS payCrncyCd
+            , 'Y' AS mpayMnYn	/* 주결제 수단과 동일하게 PG 취소를 처리하기 위해 Y로 넘긴다 */
+            , MAX(a.mbr_cpn_no) AS mbrCpnNo
+            , MAX(a.rfd_bnk_cd) AS rfdBnkCd
+            , MAX(PKG_CRYPTO.DECRYPT(a.rfd_bnk_acct_no, 'FNFBNT02-5200001')) AS rfdBnkAcctNo
+            , MAX(a.rfd_acnthldr_nm) AS rfdAcnthldrNm
+            , MAX(a.cncl_acmtl_amt) AS cnclAcmtlAmt
+            , MAX(a.pay_exchg_rt_apl_beg_dt) AS exchgRtAplBegDt
+    	 	, MAX(a.pay_crncy_pay_amt - NVL(a.cncl_acmtl_amt, 0)) AS payCrncyPayAmt
+    	 	, MAX(a.deal_tp_cd) AS dealTpCd
+    	 	, TO_CHAR(SYSDATE, 'YYYYMM')-MAX(TO_CHAR(NVL(a.pay_dt,a.reg_dt), 'YYYYMM'))  as refundYn
+		FROM pay a
+			INNER JOIN clm b ON a.clm_no = b.clm_no
+		WHERE a.ord_no = #{ordNo}
+			AND a.deal_tp_cd = 'PAY_COMPT'
+  			AND b.clm_tp_cd = 'PART_CNCL'
+  			AND a.pay_crncy_pay_amt - NVL(a.cncl_acmtl_amt, 0) > 0
+			AND EXISTS (
+				SELECT 1
+				FROM clm_wrhs_god x
+					INNER JOIN clm_wrhs_god y ON x.ord_no = y.ord_no AND x.dlv_pcupsp_turn = y.dlv_pcupsp_turn
+				WHERE y. clm_no = #{clmNo}
+					AND x.clm_no = b.clm_no
+		)
+		GROUP BY pay_no
+    </select>
+
+    <update id="updateAddPayByPartCncl" parameterType="com.plgrim.ncp.biz.claim.data.RefundPayDTO">
+        UPDATE /* [claim.manage.xml][updateAddPayByPartCncl][부분취소로인한추가결제 환불금액 업데이트] */
+                PAY
+           SET
+           		cncl_acmtl_amt = nvl(cncl_acmtl_amt,0) + #{cnclAcmtlAmt}
+                , udter_id = #{regtrId,jdbcType=VARCHAR}
+                , udt_dt = sysdate
+         WHERE pay_no = #{payNo ,jdbcType=VARCHAR}
+           AND ord_no = #{ordNo ,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectPayWaitPartCnclCount" parameterType="String" resultType="Integer">
+    	SELECT /* [claim.manage.xml][selectPayWaitPartCnclCount][결제대기 상태의 부분취소 클레임 수량 조회] */
+    		COUNT(1)
+    	FROM clm
+    	WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+    		AND clm_tp_cd = 'PART_CNCL'
+    		AND clm_stat_cd = 'PAY_WAIT'
+    </select>
+
+	<select id="selectClmComChrger" parameterType="com.plgrim.ncp.base.entities.datasource1.clm.Clm" resultType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger">
+    	     SELECT /* [claim.manage.xml][selectClmComChrger][클레임 배송담당자 조회] */
+    	     		T2.COM_ID, T2.CHRGER_JOB_CD, T2.CHRGER_TURN,
+    	     		T2.CHRGER_NM, NVL(T2.CHRGER_MOBIL_AREA_NO,'') AS CHRGER_MOBIL_AREA_NO,
+    	     		NVL(T2.CHRGER_MOBIL_TLOF_NO,'') AS CHRGER_MOBIL_TLOF_NO,
+    	     		NVL(T2.CHRGER_MOBIL_TLOF_WTHN_NO,'') AS CHRGER_MOBIL_TLOF_WTHN_NO
+		     FROM
+		     (
+		    	SELECT B.COM_ID, B.CHRGER_JOB_CD, MIN(CHRGER_TURN) AS CHRGER_TURN
+				  FROM COM A JOIN COM_CHRGER B ON A.COM_ID = B.COM_ID
+				 WHERE A.COM_STAT_CD = 'USE'
+				   AND A.DELETE_YN = 'N'
+				   AND B.CHRGER_JOB_CD = 'MD'
+				   AND EXISTS(
+				              SELECT *
+				                FROM CLM_WRHS_GOD C
+				               WHERE C.CLM_NO = #{clmNo}
+				                 AND C.PARTMAL_SECT_CD = 'PARTMAL'
+				                 AND A.COM_ID = C.COM_ID
+				   )
+				 GROUP BY B.COM_ID, B.CHRGER_JOB_CD
+			  ) T1 JOIN COM_CHRGER T2 ON T1.COM_ID = T2.COM_ID AND T1.CHRGER_JOB_CD = T2.CHRGER_JOB_CD AND T1.CHRGER_TURN = T2.CHRGER_TURN
+    </select>
+
+    <select id="selectOrdStatDlvComptYn" parameterType="String" resultType="String">
+    	/* [claim.manage.xml][selectOrdStatDlvComptYn][주문의 잔여상품이 모두 배송완료인지 체크] */
+		SELECT
+	        CASE
+	            WHEN outqry.notClmNotDlvComptCnt = 0
+	            AND outqry.ordStatCd != 'ALL_CNCL'
+	            THEN 'Y' ELSE 'N'
+	        END
+	           result
+		  FROM (
+			  		SELECT o.ord_stat_cd as ordStatCd
+			             , SUM (
+		                   CASE
+		                       WHEN     lddg.dlv_stat_cd != 'DLV_COMPT'
+		                            AND c.clm_no IS NULL
+		                       THEN
+		                           1
+		                       ELSE
+		                           0
+		                   END)
+		                   AS notClmNotDlvComptCnt
+			          FROM inf_ord_god_erp_dstb i
+			          	   JOIN ord o ON o.ord_no = i.ord_no
+			               JOIN lgs_dlivy_drct_god lddg
+			                   ON lddg.dlivy_drct_god_no = i.dlivy_drct_god_no
+			               LEFT OUTER JOIN clm c
+			                   ON c.clm_no = i.clm_no AND c.clm_stat_cd = 'COMPT'
+			         WHERE 1 = 1 AND i.ord_no = #{ordNo}
+			         GROUP BY o.ord_stat_cd
+		       ) outqry
+    </select>
+
+	<select id="selectClaimLmsText" parameterType="java.util.HashMap" resultType="String">
+		SELECT  /* [claim.manage.xml][selectClaimLmsText][클레임 문구 조회][Yoon] */
+			msp.PLC_VAL
+		  FROM MV_SYS_PLC msp
+		 WHERE 1 = 1
+		   AND msp.MALL_ID = #{mallId}
+		   AND msp.PLC_CD = #{plcCd}
+	</select>
+
+    <!-- REPAIR s: 무료수선신청 RFC 전송을 위한 조회 -->
+    <!--<resultMap id="repairReceptionSDO" type="com.plgrim.ncp.interfaces.erp.jco.claim.data.RepairReceptionSDO">-->
+	    <!--<result property="onRepairNo" 		    column="ON_REPAIR_NO"/>-->
+		<!--<result property="onRepairNoSeq" 		column="ON_REPAIR_NO_SEQ"/>-->
+		<!--<result property="bpName" 		column="BP_NAME"/>-->
+		<!--<result property="telNo" 		column="TEL_NO"/>-->
+		<!--<result property="date" 		column="BDATE"/>-->
+		<!--<result property="gender" 		column="GENDER"/>-->
+		<!--<result property="matnr" 		column="MATNR"/>-->
+		<!--<result property="chasu" 		column="CHASU"/>-->
+		<!--<result property="retAppPrc" 	column="RET_APP_PRC"/>-->
+		<!--<result property="otgrpt" 		column="OTGRPT"/>-->
+		<!--<result property="ausbs" 		column="AUSBS"/>-->
+		<!--<result property="bpNo" 		column="BP_NO"/>-->
+		<!--<result property="rctno" 		column="RCTNO"/>-->
+		<!--<result property="seqno" 		column="SEQNO"/>-->
+		<!--<result property="tagSn" 		column="TAG_SN"/>-->
+		<!--<result property="shopFee" 		column="SHOP_FEE"/>-->
+		<!--<result property="shopPrc" 		column="SHOP_PRC"/>-->
+    <!--</resultMap>-->
+
+    <!--<select id="selectRepairReceptionSDOList" parameterType="com.plgrim.ncp.base.entities.datasource1.clm.Clm" resultMap="repairReceptionSDO">-->
+		<!--SELECT-->
+		      <!--IOGSD.CLM_NO AS ON_REPAIR_NO-->
+		    <!--, IOGSD.QTY_TURN AS ON_REPAIR_NO_SEQ-->
+		    <!--, O.CSTMR_NM AS BP_NAME-->
+		    <!--, O.CSTMR_MOBIL_AREA_NO || O.CSTMR_MOBIL_TLOF_NO || O.CSTMR_MOBIL_TLOF_WTHN_NO AS TEL_NO-->
+		    <!--, M.MBR_BRTHDY AS BDATE-->
+		    <!--, NVL(DECODE(M.MBR_SEX_SECT_CD, 'MALE','M','FEMALE','F'),'M') AS GENDER /*비회원일경우 임시방편*/-->
+		    <!--, IOGSD.SKU_NO AS MATNR-->
+		    <!--, '1' AS CHASU-->
+		    <!--, IOGSD.STDR_CRNCY_UNT_PRC AS RET_APP_PRC-->
+		    <!--, NVL(LD.DLV_MEMO,'-') AS OTGRPT-->
+		    <!--, '' AS AUSBS-->
+		    <!--, M.ERP_CSTMR_NO AS BP_NO-->
+		    <!--, IOGSD.ERP_RESVE_RCPTFR_NO AS RCTNO-->
+		    <!--, IOGSD.QTY_TURN AS SEQNO-->
+		    <!--, '' AS TAG_SN-->
+		    <!--, NVL(SBP.SHOP_REPAIR_FEE_RT,'0') AS SHOP_FEE-->
+            <!--, (CASE WHEN SBP.SHOP_REPAIR_FEE_SECT_CD = 'FIXAMT' THEN NVL(SBP.SHOP_REPAIR_FEE_AMT,'0')-->
+                   <!--WHEN SBP.SHOP_REPAIR_FEE_SECT_CD = 'FIXRT' THEN ROUND(SBP.SHOP_REPAIR_FEE_RT * NVL(IOGSD.STDR_CRNCY_UNT_PRC,0) /100)-->
+                   <!--ELSE NVL(SBP.SHOP_REPAIR_FEE_AMT,'0')-->
+               <!--END ) AS SHOP_PRC-->
+		<!--FROM INF_ORD_GOD_ERP_DSTB IOGSD-->
+		<!--JOIN LGS_RTRVL_DRCT_GOD LRDG ON (IOGSD.ORD_NO = LRDG.ORD_NO  and IOGSD.CLM_NO = LRDG.CLM_NO AND IOGSD.CLM_WRHS_GOD_TURN = LRDG.CLM_WRHS_GOD_TURN )-->
+		<!--JOIN LGS_DLVSP LD ON (IOGSD.ORD_NO = LD.ORD_NO AND IOGSD.CLM_NO = LD.CLM_NO AND LRDG.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LD.DLV_PCUPSP_SECT_CD = 'CLM_PCUPSP')-->
+		<!--JOIN ORD O ON IOGSD.ORD_NO = O.ORD_NO-->
+		<!--JOIN ORD_GOD OG ON (IOGSD.ORD_NO = OG.ORD_NO AND IOGSD.ORD_GOD_TURN = OG.ORD_GOD_TURN)-->
+		<!--LEFT OUTER JOIN MBR M ON O.MBR_NO = M.MBR_NO-->
+		<!--JOIN GOD G ON OG.GOD_NO = G.GOD_NO-->
+		<!--JOIN SYS_BRND_PRDLST SBP ON (G.BRND_ID = SBP.BRND_ID AND G.PRDLST_CD = SBP.PRDLST_CD)-->
+		<!--WHERE IOGSD.ORD_NO = #{ordNo}-->
+		<!--AND IOGSD.CLM_NO = #{clmNo}-->
+    <!--</select>-->
+
+    <!--<sql id="com.plgrim.ncp.biz.claim.manage.whereFreeRepair">-->
+	    <!--<choose>-->
+		    <!--<when test='freeRepairViewType == "BO_CLAIM"'>-->
+		    	<!--<choose>-->
+			    	<!--<when test = '(ordNos != null and ordNo != "") or (clmNoArr != null and clmNo != "") or (mbrIds != null and mbrId != "")'>-->
+			    		<!--<if test='mbrIds != null and mbrId != ""'>-->
+				    		<!--AND <foreach collection="mbrIds" item="searchMbrId" index="index" separator="or" open=" (" close=")">-->
+				     					<!--SEARCH_MBR_ID = #{searchMbrId}  /*구매자아이디*/-->
+				 				<!--</foreach>-->
+				    	<!--</if>-->
+			    		<!--<if test='ordNos != null and ordNo != ""'>-->
+				    		<!--AND <foreach collection="ordNos" item="searchOrdNo" index="index" separator="or" open=" (" close=")">-->
+				     					<!--ORD_NO = #{searchOrdNo} /*주문번호*/-->
+				 				<!--</foreach>-->
+				    	<!--</if>-->
+				    	<!--<if test='clmNoArr != null and clmNo != ""'>-->
+				    		<!--AND <foreach collection="clmNoArr" item="searchClmNo" index="index" separator="or" open=" (" close=")">-->
+				     					<!--CLM_NO = #{searchClmNo}  /*온라인 수선번호*/-->
+				 				<!--</foreach>-->
+				    	<!--</if>-->
+			     	<!--</when>-->
+			     	<!--<otherwise>-->
+			     		<!--<if test='shopId != null and shopId != ""'>-->
+				    		<!--AND PKUP_SHOP_ID = #{shopId}              /*접수매장*/-->
+				    	<!--</if>-->
+				    	<!--<if test='boRepairStatCd != null and boRepairStatCd != ""'>-->
+				    		<!--<choose>-->
+				    			<!--<when test='boRepairStatCd == "BO00"'> &lt;!&ndash; 수선 신청 취소 &ndash;&gt;-->
+				    				<!--AND REPAIR_COMPT_CD = 'O01'-->
+				    			<!--</when>-->
+				    			<!--<when test='boRepairStatCd == "BO01"'> &lt;!&ndash; 수선신청 &ndash;&gt;-->
+				    				<!--AND REPAIR_COMPT_CD = 'O02'-->
+				    			<!--</when>-->
+				    			<!--<when test='boRepairStatCd == "BO02"'> &lt;!&ndash; 상품수거중 &ndash;&gt;-->
+				    				<!--AND REPAIR_COMPT_CD = 'O03'-->
+				    			<!--</when>-->
+				    			<!--<when test='boRepairStatCd == "BO03"'> &lt;!&ndash; 수선중 &ndash;&gt;-->
+				    				<!--AND REPAIR_COMPT_CD IN ('A01','A03','A05','A07','A09','A11','A20')-->
+				    			<!--</when>-->
+				    			<!--<when test='boRepairStatCd == "BO04"'> &lt;!&ndash; 수선완료 &ndash;&gt;-->
+				    				<!--AND REPAIR_COMPT_CD IN ('A12','A13','A14')-->
+				    			<!--</when>-->
+				    			<!--<when test='boRepairStatCd == "BO05"'> &lt;!&ndash; 수선(발송)완료 &ndash;&gt;-->
+				    				<!--AND REPAIR_COMPT_CD = 'A15'-->
+				    			<!--</when>-->
+				    		<!--</choose>-->
+				    	<!--</if>-->
+						<!--<if test='brndIdNewArr != null and brndIdNewArr !=""'>-->
+							<!--AND <foreach collection="brndIdNewArr" item="searchBrndId" index="index" separator="or" open=" (" close=")">-->
+				     					<!--BRND_ID = #{searchBrndId} /*브랜드*/-->
+				 				<!--</foreach>-->
+						<!--</if>-->
+				    	<!--<if test='clmRceptMthdCd != null and clmRceptMthdCd != ""'>-->
+				    		<!--AND CLM_RCEPT_MTHD_CD = #{clmRceptMthdCd}         /*접수구분*/-->
+				    	<!--</if>-->
+				    	<!--<if test='regtrNm != null and regtrNm != ""'>-->
+				    		<!--AND SEARCH_REGTR_NM LIKE '%'||#{regtrNm}||'%'            /*접수자명*/-->
+				    	<!--</if>-->
+				    	<!--<if test='clmDtStart != null and clmDtStart !="" and clmDtEnd != null and clmDtEnd !=""'>-->
+					    	<!--<choose>-->
+								<!--<when test='dateGubun != null and dateGubun =="rceptDt"'>-->
+									<!--AND TO_CHAR(RCEPT_DT,'YYYYMMDDHH24MISS') BETWEEN #{clmDtStart} AND #{clmDtEnd}    /*접수일자*/-->
+								<!--</when>-->
+								<!--<when test='dateGubun != null and dateGubun =="dlvComptDt"'>-->
+									<!--AND TO_CHAR(DLV_COMPT_DT,'YYYYMMDDHH24MISS') BETWEEN #{clmDtStart} AND #{clmDtEnd} /*수령완료일*/-->
+								<!--</when>-->
+								<!--<otherwise>-->
+									<!--AND TO_CHAR(CLM_DT,'YYYYMMDDHH24MISS') BETWEEN #{clmDtStart} AND #{clmDtEnd}       /*신청일자*/-->
+								<!--</otherwise>-->
+							<!--</choose>-->
+						<!--</if>-->
+						<!--<if test='searchCstmrMobile != null and searchCstmrMobile != ""'>-->
+				    		<!--AND SEARCH_CSTMR_MOBILE = #{searchCstmrMobile}            /*구매자연락처*/-->
+				    	<!--</if>-->
+			     	<!--</otherwise>-->
+			    <!--</choose>-->
+		    <!--</when>-->
+		    <!--<when test='freeRepairViewType == "BO_MEMBER"'>-->
+		    	<!--AND MBR_NO = #{mbrNo}       /*회원번호*/-->
+		    <!--</when>-->
+		    <!--<when test='freeRepairViewType == "FO"'>-->
+		    	<!--AND MBR_NO = #{mbrNo}       /*회원번호*/-->
+    	 		<!--<if test='clmDtStart != null and clmDtStart !="" and clmDtEnd != null and clmDtEnd !=""'>-->
+			    	<!--AND CLM_DT BETWEEN TO_DATE(#{clmDtStart , jdbcType=VARCHAR}||' 000000', 'YYYY-MM-DD HH24MISS') AND TO_DATE(#{clmDtEnd}||' 235959','YYYY-MM-DD HH24MISS')-->
+				<!--</if>-->
+		    <!--</when>-->
+		    <!--<when test='freeRepairViewType == "BO_DETAIL_POP"'>-->
+		        <!--<if test='clmNo != null and clmNo !=""'>-->
+		    		<!--AND CLM_NO = #{clmNo}-->
+		    	<!--</if>-->
+		    	<!--<if test='ordNo != null and ordNo !=""'>-->
+                	<!--AND ORD_NO = #{ordNo}-->
+                <!--</if>-->
+		    <!--</when>-->
+	    <!--</choose>-->
+    <!--</sql>-->
+
+    <select id="selectFreeRepairRegList" parameterType="com.plgrim.ncp.biz.claim.data.ClaimListSearchDTO" resultType="com.plgrim.ncp.biz.claim.result.ClaimListResult">
+	    SELECT  /* [claim.manage.xml][selectFreeRepairRegList][무료수선목록조회][jewellig.lee] */
+	    	*
+	    FROM (
+			SELECT
+		    	 ROWNUM AS RNUM
+				,RES.*
+				,COMPTCD.ASSTN_CD_1 AS REPAIR_COMPT_CD_NM
+				<if test="freeRepairViewType != 'FO'">
+				,COMPTCD.ASSTN_CD_1 AS BO_REPAIR_STAT_NM
+				,RES.REPAIR_COMPT_CD AS BO_REPAIR_STAT_CD
+				,COMPTCD.CD_NM AS RET_REPAIR_STAT_NM /*RET수선상태명*/
+		        </if>
+			FROM
+			(
+				 SELECT
+		             C.CLM_NO                         /*온라인수선번호*/
+		            ,IOGSDR.QTY_TURN                   /*SEQ*/
+		            ,IOGSDR.REPAIR_NO                  /*RET수선번호*/
+		            ,C.ORD_NO                         /*주문번호*/
+		            ,DECODE(C.AFF_COM_ORD_NO,NULL,'자사',(SELECT COM_NM FROM COM WHERE COM_ID = C.AFF_COM_ID)) AS PARTMAL_SECT_CD_NM /*자사/제휴사*/
+		            ,O.MALL_ID                        /*몰ID*/
+		            ,(SELECT NVL(MALL_NM,'') FROM SYS_MALL WHERE MALL_ID = O.MALL_ID AND USE_YN='Y') AS MALL_NM  /*몰*/
+		            ,O.LANG_CD                        /*언어코드*/
+		            ,(SELECT NVL(CD_NM,'') FROM MV_SYS_CD WHERE LANG_CD = O.LANG_CD AND UPPER_CD = 'LANG' AND o.LANG_CD = CD) AS LANG_NM /*언어*/
+		            ,IOGSDR.REPAIR_RCEPT_SHOP_ID AS PKUP_SHOP_ID               /*접수매장(BATCH로 업데이트 예상)*/
+		            ,SS.SHOP_NM AS PKUP_SHOP_NM                                /*접수매장명*/
+		            ,(SELECT NVL(CD_NM,'') FROM MV_SYS_CD WHERE LANG_CD = O.LANG_CD AND UPPER_CD = 'CLM_RCEPT_MTHD' AND C.CLM_RCEPT_MTHD_CD = CD) AS CLM_RCEPT_MTHD_CD_NM /*접수구분*/
+		            ,CLM_RCEPT_MTHD_CD                /*접수구분코드*/
+		            ,CASE WHEN IOGSD.CLM_NO IS NULL AND IOGSDR.CLM_NO IS NOT NULL THEN 'O01'
+                     ELSE
+                         CASE WHEN IOGSDR.REPAIR_COMPT_CD IS NULL
+                         THEN
+                            CASE WHEN C.CLM_RCEPT_MTHD_CD = 'SHOP_VISIT' THEN 'O02'
+                            ELSE
+                                CASE WHEN RTRVL.RTRVL_STAT_CD = 'RTRVL_DRCT_WAIT' THEN 'O02'
+                                ELSE 'O03'
+                                END
+                            END
+                         ELSE
+                            IOGSDR.REPAIR_COMPT_CD
+                         END
+                     END AS REPAIR_COMPT_CD  		  /*Retail수선상태코드*/
+		            ,RTRVL.RTRVL_STAT_CD              /*수선품 회수상태*/
+		            ,(CASE
+		               WHEN CLM_RCEPT_MTHD_CD = 'SHOP_VISIT' THEN ' - '
+		               ELSE (SELECT CD_NM FROM MV_SYS_CD WHERE CD = RTRVL.RTRVL_STAT_CD AND UPPER_CD = 'RTRVL_STAT' AND LANG_CD = O.LANG_CD )
+		             END ) AS RTRVL_STAT_NM /*수선품 회수상태명*/
+		            ,RTRVL.DLV_COM_CD AS RDLV_COM_CD  /*수선품 회수택배사*/
+		            ,(CASE
+		                WHEN CLM_RCEPT_MTHD_CD = 'SHOP_VISIT' THEN ' - '
+		                ELSE (SELECT CD_NM FROM MV_SYS_CD WHERE CD = RTRVL.DLV_COM_CD AND UPPER_CD = 'DLV_COM' AND LANG_CD = O.LANG_CD )
+		             END) AS RDLV_COM_NM /*수선품 회수택배사*/
+		            ,(CASE
+		               WHEN CLM_RCEPT_MTHD_CD = 'SHOP_VISIT' THEN ' - '
+		               ELSE RTRVL.DMSTC_WAYBIL_NO
+		              END ) AS RDMSTC_WAYBIL_NO                            /*수선품 회수택배송장*/
+		            ,IOGSDR.REPAIR_DLV_SECT_CD AS DLV_SECT_CD              /*상품전달방법*/
+		            ,(CASE
+	                       WHEN NVL(IOGSDR.REPAIR_DLV_SECT_CD,'') = 'GNRL_DLV' THEN '택배배송'
+	                       WHEN NVL(IOGSDR.REPAIR_DLV_SECT_CD,'') = 'PKUP_DLV' THEN '방문수령'
+	                       ELSE ' - '
+	                       END
+		             ) AS DLV_SECT_NM  /*상품전달방법명*/
+		            ,IOGSDR.REPAIR_DLV_HDRY_COM_CD AS DDLV_COM_CD  /*수선완료상품 전달 택배사*/
+		            ,(CASE
+		                WHEN IOGSDR.REPAIR_DLV_HDRY_COM_CD IS NOT NULL
+		                THEN (SELECT CD_NM FROM MV_SYS_CD WHERE CD = IOGSDR.REPAIR_DLV_HDRY_COM_CD AND UPPER_CD = 'DLV_COM' AND LANG_CD = O.LANG_CD )
+		                ELSE ' - '
+		                END ) AS DDLV_COM_NM /*수선완료상품 전달 택배사명*/
+		            ,(CASE
+		                WHEN IOGSDR.REPAIR_DLV_WAYBIL_NO IS NOT NULL
+		                THEN IOGSDR.REPAIR_DLV_WAYBIL_NO
+		                ELSE ' - '
+		              END ) AS DDMSTC_WAYBIL_NO  /*수선완료상품 전달택배송장*/
+		            ,C.CLM_DT                         /*수선신청일*/
+		            ,IOGSDR.REPAIR_RCEPT_DT AS RCEPT_DT         /*수선접수일*/
+		            ,IOGSDR.REPAIR_COMPT_DT AS DLV_COMPT_DT     /*수령완료일*/
+		            ,IOGSDR.REPAIR_CNCL_DT AS  DRAW_DT          /*수선철회일*/
+		            ,CWG.ERP_GOD_NO                   /*ERP상품코드*/
+		            ,CWG.GOD_NO                       /*온라인 상품코드*/
+		            ,CWG.ITM_NM                       /*사이즈*/
+		            ,1 AS ORD_CLM_QTY                 /*수량(수선은 1단위당 1ROW이므로 의미가 없음)*/
+		            ,IOGSD.STDR_CRNCY_UNT_PRC         /*결제금액*/
+		            ,CWG.GOD_NM                       /*상품명*/
+		            ,CWG.BRND_ID                      /*브랜드*/
+		            ,O.MBR_NO
+
+		            <if test="freeRepairViewType != 'FO'">
+		            ,FN_MASKING('FLNM', O.CSTMR_NM, '', #{maskingYn}) AS CSTMR_NM /*구매자이름*/
+		            ,FN_MASKING('PHON',
+		                                CASE WHEN (O.CSTMR_MOBIL_NATION_NO = '82' OR O.CSTMR_MOBIL_NATION_NO IS NULL)
+		                                     THEN O.CSTMR_MOBIL_AREA_NO || '-' || O.CSTMR_MOBIL_TLOF_NO || '-' || O.CSTMR_MOBIL_TLOF_WTHN_NO
+		                                     ELSE O.CSTMR_MOBIL_NATION_NO || '-' || O.CSTMR_MOBIL_AREA_NO || '-' || O.CSTMR_MOBIL_TLOF_NO || '-' || O.CSTMR_MOBIL_TLOF_WTHN_NO
+		                                END
+		                              ,
+                     '', #{maskingYn}) AS CSTMR_MOBILE /*구매자연락처*/
+		            ,DECODE(
+		            	       O.MBR_TP_CD,'NMBR'
+		            	     ,'비회원'
+		            	     ,FN_MASKING('ID', (SELECT MBR_ID FROM MBR WHERE MBR_NO = O.MBR_NO AND SSO_GRP_CD='FNF_GRP'), '', #{maskingYn})
+		            	    ) AS MBR_ID
+		            ,(SELECT MBR_ID FROM MBR WHERE MBR_NO = O.MBR_NO AND SSO_GRP_CD='FNF_GRP') AS SEARCH_MBR_ID
+		            ,O.MBR_TP_CD
+		            ,FN_MASKING('FLNM', DLIVY.ADDRSE_NM, '', #{maskingYn}) AS ADDRSE_NM /*수취인이름*/
+		            ,FN_MASKING('PHON',
+		            					CASE WHEN (DLIVY.ADDRSE_MOBIL_NATION_NO ='82' OR DLIVY.ADDRSE_MOBIL_NATION_NO IS NULL)
+		            					     THEN DLIVY.ADDRSE_MOBIL_AREA_NO || '-' || DLIVY.ADDRSE_MOBIL_TLOF_NO || '-' || DLIVY.ADDRSE_MOBIL_TLOF_WTHN_NO
+		            					     ELSE DLIVY.ADDRSE_MOBIL_NATION_NO || '-' || DLIVY.ADDRSE_MOBIL_AREA_NO || '-' || DLIVY.ADDRSE_MOBIL_TLOF_NO || '-' || DLIVY.ADDRSE_MOBIL_TLOF_WTHN_NO
+		            					END
+		            		          ,
+		            '', #{maskingYn}) AS ADDRSE_MOBILE /*수취인연락처*/
+		            ,(CASE
+		                 WHEN (SELECT COUNT(1) FROM MBR WHERE MBR_ID = C.REGTR_ID) > 0
+		                 THEN (FN_MASKING('FLNM', (SELECT MBR_NM AS MBR_NM FROM MBR WHERE MBR_ID = C.REGTR_ID AND SSO_GRP_CD='FNF_GRP'), '', #{maskingYn}))
+		                 WHEN (SELECT COUNT(1) FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID) > 0
+		                 THEN (FN_MASKING('FLNM', (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID ), '', #{maskingYn}))
+		                 ELSE ''
+		            END ) AS REGTR_NM               /*수선접수자명*/
+		            ,(CASE
+		                 WHEN (SELECT COUNT(1) FROM MBR WHERE MBR_ID = C.REGTR_ID) > 0
+		                 THEN (SELECT MBR_NM AS MBR_NM FROM MBR WHERE MBR_ID = C.REGTR_ID AND SSO_GRP_CD='FNF_GRP')
+		                 WHEN (SELECT COUNT(1) FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID) > 0
+		                 THEN (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID )
+		                 ELSE ''
+		            END ) AS SEARCH_REGTR_NM               /*조회용 수선접수자명*/
+		            ,C.REGTR_ID                       /*수선접수자ID*/
+		            ,IOGSDR.UDT_DT                         /*최종변경시간*/
+		            ,(FN_MASKING('ID', IOGSDR.UDTER_ID, '', #{maskingYn}) || '/' || (CASE
+		                    WHEN (SELECT COUNT(1) FROM MBR WHERE MBR_ID = IOGSDR.UDTER_ID) > 0
+		                    THEN (FN_MASKING('FLNM', (SELECT MBR_NM FROM MBR WHERE MBR_ID = IOGSDR.UDTER_ID AND SSO_GRP_CD='FNF_GRP'), '', #{maskingYn}))
+		                    WHEN (SELECT COUNT(1) FROM SYS_ADMIN WHERE ADMIN_ID = IOGSDR.UDTER_ID) > 0
+		                    THEN (FN_MASKING('FLNM', (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = IOGSDR.UDTER_ID ), '', #{maskingYn}))
+		                    ELSE ''
+		             END    )) AS UDTER_ID                      /*최종변경자*/
+		            ,IOGSDR.REPAIR_RCEPT_CHRGER_NM /*수선상담원*/
+		            ,IOGSDR.REPAIR_RCEPT_CHRGER_PHON /*수선상담원연락처*/
+		            ,(CASE WHEN SS.SHOP_TEL_AREA_NO IS NOT NULL
+		              AND SS.SHOP_TEL_TLOF_NO IS NOT NULL
+		              AND SS.SHOP_TEL_TLOF_WTHN_NO IS NOT NULL
+		              THEN SS.SHOP_TEL_AREA_NO|| '-' ||SS.SHOP_TEL_TLOF_NO || '-' ||SS.SHOP_TEL_TLOF_WTHN_NO
+		              ELSE ' - '
+		            END ) AS PKUP_SHOP_TEL_NO /*접수매장전화번호*/
+		            ,(CASE WHEN (O.CSTMR_MOBIL_NATION_NO ='82' OR O.CSTMR_MOBIL_NATION_NO IS NULL)
+		                   THEN O.CSTMR_MOBIL_AREA_NO || O.CSTMR_MOBIL_TLOF_NO || O.CSTMR_MOBIL_TLOF_WTHN_NO
+		                   ELSE O.CSTMR_MOBIL_NATION_NO || O.CSTMR_MOBIL_AREA_NO || O.CSTMR_MOBIL_TLOF_NO || O.CSTMR_MOBIL_TLOF_WTHN_NO
+		              END) AS SEARCH_CSTMR_MOBILE /*조회용 구매자연락처*/
+			            <if test='freeRepairViewType == "BO_DETAIL_POP"'>
+				            ,RTRVL.DLV_MEMO
+		                    ,RTRVL.DLV_COM_TRNSMIS_TGT_YN
+		                    ,RTRVL.addrseBaseAddr
+		                    ,RTRVL.addrseDetailAddr
+	                    </if>
+		            </if>
+		            <if test="freeRepairViewType == 'FO'">
+		            ,CASE WHEN OC.PCKAGE_GOD_TP_CD = 'SET_GOD' OR OG.LST_IMG_URL IS NULL THEN
+		            (
+		               SELECT IMG_URL
+		               FROM GOD_IMG
+		               WHERE GOD_NO = CWG.GOD_NO
+		               AND IMG_TP_CD = 'THNAIL'
+		               AND IMG_SIZE_CD = '100X132'
+		               AND IMG_TURN = 0
+		            )
+		            ELSE
+		               OG.LST_IMG_URL
+		            END  AS LST_IMG_URL                		/* 상품 이미지*/
+		            , OG.COLOR_NM                          AS color_nm
+		            , (SELECT SBB.BRND_NM FROM SYS_BRND SBB WHERE SBB.BRND_ID = CWG.BRND_ID)  AS fo_brnd_nm
+		            , OG.BRND_GRP_ID
+		            , OC.PCKAGE_GOD_TP_CD
+		            ,CASE WHEN  OC.PCKAGE_GOD_TP_CD = 'SET_GOD' or OC.PCKAGE_GOD_TP_CD = 'ADIT_CPST_GOD' THEN
+		            (
+		               SELECT god_no
+		               FROM ORD_GOD
+		               WHERE ORD_NO = OC.ORD_NO
+		               AND GOD_TP_CD = 'SET_GOD'
+		               AND ORD_GOD_TURN = OC.ORD_GOD_TURN
+		            )
+		            ELSE NULL END AS SET_GOD_NO
+		            ,(SELECT CD_DSCR FROM mv_sys_cd msc WHERE msc.cd = RTRVL.DLV_COM_CD AND msc.upper_cd = 'DLV_COM' AND msc.LANG_CD = 'KOR') AS rdlv_com_url
+		            ,(SELECT CD_DSCR FROM mv_sys_cd msc WHERE msc.cd = IOGSDR.REPAIR_DLV_HDRY_COM_CD AND msc.upper_cd = 'DLV_COM' AND msc.LANG_CD = 'KOR') AS ddlv_com_url
+					</if>
+
+		            ,SS.SHOP_NM
+		            ,SS.SHOP_TEL_AREA_NO
+		            ,SS.SHOP_TEL_TLOF_NO
+		            ,SS.SHOP_TEL_TLOF_WTHN_NO
+		            ,C.CLM_STAT_CD
+		            ,CWG.CLM_WRHS_GOD_TURN
+		            ,CWG.DLV_PCUPSP_TURN
+		            ,DLIVY.DLIVY_DRCT_QTY AS DLIVY_QTY
+		            ,DLIVY.DLV_PCUPSP_TURN AS DLV_PCUPSP_TURN_DLIVY
+		            ,DLIVY.DLIVY_DRCT_GOD_NO
+		            ,DLIVY.ORD_GOD_TURN
+		            ,O.ORD_TP_CD
+		            ,RTRVL.RTRVL_DRCT_QTY
+		            ,RTRVL.RTRVL_DRCT_WTHDRAW_QTY
+		            ,DLIVY.DLV_STAT_CD
+		            ,DLIVY.DLV_COM_TRNSMIS_YN
+		            ,RGDGPCD.CD AS RGDGP_STAT_CD
+		            ,DGDGPCD.CD AS DGDGP_STAT_CD
+		            ,RGDGPCD.ASSTN_CD_1 AS RGDGP_STAT_STR
+		            ,DGDGPCD.ASSTN_CD_1 AS DGDGP_STAT_STR
+					,NVL((SELECT CLM_TP_CD FROM CLM WHERE CLM_NO = IOGSD.CLM_NO),'REPAIR') as IOGSD_CLM_TP_CD
+		        FROM INF_ORD_GOD_ERP_DSTB IOGSD
+		        INNER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR IOGSDR
+		            ON (IOGSD.ORD_NO = IOGSDR.ORD_NO AND IOGSD.ORD_GOD_TURN = IOGSDR.ORD_GOD_TURN AND IOGSD.QTY_TURN = IOGSDR.QTY_TURN)
+		        INNER JOIN CLM_WRHS_GOD CWG
+		            ON (IOGSDR.CLM_NO = CWG.CLM_NO AND IOGSDR.CLM_WRHS_GOD_TURN = CWG.CLM_WRHS_GOD_TURN)
+		        INNER JOIN CLM C
+		            ON (IOGSDR.CLM_NO = C.CLM_NO)
+		        INNER JOIN ORD O
+		            ON (C.ORD_NO = O.ORD_NO)
+
+		        INNER JOIN (
+		            SELECT
+		                   LDS.ORD_NO
+		                  ,LDS.CLM_NO
+		                  ,OCGC.CLM_WRHS_GOD_TURN
+		                  ,LRDG.RTRVL_STAT_CD
+		                  ,LRDG.DLV_TURN
+		                  ,LD.DMSTC_WAYBIL_NO
+		                  ,LD.DLV_COM_CD
+		                  ,LD.DLV_PCUPSP_TURN
+		                  ,OCGC.ORD_CLM_QTY
+		                  ,NVL(LRDG.RTRVL_DRCT_QTY,0) AS RTRVL_DRCT_QTY
+		                  ,NVL(LRDG.RTRVL_DRCT_WTHDRAW_QTY,0) AS RTRVL_DRCT_WTHDRAW_QTY
+		                  ,LD.GDGP_STAT_CD
+		                  <if test='freeRepairViewType == "BO_DETAIL_POP"'>
+		                  	,LDS.DLV_MEMO
+                            ,LD.DLV_COM_TRNSMIS_TGT_YN
+                            , fn_masking('ADDR', LDS.addrse_base_addr, '', #{maskingYn})    	AS addrseBaseAddr           /* 수취인 기본주소          */
+                            , fn_masking('ADDRDTL', LDS.addrse_detail_addr, '', #{maskingYn})	AS addrseDetailAddr         /* 수취인 상세주소          */
+		                  </if>
+		            FROM   LGS_DLVSP LDS
+		            INNER JOIN LGS_DLV LD
+		                ON (LDS.ORD_NO = LD.ORD_NO AND LDS.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LDS.DLV_PCUPSP_SECT_CD = 'CLM_PCUPSP')
+		            INNER JOIN LGS_RTRVL_DRCT_GOD LRDG
+		                ON (LRDG.ORD_NO = LD.ORD_NO AND LRDG.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LRDG.DLV_TURN = LD.DLV_TURN)
+		            INNER JOIN ORD_CLM_GOD_CNNC OCGC
+		                ON (LRDG.ORD_NO = OCGC.ORD_NO AND LRDG.CLM_NO = OCGC.CLM_NO AND LRDG.CLM_WRHS_GOD_TURN = OCGC.CLM_WRHS_GOD_TURN AND OCGC.GOD_CNNC_TP_CD = 'WRHS_GOD_CNNC' )
+		            WHERE 1=1
+		            AND LDS.CLM_NO = LD.CLM_NO
+		            AND LRDG.CLM_NO = LD.CLM_NO
+		        ) RTRVL /*수거*/
+		            ON (RTRVL.CLM_NO = IOGSDR.CLM_NO AND RTRVL.CLM_WRHS_GOD_TURN = IOGSDR.CLM_WRHS_GOD_TURN)
+
+		        INNER JOIN (
+		            SELECT
+		                   LDS.ORD_NO
+		                  ,LDS.CLM_NO
+		                  ,OCGC.CLM_WRHS_GOD_TURN
+		                  ,LD.DLV_PCUPSP_TURN
+		                  ,LD.DLV_MN_CD
+		                  ,LDDG.DLV_COMPT_DT
+		                  ,LDS.ADDRSE_NM
+		                  ,LDS.ADDRSE_MOBIL_NATION_NO
+		                  ,LDS.ADDRSE_MOBIL_AREA_NO
+		                  ,LDS.ADDRSE_MOBIL_TLOF_NO
+		                  ,LDS.ADDRSE_MOBIL_TLOF_WTHN_NO
+		                  ,LDS.DLV_SECT_CD
+		                  ,NVL(LDDG.DLIVY_DRCT_QTY,0) AS DLIVY_DRCT_QTY
+		                  ,LDDG.DLIVY_DRCT_GOD_NO
+		                  ,LDDG.ORD_GOD_TURN
+		                  ,LDDG.DLV_STAT_CD
+		                  ,LD.DLV_COM_TRNSMIS_YN
+		                  ,LD.GDGP_STAT_CD
+		            FROM   LGS_DLVSP LDS
+		            INNER JOIN LGS_DLV LD
+		                ON (LDS.ORD_NO = LD.ORD_NO AND LDS.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LDS.DLV_PCUPSP_SECT_CD = 'CLM_DLVSP')
+		            INNER JOIN LGS_DLIVY_DRCT_GOD LDDG
+		                ON (LDDG.ORD_NO = LD.ORD_NO AND LDDG.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LDDG.DLV_TURN = LD.DLV_TURN)
+		            INNER JOIN ORD_CLM_GOD_CNNC OCGC
+		                ON (LDDG.ORD_NO = OCGC.ORD_NO AND LDDG.ORD_GOD_TURN = OCGC.ORD_GOD_TURN AND OCGC.GOD_CNNC_TP_CD = 'DLIVY_GOD_CNNC' )
+		            WHERE 1=1
+		            AND   LDS.CLM_NO = LD.CLM_NO
+                    AND   LDS.ORD_NO = OCGC.ORD_NO
+                    AND   LDS.CLM_NO = OCGC.CLM_NO
+                    AND   LDDG.ORD_NO = LDS.ORD_NO
+		        ) DLIVY /*배송*/
+		            ON (DLIVY.CLM_NO = IOGSDR.CLM_NO AND DLIVY.CLM_WRHS_GOD_TURN = IOGSDR.CLM_WRHS_GOD_TURN)
+
+				<if test="freeRepairViewType == 'FO'">
+		        INNER JOIN ORD_GOD OG
+		            ON (IOGSDR.ORD_NO = OG.ORD_NO AND IOGSDR.ORD_GOD_TURN = OG.ORD_GOD_TURN)
+		        LEFT OUTER JOIN ORD_CPST_GOD_CNNC OC
+		            ON (OG.ORD_NO = OC.ORD_NO AND OG.ORD_GOD_TURN = OC.ORD_CPST_GOD_TURN)
+		        </if>
+
+		        LEFT OUTER JOIN SYS_SHOP SS
+		            ON (IOGSDR.REPAIR_RCEPT_SHOP_ID = SS.SHOP_ID)
+		        LEFT OUTER JOIN ( SELECT CD, ASSTN_CD_1 FROM SYS_EXCP_CD WHERE GRP_CD = 'FRGHT_STAT') RGDGPCD ON (RTRVL.GDGP_STAT_CD = RGDGPCD.CD )
+		        LEFT OUTER JOIN ( SELECT CD, ASSTN_CD_1 FROM SYS_EXCP_CD WHERE GRP_CD = 'FRGHT_STAT') DGDGPCD ON (DLIVY.GDGP_STAT_CD = DGDGPCD.CD )
+
+		        WHERE 1=1
+		        AND   C.CLM_TP_CD = 'REPAIR'
+		        AND   C.CLM_NO = IOGSDR.CLM_NO
+		        AND   CWG.CLM_WRHS_GOD_TURN = IOGSDR.CLM_WRHS_GOD_TURN
+
+			) RES
+			LEFT OUTER JOIN ( SELECT CD, ASSTN_CD_1, CD_NM FROM SYS_EXCP_CD WHERE GRP_CD = 'REPAIR_COMPT') COMPTCD ON (RES.REPAIR_COMPT_CD = COMPTCD.CD)
+			WHERE 1=1
+			AND RES.IOGSD_CLM_TP_CD = 'REPAIR'
+			<!--<include refid="whereFreeRepair"/>-->
+			ORDER BY CLM_DT DESC, QTY_TURN, CLM_NO
+		)
+		WHERE   1=1
+
+		<choose>
+			<when test='pagingYn != null and pagingYn == "Y"'>
+			 AND RNUM BETWEEN #{beginIndex} AND #{endIndex}
+		    </when>
+		    <when test='pagingYn != null and pagingYn == "N" and freeRepairViewType == "BO_DETAIL_POP"'>
+			 AND RNUM = 1
+		    </when>
+		</choose>
+
+    </select>
+
+    <select id="selectFreeRepairRegListCnt" parameterType="com.plgrim.ncp.biz.claim.data.ClaimListSearchDTO" resultType="long">
+
+	    SELECT  /* [claim.manage.xml][selectFreeRepairRegListCnt][무료수선목록카운트][jewellig.lee] */
+    	        COUNT(1)
+		FROM
+			(
+				 SELECT
+		              C.CLM_NO
+		             ,C.ORD_NO
+		             ,IOGSDR.REPAIR_RCEPT_SHOP_ID AS PKUP_SHOP_ID
+		             ,CASE WHEN IOGSD.CLM_NO IS NULL AND IOGSDR.CLM_NO IS NOT NULL THEN 'O01'
+                      ELSE
+                         CASE WHEN IOGSDR.REPAIR_COMPT_CD IS NULL
+                         THEN
+                            CASE WHEN C.CLM_RCEPT_MTHD_CD = 'SHOP_VISIT' THEN 'O02'
+                            ELSE
+                                CASE WHEN RTRVL.RTRVL_STAT_CD = 'RTRVL_DRCT_WAIT' THEN 'O02'
+                                ELSE 'O03'
+                                END
+                            END
+                         ELSE
+                            IOGSDR.REPAIR_COMPT_CD
+                         END
+                      END AS REPAIR_COMPT_CD
+		             ,CWG.BRND_ID
+		             ,C.CLM_RCEPT_MTHD_CD
+		             ,IOGSDR.REPAIR_RCEPT_DT AS RCEPT_DT
+		             ,IOGSDR.REPAIR_COMPT_DT AS DLV_COMPT_DT
+		             ,C.CLM_DT
+		             ,(CASE
+		                     WHEN (SELECT COUNT(1) FROM MBR WHERE MBR_ID = C.REGTR_ID) > 0
+		                     THEN (SELECT MBR_NM AS MBR_NM FROM MBR WHERE MBR_ID = C.REGTR_ID AND SSO_GRP_CD='FNF_GRP')
+		                     WHEN (SELECT COUNT(1) FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID) > 0
+		                     THEN (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID )
+		                     ELSE ''
+		               END ) AS SEARCH_REGTR_NM
+		             ,O.MBR_NO
+		             ,RTRVL.RTRVL_DRCT_WTHDRAW_QTY
+		             ,NVL((SELECT CLM_TP_CD FROM CLM WHERE CLM_NO = IOGSD.CLM_NO),'REPAIR') as IOGSD_CLM_TP_CD
+		             ,(CASE WHEN (O.CSTMR_MOBIL_NATION_NO ='82' OR O.CSTMR_MOBIL_NATION_NO IS NULL)
+		                   THEN O.CSTMR_MOBIL_AREA_NO || O.CSTMR_MOBIL_TLOF_NO || O.CSTMR_MOBIL_TLOF_WTHN_NO
+		                   ELSE O.CSTMR_MOBIL_NATION_NO || O.CSTMR_MOBIL_AREA_NO || O.CSTMR_MOBIL_TLOF_NO || O.CSTMR_MOBIL_TLOF_WTHN_NO
+		              END) AS SEARCH_CSTMR_MOBILE /*조회용 구매자연락처*/
+		             ,(SELECT MBR_ID FROM MBR WHERE MBR_NO = O.MBR_NO AND SSO_GRP_CD='FNF_GRP') AS SEARCH_MBR_ID
+		             ,O.MBR_TP_CD
+		        FROM INF_ORD_GOD_ERP_DSTB IOGSD
+		        INNER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR IOGSDR
+		            ON (IOGSD.ORD_NO = IOGSDR.ORD_NO AND IOGSD.ORD_GOD_TURN = IOGSDR.ORD_GOD_TURN AND IOGSD.QTY_TURN = IOGSDR.QTY_TURN)
+		        INNER JOIN CLM_WRHS_GOD CWG
+		            ON (IOGSDR.CLM_NO = CWG.CLM_NO AND IOGSDR.CLM_WRHS_GOD_TURN = CWG.CLM_WRHS_GOD_TURN)
+		        INNER JOIN CLM C
+		            ON (IOGSDR.CLM_NO = C.CLM_NO)
+		        INNER JOIN ORD O
+		            ON (C.ORD_NO = O.ORD_NO)
+
+		        INNER JOIN (
+		            SELECT
+		                   LDS.ORD_NO
+		                  ,LDS.CLM_NO
+		                  ,OCGC.CLM_WRHS_GOD_TURN
+		                  ,LRDG.RTRVL_STAT_CD
+		                  ,LRDG.DLV_TURN
+		                  ,LD.DMSTC_WAYBIL_NO
+		                  ,LD.DLV_COM_CD
+		                  ,LD.DLV_PCUPSP_TURN
+		                  ,OCGC.ORD_CLM_QTY
+		                  ,NVL(LRDG.RTRVL_DRCT_QTY,0) AS RTRVL_DRCT_QTY
+		                  ,NVL(LRDG.RTRVL_DRCT_WTHDRAW_QTY,0) AS RTRVL_DRCT_WTHDRAW_QTY
+		                  ,LD.GDGP_STAT_CD
+		            FROM   LGS_DLVSP LDS
+		            INNER JOIN LGS_DLV LD
+		                ON (LDS.ORD_NO = LD.ORD_NO AND LDS.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LDS.DLV_PCUPSP_SECT_CD = 'CLM_PCUPSP')
+		            INNER JOIN LGS_RTRVL_DRCT_GOD LRDG
+		                ON (LRDG.ORD_NO = LD.ORD_NO AND LRDG.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LRDG.DLV_TURN = LD.DLV_TURN)
+		            INNER JOIN ORD_CLM_GOD_CNNC OCGC
+		                ON (LRDG.ORD_NO = OCGC.ORD_NO AND LRDG.CLM_NO = OCGC.CLM_NO AND LRDG.CLM_WRHS_GOD_TURN = OCGC.CLM_WRHS_GOD_TURN AND OCGC.GOD_CNNC_TP_CD = 'WRHS_GOD_CNNC' )
+		            WHERE 1=1
+		            AND LDS.CLM_NO = LD.CLM_NO
+		            AND LRDG.CLM_NO = LD.CLM_NO
+		        ) RTRVL /*수거*/
+		            ON (RTRVL.CLM_NO = IOGSDR.CLM_NO AND RTRVL.CLM_WRHS_GOD_TURN = IOGSDR.CLM_WRHS_GOD_TURN)
+
+		        INNER JOIN (
+		            SELECT
+		                   LDS.ORD_NO
+		                  ,LDS.CLM_NO
+		                  ,OCGC.CLM_WRHS_GOD_TURN
+		                  ,LD.DLV_PCUPSP_TURN
+		                  ,LD.DLV_MN_CD
+		                  ,LDDG.DLV_COMPT_DT
+		                  ,LDS.ADDRSE_NM
+		                  ,LDS.ADDRSE_MOBIL_NATION_NO
+		                  ,LDS.ADDRSE_MOBIL_AREA_NO
+		                  ,LDS.ADDRSE_MOBIL_TLOF_NO
+		                  ,LDS.ADDRSE_MOBIL_TLOF_WTHN_NO
+		                  ,LDS.DLV_SECT_CD
+		                  ,NVL(LDDG.DLIVY_DRCT_QTY,0) AS DLIVY_DRCT_QTY
+		                  ,LDDG.DLIVY_DRCT_GOD_NO
+		                  ,LDDG.ORD_GOD_TURN
+		                  ,LDDG.DLV_STAT_CD
+		                  ,LD.DLV_COM_TRNSMIS_YN
+		                  ,LD.GDGP_STAT_CD
+		            FROM   LGS_DLVSP LDS
+		            INNER JOIN LGS_DLV LD
+		                ON (LDS.ORD_NO = LD.ORD_NO AND LDS.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LDS.DLV_PCUPSP_SECT_CD = 'CLM_DLVSP')
+		            INNER JOIN LGS_DLIVY_DRCT_GOD LDDG
+		                ON (LDDG.ORD_NO = LD.ORD_NO AND LDDG.DLV_PCUPSP_TURN = LD.DLV_PCUPSP_TURN AND LDDG.DLV_TURN = LD.DLV_TURN)
+		            INNER JOIN ORD_CLM_GOD_CNNC OCGC
+		                ON (LDDG.ORD_NO = OCGC.ORD_NO AND LDDG.ORD_GOD_TURN = OCGC.ORD_GOD_TURN AND OCGC.GOD_CNNC_TP_CD = 'DLIVY_GOD_CNNC' )
+		            WHERE 1=1
+		            AND   LDS.CLM_NO = LD.CLM_NO
+                    AND   LDS.ORD_NO = OCGC.ORD_NO
+                    AND   LDS.CLM_NO = OCGC.CLM_NO
+                    AND   LDDG.ORD_NO = LDS.ORD_NO
+		        ) DLIVY /*배송*/
+		            ON (DLIVY.CLM_NO = IOGSDR.CLM_NO AND DLIVY.CLM_WRHS_GOD_TURN = IOGSDR.CLM_WRHS_GOD_TURN)
+
+				<if test="freeRepairViewType == 'FO'">
+		        INNER JOIN ORD_GOD OG
+		            ON (IOGSDR.ORD_NO = OG.ORD_NO AND IOGSDR.ORD_GOD_TURN = OG.ORD_GOD_TURN)
+		        LEFT OUTER JOIN ORD_CPST_GOD_CNNC OC
+		            ON (OG.ORD_NO = OC.ORD_NO AND OG.ORD_GOD_TURN = OC.ORD_CPST_GOD_TURN)
+		        </if>
+		        WHERE 1=1
+		        AND   C.CLM_TP_CD = 'REPAIR'
+		        AND   C.CLM_NO = IOGSDR.CLM_NO
+		        AND   CWG.CLM_WRHS_GOD_TURN = IOGSDR.CLM_WRHS_GOD_TURN
+
+			) RES
+			LEFT OUTER JOIN ( SELECT CD, ASSTN_CD_1, CD_NM FROM SYS_EXCP_CD WHERE GRP_CD = 'REPAIR_COMPT') COMPTCD ON (RES.REPAIR_COMPT_CD = COMPTCD.CD)
+			WHERE 1=1
+			AND RES.IOGSD_CLM_TP_CD = 'REPAIR'
+			<!--<include refid="whereFreeRepair"/>-->
+
+    </select>
+    <!-- REPAIR e -->
+
+    <select id="selectClmByMbr" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBoDTO" resultType="long">
+    	SELECT COUNT(1)
+    	FROM CLM C
+    	JOIN ORD O on (O.ORD_NO = C.ORD_NO)
+    	WHERE C.CLM_NO = #{clmNo}
+    	AND O.mbr_no = #{mbrNo}
+    </select>
+
+	<select id="selectRepairDlvComptSmsTarget" parameterType="com.plgrim.ncp.biz.claim.data.RepairDTO" resultType="com.plgrim.ncp.biz.claim.result.RepairResult">
+		SELECT /* [batch.server.claim.repair.xml][selectRepairDlvComptSmsTarget][무료 수선 서비스 수선 완료(발송) 안내 SMS 대상 조회][yoon] */
+			    DISTINCT c.clm_no
+			  , DECODE(o.MBR_TP_CD,'NMBR', c.clm_no, o.mbr_no) AS mbrNo  /* 비회원 : 클레임번호로 대체*/
+			  , cwg.god_nm || CASE WHEN (cnt <![CDATA[>]]> 1) THEN ' 외 ' || (t.cnt-1) || '건' END AS godSumry
+			  , DECODE(o.MBR_TP_CD,'NMBR', o.CSTMR_NM, m.mbr_nm) AS mbrNm /* 비회원 : 주문자 이름으로 처리*/
+			  , DECODE(
+		            o.MBR_TP_CD
+		          , 'NMBR'
+		          , trim(o.CSTMR_MOBIL_AREA_NO || o.CSTMR_MOBIL_TLOF_NO || o.CSTMR_MOBIL_TLOF_WTHN_NO)
+		          , trim(m.mobil_area_no || m.mobil_tlof_no || m.mobil_tlof_wthn_no)
+		        ) AS mobilNo   /* 비회원 : 주문자 휴대폰번호로 처리*/
+			  , c.clm_rcept_mthd_cd												 AS clmRceptMthdCd
+		  FROM clm c
+		  JOIN ord o ON c.ord_no = o.ord_no
+		  JOIN clm_wrhs_god cwg ON c.clm_no = cwg.clm_no AND rownum = 1
+		  LEFT OUTER JOIN mbr m ON o.mbr_no = m.mbr_no
+		  JOIN ( SELECT clm_no
+					   ,count(*) AS cnt
+		           FROM inf_ord_god_erp_dstb_repair
+		          WHERE clm_no = #{clmNo,jdbcType=VARCHAR}
+		          	AND repair_compt_cd = 'A15'
+               		AND to_char(udt_dt, 'yyyy-mm-dd hh24:mi') <![CDATA[>=]]> to_char(SYSDATE - INTERVAL '${searchDate}' MINUTE, 'yyyy-mm-dd hh24:mi')
+		       GROUP BY clm_no
+		       ) t ON c.clm_no = t.clm_no
+		WHERE 1 = 1
+     	  AND c.clm_no = #{clmNo,jdbcType=VARCHAR}
+	</select>
+
+	<update id="updateMbrIssuCoupon" parameterType="clmWrhsGodAplPrm">
+		/* [claim.manage.xml][updateMbrIssuCoupon][회원 클레임쿠폰 사용갱신] */
+		UPDATE mbr_issu_cpn
+		   SET cpn_stat_cd = 'USE'
+		     , cpn_use_dt = SYSDATE
+		     , ord_no = #{ordNo, jdbcType=VARCHAR}
+		     , clm_no = #{clmNo, jdbcType=VARCHAR}
+			 , udter_id = #{udterId,jdbcType=VARCHAR}
+			 , udt_dt = #{udtDt,jdbcType=TIMESTAMP}
+		 WHERE mbr_cpn_no = #{mbrCpnNo, jdbcType=VARCHAR}
+	</update>
+
+	<select id="selectUsedClaimCouponGodCnt" parameterType="com.plgrim.ncp.biz.claim.data.ClmCouponSearchDTO" resultType="long">
+		/* [claim.manage.xml][selectUsedClaimCouponGodCnt][사용된클레임쿠폰상품수조회] */
+		  WITH bg
+		  AS ( SELECT bg.ord_no
+					, bg.clm_no
+					, bg.god_no
+					, bg.prm_no
+					, g.brnd_id
+					, g.brnd_grp_id
+					, sb.upper_brnd_id AS brnd_top_id
+					, g.mnfctur_year_cd
+					, g.seson_grp_cd
+				 FROM (   SELECT cwg.ord_no, cwg.clm_no, cwg.god_no, p.prm_no
+							FROM clm_wrhs_god cwg
+							     JOIN lgs_dlv ld ON cwg.ord_no = ld.ord_no and cwg.clm_no = ld.clm_no
+						         <choose>
+									<when test='mbrCpnNo != null and mbrCpnNo !=""'>
+										JOIN mbr_issu_cpn mic ON mic.mbr_cpn_no = ld.dlv_cst_cpn_no
+						         		JOIN prm p ON p.prm_no = mic.prm_no
+									</when>
+									<when test='prmNo != null and prmNo !=""'>
+										JOIN prm p ON p.prm_no = ld.dlv_cst_cpn_prm_no
+									</when>
+								 </choose>
+						   WHERE cwg.clm_no = #{clmWrhsGodExtendList[0].clmNo,jdbcType=VARCHAR}
+						     AND cwg.clm_wthdraw_sect_cd != 'PART_WTHDRAW'
+						    <if test='allGodYn != null and allGodYn == "N"'>
+						    	<!--
+						    	AND cwg.god_no in (
+								<foreach collection="clmWrhsGodExtendList" item="clmWrhsGodExtend" index="idx"  separator=",">
+												#{clmWrhsGodExtend.godNo,jdbcType=VARCHAR}
+								</foreach>	)
+								-->
+								AND cwg.clm_wrhs_god_turn in (
+								<foreach collection="clmWrhsGodExtendList" item="clmWrhsGodExtend" index="idx"  separator=",">
+												#{clmWrhsGodExtend.clmWrhsGodTurn,jdbcType=NUMERIC}
+								</foreach>	)
+						    </if>
+						     and p.prm_dtl_tp_cd     = #{prmDtlTpCd,jdbcType=VARCHAR}
+						     <!--
+						     and pc.cpn_issu_mthd_cd = 'IMDTL_DC'
+				 	  		 -->
+				 	  ) bg
+					  JOIN god g ON g.god_no = bg.god_no
+					  JOIN sys_brnd sb ON g.brnd_grp_id = sb.brnd_id
+			)
+			SELECT COUNT(a.god_no)
+			FROM(
+					SELECT /*+ NO_CPU_COSTING */
+						   t1.god_no
+						   ,t1.prm_no
+						   ,t1.dlv_cst_cpn_sect_cd
+						   ,t1.brnd_id
+						   ,t1.brnd_grp_id
+						   ,t1.brnd_top_id
+					  FROM ( SELECT bg.god_no
+					               ,p.prm_no
+					               ,pc.dlv_cst_cpn_sect_cd
+					               ,bg.brnd_id
+								   ,bg.brnd_grp_id
+								   ,bg.brnd_top_id
+							   FROM bg
+							   JOIN prm_apl_god pag
+								 ON 1 = 1
+							   JOIN prm p
+								 ON p.prm_no = pag.prm_no
+							   JOIN prm_cpn pc
+								 ON pc.prm_no = p.prm_no
+							    AND pc.prm_no = pag.prm_no
+							   JOIN prm_apl_pd pap
+							     ON pap.prm_no = p.prm_no
+								AND pap.prm_no = pag.prm_no
+								AND pap.prm_no = pc.prm_no
+							  WHERE 1 = 1
+								AND pag.god_apl_yn = 'Y'
+								AND pag.apl_god_sect_cd = 'ALL'
+								AND p.prm_tp_cd = 'CPN'
+								<!--
+								AND p.prm_stat_cd = 'APRV'
+								AND p.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								AND p.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								-->
+								AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+								AND pc.cpn_issu_mthd_cd = 'IMDTL_DC'
+								<!--
+								AND pap.beg_dt <![CDATA[<=]]> SYSDATE
+								AND pap.end_dt <![CDATA[>=]]> SYSDATE
+								AND pap.apl_pd_cd = 'APL_PD'
+								-->
+								AND p.prm_no = bg.prm_no
+								AND exists(
+									select 1
+									  from prm_apl_god pag2
+									 where pag2.prm_no          = pag.prm_no
+									   and pag2.god_apl_yn      = pag.god_apl_yn
+									   and pag2.apl_god_sect_cd = 'SESON'
+									   and pag2.seson_cd        = decode(pag2.seson_cd,'ALL','ALL',bg.mnfctur_year_cd||bg.seson_grp_cd)
+								)
+							  UNION
+							  SELECT bg.god_no
+					                ,p.prm_no
+					                ,pc.dlv_cst_cpn_sect_cd
+					                ,bg.brnd_id
+								    ,bg.brnd_grp_id
+								    ,bg.brnd_top_id
+							   FROM bg
+							   JOIN prm_apl_god pag
+								 ON 1 = 1
+							   JOIN mbr_issu_cpn mic
+								 ON pag.prm_no = mic.prm_no
+							   JOIN prm p
+								 ON pag.prm_no = p.prm_no
+								AND mic.prm_no = p.prm_no
+							   JOIN prm_cpn pc
+								 ON pag.prm_no = pc.prm_no
+								AND mic.prm_no = pc.prm_no
+								AND p.prm_no = pc.prm_no
+							  WHERE 1 = 1
+								AND pag.god_apl_yn = 'Y'
+								AND pag.apl_god_sect_cd = 'ALL'
+								AND mic.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+								AND mic.cpn_stat_cd = 'USE'
+								<!--
+								AND mic.valid_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								AND mic.valid_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								-->
+								AND p.prm_tp_cd = 'CPN'
+								AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+								AND pc.cpn_issu_mthd_cd != 'IMDTL_DC'
+								AND p.prm_no = bg.prm_no
+								AND exists(
+									select 1
+									  from prm_apl_god pag2
+									 where pag2.prm_no          = pag.prm_no
+									   and pag2.god_apl_yn      = pag.god_apl_yn
+									   and pag2.apl_god_sect_cd = 'SESON'
+									   and pag2.seson_cd        = decode(pag2.seson_cd,'ALL','ALL',bg.mnfctur_year_cd||bg.seson_grp_cd)
+								)
+							  UNION
+							 SELECT bg.god_no
+							 	   ,p.prm_no
+							 	   ,pc.dlv_cst_cpn_sect_cd
+							 	   ,bg.brnd_id
+								   ,bg.brnd_grp_id
+								   ,bg.brnd_top_id
+							   FROM bg
+							   JOIN prm_apl_god pag
+								 ON pag.brnd_id IN (bg.brnd_id, bg.brnd_grp_id, bg.brnd_top_id)
+							   JOIN prm p
+								 ON p.prm_no = pag.prm_no
+							   JOIN prm_cpn pc
+								 ON pc.prm_no = p.prm_no
+								AND pc.prm_no = pag.prm_no
+							   JOIN prm_apl_pd pap
+								 ON pap.prm_no = p.prm_no
+								AND pap.prm_no = pag.prm_no
+								AND pap.prm_no = pc.prm_no
+							  WHERE 1 = 1
+								AND pag.god_apl_yn = 'Y'
+								AND pag.apl_god_sect_cd = 'BRND'
+								AND p.prm_tp_cd = 'CPN'
+								<!--
+								AND p.prm_stat_cd = 'APRV'
+								AND p.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								AND p.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								-->
+								AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+								AND pc.cpn_issu_mthd_cd = 'IMDTL_DC'
+								<!--
+								AND pap.beg_dt <![CDATA[<=]]> SYSDATE
+								AND pap.end_dt <![CDATA[>=]]> SYSDATE
+								AND pap.apl_pd_cd = 'APL_PD'
+								-->
+								AND p.prm_no = bg.prm_no
+								AND exists(
+									select 1
+									  from prm_apl_god pag2
+									 where pag2.prm_no          = pag.prm_no
+									   and pag2.god_apl_yn      = pag.god_apl_yn
+									   and pag2.apl_god_sect_cd = 'SESON'
+									   and pag2.seson_cd        = decode(pag2.seson_cd,'ALL','ALL',bg.mnfctur_year_cd||bg.seson_grp_cd)
+								)
+							  UNION
+							  SELECT bg.god_no
+					                ,p.prm_no
+					                ,pc.dlv_cst_cpn_sect_cd
+					                ,bg.brnd_id
+								    ,bg.brnd_grp_id
+								    ,bg.brnd_top_id
+							   FROM bg
+							   JOIN prm_apl_god pag
+								 ON pag.brnd_id IN (bg.brnd_id, bg.brnd_grp_id, bg.brnd_top_id)
+							   JOIN mbr_issu_cpn mic
+								 ON pag.prm_no = mic.prm_no
+							   JOIN prm p
+								 ON pag.prm_no = p.prm_no
+								AND mic.prm_no = p.prm_no
+							   JOIN prm_cpn pc
+							     ON pag.prm_no = pc.prm_no
+								AND mic.prm_no = pc.prm_no
+								AND p.prm_no = pc.prm_no
+							  WHERE 1 = 1
+								AND pag.god_apl_yn = 'Y'
+								AND pag.apl_god_sect_cd = 'BRND'
+								AND mic.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+								AND mic.cpn_stat_cd = 'USE'
+								<!--
+								AND mic.valid_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								AND mic.valid_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								-->
+								AND p.prm_tp_cd = 'CPN'
+								AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+								AND pc.cpn_issu_mthd_cd != 'IMDTL_DC'
+								AND p.prm_no = bg.prm_no
+								AND exists(
+									select 1
+									  from prm_apl_god pag2
+									 where pag2.prm_no          = pag.prm_no
+									   and pag2.god_apl_yn      = pag.god_apl_yn
+									   and pag2.apl_god_sect_cd = 'SESON'
+									   and pag2.seson_cd        = decode(pag2.seson_cd,'ALL','ALL',bg.mnfctur_year_cd||bg.seson_grp_cd)
+								)
+							  UNION
+							  SELECT bg.god_no
+							  		,p.prm_no
+							  		,pc.dlv_cst_cpn_sect_cd
+							  		,bg.brnd_id
+								    ,bg.brnd_grp_id
+								    ,bg.brnd_top_id
+							   FROM bg
+							   JOIN dsp_ctgry_cnnc_god dccg
+								 ON dccg.god_no = bg.god_no
+							   JOIN prm_apl_god pag
+							     ON dccg.dsp_ctgry_no LIKE pag.dsp_ctgry_no || '%'
+							   JOIN prm p
+							     ON p.prm_no = pag.prm_no
+							   JOIN prm_cpn pc
+							     ON pc.prm_no = p.prm_no
+								AND pc.prm_no = pag.prm_no
+							   JOIN prm_apl_pd pap
+							     ON pap.prm_no = p.prm_no
+								AND pap.prm_no = pag.prm_no
+								AND pap.prm_no = pc.prm_no
+							  WHERE 1 = 1
+								AND pag.god_apl_yn = 'Y'
+								AND pag.apl_god_sect_cd = 'DSP_CTGRY'
+								AND p.prm_tp_cd = 'CPN'
+								<!--
+								AND p.prm_stat_cd = 'APRV'
+								AND p.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								AND p.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								-->
+								AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+								AND pc.cpn_issu_mthd_cd = 'IMDTL_DC'
+								<!--
+								AND pap.beg_dt <![CDATA[<=]]> SYSDATE
+								AND pap.end_dt <![CDATA[>=]]> SYSDATE
+								AND pap.apl_pd_cd = 'APL_PD'
+								-->
+								AND p.prm_no = bg.prm_no
+								AND exists(
+									select 1
+									  from prm_apl_god pag2
+									 where pag2.prm_no          = pag.prm_no
+									   and pag2.god_apl_yn      = pag.god_apl_yn
+									   and pag2.apl_god_sect_cd = 'SESON'
+									   and pag2.seson_cd        = decode(pag2.seson_cd,'ALL','ALL',bg.mnfctur_year_cd||bg.seson_grp_cd)
+								)
+							  UNION
+							 SELECT bg.god_no
+					               ,p.prm_no
+					               ,pc.dlv_cst_cpn_sect_cd
+					               ,bg.brnd_id
+								   ,bg.brnd_grp_id
+								   ,bg.brnd_top_id
+							   FROM bg
+							   JOIN dsp_ctgry_cnnc_god dccg
+								 ON dccg.god_no = bg.god_no
+							   JOIN prm_apl_god pag
+							     ON dccg.dsp_ctgry_no LIKE pag.dsp_ctgry_no || '%'
+							   JOIN mbr_issu_cpn mic
+							     ON pag.prm_no = mic.prm_no
+							   JOIN prm p
+							     ON pag.prm_no = p.prm_no
+								AND mic.prm_no = p.prm_no
+							   JOIN prm_cpn pc
+							     ON pag.prm_no = pc.prm_no
+								AND mic.prm_no = pc.prm_no
+								AND p.prm_no = pc.prm_no
+							  WHERE 1 = 1
+								AND pag.god_apl_yn = 'Y'
+								AND pag.apl_god_sect_cd = 'DSP_CTGRY'
+								AND mic.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+								AND mic.cpn_stat_cd = 'USE'
+								<!--
+								AND mic.valid_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								AND mic.valid_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								-->
+								AND p.prm_tp_cd = 'CPN'
+								AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+								AND pc.cpn_issu_mthd_cd != 'IMDTL_DC'
+								AND p.prm_no = bg.prm_no
+								AND exists(
+									select 1
+									  from prm_apl_god pag2
+									 where pag2.prm_no          = pag.prm_no
+									   and pag2.god_apl_yn      = pag.god_apl_yn
+									   and pag2.apl_god_sect_cd = 'SESON'
+									   and pag2.seson_cd        = decode(pag2.seson_cd,'ALL','ALL',bg.mnfctur_year_cd||bg.seson_grp_cd)
+								)
+							  UNION
+							 SELECT bg.god_no
+							 	   ,p.prm_no
+							 	   ,pc.dlv_cst_cpn_sect_cd
+							 	   ,bg.brnd_id
+								   ,bg.brnd_grp_id
+								   ,bg.brnd_top_id
+							   FROM bg
+							   JOIN prm_apl_god pag ON bg.god_no = pag.god_no
+							   JOIN prm p ON p.prm_no = pag.prm_no
+							   JOIN prm_cpn pc ON pc.prm_no = p.prm_no AND pc.prm_no = pag.prm_no
+							   JOIN prm_apl_pd pap ON pap.prm_no = p.prm_no AND pap.prm_no = pag.prm_no AND pap.prm_no = pc.prm_no
+							  WHERE 1 = 1
+							    AND pag.god_apl_yn = 'Y'
+							    AND pag.apl_god_sect_cd = 'GOD'
+							    AND p.prm_tp_cd = 'CPN'
+							    <!--
+							    AND p.prm_stat_cd = 'APRV'
+							    AND p.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+							    AND p.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+							    -->
+							    AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+							    AND pc.cpn_issu_mthd_cd = 'IMDTL_DC'
+							    <!--
+							    AND pap.beg_dt <![CDATA[<=]]> SYSDATE
+							    AND pap.end_dt <![CDATA[>=]]> SYSDATE
+							    AND pap.apl_pd_cd = 'APL_PD'
+							    -->
+							    AND p.prm_no = bg.prm_no
+							    UNION
+								 SELECT bg.god_no
+								 	   ,p.prm_no
+								 	   ,pc.dlv_cst_cpn_sect_cd
+								 	   ,bg.brnd_id
+									   ,bg.brnd_grp_id
+									   ,bg.brnd_top_id
+								   FROM bg
+								   JOIN prm_apl_god pag
+									 ON bg.god_no = pag.god_no
+								   JOIN mbr_issu_cpn mic
+								     ON pag.prm_no = mic.prm_no
+								   JOIN prm p
+								     ON pag.prm_no = p.prm_no
+								     AND mic.prm_no = p.prm_no
+								   JOIN prm_cpn pc
+								     ON pag.prm_no = pc.prm_no
+									AND mic.prm_no = pc.prm_no
+									AND p.prm_no = pc.prm_no
+								  WHERE 1 = 1
+									AND pag.god_apl_yn = 'Y'
+									AND pag.apl_god_sect_cd = 'GOD'
+									AND mic.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+									AND mic.cpn_stat_cd = 'USE'
+									<!--
+									AND mic.valid_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+									AND mic.valid_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+									-->
+									AND p.prm_tp_cd = 'CPN'
+									AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+									AND pc.cpn_issu_mthd_cd != 'IMDTL_DC'
+									AND p.prm_no = bg.prm_no
+					  ) t1
+					  JOIN prm_apl_tgt pat_m
+					    ON t1.prm_no = pat_m.prm_no
+					  JOIN prm_apl_tgt pat_l
+					    ON t1.prm_no = pat_l.prm_no
+					  JOIN prm_apl_tgt pat_d
+					    ON t1.prm_no = pat_d.prm_no
+				     WHERE pat_m.prm_tgt_tp_cd = 'MALL_ID'
+					   AND pat_m.mall_id = #{clmWrhsGodExtendList[0].mallId,jdbcType=VARCHAR}
+					   AND pat_l.prm_tgt_tp_cd = 'LANG'
+					   AND pat_l.lang_cd = #{clmWrhsGodExtendList[0].lang,jdbcType=VARCHAR}
+					   AND pat_d.prm_tgt_tp_cd = 'DVC'
+					   AND pat_d.dvc_cd = #{clmWrhsGodExtendList[0].device,jdbcType=VARCHAR}
+				<choose>
+					<when test="lang != null and lang != 'KOR' ">
+					   AND (t1.dlv_cst_cpn_sect_cd IS NULL OR t1.dlv_cst_cpn_sect_cd = 'OVSEA_DLV_CPN')
+					</when>
+					<otherwise>
+					   AND (t1.dlv_cst_cpn_sect_cd IS NULL OR t1.dlv_cst_cpn_sect_cd = 'DMSTC_DLV_CPN')
+					</otherwise>
+				</choose>
+					   <!--
+					   AND CASE
+							   WHEN t1.cpn_issu_mthd_cd = 'IMDTL_DC'
+							   THEN
+								   CASE
+									   WHEN t1.prm_stat_cd = 'APRV'
+									    AND t1.prm_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+									    AND t1.prm_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+									   THEN
+										   1
+									   ELSE
+										   2
+								   END
+							   ELSE
+								   1
+						    END = 1
+						  -->
+					   AND NOT EXISTS
+							   (SELECT pag5.brnd_id
+								  FROM prm_apl_god pag5
+								  JOIN prm p5
+								    ON p5.prm_no = pag5.prm_no
+								  JOIN prm_cpn pc5
+								    ON pc5.prm_no = p5.prm_no
+								   AND pc5.prm_no = pag5.prm_no
+								  JOIN prm_apl_pd pap5
+								    ON pap5.prm_no = p5.prm_no
+								   AND pap5.prm_no = pag5.prm_no
+								   AND pap5.prm_no = pc5.prm_no
+							     WHERE pag5.god_apl_yn = 'N'
+								   AND pag5.apl_god_sect_cd = 'BRND'
+								   AND p5.prm_stat_cd = 'APRV'
+								   AND p5.prm_tp_cd = 'CPN'
+								   AND pap5.apl_pd_cd = 'APL_PD'
+								   AND pag5.prm_no = t1.prm_no
+								   AND pag5.brnd_id IN (t1.brnd_id, t1.brnd_grp_id, t1.brnd_top_id))
+					   AND NOT EXISTS
+							   (SELECT dccg6.god_no
+								  FROM dsp_ctgry_cnnc_god dccg6
+								  JOIN prm_apl_god pag6
+								    ON dccg6.dsp_ctgry_no LIKE pag6.dsp_ctgry_no || '%'
+								  JOIN prm p6
+								    ON p6.prm_no = pag6.prm_no
+								  JOIN prm_cpn pc6
+								    ON pc6.prm_no = p6.prm_no
+								   AND pc6.prm_no = pag6.prm_no
+								  JOIN prm_apl_pd pap6
+								    ON pap6.prm_no = p6.prm_no
+								   AND pap6.prm_no = pag6.prm_no
+								   AND pap6.prm_no = pc6.prm_no
+							     WHERE pag6.god_apl_yn = 'N'
+								   AND pag6.apl_god_sect_cd = 'DSP_CTGRY'
+								   AND p6.prm_stat_cd = 'APRV'
+								   AND p6.prm_tp_cd = 'CPN'
+								   AND pap6.apl_pd_cd = 'APL_PD'
+								   AND pag6.prm_no = t1.prm_no
+								   AND dccg6.god_no = t1.god_no)
+					   AND NOT EXISTS
+							   (SELECT pag7.god_no
+								  FROM prm_apl_god pag7
+								  JOIN prm p7
+								    ON p7.prm_no = pag7.prm_no
+								  JOIN prm_cpn pc7
+								    ON pc7.prm_no = p7.prm_no
+								   AND pc7.prm_no = pag7.prm_no
+								  JOIN prm_apl_pd pap7
+									ON pap7.prm_no = p7.prm_no
+								   AND pap7.prm_no = pag7.prm_no
+								   AND pap7.prm_no = pc7.prm_no
+								 WHERE pag7.god_apl_yn = 'N'
+								   AND pag7.apl_god_sect_cd = 'GOD'
+								   AND p7.prm_stat_cd = 'APRV'
+								   AND p7.prm_tp_cd = 'CPN'
+								   AND pap7.apl_pd_cd = 'APL_PD'
+								   AND pag7.prm_no = t1.prm_no
+								   AND pag7.god_no = t1.god_no)
+		   ) a
+	</select>
+
+	<resultMap id="clmCouponInfoResult" type="com.plgrim.ncp.biz.claim.result.ClmGoodsCouponResult">
+		<result property="prm.prmNo" column="prm_no" />
+		<result property="prmCpn.cpnIssuMthdCd" column="cpn_issu_mthd_cd" />
+		<result property="mbrCpnNo" column="dlv_cst_cpn_no" />
+	</resultMap>
+
+	<select id="selectClmCouponInfo" parameterType="com.plgrim.ncp.biz.claim.data.ClmCouponSearchDTO" resultMap="clmCouponInfoResult">
+		    SELECT DISTINCT a.prm_no, a.cpn_issu_mthd_cd, a.dlv_cst_cpn_no
+		    FROM(
+		          SELECT p.prm_no, pc.cpn_issu_mthd_cd, ld.dlv_cst_cpn_no
+		            FROM lgs_dlv ld join prm p on ld.dlv_cst_cpn_prm_no = p.prm_no
+		                 join prm_cpn pc on p.prm_no = pc.prm_no
+		           WHERE ld.ord_no = #{clmWrhsGodExtendList[0].ordNo,jdbcType=VARCHAR}
+		             AND ld.clm_no = #{clmWrhsGodExtendList[0].clmNo,jdbcType=VARCHAR}
+		             AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+		             AND p.prm_tp_cd = 'CPN'
+		             AND pc.cpn_issu_mthd_cd = 'IMDTL_DC'
+		           UNION
+		          SELECT p.prm_no, pc.cpn_issu_mthd_cd, ld.dlv_cst_cpn_no
+		            FROM lgs_dlv ld join mbr_issu_cpn mic on ld.dlv_cst_cpn_no = mic.mbr_cpn_no
+		                 join prm_cpn pc on pc.prm_no = mic.prm_no
+		                 join prm p on p.prm_no = pc.prm_no
+		           WHERE ld.ord_no = #{clmWrhsGodExtendList[0].ordNo,jdbcType=VARCHAR}
+		             AND ld.clm_no = #{clmWrhsGodExtendList[0].clmNo,jdbcType=VARCHAR}
+		             AND p.prm_dtl_tp_cd = #{prmDtlTpCd,jdbcType=VARCHAR}
+		             AND p.prm_tp_cd = 'CPN'
+		             AND pc.cpn_issu_mthd_cd != 'IMDTL_DC'
+		    ) a
+	</select>
+
+	<update id="updateCouponRevertStatus" parameterType="mbrIssuCpn">
+		/* [claim.manage.xml][updateCouponRevertStatus][클레임 사용 쿠폰 복원] */
+		UPDATE MBR_ISSU_CPN
+		   SET   CPN_STAT_CD = #{cpnStatCd, jdbcType=VARCHAR}
+		       <if test="cpnStatCd == 'USE_STPGE' ">
+		       , CLM_NO = #{clmNo, jdbcType=VARCHAR}
+		       </if>
+		       <if test="cpnStatCd == 'NO_USE' ">
+		       , CLM_NO = #{clmNo, jdbcType=VARCHAR}
+		       , CPN_USE_DT = #{cpnUseDt, jdbcType=TIMESTAMP}
+		       </if>
+		       , UDTER_ID = #{udterId, jdbcType=VARCHAR}
+		       , UDT_DT = SYSDATE
+		 WHERE MBR_CPN_NO = #{mbrCpnNo, jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectOrdCpstGodCnncList" parameterType="java.util.Map" resultType="ordGod">
+		   SELECT ORD_NO
+			     ,ORD_GOD_TURN
+			     ,GOD_NO
+			     ,ITM_NO
+			     ,ORD_QTY
+		   FROM(
+				   SELECT OCGC.ORD_NO
+				         ,OCGC.ORD_GOD_TURN
+				         ,OG.GOD_NO
+				         ,OG.ITM_NO
+				         ,OCGC2.ORD_CLM_QTY AS ORD_QTY
+				         ,COUNT(*) SET_QTY
+				     FROM ORD_CPST_GOD_CNNC OCGC, ORD_CLM_GOD_CNNC OCGC2, ORD_GOD OG
+				    WHERE OCGC.ORD_NO = #{ordNo}
+		    	  	  AND OCGC2.CLM_NO = #{clmNo}
+		    	  <foreach collection="extOrdGodTurnList" item="item" open="AND OCGC.ORD_CPST_GOD_TURN IN (" close=")" separator=",">#{item}</foreach>
+					  AND OCGC.PCKAGE_GOD_TP_CD='SET_GOD'
+				  	  AND OCGC.ORD_NO = OCGC2.ORD_NO
+           			  AND OCGC.ORD_CPST_GOD_TURN = OCGC2.ORD_GOD_TURN
+				  	  AND OCGC.ORD_NO=OG.ORD_NO
+				      AND OCGC.ORD_GOD_TURN=OG.ORD_GOD_TURN
+				    GROUP BY OCGC.ORD_NO,OCGC.ORD_GOD_TURN,OG.GOD_NO,OG.ITM_NO,OCGC2.ORD_CLM_QTY
+		   )
+		   WHERE SET_QTY > 1
+   </select>
+   
+   <update id="updateSetPckageGodTurn" parameterType="java.util.Map">
+	    UPDATE lgs_dlivy_drct_god lddg
+		   SET lddg.pckage_god_turn = #{pckageGodTurn, jdbcType=NUMERIC}
+		 WHERE lddg.ord_no = #{ordNo, jdbcType=VARCHAR}
+		   AND EXISTS(
+		                SELECT 1
+		                  FROM ord_clm_god_cnnc ocgc JOIN ord_cpst_god_cnnc ocgc2 ON ocgc.ord_no = ocgc2.ord_no AND ocgc.ord_god_turn = ocgc2.ord_cpst_god_turn  
+		                 WHERE ocgc.ord_no = #{ordNo, jdbcType=VARCHAR}
+		                   AND ocgc.clm_no = #{clmNo, jdbcType=VARCHAR}
+		                   AND ocgc.god_cnnc_tp_cd = 'DLIVY_GOD_CNNC'
+		                   AND ocgc.ord_no = lddg.ord_no
+		                   AND ocgc.ord_god_turn = lddg.ord_god_turn 
+		   )
+   </update>
+   
+   <select id="selectSysExcpCdList" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysExcpCd" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysExcpCd">
+	    SELECT /* [claim.manage.xml][selectSysExcpCdList] */
+	            GRP_CD
+               ,CD
+               ,CD_NM
+               ,SORT_SEQ
+               ,ASSTN_CD_1
+               ,ASSTN_CD_2
+               ,CD_DSCR
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    SYS_EXCP_CD t
+        WHERE   1 = 1
+        AND     GRP_CD = #{grpCd,jdbcType=VARCHAR}
+   </select>
+   
+   <update id="updateClmPreprogrsSectCd" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBoDTO">
+		UPDATE CLM /* [claim.manage.xml][updateClmPreprogrsSectCd] */
+		       SET CLM_PREPROGRS_SECT_CD = #{clmPreprogrsSectCd}
+		       , udt_dt = SYSDATE
+		       , UDTER_ID = #{udterId}
+		WHERE CLM_NO = #{clmNo}
+	</update>
+	
+	<update id="updateCouponCorrectStatus" parameterType="mbrIssuCpn">
+		/* [claim.manage.xml][updateCouponCorrectStatus][클레임 사용쿠폰 상태 보정] */
+		UPDATE MBR_ISSU_CPN
+			SET   CPN_STAT_CD = #{cpnStatCd, jdbcType=VARCHAR}
+				, ORD_NO = NULL
+				, CLM_NO = NULL
+				, CPN_USE_DT = NULL
+				, UDTER_ID = #{udterId, jdbcType=VARCHAR}
+				, UDT_DT = SYSDATE
+			WHERE 
+				MBR_CPN_NO = (
+					SELECT P.MBR_CPN_NO 
+						FROM PAY P JOIN PRM_CPN PC ON P.USE_CPN_PRM_NO = PC.PRM_NO 
+						WHERE P.ORD_NO = #{ordNo, jdbcType=VARCHAR} 
+							AND P.CLM_NO = #{clmNo, jdbcType=VARCHAR} 
+							AND P.PAY_MN_CD = 'BSK_CPN'
+							AND PC.CPN_KND_CD = 'ONOFLNE_CPN'
+				)
+				AND CPN_STAT_CD = 'USE'
+	</update>
+
+	<select id="getMobileRePayInfo" parameterType="String" resultType="com.plgrim.ncp.biz.claim.data.RefundPayDTO">
+		SELECT /* [claim.manage.xml][getMobileRePayInfo][모바일 재결제 정보조회] */ 
+				(
+					SELECT pg_aprv_no 
+						FROM (
+							SELECT pg_aprv_no
+							FROM pay
+							START WITH pay_no = #{payNo, jdbcType=VARCHAR}
+							CONNECT BY prior pay_no = upper_pay_no 
+							ORDER BY pay_no DESC
+						) 
+						WHERE ROWNUM = 1
+				) AS pgAprvNo
+				, stdr_crncy_pay_amt 
+					- NVL((
+						SELECT SUM(stdr_crncy_pay_amt)
+							FROM pay p
+								INNER JOIN pay_rfd pr ON p.pay_no = pr.pay_no
+							WHERE p.upper_pay_no = ori.pay_no
+								AND pr.rfd_stat_cd = 'RFD_COMPT'
+								AND pr.rfd_tp_cd = 'MOBIL_CNCL'
+					), 0) AS oriStdrCrncySumAmt
+				, NVL((
+						SELECT SUM(stdr_crncy_pay_amt)
+							FROM pay p
+								INNER JOIN pay_rfd pr ON p.pay_no = pr.pay_no
+							WHERE p.upper_pay_no = ori.pay_no
+								AND pr.rfd_stat_cd = 'RFD_COMPT'
+								AND pr.rfd_tp_cd = 'CASH_RFD'
+					), 0) AS oriCnclAcmtlAmt
+			FROM pay ori
+			WHERE pay_no = #{payNo, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getRefundPayYn" parameterType="String" resultType="String">
+		SELECT /* [claim.manage.xml][getRefundPayYn][환불처리 여부 조회] */ 
+			CASE 
+				WHEN pay_mn_cd = 'VIRTL_BNK_ACCT_PAY' AND deal_tp_cd = 'PAY_COMPT' THEN 'Y'
+				WHEN pay_mn_cd = 'MOBIL_PON_PAY' AND TO_CHAR(pay_dt, 'YYYYMM') <![CDATA[<>]]> TO_CHAR(SYSDATE, 'YYYYMM') THEN 'Y'
+				ELSE 'N'
+			END AS refundYn
+		FROM pay p
+		WHERE pay_no = #{payNo, jdbcType=VARCHAR}
+	</select>
+
+	<update id="updateTradeReauthNo" parameterType="com.plgrim.ncp.biz.claim.data.RefundPayDTO">
+		/* [claim.manage.xml][updateTradeReauthNo][재 승인 거래번호 변경 - PG승인번호를 신규 거래번호로 변경한다.] */
+		UPDATE PAY
+			SET   PG_APRV_NO = #{tradeReauthNo, jdbcType=VARCHAR}
+			WHERE PAY_NO = #{newPayNo, jdbcType=VARCHAR}
+	</update>
+
+	<!-- 취소시는 주문할인 + 에스크로여부 / 반품시는 에스크로 여부만으로 판단함 -->
+	<select id="getPartClaimPossibleYn" parameterType="java.util.HashMap" resultType="String">
+		SELECT /* [claim.manage.xml][getPartClaimPossibleYn][부분 취소/반품 가능여부 조회] */
+				CASE 
+					<if test='clmTpCd != null and clmTpCd == "PART_CNCL" and role != "B"'>
+					WHEN EXISTS (SELECT 1 FROM ord_god_apl_prm WHERE ord_no = o.ord_no AND prm_tp_cd = 'ORD_DC') THEN 'N'
+					</if>
+					WHEN (SELECT escr_yn FROM pay WHERE ord_no = o.ord_no AND mpay_mn_yn = 'Y' AND pay_tp_cd = 'ORD') = 'Y' THEN 'N'
+					ELSE 'Y'
+					END
+			FROM ord o
+			WHERE ord_no = #{ordNo}
+	</select>
+	
+	<select id="getNoClaimGodCount" parameterType="String" resultType="Integer">
+		SELECT COUNT(1) /* [claim.manage.xml][getNoneClaimGodCount][미클레임상품수량조회] */ 
+			FROM inf_ord_god_erp_dstb a
+			WHERE ord_no = #{ordNo}
+				AND pay_exchg_rt_crncy_unt_prc > 0 
+				AND clm_no IS NULL
+				AND NOT EXISTS (SELECT 1 FROM lgs_dlivy_drct_god WHERE dlivy_drct_god_no = a.dlivy_drct_god_no and dlivy_drct_tp_cd = 'EXCHG' and dlv_stat_cd = 'DLIVY_DRCT_CNCL' and dlivy_drct_qty = dlivy_drct_cncl_qty)
+	</select>
+	
+	<select id="selectPayInfoForCalculateReserve" parameterType="String" resultType="com.plgrim.ncp.biz.claim.data.RefundPayDTO">
+		SELECT /* [claim.manage.xml][selectPayInfoForCalculateReserve][정산보류를 위한 결제정보 조회] */
+				p.pay_no 			AS payNo
+				, p.pg_aprv_no 		AS pgAprvNo
+				, p.pg_sect_cd 		AS pgSectCd
+				, p.deal_tp_cd 		AS dealTpCd
+				, p.pay_mn_cd 		AS payMnCd
+				, p.escr_yn			AS escrYn
+				, pe.escr_stat_cd	AS escrStatCd
+			FROM pay p
+				LEFT OUTER JOIN pay_escr pe ON p.pay_no = pe.pay_no 
+			WHERE p.mpay_mn_yn = 'Y'
+				AND p.pay_tp_cd = 'ORD'
+				AND p.ord_no = #{ordNo}
+	</select>
+	
+	<update id="updateEscrStatCd" parameterType="com.plgrim.ncp.biz.claim.data.RefundPayDTO">
+		/* [claim.manage.xml][updateEscrStatCd][에스크로상태코드 변경] */
+		UPDATE pay_escr
+			SET   escr_stat_cd = #{escrStatCd, jdbcType=VARCHAR}
+				<if test="escrStatCd != null and escrStatCd == 'ESCR_DLV_REG'">
+					, escr_cal_resrve_dt = SYSDATE
+				</if>
+				<if test="escrStatCd != null and escrStatCd == 'ESCR_PCH_DCSN'">
+					, escr_pch_dcsn_dt = SYSDATE
+				</if>
+				<if test="escrStatCd != null and escrStatCd == 'ESCR_PCH_REJECT'">
+					, escr_pch_reject_dt = SYSDATE
+				</if>
+				<if test="escrStatCd != null and escrStatCd == 'ESCR_AUTO_PCH_DCSN'">
+					, escr_auto_pch_dcsn_dt = SYSDATE
+				</if>
+				<if test="escrStatCd != null and escrStatCd == 'ESCR_CAL_RESRVE'">
+					, escr_cal_resrve_dt = SYSDATE
+				</if>
+				<if test="escrStatCd != null and escrStatCd == 'DLV_BF_CNCL'">
+					, dlv_bf_cncl_dt = SYSDATE
+				</if>
+				<if test="escrStatCd != null and escrStatCd == 'DLV_AF_CNCL'">
+					, dlv_af_cncl_dt = SYSDATE
+				</if>
+				, udter_id = #{regtrId, jdbcType=VARCHAR}
+				, udt_dt = SYSDATE
+			WHERE PAY_NO = #{payNo, jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectRestoreOnoffCpnInfo" parameterType="String" resultType="com.plgrim.ncp.biz.promotion.data.MbrIssuCpnExtend">
+		SELECT /* [claim.manage.xml][getUseCpnKndCd][복구할 쿠폰 정보 조회] */
+				  c.erp_cstmr_no
+				, a.cpn_crtfc_cd
+				, o.mall_id
+			FROM mbr_issu_cpn a
+				INNER JOIN prm_cpn b ON a.prm_no = b.prm_no
+				INNER JOIN mbr c ON a.mbr_no = c.mbr_no
+				INNER JOIN ord o ON a.ord_no = o.ord_no AND a.mbr_no = o.mbr_no 
+			WHERE a.mbr_cpn_no = #{mbrCpnNo, jdbcType=VARCHAR}
+				AND b.cpn_knd_cd = 'ONOFLNE_CPN'
+	</select>
+	
+	<select id="getWMSAvailableInvQty" parameterType="com.plgrim.ncp.biz.goods.data.GoodsInventoryDTO" resultType="Integer">
+		SELECT /* [claim.manage.xml][getWMSAvailableInvQty][WMS가용재고수량조회] */
+				NVL(inv_qty, 0) + NVL(lc1_inv_qty, 0) - NVL(sale_prearnge_qty, 0) AS aval_qty
+			FROM god_shop_itm_inv
+			WHERE shop_id = #{shopId, jdbcType=VARCHAR}
+				AND god_no = #{godNo, jdbcType=VARCHAR}
+				AND itm_no = #{itmNo, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updatePayRfdStat" parameterType="com.plgrim.ncp.base.entities.datasource1.pay.PayRfd">
+		UPDATE pay_rfd SET /* [claim.manage.xml][updatePayRfdStat][결제환불상태변경] */
+			rfd_stat_cd = #{rfdStatCd, jdbcType=VARCHAR}
+			, rfd_requst_dt = SYSDATE
+			<if test="rfdStatCd != null and rfdStatCd == 'RFD_COMPT'">
+				, rfd_compt_dt = SYSDATE
+			</if>
+			<if test="rfdStatCd != null and rfdStatCd == 'RFD_ERR'">
+				, rfd_err_dt = SYSDATE
+				, rfd_err_cont = #{rfdErrCont, jdbcType=VARCHAR}
+			</if>
+			, udter_id = #{udterId, jdbcType=VARCHAR}
+			, udt_dt = SYSDATE
+		WHERE pay_no = #{payNo, jdbcType=VARCHAR}
+	</update>
+	
+	<select id="getKcpRefundBnkCd" parameterType="String" resultType="String">
+		SELECT asstn_cd_1	/* [claim.manage.xml][getKcpRefundBnkCd][KCP환불은행코드조회] */
+			FROM mv_sys_cd
+			WHERE lang_cd = 'KOR'
+				AND upper_cd = 'BNK'
+				AND cd = #{cd, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateCancelClaimTpCd" parameterType="com.plgrim.ncp.biz.claim.data.ClaimSearchDTO" >
+		UPDATE clm a /* [claim.manage.xml][updateCancelClaimTpCd][클레임 취소유형 변경] */
+			SET clm_tp_cd = 'ALL_CNCL'
+				, udter_id = #{udterId, jdbcType=VARCHAR}
+				, udt_dt = SYSDATE
+			WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+				AND clm_no = #{clmNo, jdbcType=VARCHAR}
+				AND NOT EXISTS (SELECT 1 FROM inf_ord_god_erp_dstb WHERE ord_no = a.ord_no AND (clm_no IS NULL or clm_no != a.clm_no))
+	</update>
+	
+	<update id="updatePayRfdBnkInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.clm.Clm" >
+		UPDATE pay a /* [claim.manage.xml][updatePayRfdBnkInfo][결제환불은행정보 변경] */
+			SET (rfd_bnk_cd, rfd_bnk_acct_no, rfd_acnthldr_nm)  
+				= (SELECT rfd_bnk_cd, rfd_bnk_acct_no, rfd_acnthldr_nm FROM clm WHERE clm_no = a.clm_no)
+			WHERE a.ord_no = #{ordNo, jdbcType=VARCHAR}
+				AND a.clm_no = #{clmNo, jdbcType=VARCHAR}
+				AND EXISTS (SELECT 1 FROM pay WHERE pay_no = a.upper_pay_no AND mpay_mn_yn = 'Y')
+				AND EXISTS (SELECT 1 FROM clm WHERE ord_no = a.ord_no AND clm_no = a.clm_no AND rfd_bnk_cd IS NOT NULL)
+	</update>
+	
+	<select id="getEscrCalResrveCnt" parameterType="String" resultType="Integer">
+		SELECT count(1) /* [claim.manage.xml][getEscrCalResrveCnt][에스크로 정산보류 카운트] */
+		    FROM pay p
+		        INNER JOIN pay_escr pe ON p.pay_no = pe.pay_no
+		    WHERE p.mpay_mn_yn = 'Y'
+		        AND p.escr_yn = 'Y'
+		        AND pe.escr_stat_cd = 'ESCR_CAL_RESRVE'
+		        AND p.ord_no = #{ordNo, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateClmRfdErrPgTrnsmisTgtYn" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBoDTO">
+		/* [claim.manage.xml][updateClmRfdErrPgTrnsmisTgtYn][클레임 환불오류 건 PG사 전송 대상 여부 N 변경] */
+		UPDATE CLM Z SET 
+			Z.PG_TRNSMIS_TGT_YN = 'N'
+		 ,	Z.UDT_DT = SYSDATE	
+		 ,  Z.UDTER_ID = #{udterId, jdbcType=VARCHAR}
+		WHERE 1 = 1
+		  AND Z.CLM_NO = #{clmNo, jdbcType=VARCHAR}		  
+		  AND Z.PG_TRNSMIS_TGT_YN = 'Y'
+		  AND Z.CLM_STAT_CD = 'RCEPT'
+		  AND EXISTS (SELECT 1 FROM PAY P, PAY_RFD PR  WHERE P.PAY_NO = PR.PAY_NO AND P.CLM_NO = Z.CLM_NO AND P.PG_SECT_CD IS NOT NULL AND PR.RFD_STAT_CD = 'RFD_ERR')
+	</update>
+		
+</mapper>

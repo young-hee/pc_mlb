@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrSecsnCrtfc" parameterType="mbrSecsnCrtfc" resultType="mbrSecsnCrtfc">
+		SELECT /* com.plgrim.ncp.base.selectMbrSecsnCrtfc		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , MBR_CRTFC_TURN
+			 , MBR_CRTFC_TP_CD
+			 , MBR_CRTFC_YN
+			 , MBR_CRTFC_DATE
+			 , RLNM_CRTFC_RESULT_CD
+			 , RLNM_CRTFC_DI
+			 , RLNM_CRTFC_CI
+			 , RLNM_CRTFC_VER
+			 , RLNM_CRTFC_IPIN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_SECSN_CRTFC
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrSecsnCrtfc" parameterType="mbrSecsnCrtfc">
+		UPDATE /* com.plgrim.ncp.base.updateMbrSecsnCrtfc		Generator(Generator)	2018-05-23 */
+		MBR_SECSN_CRTFC SET
+			   MBR_CRTFC_TP_CD = #{mbrCrtfcTpCd,jdbcType=VARCHAR}
+			 , MBR_CRTFC_YN = #{mbrCrtfcYn,jdbcType=VARCHAR}
+			 , MBR_CRTFC_DATE = #{mbrCrtfcDate,jdbcType=TIMESTAMP}
+			 , RLNM_CRTFC_RESULT_CD = #{rlnmCrtfcResultCd,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_DI = #{rlnmCrtfcDi,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_CI = #{rlnmCrtfcCi,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_VER = #{rlnmCrtfcVer,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_IPIN = #{rlnmCrtfcIpin,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrSecsnCrtfc" parameterType="mbrSecsnCrtfc">
+		INSERT /* com.plgrim.ncp.base.insertMbrSecsnCrtfc		Generator(Generator)	2018-05-23 */
+		INTO   MBR_SECSN_CRTFC (
+			   MBR_NO
+			 , MBR_CRTFC_TURN
+			 , MBR_CRTFC_TP_CD
+			 , MBR_CRTFC_YN
+			 , MBR_CRTFC_DATE
+			 , RLNM_CRTFC_RESULT_CD
+			 , RLNM_CRTFC_DI
+			 , RLNM_CRTFC_CI
+			 , RLNM_CRTFC_VER
+			 , RLNM_CRTFC_IPIN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{mbrCrtfcTurn,jdbcType=NUMERIC}
+			 , #{mbrCrtfcTpCd,jdbcType=VARCHAR}
+			 , #{mbrCrtfcYn,jdbcType=VARCHAR}
+			 , #{mbrCrtfcDate,jdbcType=TIMESTAMP}
+			 , #{rlnmCrtfcResultCd,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcDi,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcCi,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcVer,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcIpin,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrSecsnCrtfc" parameterType="mbrSecsnCrtfc">
+		DELETE /* com.plgrim.ncp.base.deleteMbrSecsnCrtfc		Generator(Generator)	2018-05-23 */
+		  FROM MBR_SECSN_CRTFC
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

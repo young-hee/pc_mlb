@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.vendor.request">
+	<resultMap id="vendorRequestResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorReqstResult">
+        <result property="comReqst.comReqstSn" column="COM_REQST_SN" />
+        <result property="comReqst.reqstSj" column="REQST_SJ" />
+        <result property="comReqst.applcntNm" column="APPLCNT_NM" />
+        <result property="comReqst.applcntEmail" column="APPLCNT_EMAIL" />
+        <result property="comReqst.comNm" column="COM_NM" />
+        <result property="comReqst.bmanRegNo" column="BMAN_REG_NO" />
+        <result property="comReqst.rprstivNm" column="RPRSTIV_NM" />
+        <result property="comReqst.brndNm" column="BRND_NM" />
+        <result property="comReqst.ctgryDscr" column="CTGRY_DSCR" />
+        <result property="comReqst.brndDscr" column="BRND_DSCR" />
+        <result property="comReqst.memoCont" column="MEMO_CONT" />
+        <result property="comReqst.prcsComptDt" column="PRCS_COMPT_DT" />
+        <result property="comReqst.prcsComptAdminId" column="PRCS_COMPT_ADMIN_ID" />
+        <result property="applcntTel" column="APPLCNT_TEL" />
+        <result property="comReqst.legacyDistbChnnlDscr" column="LEGACY_DISTB_CHNNL_DSCR" />
+        <result property="comReqst.comReqstPrcsStatCd" column="COM_REQST_PRCS_STAT_CD" />
+        <result property="comReqst.udtDt" column="UDT_DT" />
+        <result property="comReqst.cnfirmAdminId" column="CNFIRM_ADMIN_ID" />
+        <result property="comReqstAtchmnfl.atchFileNm" column="ATCH_FILE_NM" />
+        <result property="comReqstAtchmnfl.atchFileUrl" column="ATCH_FILE_URL" />
+    </resultMap>
+    
+    <!-- 입점 신청 목록 조회 -->
+    <select id="selectVendorRequestList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorReqstDTO" resultMap="vendorRequestResultMap">
+    	<include refid="com.plgrim.ncp.base.beginPage"/>
+    	SELECT	cr.com_reqst_sn
+    			,	cr.reqst_sj
+    			,	cr.brnd_nm
+    			,	cr.com_nm
+    			,	cr.rprstiv_nm
+    			,	cr.applcnt_nm
+    			,	cr.udt_dt
+    			,	cr.prcs_compt_dt
+    			,	cr.prcs_compt_admin_id
+    			, 	cr.com_reqst_prcs_stat_cd
+    	  FROM	com_reqst cr
+    	WHERE	1 = 1
+    	<if test="startDt != null and endDt != null" >
+            <choose>
+                <when test="searchDateType == 'inqDate'">
+                    AND     cr.reg_dt BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD') AND TO_DATE(#{endDt}, 'YYYY-MM-DD') + 0.99999        
+                </when>
+                <when test="searchDateType == 'comptDate'">
+                    AND     cr.prcs_compt_dt BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD') AND TO_DATE(#{endDt}, 'YYYY-MM-DD') + 0.99999
+                </when>
+            </choose>
+        </if>
+        <if test="searchNm != null and searchNm != ''" >
+            <choose>
+                <when test="serachNameType == 'rprstivName'">
+                    AND     cr.rprstiv_nm = #{searchNm, jdbcType=VARCHAR}
+                </when>
+                <when test="serachNameType == 'inqName'">
+                    AND     cr.applcnt_nm = #{searchNm, jdbcType=VARCHAR}
+                </when>
+            </choose>
+        </if>
+       	<if test="comReqst.comNm != null and comReqst.comNm != ''" >
+       		AND	cr.com_nm LIKE '%'||#{comReqst.comNm, jdbcType=VARCHAR}||'%'
+       	</if>
+       	<if test="comReqst.brndNm != null and comReqst.brndNm != ''">
+       		AND	cr.brnd_nm LIKE '%'|| #{comReqst.brndNm, jdbcType=VARCHAR}||'%'
+       	</if>
+       	<if test="comReqst.comReqstPrcsStatCd != null and comReqst.comReqstPrcsStatCd != ''">
+       		AND	cr.com_reqst_prcs_stat_cd = #{comReqst.comReqstPrcsStatCd, jdbcType=VARCHAR}
+       	</if>
+    ORDER BY	cr.com_reqst_prcs_stat_cd DESC, cr.com_reqst_sn DESC
+    <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    
+    <!-- 입점 신청 Total 갯수 조회 -->
+    <select id="selectVendorRequestTotal" parameterType="com.plgrim.ncp.biz.vendor.data.VendorReqstDTO" resultType="long">
+    	SELECT	COUNT(*)
+    	  FROM	com_reqst cr
+    	WHERE	1 = 1
+    	<if test="startDt != null and endDt != null" >
+            <choose>
+                <when test="searchDateType == 'inqDate'">
+                    AND     cr.reg_dt BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD') AND TO_DATE(#{endDt}, 'YYYY-MM-DD') + 0.99999        
+                </when>
+                <when test="searchDateType == 'comptDate'">
+                    AND     cr.prcs_compt_dt BETWEEN TO_DATE(#{startDt}, 'YYYY-MM-DD') AND TO_DATE(#{endDt}, 'YYYY-MM-DD') + 0.99999
+                </when>
+            </choose>
+        </if>
+        <if test="searchNm != null and searchNm != ''" >
+            <choose>
+                <when test="serachNameType == 'rprstivName'">
+                    AND     cr.rprstiv_nm = #{searchNm, jdbcType=VARCHAR}
+                </when>
+                <when test="serachNameType == 'inqName'">
+                    AND     cr.applcnt_nm = #{searchNm, jdbcType=VARCHAR}
+                </when>
+            </choose>
+        </if>
+       	<if test="comReqst.comNm != null and comReqst.comNm != ''" >
+       		AND	cr.com_nm LIKE '%'||#{comReqst.comNm, jdbcType=VARCHAR}||'%'
+       	</if>
+       	<if test="comReqst.brndNm != null and comReqst.brndNm != ''">
+       		AND	cr.brnd_nm LIKE '%'|| #{comReqst.brndNm, jdbcType=VARCHAR}||'%'
+       	</if>
+       	<if test="comReqst.comReqstPrcsStatCd != null and comReqst.comReqstPrcsStatCd != ''">
+       		AND	cr.com_reqst_prcs_stat_cd = #{comReqst.comReqstPrcsStatCd, jdbcType=VARCHAR}
+       	</if>
+    </select>
+    
+    <!-- 입점 신청 정보 상세 조회 -->
+    <select id="getVendorRequest" parameterType="com.plgrim.ncp.biz.vendor.data.VendorReqstDTO" resultMap="vendorRequestResultMap">
+    	SELECT	cr.com_reqst_sn
+    			,	cr.brnd_nm
+    			,	cr.rprstiv_nm
+    			,	cr.applcnt_nm
+    			,	cr.applcnt_email
+    			,	cr.applcnt_tel_area_no || '-' || cr.applcnt_tel_tlof_no || '-' || cr.applcnt_tel_tlof_wthn_no AS	applcnt_tel
+    			,	cr.com_nm
+    			,	cr.bman_reg_no
+    			,	cr.reqst_sj
+    			,	cr.ctgry_dscr
+    			,	cr.brnd_dscr
+    			,	cr.legacy_distb_chnnl_dscr
+    			,	cr.memo_cont
+    			,	cr.com_reqst_prcs_stat_cd
+    	 FROM	com_reqst cr
+       WHERE	1 = 1
+       	   AND	cr.com_reqst_sn = #{comReqst.comReqstSn, jdbcType=NUMERIC}
+    </select>
+    
+    <!-- 입점 신청 정보 수정 -->
+    <update id="updateVendorRequest" parameterType="comReqst">
+    	UPDATE		com_reqst
+    		   SET 	com_reqst_prcs_stat_cd = #{comReqstPrcsStatCd, jdbcType=VARCHAR}
+    		   		,	memo_cont = #{memoCont, jdbcType=VARCHAR}
+    		   		,	udt_dt = SYSDATE
+    		   		, 	udter_id	= #{loginId, jdbcType=VARCHAR}
+    	  WHERE	1 = 1
+    	      AND	com_reqst_sn = #{comReqstSn, jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateVendorPrcsCompt" parameterType="comReqst">
+    	UPDATE		com_reqst
+    		   SET		prcs_compt_admin_id = #{prcsComptAdminId, jdbcType=VARCHAR}
+    		   		,	prcs_compt_dt = SYSDATE
+    		   		,	udt_dt = SYSDATE
+    		   		, 	udter_id	= #{loginId, jdbcType=VARCHAR}
+    	  WHERE	1 = 1
+    	  	  AND	com_reqst_sn = #{comReqstSn, jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 입점 신청 첨부파일 조회 -->
+    <select id="selectVendorRequestAtchmnfl" parameterType="com.plgrim.ncp.biz.vendor.data.VendorReqstDTO" resultType="comReqstAtchmnfl">
+    	SELECT	cra.atch_file_nm
+    			,	cra.atch_file_url
+    	  FROM com_reqst_atchmnfl cra
+    	WHERE	cra.com_reqst_sn = #{comReqst.comReqstSn, jdbcType=NUMERIC}
+    </select>
+    
+    <select id="selectNationCdList" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+    	SELECT	cd_nm
+    			,	asstn_cd_1
+    	  FROM	mv_sys_cd
+    	WHERE 	upper_cd = 'NATION'
+    		AND	lang_cd = 'KOR'
+    		AND	asstn_cd_1 IS NOT NULL
+    </select>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrSizeClfcDetail" parameterType="mbrSizeClfcDetail" resultType="mbrSizeClfcDetail">
+		SELECT /* com.plgrim.ncp.base.selectMbrSizeClfcDetail		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , MBR_SIZE_TURN
+			 , MBR_SIZE_CD
+			 , SIZE_VAL
+			 , SIZE_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_SIZE_CLFC_DETAIL
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+		   AND MBR_SIZE_CD = #{mbrSizeCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbrSizeClfcDetail" parameterType="mbrSizeClfcDetail">
+		UPDATE /* com.plgrim.ncp.base.updateMbrSizeClfcDetail		Generator(Generator)	2018-05-23 */
+		MBR_SIZE_CLFC_DETAIL SET
+			   SIZE_VAL = #{sizeVal,jdbcType=VARCHAR}
+			 , SIZE_UNIT_CD = #{sizeUnitCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+		   AND MBR_SIZE_CD = #{mbrSizeCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbrSizeClfcDetail" parameterType="mbrSizeClfcDetail">
+		INSERT /* com.plgrim.ncp.base.insertMbrSizeClfcDetail		Generator(Generator)	2018-05-23 */
+		INTO   MBR_SIZE_CLFC_DETAIL (
+			   MBR_NO
+			 , MBR_SIZE_TURN
+			 , MBR_SIZE_CD
+			 , SIZE_VAL
+			 , SIZE_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{mbrSizeTurn,jdbcType=NUMERIC}
+			 , #{mbrSizeCd,jdbcType=VARCHAR}
+			 , #{sizeVal,jdbcType=VARCHAR}
+			 , #{sizeUnitCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrSizeClfcDetail" parameterType="mbrSizeClfcDetail">
+		DELETE /* com.plgrim.ncp.base.deleteMbrSizeClfcDetail		Generator(Generator)	2018-05-23 */
+		  FROM MBR_SIZE_CLFC_DETAIL
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+		   AND MBR_SIZE_CD = #{mbrSizeCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

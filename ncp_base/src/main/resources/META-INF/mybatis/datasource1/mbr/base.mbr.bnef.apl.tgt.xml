@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrBnefAplTgt" parameterType="mbrBnefAplTgt" resultType="mbrBnefAplTgt">
+		SELECT /* com.plgrim.ncp.base.selectMbrBnefAplTgt		Generator(Generator)	2018-05-23 */
+			   BNEF_SN
+			 , APL_TURN
+			 , BNEF_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , MOBILE_APP_SECT_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , AFF_COM_ID
+			 , CHNNL_RECPTN_AGR_SECT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_BNEF_APL_TGT
+		 WHERE 1 = 1
+	   	   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrBnefAplTgt" parameterType="mbrBnefAplTgt">
+		UPDATE /* com.plgrim.ncp.base.updateMbrBnefAplTgt		Generator(Generator)	2018-05-23 */
+		MBR_BNEF_APL_TGT SET
+			   BNEF_TGT_TP_CD = #{bnefTgtTpCd,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , MOBILE_APP_SECT_CD = #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , TGT_MBR_ATRB_CD = #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+			 , AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+			 , CHNNL_RECPTN_AGR_SECT_CD = #{chnnlRecptnAgrSectCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrBnefAplTgt" parameterType="mbrBnefAplTgt">
+		INSERT /* com.plgrim.ncp.base.insertMbrBnefAplTgt		Generator(Generator)	2018-05-23 */
+		INTO   MBR_BNEF_APL_TGT (
+			   BNEF_SN
+			 , APL_TURN
+			 , BNEF_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , MOBILE_APP_SECT_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , AFF_COM_ID
+			 , CHNNL_RECPTN_AGR_SECT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{bnefSn,jdbcType=NUMERIC}
+			 , #{aplTurn,jdbcType=NUMERIC}
+			 , #{bnefTgtTpCd,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , #{grpcoId,jdbcType=VARCHAR}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{chnnlRecptnAgrSectCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrBnefAplTgt" parameterType="mbrBnefAplTgt">
+		DELETE /* com.plgrim.ncp.base.deleteMbrBnefAplTgt		Generator(Generator)	2018-05-23 */
+		  FROM MBR_BNEF_APL_TGT
+		 WHERE 1 = 1
+		   AND BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

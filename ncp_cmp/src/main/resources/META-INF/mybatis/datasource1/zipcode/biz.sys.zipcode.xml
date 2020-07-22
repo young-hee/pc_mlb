@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.sys.zipcode">
+
+    <select id="selectSysPlcPostNo" parameterType="sysPlc" resultType="sysPlc">
+        SELECT /* com.plgrim.ncp.biz.sys.zipcode.selectSysPlcPostNo yoon 20161130 */
+                MALL_ID
+               ,PLC_CD
+               ,APL_BEG_DT
+               ,APL_END_DT
+               ,USE_YN
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    SYS_PLC
+        WHERE   1 = 1
+        AND     MALL_ID = #{mallId,jdbcType=VARCHAR}
+        AND     PLC_CD = #{plcCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="mergeSysPlcPostNoIntrlckMenmthd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPlc">
+      MERGE INTO SYS_PLC sp /* com.plgrim.ncp.biz.sys.zipcode.mergePostNoIntrlckMenmthd yoon 20161130 */
+			USING DUAL
+			ON (
+			        SP.MALL_ID  = #{mallId,jdbcType=VARCHAR}
+			    AND SP.PLC_CD = #{plcCd,jdbcType=VARCHAR}
+			 )
+      WHEN MATCHED THEN
+            UPDATE SET
+                 USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+	  WHEN NOT MATCHED THEN
+            INSERT
+            (
+                 MALL_ID
+                ,PLC_CD
+                ,APL_BEG_DT
+                ,APL_END_DT
+                ,USE_YN
+                ,REGTR_ID
+                ,UDTER_ID
+                ,REG_DT
+                ,UDT_DT
+            )
+            VALUES
+            (
+                 #{mallId,jdbcType=VARCHAR}
+                ,#{plcCd,jdbcType=VARCHAR}
+                ,#{aplBegDt,jdbcType=DATE}
+                ,#{aplEndDt,jdbcType=DATE}
+                ,#{useYn,jdbcType=VARCHAR}
+                ,#{regtrId,jdbcType=VARCHAR}
+                ,#{udterId,jdbcType=VARCHAR}
+                ,SYSDATE
+                ,SYSDATE
+            )
+    </update>
+
+    <select id="selectSysPlcValPostNo" parameterType="sysPlc" resultType="sysPlcVal">
+        SELECT a.*
+          FROM (
+                SELECT MALL_ID
+                      ,PLC_CD
+                      ,APL_BEG_DT
+                      ,PLC_VAL_TURN
+                      ,PLC_VAL
+                  FROM SYS_PLC_VAL
+                 WHERE MALL_ID = #{mallId,jdbcType=VARCHAR}
+                   AND PLC_CD = #{plcCd,jdbcType=VARCHAR}
+              ORDER BY PLC_VAL_TURN DESC
+        ) a
+        WHERE ROWNUM = 1
+    </select>
+
+
+    <update id="mergeSysPlcValPostNo" parameterType="sysPlcVal">
+        MERGE INTO SYS_PLC_VAL spv /* com.plgrim.ncp.biz.sys.zipcode.mergeSysPlcValPostNo yoon 20161130 */
+        USING DUAL
+        ON (
+                SPV.MALL_ID  = #{mallId,jdbcType=VARCHAR}
+            AND SPV.PLC_CD = #{plcCd,jdbcType=VARCHAR}
+            AND SPV.APL_BEG_DT = #{aplBegDt,jdbcType=DATE}
+            AND SPV.PLC_VAL_TURN = #{plcValTurn,jdbcType=NUMERIC}
+        )
+        WHEN MATCHED THEN
+        UPDATE SET
+             PLC_VAL = #{plcVal,jdbcType=VARCHAR}
+            ,PLC_VAL_TP_CD = #{plcValTpCd,jdbcType=VARCHAR}
+            ,PLC_VAL_UNIT_CD = #{plcValUnitCd,jdbcType=VARCHAR}
+            ,PLC_VAL_BEG_DT = #{plcValBegDt,jdbcType=DATE}
+            ,PLC_VAL_END_DT = #{plcValEndDt,jdbcType=DATE}
+            ,USE_YN = #{useYn,jdbcType=VARCHAR}
+            ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+        INSERT
+		(
+	        MALL_ID
+	       ,PLC_CD
+	       ,APL_BEG_DT
+	       ,PLC_VAL_TURN
+           ,PLC_VAL
+           ,PLC_VAL_TP_CD
+           ,PLC_VAL_UNIT_CD
+           ,PLC_VAL_BEG_DT
+           ,PLC_VAL_END_DT
+	       ,USE_YN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{mallId,jdbcType=VARCHAR}
+	       ,#{plcCd,jdbcType=VARCHAR}
+	       ,#{aplBegDt,jdbcType=DATE}
+	       ,#{plcValTurn,jdbcType=NUMERIC}
+	       ,#{plcVal,jdbcType=VARCHAR}
+           ,#{plcValTpCd,jdbcType=VARCHAR}
+           ,#{plcValUnitCd,jdbcType=VARCHAR}
+           ,#{plcValBegDt,jdbcType=DATE}
+           ,#{plcValEndDt,jdbcType=DATE}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+    </update>
+    
+    <select id="selectSysFileUploadInfo" parameterType="sysFileUpload" resultType="com.plgrim.ncp.biz.zipcode.data.SysFileUploadExtend">
+        SELECT /* [biz.sys.zipcode.xml][selectSysFileUploadInfo][시스템 파일 업로드 조회(가장 최근 1건만 조회)][ID] 20171213 */
+                *
+        FROM
+        (
+        SELECT  FILE_UPLOAD_DATE
+               ,FILE_UPLOAD_TURN
+               ,FILE_UPLOAD_SECT_CD
+               ,FILE_UPLOAD_TP_CD
+               ,FILE_NM
+               ,PROGRS_STAT_CD
+               ,FAILR_RESN_CONT
+               ,FILE_UPLOAD_CNT
+               ,MOD_BF_CNT
+               ,MOD_AF_CNT
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+               ,ROW_NUMBER() OVER(ORDER BY FILE_UPLOAD_DATE DESC, FILE_UPLOAD_TURN DESC) AS RNUM
+        FROM    SYS_FILE_UPLOAD t
+        WHERE   1 = 1
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(fileUploadDate)">
+        AND     FILE_UPLOAD_DATE = #{fileUploadDate,jdbcType=VARCHAR}
+        </if>
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(fileUploadTurn)">
+        AND     FILE_UPLOAD_TURN = #{fileUploadTurn,jdbcType=NUMERIC}
+        </if>
+        AND     FILE_UPLOAD_SECT_CD = #{fileUploadSectCd,jdbcType=VARCHAR}
+        AND     FILE_UPLOAD_DATE <![CDATA[>=]]> TO_CHAR(SYSDATE-3, 'YYYYMMDD')
+        )
+        WHERE   1 = 1
+        AND     RNUM = 1
+    </select>
+    
+	<insert id="insertSysFileUpload" parameterType="sysFileUpload">
+	    INSERT /* [biz.sys.zipcode.xml][insertSysFileUpload][시스템 파일 업로드][ID] 20171213 */
+	    INTO SYS_FILE_UPLOAD
+		(
+	        FILE_UPLOAD_DATE
+	       ,FILE_UPLOAD_TURN
+	       ,FILE_UPLOAD_SECT_CD
+	       ,FILE_UPLOAD_TP_CD
+	       ,FILE_NM
+	       ,PROGRS_STAT_CD
+	       ,FAILR_RESN_CONT
+	       ,FILE_UPLOAD_CNT
+	       ,MOD_BF_CNT
+	       ,MOD_AF_CNT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{fileUploadDate,jdbcType=VARCHAR}
+	       ,#{fileUploadTurn,jdbcType=NUMERIC}
+	       ,#{fileUploadSectCd,jdbcType=VARCHAR}
+	       ,#{fileUploadTpCd,jdbcType=VARCHAR}
+	       ,#{fileNm,jdbcType=VARCHAR}
+	       ,#{progrsStatCd,jdbcType=VARCHAR}
+	       ,#{failrResnCont,jdbcType=VARCHAR}
+	       ,#{fileUploadCnt,jdbcType=NUMERIC}
+	       ,#{modBfCnt,jdbcType=NUMERIC}
+	       ,#{modAfCnt,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <update id="updateSysFileUpload" parameterType="sysFileUpload">
+        UPDATE /* [biz.sys.zipcode.xml][updateSysFileUpload][시스템 파일 업로드 변경][ID] 20171213 */
+        SYS_FILE_UPLOAD SET
+		        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(progrsStatCd)">
+		         PROGRS_STAT_CD = #{progrsStatCd,jdbcType=VARCHAR}
+		        	<choose>
+		        	<when test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(progrsStatCd, 'APRV_COMPT')">
+		        ,FAILR_RESN_CONT = NULL
+		        	</when>
+		        	<when test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(failrResnCont)">
+		        ,FAILR_RESN_CONT = #{failrResnCont,jdbcType=VARCHAR}
+		        	</when>
+		        	</choose>
+		        </if>                
+		        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(fileUploadCnt)">
+		        ,FILE_UPLOAD_CNT = #{fileUploadCnt,jdbcType=NUMERIC}
+		        </if>
+		        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(modBfCnt)">
+		        ,MOD_BF_CNT = #{modBfCnt,jdbcType=NUMERIC}
+		        </if>
+		        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(modAfCnt)">
+		        ,MOD_AF_CNT = #{modAfCnt,jdbcType=NUMERIC}
+		        </if>
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     FILE_UPLOAD_DATE = #{fileUploadDate,jdbcType=VARCHAR}
+        AND     FILE_UPLOAD_TURN = #{fileUploadTurn,jdbcType=NUMERIC}
+    </update>
+    
+	<update id="renameSysPostNoTable">
+		ALTER /* [biz.sys.zipcode.xml][renameSysPostNoTable][시스템 우편번호 주소 테이블 RENAME][ID] */
+		TABLE ${source} RENAME TO ${target}
+	</update>
+	
+	<update id="renameSysPostNoIndex">
+		ALTER /* [biz.sys.zipcode.xml][renameSysPostNoIndex][시스템 우편번호 주소 인덱스 RENAME][ID] */
+		INDEX ${source} RENAME TO ${target}
+	</update>
+	
+	<select id="checkSysPostNoTable" parameterType="String" resultType="long">
+		SELECT	/* [biz.sys.zipcode.xml][checkSysPostNoTable][시스템 우편번호 TABLE CHECK][YOON] */
+				COUNT(1)
+		FROM	ALL_TABLES
+		WHERE	TABLE_NAME = #{tableName}
+	</select>
+	
+	<select id="checkSysPostNoIndex" parameterType="String" resultType="long">
+		SELECT	/* [biz.sys.zipcode.xml][checkSysPostNoIndex][시스템 우편번호 INDEX CHECK][YOON] */
+				COUNT(1)
+		FROM	ALL_INDEXES
+		WHERE	INDEX_NAME = #{indexName}
+	</select>
+</mapper>

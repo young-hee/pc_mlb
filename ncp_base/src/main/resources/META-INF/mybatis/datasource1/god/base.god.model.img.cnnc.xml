@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodModelImgCnnc" parameterType="godModelImgCnnc" resultType="godModelImgCnnc">
+		SELECT /* com.plgrim.ncp.base.selectGodModelImgCnnc		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , MODEL_NO
+			 , MODEL_IMG_TURN
+			 , DSP_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_MODEL_IMG_CNNC
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+		   AND MODEL_IMG_TURN = #{modelImgTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodModelImgCnnc" parameterType="godModelImgCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateGodModelImgCnnc		Generator(Generator)	2018-05-23 */
+		GOD_MODEL_IMG_CNNC SET
+			   DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+		   AND MODEL_IMG_TURN = #{modelImgTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodModelImgCnnc" parameterType="godModelImgCnnc">
+		INSERT /* com.plgrim.ncp.base.insertGodModelImgCnnc		Generator(Generator)	2018-05-23 */
+		INTO   GOD_MODEL_IMG_CNNC (
+			   GOD_NO
+			 , MODEL_NO
+			 , MODEL_IMG_TURN
+			 , DSP_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{modelNo,jdbcType=VARCHAR}
+			 , #{modelImgTurn,jdbcType=NUMERIC}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodModelImgCnnc" parameterType="godModelImgCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteGodModelImgCnnc		Generator(Generator)	2018-05-23 */
+		  FROM GOD_MODEL_IMG_CNNC
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+		   AND MODEL_IMG_TURN = #{modelImgTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

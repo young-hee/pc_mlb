@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>NCP TagLib</short-name>
+	<tag>
+		<name>codes</name>
+		<display-name>공통 코드 리스트 출력</display-name>
+		<description>
+		&lt;b&gt;공통 코드 리스트 출력&lt;b&gt;&lt;br&gt;
+		사용자가 선택한 언어셋에 대해 입력된 group 코드에 해당하는 코드 목록을 type에 지정된 형태로 HTML을 생성&lt;br&gt;
+		var 변수가 지정된 경우 HTML을 생성하지 않고 var에 지정된 이름으로 context 변수를 생성하여 List&lt;Code&gt; 타입으로 객체를 생성하여 저장
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.CodesTag</tag-class>
+		<attribute>
+			<name>group</name>
+			<description>(필수) : 그룹 코드</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(var가 지정되지 않으면 필수) : option(Select 태그의 option 목록), radio(input box의 radio 타입), checkbox(input box의 checkbox 타입)으로 목록 생성</description>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : HTML 태그 생성 시 태그의 id 속성 값&lt;br&gt;type이 radio, checkbox인 경우 id는 prefix로 사용되어 code를 붙인 값으로 id속성이 지정되고 code name을 label 태그로 감싸고 input를 지정하도록 for 속성에 id를 지정</description>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : HTML 태그 생성 시 name 속성 값</description>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : HTML 태그 생성 시 style 속성 값</description>
+		</attribute>
+		<attribute>
+			<name>prefix</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : HTML 태그 생성 시 각 항목 이전에 삽입 할 텍스트. type이 option인 경우 무시됨</description>
+		</attribute>
+		<attribute>
+			<name>postfix</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : HTML 태그 생성 시 각 항목 이후에 삽입 할 텍스트. type이 option인 경우 무시됨</description>
+		</attribute>
+		<attribute>
+			<name>etc</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : HTML 태그 생성 시 생성 할 기타의 속성에 대한 name, value 쌍(예] etc="att1='val1' att2='val2'")</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : HTML 태그로 생성하지 않고 context 변수로 생성 시 변수 이름</description>
+		</attribute>
+		<attribute>
+			<name>def</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : HTML 태그 생성 시 기본으로 선택할 코드 값</description>
+		</attribute>
+		<attribute>
+			<name>depth</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택, int) : 계층형 코드 구조에서 하위로 표시할 깊이. default, 최하위 코드까지 모두 표시</description>
+		</attribute>
+		<attribute>
+			<name>filterAsstnCd1</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : AsstnCd1 필터링</description>
+		</attribute>
+		<attribute>
+			<name>filterAsstnCd2</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : AsstnCd2 필터링</description>
+		</attribute>
+		<attribute>
+			<name>includeNotUse</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택, boolean) : 사용여부가 Y인 것만 보일지 N인 것도 보일지 선택. default, false(사용여부 Y인 것만)</description>
+		</attribute>
+		<attribute>
+			<name>orderBy</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 오름차순정렬 - ASC, 내림차순 - DESC</description>
+		</attribute>
+		<attribute>
+			<name>chkAll</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 체크박스일때 출력되는 항목을 모두 체크할 경우</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>code</name>
+		<display-name>공통 코드의 코드명 조회</display-name>
+		<description>
+		&lt;b&gt;공통 코드의 코드명 조회&lt;b&gt;&lt;br&gt;
+		사용자가 선택한 언어셋에 대해 입력된 코드에 해당하는 코드 객체로 context 변수로 생성하거나 HTML로 출력
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.CodeTag</tag-class>
+		<attribute>
+			<name>code</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(필수) : 코드</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>root</name>
+		<description>
+		&lt;b&gt;상품/전시 기본 URL&lt;b&gt;&lt;br&gt;
+		상품/전시 페이지에 대한 URL을 생성하여 context 변수로 생성하거나 HTML로 출력
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.UrlRootTag</tag-class>
+		<attribute>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 하위 URL path</description>
+		</attribute>
+		<attribute>
+			<name>device</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 대상 서버 구분. PC, MB 중 하나. 입력되지 않는 경우 현재 서버</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>sroot</name>
+		<description>
+		&lt;b&gt;상품/전시 보안 페이지 URL&lt;b&gt;&lt;br&gt;
+		상품/전시 페이지에 대한 보안페이지 URL을 생성하여 context 변수로 생성하거나 HTML로 출력
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.UrlSecureRootTag</tag-class>
+		<attribute>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 하위 URL path</description>
+		</attribute>
+		<attribute>
+			<name>device</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 대상 서버 구분. PC, MB 중 하나. 입력되지 않는 경우 현재 서버</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>cps</name>
+		<description>
+		&lt;b&gt;회원/주문/결재 기본 URL&lt;b&gt;&lt;br&gt;
+		회원/주문/결재 페이지에 대한 URL을 생성하여 context 변수로 생성하거나 HTML로 출력
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.UrlCpsRootTag</tag-class>
+		<attribute>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 하위 URL path</description>
+		</attribute>
+		<attribute>
+			<name>device</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 대상 서버 구분. PC, MB 중 하나. 입력되지 않는 경우 현재 서버</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>scps</name>
+		<description>
+		&lt;b&gt;회원/주문/결재 보안 페이지 URL&lt;b&gt;&lt;br&gt;
+		회원/주문/결재 페이지에 대한 보안 페이지 URL을 생성하여 context 변수로 생성하거나 HTML로 출력
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.UrlCpsSecureRootTag</tag-class>
+		<attribute>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 하위 URL path</description>
+		</attribute>
+		<attribute>
+			<name>device</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 대상 서버 구분. PC, MB 중 하나. 입력되지 않는 경우 현재 서버</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>img</name>
+		<description>
+		&lt;b&gt;상품 이미지 URL&lt;b&gt;&lt;br&gt;
+		상품 이미지에 대한 URL을 생성하여 context 변수 생성하거나 HTML로 출력
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.UrlImageTag</tag-class>
+		<attribute>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 하위 URL path</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+		<attribute>
+			<name>opt</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 이미지 변환 옵션</description>
+		</attribute>
+		<attribute>
+			<name>width</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 이미지 가로 변환 크기</description>
+		</attribute>
+		<attribute>
+			<name>height</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 이미지 세로 변환 크기</description>
+		</attribute>
+		<attribute>
+			<name>imgQ</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : OnDemand 여부 기본 Y</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>goodsImg</name>
+		<description>
+		&lt;b&gt;상품 이미지 URL&lt;b&gt;&lt;br&gt;
+		상품 이미지에 대한 URL을 생성하여 context 변수 생성하거나 HTML로 출력
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.UrlGoodImageTag</tag-class>
+		<attribute>
+			<name>goodNo</name>
+			<description></description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 상품 번호</description>
+		</attribute>
+		<attribute>
+			<name>size</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(필수) : 표시할 상품 이미지 사이즈</description>
+		</attribute>
+		<attribute>
+			<name>imgTurn</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 이미지순서(0: 대표이미지)</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>auth</name>
+		<description>
+			&lt;b&gt;인증 상태 체크&lt;b&gt;&lt;br&gt;
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.AuthTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<name>url</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+		<attribute>
+			<name>className</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : class 지정</description>
+		</attribute>		
+	</tag>
+	<tag>
+		<name>prop</name>
+		<description>
+		&lt;b&gt;프로퍼티 값 조회&lt;b&gt;&lt;br&gt;
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.PropertyTag</tag-class>
+		<attribute>
+			<name>key</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(필수) : 얻어올 프로퍼티 Key</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>utag2</name>
+		<description>
+		&lt;b&gt;utag 파라미터 생성&lt;b&gt;&lt;br&gt;
+		</description>
+		<tag-class>com.plgrim.ncp.commons.taglib.Utag2Tag</tag-class>
+		<attribute>
+			<name>tmplt</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 템플릿번호</description>
+		</attribute>
+		<attribute>
+			<name>cnr</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 코너번호</description>
+		</attribute>
+		<attribute>
+			<name>sect</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 모바일섹션번호</description>
+		</attribute>
+		<attribute>
+			<name>cate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 카테고리번호</description>
+		</attribute>
+		<attribute>
+			<name>etc</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : etc카테고리번호</description>
+		</attribute>
+		<attribute>
+			<name>brn</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 브랜드카테고리번호</description>
+		</attribute>
+		<attribute>
+			<name>br</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 브랜드카테고리번호-브랜드관</description>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 카테고리구분코드</description>
+		</attribute>
+		<attribute>
+			<name>set</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 셋트번호</description>
+		</attribute>
+		<attribute>
+			<name>contt</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>(선택) : 컨텐츠번호</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>(선택) : context 변수로 생성 시 변수 이름</description>
+		</attribute>
+        <attribute>
+            <name>abTestSn</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>(선택) : AB 테스트 순번</description>
+        </attribute>
+        <attribute>
+            <name>abRevSn</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>(선택) : AB 테스트 개정순번</description>
+        </attribute>
+        <attribute>
+            <name>abRevTrnSn</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>(선택) : AB 테스트 개정구성순번 </description>
+		</attribute>
+	</tag>
+	
+</taglib>

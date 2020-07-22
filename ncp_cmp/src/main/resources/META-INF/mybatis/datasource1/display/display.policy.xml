@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+
+    <select id="selectSysStplatByLang" parameterType="sysStplat" resultType="sysStplat">
+		SELECT /* [display.policy.xml][selectSysStplatByLang][약관 영문 조회][muba] */
+             CASE
+             	WHEN B.STPLAT_DSCR IS NULL
+             	THEN
+             		A.STPLAT_DSCR
+             	ELSE
+             		B.STPLAT_DSCR
+             	END AS STPLAT_DSCR
+            ,CASE
+            	WHEN B.STPLAT_CONT IS NULL
+            	THEN
+            		A.STPLAT_CONT
+            	ELSE
+            		B.STPLAT_CONT
+            	END AS STPLAT_CONT
+		 FROM SYS_STPLAT A LEFT OUTER JOIN SYS_STPLAT_LANG B ON A.STPLAT_CD = B.STPLAT_CD AND B.LANG_CD = #{lang,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+	   	 AND A.STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectSysStplatHist" parameterType="sysStplat" resultType="sysStplatHistExtends">
+		SELECT /* [display.policy.xml][selectSysStplatHist][약관 history 한글 조회][muba] */
+			   STPLAT_DSCR
+			 , STPLAT_CONT
+			 , HIST_DT
+		 FROM SYS_STPLAT_HIST
+		 WHERE 1 = 1
+	   	 AND STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+	   	 ORDER BY HIST_DT DESC
+    </select>
+
+    <select id="selectSysStplatHistByLang" parameterType="sysStplat" resultType="sysStplatHistExtends">
+		SELECT /* [display.policy.xml][selectSysStplatHistByLang][약관 history 영문 조회][muba] */
+             CASE
+             	WHEN B.STPLAT_DSCR IS NULL
+             	THEN
+             		A.STPLAT_DSCR
+             	ELSE
+             		B.STPLAT_DSCR
+             	END AS STPLAT_DSCR
+            ,CASE
+            	WHEN B.STPLAT_CONT IS NULL
+            	THEN
+            		A.STPLAT_CONT
+            	ELSE
+            		B.STPLAT_CONT
+            	END AS STPLAT_CONT
+            ,CASE
+            	WHEN B.HIST_DT IS NULL
+            	THEN
+            		A.HIST_DT
+            	ELSE
+            		B.HIST_DT
+            	END AS HIST_DT
+		 FROM SYS_STPLAT_HIST A LEFT OUTER JOIN SYS_STPLAT_LANG_HIST B ON A.STPLAT_CD = B.STPLAT_CD AND B.LANG_CD = 'ENG'
+		 WHERE 1 = 1
+	   	 AND A.STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+	   	 ORDER BY HIST_DT DESC
+    </select>
+
+	<select id="selectSysStplatTitleByLang" parameterType="String" resultType="String">
+		SELECT /* [display.policy.xml][selectSysStplatTitleByLang][약관 제목 영문 조회][muba] */
+			CD_NM
+		FROM MV_SYS_CD
+		WHERE 1 = 1 AND LANG_CD = 'ENG'
+			AND CD = #{stplatCd,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

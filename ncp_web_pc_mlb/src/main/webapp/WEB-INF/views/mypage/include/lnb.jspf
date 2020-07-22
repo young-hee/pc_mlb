@@ -1,0 +1,150 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>
+<script>
+$(document).ready(function(){
+	var mypageUrl = document.location.pathname;
+	var mypageUrlParam = document.location.href.substring((document.location.href).indexOf("?"));
+	console.log(mypageUrl);
+	console.log(mypageUrlParam);
+	
+	var patt1 = /^\/mypage\/order\/\w+\/view/;
+	var f_patt1 = patt1.exec(mypageUrl);
+	
+	console.log(/^\/mypage\/order\/\w+\/view/.exec(mypageUrl));
+	
+	$("#myNavi1").find("li").removeClass("on");
+	$("#myNavi2").find("li").removeClass("on");
+	$("#myNavi3").find("li").removeClass("on");
+	$("#myNavi4").find("li").removeClass("on");
+	
+	if(mypageUrl.indexOf("/mypage/claim/list") > -1 || "Y" == "${clmYn}"){
+		$("#myNavi1").find("li").eq(1).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/order/list") > -1 || f_patt1){
+		$("#myNavi1").find("li").eq(0).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/order/receipt/list") > -1){
+		$("#myNavi1").find("li").eq(2).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/wishlist/list") > -1){
+		$("#myNavi2").find("li").eq(0).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/todaygood/list") > -1){
+		$("#myNavi2").find("li").eq(1).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/goods/reviewView") > -1){
+		$("#myNavi2").find("li").eq(2).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/inquiry/") > -1){
+		$("#myNavi2").find("li").eq(3).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/benefit/listMileage") > -1){
+		$("#myNavi3").find("li").eq(0).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/benefit/listPoint") > -1){
+		$("#myNavi3").find("li").eq(1).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/benefit/listCoupon") > -1){
+		$("#myNavi3").find("li").eq(2).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/benefit/membershipRateInfo") > -1){
+		$("#myNavi3").find("li").eq(3).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/member/deliveryLocationList") > -1){
+		$("#myNavi4").find("li").eq(0).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/member/modifyMemberView") > -1 || (mypageUrl+mypageUrlParam).indexOf("/mypage/member/checkPasswordView?targetUrl=modifyMemberView") > -1){
+		$("#myNavi4").find("li").eq(1).addClass("on");
+	}else if(mypageUrl.indexOf("/mypage/member/secessionMemberView") > -1 || (mypageUrl+mypageUrlParam).indexOf("/mypage/member/checkPasswordView?targetUrl=secessionMemberView") > -1){
+		$("#myNavi4").find("li").eq(2).addClass("on");
+	}
+})
+</script>
+
+<sec:authorize access="isAuthenticated()">
+    <nav id="lnb" class="lnb-nav">
+        <strong><img src="${_resourceURL}static/images/my/mypage_titImg.png" alt="MYPAGE"></strong>
+    	<sec:authorize access="hasRole('ROLE_GUEST')">
+        <p><b><spring:message code='mypage.main.cust.txt3' text="고객" /></b><spring:message code='mypage.main.cust.txt1' text="님" /><br/><spring:message code='mypage.main.cust.txt2' text="반갑습니다." /></p>
+    	</sec:authorize>
+    	<sec:authorize access="hasRole('ROLE_USER')">
+        <p><b>${_user.mbr.mbrNm }</b><spring:message code='mypage.main.cust.txt1' text="님" /><br/><spring:message code='mypage.main.cust.txt2' text="반갑습니다." /></p>
+    	</sec:authorize>
+        <hr class="hr-ddd" />
+    	
+    	<sec:authorize access="hasRole('ROLE_GUEST')">
+    	<ul class="nav-mnlist">
+    		<li id="myNavi1">
+    			<a href="javascript:;"><span><spring:message code='mypage.order.ttl' text="주문정보" /></span></a>
+    			<ul>
+    				<li>
+    					<a href="/mypage/order/list"><span><spring:message code='mypage.order.list.ttl' text="주문/배송조회" /></span></a>
+    				</li>
+    				<li>
+    					<a href="/mypage/claim/list"><span><spring:message code='mypage.order.claimlist.ttl' text="취소/교환/반품" /></span></a>
+    				</li>
+    			</ul>
+    			
+    		</li>
+    	</ul>
+    	</sec:authorize>
+    	
+    	<sec:authorize access="hasRole('ROLE_USER')">
+    	<ul class="nav-mnlist">
+    		<li id="myNavi1">
+    			<a href="javascript:;"><span><spring:message code='mypage.order.ttl' text="주문정보" /></span></a>
+    			<ul>
+    				<li>
+    					<a href="/mypage/order/list"><span><spring:message code='mypage.order.list.ttl' text="주문/배송조회" /></span></a>
+    				</li>
+    				<li>
+    					<a href="/mypage/claim/list"><span><spring:message code='mypage.order.claimlist.ttl' text="취소/교환/반품" /></span></a>
+    				</li>
+    				<%-- <li>
+    					<a href="javascript:;"><span><spring:message code='mypage.order.offlinelist.ttl' text="매장구매내역" /></span></a>
+    				</li> --%>
+    				<li>
+    					<a href="/mypage/order/receipt/list"><span><spring:message code='mypage.order.receipt.lbl.title' text="증빙서류조회" /></span></a>
+    				</li>
+    			</ul>
+    		</li>
+    		<li id="myNavi2">
+    			<a href="javascript:;"><span><spring:message code='mypage.submain.activeinfo.ttl' text="활동정보" /></span></a>
+    			<ul>
+    				<li>
+    					<a href="<c:url value='/mypage/wishlist/list' />"><span><spring:message code='mypage.wishlist.ttl1' text="위시리스트" /></span></a>
+    				</li>
+    				<li>
+    					<a href="<c:url value='/mypage/todaygood/list' />"><span><spring:message code='mypage.todaygood.ttl1' text="최근본상품" /></span></a>
+    				</li>
+    				<li>
+    					<a href="<c:url value='/mypage/goods/reviewView' />"><span><spring:message code='mypage.goods.review.page.ttl1' text="상품리뷰" /></span></a>
+    				</li>
+    				<li>
+    					<a href="/mypage/inquiry/list"><span><spring:message code='mypage.order.list.btn.inquiry2' text="1:1문의" /></span></a>
+    				</li>
+    			</ul>
+    		</li>
+    		<li id="myNavi3">
+    			<a href="javascript:;"><span><spring:message code='mypage.submain.benefitinfo.ttl' text="혜택정보" /></span></a>
+    			<ul>
+    				<li>
+    					<a href="<c:url value='/mypage/benefit/listMileage' />"><span><spring:message code='mypage.mileage.ttl1' text="마일리지" /></span></a>
+    				</li>
+    				<li>
+    					<a href="<c:url value='/mypage/benefit/listPoint' />"><span><spring:message code='mypage.point.ttl1' text="포인트" /></span></a>
+    				</li>
+    				<li>
+    					<a href="<c:url value='/mypage/benefit/listCoupon' />"><span><spring:message code='mypage.coupon.ttl1' text="쿠폰함" /></span></a>
+    				</li>
+    				<li>
+    					<a href="<c:url value='/mypage/benefit/membershipRateInfo' />"><span><spring:message code='mypage.membership.info.ttl3' text="회원혜택안내" /></span></a>
+    				</li>
+    			</ul>
+    		</li>
+    		<li id="myNavi4">
+    			<a href="javascript:;"><span><spring:message code='mypage.member.ttl' text="회원정보" /></span></a>
+    			<ul>
+    				<li>
+    					<a href="/mypage/member/deliveryLocationList"><span><spring:message code='mypage.member.delivery.ttl1' text="배송지관리" /></span></a>
+    				</li>
+    				<li>
+    					<a href="/mypage/member/modifyMemberView"><span><spring:message code='mypage.member.modify.ttl' text="회원정보 수정" /></span></a>
+    				</li>
+    				<li>
+    					<a href="/mypage/member/secessionMemberView"><span><spring:message code='mypage.member.secession.ttl' text="회원탈퇴" /></span></a>
+    				</li>
+    			</ul>
+    		</li>
+    	</ul>
+    	</sec:authorize>
+    </nav>
+</sec:authorize>

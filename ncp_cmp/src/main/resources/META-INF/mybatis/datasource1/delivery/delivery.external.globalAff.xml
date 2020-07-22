@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.delivery.external.globalAff">
+
+
+	<select id="selectLgsDlivyDrctGodInfoList" parameterType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO" resultType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO">
+	  SELECT lddg.ord_no
+	       , lddg.ord_god_turn
+	       , lddg.dlv_pcupsp_turn
+	       , lddg.dlv_turn
+	       , lddg.dlivy_drct_god_no
+	       , i.clm_no
+           , i.clm_wrhs_god_turn
+           , lddg.gft_yn
+	       , COUNT (i.qty_turn) as qty
+	    FROM lgs_dlivy_drct_god lddg
+	         JOIN inf_ord_god_erp_dstb i
+	             ON i.ord_no = lddg.ord_no AND i.ord_god_turn = lddg.ord_god_turn
+	   WHERE 1 = 1 AND i.clm_no = #{clmNo}
+	GROUP BY lddg.ord_no
+	       , lddg.ord_god_turn
+	       , lddg.dlv_pcupsp_turn
+	       , lddg.dlv_turn
+	       , lddg.dlivy_drct_god_no
+	       , i.clm_no
+           , i.clm_wrhs_god_turn
+           , lddg.gft_yn
+	</select>
+	
+	<update id="updateRtrvlDrctGftForTmall" parameterType="clm">
+		UPDATE lgs_rtrvl_drct_god lr /* 티몰 사은품 클레임 완료시 회수완료로 강제 상태변경*/
+		   SET lr.udt_dt = SYSDATE
+		     , lr.udter_id = 'TMALL'
+		     , lr.rtrvl_stat_cd = 'RTRVL_COMPT'
+		 WHERE     1 = 1
+		       AND lr.clm_no = #{clmNo}
+		       AND lr.gft_yn = 'Y'
+		       AND lr.rtrvl_stat_cd != 'RTRVL_COMPT'	
+		       <if test='clmNo == null or clmNo == ""'>
+		       	AND 1=2 /*클레임 번호가 없다면 아무것도 업데이트 하지 않는다*/
+		       </if>	 
+	</update>
+
+</mapper>

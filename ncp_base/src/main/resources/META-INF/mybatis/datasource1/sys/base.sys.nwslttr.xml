@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysNwslttr" parameterType="sysNwslttr" resultType="sysNwslttr">
+		SELECT /* com.plgrim.ncp.base.selectSysNwslttr		Generator(Generator)	2018-11-08 */
+			   MALL_ID
+			 , APPLCNT_EMAIL
+			 , REQST_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_NWSLTTR
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND APPLCNT_EMAIL = #{applcntEmail,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysNwslttr" parameterType="sysNwslttr">
+		UPDATE /* com.plgrim.ncp.base.updateSysNwslttr		Generator(Generator)	2018-11-08 */
+		SYS_NWSLTTR SET
+			   REQST_DT = #{reqstDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND APPLCNT_EMAIL = #{applcntEmail,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysNwslttr" parameterType="sysNwslttr">
+		INSERT /* com.plgrim.ncp.base.insertSysNwslttr		Generator(Generator)	2018-11-08 */
+		INTO   SYS_NWSLTTR (
+			   MALL_ID
+			 , APPLCNT_EMAIL
+			 , REQST_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{applcntEmail,jdbcType=VARCHAR}
+			 , #{reqstDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysNwslttr" parameterType="sysNwslttr">
+		DELETE /* com.plgrim.ncp.base.deleteSysNwslttr		Generator(Generator)	2018-11-08 */
+		  FROM SYS_NWSLTTR
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND APPLCNT_EMAIL = #{applcntEmail,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

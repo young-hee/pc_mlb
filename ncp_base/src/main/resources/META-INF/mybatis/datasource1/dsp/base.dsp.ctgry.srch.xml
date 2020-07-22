@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCtgrySrch" parameterType="dspCtgrySrch" resultType="dspCtgrySrch">
+		SELECT /* com.plgrim.ncp.base.selectDspCtgrySrch		Generator(Generator)	2018-05-23 */
+			   DSP_CTGRY_NO
+			 , DSP_CTGRY_SRCH_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CTGRY_SRCH
+		 WHERE 1 = 1
+	   	   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspCtgrySrch" parameterType="dspCtgrySrch">
+		UPDATE /* com.plgrim.ncp.base.updateDspCtgrySrch		Generator(Generator)	2018-05-23 */
+		DSP_CTGRY_SRCH SET
+			   DSP_CTGRY_SRCH_NM = #{dspCtgrySrchNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspCtgrySrch" parameterType="dspCtgrySrch">
+		INSERT /* com.plgrim.ncp.base.insertDspCtgrySrch		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CTGRY_SRCH (
+			   DSP_CTGRY_NO
+			 , DSP_CTGRY_SRCH_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{dspCtgrySrchNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCtgrySrch" parameterType="dspCtgrySrch">
+		DELETE /* com.plgrim.ncp.base.deleteDspCtgrySrch		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CTGRY_SRCH
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

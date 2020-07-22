@@ -1,0 +1,1891 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspCtgryFrResult" id="dspCtgryFrResultMap">
+	   <result property="dspCtgry.dspCtgryNo" column="DSP_CTGRY_NO" />                  
+	   <result property="dspCtgry.upperDspCtgryNo" column="UPPER_DSP_CTGRY_NO" />      
+	   <result property="dspCtgry.dspCtgryNm" column="DSP_CTGRY_NM" />                 
+	   <result property="dspCtgry.ctgryTpCd" column="CTGRY_TP_CD" />                   
+	   <result property="dspCtgry.godDspUnitCd" column="GOD_DSP_UNIT_CD" />          
+	   <result property="dspCtgry.ctgryDpthCd" column="CTGRY_DPTH_CD" />     
+	   <result property="dspCtgry.dspGodSortStdrCd" column="DSP_GOD_SORT_STDR_CD"/>        
+	   <result property="dspCtgry.leafCtgryYn" column="LEAF_CTGRY_YN" />         
+	   <result property="dspCtgry.dspYn" column="DCTGRY_DSP_YN" />                 
+	   <result property="dspCtgry.spcifyUrlDspYn" column="SPCIFY_URL_DSP_YN" />
+	   <result property="dspCtgry.ctgryDivLneYn" column="CTGRY_DIV_LNE_YN" />   
+	   <result property="dspCtgry.ctgryDivLneCssCd" column="CTGRY_DIV_LNE_CSS_CD" />
+	   <result property="dspCtgry.deleteYn" column="DELETE_YN"/>          
+	   <result property="dspCtgry.ctgryOutptTpCd" column="CTGRY_OUTPT_TP_CD" />   
+	   <result property="dspCtgry.outptSectCd" column="OUTPT_SECT_CD" />    
+	   <result property="dspCtgry.outptLinkUrl" column="OUTPT_LINK_URL" />  
+	   <result property="dspCtgry.sortSeq" column="DCTGRY_SORT_SEQ" />         
+	   <result property="dspCtgry.aplMallId" column="APL_MALL_ID" />    
+	   <result property="dspCtgry.dspBrndId" column="DSP_BRND_ID" />  
+	   <result property="dspCtgry.expsrLvlCd" column="EXPSR_LVL_CD"/>          
+	   <result property="dspCtgry.rprstImgFileNm" column="RPRST_IMG_FILE_NM" />         
+	   <result property="dspCtgry.rprstImgFileUrl" column="RPRST_IMG_FILE_URL" />       
+	   <result property="dspCtgry.rprstImgAltrtvCont" column="RPRST_IMG_ALTRTV_CONT" /> 
+	   <result property="dspCtgry.bcrnStyleClassId" column="BCRN_STYLE_CLASS_ID" />
+	   <result property="dspCtgry.pcMobileTmplatIndUseYn" column="PC_MOBILE_TMPLAT_IND_USE_YN" /> 
+	   <result property="dspCtgry.pcTmplatSn" column="PC_TMPLAT_SN" /> 
+	   <result property="dspCtgry.mobileTmplatSn" column="MOBILE_TMPLAT_SN" /> 
+	   <result property="dspCtgry.regtrId" column="REGTR_ID" />                         
+	   <result property="dspCtgry.regDt" column="REG_DT" />                             
+	   <result property="dspCtgry.udterId" column="UDTER_ID" />                         
+	   <result property="dspCtgry.udtDt" column="UDT_DT" />   
+	   <result property="dspCtgryLang.dspCtgryNo" column="DCLANG_DSP_CTGRY_NO" />
+	   <result property="dspCtgryLang.langCd" column="LANG_CD"/>
+	   <result property="dspCtgryLang.dspCtgryNm" column="DCLANG_DSP_CTGRY_NM"/>
+	   <result property="dspCtgryLang.rprstImgFileUrl" column="DCLANG_RPRST_IMG_FILE_URL"/>
+	   <result property="dspCtgryLang.rprstImgAltrtvCont" column="DCLANG_RPRST_IMG_ALTRTV_CONT"/>
+	   <result property="dspCtgryLang.rprstImgFileNm" column="DCLANG_RPRST_IMG_FILE_NM"/>
+	</resultMap> 
+	
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspCommonGodFrResult" id="dspCommonGodFrResultMap">
+        <result property="god.godNo" column="GOD_NO" />
+		<result property="god.erpGodNo" column="ERP_GOD_NO" />
+		<result property="god.dsgnGrpNo" column="DSGN_GRP_NO" />
+		<result property="god.godNm" column="GOD_NM" />
+		<result property="god.mobileGodNm" column="MOBILE_GOD_NM" />
+		<result property="god.tagNm" column="TAG_NM" />
+		<result property="god.colorTagNm" column="COLOR_TAG_NM" />
+		<result property="god.themaTagNm" column="THEMA_TAG_NM" />
+		<result property="god.textIconCont" column="TEXT_ICON_CONT" />
+		<result property="god.godAprvSectCd" column="GOD_APRV_SECT_CD" />
+		<result property="god.godSaleSectCd" column="GOD_SALE_SECT_CD" />
+		<result property="god.saleBegDate" column="SALE_BEG_DATE" />
+		<result property="god.saleEndDate" column="SALE_END_DATE" />
+		<result property="god.colorNm" column="COLOR_NM" />
+		<result property="god.colorCd" column="COLOR_CD" />
+		<result property="god.clorChipImgUrl" column="CLOR_CHIP_IMG_URL" />
+		<result property="god.godTpCd" column="GOD_TP_CD" />
+		<result property="god.partmalSectCd" column="PARTMAL_SECT_CD" />
+		<result property="god.brndId" column="GOD_BRND_ID" />
+		<result property="god.brndGrpId" column="GOD_BRND_GRP_ID" />
+		<result property="god.stdCtgryNo" column="STD_CTGRY_NO" />
+		<result property="god.tdfSect" column="TDF_SECT" />
+		<result property="god.sesonGrpCd" column="SESON_GRP_CD" />
+		<result property="god.sesonCd" column="SESON_CD" />
+		<result property="god.prdlstCd" column="PRDLST_CD" />	
+		<result property="god.otltYn" column="OTLT_YN" />
+		<result property="god.regtrId" column="REGTR_ID" />
+		<result property="sysBrnd.brndId" column="BRND_ID" />
+		<result property="sysBrnd.upperBrndId" column="UPPER_BRND_ID" />
+		<result property="sysBrnd.brndNm" column="BRND_NM" />
+		<result property="dspGodPrc.rtlPrc" column="RTL_PRC" />
+		<result property="dspGodPrc.godDcRt" column="DGPRC_GOD_DC_RT" />
+		<result property="dspGodPrc.lastSalePrc" column="DGPRC_LAST_SALE_PRC" />
+		<result property="dspGodPrc.cpnDcRt" column="DGPRC_CPN_DC_RT" />
+		<result property="godLangbyGodNm.godNm" column="GLGNM_GOD_NM" />
+		<result property="godLangbyGodNm.mobileGodNm" column="GLGNM_MOBILE_GOD_NM" />
+		<result property="godLangbyGodNm.tagNm" column="GLGNM_TAG_NM" />
+		<result property="godLangbyGodNm.colorTagNm" column="GLGNM_COLOR_TAG_NM" />
+		<result property="godLangbyGodNm.themaTagNm" column="GLGNM_THEMA_TAG_NM" />
+		<result property="godLangbyGodNm.colorNm" column="GLGNM_COLOR_NM" />
+		<result property="godTagResve.tagNm" column="GR_TAG_NM" />
+		<result property="godLangbyTagResve.tagNm" column="GLTR_TAG_NM" />
+		
+		<result property="sttRank" column="STT_RANK" />
+		<result property="godas" column="GODAS" />
+		<result property="mnfcturDate" column="MNFCTUR_DATE" />
+		<result property="iconNm" column="ICON_NM" />
+		
+        <result property="imgFrontUrl" column="IMG_FRONT_URL" />
+        <result property="imgBackUrl" column="IMG_BACK_URL" />
+        <result property="image" column="IMAGE" />
+	</resultMap>
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspCtgryBrndFrResult" id="dspBrndFrResultMap">
+		<result property="dspCtgryNo" column="DSP_CTGRY_NO"/>
+		<result property="brndId" column="BRND_ID"/>
+		<result property="brndNm" column="BRND_NM"/>
+		<result property="pcBrndImgFileNm" column="PC_BRND_IMG_FILE_NM"/>
+        <result property="pcBrndImgFileUrl" column="PC_BRND_IMG_FILE_URL"/>
+        <result property="pcBrndImgAltrtvCont" column="PC_BRND_IMG_ALTRTV_CONT"/>
+        <result property="mobileBrndImgFileNm" column="MOBILE_BRND_IMG_FILE_NM"/>
+        <result property="mobileBrndImgFileUrl" column="MOBILE_BRND_IMG_FILE_URL"/>
+        <result property="mobileBrndImgAltrtvCont" column="MOBILE_BRND_IMG_ALTRTV_CONT"/>
+        <result property="pcixeBrndImgFileNm" column="PCIXE_BRND_IMG_FILE_NM"/>
+        <result property="pcixeBrndImgFileUrl" column="PCIXE_BRND_IMG_FILE_URL"/>
+        <result property="pcixeBrndImgAltrtvCont" column="PCIXE_BRND_IMG_ALTRTV_CONT"/>
+        <result property="mbixeBrndImgFileNm" column="MBIXE_BRND_IMG_FILE_NM"/>
+        <result property="mbixeBrndImgFileUrl" column="MBIXE_BRND_IMG_FILE_URL"/>
+        <result property="mbixeBrndImgAltrtvCont" column="MBIXE_BRND_IMG_ALTRTV_CONT"/>
+		<result property="myBrnd" column="MY_BRND"/>
+		<result property="odrIdx" column="ODR_IDX"/>
+		<result property="ctgryOutptTpCd" column="CTGRY_OUTPT_TP_CD" />         		<!-- 카테고리 출력 유형 코드 -->
+		<result property="outptSectCd" column="OUTPT_SECT_CD" />                		<!-- 출력 구분 코드 -->
+		<result property="outptLinkUrl" column="OUTPT_LINK_URL" />              		<!-- 출력 링크 URL -->
+	</resultMap>
+	
+	
+	
+	<select id="selectBrandAllList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspBrndFrResultMap" >
+		select  /* [display.fr.ctgry.xml][selectBrandAllList][전시대카테고리 브랜드 목록][Dian] */   
+		     ctg.dsp_ctgry_no
+		    ,brnd.brnd_id 
+			<choose>
+			<when test="lang != 'KOR' ">
+			/* 전시카테고리명 다국어변환 */
+		    ,ctgLang.dsp_ctgry_nm as brnd_nm
+			</when>
+			<otherwise>
+		    ,ctg.dsp_ctgry_nm as brnd_nm
+			</otherwise>
+			</choose>
+		from dsp_ctgry ctg
+		join sys_brnd brnd
+		on (ctg.dsp_brnd_id = brnd.brnd_id)
+		<if test="lang != 'KOR' ">
+		/* 전시카테고리명 다국어변환 */
+		left outer join dsp_ctgry_lang ctgLang ON ctg.dsp_ctgry_no = ctgLang.dsp_ctgry_no AND ctgLang.lang_cd = #{lang, jdbcType=VARCHAR}
+		</if>
+        where ctg.apl_mall_id = #{mallId, jdbcType=VARCHAR}
+		and ctg.delete_yn = 'N'
+		and ctg.spcify_url_dsp_yn = 'N'
+		and ctg.dsp_yn = 'Y'
+        and ctg.dsp_brnd_id in (
+            SELECT t4.brnd_id
+            FROM dsp_ctgry_cnnc_god t2 
+		    JOIN god t3 ON t3.god_no = t2.god_no 
+		    JOIN sys_brnd t4 ON t3.BRND_GRP_ID = t4.BRND_ID
+			JOIN dsp_ctgry ctg ON (t2.dsp_ctgry_no = ctg.dsp_ctgry_no and ctg.leaf_ctgry_yn = 'Y')
+	 		JOIN DSP_GOD_PRC t6
+	          ON (T2.GOD_NO = t6.GOD_NO
+	          AND t6.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	          AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}	
+	          <if test='spcPrmTp != null and spcPrmTp != ""'>
+	          AND t6.PRC_SECT_CD = CASE
+                   WHEN (SELECT 1
+                           FROM DSP_GOD_PRC A
+                          WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND A.GOD_NO = T6.GOD_NO AND ROWNUM = 1)
+                           IS NOT NULL
+                   THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END		          
+	          </if>
+	          <if test='spcPrmTp == null or spcPrmTp == ""'>
+			  AND t6.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}	          
+	          </if>
+	           )
+		    WHERE 1 = 1 
+	        AND t3.god_aprv_sect_cd = 'APRV_COMPT' 
+	        AND t3.god_sale_sect_cd IN ('SALE_PROGRS', 'SLDOUT') 
+	        AND t3.dsp_yn = 'Y' 
+	        AND t3.spcify_url_dsp_yn = 'N' 
+		 	<if test='empYn == "N"'>
+			AND t3.EMP_ONLY_YN = 'N'
+		 	</if>
+		 	<if test="special == 'OUTLET'">
+			AND t3.OTLT_YN = 'Y'
+			<!-- AND t3.RTL_PRC != t3.CSMR_PRC --> 
+		 	</if>
+		 	<if test="special == 'SALE'">
+		 	<![CDATA[
+			AND t6.LAST_SALE_PRC < t6.RTL_PRC
+			]]>
+		 	</if>
+		    AND t3.BRND_GRP_ID IN
+	        	(
+	        	SELECT
+				    brnd_id
+				FROM (
+				    SELECT
+				        SB.brnd_id, SB.UPPER_BRND_ID
+				    FROM SYS_BRND SB
+				    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+				    AND SB.USE_YN = 'Y'
+				    AND SB.BRND_GRP_YN = 'Y'
+				    START WITH SB.BRND_ID = #{brndId,jdbcType=VARCHAR}
+				    ORDER SIBLINGS BY SB.SORT_SEQ
+				) BB
+				where bb.UPPER_BRND_ID is not null
+	        	)
+	        AND t2.dsp_yn = 'Y'
+			<if test="dspCtgryNo != null and dspCtgryNo != ''">
+	        AND t2.dsp_ctgry_no like  #{dspCtgryNo,jdbcType=VARCHAR}||'%'
+		    </if>
+        )
+		order by ctg.dsp_ctgry_nm, ctg.sort_seq
+	</select>
+	
+	<select id="selectBrandAllListCount" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="java.util.LinkedHashMap" >
+		select  /* [display.fr.ctgry.xml][selectBrandAllListCount][전시대카테고리별 연결 브랜드 수][Dian] */                  
+            substr(dd.dsp_ctgry_no,1,6) as dsp_ctgry_no, count(distinct dd.brnd_id) as brnd_cnt
+        from 
+        dsp_ctgry dc join (
+			SELECT t2.dsp_ctgry_no, t4.brnd_id
+            FROM dsp_ctgry_cnnc_god t2 
+		    JOIN god t3 ON t3.god_no = t2.god_no 
+		    JOIN sys_brnd t4 ON t3.BRND_GRP_ID = t4.BRND_ID
+	 		JOIN DSP_GOD_PRC t6
+	          ON (T2.GOD_NO = t6.GOD_NO
+	          AND t6.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	          AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}	
+	          <if test='spcPrmTp != null and spcPrmTp != ""'>
+	          AND t6.PRC_SECT_CD = CASE
+                   WHEN (SELECT 1
+                           FROM DSP_GOD_PRC A
+                          WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND A.GOD_NO = T6.GOD_NO AND ROWNUM = 1)
+                           IS NOT NULL
+                   THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END		          
+	          </if>
+	          <if test='spcPrmTp == null or spcPrmTp == ""'>
+			  AND t6.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}	          
+	          </if>
+	           )
+		    WHERE 1 = 1 
+	        AND t3.god_aprv_sect_cd = 'APRV_COMPT' 
+	        AND t3.god_sale_sect_cd IN ('SALE_PROGRS', 'SLDOUT') 
+	        AND t3.dsp_yn = 'Y' 
+	        AND t3.spcify_url_dsp_yn = 'N' 
+		 	<if test='empYn == "N"'>
+			AND t3.EMP_ONLY_YN = 'N'
+		 	</if>
+		 	<if test="special == 'OUTLET'">
+			AND t3.OTLT_YN = 'Y'
+			<!-- AND t3.RTL_PRC != t3.CSMR_PRC --> 
+		 	</if>
+		 	<if test="special == 'SALE'">
+		 	<![CDATA[
+			AND t6.LAST_SALE_PRC < t6.RTL_PRC
+			]]>
+		 	</if>
+		    AND t3.BRND_GRP_ID IN
+	        	(
+	        	SELECT
+				    brnd_id
+				FROM (
+				    SELECT
+				        SB.brnd_id, SB.UPPER_BRND_ID
+				    FROM SYS_BRND SB
+				    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+				    AND SB.USE_YN = 'Y'
+				    AND SB.BRND_GRP_YN = 'Y'
+				    START WITH SB.BRND_ID = #{brndId,jdbcType=VARCHAR}
+				    ORDER SIBLINGS BY SB.SORT_SEQ
+				) BB
+				where bb.UPPER_BRND_ID is not null
+	        	)
+	        AND t2.dsp_yn = 'Y' 
+	    ) dd 
+	    on (dc.dsp_brnd_id = dd.brnd_id)
+        group by substr(dd.dsp_ctgry_no,1,6)
+	</select>
+	
+	<!-- 2017-10-20 전시 영역 구조 변경으로 인해 기존에 사용하지 않던 query 삭제를 위한 임시 주석 처리 -->
+	<!--<select id="selectBrandLnbCtgryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspCtgryFrResultMap" >
+		/* [display.fr.ctgry.xml][selectBrandLnbCtgryList][브랜드샵 LNB 카테고리 목록조회][Dian] */
+		<if test="dpthsByExprTp != null and dpthsByExprTp.length > 0">
+		SELECT CC.*	
+		FROM (
+		</if>
+			SELECT    
+				BB.*
+			FROM (
+				select 
+					 a.dsp_ctgry_no
+				    ,a.UPPER_DSP_CTGRY_NO
+				    ,a.DSP_CTGRY_NM
+				    ,a.CTGRY_TP_CD
+				    ,a.GOD_DSP_UNIT_CD
+				    ,a.CTGRY_DPTH_CD
+				    ,a.DSP_GOD_SORT_STDR_CD
+				    ,a.LEAF_CTGRY_YN
+				    ,a.DSP_YN
+				    ,a.SPCIFY_URL_DSP_YN
+				    ,a.CTGRY_DIV_LNE_YN
+				    ,a.CTGRY_DIV_LNE_CSS_CD
+				    ,a.DELETE_YN
+				    ,a.CTGRY_OUTPT_TP_CD
+				    ,a.OUTPT_SECT_CD
+				    ,a.OUTPT_LINK_URL
+				    ,a.SORT_SEQ
+				    ,a.APL_MALL_ID
+				    ,a.DSP_BRND_ID
+				    ,a.EXPSR_LVL_CD
+				    ,a.RPRST_IMG_FILE_NM
+				    ,a.RPRST_IMG_FILE_URL
+				    ,a.RPRST_IMG_ALTRTV_CONT
+				    ,a.BCRN_STYLE_CLASS_ID
+				    ,a.PC_MOBILE_TMPLAT_IND_USE_YN
+				    ,a.PC_TMPLAT_SN
+				    ,a.MOBILE_TMPLAT_SN
+				    ,a.REGTR_ID
+				    ,a.REG_DT
+				    ,a.UDTER_ID
+				    ,a.UDT_DT
+				    ,CLANG.DSP_CTGRY_NO AS DCLANG_DSP_CTGRY_NO
+				    ,CLANG.LANG_CD
+				    ,CLANG.DSP_CTGRY_NM AS DCLANG_DSP_CTGRY_NM
+				    ,CLANG.RPRST_IMG_FILE_NM AS DCLANG_RPRST_IMG_FILE_NM
+				    ,CLANG.RPRST_IMG_FILE_URL AS DCLANG_RPRST_IMG_FILE_URL
+				    ,CLANG.RPRST_IMG_ALTRTV_CONT AS DCLANG_RPRST_IMG_ALTRTV_CONT
+				from dsp_ctgry a
+				LEFT OUTER JOIN DSP_CTGRY_LANG CLANG ON (a.DSP_CTGRY_NO = CLANG.DSP_CTGRY_NO AND CLANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+				where a.dsp_ctgry_no in (
+				    select ctg.dsp_ctgry_no
+				    from dsp_ctgry ctg
+				    connect by prior ctg.upper_dsp_ctgry_no = ctg.dsp_ctgry_no
+				    start with ctg.dsp_ctgry_no in (
+						SELECT 
+							t1.dsp_ctgry_no 
+						FROM dsp_ctgry t1 
+						WHERE t1.spcify_url_dsp_yn = 'N' 
+						AND t1.apl_mall_id = #{mallId, jdbcType=VARCHAR}
+						AND t1.delete_yn = 'N' 
+						AND t1.dsp_yn = 'Y'
+						AND t1.leaf_ctgry_yn = 'Y'
+						AND t1.dsp_ctgry_no  in ( 
+						    SELECT t2.dsp_ctgry_no 
+						    FROM dsp_ctgry_cnnc_god t2
+						    /* 20160418_김병철_sr#17763 [등록일 기준 14일 이내 &ndash;&gt; 최초승인일 기준 14일 이내] */
+						    JOIN	(	SELECT	A.*,
+						    					CASE
+								    			WHEN A.PARTMAL_SECT_CD = 'MCOM'	THEN	(	SELECT	MAX	((	SELECT	/*+ index(t23 ix1_god_hist) */ t23.UDT_DT AS UDT_DT
+						                                              								FROM	GOD_HIST t23
+						                                              								WHERE 	t23.GOD_APRV_SECT_CD	= 'APRV_COMPT'
+						                                              								AND		t23.GOD_NO 				= t22.GOD_NO
+						                                              								AND 	rownum 					= 1
+			                                     													)) REG_DT
+				                              												FROM	GOD t22
+				                              												WHERE 	t22.DSGN_GRP_NO = A.DSGN_GRP_NO
+									        											)
+								        										
+										    	ELSE	(	SELECT	/*+ index(t23 ix1_god_hist) */ t25.UDT_DT AS UDT_DT
+										          			FROM 	GOD_HIST t25
+										        			WHERE 	A.GOD_NO = t25.GOD_NO
+										          			AND 	t25.GOD_APRV_SECT_CD = 'APRV_COMPT'
+										          			AND rownum=1    
+										          		)
+												END AS FST_APRV_COMPT_DT
+										FROM	GOD A
+						    
+						    		) t3
+						    /* 20160418_김병철_sr#17763 End */			
+						    ON t3.god_no = t2.god_no 
+						    JOIN sys_brnd t4 ON t3.BRND_GRP_ID = t4.BRND_ID
+					 		JOIN DSP_GOD_PRC t6
+					          ON (T2.GOD_NO = t6.GOD_NO
+					          AND t6.MALL_ID = #{mallId, jdbcType=VARCHAR}
+					          AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}	
+					          <if test='spcPrmTp != null and spcPrmTp != ""'>
+					          AND t6.PRC_SECT_CD = CASE
+					                               WHEN (SELECT 1
+					                                       FROM DSP_GOD_PRC A
+					                                      WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND A.GOD_NO = T6.GOD_NO AND ROWNUM = 1)
+					                                       IS NOT NULL
+					                               THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END		          
+					          </if>
+					          <if test='spcPrmTp == null or spcPrmTp == ""'>
+							  AND t6.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}	          
+					          </if>
+					           )
+						    WHERE 1 = 1 
+						        AND t3.god_aprv_sect_cd = 'APRV_COMPT' 
+						        AND t3.god_sale_sect_cd IN ('SALE_PROGRS', 'SLDOUT') 
+						        AND t3.dsp_yn = 'Y' 
+						        AND t3.spcify_url_dsp_yn = 'N' 
+							 	<if test='empYn == "N"'>
+								AND t3.EMP_ONLY_YN = 'N'
+							 	</if>
+							 	<if test="special == 'OUTLET'">
+								AND t3.OTLT_YN = 'Y'
+								&lt;!&ndash; AND t3.RTL_PRC != t3.CSMR_PRC &ndash;&gt;
+							 	</if>
+							 	<if test="special == 'SALE'">
+							 	<![CDATA[
+								AND t6.LAST_SALE_PRC < t6.RTL_PRC
+								]]>
+							 	</if>
+							    <if test="brandIds != null">
+								AND t3.BRND_GRP_ID IN
+								<foreach item="brndId" collection="brandIds" open="(" separator="," close=")">
+									#{brndId,jdbcType=VARCHAR}
+								</foreach>
+						        </if>
+						        <if test="brandIds == null and dspBrndId != null and dspBrndId != ''">
+						        AND t3.BRND_GRP_ID IN
+						        	(
+						        	SELECT
+									    brnd_id
+									FROM (
+									    SELECT
+									        SB.brnd_id, SB.UPPER_BRND_ID
+									    FROM SYS_BRND SB
+									    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+									    AND SB.USE_YN = 'Y'
+									    AND SB.BRND_GRP_YN = 'Y'
+									    START WITH SB.BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+									    ORDER SIBLINGS BY SB.SORT_SEQ
+									) BB
+									where bb.UPPER_BRND_ID is not null
+						        	)
+						        </if>
+						        &lt;!&ndash; NEW는 최근2주 등록된 상품 중 판매금액 순 &ndash;&gt;
+								<if test="useNew != null">
+								/* 20160418_김병철_sr#17763 [등록일 기준 14일 이내 &ndash;&gt; 최초승인일 기준 14일 이내] */
+								AND t3.FST_APRV_COMPT_DT &gt;= sysdate-14
+								/* 20160418_김병철_sr#17763 End */			
+								</if>
+						        AND t2.dsp_yn = 'Y'  
+						        <if test="beaker1dpthCtgryNo != null">
+						        AND t2.dsp_ctgry_no like  #{beaker1dpthCtgryNo,jdbcType=VARCHAR}||'%'
+						        </if>
+						)
+					)
+				)
+				&lt;!&ndash; 구분선 &ndash;&gt;
+				union all
+				select cc.dsp_ctgry_no
+				    ,cc.UPPER_DSP_CTGRY_NO
+				    ,cc.DSP_CTGRY_NM
+				    ,cc.CTGRY_TP_CD
+				    ,cc.GOD_DSP_UNIT_CD
+				    ,cc.CTGRY_DPTH_CD
+				    ,cc.DSP_GOD_SORT_STDR_CD
+				    ,cc.LEAF_CTGRY_YN
+				    ,cc.DSP_YN
+				    ,cc.SPCIFY_URL_DSP_YN
+				    ,cc.CTGRY_DIV_LNE_YN
+				    ,cc.CTGRY_DIV_LNE_CSS_CD
+				    ,cc.DELETE_YN
+				    ,cc.CTGRY_OUTPT_TP_CD
+				    ,cc.OUTPT_SECT_CD
+				    ,cc.OUTPT_LINK_URL
+				    ,cc.SORT_SEQ
+				    ,cc.APL_MALL_ID
+				    ,cc.DSP_BRND_ID
+				    ,cc.EXPSR_LVL_CD
+				    ,cc.RPRST_IMG_FILE_NM
+				    ,cc.RPRST_IMG_FILE_URL
+				    ,cc.RPRST_IMG_ALTRTV_CONT
+				    ,cc.BCRN_STYLE_CLASS_ID
+				    ,cc.PC_MOBILE_TMPLAT_IND_USE_YN
+				    ,cc.PC_TMPLAT_SN
+				    ,cc.MOBILE_TMPLAT_SN
+				    ,cc.REGTR_ID
+				    ,cc.REG_DT
+				    ,cc.UDTER_ID
+				    ,cc.UDT_DT
+				    ,'' AS DCLANG_DSP_CTGRY_NO
+				    ,'' AS LANG_CD
+				    ,'' AS DCLANG_DSP_CTGRY_NM
+				    ,'' AS DCLANG_RPRST_IMG_FILE_NM
+				    ,'' AS DCLANG_RPRST_IMG_FILE_URL
+				    ,'' AS DCLANG_RPRST_IMG_ALTRTV_CONT
+				from dsp_ctgry cc
+				where cc.delete_yn = 'N'
+				and cc.dsp_yn = 'Y'
+				and cc.spcify_url_dsp_yn = 'N'
+				and cc.ctgry_div_lne_yn = 'Y'
+			) BB	
+			connect by prior BB.dsp_ctgry_no = BB.upper_dsp_ctgry_no 
+			start with BB.dsp_ctgry_no = #{mallId, jdbcType=VARCHAR}
+			order siblings by BB.sort_seq	
+		<if test="dpthsByExprTp != null and dpthsByExprTp.length > 0">	
+		) CC
+		where CC.ctgry_dpth_cd in
+		<foreach item="dpth" collection="dpthsByExprTp" open="(" separator="," close=")">
+			#{dpth, jdbcType=VARCHAR}
+		</foreach>
+		</if>
+	</select> -->
+	
+	
+	
+	<select id="selectCtgryGodFrList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspCommonGodFrResultMap">
+		SELECT /* [display.fr.ctgry.xml][selectCtgryGodFrList][카테고리상품목록][Dian] */ 
+
+
+		#{sortColumn,jdbcType=VARCHAR} AS AAA,
+		#{saleIdxTp,jdbcType=VARCHAR} AS BBB,
+
+			f.*
+         ,(
+             SELECT  LISTAGG(
+						(
+					    CASE WHEN A.clor_chip_img_url IS NOT NULL
+							THEN A.clor_chip_img_url
+							ELSE B.color_style_cd
+					    END
+					    )
+    				, ',') WITHIN GROUP (ORDER BY  B.COLOR_STYLE_CD)  AS COLOR_STYLE_CD
+               FROM GOD A
+           JOIN INF_COLOR_GRP B ON (A.COLOR_CD = B.COLOR_GRP_CD AND B.LANGUAGE = DECODE( #{lang,jdbcType=VARCHAR} , 'ENG' , 'EN' , 'CHI' , 'ZH' , 'KO' ))
+              WHERE A.DSP_YN = 'Y'
+                AND A.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                AND A.GOD_SALE_SECT_CD IN ('SLDOUT', 'SALE_PROGRS')
+            AND A.PARTMAL_SECT_CD ='MCOM'
+                AND EXISTS
+                       (SELECT 1
+                          FROM DSP_CTGRY_CNNC_GOD T1
+                               INNER JOIN DSP_CTGRY T2
+                                  ON (T1.DSP_CTGRY_NO = T2.DSP_CTGRY_NO AND T2.DSP_YN = 'Y' AND T2.DELETE_YN = 'N')
+                         WHERE T1.GOD_NO = A.GOD_NO AND T1.DSP_YN = 'Y'
+                       ) 
+              AND f.DSGN_GRP_NO  = A.DSGN_GRP_NO
+             )  AS COLOR_STYLE_CD 
+		FROM(
+			SELECT
+				e.*
+			FROM(
+				SELECT 
+					d.* ,ROWNUM AS NO
+				FROM(
+				SELECT
+					c.*
+					,T11.IMG_URL AS IMG_FRONT_URL
+					,T12.IMG_URL AS IMG_BACK_URL
+					,T13.MNFCTUR_DATE
+					,ic.icon_nm
+	                ,rtg.TAG_NM AS GR_TAG_NM
+	                ,t21.TAG_NM AS GLTR_TAG_NM
+               		,T14.IMG_URL AS IMAGE
+				FROM(
+				SELECT 
+					 b.*
+					,nvl(T10.GOD_EVL_COUNT, 0) AS GODAS
+				FROM(
+				<!-- SR : #22516(2016.07.21) 김병철  판매지수 (Sales Index)를 FO에 반영 -->
+				<choose>
+					<when test="saleIdxTp == 'PRMY' or saleIdxTp == 'SCDY'">
+						<include refid="selectCnncSaleIdxGodSql" />
+					</when>
+					<otherwise>
+				<include refid="selectCnncGodSql" />
+					</otherwise>
+				</choose>
+
+				) b
+				LEFT OUTER JOIN DSP_BST_GOD_EVL T10 On b.GOD_NO=T10.GOD_NO
+				) c
+				LEFT OUTER JOIN GOD_IMG T11 ON c.GOD_NO = T11.GOD_NO AND T11.IMG_TP_CD = 'THNAIL' AND T11.IMG_TURN = 0 AND T11.IMG_SIZE_CD = #{imgSize,jdbcType=VARCHAR}
+				LEFT OUTER JOIN GOD_IMG T12 ON c.GOD_NO = T12.GOD_NO AND T12.IMG_TP_CD = 'THNAIL' AND T12.IMG_TURN = 1 AND T12.IMG_SIZE_CD = #{imgSize,jdbcType=VARCHAR}
+				LEFT OUTER JOIN GOD_NTFC_DETAIL T13 ON c.GOD_NO = T13.GOD_NO AND T13.LANG_CD = #{lang,jdbcType=VARCHAR}
+				LEFT OUTER JOIN GOD_IMG T14 ON c.GOD_NO = T14.GOD_NO AND T14.IMG_USE_YN = 'Y'  and T14.img_size_cd = '280X370' and T14.rprst_img_yn = 'Y'
+				
+				LEFT OUTER JOIN (
+	                SELECT 
+	                     t2.GOD_NO
+	                    ,listagg(t1.ICON_NM, ',') within group(order by t1.ICON_TURN) as ICON_NM
+	                FROM GOD_ICON t1 JOIN GOD_ICON_CNNC t2 ON t1.ICON_TURN = t2.ICON_TURN
+	                GROUP BY t2.GOD_NO
+	            ) ic ON (c.god_no = ic.god_no)
+	            LEFT OUTER JOIN (
+	                SELECT 
+	                       a.GOD_NO ,
+	                       a.TAG_RESVE_SN,
+	                       a.TAG_NM 
+	                FROM (
+	                         SELECT T19.GOD_NO ,
+	                               T19.TAG_RESVE_SN ,
+	                               T20.TAG_NM,
+	                               row_number() over (partition by t19.god_no order by T19.REG_DT desc) as rn
+	                          FROM GOD_TAG_RESVE_CNNC T19 
+	                          JOIN GOD_TAG_RESVE T20 ON T19.TAG_RESVE_SN = T20.TAG_RESVE_SN
+	                           AND T20.USE_YN = 'Y'
+	                         WHERE 1 = 1
+	                         <![CDATA[
+	                           AND T20.RESVE_BEG_DT <= sysdate
+	                           AND T20.RESVE_END_DT >= sysdate
+	                         ]]>
+	                         ) a 
+	                where a.rn = 1
+	            ) rtg ON (c.god_no = rtg.god_no)
+	            LEFT OUTER JOIN GOD_LANGBY_TAG_RESVE T21 ON rtg.TAG_RESVE_SN = t21.TAG_RESVE_SN  AND t21.LANG_CD= #{lang,jdbcType=VARCHAR}
+				ORDER BY
+				    c.GOD_SALE_SECT_CD ASC,
+				<choose>
+					<when test="sortColumn == 'NEW_GOD_SEQ'">
+						c.REG_DT DESC, c.DSGN_GRP_NO ASC, 
+					</when>
+					<when test="sortColumn == 'SALE_QTY_SEQ'">
+						<!-- SR : #22516(2016.07.21) 김병철  판매지수 (Sales Index)를 FO에 반영 -->
+						<choose>
+							<when test="saleIdxTp == 'PRMY'">
+								c.BST_GOD_SALE_IDEX DESC NULLS LAST, C.SALE_IDEX DESC NULLS LAST,
+							</when>
+							<otherwise>
+						c.STT_RANK ASC,
+							</otherwise>
+						</choose>
+					</when>
+					<when test="sortColumn == 'BEST_DC_SEQ'">
+						c.DGPRC_GOD_DC_RT DESC,
+					</when>
+					<when test="sortColumn == 'LWET_PRC_SEQ'">
+						c.DGPRC_LAST_SALE_PRC ASC,
+					</when>
+					<when test="sortColumn == 'BEST_PRC_SEQ'">
+						c.DGPRC_LAST_SALE_PRC DESC,
+					</when>
+					<when test="sortColumn == 'PCH_PS_SEQ'">
+						c.GODAS DESC,
+					</when>
+					<otherwise>
+				        c.REG_DT DESC, c.DSGN_GRP_NO ASC, 
+					</otherwise>
+				</choose>
+					c.GOD_NO ASC
+				) d 
+			) e 
+			WHERE e.NO &lt;= #{endIndex}
+		) f
+		WHERE NO &gt;= #{beginIndex}
+	</select> 
+	
+	
+
+
+
+	<select id="selectCtgryGodFrTotCnt" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="int">
+		select /* [display.fr.ctgry.xml][selectCnncGodNos][카테고리연결상품번호목록][Dian] */
+			count(b.GOD_NO)
+		FROM(
+			<!-- SR : #22516(2016.07.21) 김병철  판매지수 (Sales Index)를 FO에 반영 -->
+			<choose>
+				<when test="saleIdxTp == 'PRMY' or saleIdxTp == 'SCDY'">
+					<include refid="selectCnncSaleIdxGodSql" />
+				</when>
+				<otherwise>
+			<include refid="selectCnncGodSql" />
+				</otherwise>
+			</choose>
+		) b
+	</select>
+	
+
+
+	<sql id="selectCnncGodSql">
+		SELECT /*+ use_nl(t9) */  
+			 a.*
+		    ,t9.RTL_PRC AS RTL_PRC
+		    ,t9.LAST_SALE_PRC AS DGPRC_LAST_SALE_PRC
+	        ,CASE
+				WHEN t9.GOD_DC_RT > 0 THEN
+					ROUND ( (t9.RTL_PRC - t9.DC_PRC) / t9.RTL_PRC * 100)
+			 ELSE
+	     		(CASE
+	         		WHEN t9.RTL_PRC > t9.CSMR_PRC
+	          		THEN
+	             		ROUND ( (t9.RTL_PRC - t9.CSMR_PRC) / t9.RTL_PRC * 100)
+	           		ELSE
+	             	0
+	     		END)               	
+	         END AS DGPRC_GOD_DC_RT
+	        ,t9.CPN_DC_RT AS DGPRC_CPN_DC_RT
+	        ,t9.BST_GOD_SALE_IDEX
+	        ,t9.SALE_IDEX
+	        ,t8.STT_RANK
+		FROM (
+			SELECT /*+ leading(t1) use_nl(t2@sub) use_nl(t5) */ <!-- /*+ index(t1 PK_GOD) */  -->    
+	      			t1.GOD_NO
+	               ,t1.ERP_GOD_NO
+	               ,t1.DSGN_GRP_NO
+	               ,t1.GOD_NM
+	               ,t1.MOBILE_GOD_NM
+	               ,t1.TAG_NM
+	               ,t1.COLOR_TAG_NM
+	               ,t1.THEMA_TAG_NM
+	               ,t1.TEXT_ICON_CONT
+	               ,t1.GOD_APRV_SECT_CD
+	               ,t1.GOD_SALE_SECT_CD
+	               ,t1.SALE_BEG_DATE
+	               ,t1.SALE_END_DATE
+	               ,t1.COLOR_NM
+	               ,t1.COLOR_CD
+	               ,t1.CLOR_CHIP_IMG_URL
+	               ,t1.GOD_TP_CD
+	               ,t1.PARTMAL_SECT_CD
+	               ,t1.BRND_ID AS GOD_BRND_ID
+	               ,t1.BRND_GRP_ID AS GOD_BRND_GRP_ID
+	               ,t1.STD_CTGRY_NO
+	               ,t1.TDF_SECT
+	               ,t1.SESON_GRP_CD
+	               ,t1.SESON_CD
+	               ,t1.PRDLST_CD
+	               ,t1.OTLT_YN
+		            <!-- 20160329_jinpyo.park _sr#17444 [리스팅 정렬 로직 개선] -->
+					<choose>
+						<when test="sortColumn == 'NEW_GOD_SEQ' or sortColumn == '' or sortColumn == null ">	               
+		               		/* 20160418_김병철_sr#17763 [등록일 기준 14일 이내 --> 최초승인일 기준 14일 이내] */						
+			               	, CASE
+							    	WHEN t1.PARTMAL_SECT_CD = 'MCOM'	THEN	(	SELECT	MAX	((	SELECT	/*+ index(t23 ix1_god_hist) */ t23.UDT_DT AS UDT_DT
+				                                              								FROM	GOD_HIST t23
+				                                              								WHERE 	t23.GOD_APRV_SECT_CD	= 'APRV_COMPT'
+				                                              								AND		t23.GOD_NO 				= t22.GOD_NO
+				                                              								AND 	rownum 					= 1
+	                                     													)) REG_DT
+		                              												FROM	GOD t22
+		                              												WHERE 	t22.DSGN_GRP_NO = t1.DSGN_GRP_NO
+							        											)
+							        										
+							    	ELSE	(	SELECT	/*+ index(t23 ix1_god_hist) */ t25.UDT_DT AS UDT_DT
+							          			FROM 	GOD_HIST t25
+							        			WHERE 	t1.GOD_NO = t25.GOD_NO
+							          			AND 	t25.GOD_APRV_SECT_CD = 'APRV_COMPT'
+							          			AND rownum=1    
+							          		)
+							END AS REG_DT
+						</when>
+						<otherwise>
+			           ,t1.REG_DT
+						</otherwise>
+					</choose>
+	               ,t5.BRND_ID
+	               ,t5.UPPER_BRND_ID
+	               ,t5.BRND_NM
+	               ,t1.com_id
+                    <if test="lang != 'KOR' ">
+                    /* 해외판매여부 체크 */
+                    ,GLGN.GOD_NO AS GLGNM_GOD_NO
+                    ,GLGN.LANG_CD
+                    ,GLGN.GOD_NM AS GLGNM_GOD_NM
+                    ,GLGN.MOBILE_GOD_NM AS GLGNM_MOBILE_GOD_NM
+                    ,GLGN.TAG_NM AS GLGNM_TAG_NM
+                    ,GLGN.COLOR_TAG_NM AS GLGNM_COLOR_TAG_NM
+                    ,GLGN.THEMA_TAG_NM AS GLGNM_THEMA_TAG_NM
+                    ,GLGN.COLOR_NM AS GLGNM_COLOR_NM
+                    </if>
+			FROM
+	        	GOD t1 
+	        	JOIN SYS_BRND t5 ON T1.BRND_GRP_ID = T5.BRND_ID
+				<if test="lang != 'KOR' ">
+				/* 해외판매여부 체크 */
+				JOIN GOD_LANGBY_GOD_NM GLGN ON T1.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+				</if>
+			WHERE 1 = 1
+			  AND t1.GOD_APRV_SECT_CD = 'APRV_COMPT'
+			  AND t1.GOD_SALE_SECT_CD IN ('SALE_PROGRS','SLDOUT')
+	          AND t1.DSP_YN = 'Y'
+	          AND t1.SPCIFY_URL_DSP_YN = 'N' 
+			  <if test="special == 'OUTLET'">
+			  AND t1.OTLT_YN = 'Y'
+			  <!-- AND t1.RTL_PRC != t1.CSMR_PRC -->
+			  </if>
+			  <if test='empYn == "N"'>
+			  AND t1.EMP_ONLY_YN = 'N'
+			  </if>	
+			  <if test="brandIds != null">
+			  AND t1.BRND_GRP_ID IN
+				<foreach item="brand" collection="brandIds" open="(" separator="," close=")">
+					#{brand}
+				</foreach>
+			  </if>
+			  <if test="brandIds == null and dspBrndId != null and dspBrndId != ''">
+			  AND t1.BRND_GRP_ID IN
+	        	(
+	        	SELECT
+				    brnd_id
+				FROM (
+				    SELECT
+				        SB.brnd_id, SB.UPPER_BRND_ID
+				    FROM SYS_BRND SB
+				    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+				    AND SB.USE_YN = 'Y'
+				    AND SB.BRND_GRP_YN = 'Y'
+				    START WITH SB.BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+				    ORDER SIBLINGS BY SB.SORT_SEQ
+				) BB
+				where bb.UPPER_BRND_ID is not null
+	        	)
+	          </if>
+	          <!-- 20160329_jinpyo.park _sr#17444 [리스팅 정렬 로직 개선] -->
+			  <!-- 대카테고리 NEW
+			  <if test="useNew != null">
+			  	AND t1.REG_DT &gt;= sysDate-14
+			  </if>
+			   -->
+			  <!--  
+			  AND t1.GOD_NO IN (
+			  	SELECT 
+	                DISTINCT t2.GOD_NO
+	           -->
+	          AND exists (SELECT /*+ unnest qb_name(sub) */  1       
+	            FROM DSP_CTGRY_CNNC_GOD t2
+	            JOIN DSP_CTGRY t6 ON t2.dsp_ctgry_no = t6.dsp_ctgry_no AND t6.dsp_yn = 'Y'
+	            where t6.dsp_ctgry_no LIKE #{dspCtgry.dspCtgryNo,jdbcType=VARCHAR} || '%' AND t2.dsp_yn = 'Y'
+	            AND t6.leaf_ctgry_yn = 'Y'
+	            and t2.god_no=t1.god_no
+	            AND NOT EXISTS (
+	                         
+	                            SELECT 1 
+	                              FROM dsp_ctgry 
+	                             WHERE dsp_ctgry_no = t6.upper_dsp_ctgry_no 
+	                               AND DSP_YN = 'N'
+	                            )
+			  )
+			  <!-- 검색필터 -->
+			  <if test="searchConditionBrandBests != null and searchConditionBrandBests.length > 0">
+			  	AND t5.BRND_ID IN
+			  	<foreach item="bestBrand" collection="searchConditionBrandBests" open="(" separator="," close=")">
+			  	 #{bestBrand}
+			  	</foreach>
+			  </if>
+			  <if test="searchConditionBrandAtoZs != null and searchConditionBrandAtoZs.length > 0">
+			  	AND t5.BRND_ID IN
+			  	<foreach item="brand" collection="searchConditionBrandAtoZs" open="(" separator="," close=")">
+			  	 #{brand}
+			  	</foreach>
+			  </if>
+			  <if test="searchConditionColors != null || searchConditionColors2 != null" >
+			  AND (
+			  <trim suffixOverrides="OR" >
+			  	<if test="searchConditionColors != null and searchConditionColors.length > 0" >
+			  	t1.COLOR_CD IN
+			  	<foreach item="color" collection="searchConditionColors" open="(" separator="," close=")">
+			  	 #{color}
+			  	</foreach>
+			  	OR 
+			  	</if>
+			  	<if test="searchConditionColors2 != null and searchConditionColors2.length > 0" >
+			  	t1.CLOR_CHIP_IMG_URL IN
+			  	<foreach item="color2" collection="searchConditionColors2" open="(" separator="," close=")">
+			  	 #{color2}
+			  	</foreach>
+			  	OR
+			  	</if>
+			  </trim>
+			  )
+			  </if>
+			  <if test="searchConditionMaterials != null and searchConditionMaterials.length > 0">
+				  AND EXISTS (
+				  SELECT 1
+				  FROM GOD_IEM_DETAIL gid
+				  WHERE gid.GOD_NO = t1.GOD_NO
+				  AND gid.GOD_IEM_CD = 'MATR'
+				  AND gid.GOD_IEM_VAL_CD IN
+				  <foreach item="matr" collection="searchConditionMaterials" open="(" separator="," close=")">
+					  #{matr}
+				  </foreach>
+				  )
+			  </if>
+			<if test="lang != 'KOR' ">
+				/* 해외판매여부 체크 */
+				AND t1.OVSEA_DLV_PSB_YN = 'Y'
+			</if>
+
+		) a
+	    <if test="prcSectCd != null">
+	    	JOIN DSP_GOD_PRC t9 ON (
+				a.GOD_NO = t9.GOD_NO 
+				AND t9.MALL_ID = #{mallId,jdbcType=VARCHAR}
+				<if test='spcPrmTp != null and spcPrmTp != ""'>
+				AND t9.prc_sect_cd IN (#{spcPrmTp, jdbcType=VARCHAR}, #{prcSectCd, jdbcType=VARCHAR})
+		        AND t9.PRC_SECT_CD = CASE
+		                             WHEN (SELECT 1
+		                                     FROM DSP_GOD_PRC K
+		                                    WHERE K.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND K.GOD_NO = T9.GOD_NO AND ROWNUM = 1)
+		                                     IS NOT NULL
+		                             THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END		          
+		        </if>
+		        <if test='spcPrmTp == null or spcPrmTp == ""'>
+				AND t9.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}	          
+		        </if>
+				AND t9.LANG_CD = #{lang,jdbcType=VARCHAR}
+				<if test="special == 'SALE'">
+			    <![CDATA[
+			    AND t9.LAST_SALE_PRC < t9.RTL_PRC
+			    ]]>
+			    </if>
+			)
+		</if>
+	 	LEFT OUTER JOIN DSP_BST_GOD t8 ON a.GOD_NO = t8.GOD_NO AND t8.stt_sect_cd = 'RECENT_14_DAY'
+	    WHERE 1 = 1
+	    <!-- 20160329_jinpyo.park _sr#17444 [리스팅 정렬 로직 개선] --> 
+	    <!-- 대카테고리 NEW -->
+	    <if test="useNew != null">
+	  		AND a.REG_DT &gt;= sysDate-14
+	  	</if>
+	    <!-- 조건필터 중 사이즈 자사 대상-->
+	    <if test="searchConditionSizes != null">
+			AND EXISTS (
+				SELECT 1
+				FROM GOD_ITM S1, SYS_STD_OPT_CNNC S2, SYS_STD_OPT_VAL S3
+				WHERE 
+					a.GOD_NO = s1.GOD_NO
+				AND s1.itm_stat_cd IN ('SALE_PROGRS', 'SLDOUT')
+				AND a.PRDLST_CD = s2.PRDLST_CD
+				AND s1.OPT_CD_1 = s2.OPT_CD
+				AND s1.OPT_VAL_CD_1 = s2.OPT_VAL_CD
+				AND s2.STD_OPT_VAL_CD = s3.STD_OPT_VAL_CD
+				AND s2.STD_OPT_CD = s3.STD_OPT_CD
+				AND s3.STD_OPT_VAL_CD IN
+					<foreach item="size" collection="searchConditionSizes" open="(" separator="," close=")">
+						#{size}
+					</foreach>
+				union all
+			    SELECT 1
+			    FROM GOD_ITM S1, com_STD_OPT_CNNC S2, SYS_STD_OPT_VAL S3
+			    WHERE 
+			        a.GOD_NO = s1.GOD_NO
+			    AND s1.itm_stat_cd IN ('SALE_PROGRS', 'SLDOUT')
+			    AND a.com_id = s2.com_id
+			    AND s1.OPT_CD_1 = s2.OPT_CD
+			    AND s1.OPT_VAL_CD_1 = s2.OPT_VAL_CD
+			    AND s2.STD_OPT_VAL_CD = s3.STD_OPT_VAL_CD
+			    AND s2.STD_OPT_CD = s3.STD_OPT_CD
+			    AND s3.STD_OPT_VAL_CD IN
+					<foreach item="size" collection="searchConditionSizes" open="(" separator="," close=")">
+						#{size}
+					</foreach>
+				)
+		</if>
+		<if test="searchConditionStyles != null and searchConditionStyles.length > 0">
+			AND EXISTS (
+				SELECT 1
+				FROM GOD_STYLE i
+				WHERE 
+					i.STYLE_CD IN
+				  	<foreach item="style" collection="searchConditionStyles" open="(" separator="," close=")">
+				  	 #{style}
+				  	</foreach>
+					AND a.GOD_NO = i.GOD_NO
+			)
+		</if>
+	</sql>
+	
+
+
+
+
+	<sql id="selectCnncSaleIdxGodSql">
+		SELECT /*+ use_nl(t9) */
+			 a.*
+		    ,t9.RTL_PRC AS RTL_PRC
+		    ,t9.LAST_SALE_PRC AS DGPRC_LAST_SALE_PRC
+	        ,CASE
+				WHEN t9.GOD_DC_RT > 0 THEN
+					ROUND ( (t9.RTL_PRC - t9.DC_PRC) / t9.RTL_PRC * 100)
+			 ELSE
+	     		(CASE
+	         		WHEN t9.RTL_PRC > t9.CSMR_PRC
+	          		THEN
+	             		ROUND ( (t9.RTL_PRC - t9.CSMR_PRC) / t9.RTL_PRC * 100)
+	           		ELSE
+	             	0
+	     		END)
+	         END AS DGPRC_GOD_DC_RT
+	        ,t9.CPN_DC_RT AS DGPRC_CPN_DC_RT
+	        ,t9.BST_GOD_SALE_IDEX
+	        ,t9.SALE_IDEX
+	        ,'' AS STT_RANK
+		FROM (
+			SELECT /*+ leading(t1) use_nl(t2@sub) use_nl(t5) */ <!-- /*+ index(t1 PK_GOD) */  -->
+	      			t1.GOD_NO
+	               ,t1.ERP_GOD_NO
+	               ,t1.DSGN_GRP_NO
+	               ,t1.GOD_NM
+	               ,t1.MOBILE_GOD_NM
+	               ,t1.TAG_NM
+	               ,t1.COLOR_TAG_NM
+	               ,t1.THEMA_TAG_NM
+	               ,t1.TEXT_ICON_CONT
+	               ,t1.GOD_APRV_SECT_CD
+	               ,t1.GOD_SALE_SECT_CD
+	               ,t1.SALE_BEG_DATE
+	               ,t1.SALE_END_DATE
+	               ,t1.COLOR_NM
+	               ,t1.COLOR_CD
+	               ,t1.CLOR_CHIP_IMG_URL
+	               ,t1.GOD_TP_CD
+	               ,t1.PARTMAL_SECT_CD
+	               ,t1.BRND_ID AS GOD_BRND_ID
+	               ,t1.BRND_GRP_ID AS GOD_BRND_GRP_ID
+	               ,t1.STD_CTGRY_NO
+	               ,t1.TDF_SECT
+	               ,t1.SESON_GRP_CD
+	               ,t1.SESON_CD
+	               ,t1.PRDLST_CD
+	               ,t1.OTLT_YN
+		            <!-- 20160329_jinpyo.park _sr#17444 [리스팅 정렬 로직 개선] -->
+					<choose>
+						<when test="sortColumn == 'NEW_GOD_SEQ' or sortColumn == '' or sortColumn == null ">
+		               		/* 20160418_김병철_sr#17763 [등록일 기준 14일 이내 --> 최초승인일 기준 14일 이내] */
+			               	, CASE
+							    	WHEN t1.PARTMAL_SECT_CD = 'MCOM'	THEN	(	SELECT	MAX	((	SELECT	/*+ index(t23 ix1_god_hist) */ t23.UDT_DT AS UDT_DT
+				                                              								FROM	GOD_HIST t23
+				                                              								WHERE 	t23.GOD_APRV_SECT_CD	= 'APRV_COMPT'
+				                                              								AND		t23.GOD_NO 				= t22.GOD_NO
+				                                              								AND 	rownum 					= 1
+	                                     													)) REG_DT
+		                              												FROM	GOD t22
+		                              												WHERE 	t22.DSGN_GRP_NO = t1.DSGN_GRP_NO
+							        											)
+
+							    	ELSE	(	SELECT	/*+ index(t23 ix1_god_hist) */ t25.UDT_DT AS UDT_DT
+							          			FROM 	GOD_HIST t25
+							        			WHERE 	t1.GOD_NO = t25.GOD_NO
+							          			AND 	t25.GOD_APRV_SECT_CD = 'APRV_COMPT'
+							          			AND rownum=1
+							          		)
+							END AS REG_DT
+						</when>
+						<otherwise>
+			           ,t1.REG_DT
+						</otherwise>
+					</choose>
+	               ,t5.BRND_ID
+	               ,t5.UPPER_BRND_ID
+	               ,t5.BRND_NM
+	               ,t1.com_id
+                    <if test="lang != 'KOR' ">
+                    /* 해외판매여부 체크 */
+                    ,GLGN.GOD_NO AS GLGNM_GOD_NO
+                    ,GLGN.LANG_CD
+                    ,GLGN.GOD_NM AS GLGNM_GOD_NM
+                    ,GLGN.MOBILE_GOD_NM AS GLGNM_MOBILE_GOD_NM
+                    ,GLGN.TAG_NM AS GLGNM_TAG_NM
+                    ,GLGN.COLOR_TAG_NM AS GLGNM_COLOR_TAG_NM
+                    ,GLGN.THEMA_TAG_NM AS GLGNM_THEMA_TAG_NM
+                    ,GLGN.COLOR_NM AS GLGNM_COLOR_NM
+                    </if>
+			FROM
+	        	GOD t1
+	        	JOIN SYS_BRND t5 ON T1.BRND_GRP_ID = T5.BRND_ID
+				<if test="lang != 'KOR' ">
+				/* 해외판매여부 체크 */
+				JOIN GOD_LANGBY_GOD_NM GLGN ON T1.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+				</if>
+			WHERE 1 = 1
+			  AND t1.GOD_APRV_SECT_CD = 'APRV_COMPT'
+			  AND t1.GOD_SALE_SECT_CD IN ('SALE_PROGRS','SLDOUT')
+	          AND t1.DSP_YN = 'Y'
+	          AND t1.SPCIFY_URL_DSP_YN = 'N'
+			  <if test="special == 'OUTLET'">
+			  AND t1.OTLT_YN = 'Y'
+			  <!-- AND t1.RTL_PRC != t1.CSMR_PRC -->
+			  </if>
+			  <if test='empYn == "N"'>
+			  AND t1.EMP_ONLY_YN = 'N'
+			  </if>
+			  <if test="brandIds != null">
+			  AND t1.BRND_GRP_ID IN
+				<foreach item="brand" collection="brandIds" open="(" separator="," close=")">
+					#{brand}
+				</foreach>
+			  </if>
+			  <if test="brandIds == null and dspBrndId != null and dspBrndId != ''">
+			  AND t1.BRND_GRP_ID IN
+	        	(
+	        	SELECT
+				    brnd_id
+				FROM (
+				    SELECT
+				        SB.brnd_id, SB.UPPER_BRND_ID
+				    FROM SYS_BRND SB
+				    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+				    AND SB.USE_YN = 'Y'
+				    AND SB.BRND_GRP_YN = 'Y'
+				    START WITH SB.BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+				    ORDER SIBLINGS BY SB.SORT_SEQ
+				) BB
+				where bb.UPPER_BRND_ID is not null
+	        	)
+	          </if>
+	          <!-- 20160329_jinpyo.park _sr#17444 [리스팅 정렬 로직 개선] -->
+			  <!-- 대카테고리 NEW
+			  <if test="useNew != null">
+			  	AND t1.REG_DT &gt;= sysDate-14
+			  </if>
+			   -->
+			  <!--
+			  AND t1.GOD_NO IN (
+			  	SELECT
+	                DISTINCT t2.GOD_NO
+	           -->
+	          AND exists (SELECT /*+ unnest qb_name(sub) */  1
+	            FROM DSP_CTGRY_CNNC_GOD t2
+	            JOIN DSP_CTGRY t6 ON t2.dsp_ctgry_no = t6.dsp_ctgry_no AND t6.dsp_yn = 'Y'
+	            where t6.dsp_ctgry_no LIKE #{dspCtgry.dspCtgryNo,jdbcType=VARCHAR} || '%' AND t2.dsp_yn = 'Y'
+	            AND t6.leaf_ctgry_yn = 'Y'
+	            and t2.god_no=t1.god_no
+	            AND NOT EXISTS (
+
+	                            SELECT 1
+	                              FROM dsp_ctgry
+	                             WHERE dsp_ctgry_no = t6.upper_dsp_ctgry_no
+	                               AND DSP_YN = 'N'
+	                            )
+			  )
+			  <!-- 검색필터 -->
+			  <if test="searchConditionBrandBests != null and searchConditionBrandBests.length > 0">
+			  	AND t5.BRND_ID IN
+			  	<foreach item="bestBrand" collection="searchConditionBrandBests" open="(" separator="," close=")">
+			  	 #{bestBrand}
+			  	</foreach>
+			  </if>
+			  <if test="searchConditionBrandAtoZs != null and searchConditionBrandAtoZs.length > 0">
+			  	AND t5.BRND_ID IN
+			  	<foreach item="brand" collection="searchConditionBrandAtoZs" open="(" separator="," close=")">
+			  	 #{brand}
+			  	</foreach>
+			  </if>
+			  <if test="searchConditionColors != null || searchConditionColors2 != null" >
+			  AND (
+			  <trim suffixOverrides="OR" >
+			  	<if test="searchConditionColors != null and searchConditionColors.length > 0" >
+			  	t1.COLOR_CD IN
+			  	<foreach item="color" collection="searchConditionColors" open="(" separator="," close=")">
+			  	 #{color}
+			  	</foreach>
+			  	OR
+			  	</if>
+			  	<if test="searchConditionColors2 != null and searchConditionColors2.length > 0" >
+			  	t1.CLOR_CHIP_IMG_URL IN
+			  	<foreach item="color2" collection="searchConditionColors2" open="(" separator="," close=")">
+			  	 #{color2}
+			  	</foreach>
+			  	OR
+			  	</if>
+			  </trim>
+			  )
+			  </if>
+			  <if test="searchConditionMaterials != null and searchConditionMaterials.length > 0">
+				  AND EXISTS (
+				  SELECT 1
+				  FROM GOD_IEM_DETAIL gid
+				  WHERE gid.GOD_NO = t1.GOD_NO
+				  AND gid.GOD_IEM_CD = 'MATR'
+				  AND gid.GOD_IEM_VAL_CD IN
+				  <foreach item="matr" collection="searchConditionMaterials" open="(" separator="," close=")">
+					  #{matr}
+				  </foreach>
+				  )
+			  </if>
+			<if test="lang != 'KOR' ">
+				/* 해외판매여부 체크 */
+				AND t1.OVSEA_DLV_PSB_YN = 'Y'
+			</if>
+
+		) a
+	    <if test="prcSectCd != null">
+	    	JOIN DSP_GOD_PRC t9 ON (
+				a.GOD_NO = t9.GOD_NO
+				AND t9.MALL_ID = #{mallId,jdbcType=VARCHAR}
+				<if test='spcPrmTp != null and spcPrmTp != ""'>
+				AND t9.prc_sect_cd IN (#{spcPrmTp, jdbcType=VARCHAR}, #{prcSectCd, jdbcType=VARCHAR})
+		        AND t9.PRC_SECT_CD = CASE
+		                             WHEN (SELECT 1
+		                                     FROM DSP_GOD_PRC K
+		                                    WHERE K.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND K.GOD_NO = T9.GOD_NO AND ROWNUM = 1)
+		                                     IS NOT NULL
+		                             THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END
+		        </if>
+		        <if test='spcPrmTp == null or spcPrmTp == ""'>
+				AND t9.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+		        </if>
+				AND t9.LANG_CD = #{lang,jdbcType=VARCHAR}
+				<if test="special == 'SALE'">
+			    <![CDATA[
+			    AND t9.LAST_SALE_PRC < t9.RTL_PRC
+			    ]]>
+			    </if>
+			)
+		</if>
+	 	<!-- LEFT OUTER JOIN DSP_BST_GOD t8 ON a.GOD_NO = t8.GOD_NO AND t8.stt_sect_cd = 'RECENT_14_DAY' -->
+	    WHERE 1 = 1
+	    <!-- 20160329_jinpyo.park _sr#17444 [리스팅 정렬 로직 개선] -->
+	    <!-- 대카테고리 NEW -->
+	    <if test="useNew != null">
+	  		AND a.REG_DT &gt;= sysDate-14
+	  	</if>
+	    <!-- 조건필터 중 사이즈 자사 대상-->
+	    <if test="searchConditionSizes != null">
+			AND EXISTS (
+				SELECT 1
+				FROM GOD_ITM S1, SYS_STD_OPT_CNNC S2, SYS_STD_OPT_VAL S3
+				WHERE
+					a.GOD_NO = s1.GOD_NO
+				AND s1.itm_stat_cd IN ('SALE_PROGRS', 'SLDOUT')
+				AND a.PRDLST_CD = s2.PRDLST_CD
+				AND s1.OPT_CD_1 = s2.OPT_CD
+				AND s1.OPT_VAL_CD_1 = s2.OPT_VAL_CD
+				AND s2.STD_OPT_VAL_CD = s3.STD_OPT_VAL_CD
+				AND s2.STD_OPT_CD = s3.STD_OPT_CD
+				AND s3.STD_OPT_VAL_CD IN
+					<foreach item="size" collection="searchConditionSizes" open="(" separator="," close=")">
+						#{size}
+					</foreach>
+				union all
+			    SELECT 1
+			    FROM GOD_ITM S1, com_STD_OPT_CNNC S2, SYS_STD_OPT_VAL S3
+			    WHERE
+			        a.GOD_NO = s1.GOD_NO
+			    AND s1.itm_stat_cd IN ('SALE_PROGRS', 'SLDOUT')
+			    AND a.com_id = s2.com_id
+			    AND s1.OPT_CD_1 = s2.OPT_CD
+			    AND s1.OPT_VAL_CD_1 = s2.OPT_VAL_CD
+			    AND s2.STD_OPT_VAL_CD = s3.STD_OPT_VAL_CD
+			    AND s2.STD_OPT_CD = s3.STD_OPT_CD
+			    AND s3.STD_OPT_VAL_CD IN
+					<foreach item="size" collection="searchConditionSizes" open="(" separator="," close=")">
+						#{size}
+					</foreach>
+				)
+		</if>
+		<if test="searchConditionStyles != null and searchConditionStyles.length > 0">
+			AND EXISTS (
+				SELECT 1
+				FROM GOD_STYLE i
+				WHERE
+					i.STYLE_CD IN
+				  	<foreach item="style" collection="searchConditionStyles" open="(" separator="," close=")">
+				  	 #{style}
+				  	</foreach>
+					AND a.GOD_NO = i.GOD_NO
+			)
+		</if>
+	</sql>
+
+
+
+
+
+
+	<select id="selectCnncGodNos" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="java.lang.String">
+		select /* [display.fr.ctgry.xml][selectCnncGodNos][카테고리연결상품번호목록][Dian] */
+			b.god_no
+		FROM(
+			<include refid="selectCnncGodSql" />			
+		) b
+	</select>
+	
+	<!-- 2017-10-20 전시 영역 구조 변경으로 인해 기존에 사용하지 않던 query 삭제를 위한 임시 주석 처리 -->
+	<!--<select id="selectDspCtgryFrInfo" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspCtgryFrResultMap">
+        SELECT /* [display.fr.ctgry.xml][selectDspCtgryFrInfo][전시카테고리기본정보조회][Dian] */ 
+                t1.DSP_CTGRY_NO
+               ,t1.UPPER_DSP_CTGRY_NO
+               ,t1.DSP_CTGRY_NM
+               ,t1.CTGRY_TP_CD
+               ,t1.GOD_DSP_UNIT_CD
+               ,t1.CTGRY_DPTH_CD
+               ,t1.DSP_GOD_SORT_STDR_CD
+               ,t1.LEAF_CTGRY_YN
+               ,t1.DSP_YN
+               ,t1.SPCIFY_URL_DSP_YN
+               ,t1.CTGRY_DIV_LNE_YN
+               ,t1.CTGRY_DIV_LNE_CSS_CD
+               ,t1.DELETE_YN
+               ,t1.CTGRY_OUTPT_TP_CD
+               ,t1.OUTPT_SECT_CD
+               ,t1.OUTPT_LINK_URL
+               ,t1.SORT_SEQ
+               ,t1.APL_MALL_ID
+               ,t1.DSP_BRND_ID
+               ,t1.EXPSR_LVL_CD
+               ,t1.RPRST_IMG_FILE_NM
+               ,t1.RPRST_IMG_FILE_URL
+               ,t1.RPRST_IMG_ALTRTV_CONT
+               ,t1.BCRN_STYLE_CLASS_ID
+               ,t1.PC_MOBILE_TMPLAT_IND_USE_YN
+               ,t1.PC_TMPLAT_SN
+               ,t1.MOBILE_TMPLAT_SN
+               ,t1.REGTR_ID
+               ,t1.REG_DT
+               ,t1.UDTER_ID
+               ,t1.UDT_DT
+               ,t4.DSP_CTGRY_NO AS DCLANG_DSP_CTGRY_NO
+               ,t4.LANG_CD
+               ,t4.DSP_CTGRY_NM AS DCLANG_DSP_CTGRY_NM
+               ,t4.RPRST_IMG_FILE_URL AS DCLANG_RPRST_IMG_FILE_URL
+               ,t4.RPRST_IMG_ALTRTV_CONT AS DCLANG_RPRST_IMG_ALTRTV_CONT
+               ,t4.RPRST_IMG_FILE_NM AS DCLANG_RPRST_IMG_FILE_NM
+        FROM DSP_CTGRY t1 
+        	LEFT OUTER JOIN DSP_CTGRY_LANG t4 ON T1.DSP_CTGRY_NO = T4.DSP_CTGRY_NO AND T4.LANG_CD = #{lang,jdbcType=VARCHAR}
+        WHERE 1 = 1
+          AND t1.APL_MALL_ID = #{mallId,jdbcType=VARCHAR} 
+          AND t1.DELETE_YN = 'N'
+          AND t1.DSP_YN = 'Y'
+          AND t1.SPCIFY_URL_DSP_YN = 'N'
+          AND t1.DSP_CTGRY_NO = #{dspCtgry.dspCtgryNo,jdbcType=VARCHAR}
+	</select>-->
+	
+	<select id="selectLocationList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspCtgryFrResultMap">
+        SELECT /* [display.fr.ctgry.xml][selectLocationList][로케이션 목록 조회][Dian] */ 
+                t1.DSP_CTGRY_NO
+               ,t1.UPPER_DSP_CTGRY_NO
+               ,t1.DSP_CTGRY_NM
+               ,t1.CTGRY_DPTH_CD
+               ,t1.APL_MALL_ID
+               ,t1.DSP_BRND_ID
+               ,t1.EXPSR_LVL_CD
+               ,t1.RPRST_IMG_FILE_NM
+               ,t1.RPRST_IMG_FILE_URL
+               ,t1.RPRST_IMG_ALTRTV_CONT
+               ,t4.DSP_CTGRY_NO AS DCLANG_DSP_CTGRY_NO
+               ,t4.LANG_CD
+               ,t4.DSP_CTGRY_NM AS DCLANG_DSP_CTGRY_NM
+               ,t4.RPRST_IMG_FILE_URL AS DCLANG_RPRST_IMG_FILE_URL
+               ,t4.RPRST_IMG_ALTRTV_CONT AS DCLANG_RPRST_IMG_ALTRTV_CONT
+               ,t4.RPRST_IMG_FILE_NM AS DCLANG_RPRST_IMG_FILE_NM
+        FROM DSP_CTGRY t1 
+        	LEFT OUTER JOIN DSP_CTGRY_LANG t4 ON T1.DSP_CTGRY_NO = T4.DSP_CTGRY_NO AND T4.LANG_CD = #{lang,jdbcType=VARCHAR}
+        WHERE 1 = 1
+          AND t1.APL_MALL_ID = #{mallId,jdbcType=VARCHAR}
+          AND t1.DELETE_YN = 'N'
+          AND t1.DSP_YN = 'Y'
+          <if test="upperCategoryNos != null and upperCategoryNos != '' and upperCategoryNos.length > 0">
+          	AND t1.DSP_CTGRY_NO IN
+			<foreach item="ctgryNo" collection="upperCategoryNos" open="(" separator="," close=")">
+				#{ctgryNo}
+			</foreach>
+         </if>
+	</select>
+	
+	<select id="selectBrndCtgGodCount" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [display.fr.ctgry.xml][selectBrndCtgGodCount][브랜드샵의 카테고리별 연결상품 수 조회][Dian] */
+			<foreach item="ctgryNo" collection="cateList" separator="," >
+		 	sum(decode(dsp_ctgry_no,#{ctgryNo},1,0)) AS ${ctgryNo} 
+            </foreach> 
+            , sum(decode(dsp_ctgry_no, 'ALL', cnt, 0)) AS ALLCNT
+        FROM (
+	        SELECT 
+	        	substr(t2.dsp_ctgry_no,1,6) as dsp_ctgry_no, count(distinct t2.god_no)  as cnt    
+		    FROM dsp_ctgry_cnnc_god t2 
+		    JOIN dsp_ctgry ctg ON (t2.dsp_ctgry_no = ctg.dsp_ctgry_no and ctg.leaf_ctgry_yn = 'Y')
+		    JOIN god t3 ON t3.god_no = t2.god_no 
+			<if test="lang != 'KOR' ">
+				/* 해외판매여부 체크 */
+			JOIN GOD_LANGBY_GOD_NM GLGN ON t3.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD= #{lang, jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+			</if>
+		    JOIN sys_brnd t4 ON t3.BRND_GRP_ID = t4.BRND_ID
+	 		JOIN DSP_GOD_PRC t6
+	          ON (T2.GOD_NO = t6.GOD_NO
+	          AND t6.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	          AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}	
+	          <if test='spcPrmTp != null and spcPrmTp != ""'>
+	          AND t6.PRC_SECT_CD = CASE
+	                               WHEN (SELECT 1
+	                                       FROM DSP_GOD_PRC A
+	                                      WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND A.GOD_NO = T6.GOD_NO AND ROWNUM = 1)
+	                                       IS NOT NULL
+	                               THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END		          
+	          </if>
+	          <if test='spcPrmTp == null or spcPrmTp == ""'>
+			  AND t6.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}	          
+	          </if>
+	           )
+		    WHERE 1 = 1 
+	        AND t3.god_aprv_sect_cd = 'APRV_COMPT' 
+	        AND t3.god_sale_sect_cd IN ('SALE_PROGRS', 'SLDOUT') 
+	        AND t3.dsp_yn = 'Y' 
+	        AND t3.spcify_url_dsp_yn = 'N' 
+		 	<if test='empYn == "N"'>
+			AND t3.EMP_ONLY_YN = 'N'
+		 	</if>
+		 	<if test="special == 'OUTLET'">
+			AND t3.OTLT_YN = 'Y'
+			<!-- AND t3.RTL_PRC != t3.CSMR_PRC --> 
+		 	</if>
+		 	<if test="special == 'SALE'">
+		 	<![CDATA[
+			AND t6.LAST_SALE_PRC < t6.RTL_PRC
+			]]>
+		 	</if>
+		    <if test="brandIds != null">
+			AND t3.BRND_GRP_ID IN
+			<foreach item="brndId" collection="brandIds" open="(" separator="," close=")">
+				#{brndId,jdbcType=VARCHAR}
+			</foreach>
+	        </if>
+	        <if test="brandIds == null and dspBrndId != null and dspBrndId != ''">
+	        AND t3.BRND_GRP_ID IN
+	        	(
+	        	SELECT
+				    brnd_id
+				FROM (
+				    SELECT
+				        SB.brnd_id, SB.UPPER_BRND_ID
+				    FROM SYS_BRND SB
+				    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+				    AND SB.USE_YN = 'Y'
+				    AND SB.BRND_GRP_YN = 'Y'
+				    START WITH SB.BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+				    ORDER SIBLINGS BY SB.SORT_SEQ
+				) BB
+				where bb.UPPER_BRND_ID is not null
+	        	)
+	        </if>
+	        AND t2.dsp_yn = 'Y' 
+			<if test="lang != 'KOR' ">
+			/* 해외판매여부 체크 */
+			AND t3.OVSEA_DLV_PSB_YN = 'Y'
+			</if>
+	        group by substr(t2.dsp_ctgry_no,1,6), t2.god_no
+	        
+	        union all
+	        
+	        SELECT 
+	        	'ALL' AS dsp_ctgry_no, count(distinct t2.god_no)  as cnt 
+		    FROM dsp_ctgry_cnnc_god t2 
+		    JOIN god t3 ON t3.god_no = t2.god_no 
+			<if test="lang != 'KOR' ">
+			/* 해외판매여부 체크 */
+			JOIN GOD_LANGBY_GOD_NM GLGN ON t3.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD= #{lang, jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+			</if>
+		    JOIN dsp_ctgry ctg ON (t2.dsp_ctgry_no = ctg.dsp_ctgry_no and ctg.leaf_ctgry_yn = 'Y')
+		    JOIN sys_brnd t4 ON t3.BRND_GRP_ID = t4.BRND_ID
+	 		JOIN DSP_GOD_PRC t6
+	          ON (T2.GOD_NO = t6.GOD_NO
+	          AND t6.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	          AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}	
+	          <if test='spcPrmTp != null and spcPrmTp != ""'>
+	          AND t6.PRC_SECT_CD = CASE
+	                               WHEN (SELECT 1
+	                                       FROM DSP_GOD_PRC A
+	                                      WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND A.GOD_NO = T6.GOD_NO AND ROWNUM = 1)
+	                                       IS NOT NULL
+	                               THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END		          
+	          </if>
+	          <if test='spcPrmTp == null or spcPrmTp == ""'>
+			  AND t6.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}	          
+	          </if>
+	           )
+		    WHERE 1 = 1 
+	        AND t3.god_aprv_sect_cd = 'APRV_COMPT' 
+	        AND t3.god_sale_sect_cd IN ('SALE_PROGRS', 'SLDOUT') 
+	        AND t3.dsp_yn = 'Y' 
+	        AND t3.spcify_url_dsp_yn = 'N' 
+		 	<if test='empYn == "N"'>
+			AND t3.EMP_ONLY_YN = 'N'
+		 	</if>
+		 	<if test="special == 'OUTLET'">
+			AND t3.OTLT_YN = 'Y'
+			<!-- AND t3.RTL_PRC != t3.CSMR_PRC --> 
+		 	</if>
+		 	<if test="special == 'SALE'">
+		 	<![CDATA[
+			AND t6.LAST_SALE_PRC < t6.RTL_PRC
+			]]>
+		 	</if>
+		    <if test="brandIds != null">
+			AND t3.BRND_GRP_ID IN
+			<foreach item="brndId" collection="brandIds" open="(" separator="," close=")">
+				#{brndId,jdbcType=VARCHAR}
+			</foreach>
+	        </if>
+	        <if test="brandIds == null and dspBrndId != null and dspBrndId != ''">
+	        AND t3.BRND_GRP_ID IN
+	        	(
+	        	SELECT
+				    brnd_id
+				FROM (
+				    SELECT
+				        SB.brnd_id, SB.UPPER_BRND_ID
+				    FROM SYS_BRND SB
+				    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+				    AND SB.USE_YN = 'Y'
+				    AND SB.BRND_GRP_YN = 'Y'
+				    START WITH SB.BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+				    ORDER SIBLINGS BY SB.SORT_SEQ
+				) BB
+				where bb.UPPER_BRND_ID is not null
+	        	)
+	        </if>
+	        AND t2.dsp_yn = 'Y' 
+			<if test="lang != 'KOR' ">
+			/* 해외판매여부 체크 */
+			AND t3.OVSEA_DLV_PSB_YN = 'Y'
+			</if>
+
+	    )
+	</select>
+	
+	
+	<select id="selectBrndCtgryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspCtgryFrResultMap">
+		SELECT  /* [display.fr.ctgry.xml][selectBrndCtgryList][브랜드카테고리목록조회-비이커필터카테고리용][Dian] */  
+		    BB.*
+		    <if test="brndId != null and brndId !=''">
+            ,(
+                SELECT
+		            count(distinct g.GOD_NO)
+		        FROM dsp_ctgry_cnnc_god dccg
+		        JOIN dsp_ctgry_dsp_apl_brnd dc ON dccg.dsp_ctgry_no = dc.dsp_ctgry_no
+		        JOIN god g ON dccg.god_no = g.god_no
+		        JOIN DSP_GOD_PRC dgp ON g.GOD_NO = dgp.GOD_NO
+		        WHERE 1 = 1
+		        AND dc.dsp_ctgry_no LIKE bb.dsp_ctgry_no || '%'
+			    AND dc.brnd_dsp_yn = 'Y'
+			    AND dc.dsp_brnd_id = #{brndId,jdbcType=VARCHAR}
+			    AND dccg.brnd_ctgry_dsp_yn = 'Y'
+			    AND dccg.dsp_ctgry_no LIKE bb.dsp_ctgry_no || '%'
+		        AND g.GOD_APRV_SECT_CD = 'APRV_COMPT'
+				AND g.GOD_SALE_SECT_CD IN ('SALE_PROGRS', 'SLDOUT', 'SALE_PROGRS_PKUP')
+				AND g.SPCIFY_URL_DSP_YN = 'N'
+				AND g.DSP_YN = 'Y'
+				<if test='empYn == "N"'>
+		        AND g.EMP_ONLY_YN = 'N'
+		        </if>
+		        AND g.BRND_GRP_ID = #{brndId,jdbcType=VARCHAR}
+		        AND dgp.MALL_ID = #{mallId,jdbcType=VARCHAR}
+	        	<if test='spcPrmTp != null and spcPrmTp != ""'>
+				AND dgp.prc_sect_cd IN (#{spcPrmTp, jdbcType=VARCHAR}, #{prcSectCd, jdbcType=VARCHAR})
+				AND dgp.PRC_SECT_CD = CASE WHEN (SELECT 1
+													FROM DSP_GOD_PRC dgp2
+													WHERE dgp2.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND dgp2.GOD_NO = dccg.GOD_NO AND ROWNUM = 1)
+													IS NOT NULL
+											THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END
+				</if>
+				<if test='spcPrmTp == null or spcPrmTp == ""'>
+				AND dgp.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+				</if>
+				AND dgp.lang_cd = 'KOR'
+             ) as god_cnt
+             </if>
+		FROM (
+		    select 
+		         a.DSP_CTGRY_NO
+		        ,a.UPPER_DSP_CTGRY_NO
+		        <if test="brndId != null">
+		        ,(case when bctg.DSP_CTGRY_NM is not null then bctg.DSP_CTGRY_NM else a.DSP_CTGRY_NM end) as dsp_ctgry_nm
+		        </if>
+		        <if test="brndId == null">
+		        ,a.DSP_CTGRY_NM
+		        </if>
+		        ,a.CTGRY_DPTH_CD
+		        ,a.SORT_SEQ
+		        ,a.DSP_BRND_ID
+		        ,lang.DSP_CTGRY_NM  AS  DCLANG_DSP_CTGRY_NM
+	            <if test="brndId != null and brndId !=''">
+	            ,bctg.DSP_CTGRY_NM  AS  BR_DSP_CTGRY_NM
+	            ,bctg.SORT_SEQ  AS  BR_SORT_SEQ
+                </if>
+		    from dsp_ctgry a
+		    JOIN DSP_CTGRY_DSP_APL_BRND dab 
+            ON (a.dsp_ctgry_no = dab.dsp_ctgry_no and dab.lang_cd = #{lang, jdbcType=VARCHAR} and dab.dsp_brnd_id =  #{brndId,jdbcType=VARCHAR} 
+            <if test='spcPrmTp != null and spcPrmTp != ""'>
+			AND dab.DSP_MBR_SECT_CD IN (#{spcPrmTp, jdbcType=VARCHAR}, #{prcSectCd, jdbcType=VARCHAR})
+			</if>
+			<if test='spcPrmTp == null or spcPrmTp == ""'>
+			AND dab.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+			</if>
+            )
+		    LEFT OUTER JOIN dsp_ctgry_lang lang
+        	ON  (a.dsp_ctgry_no = lang.dsp_ctgry_no and lang.LANG_CD = #{lang, jdbcType=VARCHAR})
+        	<if test="brndId != null and brndId !=''">
+		    LEFT OUTER JOIN dsp_brnd_ctgry bctg
+        	ON  (a.dsp_ctgry_no = bctg.dsp_ctgry_no and bctg.dsp_brnd_id = #{brndId,jdbcType=VARCHAR})
+        	</if>
+		    where 1=1
+		    AND a.DELETE_YN = 'N'
+            AND a.CTGRY_SECT_CD in ( 'GNRL_CTGRY','OTLT_CTGRY')
+            AND NVL(bctg.DSP_YN, a.DSP_YN)  = 'Y'
+            AND NVL(bctg.SPCIFY_URL_DSP_YN,a.SPCIFY_URL_DSP_YN) = 'N'
+            AND dab.BRND_DSP_YN = 'Y'
+		) BB    
+		WHERE BB.CTGRY_DPTH_CD in ('0', '1','2')
+		CONNECT BY PRIOR BB.DSP_CTGRY_NO = BB.UPPER_DSP_CTGRY_NO
+        START WITH BB.DSP_CTGRY_NO = 'DXM'
+        <if test="brndId != null and brndId !=''">
+		ORDER SIBLINGS BY CASE WHEN BB.BR_SORT_SEQ IS NOT NULL THEN BB.BR_SORT_SEQ ELSE  BB.SORT_SEQ  END
+		</if>
+		<if test="brndId == null or brndId == ''">
+		ORDER SIBLINGS BY BB.SORT_SEQ  
+		</if>   
+	</select>
+	
+	<select id="selectTopBrand" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspBrndFrResultMap" >
+		SELECT /* [display.fr.ctgry.xml][selectTopBrand][TOP브랜드 목록][Dian] */
+			 sb.dsp_ctgry_no
+			,sb.brnd_id
+			,sb.brnd_nm
+			,sb.brnd_sale_idex
+			,sb.rn 
+			,sbi1.BRND_IMG_FILE_NM          AS PC_BRND_IMG_FILE_NM
+            ,sbi1.BRND_IMG_FILE_URL         AS PC_BRND_IMG_FILE_URL
+            ,sbi1.BRND_IMG_ALTRTV_CONT      AS PC_BRND_IMG_ALTRTV_CONT
+            ,sbi2.BRND_IMG_FILE_NM          AS MOBILE_BRND_IMG_FILE_NM
+            ,sbi2.BRND_IMG_FILE_URL         AS MOBILE_BRND_IMG_FILE_URL
+            ,sbi2.BRND_IMG_ALTRTV_CONT      AS MOBILE_BRND_IMG_ALTRTV_CONT
+            <if test="mbrNo != null and mbrNo != '' ">
+			,sb.MY_BRND
+             </if>
+		FROM (
+			SELECT 
+				 dsp_ctgry_no
+				,brnd_id
+				,brnd_nm
+				,brnd_sale_idex
+				,rn 
+				<if test="mbrNo != null and mbrNo != '' ">
+				,my_brnd
+	             </if>
+			FROM (
+				<include refid="sqlBrndList" /> 
+			) where rn <![CDATA[<=]]> #{topNum,jdbcType=NUMERIC}
+		) sb
+		LEFT OUTER JOIN (
+            SELECT 
+                 BRND_ID
+                ,BRND_IMG_FILE_NM
+                ,BRND_IMG_FILE_URL
+                ,BRND_IMG_ALTRTV_CONT
+            FROM SYS_BRND_IMG 
+            WHERE 1=1 
+            AND BRND_IMG_SECT_CD = 'PC_RPRST_IMG'
+            AND LANG_CD = #{lang, jdbcType=VARCHAR}
+        ) SBI1
+		ON (SB.BRND_ID = SBI1.BRND_ID)        
+		LEFT OUTER JOIN (
+            SELECT 
+                 BRND_ID
+                ,BRND_IMG_FILE_NM
+                ,BRND_IMG_FILE_URL
+                ,BRND_IMG_ALTRTV_CONT
+            FROM SYS_BRND_IMG 
+            WHERE 1=1 
+            AND BRND_IMG_SECT_CD = 'MOBILE_RPRST_IMG'
+            AND LANG_CD = #{lang, jdbcType=VARCHAR}
+        ) SBI2
+		ON (SB.BRND_ID = SBI2.BRND_ID)
+		ORDER BY SB.rn
+	</select>
+	
+	<select id="selectAllBrand" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspBrndFrResultMap" >
+		/* [display.fr.ctgry.xml][selectAllBrand][BEAKER 서브브랜드 목록][Dian] */  
+		<include refid="sqlBrndList" />  
+        ORDER BY case when REGEXP_SUBSTR(brnd_nm ,'^[0-9]') is null then upper(brnd_nm) else 'ZZ'||brnd_nm  end
+	</select>
+	
+	<sql id="sqlBrndList" >
+		select  
+		     ctg.dsp_ctgry_no
+		    ,brnd.brnd_id 
+			<choose>
+			<when test="lang != 'KOR' ">
+			/* 전시카테고리명 다국어변환 */
+		    ,ctgLang.dsp_ctgry_nm as brnd_nm
+			</when>
+			<otherwise>
+		    ,ctg.dsp_ctgry_nm as brnd_nm
+			</otherwise>
+			</choose>
+			<if test="mbrNo != null and mbrNo != '' ">
+			,(
+				SELECT count(1)
+			    FROM MBR_BUKMK_BRND 
+			    WHERE 1=1 
+                AND MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+			    AND MALL_ID = #{mallId, jdbcType=VARCHAR}
+			    AND BRND_ID = brnd.brnd_id
+             ) AS MY_BRND
+             </if>
+             ,nvl(brnd.BRND_SALE_IDEX,0) as BRND_SALE_IDEX
+             ,row_number() over (order by nvl(brnd.BRND_SALE_IDEX,0) DESC) rn
+             ,case when REGEXP_SUBSTR(brnd_nm ,'^[0-9]') is null then substr(upper(brnd_nm),1,1) else '0-9'  end as ODR_IDX
+			 ,ctg.CTGRY_OUTPT_TP_CD
+			 ,ctg.OUTPT_SECT_CD
+			 ,ctg.OUTPT_LINK_URL
+		from dsp_ctgry ctg
+		join sys_brnd brnd on (ctg.dsp_brnd_id = brnd.brnd_id)
+		<if test="lang != 'KOR' ">
+		/* 전시카테고리명 다국어변환 */
+		left outer join dsp_ctgry_lang ctgLang ON ctg.dsp_ctgry_no = ctgLang.dsp_ctgry_no AND ctgLang.lang_cd = #{lang, jdbcType=VARCHAR}
+		</if>
+        where ctg.apl_mall_id = #{mallId, jdbcType=VARCHAR}
+		and ctg.delete_yn = 'N'
+		and ctg.spcify_url_dsp_yn = 'N'
+		and ctg.dsp_yn = 'Y'
+		<if test="brandIds != null">
+		AND ctg.dsp_brnd_id IN
+		<foreach item="brndId" collection="brandIds" open="(" separator="," close=")">
+			#{brndId,jdbcType=VARCHAR}
+		</foreach>
+        </if>
+        <if test="brandIds == null and dspBrndId != null and dspBrndId != ''">
+	 	AND ctg.dsp_brnd_id IN
+        	(
+        	SELECT
+			    brnd_id
+			FROM (
+			    SELECT
+			        SB.brnd_id, SB.UPPER_BRND_ID
+			    FROM SYS_BRND SB
+			    CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+			    AND SB.USE_YN = 'Y'
+			    AND SB.BRND_GRP_YN = 'Y'
+			    START WITH SB.BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+			    ORDER SIBLINGS BY SB.SORT_SEQ
+			) BB
+			where bb.UPPER_BRND_ID is not null
+        	)
+        </if>
+		<if test="ovseaBrndYn != null and ovseaBrndYn != ''">
+		AND brnd.OVSEA_BRND_YN = #{ovseaBrndYn,jdbcType=VARCHAR}
+		</if>
+		AND EXISTS (
+            select 1 
+            from dsp_ctgry_dsp_apl_brnd b
+            where b.dsp_brnd_id = ctg.dsp_brnd_id
+            and b.brnd_dsp_yn = 'Y'
+            AND b.LANG_CD = #{lang, jdbcType=VARCHAR}
+            <if test='spcPrmTp != null and spcPrmTp != ""'>
+			AND b.DSP_MBR_SECT_CD IN (#{spcPrmTp, jdbcType=VARCHAR}, #{prcSectCd, jdbcType=VARCHAR})
+			</if>
+			<if test='spcPrmTp == null or spcPrmTp == ""'>
+			AND b.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+			</if>
+            <if test="filterCtgryNo != null and filterCtgryNo != ''">
+			AND b.dsp_ctgry_no like #{filterCtgryNo,jdbcType=VARCHAR}||'%'
+			</if>
+			AND b.dsp_brnd_id IN (
+									  SELECT dsp_brnd_id
+										FROM DSP_CTGRY_DSP_APL_BRND
+									   WHERE 1 = 1
+										 AND DSP_CTGRY_NO LIKE 'DXM'||'%'
+										 AND lang_cd = #{lang, jdbcType=VARCHAR}
+										 AND (BRND_DSP_YN = 'Y' or DSP_YN = 'Y')
+								  )
+        )
+	</sql>
+	
+	
+	<select id="selectDspBrndIdList" parameterType="java.util.HashMap" resultType="String" >
+		select /* [display.fr.ctgry.xml][selectDspBrndIdList][전시브랜드ID 조회][Dian] */
+			dsp_brnd_id
+		from dsp_ctgry
+		where 1=1
+		<if test="bdmCtgNoList != null">
+		AND dsp_ctgry_no IN
+		<foreach item="dspCtgryNo" collection="bdmCtgNoList" open="(" separator="," close=")">
+			#{dspCtgryNo,jdbcType=VARCHAR}
+		</foreach>  
+		</if>
+	</select>
+	
+	<resultMap id="selectMetaDspCtgryListResultMap" type="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" >
+	   <result property="dspCtgryNo" column="DSP_CTGRY_NO" />             
+	   <result property="metaSjNm" column="META_SJ_NM" />
+	   <result property="metaDscrCont" column="META_DSCR_CONT" />
+	   <result property="metaKwd" column="META_KWD" />
+	</resultMap>
+	
+	<!-- 전시 카테고리별 매타 data 조회 -->
+	<select id="selectMetaDspCtgryList" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" resultMap="selectMetaDspCtgryListResultMap">
+		SELECT /* [display.fr.ctgry.xml][selectMetaDspCtgryList][전시 카테고리별 매타 data 조회] */
+			dc.DSP_CTGRY_NO
+			<choose>
+				<when test="lang != 'KOR'">
+					, dcl.META_SJ_NM
+					, dcl.META_DSCR_CONT
+					, dcl.META_KWD
+				</when>
+				<otherwise>
+					, dc.META_SJ_NM
+					, dc.META_DSCR_CONT
+					, dc.META_KWD
+				</otherwise>
+			</choose>
+		FROM DSP_CTGRY dc
+		<if test="lang != 'KOR'">
+			LEFT OUTER JOIN dsp_ctgry_lang dcl on (dc.dsp_ctgry_no = dcl.dsp_ctgry_no and dcl.lang_cd = #{lang, jdbcType=VARCHAR})
+		</if>
+		WHERE dc.DELETE_YN = 'N'
+			<if test='aplMallId != null and aplMallId != ""'>
+				AND dc.APL_MALL_ID = #{aplMallId,jdbcType=VARCHAR}
+			</if>
+	</select>
+	
+	<!-- FriendlyUrl 전시카테고리 기본정보조회 -->
+	<select id="selectFriendlyUrlDspCtgryInfo" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="dspCtgryFrResultMap">
+        SELECT /* [display.fr.ctgry.xml][selectFriendlyUrlDspCtgryInfo][FriendlyUrl 전시카테고리 기본정보조회] */ 
+                t1.DSP_CTGRY_NO
+               ,t1.UPPER_DSP_CTGRY_NO
+               ,nvl(t1.STT_CTGRY_NM, '') AS DSP_CTGRY_NM
+               ,t1.CTGRY_TP_CD
+               ,t1.GOD_DSP_UNIT_CD
+               ,t1.CTGRY_DPTH_CD
+               ,t1.DSP_GOD_SORT_STDR_CD
+               ,t1.LEAF_CTGRY_YN
+               ,t1.DSP_YN
+               ,t1.SPCIFY_URL_DSP_YN
+               ,t1.CTGRY_DIV_LNE_YN
+               ,t1.CTGRY_DIV_LNE_CSS_CD
+               ,t1.DELETE_YN
+               ,t1.CTGRY_OUTPT_TP_CD
+               ,t1.OUTPT_SECT_CD
+               ,t1.OUTPT_LINK_URL
+               ,t1.SORT_SEQ
+               ,t1.APL_MALL_ID
+               , nvl((SELECT UPPER_BRND_ID FROM SYS_BRND WHERE BRND_ID = t1.DSP_BRND_ID AND ROWNUM = 1), t1.DSP_BRND_ID) AS DSP_BRND_ID
+               ,t1.EXPSR_LVL_CD
+               ,t1.RPRST_IMG_FILE_NM
+               ,t1.RPRST_IMG_FILE_URL
+               ,t1.RPRST_IMG_ALTRTV_CONT
+               ,t1.BCRN_STYLE_CLASS_ID
+               ,t1.REGTR_ID
+               ,t1.REG_DT
+               ,t1.UDTER_ID
+               ,t1.UDT_DT
+               ,t4.DSP_CTGRY_NO AS DCLANG_DSP_CTGRY_NO
+               ,t4.LANG_CD
+               ,t4.DSP_CTGRY_NM AS DCLANG_DSP_CTGRY_NM
+               ,t4.RPRST_IMG_FILE_URL AS DCLANG_RPRST_IMG_FILE_URL
+               ,t4.RPRST_IMG_ALTRTV_CONT AS DCLANG_RPRST_IMG_ALTRTV_CONT
+               ,t4.RPRST_IMG_FILE_NM AS DCLANG_RPRST_IMG_FILE_NM
+        FROM DSP_CTGRY t1 
+        	LEFT OUTER JOIN DSP_CTGRY_LANG t4 ON T1.DSP_CTGRY_NO = T4.DSP_CTGRY_NO AND T4.LANG_CD = #{lang,jdbcType=VARCHAR}
+        WHERE 1 = 1
+          AND t1.APL_MALL_ID = #{mallId,jdbcType=VARCHAR} 
+          AND t1.DELETE_YN = 'N'
+          AND t1.DSP_YN = 'Y'
+          AND t1.SPCIFY_URL_DSP_YN = 'N'
+          AND t1.DSP_CTGRY_NO = #{dspCtgry.dspCtgryNo,jdbcType=VARCHAR}
+          AND ROWNUM = 1
+	</select>
+	
+	<select id="selectBrandStoryInfo" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultMap="sysBrndImg">
+
+		SELECT /* [display.fr.ctgry.xml][selectBrandStoryInfo][브랜드스토리 이미지 조회][Emily] */
+			<choose>
+			<when test="lang != 'KOR' ">
+			   sbl.BRND_STORY_INTRCN_CONT,	
+			</when>
+			<otherwise>
+			   sb.BRND_STORY_INTRCN_CONT,
+			</otherwise>	
+			</choose>
+			   sb.BRND_NM,
+			   sbi1.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_1,
+			   sbi1.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_1,
+			   sbi1.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_1,
+			   sbi2.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_2,
+			   sbi2.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_2,
+			   sbi2.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_2,
+			   sbi3.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_3,
+			   sbi3.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_3,
+			   sbi3.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_3,
+			   sbi4.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_4,
+			   sbi4.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_4,
+			   sbi4.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_4
+		FROM SYS_BRND sb
+		JOIN SYS_BRND_IMG sbi1
+		ON sbi1.BRND_ID = sb.BRND_ID
+		AND sbi1.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_1'
+		AND sbi1.LANG_CD = 'KOR'
+		LEFT OUTER JOIN SYS_BRND_IMG sbi2
+		ON sbi2.BRND_ID = sb.BRND_ID
+		AND sbi2.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_2'
+		AND sbi2.LANG_CD = 'KOR'
+		LEFT OUTER JOIN SYS_BRND_IMG sbi3
+		ON sbi3.BRND_ID = sb.BRND_ID
+		AND sbi3.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_3'
+		AND sbi3.LANG_CD = 'KOR'
+		LEFT OUTER JOIN SYS_BRND_IMG sbi4
+		ON sbi4.BRND_ID = sb.BRND_ID
+		AND sbi4.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_4'
+		AND sbi4.LANG_CD = 'KOR'
+		<if test="lang != 'KOR' ">
+		LEFT OUTER JOIN SYS_BRND_LANG sbl
+        ON sb.BRND_ID = sbl.BRND_ID
+        AND sbl.LANG_CD = #{lang, jdbcType=VARCHAR}
+		</if>
+		WHERE 1 = 1
+		 AND sb.BRND_ID = #{brndId, jdbcType=VARCHAR}
+
+	</select>
+</mapper>

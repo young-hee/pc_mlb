@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Property Placeholder (https://codingbone.wordpress.com/2010/02/28/how-to-load-properties-files-into-spring-and-expose-to-the-java-classes/) -->
+	<beans profile=",local">
+		<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"  p:order="0">
+			<property name="ignoreUnresolvablePlaceholders" value="true" />
+			<property name="ignoreResourceNotFound" value="true" />
+			<property name="locations">
+				<list>
+					<value>classpath:/META-INF/config/local_overwrite.properties</value>
+				</list>
+			</property>
+		</bean>
+	</beans>
+
+	<beans profile="dev,stg,stg2,prod">
+		<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" p:order="0">
+			<property name="ignoreUnresolvablePlaceholders" value="true" />
+			<property name="ignoreResourceNotFound" value="true" />
+		</bean>
+	</beans>
+</beans>

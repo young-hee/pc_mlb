@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysSmsEmailTxt" parameterType="sysSmsEmailTxt" resultType="sysSmsEmailTxt">
+		SELECT /* com.plgrim.ncp.base.selectSysSmsEmailTxt		Generator(Generator)	2018-05-23 */
+			   TXT_SN
+			 , TXT_USE_SECT_CD
+			 , TXT_TMPLAT_NO
+			 , NTCN_TAK_MANAGE_NO
+			 , SMS_EMAIL_SECT_CD
+			 , TXT_SJ
+			 , TXT_CONT
+			 , LINK_URL
+			 , TXT_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_SMS_EMAIL_TXT
+		 WHERE 1 = 1
+	   	   AND TXT_SN = #{txtSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysSmsEmailTxt" parameterType="sysSmsEmailTxt">
+		UPDATE /* com.plgrim.ncp.base.updateSysSmsEmailTxt		Generator(Generator)	2018-05-23 */
+		SYS_SMS_EMAIL_TXT SET
+			   TXT_USE_SECT_CD = #{txtUseSectCd,jdbcType=VARCHAR}
+			 , TXT_TMPLAT_NO = #{txtTmplatNo,jdbcType=VARCHAR}
+			 , NTCN_TAK_MANAGE_NO = #{ntcnTakManageNo,jdbcType=VARCHAR}
+			 , SMS_EMAIL_SECT_CD = #{smsEmailSectCd,jdbcType=VARCHAR}
+			 , TXT_SJ = #{txtSj,jdbcType=VARCHAR}
+			 , TXT_CONT = #{txtCont,jdbcType=VARCHAR}
+			 , LINK_URL = #{linkUrl,jdbcType=VARCHAR}
+			 , TXT_CPCTY = #{txtCpcty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND TXT_SN = #{txtSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysSmsEmailTxt" parameterType="sysSmsEmailTxt">
+		INSERT /* com.plgrim.ncp.base.insertSysSmsEmailTxt		Generator(Generator)	2018-05-23 */
+		INTO   SYS_SMS_EMAIL_TXT (
+			   TXT_SN
+			 , TXT_USE_SECT_CD
+			 , TXT_TMPLAT_NO
+			 , NTCN_TAK_MANAGE_NO
+			 , SMS_EMAIL_SECT_CD
+			 , TXT_SJ
+			 , TXT_CONT
+			 , LINK_URL
+			 , TXT_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{txtSn,jdbcType=NUMERIC}
+			 , #{txtUseSectCd,jdbcType=VARCHAR}
+			 , #{txtTmplatNo,jdbcType=VARCHAR}
+			 , #{ntcnTakManageNo,jdbcType=VARCHAR}
+			 , #{smsEmailSectCd,jdbcType=VARCHAR}
+			 , #{txtSj,jdbcType=VARCHAR}
+			 , #{txtCont,jdbcType=VARCHAR}
+			 , #{linkUrl,jdbcType=VARCHAR}
+			 , #{txtCpcty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysSmsEmailTxt" parameterType="sysSmsEmailTxt">
+		DELETE /* com.plgrim.ncp.base.deleteSysSmsEmailTxt		Generator(Generator)	2018-05-23 */
+		  FROM SYS_SMS_EMAIL_TXT
+		 WHERE 1 = 1
+		   AND TXT_SN = #{txtSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

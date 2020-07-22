@@ -1,0 +1,70 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<button type="button" class="btn-open d_toggle_select"><span>Open</span></button>
+<div class="order-detail-content d_toggle_cont">
+	<div class="board-write">
+		<table>
+			<caption><spring:message code="order.js.txt.orderer" /></caption>
+			<colgroup>
+				<col style="width:200px;">
+				<col>
+			</colgroup>
+			<tbody>
+				<tr>
+					<th scope="row"><label for="noMemName"><spring:message code="order.js.txt.orderer" /></label> <span class="required">*</span></th>
+					<td>
+						<input type="text" id="noMemName" class="input-style01 input_required textOnly" style="width:255px;" alt="<spring:message code="order.js.txt.orderer" />" maxlength="100"/>
+						<p class="txtSub01 info_mem">
+                            <span class="check-skin">
+                                <input type="checkbox" id="checkOrderToMemberInfo">
+                                <span><spring:message code="order.js.txt.select" /></span>
+                            </span>
+                            <label for="checkMemSame"><spring:message code="order.js.txt.dlv.caption2" /></label>
+                        </p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="noMemContact"><spring:message code="order.js.txt.mobile.no" /></label> <span class="required">*</span></th>
+					<td>
+						<input type="text" id="noMemMobile1" class="input-style01 input_required numberOnly" style="width:65px;" alt="<spring:message code="order.js.txt.mobile.no" />" maxlength="3" minlength="3"/>
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 input_required numberOnly" id="noMemMobile2" style="width:75px;" alt="<spring:message code="order.js.txt.mobile.no" />" maxlength="4" minlength="3"/>
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 input_required numberOnly" id="noMemMobile3" style="width:75px;" alt="<spring:message code="order.js.txt.mobile.no" />" maxlength="4" minlength="4"/>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="noMemContact02"><spring:message code="order.js.txt.tel.no" /></label></th>
+					<td>
+						<input type="text" id="noMemTel1" class="input-style01 numberOnly" style="width:65px;" maxlength="3" />
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 numberOnly" id="noMemTel2" style="width:75px;" maxlength="4"/>
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 numberOnly" id="noMemTel3" style="width:75px;" maxlength="4"/>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="boardWriteEmail"><spring:message code="order.js.txt.email.addr" /></label> <span class="required">*</span></th>
+					<td>
+						<input type="text" id="noMemEmail1" class="input-style01 input_required" style="width:152px;" alt="<spring:message code="order.js.txt.email" />" maxlength="100">
+						<span class="at">@</span>
+						<input type="text" id="noMemEmail2" class="input-style01 input_required" style="width:152px;" alt="<spring:message code="order.js.txt.email" />" maxlength="100">
+						<!-- select -->
+						<div class="select-style01 d_select">
+							<button type="button" class="d_select_sel" style="width:152px;" ><span><spring:message code="order.js.txt.just.input" /></span></button>
+							<ul>
+								<li><a href="#" onClick="$('#noMemEmail2').val('');"><spring:message code="order.js.txt.just.input" /></a></li>
+								<li><a href="#" onClick="$('#noMemEmail2').val('naver.com');">naver.com</a></li>
+								<li><a href="#" onClick="$('#noMemEmail2').val('daum.net');">daum.net</a></li>
+								<li><a href="#" onClick="$('#noMemEmail2').val('nate.com');">nate.com</a></li>
+								<li><a href="#" onClick="$('#noMemEmail2').val('gmail.com');">gmail.com</a></li>
+								<li><a href="#" onClick="$('#noMemEmail2').val('hotmail.com');">hotmail.com</a></li>
+							</ul>
+						</div>
+						<!-- //select -->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>	
+</div>
+<button type="button" class="btn-close d_toggle_select"><span>Close</span></button>

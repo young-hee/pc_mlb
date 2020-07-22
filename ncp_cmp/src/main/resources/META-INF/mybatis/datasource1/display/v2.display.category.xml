@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.v2.display">
+
+    <select id="selectBrandInfo" parameterType="String" resultType="String" >
+        SELECT /* [v2.display.category.xml][selectBrandInfo][브랜드 ID 조회][sangsic] */
+                s.BRND_ID
+          FROM DSP_CTGRY d
+          , SYS_BRND s
+         WHERE dsp_ctgry_no = #{brandShopNo, jdbcType=VARCHAR}
+           AND d.DSP_BRND_ID = s.BRND_ID
+           AND s.USE_YN = 'Y'
+           AND d.DSP_YN = 'Y'
+           AND d.DELETE_YN = 'N'
+    </select>
+
+    <select id="selectCtgryInfo" parameterType="String" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" >
+        SELECT  /* [v2.display.category.xml][selectCtgryInfo][카테고리 정보 조회][sangsic] */
+                 d.dsp_ctgry_no
+		        ,d.UPPER_DSP_CTGRY_NO
+		        ,d.DSP_CTGRY_NM
+		        ,d.CTGRY_TP_CD
+		        ,d.GOD_DSP_UNIT_CD
+		        ,d.CTGRY_DPTH_CD
+		        ,d.DSP_GOD_SORT_STDR_CD
+		        ,d.LEAF_CTGRY_YN
+		        ,d.DSP_YN
+		        ,d.SPCIFY_URL_DSP_YN
+		        ,d.CTGRY_DIV_LNE_YN
+		        ,d.CTGRY_DIV_LNE_CSS_CD
+		        ,d.DELETE_YN
+		        ,d.CTGRY_OUTPT_TP_CD
+		        ,d.OUTPT_SECT_CD
+		        ,d.OUTPT_LINK_URL
+		        ,d.SORT_SEQ
+		        ,d.APL_MALL_ID
+		        ,d.DSP_BRND_ID
+		        ,d.EXPSR_LVL_CD
+		        ,d.RPRST_IMG_FILE_NM
+		        ,d.RPRST_IMG_FILE_URL
+		        ,d.RPRST_IMG_ALTRTV_CONT
+		        ,d.BCRN_STYLE_CLASS_ID
+                ,d.CTGRY_SECT_CD
+                ,d.EXPSR_TGT_CD
+		        ,d.REGTR_ID
+		        ,d.REG_DT
+		        ,d.UDTER_ID
+		        ,d.UDT_DT
+                ,d.STRTGY_CTGRY_ATRB_CD
+        FROM DSP_CTGRY d
+        WHERE dsp_ctgry_no = #{dspCtgryNo, jdbcType=VARCHAR}
+        AND d.DSP_YN = 'Y'
+        AND d.DELETE_YN = 'N'
+    </select>
+
+    <select id="selectNewTopOnCtgryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" >
+          select /* [v2.display.category.xml][selectNewTopOnCtgryList][신상품, 인기상품, 세일상품 조회][sangsic] */
+		         a.dsp_ctgry_no
+		        ,a.UPPER_DSP_CTGRY_NO
+		        ,NVL(dcl.DSP_CTGRY_NM,a.DSP_CTGRY_NM) AS dsp_ctgry_nm
+		        ,a.CTGRY_TP_CD
+		        ,a.GOD_DSP_UNIT_CD
+		        ,a.CTGRY_DPTH_CD
+		        ,a.DSP_GOD_SORT_STDR_CD
+		        ,a.LEAF_CTGRY_YN
+		        ,a.DSP_YN
+		        ,a.SPCIFY_URL_DSP_YN
+		        ,a.CTGRY_DIV_LNE_YN
+		        ,a.CTGRY_DIV_LNE_CSS_CD
+		        ,a.DELETE_YN
+		        ,a.CTGRY_OUTPT_TP_CD
+		        ,a.OUTPT_SECT_CD
+		        ,a.OUTPT_LINK_URL
+		        ,a.SORT_SEQ
+		        ,a.APL_MALL_ID
+		        ,a.DSP_BRND_ID
+		        ,a.EXPSR_LVL_CD
+		        ,a.RPRST_IMG_FILE_NM
+		        ,a.RPRST_IMG_FILE_URL
+		        ,a.RPRST_IMG_ALTRTV_CONT
+		        ,a.BCRN_STYLE_CLASS_ID
+                ,a.CTGRY_SECT_CD
+                ,a.EXPSR_TGT_CD
+		        ,a.REGTR_ID
+		        ,a.REG_DT
+		        ,a.UDTER_ID
+		        ,a.UDT_DT
+                ,a.STRTGY_CTGRY_ATRB_CD
+
+
+          from dsp_ctgry a
+
+
+            JOIN DSP_CTGRY_DSP_APL dcda
+            ON a.DSP_CTGRY_NO = dcda.dsp_ctgry_no
+            AND dcda.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+            AND dcda.LANG_CD = #{lang, jdbcType=VARCHAR}
+            AND dcda.DSP_YN = 'Y'
+            and a.CTGRY_SECT_CD in ('NEW_GOD_CTGRY','BST_CTGRY','ON_SALE_CTGRY')
+            and a.ctgry_dpth_cd = '2'
+            and a.dsp_yn = 'Y'
+            and a.delete_yn = 'N'
+            and a.upper_dsp_ctgry_no = substr(#{dspCtgryNo, jdbcType=VARCHAR},0,6)
+
+            left outer JOIN DSP_CTGRY_LANG dcl
+            ON a.DSP_CTGRY_NO = dcl.DSP_CTGRY_NO
+            AND dcl.lang_cd = #{lang, jdbcType=VARCHAR}
+            AND a.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+
+ order by a.SORT_SEQ
+    </select>
+
+
+    <select id="selectNewTopOnCtgryListOfInstore" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" >
+        SELECT    /* [v2.display.category.xml][selectNewTopOnCtgryList][신상품, 인기상품, 세일상품 조회][sangsic] */
+                  a.dsp_ctgry_no
+                  ,a.UPPER_DSP_CTGRY_NO
+                  ,NVL(dcl.DSP_CTGRY_NM,a.DSP_CTGRY_NM) AS dsp_ctgry_nm
+                  ,a.CTGRY_TP_CD
+                  ,a.GOD_DSP_UNIT_CD
+                  ,a.CTGRY_DPTH_CD
+                  ,a.DSP_GOD_SORT_STDR_CD
+                  ,a.LEAF_CTGRY_YN
+                  ,a.DSP_YN
+                  ,a.SPCIFY_URL_DSP_YN
+                  ,a.CTGRY_DIV_LNE_YN
+                  ,a.CTGRY_DIV_LNE_CSS_CD
+                  ,a.DELETE_YN
+                  ,a.CTGRY_OUTPT_TP_CD
+                  ,a.OUTPT_SECT_CD
+                  ,a.OUTPT_LINK_URL
+                  ,a.SORT_SEQ
+                  ,a.APL_MALL_ID
+                  ,a.DSP_BRND_ID
+                  ,a.EXPSR_LVL_CD
+                  ,a.RPRST_IMG_FILE_NM
+                  ,a.RPRST_IMG_FILE_URL
+                  ,a.RPRST_IMG_ALTRTV_CONT
+                  ,a.BCRN_STYLE_CLASS_ID
+                  <!-- 2017-10-20 전시 영역 구조 변경으로 인해 기존에 사용하지 않던 query 삭제를 위한 임시 주석 처리 -->
+                  /*,a.PC_MOBILE_TMPLAT_IND_USE_YN
+                  ,a.PC_TMPLAT_SN
+                  ,a.MOBILE_TMPLAT_SN*/
+                  ,a.CTGRY_SECT_CD
+                  ,a.EXPSR_TGT_CD
+                  ,a.REGTR_ID
+                  ,a.REG_DT
+                  ,a.UDTER_ID
+                  ,a.UDT_DT
+                  ,a.STRTGY_CTGRY_ATRB_CD
+          FROM  dsp_ctgry a
+          JOIN DSP_CTGRY_DSP_APL_brnd dcda ON a.DSP_CTGRY_NO = dcda.dsp_ctgry_no
+           AND dcda.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+           AND dcda.DSP_BRND_ID = #{brndId, jdbcType=VARCHAR}
+           AND dcda.LANG_CD = #{lang, jdbcType=VARCHAR}
+           AND a.CTGRY_SECT_CD in ('NEW_GOD_CTGRY','BST_CTGRY','ON_SALE_CTGRY')
+           AND a.ctgry_dpth_cd = '1'
+           AND a.dsp_yn = 'Y'
+           AND a.delete_yn = 'N'
+           AND dcda.BRND_DSP_YN = 'Y'
+           AND a.upper_dsp_ctgry_no = substr(#{dspCtgryNo, jdbcType=VARCHAR},0,6)
+          LEFT OUTER JOIN DSP_CTGRY_LANG dcl
+            ON a.DSP_CTGRY_NO = dcl.DSP_CTGRY_NO
+           AND dcl.lang_cd = #{lang, jdbcType=VARCHAR}
+           AND a.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+         ORDER BY a.SORT_SEQ
+    </select>
+
+    <select id="selectBrandLnbCtgryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" >
+        select /* [v2.display.category.xml][selectBrandLnbCtgryList][전시 브랜드 조회][sangsic] */
+          DSP_CTGRY_NO
+        , UPPER_DSP_CTGRY_NO
+        , DSP_CTGRY_NM
+        , CTGRY_TP_CD
+        , GOD_DSP_UNIT_CD
+        , CTGRY_DPTH_CD
+        , DSP_GOD_SORT_STDR_CD
+        , LEAF_CTGRY_YN
+        , DSP_YN
+        , SPCIFY_URL_DSP_YN
+        , CTGRY_DIV_LNE_YN
+        , CTGRY_DIV_LNE_CSS_CD
+        , DELETE_YN
+        , CTGRY_OUTPT_TP_CD
+        , OUTPT_SECT_CD
+        , OUTPT_LINK_URL
+        , SORT_SEQ
+        , APL_MALL_ID
+        , DSP_BRND_ID
+        , EXPSR_LVL_CD
+        , RPRST_IMG_FILE_NM
+        , RPRST_IMG_FILE_URL
+        , RPRST_IMG_ALTRTV_CONT
+        , BCRN_STYLE_CLASS_ID
+        , CTGRY_SECT_CD
+        from (
+
+                   SELECT
+                        DC.DSP_CTGRY_NO
+                        , DC.UPPER_DSP_CTGRY_NO
+                        , NVL(DCL.DSP_CTGRY_NM,DC.DSP_CTGRY_NM) AS DSP_CTGRY_NM
+                        , DC.CTGRY_TP_CD
+                        , DC.GOD_DSP_UNIT_CD
+                        , DC.CTGRY_DPTH_CD
+                        , DC.DSP_GOD_SORT_STDR_CD
+                        , DC.LEAF_CTGRY_YN
+                        , DC.DSP_YN
+                        , DC.SPCIFY_URL_DSP_YN
+                        , DC.CTGRY_DIV_LNE_YN
+                        , DC.CTGRY_DIV_LNE_CSS_CD
+                        , DC.DELETE_YN
+                        , DC.CTGRY_OUTPT_TP_CD
+                        , DC.OUTPT_SECT_CD
+                        , DC.OUTPT_LINK_URL
+                        , DC.SORT_SEQ
+                        , DC.APL_MALL_ID
+                        , DC.DSP_BRND_ID
+                        , DC.EXPSR_LVL_CD
+                        , DC.RPRST_IMG_FILE_NM
+                        , DC.RPRST_IMG_FILE_URL
+                        , DC.RPRST_IMG_ALTRTV_CONT
+                        , DC.BCRN_STYLE_CLASS_ID
+                        , DC.CTGRY_SECT_CD
+
+                FROM DSP_CTGRY DC
+                JOIN DSP_CTGRY_DSP_APL dcda
+                ON dc.DSP_CTGRY_NO = dcda.DSP_CTGRY_NO
+                AND dcda.DSP_YN = 'Y'
+                AND dcda.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+                AND dcda.LANG_CD = #{lang, jdbcType=VARCHAR}
+                LEFT OUTER JOIN DSP_CTGRY_LANG DCL
+                ON DCL.DSP_CTGRY_NO = DC.DSP_CTGRY_NO
+                AND DCL.LANG_CD = #{lang, jdbcType=VARCHAR}
+
+            WHERE  1 = 1
+            AND DC.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+            AND DC.DELETE_YN = 'N'
+            and DC.dsp_yn = 'Y'
+             and DC.UPPER_DSP_CTGRY_NO <![CDATA[<>]]> 'BDMA09'
+             and  DC.DSP_CTGRY_NO like 'BDM%'
+             AND DC.ctgry_dpth_cd = '2'
+             AND DC.dsp_brnd_id IN (
+                                    SELECT dsp_brnd_id
+                                    FROM  DSP_CTGRY_DSP_APL_BRND
+                                    where 1 = 1
+                                    <if test='dspCtgryNo != null and dspCtgryNo != ""'>
+                                        AND dsp_ctgry_no like #{dspCtgryNo, jdbcType=VARCHAR}||'%'
+                                    </if>
+                                    AND lang_cd = #{lang, jdbcType=VARCHAR}
+                                    <if test='mallGubun != "BRAND"'>
+                                    AND dsp_yn = 'Y'
+                                    </if>
+                                    <if test='mallGubun == "BRAND"'>
+                                        AND (BRND_DSP_YN = 'Y' or DSP_YN = 'Y')
+                                    </if>
+                                    )
+
+        UNION all
+        SELECT
+                d1.DSP_CTGRY_NO
+                , d1.UPPER_DSP_CTGRY_NO
+                , NVL(DCL.DSP_CTGRY_NM,d1.DSP_CTGRY_NM) AS DSP_CTGRY_NM
+                , d1.CTGRY_TP_CD
+                , d1.GOD_DSP_UNIT_CD
+                , d1.CTGRY_DPTH_CD
+                , d1.DSP_GOD_SORT_STDR_CD
+                , d1.LEAF_CTGRY_YN
+                , d1.DSP_YN
+                , d1.SPCIFY_URL_DSP_YN
+                , d1.CTGRY_DIV_LNE_YN
+                , d1.CTGRY_DIV_LNE_CSS_CD
+                , d1.DELETE_YN
+                , d1.CTGRY_OUTPT_TP_CD
+                , d1.OUTPT_SECT_CD
+                , d1.OUTPT_LINK_URL
+                , d1.SORT_SEQ
+                , d1.APL_MALL_ID
+                , d1.DSP_BRND_ID
+                , d1.EXPSR_LVL_CD
+                , d1.RPRST_IMG_FILE_NM
+                , d1.RPRST_IMG_FILE_URL
+                , d1.RPRST_IMG_ALTRTV_CONT
+                , d1.BCRN_STYLE_CLASS_ID
+                , d1.CTGRY_SECT_CD
+        from DSP_CTGRY d1
+        JOIN DSP_CTGRY_DSP_APL dcda
+        ON d1.DSP_CTGRY_NO = dcda.DSP_CTGRY_NO
+        AND dcda.DSP_YN = 'Y'
+        AND dcda.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+        AND dcda.LANG_CD = #{lang, jdbcType=VARCHAR}
+        LEFT OUTER JOIN DSP_CTGRY_LANG DCL
+        ON DCL.DSP_CTGRY_NO = d1.DSP_CTGRY_NO
+        AND DCL.LANG_CD = #{lang, jdbcType=VARCHAR}
+        WHERE 1 = 1
+        AND d1.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+        AND d1.DELETE_YN = 'N'
+        and d1.dsp_yn = 'Y'
+        <if test="mallGubun == 'PLGRIM'">
+            /*브랜드 필터적용시 Beanpole 은 제외한다*/
+          AND d1.DSP_CTGRY_NO in ('BDMA09')
+        </if>
+        <if test="mallGubun != 'PLGRIM'">
+            /*브랜드 필터적용시 Beanpole 은 제외한다*/
+          AND d1.DSP_CTGRY_NO in ('BDMA09','BDMA01')
+        </if>
+        AND d1.dsp_brnd_id IN (
+                                SELECT dsp_brnd_id
+                                FROM  DSP_CTGRY_DSP_APL_BRND
+                                where 1 = 1
+                                <if test='dspCtgryNo != null and dspCtgryNo != ""'>
+                                    AND dsp_ctgry_no like #{dspCtgryNo, jdbcType=VARCHAR}||'%'
+                                </if>
+                                AND lang_cd = #{lang, jdbcType=VARCHAR}
+                                <if test='mallGubun != "BRAND"'>
+                                    AND dsp_yn = 'Y'
+                                </if>
+                                <if test='mallGubun == "BRAND"'>
+                                    AND (BRND_DSP_YN = 'Y' or DSP_YN = 'Y')
+                                </if>
+                                )
+
+            )order by SORT_SEQ
+    </select>
+
+    <select id="selectLnbCtgryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" >
+        SELECT  /* [v2.display.category.xml][selectLnbCtgryList][전시 카테고리 트리 조회][sangsic] */
+         DSP_CTGRY_NO
+        ,UPPER_DSP_CTGRY_NO
+        ,DSP_CTGRY_NM
+        ,CTGRY_TP_CD
+        ,GOD_DSP_UNIT_CD
+        ,CTGRY_DPTH_CD
+        ,DSP_GOD_SORT_STDR_CD
+        ,LEAF_CTGRY_YN
+        ,DSP_YN
+        ,SPCIFY_URL_DSP_YN
+        ,CTGRY_DIV_LNE_YN
+        ,CTGRY_DIV_LNE_CSS_CD
+        ,DELETE_YN
+        ,CTGRY_OUTPT_TP_CD
+        ,OUTPT_SECT_CD
+        ,OUTPT_LINK_URL
+        ,SORT_SEQ
+        ,APL_MALL_ID
+        ,DSP_BRND_ID
+        ,EXPSR_LVL_CD
+        ,RPRST_IMG_FILE_NM
+        ,RPRST_IMG_FILE_URL
+        ,RPRST_IMG_ALTRTV_CONT
+        ,BCRN_STYLE_CLASS_ID
+        ,EXPSR_TGT_CD
+        ,REGTR_ID
+        ,REG_DT
+        ,UDTER_ID
+        ,UDT_DT
+        ,STRTGY_CTGRY_ATRB_CD
+        ,CTGRY_SECT_CD
+          from
+        (select
+
+        BB.DSP_CTGRY_NO
+        ,BB.UPPER_DSP_CTGRY_NO
+        ,BB.DSP_CTGRY_NM
+        ,BB.CTGRY_TP_CD
+        ,BB.GOD_DSP_UNIT_CD
+        ,BB.CTGRY_DPTH_CD
+        ,BB.DSP_GOD_SORT_STDR_CD
+        ,BB.LEAF_CTGRY_YN
+        ,BB.DSP_YN
+        ,BB.SPCIFY_URL_DSP_YN
+        ,BB.CTGRY_DIV_LNE_YN
+        ,BB.CTGRY_DIV_LNE_CSS_CD
+        ,BB.DELETE_YN
+        ,BB.CTGRY_OUTPT_TP_CD
+        ,BB.OUTPT_SECT_CD
+        ,BB.OUTPT_LINK_URL
+        ,BB.SORT_SEQ
+        ,BB.APL_MALL_ID
+        ,BB.DSP_BRND_ID
+        ,BB.EXPSR_LVL_CD
+        ,BB.RPRST_IMG_FILE_NM
+        ,BB.RPRST_IMG_FILE_URL
+        ,BB.RPRST_IMG_ALTRTV_CONT
+        ,BB.BCRN_STYLE_CLASS_ID
+        ,BB.EXPSR_TGT_CD
+        ,BB.REGTR_ID
+        ,BB.REG_DT
+        ,BB.UDTER_ID
+        ,BB.UDT_DT
+        ,BB.STRTGY_CTGRY_ATRB_CD
+        ,BB.CTGRY_SECT_CD
+
+		FROM (
+		    select
+		         a.dsp_ctgry_no
+		        ,a.UPPER_DSP_CTGRY_NO
+		        ,CASE
+                    WHEN #{lang, jdbcType=VARCHAR} = 'KOR'
+                    THEN NVL(bctg.DSP_CTGRY_NM,a.DSP_CTGRY_NM)
+                    ELSE NVL(dcl.DSP_CTGRY_NM,a.DSP_CTGRY_NM)
+                  END  AS dsp_ctgry_nm
+		        ,a.CTGRY_TP_CD
+		        ,a.GOD_DSP_UNIT_CD
+		        ,a.CTGRY_DPTH_CD
+		        ,a.DSP_GOD_SORT_STDR_CD
+		        ,a.LEAF_CTGRY_YN
+		        ,a.DSP_YN
+		        ,a.SPCIFY_URL_DSP_YN
+		        ,a.CTGRY_DIV_LNE_YN
+		        ,a.CTGRY_DIV_LNE_CSS_CD
+		        ,a.DELETE_YN
+                 /*브랜드 카테고리 일때, 브랜드 테이블에 카테고리 출력 유형 코드 / 출력 구분 코드 / 출력 링크 URL*/
+                <if test='brndId == null or brndId == ""'>
+                    ,a.CTGRY_OUTPT_TP_CD
+                    ,a.OUTPT_SECT_CD
+                    ,a.OUTPT_LINK_URL
+                </if>
+                <if test='brndId != null and brndId != ""'>
+                    ,nvl(bctg.CTGRY_OUTPT_TP_CD,a.CTGRY_OUTPT_TP_CD) as CTGRY_OUTPT_TP_CD
+                    ,nvl(bctg.OUTPT_SECT_CD,a.OUTPT_SECT_CD) as OUTPT_SECT_CD
+                    ,nvl(bctg.OUTPT_LINK_URL,a.OUTPT_LINK_URL) as OUTPT_LINK_URL
+                </if>
+                /*브랜드 카테고리 일때, 브랜드 테이블에 카테고리 출력 유형 코드 / 출력 구분 코드 / 출력 링크 URL*/
+		        ,a.SORT_SEQ
+		        ,a.APL_MALL_ID
+		        ,a.DSP_BRND_ID
+		        ,a.EXPSR_LVL_CD
+		        ,a.RPRST_IMG_FILE_NM
+		        ,a.RPRST_IMG_FILE_URL
+		        ,a.RPRST_IMG_ALTRTV_CONT
+		        ,a.BCRN_STYLE_CLASS_ID
+                ,a.CTGRY_SECT_CD
+                ,a.EXPSR_TGT_CD
+		        ,a.REGTR_ID
+		        ,a.REG_DT
+		        ,a.UDTER_ID
+		        ,a.UDT_DT
+                ,a.STRTGY_CTGRY_ATRB_CD
+		        ,bctg.DSP_CTGRY_NM as BR_DSP_CTGRY_NM
+		        ,bctg.SORT_SEQ as BR_SORT_SEQ
+                ,nvl(bctg.DSP_YN,a.dsp_yn) as dsp_brnd_ctgry_dsp_yn
+                ,nvl(bctg.SPCIFY_URL_DSP_YN,a.SPCIFY_URL_DSP_YN) as brnd_SPCIFY_URL_DSP_YN
+		    from dsp_ctgry a
+
+            <if test='brndId == null or brndId == ""'>
+                JOIN DSP_CTGRY_DSP_APL dcda
+                ON (a.DSP_CTGRY_NO = dcda.dsp_ctgry_no
+                AND dcda.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+                AND dcda.LANG_CD = #{lang, jdbcType=VARCHAR}
+                AND dcda.DSP_YN = 'Y')
+            </if>
+            <if test='brndId != null and brndId != ""'>
+                JOIN DSP_CTGRY_DSP_APL_BRND dcdab
+                ON (a.DSP_CTGRY_NO = dcdab.DSP_CTGRY_NO
+                AND dcdab.dsp_brnd_id = #{brndId, jdbcType=VARCHAR}
+                AND dcdab.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+                AND dcdab.LANG_CD = #{lang, jdbcType=VARCHAR}
+                <if test='mallGubun == "BRAND"'>
+                    AND dcdab.BRND_DSP_YN = 'Y'
+                </if>
+                <if test='mallGubun != "BRAND"'>
+                AND dcdab.DSP_YN = 'Y'
+                </if>
+
+                )
+            </if>
+
+		    LEFT OUTER JOIN dsp_brnd_ctgry bctg
+        	ON  (a.dsp_ctgry_no = bctg.dsp_ctgry_no
+                AND bctg.dsp_brnd_id = #{brndId, jdbcType=VARCHAR}
+                )
+            left outer JOIN DSP_CTGRY_LANG dcl
+            ON a.DSP_CTGRY_NO = dcl.DSP_CTGRY_NO
+            AND dcl.lang_cd = #{lang, jdbcType=VARCHAR}
+            AND a.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+
+            ) BB
+
+            CONNECT BY PRIOR BB.DSP_CTGRY_NO = BB.UPPER_DSP_CTGRY_NO
+                AND BB.delete_yn = 'N'
+            <if test='mallGubun != "BRAND"'>  
+                AND BB.dsp_yn = 'Y'
+                AND BB.SPCIFY_URL_DSP_YN = 'N'
+            </if> 
+            <if test='mallGubun == "BRAND"'>
+                AND BB.dsp_brnd_ctgry_dsp_yn = 'Y'
+                AND BB.brnd_SPCIFY_URL_DSP_YN = 'N'
+            </if>
+            START WITH BB.DSP_CTGRY_NO = SUBSTR(#{dspCtgryNo, jdbcType=VARCHAR},0,6)
+            <!--<if test="ctgrySectCd == null or ctgrySectCd == ''">
+                START WITH BB.DSP_CTGRY_NO = SUBSTR(#{dspCtgryNo, jdbcType=VARCHAR},0,6)
+            </if>-->
+            <!--<if test="ctgrySectCd == 'STRTGY_CTGRY'">
+                START WITH BB.DSP_CTGRY_NO = SUBSTR(#{dspCtgryNo, jdbcType=VARCHAR},0,6)
+            </if>-->
+            <!--<if test="ctgrySectCd == 'OTLT_CTGRY'">
+                START WITH BB.DSP_CTGRY_NO IN (SELECT DSP_CTGRY_NO
+                FROM DSP_CTGRY
+                WHERE 1 = 1
+                AND CTGRY_SECT_CD = #{ctgrySectCd,jdbcType=VARCHAR}
+                <if test="dspCtgryNo != 'DXM'">
+                    AND STRTGY_CTGRY_ATRB_CD = DECODE(SUBSTR(#{dspCtgryNo, jdbcType=VARCHAR},0,6),#{men,jdbcType=VARCHAR},'CTGRY_MEN',#{women,jdbcType=VARCHAR},'CTGRY_WOMEN',#{kids,jdbcType=VARCHAR},'CTGRY_KIDS')
+                </if>
+                )
+            </if>-->
+            ORDER SIBLINGS BY
+            CASE
+            WHEN BB.BR_SORT_SEQ IS NOT NULL
+            THEN BB.BR_SORT_SEQ
+            ELSE BB.SORT_SEQ
+            END
+        )where 1 = 1
+        <if test="ctgrySectCd != null and ctgrySectCd != ''">
+            AND CTGRY_SECT_CD = #{ctgrySectCd,jdbcType=VARCHAR}
+        </if>
+        <if test='mallGubun != "BRAND"'>
+            AND (EXPSR_TGT_CD is null or EXPSR_TGT_CD = 'EXPSR_DXM_CTGRY' OR EXPSR_TGT_CD = 'EXPSR_DXM_BRND_CTGRY')
+        </if>
+        <if test='mallGubun == "BRAND"'>
+            AND (EXPSR_TGT_CD is null or EXPSR_TGT_CD = 'EXPSR_BRND_CTGRY' OR EXPSR_TGT_CD = 'EXPSR_DXM_BRND_CTGRY')
+        </if>
+
+
+
+    </select>
+
+    <select id="selectMBLnbCtgryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.biz.display.result.DspCtgryLNBResult" >
+        SELECT  /* [v2.display.category.xml][selectMBLnbCtgryList][전시 카테고리 리스트 조회][sangsic] */
+
+        BB.DSP_CTGRY_NO
+        ,BB.UPPER_DSP_CTGRY_NO
+        ,BB.UPPER_DSP_CTGRY_NM
+        ,BB.UPPER_DEPTH2_DSP_CTGRY_NO
+        ,BB.DSP_CTGRY_NM
+        ,BB.CTGRY_TP_CD
+        ,BB.GOD_DSP_UNIT_CD
+        ,BB.CTGRY_DPTH_CD
+        ,BB.DSP_GOD_SORT_STDR_CD
+        ,BB.LEAF_CTGRY_YN
+        ,BB.DSP_YN
+        ,BB.SPCIFY_URL_DSP_YN
+        ,BB.CTGRY_DIV_LNE_YN
+        ,BB.CTGRY_DIV_LNE_CSS_CD
+        ,BB.DELETE_YN
+        ,BB.CTGRY_OUTPT_TP_CD
+        ,BB.OUTPT_SECT_CD
+        ,BB.OUTPT_LINK_URL
+        ,BB.SORT_SEQ
+        ,BB.APL_MALL_ID
+        ,BB.DSP_BRND_ID
+        ,BB.EXPSR_LVL_CD
+        ,BB.RPRST_IMG_FILE_NM
+        ,BB.RPRST_IMG_FILE_URL
+        ,BB.RPRST_IMG_ALTRTV_CONT
+        ,BB.BCRN_STYLE_CLASS_ID
+        ,BB.EXPSR_TGT_CD
+        ,BB.REGTR_ID
+        ,BB.REG_DT
+        ,BB.UDTER_ID
+        ,BB.UDT_DT
+        ,BB.STRTGY_CTGRY_ATRB_CD
+        ,BB.CTGRY_SECT_CD
+
+        FROM (
+        select
+                a.dsp_ctgry_no
+                ,a.UPPER_DSP_CTGRY_NO
+                /*,upperdc.DSP_CTGRY_NM AS UPPER_DSP_CTGRY_NM*/
+                ,CASE
+                WHEN #{lang, jdbcType=VARCHAR} = 'KOR'
+                THEN upperdc.DSP_CTGRY_NM
+                ELSE NVL(uppdcl.DSP_CTGRY_NM,upperdc.DSP_CTGRY_NM)
+                END AS UPPER_DSP_CTGRY_NM
+                ,upperdc.UPPER_DSP_CTGRY_NO AS UPPER_DEPTH2_DSP_CTGRY_NO
+                ,CASE
+                WHEN #{lang, jdbcType=VARCHAR} = 'KOR'
+                THEN NVL(bctg.DSP_CTGRY_NM,a.DSP_CTGRY_NM)
+                ELSE NVL(dcl.DSP_CTGRY_NM,a.DSP_CTGRY_NM)
+                END  AS dsp_ctgry_nm
+                ,a.CTGRY_TP_CD
+                ,a.GOD_DSP_UNIT_CD
+                ,a.CTGRY_DPTH_CD
+                ,a.DSP_GOD_SORT_STDR_CD
+                ,a.LEAF_CTGRY_YN
+                ,a.DSP_YN
+                ,a.SPCIFY_URL_DSP_YN
+                ,a.CTGRY_DIV_LNE_YN
+                ,a.CTGRY_DIV_LNE_CSS_CD
+                ,a.DELETE_YN
+                /*브랜드 카테고리 일때, 브랜드 테이블에 카테고리 출력 유형 코드 / 출력 구분 코드 / 출력 링크 URL*/
+                <if test='brndId == null or brndId == ""'>
+                    ,a.CTGRY_OUTPT_TP_CD
+                    ,a.OUTPT_SECT_CD
+                    ,a.OUTPT_LINK_URL
+                </if>
+                <if test='brndId != null and brndId != ""'>
+                    ,nvl(bctg.CTGRY_OUTPT_TP_CD,a.CTGRY_OUTPT_TP_CD) as CTGRY_OUTPT_TP_CD
+                    ,nvl(bctg.OUTPT_SECT_CD,a.OUTPT_SECT_CD) as OUTPT_SECT_CD
+                    ,nvl(bctg.OUTPT_LINK_URL,a.OUTPT_LINK_URL) as OUTPT_LINK_URL
+                </if>
+                /*브랜드 카테고리 일때, 브랜드 테이블에 카테고리 출력 유형 코드 / 출력 구분 코드 / 출력 링크 URL*/
+                ,a.SORT_SEQ
+                ,a.APL_MALL_ID
+                ,a.DSP_BRND_ID
+                ,a.EXPSR_LVL_CD
+                ,a.RPRST_IMG_FILE_NM
+                ,a.RPRST_IMG_FILE_URL
+                ,a.RPRST_IMG_ALTRTV_CONT
+                ,a.BCRN_STYLE_CLASS_ID
+                ,a.CTGRY_SECT_CD
+                ,a.EXPSR_TGT_CD
+                ,a.REGTR_ID
+                ,a.REG_DT
+                ,a.UDTER_ID
+                ,a.UDT_DT
+                ,a.STRTGY_CTGRY_ATRB_CD
+                ,bctg.DSP_CTGRY_NM as BR_DSP_CTGRY_NM
+                ,bctg.SORT_SEQ as BR_SORT_SEQ
+                ,nvl(bctg.DSP_YN,a.dsp_yn) as dsp_brnd_ctgry_dsp_yn
+                ,nvl(bctg.SPCIFY_URL_DSP_YN,a.SPCIFY_URL_DSP_YN) as brnd_SPCIFY_URL_DSP_YN
+                from dsp_ctgry a
+
+                <if test='brndId == null or brndId == ""'>
+                    JOIN DSP_CTGRY_DSP_APL dcda
+                    ON (a.DSP_CTGRY_NO = dcda.dsp_ctgry_no
+                    AND dcda.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+                    AND dcda.LANG_CD = #{lang, jdbcType=VARCHAR}
+                    AND dcda.DSP_YN = 'Y')
+                </if>
+                <if test='brndId != null and brndId != ""'>
+                    JOIN DSP_CTGRY_DSP_APL_BRND dcdab
+                    ON (a.DSP_CTGRY_NO = dcdab.DSP_CTGRY_NO
+                    AND dcdab.dsp_brnd_id = #{brndId, jdbcType=VARCHAR}
+                    AND dcdab.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+                    AND dcdab.LANG_CD = #{lang, jdbcType=VARCHAR}
+                    <if test='mallGubun == "BRAND"'>
+                        AND dcdab.BRND_DSP_YN = 'Y'
+                    </if>
+                    <if test='mallGubun != "BRAND"'>
+                        AND dcdab.DSP_YN = 'Y'
+                    </if>
+
+                    )
+                </if>
+
+        LEFT OUTER JOIN dsp_brnd_ctgry bctg
+        ON  (a.dsp_ctgry_no = bctg.dsp_ctgry_no
+        AND bctg.dsp_brnd_id = #{brndId, jdbcType=VARCHAR}
+        )
+        left outer JOIN DSP_CTGRY_LANG dcl
+        ON a.DSP_CTGRY_NO = dcl.DSP_CTGRY_NO
+        AND dcl.lang_cd = #{lang, jdbcType=VARCHAR}
+        AND a.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+
+        left outer JOIN DSP_CTGRY upperdc
+        ON a.UPPER_DSP_CTGRY_NO = upperdc.dsp_ctgry_no
+        LEFT OUTER JOIN DSP_CTGRY_LANG uppdcl
+        ON upperdc.DSP_CTGRY_NO = uppdcl.DSP_CTGRY_NO
+        AND uppdcl.lang_cd = #{lang, jdbcType=VARCHAR}
+        AND upperdc.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+        ) BB
+        WHERE 1 = 1
+        AND BB.delete_yn = 'N'
+        AND BB.upper_dsp_ctgry_no LIKE 'DXM%'
+        <if test="ctgrySectCd == null or ctgrySectCd == ''">
+          AND BB.upper_dsp_ctgry_no != 'DXM'
+          AND BB.CTGRY_SECT_CD not in ('BST_CTGRY','NEW_GOD_CTGRY','ON_SALE_CTGRY','OTLT_CTGRY')
+        </if>
+        <if test="ctgrySectCd != null and ctgrySectCd != ''">
+            <if test="ctgrySectCd != 'ETC_CTGRY'">
+                AND BB.CTGRY_SECT_CD = #{ctgrySectCd,jdbcType=VARCHAR}
+            </if>
+            <if test="ctgrySectCd == 'ETC_CTGRY'">
+                AND BB.CTGRY_SECT_CD in ('BST_CTGRY','NEW_GOD_CTGRY','ON_SALE_CTGRY')
+            </if>
+        </if>
+        <if test='mallGubun == "BRAND"'>
+            AND BB.dsp_brnd_ctgry_dsp_yn = 'Y'
+            AND BB.brnd_SPCIFY_URL_DSP_YN = 'N'
+            AND (EXPSR_TGT_CD is null or EXPSR_TGT_CD = 'EXPSR_BRND_CTGRY' OR EXPSR_TGT_CD = 'EXPSR_DXM_BRND_CTGRY')
+        </if>
+        <if test='mallGubun != "BRAND"'>
+        	AND BB.dsp_yn = 'Y'
+        	AND BB.SPCIFY_URL_DSP_YN = 'N'
+            AND (EXPSR_TGT_CD is null or EXPSR_TGT_CD = 'EXPSR_DXM_CTGRY' OR EXPSR_TGT_CD = 'EXPSR_DXM_BRND_CTGRY')
+        </if>
+		<if test="ctgrySectCd == 'OTLT_CTGRY'">
+			AND BB.CTGRY_DPTH_CD  <![CDATA[<]]> 4
+		</if>
+        <if test="ctgrySectCd != null and ctgrySectCd != ''">
+            ORDER BY
+            <if test="ctgrySectCd == 'OTLT_CTGRY'">
+            BB.ctgry_dpth_cd,BB.upper_dsp_ctgry_no,
+            </if>
+            CASE
+            WHEN BB.BR_SORT_SEQ IS NOT NULL
+            THEN BB.BR_SORT_SEQ
+            ELSE BB.SORT_SEQ
+            END
+        </if>
+        <if test="ctgrySectCd == null or ctgrySectCd == ''">
+            ORDER BY BB.CTGRY_SECT_CD,BB.ctgry_dpth_cd,BB.upper_dsp_ctgry_no,
+            CASE
+            WHEN BB.BR_SORT_SEQ IS NOT NULL
+            THEN BB.BR_SORT_SEQ
+            ELSE BB.SORT_SEQ
+            END
+        </if>
+
+    </select>
+
+    <select id="selectBeakerList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry" >
+
+        SELECT /* [v2.display.category.xml][selectBeakerList][BEAKER 브랜드 조회][sangsic] */
+        DC.DSP_CTGRY_NO
+        , DC.UPPER_DSP_CTGRY_NO
+        , NVL(DCL.DSP_CTGRY_NM,DC.DSP_CTGRY_NM) AS DSP_CTGRY_NM
+        , DC.CTGRY_TP_CD
+        , DC.GOD_DSP_UNIT_CD
+        , DC.CTGRY_DPTH_CD
+        , DC.DSP_GOD_SORT_STDR_CD
+        , DC.LEAF_CTGRY_YN
+        , DC.DSP_YN
+        , DC.SPCIFY_URL_DSP_YN
+        , DC.CTGRY_DIV_LNE_YN
+        , DC.CTGRY_DIV_LNE_CSS_CD
+        , DC.DELETE_YN
+        , DC.CTGRY_OUTPT_TP_CD
+        , DC.OUTPT_SECT_CD
+        , DC.OUTPT_LINK_URL
+        , DC.SORT_SEQ
+        , DC.APL_MALL_ID
+        , DC.DSP_BRND_ID
+        , DC.EXPSR_LVL_CD
+        , DC.RPRST_IMG_FILE_NM
+        , DC.RPRST_IMG_FILE_URL
+        , DC.RPRST_IMG_ALTRTV_CONT
+        , DC.BCRN_STYLE_CLASS_ID
+        , DC.CTGRY_SECT_CD
+
+        FROM DSP_CTGRY DC
+        JOIN DSP_CTGRY_DSP_APL t6
+            ON (
+            DC.DSP_CTGRY_NO = t6.DSP_CTGRY_NO
+            AND t6.DSP_YN = 'Y'
+            AND t6.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+            AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}
+            )
+        LEFT OUTER JOIN DSP_CTGRY_LANG DCL
+          ON DCL.DSP_CTGRY_NO = DC.DSP_CTGRY_NO
+         AND DCL.LANG_CD = #{lang, jdbcType=VARCHAR}
+       WHERE 1 = 1
+         AND dc.dsp_yn = 'Y'
+         AND dc.DELETE_YN = 'N'
+         AND DC.DSP_CTGRY_NO LIKE 'BDMA09%'
+         AND dc.CTGRY_DPTH_CD = '2'
+
+         AND DC.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+        <if test='dspCtgryNo != null and dspCtgryNo != ""'>
+            AND dc.dsp_brnd_id IN (
+                                    SELECT dsp_brnd_id
+                                    FROM  DSP_CTGRY_DSP_APL_BRND
+                                    where 1 = 1
+                                    AND DSP_CTGRY_NO LIKE #{dspCtgryNo, jdbcType=VARCHAR}||'%'
+                                    AND lang_cd = #{lang, jdbcType=VARCHAR}
+                                    AND (BRND_DSP_YN = 'Y' or DSP_YN = 'Y')
+                                    )
+        </if>
+        <if test='indexKey != null and indexKey != ""'>
+            <if test='indexKey == "0-9"'>
+                AND regexp_like(dc.dsp_ctgry_nm,'^[0-9]')
+            </if>
+            <if test='indexKey != "0-9"'>
+                AND regexp_like(dc.dsp_ctgry_nm,'^'||#{indexKey, jdbcType=VARCHAR}||'|^'||lower(#{indexKey, jdbcType=VARCHAR}))
+            </if>
+        </if>
+        ORDER BY DCL.DSP_CTGRY_NM,DC.DSP_CTGRY_NM
+
+    </select>
+
+    <select id="selectCategoryChack" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.biz.display.result.CategoryChackResult" >
+
+        SELECT /* [v2.display.category.xml][selectCategoryChack][대 카테고리 체크][sangsic] */
+              MEN
+              ,WOMEN
+              ,KIDS
+              ,CTGRYCOUNT
+            FROM (
+                SELECT NVL(MAX(DECODE(a.dsp_ctgry_no,#{men,jdbcType=VARCHAR},'Y','N')),'N') AS  MEN
+                        ,NVL(MAX(DECODE(a.dsp_ctgry_no,#{women,jdbcType=VARCHAR},'Y','N')),'N') AS  WOMEN
+                        ,NVL(MAX(DECODE(a.dsp_ctgry_no,#{kids,jdbcType=VARCHAR},'Y','N')),'N') AS  KIDS
+                        ,COUNT(a.dsp_ctgry_no) AS CTGRYCOUNT
+                 FROM dsp_ctgry a
+                 left outer join dsp_brnd_ctgry ba on (a.dsp_ctgry_no = ba.dsp_ctgry_no and a.dsp_brnd_id = ba.dsp_brnd_id and ba.dsp_brnd_id = #{brndId, jdbcType=VARCHAR})
+                JOIN DSP_CTGRY_DSP_APL_BRND dcdab
+                     ON (
+                         a.DSP_CTGRY_NO = dcdab.DSP_CTGRY_NO
+                         AND dcdab.dsp_brnd_id = #{brndId, jdbcType=VARCHAR}
+                         AND dcdab.DSP_MBR_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+                         AND dcdab.LANG_CD = #{lang, jdbcType=VARCHAR}
+                         AND (dcdab.BRND_DSP_YN = 'Y' or dcdab.DSP_YN = 'Y')
+                     )
+
+            WHERE 1 = 1
+              AND a.ctgry_dpth_cd = 1
+              AND a.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+              AND a.dsp_ctgry_no IN (#{men,jdbcType=VARCHAR},#{women,jdbcType=VARCHAR},#{kids,jdbcType=VARCHAR})
+              AND a.DSP_YN = 'Y'
+              AND dcdab.brnd_dsp_yn = 'Y'
+			  AND nvl(ba.SPCIFY_URL_DSP_YN , a.SPCIFY_URL_DSP_YN ) = 'N'
+                )
+            group BY MEN, WOMEN, KIDS, CTGRYCOUNT
+
+    </select>
+
+    <select id="selectLocationList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry"  >
+        /* [v2.display.category.xml][selectLocationList][카테고리 로케이션 조회][sangsic] */
+        SELECT DSP_CTGRY_NO
+        , dsp_ctgry_nm
+        , DSP_BRND_ID
+        , CTGRY_SECT_CD
+        , CTGRY_DPTH_CD
+        , UPPER_DSP_CTGRY_NO
+          from (
+        <if test="brndId != null and brndId != ''">
+            SELECT DSP_CTGRY_NO
+                , dsp_ctgry_nm
+                , DSP_BRND_ID
+                , CTGRY_SECT_CD
+                , CTGRY_DPTH_CD
+                , UPPER_DSP_CTGRY_NO
+            FROM (
+            SELECT dc.DSP_CTGRY_NO
+            , NVL(dcl.DSP_CTGRY_NM,dc.DSP_CTGRY_NM) AS dsp_ctgry_nm
+            , dc.DSP_BRND_ID
+            , dc.CTGRY_SECT_CD
+            , dc.CTGRY_DPTH_CD
+            , dc.UPPER_DSP_CTGRY_NO
+            FROM dsp_ctgry dc
+            left outer JOIN DSP_CTGRY_LANG dcl
+            ON dc.DSP_CTGRY_NO = dcl.DSP_CTGRY_NO
+            AND dcl.lang_cd = #{lang, jdbcType=VARCHAR}
+            AND dc.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+            AND dc.DSP_YN = 'Y'
+            <if test="brndId == 'MCBR'">
+                CONNECT BY PRIOR dc.UPPER_DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+                AND dc.CTGRY_DPTH_CD != '0'
+                START WITH
+                <if test="brandShopNo != null and brandShopNo != ''">
+                    dc.DSP_CTGRY_NO = #{brandShopNo, jdbcType=VARCHAR}
+                </if>
+                <if test="brandShopNo == null or brandShopNo == ''">
+                    dc.dsp_brnd_id = #{brndId, jdbcType=VARCHAR}
+                </if>
+
+                ORDER BY dc.CTGRY_DPTH_CD
+            </if>
+            <if test="brndId != 'MCBR'">
+                WHERE 1 = 1
+                AND dc.delete_yn = 'N'
+                <if test="brandShopNo != null and brandShopNo != ''">
+                    AND dc.DSP_CTGRY_NO = #{brandShopNo, jdbcType=VARCHAR}
+                </if>
+                <if test="brandShopNo == null or brandShopNo == ''">
+                    AND dc.dsp_brnd_id = #{brndId, jdbcType=VARCHAR}
+                </if>
+            </if>
+            )
+            <if test="dspCtgryNo != 'DXM'">UNION ALL
+            </if>
+        </if>
+        <if test="dspCtgryNo != 'DXM'">
+            SELECT DSP_CTGRY_NO
+            , dsp_ctgry_nm
+            , DSP_BRND_ID
+            , CTGRY_SECT_CD
+            , CTGRY_DPTH_CD
+            , UPPER_DSP_CTGRY_NO
+            FROM (
+            SELECT DSP_CTGRY_NO
+                , dsp_ctgry_nm
+                , DSP_BRND_ID
+                , CTGRY_SECT_CD
+                , CTGRY_DPTH_CD
+                , UPPER_DSP_CTGRY_NO
+            FROM
+            (SELECT b.DSP_CTGRY_NO
+            , CASE
+            WHEN #{lang, jdbcType=VARCHAR} = 'KOR'
+            THEN NVL(dbc.DSP_CTGRY_NM,b.DSP_CTGRY_NM)
+            ELSE NVL(dcl.DSP_CTGRY_NM,b.DSP_CTGRY_NM)
+            END AS dsp_ctgry_nm
+            , b.DSP_BRND_ID
+            , b.CTGRY_SECT_CD
+            , b.CTGRY_DPTH_CD
+            , b.UPPER_DSP_CTGRY_NO
+            FROM dsp_ctgry b
+            left outer join DSP_BRND_CTGRY dbc
+            on b.DSP_CTGRY_NO = dbc.DSP_CTGRY_NO
+            and b.DSP_BRND_ID = dbc.DSP_BRND_ID
+            left outer JOIN DSP_CTGRY_LANG dcl
+            ON b.DSP_CTGRY_NO = dcl.DSP_CTGRY_NO
+            AND dcl.lang_cd = #{lang, jdbcType=VARCHAR}
+            AND b.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+            AND b.DSP_YN = 'Y'
+            CONNECT BY PRIOR b.UPPER_DSP_CTGRY_NO = b.DSP_CTGRY_NO
+            AND b.CTGRY_DPTH_CD != '0'
+            START WITH b.DSP_CTGRY_NO = #{dspCtgryNo, jdbcType=VARCHAR}
+            ORDER SIBLINGS BY b.SORT_SEQ
+            ) t1
+            )
+        </if>
+        )
+        <if test="ctgrySectCd == 'STRTGY_CTGRY'">
+            /*전략카테고리인 경우 1depth만 노출 한다*/
+            WHERE CTGRY_DPTH_CD = 1
+        </if>
+        <if test="(mallGubun == 'BRAND' or mallGubun == 'PLGRIM') and ctgrySectCd == 'OTLT_CTGRY'">
+            /**/
+            WHERE CTGRY_DPTH_CD != 1
+        </if>
+        ORDER BY DSP_CTGRY_NO
+
+    </select>
+
+    <select id="selectMBLocationList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspCtgry"  >
+        /* [v2.display.category.xml][selectMBLocationList][모바일 카테고리 로케이션 조회][sangsic] */
+        SELECT DSP_CTGRY_NO
+        , dsp_ctgry_nm
+        , DSP_BRND_ID
+        , CTGRY_SECT_CD
+        , CTGRY_DPTH_CD
+        from (
+
+            SELECT DSP_CTGRY_NO
+                , dsp_ctgry_nm
+                , DSP_BRND_ID
+                , CTGRY_SECT_CD
+                , CTGRY_DPTH_CD
+            FROM (
+            SELECT DSP_CTGRY_NO
+                    , dsp_ctgry_nm
+                    , DSP_BRND_ID
+                    , CTGRY_SECT_CD
+                    , CTGRY_DPTH_CD
+            FROM
+            (SELECT b.
+            DSP_CTGRY_NO
+            , CASE
+            WHEN #{lang, jdbcType=VARCHAR} = 'KOR'
+            THEN NVL(dbc.DSP_CTGRY_NM,b.DSP_CTGRY_NM)
+            ELSE NVL(dcl.DSP_CTGRY_NM,b.DSP_CTGRY_NM)
+            END AS dsp_ctgry_nm
+            , b.DSP_BRND_ID
+            , b.CTGRY_SECT_CD
+            , b.CTGRY_DPTH_CD
+            FROM dsp_ctgry b
+            left outer join DSP_BRND_CTGRY dbc
+            on b.DSP_CTGRY_NO = dbc.DSP_CTGRY_NO
+            and b.DSP_BRND_ID = dbc.DSP_BRND_ID
+            left outer JOIN DSP_CTGRY_LANG dcl
+            ON b.DSP_CTGRY_NO = dcl.DSP_CTGRY_NO
+            AND dcl.lang_cd = #{lang, jdbcType=VARCHAR}
+            AND b.APL_MALL_ID = #{mallId, jdbcType=VARCHAR}
+            AND b.DSP_YN = 'Y'
+            CONNECT BY PRIOR b.UPPER_DSP_CTGRY_NO = b.DSP_CTGRY_NO
+            AND b.CTGRY_DPTH_CD != '0'
+            START WITH b.DSP_CTGRY_NO = #{dspCtgryNo, jdbcType=VARCHAR}
+            ORDER SIBLINGS BY b.SORT_SEQ
+            ) t1
+            )
+        )
+        <if test="mallGubun == 'BRAND' and ctgrySectCd != null and ctgrySectCd != ''">
+            WHERE CTGRY_DPTH_CD != 1
+        </if>
+        ORDER BY DSP_CTGRY_NO
+
+    </select>
+
+
+
+</mapper>

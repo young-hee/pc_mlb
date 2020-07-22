@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysStplatLangHist" parameterType="sysStplatLangHist" resultType="sysStplatLangHist">
+		SELECT /* com.plgrim.ncp.base.selectSysStplatLangHist		Generator(Generator)	2018-05-23 */
+			   STPLAT_CD
+			 , LANG_CD
+			 , HIST_DT
+			 , STPLAT_DSCR
+			 , STPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_STPLAT_LANG_HIST
+		 WHERE 1 = 1
+	   	   AND STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateSysStplatLangHist" parameterType="sysStplatLangHist">
+		UPDATE /* com.plgrim.ncp.base.updateSysStplatLangHist		Generator(Generator)	2018-05-23 */
+		SYS_STPLAT_LANG_HIST SET
+			   STPLAT_DSCR = #{stplatDscr,jdbcType=VARCHAR}
+			 , STPLAT_CONT = #{stplatCont,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertSysStplatLangHist" parameterType="sysStplatLangHist">
+		INSERT /* com.plgrim.ncp.base.insertSysStplatLangHist		Generator(Generator)	2018-05-23 */
+		INTO   SYS_STPLAT_LANG_HIST (
+			   STPLAT_CD
+			 , LANG_CD
+			 , HIST_DT
+			 , STPLAT_DSCR
+			 , STPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stplatCd,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{stplatDscr,jdbcType=VARCHAR}
+			 , #{stplatCont,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysStplatLangHist" parameterType="sysStplatLangHist">
+		DELETE /* com.plgrim.ncp.base.deleteSysStplatLangHist		Generator(Generator)	2018-05-23 */
+		  FROM SYS_STPLAT_LANG_HIST
+		 WHERE 1 = 1
+		   AND STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

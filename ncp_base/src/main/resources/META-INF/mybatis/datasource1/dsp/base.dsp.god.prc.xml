@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspGodPrc" parameterType="dspGodPrc" resultType="dspGodPrc">
+		SELECT /* com.plgrim.ncp.base.selectDspGodPrc		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , GOD_NO
+			 , PRC_SECT_CD
+			 , LANG_CD
+			 , CRNCY_CD
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , EMP_PRC
+			 , LWET_PRC_SECT_CD
+			 , SALE_PRC
+			 , APL_PRM_NO
+			 , DC_SECT_CD
+			 , GOD_DC_RT
+			 , DC_PRC
+			 , LAST_SALE_PRC_APL_CPN_PRM_NO
+			 , CPN_DC_SECT_CD
+			 , CPN_DC_RT
+			 , LAST_SALE_PRC
+			 , SALE_IDEX
+			 , BST_GOD_SALE_IDEX
+			 , NEW_GOD_IDEX
+			 , NEW_GOD_RECENT_IDEX
+			 , NEW_GOD_SORT_SEQ
+			 , SALE_IDEX_SORT_SEQ
+			 , UDT_DT
+		  FROM DSP_GOD_PRC
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND PRC_SECT_CD = #{prcSectCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspGodPrc" parameterType="dspGodPrc">
+		UPDATE /* com.plgrim.ncp.base.updateDspGodPrc		Generator(Generator)	2018-05-23 */
+		DSP_GOD_PRC SET
+			   CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+			 , CSMR_PRC = #{csmrPrc,jdbcType=NUMERIC}
+			 , EMP_PRC = #{empPrc,jdbcType=NUMERIC}
+			 , LWET_PRC_SECT_CD = #{lwetPrcSectCd,jdbcType=VARCHAR}
+			 , SALE_PRC = #{salePrc,jdbcType=NUMERIC}
+			 , APL_PRM_NO = #{aplPrmNo,jdbcType=VARCHAR}
+			 , DC_SECT_CD = #{dcSectCd,jdbcType=VARCHAR}
+			 , GOD_DC_RT = #{godDcRt,jdbcType=NUMERIC}
+			 , DC_PRC = #{dcPrc,jdbcType=NUMERIC}
+			 , LAST_SALE_PRC_APL_CPN_PRM_NO = #{lastSalePrcAplCpnPrmNo,jdbcType=VARCHAR}
+			 , CPN_DC_SECT_CD = #{cpnDcSectCd,jdbcType=VARCHAR}
+			 , CPN_DC_RT = #{cpnDcRt,jdbcType=NUMERIC}
+			 , LAST_SALE_PRC = #{lastSalePrc,jdbcType=NUMERIC}
+			 , SALE_IDEX = #{saleIdex,jdbcType=NUMERIC}
+			 , BST_GOD_SALE_IDEX = #{bstGodSaleIdex,jdbcType=NUMERIC}
+			 , NEW_GOD_IDEX = #{newGodIdex,jdbcType=NUMERIC}
+			 , NEW_GOD_RECENT_IDEX = #{newGodRecentIdex,jdbcType=NUMERIC}
+			 , NEW_GOD_SORT_SEQ = #{newGodSortSeq,jdbcType=NUMERIC}
+			 , SALE_IDEX_SORT_SEQ = #{saleIdexSortSeq,jdbcType=NUMERIC}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND PRC_SECT_CD = #{prcSectCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspGodPrc" parameterType="dspGodPrc">
+		INSERT /* com.plgrim.ncp.base.insertDspGodPrc		Generator(Generator)	2018-05-23 */
+		INTO   DSP_GOD_PRC (
+			   MALL_ID
+			 , GOD_NO
+			 , PRC_SECT_CD
+			 , LANG_CD
+			 , CRNCY_CD
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , EMP_PRC
+			 , LWET_PRC_SECT_CD
+			 , SALE_PRC
+			 , APL_PRM_NO
+			 , DC_SECT_CD
+			 , GOD_DC_RT
+			 , DC_PRC
+			 , LAST_SALE_PRC_APL_CPN_PRM_NO
+			 , CPN_DC_SECT_CD
+			 , CPN_DC_RT
+			 , LAST_SALE_PRC
+			 , SALE_IDEX
+			 , BST_GOD_SALE_IDEX
+			 , NEW_GOD_IDEX
+			 , NEW_GOD_RECENT_IDEX
+			 , NEW_GOD_SORT_SEQ
+			 , SALE_IDEX_SORT_SEQ
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{prcSectCd,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{rtlPrc,jdbcType=NUMERIC}
+			 , #{csmrPrc,jdbcType=NUMERIC}
+			 , #{empPrc,jdbcType=NUMERIC}
+			 , #{lwetPrcSectCd,jdbcType=VARCHAR}
+			 , #{salePrc,jdbcType=NUMERIC}
+			 , #{aplPrmNo,jdbcType=VARCHAR}
+			 , #{dcSectCd,jdbcType=VARCHAR}
+			 , #{godDcRt,jdbcType=NUMERIC}
+			 , #{dcPrc,jdbcType=NUMERIC}
+			 , #{lastSalePrcAplCpnPrmNo,jdbcType=VARCHAR}
+			 , #{cpnDcSectCd,jdbcType=VARCHAR}
+			 , #{cpnDcRt,jdbcType=NUMERIC}
+			 , #{lastSalePrc,jdbcType=NUMERIC}
+			 , #{saleIdex,jdbcType=NUMERIC}
+			 , #{bstGodSaleIdex,jdbcType=NUMERIC}
+			 , #{newGodIdex,jdbcType=NUMERIC}
+			 , #{newGodRecentIdex,jdbcType=NUMERIC}
+			 , #{newGodSortSeq,jdbcType=NUMERIC}
+			 , #{saleIdexSortSeq,jdbcType=NUMERIC}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspGodPrc" parameterType="dspGodPrc">
+		DELETE /* com.plgrim.ncp.base.deleteDspGodPrc		Generator(Generator)	2018-05-23 */
+		  FROM DSP_GOD_PRC
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND PRC_SECT_CD = #{prcSectCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

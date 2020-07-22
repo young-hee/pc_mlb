@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE tiles-definitions PUBLIC  
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	
+    <definition name="emptyTemplate" template="/WEB-INF/tiles/layout/emptyLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<definition name="tiles:mypage/*/include/*" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/mypage/{1}/include/{2}.jsp" />
+	</definition>
+	
+	<definition name="tiles:goods/include/*" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/goods/include/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:helpdesk/include/*" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/helpdesk/include/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:main/include/*" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/main/include/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:event/include/*" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/event/include/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:mypage/review/*/*" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/mypage/review/{1}/{2}.jsp" />
+	</definition>
+	
+	
+	<definition name="tiles:order/kcpOrderCommonReturn" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/order/kcpOrderCommonReturn.jsp" />
+	</definition>
+
+	<definition name="tiles:errors/*" extends="emptyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/errors/{1}.jsp" />
+	</definition>
+	
+</tiles-definitions>

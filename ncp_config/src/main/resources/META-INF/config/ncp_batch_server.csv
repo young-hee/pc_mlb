@@ -1,0 +1,54 @@
+Key,Description,common,local,dev,stg_common,stg,stg2,prod
+ncp_batch_server.oracle.driver,오라클 JDBC 드라이버,oracle.jdbc.driver.OracleDriver,,,,,,
+ncp_batch_server.oracle.sequence.query.id,"컬럼명 뒷 부분이 ""번호(NO)"" 일때 mybatis 아이디",selectOracleSequence,,,,,,
+ncp_batch_server.oracle.number.query.id,"컬럼명 뒷 부분이 ""일련번호(SN)"" 일때  mybatis 아이디",selectOracleNumber,,,,,,
+ncp_batch_server.oracle.order.query.id,"컬럼명 뒷 부분이 ""순번(TURN)"" 일때 mybatis 아이디",selectOracleOrder,,,,,,
+ncp_batch_server.mybatis.common.mapper.location,,classpath:META-INF/mybatis/batch.server.common.xml,,,,,,
+####################################,,,,,,,,
+# Spring MVC,,,,,,,,
+####################################,,,,,,,,
+####################################,,,,,,,,
+# BATCH SERVER URL,,,,,,,,
+####################################,,,,,,,,
+ncp_batch_server.batch.server.url,Batch Server URL,,http://localhost:8092/batch,http://10.10.3.174:8082/batch,http://10.10.2.28:8082/batch,,,http://10.12.30.72:8080/batch
+####################################,,,,,,,,
+# 상품 ERP 재고연동,,,,,,,,
+####################################,,,,,,,,
+ncp_batch_server.good.inventory.update.threads,재고 연동 Thread 갯수,2,,10,10,,,10
+ncp_batch_server.good.inventory.update.goods,재고 update 갯수,200,,,,,,
+ncp_batch_server.good.inventory.update.shops,,300,,,,,,
+ncp_batch_server.good.interface.request.count,상품 인터페이스 count,1000,,,,,,
+####################################,,,,,,,,
+# Front URL,,,,,,,,
+####################################,,,,,,,,
+ncp_batch_server.pc.DXM.url,discovery expediton url,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.dx},http://${ncp.base.domain.dx}:8032,,,,,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.dx}
+ncp_batch_server.pc.MBM.url,mlb url,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.mlb},http://${ncp.base.domain.mlb}:9032,,,,,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.mlb}
+ncp_batch_server.pc.SAM.url,stretch angels url,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.sa},http://${ncp.base.domain.sa}:9042,,,,,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.sa}
+####################################,,,,,,,,
+# AWS,,,,,,,,
+####################################,,,,,,,,
+ncp_batch_server.cdn.DXM.url,discovery expediton CDN url,http://dev-static.discovery-expedition.com,,http://dev-static.discovery-expedition.com,http://stg-static.discovery-expedition.com,,,http://static.discovery-expedition.com
+ncp_batch_server.cdn.DXM.url.secure,discovery expediton CDN url,https://dev-static.discovery-expedition.com,,https://dev-static.discovery-expedition.com,https://stg-static.discovery-expedition.com,,,https://static.discovery-expedition.com
+ncp_batch_server.cdn.DXM.image.url,discovery expediton CDN image url,${ncp_batch_server.cdn.DXM.url}/images,,,,,,
+ncp_batch_server.web.content.DXM.path,cloudfront,/webresource/discovery-expedition/content,,,,,,
+ncp_batch_server.cdn.MBM.url,mlb-korea CDN url,http://dev-static.mlb-korea.com,,http://dev-static.mlb-korea.com,http://stg-static.mlb-korea.com,,,http://static.mlb-korea.com
+ncp_batch_server.cdn.MBM.url.secure,mlb-korea CDN url,https://dev-static.mlb-korea.com,,https://dev-static.mlb-korea.com,https://stg-static.mlb-korea.com,,,https://static.mlb-korea.com
+ncp_batch_server.cdn.MBM.image.url,mlb-korea CDN image url,${ncp_batch_server.cdn.MBM.url}/images,,,,,,
+ncp_batch_server.web.content.MBM.path,cloudfront,/webresource/mlb-korea/content,,,,,,
+ncp_batch_server.cdn.SAM.url,stretch-angel CDN url,http://dev-static.stretch-angels.com,,http://dev-static.stretch-angels.com,http://stg-static.stretch-angels.com,,,http://static.stretch-angels.com
+ncp_batch_server.cdn.SAM.url.secure,stretch-angel CDN url,https://dev-static.stretch-angels.com,,https://dev-static.stretch-angels.com,https://stg-static.stretch-angels.com,,,https://static.stretch-angels.com
+ncp_batch_server.cdn.SAM.image.url,stretch-angel CDN image url,${ncp_batch_server.cdn.SAM.url}/images,,,,,,
+ncp_batch_server.web.content.SAM.path,cloudfront,/webresource/stretch-angels/content,,,,,,
+ncp_batch_server.dlivy.compt.day,,7,,,,,,
+####################################,,,,,,,,
+# OLAPIC,,,,,,,,
+####################################,,,,,,,,
+ncp_batch_server.olapic.s3path,Ex-INF 공유용 s3 경로,/pec/temp/olapic/,,,,,,
+ncp_batch_server.olapic.mallIDs,올라픽연동몰,"MBM,SAM",,,,,,
+ncp_batch_server.olapic.MBM.lang,MLB 올라픽연동 언어,"KOR,ENG,CHI",,,,,,
+ncp_batch_server.olapic.SAM.lang,SA 올라픽연동 언어,"KOR,ENG,CHI",,,,,,
+ncp_batch_server.ranking.mallIDs,랭킹브랜드코드,"M,A",,,,,,
+ncp_batch_server.ranking.qty,랭킹 호출 수량,80,,,,,,
+ncp_batch_server.categoryRanking.mallIDs,카테고리랭킹브랜드코드,"M,D,A",,,,,,
+ncp_batch_server.categoryRanking.qty,카테고리랭킹 호출 수량,80,,,,,,
+ncp_batch_server.categoryRanking.saleDate,카테고리수신날짜,"",,,,,,

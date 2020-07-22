@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.hldy">
+	
+	<resultMap id="resultSysHldy" type="com.plgrim.ncp.commons.result.SysHldyResult">
+		<result property="sysCldr.sysDate" column="SYS_DATE" />
+		<result property="sysDateNm" column="SYS_DATE_NM" />
+		<result property="sysCldr.dscr" column="DSCR" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+	</resultMap>
+	
+	<!-- 휴일 목록 -->
+	<select id="selectSysHldyList" parameterType="com.plgrim.ncp.commons.data.SysHldyDTO" resultMap="resultSysHldy">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [commons.hldy.xml]["selectSysHldyList"][휴일 목록 조회][Ed] */
+			SC.SYS_DATE /* 시스템일자 */
+			,SUBSTR(SC.SYS_DATE, 1, 4)||'-'||SUBSTR(SC.SYS_DATE, 5, 2)||'-'||SUBSTR(SC.SYS_DATE, 7, 2) AS SYS_DATE_NM  /* 시스템일자 */
+			,SC.DSCR /* 설명 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SC.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+		   	,TO_CHAR(SC.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+	       	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SC.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	       	,TO_CHAR(SC.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+	    FROM	SYS_CLDR SC
+		WHERE 	1 = 1
+		AND		SC.HLDY_YN = 'Y'/* 공휴일 여부 */ 	
+		<include refid="selectSysHldyListWhere"/>
+		ORDER BY SC.SYS_DATE DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 휴일 목록 개수 -->
+	<select id="selectSysHldyListCount" resultType="long"> 
+		SELECT /* [commons.hldy.xml]["selectSysHldyListCount"][휴일 목록 개수][Ed] */
+			COUNT(*)
+		FROM	SYS_CLDR SC
+		WHERE 	1 = 1
+		AND		SC.HLDY_YN = 'Y'/* 공휴일 여부 */
+		<include refid="selectSysHldyListWhere"/>
+	</select>
+	
+	<!-- 휴일 목록 엑셀-->
+	<select id="selectSysHldyListExcel" parameterType="com.plgrim.ncp.commons.data.SysHldyDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [commons.hldy.xml]["selectSysHldyListExcel"][휴일 목록 엑셀][Ed] */
+			SUBSTR(SC.SYS_DATE, 1, 4)||'-'||SUBSTR(SC.SYS_DATE, 5, 2)||'-'||SUBSTR(SC.SYS_DATE, 7, 2) AS SYS_DATE_NM  /* 시스템일자 */
+			,SC.DSCR /* 설명 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SC.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+		   	,TO_CHAR(SC.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+	       	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SC.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	       	,TO_CHAR(SC.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+	    FROM	SYS_CLDR SC
+		WHERE 	1 = 1
+		AND		SC.HLDY_YN = 'Y'/* 공휴일 여부 */ 	
+		<include refid="selectSysHldyListWhere"/>
+		ORDER BY SC.SYS_DATE DESC
+	</select>
+	
+	<!-- 휴일 목록 조건문 -->
+	<sql id="selectSysHldyListWhere"> 
+		<if test='search.begDt != null and search.begDt != "" and search.endDt != null and search.endDt != ""'>
+			AND SC.SYS_DATE >= #{search.begDt} AND SC.SYS_DATE &lt;= #{search.endDt} /* 시스템일자 */
+		</if>
+	</sql>
+	
+	<resultMap id="resultSysHldyDetail" type="com.plgrim.ncp.commons.result.SysHldyResult">
+		<result property="sysCldr.sysDate" column="SYS_DATE" />
+		<result property="sysDateNm" column="SYS_DATE_NM" />
+		<result property="sysCldr.dscr" column="DSCR" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+	</resultMap>
+	
+	<!-- 휴일 상세 -->
+	<select id="selectSysHldyDetail" parameterType="com.plgrim.ncp.commons.data.SysHldyDTO" resultMap="resultSysHldyDetail">
+		SELECT /* [commons.hldy.xml]["selectSysHldyDetail"][휴일 상세 조회][Ed] */
+			SC.SYS_DATE /* 시스템일자 */
+			,SUBSTR(SC.SYS_DATE, 1, 4)||'-'||SUBSTR(SC.SYS_DATE, 5, 2)||'-'||SUBSTR(SC.SYS_DATE, 7, 2) AS SYS_DATE_NM  /* 시스템일자 */
+			,SC.DSCR /* 설명 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SC.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+		   	,TO_CHAR(SC.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+	       	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SC.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	       	,TO_CHAR(SC.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+	    FROM	SYS_CLDR SC
+		WHERE 	1 = 1
+		AND     SYS_DATE = #{search.sysDate,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 휴일 등록 -->
+    <update id="insertSysHldy" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysCldr">
+    	UPDATE /* [commons.hldy.xml]["insertSysHldy"][휴일 등록][Ed] */  
+        SYS_CLDR SET
+                DSCR = #{dscr,jdbcType=VARCHAR}
+                ,HLDY_YN = 'Y'
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 휴일 삭제 -->
+    <update id="deleteSysHldy" parameterType="com.plgrim.ncp.commons.data.SysHldyDataDTO">
+    	UPDATE /* [commons.hldy.xml]["deleteSysHldy"][휴일 삭제][Ed] */  
+        SYS_CLDR SET
+                DSCR = ''
+                ,HLDY_YN = 'N'
+                ,UDTER_ID = #{sysCldr.udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+		AND     SYS_DATE = #{prvSysDate,jdbcType=VARCHAR}
+    </update>
+</mapper>

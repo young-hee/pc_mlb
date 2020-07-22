@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-web-app http://xmlns.oracle.com/weblogic/weblogic-web-app/1.7/weblogic-web-app.xsd">
+	<session-descriptor>
+		<timeout-secs>3600</timeout-secs>
+		<invalidation-interval-secs>20</invalidation-interval-secs>
+		<debug-enabled>true</debug-enabled>
+		<id-length>52</id-length>
+		<cookie-name>JSESSIONID</cookie-name>
+		<persistent-store-type>replicated_if_clustered</persistent-store-type>
+	</session-descriptor>
+	<jsp-descriptor>
+		<keepgenerated>true</keepgenerated>
+		<page-check-seconds>300</page-check-seconds>
+		<verbose>true</verbose>
+		<print-nulls>false</print-nulls>
+		<encoding>UTF-8</encoding>
+		<compress-html-template>true</compress-html-template>
+		<debug>true</debug>
+	</jsp-descriptor>
+	<charset-params>
+		<input-charset>
+			<resource-path>/*</resource-path>
+			<java-charset-name>UTF-8</java-charset-name>
+		</input-charset>
+	</charset-params>
+	<container-descriptor>
+		<prefer-web-inf-classes>false</prefer-web-inf-classes>
+		<prefer-application-packages>
+			<package-name>org.slf4j.*</package-name>
+			<package-name>org.joda.*</package-name>
+			<package-name>com.google.*</package-name>
+		</prefer-application-packages>
+		<prefer-application-resources>
+			<resource-name>META-INF/services/javax.xml.ws.spi.Provider</resource-name>
+		</prefer-application-resources>
+	</container-descriptor>
+	<context-root>/</context-root>
+</weblogic-web-app>

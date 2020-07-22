@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.newsletter">
+
+    <!-- /// BackOffice Start //////////////////////////////////////////////////-->    
+    
+    <!-- BO : 뉴스레터 조회를 위한 카운트 쿼리  -->
+    <select id="selectNewsLetterListCount" parameterType="com.plgrim.ncp.biz.newsletter.data.NewsLetterDTO" resultType="long">
+		SELECT /* [biz.newsletter.xml][selectNewsLetterListCount][조회 : 뉴스레터 목록 건수 ][] */
+		COUNT(*)
+		FROM sys_nwslttr sn,
+			 sys_mall sm
+		<where>
+			sm.use_yn = 'Y'
+			and sn.mall_id = sm.mall_id
+			<if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchStartDate)'>
+                AND sn.reqst_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+            </if>
+            <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchMallId)'>
+                AND sn.mall_id = #{searchMallId}
+            </if>
+            <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchEmailAddr)'>
+                AND sn.applcnt_email = #{searchEmailAddr}
+            </if>
+		</where>		
+    </select>
+
+ 	<resultMap id="newsLetterResultMap" type="com.plgrim.ncp.biz.newsletter.result.NewsLetterResult">
+ 		<result property="mallNm"                    	column="mall_nm" />     
+        <result property="mallId"                    	column="mall_id" />                   
+        <result property="applcntEmail"                 column="applcnt_email" />              
+        <result property="reqstDt"                  	column="reqst_dt" />               
+        <result property="regtrId"                		column="regtr_id" />              
+        <result property="regDt"      					column="reg_dt" />  
+        <result property="udterId"                    	column="udter_id" /> 
+        <result property="udtDt"                    	column="udt_dt" />                        
+    </resultMap>
+    <!-- BO : 뉴스레터 목록 조회 -->
+    <select id="selectNewsLetterList" parameterType="com.plgrim.ncp.biz.newsletter.data.NewsLetterDTO" resultMap="newsLetterResultMap">
+        SELECT /* [biz.newsletter.xml][selectNewsLetterList][조회 : 뉴스레터 목록  ][] */
+        		mall_nm,
+				mall_id,
+				applcnt_email,
+				reqst_dt,
+				regtr_id,
+				reg_dt,
+				udter_id,
+				udt_dt
+		FROM (
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+			SELECT
+				sm.mall_nm,
+				sn.mall_id,
+				sn.applcnt_email,
+				sn.reqst_dt,
+				sn.regtr_id,
+				sn.reg_dt,
+				sn.udter_id,
+				sn.udt_dt
+			FROM
+				sys_nwslttr sn,
+			 	sys_mall sm
+				<where>
+					sm.use_yn = 'Y'
+					and sn.mall_id = sm.mall_id
+					<if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchStartDate)'>
+		                AND sn.reqst_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+		            </if>
+		            <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchMallId)'>
+		                AND sn.mall_id = #{searchMallId}
+		            </if>
+		            <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchEmailAddr)'>
+		                AND sn.applcnt_email = #{searchEmailAddr}
+		            </if>
+				</where>
+			ORDER BY sn.reg_dt DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>	
+		)
+    </select>
+    
+    <select id="selectNewsLetterListExcel" parameterType="com.plgrim.ncp.biz.newsletter.data.NewsLetterDTO" resultType="java.util.LinkedHashMap">
+        SELECT /* [biz.newsletter.xml][selectNewsLetterListExcel][조회 : 뉴스레터 목록 ][] */
+        		mall_nm,
+        		reqst_dt,				
+				applcnt_email				
+		FROM (
+		
+			SELECT
+				sm.mall_nm,
+				sn.mall_id,
+				sn.applcnt_email,
+				sn.reqst_dt,
+				sn.regtr_id,
+				sn.reg_dt,
+				sn.udter_id,
+				sn.udt_dt
+			FROM
+				sys_nwslttr sn,
+			 	sys_mall sm
+				<where>
+					sm.use_yn = 'Y'
+					and sn.mall_id = sm.mall_id
+					<if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchStartDate)'>
+		                AND sn.reqst_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+		            </if>
+		            <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchMallId)'>
+		                AND sn.mall_id = #{searchMallId}
+		            </if>
+		            <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchEmailAddr)'>
+		                AND sn.applcnt_email = #{searchEmailAddr}
+		            </if>
+				</where>
+			ORDER BY sn.reg_dt DESC
+		
+		)
+    </select>
+    
+    <delete id="deleteNewsLetter" parameterType="com.plgrim.ncp.biz.newsletter.data.NewsLetterDTO">
+    	DELETE /* [biz.newsletter.xml][deleteNewsLetter][삭제 : 뉴스레터 삭제 ][] */
+    	  FROM sys_nwslttr
+    	 WHERE mall_id = #{searchMallId}
+    	   AND applcnt_email IN 
+    	   		<foreach collection="deleteEmailAddr" item="email"  open="(" close=")" separator=",">
+            		#{email}
+        		</foreach>
+    </delete>
+
+    <insert id="insertNewsLetter" parameterType="com.plgrim.ncp.biz.newsletter.data.NewsLetterDTO">
+        /* [biz.newsletter.xml][insertNewsLetter][newsletter 가입][] */
+        MERGE INTO SYS_NWSLTTR A
+        USING DUAL B
+           ON (A.APPLCNT_EMAIL = #{applcntEmail} AND A.MALL_ID=#{mallId})	
+         WHEN NOT MATCHED THEN
+	        INSERT (
+		        	MALL_ID,
+		        	APPLCNT_EMAIL,
+		        	REQST_DT,
+		        	REGTR_ID,
+		        	REG_DT,
+		        	UDTER_ID,
+		        	UDT_DT
+		        	)
+			VALUES (
+					#{mallId},
+					#{applcntEmail},
+					sysdate,
+					'FRONT',
+					sysdate,
+					'FRONT',
+					sysdate 
+					)
+    </insert>
+
+
+</mapper>

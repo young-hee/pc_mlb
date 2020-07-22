@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysContt" parameterType="sysContt" resultType="sysContt">
+		SELECT /* com.plgrim.ncp.base.selectSysContt		Generator(Generator)	2018-05-23 */
+			   CONTT_SN
+			 , CONTT_SECT_CD
+			 , CONTT_SJ
+			 , CONTT_CONT
+			 , USE_YN
+			 , INQIRE_CNT
+			 , DWLD_CNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_CONTT
+		 WHERE 1 = 1
+	   	   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysContt" parameterType="sysContt">
+		UPDATE /* com.plgrim.ncp.base.updateSysContt		Generator(Generator)	2018-05-23 */
+		SYS_CONTT SET
+			   CONTT_SECT_CD = #{conttSectCd,jdbcType=VARCHAR}
+			 , CONTT_SJ = #{conttSj,jdbcType=VARCHAR}
+			 , CONTT_CONT = #{conttCont,jdbcType=CLOB}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , INQIRE_CNT = #{inqireCnt,jdbcType=NUMERIC}
+			 , DWLD_CNT = #{dwldCnt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysContt" parameterType="sysContt">
+		INSERT /* com.plgrim.ncp.base.insertSysContt		Generator(Generator)	2018-05-23 */
+		INTO   SYS_CONTT (
+			   CONTT_SN
+			 , CONTT_SECT_CD
+			 , CONTT_SJ
+			 , CONTT_CONT
+			 , USE_YN
+			 , INQIRE_CNT
+			 , DWLD_CNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{conttSn,jdbcType=NUMERIC}
+			 , #{conttSectCd,jdbcType=VARCHAR}
+			 , #{conttSj,jdbcType=VARCHAR}
+			 , #{conttCont,jdbcType=CLOB}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{inqireCnt,jdbcType=NUMERIC}
+			 , #{dwldCnt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysContt" parameterType="sysContt">
+		DELETE /* com.plgrim.ncp.base.deleteSysContt		Generator(Generator)	2018-05-23 */
+		  FROM SYS_CONTT
+		 WHERE 1 = 1
+		   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

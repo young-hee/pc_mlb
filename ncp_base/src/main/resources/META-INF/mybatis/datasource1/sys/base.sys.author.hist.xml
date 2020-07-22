@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAuthorHist" parameterType="sysAuthorHist" resultType="sysAuthorHist">
+		SELECT /* com.plgrim.ncp.base.selectSysAuthorHist		Generator(Generator)	2018-05-23 */
+			   AUTHOR_GRP_SN
+			 , AUTHOR_TURN
+			 , AUTHOR_HIST_DT
+			 , MENU_SN
+			 , AUTHOR_RESRC_NM
+			 , AUTHOR_RESRC_VAL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_AUTHOR_HIST
+		 WHERE 1 = 1
+	   	   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+		   AND AUTHOR_TURN = #{authorTurn,jdbcType=NUMERIC}
+		   AND AUTHOR_HIST_DT = #{authorHistDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateSysAuthorHist" parameterType="sysAuthorHist">
+		UPDATE /* com.plgrim.ncp.base.updateSysAuthorHist		Generator(Generator)	2018-05-23 */
+		SYS_AUTHOR_HIST SET
+			   MENU_SN = #{menuSn,jdbcType=NUMERIC}
+			 , AUTHOR_RESRC_NM = #{authorResrcNm,jdbcType=VARCHAR}
+			 , AUTHOR_RESRC_VAL = #{authorResrcVal,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+		   AND AUTHOR_TURN = #{authorTurn,jdbcType=NUMERIC}
+		   AND AUTHOR_HIST_DT = #{authorHistDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertSysAuthorHist" parameterType="sysAuthorHist">
+		INSERT /* com.plgrim.ncp.base.insertSysAuthorHist		Generator(Generator)	2018-05-23 */
+		INTO   SYS_AUTHOR_HIST (
+			   AUTHOR_GRP_SN
+			 , AUTHOR_TURN
+			 , AUTHOR_HIST_DT
+			 , MENU_SN
+			 , AUTHOR_RESRC_NM
+			 , AUTHOR_RESRC_VAL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{authorGrpSn,jdbcType=NUMERIC}
+			 , #{authorTurn,jdbcType=NUMERIC}
+			 , #{authorHistDt,jdbcType=TIMESTAMP}
+			 , #{menuSn,jdbcType=NUMERIC}
+			 , #{authorResrcNm,jdbcType=VARCHAR}
+			 , #{authorResrcVal,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAuthorHist" parameterType="sysAuthorHist">
+		DELETE /* com.plgrim.ncp.base.deleteSysAuthorHist		Generator(Generator)	2018-05-23 */
+		  FROM SYS_AUTHOR_HIST
+		 WHERE 1 = 1
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+		   AND AUTHOR_TURN = #{authorTurn,jdbcType=NUMERIC}
+		   AND AUTHOR_HIST_DT = #{authorHistDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

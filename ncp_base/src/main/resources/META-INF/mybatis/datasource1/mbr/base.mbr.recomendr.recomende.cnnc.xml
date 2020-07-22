@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrRecomendrRecomendeCnnc" parameterType="mbrRecomendrRecomendeCnnc" resultType="mbrRecomendrRecomendeCnnc">
+		SELECT /* com.plgrim.ncp.base.selectMbrRecomendrRecomendeCnnc		Generator(Generator)	2018-05-23 */
+			   RECOMENDR_MBR_NO
+			 , RECOMENDE_MBR_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_RECOMENDR_RECOMENDE_CNNC
+		 WHERE 1 = 1
+	   	   AND RECOMENDR_MBR_NO = #{recomendrMbrNo,jdbcType=VARCHAR}
+		   AND RECOMENDE_MBR_NO = #{recomendeMbrNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbrRecomendrRecomendeCnnc" parameterType="mbrRecomendrRecomendeCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateMbrRecomendrRecomendeCnnc		Generator(Generator)	2018-05-23 */
+		MBR_RECOMENDR_RECOMENDE_CNNC SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND RECOMENDR_MBR_NO = #{recomendrMbrNo,jdbcType=VARCHAR}
+		   AND RECOMENDE_MBR_NO = #{recomendeMbrNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbrRecomendrRecomendeCnnc" parameterType="mbrRecomendrRecomendeCnnc">
+		INSERT /* com.plgrim.ncp.base.insertMbrRecomendrRecomendeCnnc		Generator(Generator)	2018-05-23 */
+		INTO   MBR_RECOMENDR_RECOMENDE_CNNC (
+			   RECOMENDR_MBR_NO
+			 , RECOMENDE_MBR_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{recomendrMbrNo,jdbcType=VARCHAR}
+			 , #{recomendeMbrNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrRecomendrRecomendeCnnc" parameterType="mbrRecomendrRecomendeCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteMbrRecomendrRecomendeCnnc		Generator(Generator)	2018-05-23 */
+		  FROM MBR_RECOMENDR_RECOMENDE_CNNC
+		 WHERE 1 = 1
+		   AND RECOMENDR_MBR_NO = #{recomendrMbrNo,jdbcType=VARCHAR}
+		   AND RECOMENDE_MBR_NO = #{recomendeMbrNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

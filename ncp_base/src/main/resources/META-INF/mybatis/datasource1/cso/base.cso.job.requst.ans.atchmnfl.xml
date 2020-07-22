@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoJobRequstAnsAtchmnfl" parameterType="csoJobRequstAnsAtchmnfl" resultType="csoJobRequstAnsAtchmnfl">
+		SELECT /* com.plgrim.ncp.base.selectCsoJobRequstAnsAtchmnfl		Generator(Generator)	2018-05-23 */
+			   REQUST_SN
+			 , JOB_REQUST_ANS_TURN
+			 , REQUST_ANS_ATCHMNFL_TURN
+			 , REQUST_ANS_ATCH_FILE_NM
+			 , REQUST_ANS_ATCH_FILE_URL
+			 , REQUST_ANS_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_JOB_REQUST_ANS_ATCHMNFL
+		 WHERE 1 = 1
+	   	   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND JOB_REQUST_ANS_TURN = #{jobRequstAnsTurn,jdbcType=NUMERIC}
+		   AND REQUST_ANS_ATCHMNFL_TURN = #{requstAnsAtchmnflTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoJobRequstAnsAtchmnfl" parameterType="csoJobRequstAnsAtchmnfl">
+		UPDATE /* com.plgrim.ncp.base.updateCsoJobRequstAnsAtchmnfl		Generator(Generator)	2018-05-23 */
+		CSO_JOB_REQUST_ANS_ATCHMNFL SET
+			   REQUST_ANS_ATCH_FILE_NM = #{requstAnsAtchFileNm,jdbcType=VARCHAR}
+			 , REQUST_ANS_ATCH_FILE_URL = #{requstAnsAtchFileUrl,jdbcType=VARCHAR}
+			 , REQUST_ANS_ATCH_FILE_CPCTY = #{requstAnsAtchFileCpcty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND JOB_REQUST_ANS_TURN = #{jobRequstAnsTurn,jdbcType=NUMERIC}
+		   AND REQUST_ANS_ATCHMNFL_TURN = #{requstAnsAtchmnflTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoJobRequstAnsAtchmnfl" parameterType="csoJobRequstAnsAtchmnfl">
+		INSERT /* com.plgrim.ncp.base.insertCsoJobRequstAnsAtchmnfl		Generator(Generator)	2018-05-23 */
+		INTO   CSO_JOB_REQUST_ANS_ATCHMNFL (
+			   REQUST_SN
+			 , JOB_REQUST_ANS_TURN
+			 , REQUST_ANS_ATCHMNFL_TURN
+			 , REQUST_ANS_ATCH_FILE_NM
+			 , REQUST_ANS_ATCH_FILE_URL
+			 , REQUST_ANS_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{requstSn,jdbcType=NUMERIC}
+			 , #{jobRequstAnsTurn,jdbcType=NUMERIC}
+			 , #{requstAnsAtchmnflTurn,jdbcType=NUMERIC}
+			 , #{requstAnsAtchFileNm,jdbcType=VARCHAR}
+			 , #{requstAnsAtchFileUrl,jdbcType=VARCHAR}
+			 , #{requstAnsAtchFileCpcty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoJobRequstAnsAtchmnfl" parameterType="csoJobRequstAnsAtchmnfl">
+		DELETE /* com.plgrim.ncp.base.deleteCsoJobRequstAnsAtchmnfl		Generator(Generator)	2018-05-23 */
+		  FROM CSO_JOB_REQUST_ANS_ATCHMNFL
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND JOB_REQUST_ANS_TURN = #{jobRequstAnsTurn,jdbcType=NUMERIC}
+		   AND REQUST_ANS_ATCHMNFL_TURN = #{requstAnsAtchmnflTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

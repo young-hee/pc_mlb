@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfGodFitLktbCnnc" parameterType="infGodFitLktbCnnc" resultType="infGodFitLktbCnnc">
+		SELECT /* com.plgrim.ncp.base.selectInfGodFitLktbCnnc		Generator(Generator)	2019-11-15 */
+			   FIT_LKTB_CNNC_NO
+			 , FIT_LKTB_HTML
+			 , MOBILE_FIT_LKTB_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_GOD_FIT_LKTB_CNNC
+		 WHERE 1 = 1
+	   	   AND FIT_LKTB_CNNC_NO = #{fitLktbCnncNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateInfGodFitLktbCnnc" parameterType="infGodFitLktbCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateInfGodFitLktbCnnc		Generator(Generator)	2019-11-15 */
+		INF_GOD_FIT_LKTB_CNNC SET
+			   FIT_LKTB_HTML = #{fitLktbHtml,jdbcType=CLOB}
+			 , MOBILE_FIT_LKTB_HTML = #{mobileFitLktbHtml,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND FIT_LKTB_CNNC_NO = #{fitLktbCnncNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertInfGodFitLktbCnnc" parameterType="infGodFitLktbCnnc">
+		INSERT /* com.plgrim.ncp.base.insertInfGodFitLktbCnnc		Generator(Generator)	2019-11-15 */
+		INTO   INF_GOD_FIT_LKTB_CNNC (
+			   FIT_LKTB_CNNC_NO
+			 , FIT_LKTB_HTML
+			 , MOBILE_FIT_LKTB_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{fitLktbCnncNo,jdbcType=VARCHAR}
+			 , #{fitLktbHtml,jdbcType=CLOB}
+			 , #{mobileFitLktbHtml,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfGodFitLktbCnnc" parameterType="infGodFitLktbCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteInfGodFitLktbCnnc		Generator(Generator)	2019-11-15 */
+		  FROM INF_GOD_FIT_LKTB_CNNC
+		 WHERE 1 = 1
+		   AND FIT_LKTB_CNNC_NO = #{fitLktbCnncNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

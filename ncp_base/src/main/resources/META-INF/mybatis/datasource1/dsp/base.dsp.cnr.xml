@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCnr" parameterType="dspCnr" resultType="dspCnr">
+		SELECT /* com.plgrim.ncp.base.selectDspCnr		Generator(Generator)	2018-05-23 */
+			   REV_SN
+			 , CNR_SN
+			 , DSP_CNR_NM
+			 , DSP_CNR_SECT_CD
+			 , DSP_CNR_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CNR
+		 WHERE 1 = 1
+	   	   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspCnr" parameterType="dspCnr">
+		UPDATE /* com.plgrim.ncp.base.updateDspCnr		Generator(Generator)	2018-05-23 */
+		DSP_CNR SET
+			   DSP_CNR_NM = #{dspCnrNm,jdbcType=VARCHAR}
+			 , DSP_CNR_SECT_CD = #{dspCnrSectCd,jdbcType=VARCHAR}
+			 , DSP_CNR_DSCR = #{dspCnrDscr,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspCnr" parameterType="dspCnr">
+		INSERT /* com.plgrim.ncp.base.insertDspCnr		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CNR (
+			   REV_SN
+			 , CNR_SN
+			 , DSP_CNR_NM
+			 , DSP_CNR_SECT_CD
+			 , DSP_CNR_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{revSn,jdbcType=NUMERIC}
+			 , #{cnrSn,jdbcType=NUMERIC}
+			 , #{dspCnrNm,jdbcType=VARCHAR}
+			 , #{dspCnrSectCd,jdbcType=VARCHAR}
+			 , #{dspCnrDscr,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCnr" parameterType="dspCnr">
+		DELETE /* com.plgrim.ncp.base.deleteDspCnr		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CNR
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

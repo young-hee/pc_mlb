@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysDvc" parameterType="sysDvc" resultType="sysDvc">
+		SELECT /* com.plgrim.ncp.base.selectSysDvc		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , USE_YN
+			 , DVC_NM
+			 , DVC_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_DVC
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysDvc" parameterType="sysDvc">
+		UPDATE /* com.plgrim.ncp.base.updateSysDvc		Generator(Generator)	2018-05-23 */
+		SYS_DVC SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , DVC_NM = #{dvcNm,jdbcType=VARCHAR}
+			 , DVC_DSCR = #{dvcDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysDvc" parameterType="sysDvc">
+		INSERT /* com.plgrim.ncp.base.insertSysDvc		Generator(Generator)	2018-05-23 */
+		INTO   SYS_DVC (
+			   MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , USE_YN
+			 , DVC_NM
+			 , DVC_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{dvcNm,jdbcType=VARCHAR}
+			 , #{dvcDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysDvc" parameterType="sysDvc">
+		DELETE /* com.plgrim.ncp.base.deleteSysDvc		Generator(Generator)	2018-05-23 */
+		  FROM SYS_DVC
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodAditDetail" parameterType="godAditDetail" resultType="godAditDetail">
+		SELECT /* com.plgrim.ncp.base.selectGodAditDetail		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , GOD_ADIT_DETAIL_CD
+			 , GOD_ADIT_DETAIL_IEM_CD
+			 , LWPRT_VAL_CONT
+			 , LWPRT_VAL_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_ADIT_DETAIL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_ADIT_DETAIL_CD = #{godAditDetailCd,jdbcType=VARCHAR}
+		   AND GOD_ADIT_DETAIL_IEM_CD = #{godAditDetailIemCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodAditDetail" parameterType="godAditDetail">
+		UPDATE /* com.plgrim.ncp.base.updateGodAditDetail		Generator(Generator)	2018-05-23 */
+		GOD_ADIT_DETAIL SET
+			   LWPRT_VAL_CONT = #{lwprtValCont,jdbcType=VARCHAR}
+			 , LWPRT_VAL_UNIT_CD = #{lwprtValUnitCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_ADIT_DETAIL_CD = #{godAditDetailCd,jdbcType=VARCHAR}
+		   AND GOD_ADIT_DETAIL_IEM_CD = #{godAditDetailIemCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodAditDetail" parameterType="godAditDetail">
+		INSERT /* com.plgrim.ncp.base.insertGodAditDetail		Generator(Generator)	2018-05-23 */
+		INTO   GOD_ADIT_DETAIL (
+			   GOD_NO
+			 , GOD_ADIT_DETAIL_CD
+			 , GOD_ADIT_DETAIL_IEM_CD
+			 , LWPRT_VAL_CONT
+			 , LWPRT_VAL_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{godAditDetailCd,jdbcType=VARCHAR}
+			 , #{godAditDetailIemCd,jdbcType=VARCHAR}
+			 , #{lwprtValCont,jdbcType=VARCHAR}
+			 , #{lwprtValUnitCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodAditDetail" parameterType="godAditDetail">
+		DELETE /* com.plgrim.ncp.base.deleteGodAditDetail		Generator(Generator)	2018-05-23 */
+		  FROM GOD_ADIT_DETAIL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_ADIT_DETAIL_CD = #{godAditDetailCd,jdbcType=VARCHAR}
+		   AND GOD_ADIT_DETAIL_IEM_CD = #{godAditDetailIemCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

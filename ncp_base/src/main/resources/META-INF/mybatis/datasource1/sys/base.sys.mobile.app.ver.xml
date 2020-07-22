@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysMobileAppVer" parameterType="sysMobileAppVer" resultType="sysMobileAppVer">
+		SELECT /* com.plgrim.ncp.base.selectSysMobileAppVer		Generator(Generator)	2018-05-23 */
+			   APP_SECT_CD
+			 , APP_VER
+			 , MALL_ID
+			 , OPSTM_NM
+			 , PCKAGE_NM
+			 , APP_UDT_APL_DT
+			 , APP_ENFRC_UDT_YN
+			 , APP_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_MOBILE_APP_VER
+		 WHERE 1 = 1
+	   	   AND APP_SECT_CD = #{appSectCd,jdbcType=VARCHAR}
+		   AND APP_VER = #{appVer,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysMobileAppVer" parameterType="sysMobileAppVer">
+		UPDATE /* com.plgrim.ncp.base.updateSysMobileAppVer		Generator(Generator)	2018-05-23 */
+		SYS_MOBILE_APP_VER SET
+			   MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , OPSTM_NM = #{opstmNm,jdbcType=VARCHAR}
+			 , PCKAGE_NM = #{pckageNm,jdbcType=VARCHAR}
+			 , APP_UDT_APL_DT = #{appUdtAplDt,jdbcType=TIMESTAMP}
+			 , APP_ENFRC_UDT_YN = #{appEnfrcUdtYn,jdbcType=VARCHAR}
+			 , APP_DSCR = #{appDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND APP_SECT_CD = #{appSectCd,jdbcType=VARCHAR}
+		   AND APP_VER = #{appVer,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysMobileAppVer" parameterType="sysMobileAppVer">
+		INSERT /* com.plgrim.ncp.base.insertSysMobileAppVer		Generator(Generator)	2018-05-23 */
+		INTO   SYS_MOBILE_APP_VER (
+			   APP_SECT_CD
+			 , APP_VER
+			 , MALL_ID
+			 , OPSTM_NM
+			 , PCKAGE_NM
+			 , APP_UDT_APL_DT
+			 , APP_ENFRC_UDT_YN
+			 , APP_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{appSectCd,jdbcType=VARCHAR}
+			 , #{appVer,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{opstmNm,jdbcType=VARCHAR}
+			 , #{pckageNm,jdbcType=VARCHAR}
+			 , #{appUdtAplDt,jdbcType=TIMESTAMP}
+			 , #{appEnfrcUdtYn,jdbcType=VARCHAR}
+			 , #{appDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysMobileAppVer" parameterType="sysMobileAppVer">
+		DELETE /* com.plgrim.ncp.base.deleteSysMobileAppVer		Generator(Generator)	2018-05-23 */
+		  FROM SYS_MOBILE_APP_VER
+		 WHERE 1 = 1
+		   AND APP_SECT_CD = #{appSectCd,jdbcType=VARCHAR}
+		   AND APP_VER = #{appVer,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

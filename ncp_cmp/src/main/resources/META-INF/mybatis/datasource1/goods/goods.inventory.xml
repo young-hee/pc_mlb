@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.goods.inventory">
+	<!-- 
+		재고 관련해서 mybatis 다이나믹 쿼리 사용 지양
+		운영시 원인 파악에 어려움이 있음
+	 -->
+
+	<update id="updateGoodsShopItemInventorySalePrearrangementQuantityVariation" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodShopItmInv">	
+		UPDATE /* [goods.inventory.xml][updateGoodsShopItemInventorySalePrearrangementQuantityVariation][상품 매장 단품 판매 예정 재고 조정][Neps] */
+		GOD_SHOP_ITM_INV SET
+			   UDT_DT = SYSDATE
+			 , UDTER_ID = #{udterId, jdbcType=VARCHAR}			   
+			 , SALE_PREARNGE_QTY = (NVL(SALE_PREARNGE_QTY, 0) + #{salePrearngeQty, jdbcType=NUMERIC})
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo, jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId, jdbcType=VARCHAR}		
+	</update>
+
+	<update id="updateGoodsItemSalePrearrangementQuantityVariation" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodItm">
+		UPDATE /* [goods.inventory.xml][updateGoodsItemSalePrearrangementQuantityVariation][상품 단품 판매 예정 재고 조정 및 상태 변경][Neps] */
+		GOD_ITM TA SET
+			   TA.UDT_DT = SYSDATE
+			 , TA.UDTER_ID = #{udterId, jdbcType=VARCHAR}
+			 , TA.SALE_PREARNGE_QTY = (NVL(TA.SALE_PREARNGE_QTY, 0) + NVL(#{salePrearngeQty, jdbcType=NUMERIC}, 0))		 
+			 , TA.ITM_STAT_CD = (CASE			 				
+				 				  	WHEN (
+				 				  			(CASE /* 예약판매 여부 처리*/
+                                                WHEN (SELECT G.RESVE_SALE_GOD_YN FROM GOD G WHERE TA.GOD_NO = G.GOD_NO) = 'N' THEN
+                                                    NVL(TA.TOT_USEFUL_INV_QTY, 0)
+						 				  			- 
+						 				  			(CASE /* 온라인 매장일 경우 판매예정수량 계산 */
+						 				  			 	WHEN (SELECT SS.WRHUS_YN FROM SYS_SHOP SS WHERE SS.SHOP_ID = TA.USEFUL_INV_QTY_SHOP_ID) = 'Y' THEN	
+															/* 상태 적용시  마이너스 예정수량 처리*/
+						 				  					(CASE
+									 						  WHEN (NVL(TA.SALE_PREARNGE_QTY, 0) + NVL(#{salePrearngeQty, jdbcType=NUMERIC}, 0)) <![CDATA[<]]> 0 THEN
+									 						  	0
+									 						  ELSE
+									 						  	(NVL(TA.SALE_PREARNGE_QTY, 0) + NVL(#{salePrearngeQty, jdbcType=NUMERIC}, 0))
+									 						END)
+						 				  			 	ELSE
+						 				  			  		0
+						 				  			 END)                                                    
+                                                ELSE                             
+                                                    NVL(TA.RESVE_INV_QTY, 0)                   
+                                            END)				 				  					 				  	
+				 				  			) > 0 THEN
+				 				  		'SALE_PROGRS'
+				 				  	ELSE
+				 				  		'SMTM_SLDOUT'
+			 				  	END)
+		 WHERE 1 = 1
+		   AND TA.ITM_NO = #{itmNo,jdbcType=VARCHAR}		    
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SLDOUT'
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SALE_END'      		   
+	</update>
+	
+	<update id="updateGoodsShopItemInventoryQuantityVariation" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodShopItmInv">
+		UPDATE /* [goods.inventory.xml][updateGoodsShopItemInventoryQuantityVariation][상품 매장 단품 재고 조정][Neps] */
+		GOD_SHOP_ITM_INV SET
+			   UDT_DT = SYSDATE
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}			   
+			 , INV_QTY = (INV_QTY + #{invQty, jdbcType=NUMERIC})
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateGoodsItemInventoryQuantityVariation" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodItm">
+		UPDATE /* [goods.inventory.xml][updateGoodsItemInventoryQuantityVariation][상품 단품 재고 조정 및 상태 변경][Neps] */
+		GOD_ITM TA SET
+			   TA.UDT_DT = SYSDATE
+			 , TA.UDTER_ID = #{udterId, jdbcType=VARCHAR}
+			 , TA.TOT_USEFUL_INV_QTY = (NVL(TA.TOT_USEFUL_INV_QTY, 0) + NVL(#{totUsefulInvQty, jdbcType=NUMERIC}, 0))
+			 , TA.ITM_STAT_CD = (CASE			 				
+				 				  	WHEN ((NVL(TA.TOT_USEFUL_INV_QTY, 0) + NVL(#{totUsefulInvQty, jdbcType=NUMERIC}, 0)) 
+				 				  			- 
+				 				  			(CASE /* 온라인 매장일 경우 판매예정수량 계산 */
+				 				  			 	WHEN (SELECT SS.WRHUS_YN FROM SYS_SHOP SS WHERE SS.SHOP_ID = TA.USEFUL_INV_QTY_SHOP_ID) = 'Y' THEN					 				  					
+				 				  					/* 상태 적용시  마이너스 예정수량 처리*/
+				 				  					(CASE
+				 				  					 	WHEN NVL(TA.SALE_PREARNGE_QTY, 0) <![CDATA[<]]> 0 THEN
+				 				  					 		0
+				 				  					 	ELSE
+				 				  					 		NVL(TA.SALE_PREARNGE_QTY, 0)	
+				 				  					 END)
+				 				  			 	ELSE
+				 				  			  		0
+				 				  			 END)
+				 				  			) > 0 THEN
+				 				  		'SALE_PROGRS'
+				 				  	ELSE
+				 				  		'SMTM_SLDOUT'
+			 				  	END)
+		 WHERE 1 = 1
+		   AND TA.ITM_NO = #{itmNo,jdbcType=VARCHAR} 	
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SLDOUT'
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SALE_END'      		   		   
+	</update>
+
+	<update id="updateGoodsItemReserveInventoryQuantityVariation" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodItm">
+		UPDATE /* [goods.inventory.xml][updateGoodsItemReserveInventoryQuantityVariation][상품 단품 예약 재고 조정 및 상태 변경][Neps] */
+		GOD_ITM TA SET
+			   TA.UDT_DT = SYSDATE
+			 , TA.UDTER_ID = #{udterId, jdbcType=VARCHAR}
+			 , TA.RESVE_INV_QTY = (NVL(TA.RESVE_INV_QTY, 0) + NVL(#{resveInvQty, jdbcType=NUMERIC}, 0))
+			 , TA.ITM_STAT_CD = (CASE			 				
+			 				  	WHEN (NVL(TA.RESVE_INV_QTY, 0) + NVL(#{resveInvQty, jdbcType=NUMERIC}, 0)) <![CDATA[>]]> 0 THEN
+			 				  		'SALE_PROGRS'
+			 				  	ELSE
+			 				  		'SMTM_SLDOUT'
+			 				  END)
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SLDOUT'
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SALE_END'      		   		   		   
+	</update>
+
+	<update id="updateGoodsShopItemInventoryQuantity" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodShopItmInv">
+		UPDATE /* [goods.inventory.xml][updateGoodsShopItemInventoryQuantity][상품 매장 단품 재고 수정][Neps] */
+		GOD_SHOP_ITM_INV SET
+			   UDT_DT = SYSDATE
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}			   
+			 , INV_QTY = #{invQty, jdbcType=NUMERIC}
+			 , LC1_INV_QTY = #{lc1InvQty, jdbcType=NUMERIC}
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateGoodsItemInventoryQuantity" parameterType="com.plgrim.ncp.base.entities.datasource1.god.GodItm">
+		UPDATE /* [goods.inventory.xml][updateGoodsItemInventoryQuantity][상품 단품 재고 수정 및 상태 변경][Neps] */
+		GOD_ITM TA SET
+			   TA.UDT_DT = SYSDATE
+			 , TA.UDTER_ID = #{udterId, jdbcType=VARCHAR}
+			 , TA.TOT_USEFUL_INV_QTY = NVL(#{totUsefulInvQty, jdbcType=NUMERIC}, 0)
+			 , TA.ITM_STAT_CD = (CASE			 				
+				 				  	WHEN (NVL(#{totUsefulInvQty, jdbcType=NUMERIC}, 0)
+				 				  			- 
+				 				  			(CASE /* 온라인 매장일 경우 판매예정수량 계산 */
+				 				  			 	WHEN (SELECT SS.WRHUS_YN FROM SYS_SHOP SS WHERE SS.SHOP_ID = TA.USEFUL_INV_QTY_SHOP_ID) = 'Y' THEN	
+				 				  					/* 상태 적용시  마이너스 예정수량 처리*/
+				 				  					(CASE
+				 				  					 	WHEN NVL(TA.SALE_PREARNGE_QTY, 0) <![CDATA[<]]> 0 THEN
+				 				  					 		0
+				 				  					 	ELSE
+				 				  					 		NVL(TA.SALE_PREARNGE_QTY, 0)	
+				 				  					 END)				 				  					
+				 				  			 	ELSE
+				 				  			  		0
+				 				  			 END)
+				 				  			) > 0 THEN
+				 				  		'SALE_PROGRS'
+				 				  	ELSE
+				 				  		'SMTM_SLDOUT'
+				 				  END)
+		 WHERE 1 = 1
+		   AND TA.ITM_NO = #{itmNo,jdbcType=VARCHAR}
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SLDOUT'
+           AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SALE_END'      		   		   		   
+	</update>
+
+	<select id="getGoodsItemFirstProrityStatus" parameterType="String" resultType="String">
+		SELECT /* [goods.inventory.xml][getGoodsItemFirstProrityStatus][상품 단품의 우선수위가 가장 높은 상태 가져오기][Neps] */
+				T.ITM_STAT_CD
+		 FROM (
+		    SELECT GI.GOD_NO, GI.ITM_STAT_CD, ROW_NUMBER() OVER (ORDER BY MSC.SORT_SEQ ASC) AS RNK
+		     FROM GOD_ITM GI
+		     JOIN MV_SYS_CD MSC ON (GI.ITM_STAT_CD = MSC.CD AND MSC.UPPER_CD = 'ITM_STAT' AND MSC.LANG_CD = 'KOR')
+		    WHERE GI.GOD_NO = #{godNo,jdbcType=VARCHAR}    
+		    ) T
+		WHERE RNK = 1	
+	</select>
+	
+	<update id="updateGoodsItemStatusAccordingToGoodsStatus" parameterType="com.plgrim.ncp.base.entities.datasource1.god.God">
+		UPDATE /* [goods.inventory.xml][updateGoodsItemStatusAccordingToGoodsStatus][상품 단품 재고 및 상태 조정][Neps] */
+		GOD SET
+			   UDT_DT = SYSDATE
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , GOD_SALE_SECT_CD = #{godSaleSectCd,jdbcType=VARCHAR} 
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_SALE_SECT_CD <![CDATA[<>]]>  #{godSaleSectCd,jdbcType=VARCHAR}
+           AND GOD_SALE_SECT_CD <![CDATA[<>]]> 'SLDOUT'
+           AND GOD_SALE_SECT_CD <![CDATA[<>]]> 'SALE_END'      
+	</update>
+
+
+	<resultMap id="shopInventoryResult" type="com.plgrim.ncp.biz.goods.result.GoodsInventoryResult">
+		<!-- 상품 확장 엔티티 -->
+		<result property="rowNumber" 											column="NO"/>
+		<result property="totalRow" 											column="TOTALROW"/>
+		<result property="godEx.godNo" 											column="GOD_NO"/>							<!-- 상품 번호 -->
+		<result property="godEx.erpGodNo" 										column="ERP_GOD_NO"/>						<!-- ERP 상품 번호 -->
+		<result property="godEx.dsgnGrpNo" 										column="DSGN_GRP_NO"/>						<!-- 디자인 그룹 번호 -->
+		<result property="godEx.brndId" 										column="BRND_ID"/>							<!-- 상품 브랜드 코드 -->
+		<result property="godEx.sesonCd" 										column="SESON_CD"/>							<!-- 시즌 코드 -->
+		<result property="godEx.godTpCd" 										column="GOD_TP_CD"/>						<!-- 상품 유형 코드 -->
+		<result property="godEx.godTpNm" 										column="GOD_TP_NM"/>						<!-- 상품 유형 코드명 -->
+		<result property="godEx.regDt" 											column="REG_DT"/>							<!-- 등록 일시 -->
+		
+		<!-- 상품 단품 엔티티 -->
+		<result property="godItmEx.itmNo" 										column="ITM_NO"/>							<!-- 단품번호 -->
+		<result property="godItmEx.itmNm" 										column="ITM_NM"/>							<!-- 단품명 -->
+		
+		<!-- 상품 매장 단품 엔티티 -->
+		<result property="godShopItmInvEx.shopId" 								column="SHOP_ID"/>							<!-- 매장ID -->
+		<result property="godShopItmInvEx.shopNm" 								column="SHOP_NM"/>							<!-- 매장명 -->
+		<result property="godShopItmInvEx.invQty" 								column="INV_QTY"/>							<!-- 매장재고수량 -->
+		<result property="godShopItmInvEx.lc1InvQty" 							column="LC1_INV_QTY"/>						<!-- 본사재고수량 -->
+		<result property="godShopItmInvEx.salePrearngeQty" 						column="SALE_PREARNGE_QTY"/>				<!-- 매장판매예정수량 -->
+		
+	</resultMap>
+
+	<sql id="shopInventoryWhere">
+		<choose>
+			<!-- 마스터키 검색조건이 존재하는 경우 -->
+			<when test="godNos != null and godNos != '' and godNos.length > 0">
+				<choose>
+       				<when test="godNosGbn == 'erp_god_no'">
+       					AND G.ERP_GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'god_no'">
+       					AND G.GOD_NO IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'seson_cd'">
+       					AND G.SESON_CD IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>
+       				<when test="godNosGbn == 'shop_id'">
+       					AND GSII.SHOP_ID IN (<foreach collection="godNos" item="godNos" separator=",">#{godNos, jdbcType=VARCHAR}</foreach>)
+       				</when>       				
+       			</choose>			
+			</when>
+			<!-- 마스터키 검색조건이 존재하지 않는 경우 -->
+			<otherwise>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(term)">
+					<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(term,'regdt')">			 	
+        				AND G.REG_DT <![CDATA[>=]]> TO_DATE(#{startTermDt}||' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+        				AND G.REG_DT <![CDATA[<=]]> TO_DATE(#{endTermDt}||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') 
+					</if>				
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godTpCd)">
+					 AND G.GOD_TP_CD = #{godTpCd, jdbcType=VARCHAR}
+				</if>	 					
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndId)">
+					 AND G.BRND_ID = #{brndId, jdbcType=VARCHAR}	
+				</if>
+				<if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndIds) and brndIds.length > 0)">
+					AND G.BRND_ID IN (<foreach collection="brndIds" item="brndIds" separator=",">#{brndIds, jdbcType=VARCHAR}</foreach>)
+				</if>				
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(shopNm)">
+					 AND SS.SHOP_NM LIKE ''||#{shopNm, jdbcType=VARCHAR}||'%'	
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(wrhusYn)">
+					 AND SS.WRHUS_YN = #{wrhusYn, jdbcType=VARCHAR}	
+				</if>				
+			</otherwise>
+		</choose>		
+	</sql>
+
+	<select id="getShopInventoryListCount" parameterType="com.plgrim.ncp.biz.goods.data.GoodsInventorySearchDTO" resultType="long">
+		SELECT /* [goods.inventory.xml][getShopInventoryListCount][매장 재고 목록 수][Neps] */
+			   COUNT(GI.ITM_NO)
+	     FROM GOD G
+	     JOIN GOD_ITM GI ON (G.GOD_NO = GI.GOD_NO)
+	     JOIN GOD_SHOP_ITM_INV GSII ON (GI.ITM_NO = GSII.ITM_NO AND GI.GOD_NO = GSII.GOD_NO)
+	     JOIN SYS_SHOP SS ON (GSII.SHOP_ID = SS.SHOP_ID)
+         <if test="adminTpCd != 'SYS_OPRTR'">                 
+         JOIN SYS_ADMIN_BRND SAB
+         ON (G.BRND_ID = SAB.BRND_ID AND SAB.ADMIN_ID = #{loginId,jdbcType=VARCHAR})
+         </if>	     
+	    WHERE G.GOD_NO IS NOT NULL
+	    <include refid="com.plgrim.ncp.biz.goods.inventory.shopInventoryWhere"/>
+	</select>
+	
+	<select id="selectShopInventoryList" parameterType="com.plgrim.ncp.biz.goods.data.GoodsInventorySearchDTO" resultMap="shopInventoryResult">
+		SELECT /* [goods.inventory.xml][getShopInventoryListCount][매장 재고 목록 수][Neps] */	 
+			   T.*
+		 FROM (	 
+				<include refid="com.plgrim.ncp.base.beginPage"/>
+			    SELECT G.GOD_NO
+			         , G.DSGN_GRP_NO
+			         , G.ERP_GOD_NO
+			         , G.SESON_CD
+			         , G.BRND_ID
+			         , G.GOD_TP_CD
+			         , GI.ITM_NO
+			         , GI.ITM_NM 
+			         , G.REG_DT
+			         , GSII.SHOP_ID
+			         , NVL(GSII.INV_QTY, 0)				AS INV_QTY
+			         , NVL(GSII.LC1_INV_QTY, 0)			AS LC1_INV_QTY 
+			         , NVL(GSII.SALE_PREARNGE_QTY, 0)	AS SALE_PREARNGE_QTY
+			         , SS.SHOP_NM
+			         , SS.WRHUS_YN 
+			     FROM GOD G
+			     JOIN GOD_ITM GI ON (G.GOD_NO = GI.GOD_NO)
+			     JOIN GOD_SHOP_ITM_INV GSII ON (GI.ITM_NO = GSII.ITM_NO AND GI.GOD_NO = GSII.GOD_NO)
+			     JOIN SYS_SHOP SS ON (GSII.SHOP_ID = SS.SHOP_ID)
+		         <if test="adminTpCd != 'SYS_OPRTR'">                 
+		         JOIN SYS_ADMIN_BRND SAB
+		         ON (G.BRND_ID = SAB.BRND_ID AND SAB.ADMIN_ID = #{loginId,jdbcType=VARCHAR})
+		         </if>	     
+			    WHERE G.GOD_NO IS NOT NULL
+			    <include refid="com.plgrim.ncp.biz.goods.inventory.shopInventoryWhere"/>
+			    ORDER BY G.REG_DT DESC, GI.ITM_NO ASC
+				<include refid="com.plgrim.ncp.base.endPage"/>
+		 	) T
+	</select>
+	
+	<update id="updateSingleGoodsShopItemInventory" parameterType="com.plgrim.ncp.interfaces.goods.data.InfGodItmInvSDO">
+		MERGE INTO /* [goods.inventory.xml][updateSingleGoodsShopItemInventory][상품 매장 단품 1건 재고 반영][Neps] */ 
+		GOD_SHOP_ITM_INV TA
+		USING (SELECT GI.ITM_NO
+		            , GI.GOD_NO
+		            , SS.SHOP_ID
+		            , NVL(#{invQty,jdbcType=NUMERIC}, 0) AS INV_QTY
+		            , NVL(#{hoffLgsInvQty,jdbcType=NUMERIC}, 0) AS LC1_INV_QTY
+		            , #{udterId,jdbcType=VARCHAR} AS UDTER_ID
+		         FROM GOD G
+		         JOIN GOD_ITM GI ON (G.GOD_NO = GI.GOD_NO)
+         		 JOIN SYS_SHOP_BRND SSB ON (G.BRND_ID = SSB.ERP_BRND_ID AND SSB.ERP_SHOP_ID = #{shopId,jdbcType=VARCHAR})
+         		 JOIN SYS_SHOP SS ON (SSB.SHOP_ID = SS.SHOP_ID)         		         
+		        WHERE G.GOD_TP_CD = 'GNRL_GOD'
+		          AND G.RESVE_SALE_GOD_YN = 'N'
+                  AND G.GOD_APRV_SECT_CD = 'APRV_COMPT'                  		         
+		          AND G.ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+		          AND G.BRND_ID = #{brndId,jdbcType=VARCHAR}
+		          AND G.SESON_CD = #{sesonCd,jdbcType=VARCHAR} 
+		          AND GI.OPT_VAL_CD_1 = #{optValCd,jdbcType=VARCHAR}
+          		  AND SSB.DLV_SHOP_YN = 'Y'
+           		  AND SSB.PKUP_SHOP_YN = 'Y'
+          		  AND SSB.USE_YN = 'Y' 
+          		  AND SS.USE_YN = 'Y' 		          
+		       ) SO ON (TA.ITM_NO = SO.ITM_NO AND TA.SHOP_ID = SO.SHOP_ID AND TA.GOD_NO = SO.GOD_NO)    
+		WHEN MATCHED THEN
+		    UPDATE SET
+		        TA.UDT_DT = SYSDATE
+		      , TA.UDTER_ID = SO.UDTER_ID  
+		      , TA.INV_QTY = SO.INV_QTY
+		      , TA.LC1_INV_QTY = SO.LC1_INV_QTY	
+	</update>	
+
+	<update id="updateSingleGoodsItemInventory" parameterType="String">
+	    MERGE INTO /* [goods.inventory.xml][updateSingleGoodsItemInventory][상품 단품 1건 재고 반영][Neps] */
+	    GOD_ITM TA
+	    USING (SELECT  GSII.ITM_NO
+	                 , GSII.SHOP_ID        
+	                 , GSII.INV_QTY
+	                 , GSII.LC1_INV_QTY
+	                 , GSII.UDTER_ID
+	                 , ROW_NUMBER() OVER(PARTITION BY GSII.ITM_NO ORDER BY GSII.INV_QTY DESC, MSC.ASSTN_CD_1 DESC NULLS LAST) AS RN
+	             FROM GOD_SHOP_ITM_INV GSII
+	             JOIN GOD G ON (GSII.GOD_NO = G.GOD_NO)
+	             JOIN SYS_SHOP_BRND SSB ON (GSII.SHOP_ID = SSB.SHOP_ID AND G.BRND_ID = SSB.ERP_BRND_ID)	             
+	             JOIN SYS_SHOP SS ON (GSII.SHOP_ID = SS.SHOP_ID)
+	             LEFT OUTER JOIN  MV_SYS_CD MSC ON (SS.ASGN_PRIO_RANK_SECT_CD = MSC.CD AND MSC.LANG_CD = 'KOR')
+		        WHERE G.ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+		          AND SSB.DLV_SHOP_YN = 'Y'
+		          AND SSB.PKUP_SHOP_YN = 'Y'
+		          AND SSB.USE_YN = 'Y' 
+		          AND SS.USE_YN = 'Y'     
+	    ) SO ON (TA.ITM_NO = SO.ITM_NO AND SO.RN = 1)
+	    WHEN MATCHED THEN
+	        UPDATE SET
+	            TA.TOT_USEFUL_INV_QTY = NVL(SO.INV_QTY, 0) + NVL(SO.LC1_INV_QTY, 0)
+	          , TA.USEFUL_INV_QTY_SHOP_ID = SO.SHOP_ID
+	          , TA.ITM_STAT_CD = (CASE WHEN (NVL(SO.INV_QTY, 0) + NVL(SO.LC1_INV_QTY, 0) - NVL(TA.SALE_PREARNGE_QTY, 0)) > 0 THEN 'SALE_PROGRS' ELSE 'SMTM_SLDOUT' END)
+	          , TA.UDT_DT = SYSDATE
+	          , TA.UDTER_ID = SO.UDTER_ID 
+			WHERE TA.ITM_STAT_CD <![CDATA[<>]]> 'SLDOUT'
+	      	  AND TA.ITM_STAT_CD <![CDATA[<>]]> 'SALE_END'	              
+	</update>
+	
+    <update id="updateSingleGoodsItemStatusAccordingToGoodsStatus" parameterType="String">    
+		MERGE INTO /* [goods.inventory.xml][updateSingleGoodsItemStatusAccordingToGoodsStatus][단품 상태에 따른 상품 상태 1건 변경][Neps] */
+		GOD TA
+		USING (SELECT  GI.GOD_NO
+		             , GI.ITM_STAT_CD
+		             , GI.UDTER_ID
+		             , ROW_NUMBER() OVER (PARTITION BY GI.GOD_NO ORDER BY MSC.SORT_SEQ ASC) AS RN
+		        FROM GOD_ITM GI
+		        JOIN GOD G ON (GI.GOD_NO = G.GOD_NO)
+		        JOIN MV_SYS_CD MSC ON (GI.ITM_STAT_CD = MSC.CD AND MSC.UPPER_CD = 'ITM_STAT' AND MSC.LANG_CD = 'KOR')
+		       WHERE G.ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+		      ) SO ON (TA.GOD_NO = SO.GOD_NO AND SO.RN = 1)
+		WHEN MATCHED THEN
+		    UPDATE SET
+		        TA.GOD_SALE_SECT_CD = SO.ITM_STAT_CD
+		      , TA.UDT_DT = SYSDATE
+		      , TA.UDTER_ID = SO.UDTER_ID
+         	WHERE TA.GOD_SALE_SECT_CD <![CDATA[<>]]> 'SLDOUT'
+         	  AND TA.GOD_SALE_SECT_CD <![CDATA[<>]]> 'SALE_END'
+    </update>	
+</mapper>

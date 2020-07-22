@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminLoginLog" parameterType="sysAdminLoginLog" resultType="sysAdminLoginLog">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminLoginLog		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , BO_SITE_ID
+			 , CONECT_DT
+			 , LOGIN_SUCCES_YN
+			 , CONECT_IP
+		  FROM SYS_ADMIN_LOGIN_LOG
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateSysAdminLoginLog" parameterType="sysAdminLoginLog">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminLoginLog		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_LOGIN_LOG SET
+			   ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+			 , BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+			 , CONECT_DT = #{conectDt,jdbcType=TIMESTAMP}
+			 , LOGIN_SUCCES_YN = #{loginSuccesYn,jdbcType=VARCHAR}
+			 , CONECT_IP = #{conectIp,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertSysAdminLoginLog" parameterType="sysAdminLoginLog">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminLoginLog		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_LOGIN_LOG (
+			   ADMIN_ID
+			 , BO_SITE_ID
+			 , CONECT_DT
+			 , LOGIN_SUCCES_YN
+			 , CONECT_IP
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{boSiteId,jdbcType=VARCHAR}
+			 , #{conectDt,jdbcType=TIMESTAMP}
+			 , #{loginSuccesYn,jdbcType=VARCHAR}
+			 , #{conectIp,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteSysAdminLoginLog" parameterType="sysAdminLoginLog">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminLoginLog		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_LOGIN_LOG
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

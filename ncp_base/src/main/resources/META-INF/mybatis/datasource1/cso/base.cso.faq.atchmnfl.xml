@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoFaqAtchmnfl" parameterType="csoFaqAtchmnfl" resultType="csoFaqAtchmnfl">
+		SELECT /* com.plgrim.ncp.base.selectCsoFaqAtchmnfl		Generator(Generator)	2018-05-23 */
+			   FAQ_SN
+			 , FAQ_ATCHMNFL_TURN
+			 , FAQ_ATCH_FILE_NM
+			 , FAQ_ATCH_FILE_URL
+			 , FAQ_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_FAQ_ATCHMNFL
+		 WHERE 1 = 1
+	   	   AND FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+		   AND FAQ_ATCHMNFL_TURN = #{faqAtchmnflTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoFaqAtchmnfl" parameterType="csoFaqAtchmnfl">
+		UPDATE /* com.plgrim.ncp.base.updateCsoFaqAtchmnfl		Generator(Generator)	2018-05-23 */
+		CSO_FAQ_ATCHMNFL SET
+			   FAQ_ATCH_FILE_NM = #{faqAtchFileNm,jdbcType=VARCHAR}
+			 , FAQ_ATCH_FILE_URL = #{faqAtchFileUrl,jdbcType=VARCHAR}
+			 , FAQ_ATCH_FILE_CPCTY = #{faqAtchFileCpcty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+		   AND FAQ_ATCHMNFL_TURN = #{faqAtchmnflTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoFaqAtchmnfl" parameterType="csoFaqAtchmnfl">
+		INSERT /* com.plgrim.ncp.base.insertCsoFaqAtchmnfl		Generator(Generator)	2018-05-23 */
+		INTO   CSO_FAQ_ATCHMNFL (
+			   FAQ_SN
+			 , FAQ_ATCHMNFL_TURN
+			 , FAQ_ATCH_FILE_NM
+			 , FAQ_ATCH_FILE_URL
+			 , FAQ_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{faqSn,jdbcType=NUMERIC}
+			 , #{faqAtchmnflTurn,jdbcType=NUMERIC}
+			 , #{faqAtchFileNm,jdbcType=VARCHAR}
+			 , #{faqAtchFileUrl,jdbcType=VARCHAR}
+			 , #{faqAtchFileCpcty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoFaqAtchmnfl" parameterType="csoFaqAtchmnfl">
+		DELETE /* com.plgrim.ncp.base.deleteCsoFaqAtchmnfl		Generator(Generator)	2018-05-23 */
+		  FROM CSO_FAQ_ATCHMNFL
+		 WHERE 1 = 1
+		   AND FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+		   AND FAQ_ATCHMNFL_TURN = #{faqAtchmnflTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

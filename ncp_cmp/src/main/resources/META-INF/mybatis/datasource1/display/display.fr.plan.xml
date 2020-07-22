@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspPromtGodFrResult" id="dspPromtGodFrResultMap">
+		<id property="promtSn" column="PROMT_SN" />
+		<id property="sprtrTurn" column="SPRTR_TURN" />
+		<id property="godNo" column="GOD_NO"  />
+		
+		<result property="dspPromtGod.godNo" column="GOD_NO" />
+		<result property="dspPromtGod.sortSeq" column="SORT_SEQ" />
+		
+		<association property="dspCnrGod" javaType="com.plgrim.ncp.biz.display.result.DspCommonGodFrResult">
+        	<id column="GOD_NO" property="god.godNo" />
+        	<result property="god.godNo" column="GOD_NO" />
+			<result property="god.erpGodNo" column="ERP_GOD_NO" />
+			<result property="god.dsgnGrpNo" column="DSGN_GRP_NO" />
+			<result property="god.godNm" column="GOD_NM" />
+			<result property="god.mobileGodNm" column="MOBILE_GOD_NM" />
+			<result property="god.tagNm" column="TAG_NM" />
+			<result property="god.colorTagNm" column="COLOR_TAG_NM" />
+			<result property="god.themaTagNm" column="THEMA_TAG_NM" />
+			<result property="god.godAprvSectCd" column="GOD_APRV_SECT_CD" />
+			<result property="god.godSaleSectCd" column="GOD_SALE_SECT_CD" />
+			<result property="god.saleBegDate" column="SALE_BEG_DATE" />
+			<result property="god.saleEndDate" column="SALE_END_DATE" />
+			<result property="god.colorNm" column="COLOR_NM" />
+			<result property="god.colorCd" column="COLOR_CD" />
+			<result property="god.clorChipImgUrl" column="CLOR_CHIP_IMG_URL" />
+			<result property="god.godTpCd" column="GOD_TP_CD" />
+			<result property="god.partmalSectCd" column="PARTMAL_SECT_CD" />
+			<result property="god.brndId" column="GOD_BRND_ID" />
+			<result property="god.brndGrpId" column="GOD_BRND_GRP_ID" />
+			<result property="god.stdCtgryNo" column="STD_CTGRY_NO" />
+			<result property="god.tdfSect" column="TDF_SECT" />
+			<result property="god.sesonGrpCd" column="SESON_GRP_CD" />
+			<result property="god.sesonCd" column="SESON_CD" />
+			<result property="god.prdlstCd" column="PRDLST_CD" />	
+			<result property="god.resveSaleGodYn" column="RESVE_SALE_GOD_YN" />
+			<result property="god.resveOrdPaySectCd" column="RESVE_ORD_PAY_SECT_CD" />
+			<result property="god.resveOrdPartPayAmt" column="RESVE_ORD_PART_PAY_AMT" />
+			<result property="god.resveOrdPayClosDt" column="RESVE_ORD_PAY_CLOS_DT" />
+			<result property="god.resveOrdDlivyPrearngeDate" column="RESVE_ORD_DLIVY_PREARNGE_DATE" />
+			<result property="god.dmstcDlvCstPlcSn" column="DMSTC_DLV_CST_PLC_SN" />
+			<result property="god.ovseaDlvPsbYn" column="OVSEA_DLV_PSB_YN" />
+			<result property="god.ovseaDlvDmstcDlvCstPlcSn" column="OVSEA_DLV_DMSTC_DLV_CST_PLC_SN" />
+			<result property="god.ovseaDlvCstPlcSn" column="OVSEA_DLV_CST_PLC_SN" />
+			<result property="god.otltYn" column="OTLT_YN" />
+			<result property="god.regtrId" column="REGTR_ID" />
+			<result property="god.regDt" column="REG_DT" />
+			<result property="god.udterId" column="UDTER_ID" />
+			<result property="god.udtDt" column="UDT_DT" />
+			<result property="dspGodPrc.rtlPrc" column="RTL_PRC" />
+			<result property="dspGodPrc.godDcRt" column="DGPRC_GOD_DC_RT" />
+			<result property="dspGodPrc.lastSalePrc" column="DGPRC_LAST_SALE_PRC" />
+			<result property="dspGodPrc.cpnDcRt" column="DGPRC_CPN_DC_RT" />
+			<result property="sysBrnd.brndId" column="BRND_ID" />
+			<result property="sysBrnd.upperBrndId" column="UPPER_BRND_ID" />
+			<result property="sysBrnd.brndNm" column="BRND_NM" />
+			<result property="godLangbyGodNm.godNm" column="GLGNM_GOD_NM" />
+			<result property="godLangbyGodNm.mobileGodNm" column="GLGNM_MOBILE_GOD_NM" />
+			<result property="godLangbyGodNm.tagNm" column="GLGNM_TAG_NM" />
+			<result property="godLangbyGodNm.colorTagNm" column="GLGNM_COLOR_TAG_NM" />
+			<result property="godLangbyGodNm.themaTagNm" column="GLGNM_THEMA_TAG_NM" />
+			<result property="godLangbyGodNm.colorNm" column="GLGNM_COLOR_NM" />
+			<result property="mnfcturDate" column="MNFCTUR_DATE" />
+			<result property="iconNm" column="ICON_NM" />
+			<result property="godTagResve.tagNm" column="GR_TAG_NM" />
+			<result property="godLangbyTagResve.tagNm" column="GLTR_TAG_NM" />
+			<result property="colorStyleCd" column="COLOR_STYLE_CD" />
+      	</association>
+	</resultMap>
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspPromtSprtrFrResult" id="dspPromtSprtrFrResultMap">
+		<id property="promtSn" column="PROMT_SN" />
+		<id property="sprtrTurn" column="SPRTR_TURN" />
+				
+		<result property="dspPromtSprtr.sprtrTurn" column="SPRTR_TURN" />
+		<result property="dspPromtSprtr.sprtrNm" column="SPRTR_NM" />
+		<result property="dspPromtSprtr.sortSeq" column="SPRTR_SEQ" />
+		<result property="dspPromtSprtrLang.sprtrNm" column="LNG_SPRTR_NM" />
+		
+		<collection property="dspPromtGodList" resultMap="dspPromtGodFrResultMap" javaType="java.util.ArrayList" />
+	</resultMap>
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspPromtFrResult" id="dspPromtFrResultMap">
+		<id property="promtSn" column="PROMT_SN" />
+		<result property="dspPromt.promtSn" column="PROMT_SN" />
+		<result property="dspPromt.promtNm" column="PROMT_NM" />
+		<result property="dspPromtLang.promtNm" column="LNG_PROMT_NM" />
+		
+		<collection property="dspPromtSprtrList" resultMap="dspPromtSprtrFrResultMap" javaType="java.util.ArrayList" />
+	</resultMap>
+	
+	<sql id="promtMbrCondSql">
+		AND EXISTS (
+			SELECT 1
+	 			FROM DSP_PROMT_DSP_TGT t4
+					WHERE 
+		            A.PROMT_SN = t4.PROMT_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'LANG'
+		        	AND t4.LANG_CD = #{lang,jdbcType=VARCHAR}
+		        )
+			)
+		AND EXISTS (
+			SELECT 1
+	 			FROM DSP_PROMT_DSP_TGT t4
+					WHERE 
+		            A.PROMT_SN = t4.PROMT_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'MALL_ID'
+		        	AND t4.MALL_ID = #{mallId,jdbcType=VARCHAR}
+		        )
+			)	
+		AND EXISTS (
+			SELECT 1
+  			FROM DSP_PROMT_DSP_TGT t4
+ 				WHERE 
+		            A.PROMT_SN = t4.PROMT_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'DVC'
+		        	AND t4.DVC_CD = #{device,jdbcType=VARCHAR}
+		        )
+			)
+		<if test="aplMbrAtrb != null">
+		AND 
+			<if test="aplMbrAtrb != 'GRPCO'">
+			EXISTS (
+			SELECT 1
+  			FROM DSP_PROMT_DSP_TGT t4
+ 				WHERE 
+		            A.PROMT_SN = t4.PROMT_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+		        	AND t4.TGT_MBR_ATRB_CD = #{aplMbrAtrb,jdbcType=VARCHAR}
+		        )
+			)
+	    	</if>
+	    	<if test="aplMbrAtrb == 'GRPCO'">
+	        (
+		    	EXISTS (
+		        	SELECT 1
+		    	FROM DSP_PROMT_DSP_TGT t4
+		    		WHERE 
+		        		A.PROMT_SN = t4.PROMT_SN
+		                AND (
+		                        t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+		        			AND t4.TGT_MBR_ATRB_CD = 'GRPCO_IND'
+		                    AND T4.GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+		                 )
+		            )
+		        OR
+		        EXISTS (
+		            SELECT 1
+		    	FROM DSP_PROMT_DSP_TGT t4
+		    		WHERE 
+		        		A.PROMT_SN = t4.PROMT_SN
+		                AND (
+		                        t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+		                    AND T4.TGT_MBR_ATRB_CD = 'GRPCO_ALL'
+		                 )
+		            )
+	        )
+	    	</if>
+	    </if>
+		AND 
+			EXISTS (
+			SELECT 1
+  			FROM DSP_PROMT_DSP_TGT t4
+ 				WHERE 
+		            A.PROMT_SN = t4.PROMT_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'TGT_MBR_TP'
+		        	AND t4.TGT_MBR_TP_CD = #{aplMbrTp,jdbcType=VARCHAR}
+		        )
+			)
+
+	</sql>	
+	
+	<sql id="selectPromtGodListSql" >
+		SELECT 
+	         t1.GOD_NO
+	        ,t1.ERP_GOD_NO
+	        ,t1.DSGN_GRP_NO
+	        ,t1.GOD_NM
+	        ,t1.MOBILE_GOD_NM
+	        ,t1.TAG_NM
+	        ,t1.COLOR_TAG_NM
+	        ,t1.THEMA_TAG_NM
+	        ,t1.GOD_APRV_SECT_CD
+	        ,t1.GOD_SALE_SECT_CD
+	        ,t1.SALE_BEG_DATE
+	        ,t1.SALE_END_DATE
+	        ,t1.COLOR_NM
+	        ,t1.COLOR_CD
+	        ,t1.CLOR_CHIP_IMG_URL
+	        ,t1.GOD_TP_CD
+	        ,t1.PARTMAL_SECT_CD
+	        ,t1.BRND_ID AS GOD_BRND_ID
+	        ,t1.BRND_GRP_ID AS GOD_BRND_GRP_ID
+	        ,t1.STD_CTGRY_NO
+	        ,t1.TDF_SECT
+	        ,t1.SESON_GRP_CD
+	        ,t1.SESON_CD
+	        ,t1.PRDLST_CD
+	        ,t1.RESVE_SALE_GOD_YN
+	        ,t1.RESVE_ORD_PAY_SECT_CD
+	        ,t1.RESVE_ORD_PART_PAY_AMT
+	        ,t1.RESVE_ORD_PAY_CLOS_DT
+	        ,t1.RESVE_ORD_DLIVY_PREARNGE_DATE
+	        ,t1.DMSTC_DLV_CST_PLC_SN
+	        ,t1.OVSEA_DLV_PSB_YN
+	        ,t1.OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+	        ,t1.OVSEA_DLV_CST_PLC_SN
+	        ,t1.OTLT_YN
+	        ,t1.REG_DT
+	        ,t6.LAST_SALE_PRC AS DGPRC_LAST_SALE_PRC
+	        ,CASE
+	            WHEN t6.GOD_DC_RT > 0 THEN
+	                ROUND ( (t6.RTL_PRC - t6.DC_PRC) / t6.RTL_PRC * 100)
+	            ELSE
+	            (CASE
+	                WHEN t6.RTL_PRC > t6.CSMR_PRC THEN                                                             
+	                    ROUND((t6.RTL_PRC - t6.CSMR_PRC) / t6.RTL_PRC * 100)
+	                ELSE 0  
+	            END)
+	         END AS DGPRC_GOD_DC_RT
+	        ,t6.CPN_DC_RT AS DGPRC_CPN_DC_RT
+	        ,t6.RTL_PRC
+	
+	        ,t5.BRND_ID
+	        ,t5.UPPER_BRND_ID
+	        ,t5.BRND_NM
+			<if test="lang != 'KOR' ">
+			/* 해외판매여부 체크 */
+	        ,t3.GOD_NM AS GLGNM_GOD_NM
+	        ,t3.MOBILE_GOD_NM AS GLGNM_MOBILE_GOD_NM
+	        ,t3.TAG_NM AS GLGNM_TAG_NM
+	        ,t3.COLOR_TAG_NM AS GLGNM_COLOR_TAG_NM
+	        ,t3.THEMA_TAG_NM AS GLGNM_THEMA_TAG_NM
+	        ,t3.COLOR_NM AS GLGNM_COLOR_NM
+			</if>
+	        ,T13.MNFCTUR_DATE
+	        ,ic.ICON_NM
+	        ,rtg.GR_TAG_NM
+            ,rtg.GLTR_TAG_NM
+        FROM GOD t1
+        INNER JOIN DSP_GOD_PRC t6
+        ON (T1.GOD_NO = t6.GOD_NO
+        AND t6.MALL_ID =  #{mallId, jdbcType=VARCHAR}
+        AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}
+    	<if test='spcPrmTp != null and spcPrmTp != ""'>
+   		AND t6.PRC_SECT_CD = CASE WHEN (
+    			SELECT 1
+    			FROM DSP_GOD_PRC A
+    			WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND A.GOD_NO = T6.GOD_NO AND ROWNUM = 1) IS NOT NULL THEN #{spcPrmTp, jdbcType=VARCHAR} 
+   			ELSE #{prcSectCd, jdbcType=VARCHAR}
+   			END
+    	</if>
+    	<if test='spcPrmTp == null or spcPrmTp == ""'>
+    	AND t6.PRC_SECT_CD = 'GNRL'
+    	</if>
+        )
+        JOIN SYS_BRND t5 ON T1.BRND_GRP_ID = T5.BRND_ID AND T5.USE_YN = 'Y'
+        LEFT OUTER JOIN GOD_NTFC_DETAIL T13 ON T1.GOD_NO = T13.GOD_NO AND T13.LANG_CD = #{lang,jdbcType=VARCHAR}
+		<if test="lang != 'KOR' ">
+		/* 해외판매여부 체크 */
+		JOIN GOD_LANGBY_GOD_NM t3 ON t1.GOD_NO=T3.GOD_NO AND T3.LANG_CD= #{lang, jdbcType=VARCHAR} AND t3.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+		</if>
+		LEFT OUTER JOIN (
+			SELECT 
+	             t2.GOD_NO
+	            ,listagg(t1.ICON_NM, ',') within group(order by t1.ICON_TURN) as ICON_NM
+		   	FROM GOD_ICON t1 JOIN GOD_ICON_CNNC t2 ON t1.ICON_TURN = t2.ICON_TURN
+		    GROUP BY t2.GOD_NO
+		) ic ON (t1.god_no = ic.god_no)
+		LEFT OUTER JOIN (
+            SELECT 
+                   a.GOD_NO ,
+                   a.TAG_NM AS GR_TAG_NM,
+                   T21.TAG_NM AS GLTR_TAG_NM
+            FROM (
+                     SELECT T19.GOD_NO ,
+                           T19.TAG_RESVE_SN ,
+                           T20.TAG_NM,
+                           row_number() over (partition by t19.god_no order by T19.REG_DT desc) as rn
+                      FROM GOD_TAG_RESVE_CNNC T19 
+                      JOIN GOD_TAG_RESVE T20 ON T19.TAG_RESVE_SN = T20.TAG_RESVE_SN
+                       AND T20.USE_YN = 'Y'
+                     WHERE 1 = 1
+                     <![CDATA[
+                       AND T20.RESVE_BEG_DT <= sysdate
+                       AND T20.RESVE_END_DT >= sysdate
+                     ]]>
+                     ) a 
+            LEFT OUTER JOIN GOD_LANGBY_TAG_RESVE T21 ON a.TAG_RESVE_SN = t21.TAG_RESVE_SN
+            AND t21.LANG_CD='KOR'
+            where a.rn = 1
+        ) rtg ON (t1.god_no = rtg.god_no)
+        WHERE 1 = 1
+        AND t1.GOD_APRV_SECT_CD = 'APRV_COMPT'
+        AND t1.DSP_YN = 'Y'
+        AND t1.SPCIFY_URL_DSP_YN = 'N'
+		AND t1.GOD_SALE_SECT_CD in ('SALE_PROGRS','SLDOUT')
+		<if test='empYn == "N"'>
+		AND t1.EMP_ONLY_YN = 'N'
+		</if>
+		<if test="lang != 'KOR' ">
+		/* 해외판매여부 체크 */
+		AND t1.OVSEA_DLV_PSB_YN = 'Y'
+		</if>
+	</sql>
+	
+	<!-- 기획전 상품리스트 -->	
+	<select id="selectPromtGodList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultMap="dspPromtFrResultMap"  >
+		SELECT /* [display.fr.plan.xml][selectPromtGodList][기획전 상품리스트][Dian] */
+			 A.PROMT_SN
+			,A.PROMT_NM
+			,B.SPRTR_TURN
+			,B.SPRTR_NM
+			,B.SORT_SEQ AS SPRTR_SEQ
+			,C.GOD_NO
+			,C.SORT_SEQ		
+			,A1.PROMT_NM AS LNG_PROMT_NM
+            ,B1.SPRTR_NM AS LNG_SPRTR_NM
+            ,B1.SPRTR_IMG_FILE_NM AS LNG_SPRTR_IMG_FILE_NM
+            ,B1.SPRTR_IMG_FILE_URL AS LNG_SPRTR_IMG_FILE_URL
+            ,B1.SPRTR_IMG_ALTRTV_CONT AS LNG_SPRTR_IMG_ALTRTV_CONT
+			,G.ERP_GOD_NO
+	        ,G.DSGN_GRP_NO
+	        ,G.GOD_NM
+	        ,G.MOBILE_GOD_NM
+	        ,G.TAG_NM
+	        ,G.COLOR_TAG_NM
+	        ,G.THEMA_TAG_NM
+	        ,G.GOD_APRV_SECT_CD
+	        ,G.GOD_SALE_SECT_CD
+	        ,G.SALE_BEG_DATE
+	        ,G.SALE_END_DATE
+	        ,G.COLOR_NM
+	        ,G.COLOR_CD
+	        ,G.CLOR_CHIP_IMG_URL
+	        ,G.GOD_TP_CD
+	        ,G.PARTMAL_SECT_CD
+	        ,G.GOD_BRND_ID
+	        ,G.GOD_BRND_GRP_ID
+	        ,G.STD_CTGRY_NO
+	        ,G.TDF_SECT
+	        ,G.SESON_GRP_CD
+	        ,G.SESON_CD
+	        ,G.PRDLST_CD
+	        ,G.RESVE_SALE_GOD_YN
+	        ,G.RESVE_ORD_PAY_SECT_CD
+	        ,G.RESVE_ORD_PART_PAY_AMT
+	        ,G.RESVE_ORD_PAY_CLOS_DT
+	        ,G.RESVE_ORD_DLIVY_PREARNGE_DATE
+	        ,G.DMSTC_DLV_CST_PLC_SN
+	        ,G.OVSEA_DLV_PSB_YN
+	        ,G.OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+	        ,G.OVSEA_DLV_CST_PLC_SN
+	        ,G.OTLT_YN
+	        ,G.DGPRC_LAST_SALE_PRC
+	        ,G.DGPRC_GOD_DC_RT
+	        ,G.DGPRC_CPN_DC_RT
+	        ,G.RTL_PRC
+	        ,G.BRND_ID
+	        ,G.UPPER_BRND_ID
+	        ,G.BRND_NM
+			<if test="lang != 'KOR' ">
+			/* 해외판매여부 체크 */
+	        ,G.GLGNM_GOD_NM
+	        ,G.GLGNM_MOBILE_GOD_NM
+	        ,G.GLGNM_TAG_NM
+	        ,G.GLGNM_COLOR_TAG_NM
+	        ,G.GLGNM_THEMA_TAG_NM
+	        ,G.GLGNM_COLOR_NM
+			</if>
+	        ,G.MNFCTUR_DATE
+	        ,G.ICON_NM
+	        ,G.GR_TAG_NM
+	        ,G.GLTR_TAG_NM
+            ,(
+                SELECT  LISTAGG(
+                			(
+                			CASE WHEN D.clor_chip_img_url IS NOT NULL
+                				THEN D.clor_chip_img_url
+                				ELSE B.color_style_cd 
+                			END
+                			)
+                		, ',') WITHIN GROUP (ORDER BY  B.COLOR_STYLE_CD)  AS COLOR_STYLE_CD
+                  FROM GOD D
+              JOIN INF_COLOR_GRP B ON (D.COLOR_CD = B.COLOR_GRP_CD AND B.LANGUAGE = DECODE( #{lang,jdbcType=VARCHAR} , 'ENG' , 'EN' , 'CHI' , 'ZH' , 'KO' ))
+                 WHERE D.DSP_YN = 'Y'
+                   AND D.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                   AND D.GOD_SALE_SECT_CD IN ('SLDOUT', 'SALE_PROGRS')
+                   AND D.PARTMAL_SECT_CD ='MCOM'
+                   AND EXISTS
+                          (SELECT 1
+                             FROM DSP_CTGRY_CNNC_GOD T1
+                                  INNER JOIN DSP_CTGRY T2
+                                     ON (T1.DSP_CTGRY_NO = T2.DSP_CTGRY_NO AND T2.DSP_YN = 'Y' AND T2.DELETE_YN = 'N')
+                            WHERE T1.GOD_NO = D.GOD_NO AND T1.DSP_YN = 'Y')
+                        AND D.DSGN_GRP_NO  = G.DSGN_GRP_NO
+               )  AS COLOR_STYLE_CD 
+		FROM 
+		  DSP_PROMT A
+		  LEFT OUTER JOIN DSP_PROMT_LANG A1 ON A.PROMT_SN = A1.PROMT_SN AND A1.LANG_CD = #{lang, jdbcType=VARCHAR}
+		  INNER JOIN DSP_PROMT_SPRTR B ON A.PROMT_SN = B.PROMT_SN
+		  LEFT OUTER JOIN DSP_PROMT_SPRTR_LANG B1 ON (B.PROMT_SN = B1.PROMT_SN AND B.SPRTR_TURN = B1.SPRTR_TURN AND B1.LANG_CD = #{lang, jdbcType=VARCHAR})
+		  INNER JOIN DSP_PROMT_GOD C ON (B.PROMT_SN = C.PROMT_SN AND B.SPRTR_TURN = C.SPRTR_TURN AND C.DSP_YN = 'Y')
+		  INNER JOIN (
+		  <include refid="selectPromtGodListSql" />
+		  ) G ON ( C.GOD_NO = G.GOD_NO)
+		WHERE   1=1
+		<if test="prev == null or prev == '' or prev != 'Y'.toString()">
+		  AND   A.DSP_YN = 'Y'
+		  AND	A.PROMT_APRV_STAT_CD = 'APRV_COMPT'
+		  AND   A.SPCIFY_URL_DSP_YN = 'N'
+		 <![CDATA[
+	      AND 	A.DSP_BEG_DT <= sysdate
+	      AND	A.DSP_END_DT >= sysdate
+         ]]>
+        </if>
+        <include refid="promtMbrCondSql"/>
+		AND A.PROMT_SN = #{promtSn, jdbcType=INTEGER}
+		<if test="sprtr != null and sprtr != ''">
+		AND B.SPRTR_TURN = #{sprtr, jdbcType=INTEGER}
+		</if>
+		ORDER BY SPRTR_SEQ, B.SPRTR_TURN, G.GOD_SALE_SECT_CD ASC
+		<if test="sortValue == 'NEW_GOD_SEQ'">
+			, G.REG_DT DESC
+		</if>
+		<if test="sortValue == 'LWET_PRC_SEQ'">
+			, G.DGPRC_LAST_SALE_PRC ASC
+		</if>
+		<if test="sortValue == null or sortValue == '' or sortValue == 'MD_RECOMMEND_SEQ'">
+			, C.SORT_SEQ ASC
+		</if>
+	</select>
+	
+	
+</mapper>

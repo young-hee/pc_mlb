@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodReWhsgNtcn" parameterType="godReWhsgNtcn" resultType="godReWhsgNtcn">
+		SELECT /* com.plgrim.ncp.base.selectGodReWhsgNtcn		Generator(Generator)	2018-05-23 */
+			   RE_WHSG_NTCN_SN
+			 , GOD_NO
+			 , ITM_NO
+			 , SET_GOD_NO
+			 , MBR_NO
+			 , NTCN_SECT_CD
+			 , MBR_EMAIL
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , MOBIL_NATION_NO
+			 , NTCN_COMPT_YN
+			 , DELETE_YN
+			 , STPLAT_IEM_AGR_YN
+			 , STPLAT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_RE_WHSG_NTCN
+		 WHERE 1 = 1
+	   	   AND RE_WHSG_NTCN_SN = #{reWhsgNtcnSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodReWhsgNtcn" parameterType="godReWhsgNtcn">
+		UPDATE /* com.plgrim.ncp.base.updateGodReWhsgNtcn		Generator(Generator)	2018-05-23 */
+		GOD_RE_WHSG_NTCN SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ITM_NO = #{itmNo,jdbcType=VARCHAR}
+			 , SET_GOD_NO = #{setGodNo,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , NTCN_SECT_CD = #{ntcnSectCd,jdbcType=VARCHAR}
+			 , MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+			 , MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+			 , NTCN_COMPT_YN = #{ntcnComptYn,jdbcType=VARCHAR}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , STPLAT_IEM_AGR_YN = #{stplatIemAgrYn,jdbcType=VARCHAR}
+			 , STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND RE_WHSG_NTCN_SN = #{reWhsgNtcnSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodReWhsgNtcn" parameterType="godReWhsgNtcn">
+		INSERT /* com.plgrim.ncp.base.insertGodReWhsgNtcn		Generator(Generator)	2018-05-23 */
+		INTO   GOD_RE_WHSG_NTCN (
+			   RE_WHSG_NTCN_SN
+			 , GOD_NO
+			 , ITM_NO
+			 , SET_GOD_NO
+			 , MBR_NO
+			 , NTCN_SECT_CD
+			 , MBR_EMAIL
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , MOBIL_NATION_NO
+			 , NTCN_COMPT_YN
+			 , DELETE_YN
+			 , STPLAT_IEM_AGR_YN
+			 , STPLAT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{reWhsgNtcnSn,jdbcType=NUMERIC}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{itmNo,jdbcType=VARCHAR}
+			 , #{setGodNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{ntcnSectCd,jdbcType=VARCHAR}
+			 , #{mbrEmail,jdbcType=VARCHAR}
+			 , #{mobilAreaNo,jdbcType=VARCHAR}
+			 , #{mobilTlofNo,jdbcType=VARCHAR}
+			 , #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{mobilNationNo,jdbcType=VARCHAR}
+			 , #{ntcnComptYn,jdbcType=VARCHAR}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{stplatIemAgrYn,jdbcType=VARCHAR}
+			 , #{stplatCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodReWhsgNtcn" parameterType="godReWhsgNtcn">
+		DELETE /* com.plgrim.ncp.base.deleteGodReWhsgNtcn		Generator(Generator)	2018-05-23 */
+		  FROM GOD_RE_WHSG_NTCN
+		 WHERE 1 = 1
+		   AND RE_WHSG_NTCN_SN = #{reWhsgNtcnSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

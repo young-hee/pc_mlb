@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodItmInvHist" parameterType="godItmInvHist" resultType="godItmInvHist">
+		SELECT /* com.plgrim.ncp.base.selectGodItmInvHist		Generator(Generator)	2018-05-23 */
+			   HIST_DT
+			 , INV_TP_CD
+			 , NRMLT_YN
+			 , GOD_NO
+			 , ITM_NO
+			 , SHOP_ID
+			 , ORD_NO
+			 , CLM_NO
+			 , MBR_NO
+			 , ADMIN_ID
+			 , TOT_USEFUL_INV_IRDS_QTY
+			 , ONLNE_LMTT_INV_IRDS_QTY
+			 , AFF_COM_LMTT_INV_IRDS_QTY
+			 , RESVE_INV_IRDS_QTY
+		  FROM GOD_ITM_INV_HIST
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateGodItmInvHist" parameterType="godItmInvHist">
+		UPDATE /* com.plgrim.ncp.base.updateGodItmInvHist		Generator(Generator)	2018-05-23 */
+		GOD_ITM_INV_HIST SET
+			   HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+			 , INV_TP_CD = #{invTpCd,jdbcType=VARCHAR}
+			 , NRMLT_YN = #{nrmltYn,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ITM_NO = #{itmNo,jdbcType=VARCHAR}
+			 , SHOP_ID = #{shopId,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+			 , TOT_USEFUL_INV_IRDS_QTY = #{totUsefulInvIrdsQty,jdbcType=NUMERIC}
+			 , ONLNE_LMTT_INV_IRDS_QTY = #{onlneLmttInvIrdsQty,jdbcType=NUMERIC}
+			 , AFF_COM_LMTT_INV_IRDS_QTY = #{affComLmttInvIrdsQty,jdbcType=NUMERIC}
+			 , RESVE_INV_IRDS_QTY = #{resveInvIrdsQty,jdbcType=NUMERIC}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertGodItmInvHist" parameterType="godItmInvHist">
+		INSERT /* com.plgrim.ncp.base.insertGodItmInvHist		Generator(Generator)	2018-05-23 */
+		INTO   GOD_ITM_INV_HIST (
+			   HIST_DT
+			 , INV_TP_CD
+			 , NRMLT_YN
+			 , GOD_NO
+			 , ITM_NO
+			 , SHOP_ID
+			 , ORD_NO
+			 , CLM_NO
+			 , MBR_NO
+			 , ADMIN_ID
+			 , TOT_USEFUL_INV_IRDS_QTY
+			 , ONLNE_LMTT_INV_IRDS_QTY
+			 , AFF_COM_LMTT_INV_IRDS_QTY
+			 , RESVE_INV_IRDS_QTY
+		)
+		VALUES (
+			   #{histDt,jdbcType=TIMESTAMP}
+			 , #{invTpCd,jdbcType=VARCHAR}
+			 , #{nrmltYn,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{itmNo,jdbcType=VARCHAR}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{adminId,jdbcType=VARCHAR}
+			 , #{totUsefulInvIrdsQty,jdbcType=NUMERIC}
+			 , #{onlneLmttInvIrdsQty,jdbcType=NUMERIC}
+			 , #{affComLmttInvIrdsQty,jdbcType=NUMERIC}
+			 , #{resveInvIrdsQty,jdbcType=NUMERIC}
+        )
+    </insert>
+
+    <delete id="deleteGodItmInvHist" parameterType="godItmInvHist">
+		DELETE /* com.plgrim.ncp.base.deleteGodItmInvHist		Generator(Generator)	2018-05-23 */
+		  FROM GOD_ITM_INV_HIST
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

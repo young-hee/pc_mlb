@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoCnsltTransHist" parameterType="csoCnsltTransHist" resultType="csoCnsltTransHist">
+		SELECT /* com.plgrim.ncp.base.selectCsoCnsltTransHist		Generator(Generator)	2018-05-23 */
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , TRANS_MOD_INFO_CD
+			 , HIST_DT
+			 , MOD_TP_CD
+			 , MOD_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CNSLT_TRANS_HIST
+		 WHERE 1 = 1
+	   	   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+		   AND TRANS_MOD_INFO_CD = #{transModInfoCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateCsoCnsltTransHist" parameterType="csoCnsltTransHist">
+		UPDATE /* com.plgrim.ncp.base.updateCsoCnsltTransHist		Generator(Generator)	2018-05-23 */
+		CSO_CNSLT_TRANS_HIST SET
+			   MOD_TP_CD = #{modTpCd,jdbcType=VARCHAR}
+			 , MOD_CONT = #{modCont,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+		   AND TRANS_MOD_INFO_CD = #{transModInfoCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertCsoCnsltTransHist" parameterType="csoCnsltTransHist">
+		INSERT /* com.plgrim.ncp.base.insertCsoCnsltTransHist		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CNSLT_TRANS_HIST (
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , TRANS_MOD_INFO_CD
+			 , HIST_DT
+			 , MOD_TP_CD
+			 , MOD_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{cnsltSn,jdbcType=NUMERIC}
+			 , #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , #{transRequstTurn,jdbcType=NUMERIC}
+			 , #{transModInfoCd,jdbcType=VARCHAR}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{modTpCd,jdbcType=VARCHAR}
+			 , #{modCont,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoCnsltTransHist" parameterType="csoCnsltTransHist">
+		DELETE /* com.plgrim.ncp.base.deleteCsoCnsltTransHist		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CNSLT_TRANS_HIST
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+		   AND TRANS_MOD_INFO_CD = #{transModInfoCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

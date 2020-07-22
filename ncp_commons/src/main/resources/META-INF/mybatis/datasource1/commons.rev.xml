@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.commons.rev">
+
+    <select id="selectPcGetRevSn" parameterType="com.plgrim.ncp.commons.data.DspRevDTO" statementType="CALLABLE">
+        /* [commons.rev.xml][selectPcGetRevSn][리비전 순번 조회][sh629.kim] */
+        {call PC_GET_REV_SN(
+            #{pgeSect, mode=IN, jdbcType=VARCHAR}
+            , #{dspBrndId, mode=IN, jdbcType=VARCHAR}
+            , #{revSnSet, mode=IN, jdbcType=VARCHAR}
+            , #{dvcSectCd, mode=IN, jdbcType=VARCHAR}
+            , #{dspRevCpst.revSn, mode=OUT, jdbcType=NUMERIC}
+            , #{dspRevCpst.revCpstTurn, mode=OUT, jdbcType=NUMERIC}
+            , #{tmplatSn, mode=OUT, jdbcType=NUMERIC}
+            , #{abTestSn, mode=OUT, jdbcType=NUMERIC}
+            )
+        }
+    </select>
+
+</mapper>

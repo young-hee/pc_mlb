@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrGrd" parameterType="mbrGrd" resultType="mbrGrd">
+		SELECT /* com.plgrim.ncp.base.selectMbrGrd		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , MBR_NO
+			 , GRD_APL_BEG_DT
+			 , GRD_APL_END_DT
+			 , ONLNE_GRD_CD
+			 , GRD_SLCTN_DT
+			 , ACMSLT_SMON_BEG_DT
+			 , ACMSLT_SMON_END_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_GRD
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND GRD_APL_BEG_DT = #{grdAplBegDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateMbrGrd" parameterType="mbrGrd">
+		UPDATE /* com.plgrim.ncp.base.updateMbrGrd		Generator(Generator)	2018-05-23 */
+		MBR_GRD SET
+			   GRD_APL_END_DT = #{grdAplEndDt,jdbcType=TIMESTAMP}
+			 , ONLNE_GRD_CD = #{onlneGrdCd,jdbcType=VARCHAR}
+			 , GRD_SLCTN_DT = #{grdSlctnDt,jdbcType=TIMESTAMP}
+			 , ACMSLT_SMON_BEG_DT = #{acmsltSmonBegDt,jdbcType=TIMESTAMP}
+			 , ACMSLT_SMON_END_DT = #{acmsltSmonEndDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND GRD_APL_BEG_DT = #{grdAplBegDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertMbrGrd" parameterType="mbrGrd">
+		INSERT /* com.plgrim.ncp.base.insertMbrGrd		Generator(Generator)	2018-05-23 */
+		INTO   MBR_GRD (
+			   MALL_ID
+			 , MBR_NO
+			 , GRD_APL_BEG_DT
+			 , GRD_APL_END_DT
+			 , ONLNE_GRD_CD
+			 , GRD_SLCTN_DT
+			 , ACMSLT_SMON_BEG_DT
+			 , ACMSLT_SMON_END_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{grdAplBegDt,jdbcType=TIMESTAMP}
+			 , #{grdAplEndDt,jdbcType=TIMESTAMP}
+			 , #{onlneGrdCd,jdbcType=VARCHAR}
+			 , #{grdSlctnDt,jdbcType=TIMESTAMP}
+			 , #{acmsltSmonBegDt,jdbcType=TIMESTAMP}
+			 , #{acmsltSmonEndDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrGrd" parameterType="mbrGrd">
+		DELETE /* com.plgrim.ncp.base.deleteMbrGrd		Generator(Generator)	2018-05-23 */
+		  FROM MBR_GRD
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND GRD_APL_BEG_DT = #{grdAplBegDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.goods.customsearch">
+	<!-- 
+	<resultMap id="customSearchResultMap" type="com.plgrim.ncp.biz.goods.result.CustomSearchResult">
+		<result property="mbrNo" column="MBR_NO"/>
+		<result property="mbrNm" column="MBR_NM"/>
+
+		<result property="god.godNo" column="GOD_NO"/>
+		<result property="god.erpGodNo" column="ERP_GOD_NO"/>
+		<result property="god.godNm" column="GOD_NM"/>
+		<result property="god.godTpCd" column="GOD_TP_CD"/>
+		<result property="god.brndId" column="BRND_ID"/>
+		<result property="god.brndNm" column="BRND_NM"/>
+		<result property="god.itmNm" column="ITM_NM"/>
+		<result property="god.lstImgUrl" column="LST_IMG_URL"/>
+
+	</resultMap>
+	<select id="selectTargetUrlBySearchKeyword" parameterType="String" resultType="String">
+		SELECT /* [custom.search.xml][selectTargetUrlBySearchKeyword][검색키워드 별 이동 url 조회][Kim] */
+				  schwd_altrtv_url 
+		FROM dsp_schwd_altrtv_url 
+		WHERE schwd_nm = #{keyword,jdbcType=VARCHAR}
+	</select>
+
+
+	<insert id="insertCustomSearchUrl" parameterType="com.plgrim.ncp.biz.goods.data.CustomSearchDTO">
+		INSERT   /* [custom.search.xml][insertCustomSearchUrl][검색키워드 별 이동 url insert][Kim] */
+			INTO DSP_SCHWD_ALTRTV_URL  
+		( SCHWD_NM , SCHWD_ALTRTV_URL, REGTR_ID, REG_DT )  
+		VALUES
+		( #{targetKeyword,jdbcType=VARCHAR}, #{targetUrl,jdbcType=VARCHAR}, 
+		  #{registId,jdbcType=VARCHAR},      SYSDATE )
+	</insert>
+	
+	<delete id="deleteCustomSearchUrl" parameterType="String" >
+		DELETE /* [custom.search.xml][deleteCustomSearchUrl][검색키워드 별 이동 url delete][Kim] */
+		FROM  DSP_SCHWD_ALTRTV_URL 
+		WHERE schwd_nm = #{targetKeyword,jdbcType=VARCHAR}
+	</delete>
+ -->
+</mapper>

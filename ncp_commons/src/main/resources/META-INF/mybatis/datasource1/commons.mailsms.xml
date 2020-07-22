@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.mailsms">
+    
+    <insert id="insertInfMail" parameterType="infMail">
+	    INSERT /* com.plgrim.ncp.commons.mailsms.insertInfMail jason  */  
+	    INTO INF_MAIL
+		(
+	        AUTOCODE
+	       ,USER_ID
+	       ,AUTOTYPE
+	       ,EMAIL
+	       ,NAME
+	       ,INSERTDATE
+	       ,SENDTIME
+	       ,SENDYN
+	       ,OPENTIME
+	       ,SENTTIME
+	       ,CMPNCODE
+	       ,FROMADDRESS
+	       ,FROMNAME
+	       ,TITLE
+	       ,TAG1
+	       ,TAG2
+	       ,TAG3
+	       ,TAG4
+	       ,TAG5
+	       ,TAG6
+	       ,TAG7
+	       ,TAG8
+	       ,TAG9
+	       ,TAG10
+	       ,TAG11
+	       ,TAG12
+	       ,ADMIN_ID
+		)
+		VALUES
+		(
+	        SQ_INF_MAIL.NEXTVAL
+	       ,#{userId,jdbcType=VARCHAR}
+	       ,#{autotype,jdbcType=VARCHAR}
+	       ,#{email,jdbcType=VARCHAR}
+	       ,#{name,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+	       ,#{sendyn,jdbcType=VARCHAR}
+	       ,#{opentime,jdbcType=TIMESTAMP}
+	       ,#{senttime,jdbcType=TIMESTAMP}
+	       ,#{cmpncode,jdbcType=NUMERIC}
+	       ,#{fromaddress,jdbcType=VARCHAR}
+	       ,#{fromname,jdbcType=VARCHAR}
+	       ,#{title,jdbcType=VARCHAR}
+	       ,#{tag1,jdbcType=VARCHAR}
+	       ,#{tag2,jdbcType=VARCHAR}
+	       ,#{tag3,jdbcType=VARCHAR}
+	       ,#{tag4,jdbcType=VARCHAR}
+	       ,#{tag5,jdbcType=VARCHAR}
+	       ,#{tag6,jdbcType=VARCHAR}
+	       ,#{tag7,jdbcType=VARCHAR}
+	       ,#{tag8,jdbcType=VARCHAR}
+	       ,#{tag9,jdbcType=VARCHAR}
+	       ,#{tag10,jdbcType=VARCHAR}
+	       ,#{tag11,jdbcType=CLOB}
+	       ,#{tag12,jdbcType=CLOB}
+	       ,#{adminId,jdbcType=VARCHAR}
+		)   
+    </insert>
+</mapper>

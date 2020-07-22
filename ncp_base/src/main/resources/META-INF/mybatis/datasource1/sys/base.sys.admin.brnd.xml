@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminBrnd" parameterType="sysAdminBrnd" resultType="sysAdminBrnd">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminBrnd		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , BRND_ID
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_ADMIN_BRND
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysAdminBrnd" parameterType="sysAdminBrnd">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminBrnd		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_BRND SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysAdminBrnd" parameterType="sysAdminBrnd">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminBrnd		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_BRND (
+			   ADMIN_ID
+			 , BRND_ID
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAdminBrnd" parameterType="sysAdminBrnd">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminBrnd		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_BRND
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

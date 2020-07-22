@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodDsgnGrp" parameterType="godDsgnGrp" resultType="godDsgnGrp">
+		SELECT /* com.plgrim.ncp.base.selectGodDsgnGrp		Generator(Generator)	2018-05-23 */
+			   DSGN_GRP_NO
+			 , DSGN_GRP_NM
+			 , RPRST_GOD_NO
+			 , RPRST_ERP_GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_DSGN_GRP
+		 WHERE 1 = 1
+	   	   AND DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodDsgnGrp" parameterType="godDsgnGrp">
+		UPDATE /* com.plgrim.ncp.base.updateGodDsgnGrp		Generator(Generator)	2018-05-23 */
+		GOD_DSGN_GRP SET
+			   DSGN_GRP_NM = #{dsgnGrpNm,jdbcType=VARCHAR}
+			 , RPRST_GOD_NO = #{rprstGodNo,jdbcType=VARCHAR}
+			 , RPRST_ERP_GOD_NO = #{rprstErpGodNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodDsgnGrp" parameterType="godDsgnGrp">
+		INSERT /* com.plgrim.ncp.base.insertGodDsgnGrp		Generator(Generator)	2018-05-23 */
+		INTO   GOD_DSGN_GRP (
+			   DSGN_GRP_NO
+			 , DSGN_GRP_NM
+			 , RPRST_GOD_NO
+			 , RPRST_ERP_GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{dsgnGrpNm,jdbcType=VARCHAR}
+			 , #{rprstGodNo,jdbcType=VARCHAR}
+			 , #{rprstErpGodNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodDsgnGrp" parameterType="godDsgnGrp">
+		DELETE /* com.plgrim.ncp.base.deleteGodDsgnGrp		Generator(Generator)	2018-05-23 */
+		  FROM GOD_DSGN_GRP
+		 WHERE 1 = 1
+		   AND DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

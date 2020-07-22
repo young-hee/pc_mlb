@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+
+	<!-- 기획전 update -->
+    <update id="updatePromtForGrid" parameterType="dspPromt">
+        UPDATE  /*[plan.xml][updatePromtForGrid][기획전 update][Dian]*/
+        DSP_PROMT SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		<if test="promtNm != null and promtNm != ''"> 
+                ,PROMT_NM = #{promtNm,jdbcType=VARCHAR}
+                </if>
+                <if test="promtAprvStatCd != null and promtAprvStatCd != ''"> 
+                ,PROMT_APRV_STAT_CD = #{promtAprvStatCd,jdbcType=VARCHAR}
+                </if>
+                <if test="promtAprvDt != null and promtAprvDt != ''"> 
+                ,PROMT_APRV_DT = #{promtAprvDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="promtAprvRejectDt != null and promtAprvRejectDt != ''"> 
+                ,PROMT_APRV_REJECT_DT = #{promtAprvRejectDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="promtAprvRejectResnCont != null and promtAprvRejectResnCont != ''"> 
+                ,PROMT_APRV_REJECT_RESN_CONT = #{promtAprvRejectResnCont,jdbcType=VARCHAR}
+                </if>
+                <if test="promtTpCd != null and promtTpCd != ''"> 
+                ,PROMT_TP_CD = #{promtTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="promtSprtrTpCd != null and promtSprtrTpCd != ''"> 
+                ,PROMT_SPRTR_TP_CD = #{promtSprtrTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="dspBegDt != null and dspBegDt != ''"> 
+                ,DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspEndDt != null and dspEndDt != ''"> 
+                ,DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspYn != null and dspYn != ''"> 
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="chrgMdAdminId != null and chrgMdAdminId != ''"> 
+                ,CHRG_MD_ADMIN_ID = #{chrgMdAdminId,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''"> 
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+                <if test="spcifyUrlDspYn != null and spcifyUrlDspYn != ''"> 
+                ,SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+                </if>
+   
+                <if test="promtExpsrSectCd != null and promtExpsrSectCd != ''"> 
+                ,PROMT_EXPSR_SECT_CD = #{promtExpsrSectCd,jdbcType=VARCHAR}
+                </if>
+                <if test="dspGodSortStdrCd != null and dspGodSortStdrCd != ''"> 
+                ,DSP_GOD_SORT_STDR_CD = #{dspGodSortStdrCd,jdbcType=VARCHAR}
+                </if>
+                <if test="pcListExpsrCntCd != null and pcListExpsrCntCd != ''"> 
+                ,PC_LIST_EXPSR_CNT_CD = #{pcListExpsrCntCd,jdbcType=VARCHAR}
+                </if>
+                <if test="mobileListExpsrCntCd != null and mobileListExpsrCntCd != ''"> 
+                ,MOBILE_LIST_EXPSR_CNT_CD = #{mobileListExpsrCntCd,jdbcType=VARCHAR}
+                </if>
+ 
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </update>
+    
+	<!-- 기획전 승인상태 update -->
+    <update id="updatePromtAprvStat" parameterType="dspPromt">
+        UPDATE  /*[plan.xml][updatePromtAprvStat][기획전 승인상태 update][Dian]*/
+        DSP_PROMT SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		<if test="promtAprvStatCd != null and promtAprvStatCd != ''"> 
+                ,PROMT_APRV_STAT_CD = #{promtAprvStatCd,jdbcType=VARCHAR}
+                </if>
+                <if test="promtAprvStatCd != null and promtAprvStatCd != '' and promtAprvStatCd == 'APRV_COMPT'"> 
+                ,PROMT_APRV_DT = sysdate
+                </if>
+                <if test="promtAprvStatCd != null and promtAprvStatCd != '' and promtAprvStatCd == 'APRV_REJECT'"> 
+                ,PROMT_APRV_REJECT_DT = sysdate
+                </if>
+                <if test="promtAprvRejectResnCont != null and promtAprvRejectResnCont != ''"> 
+                ,PROMT_APRV_REJECT_RESN_CONT = #{promtAprvRejectResnCont,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </update>
+
+	<!-- 기획전 정보 update -->
+	<update id="updatePlanInfo" parameterType="dspPromt">
+        UPDATE  /*[plan.xml][updatePlanInfo][기획전 정보 update][Dian]*/
+        DSP_PROMT SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		<choose>
+        		<when test="promtTpCd != null and promtTpCd != '' and promtTpCd == 'DX_PROMT'"> 
+                ,PROMT_GRP_SN = #{promtGrpSn,jdbcType=NUMERIC}
+                </when>
+                <otherwise>
+                ,PROMT_GRP_SN = NULL
+                </otherwise>
+                </choose>
+        		<if test="promtNm != null and promtNm != ''"> 
+                ,PROMT_NM = #{promtNm,jdbcType=VARCHAR}
+                </if>
+        		<if test="promtDscr != null and promtDscr != ''"> 
+                ,PROMT_DSCR = #{promtDscr,jdbcType=VARCHAR}
+                </if>
+                <if test="promtAprvStatCd != null and promtAprvStatCd != ''"> 
+                ,PROMT_APRV_STAT_CD = #{promtAprvStatCd,jdbcType=VARCHAR}
+                </if>
+                <if test="promtAprvDt != null and promtAprvDt != ''"> 
+                ,PROMT_APRV_DT = #{promtAprvDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="promtAprvRejectDt != null and promtAprvRejectDt != ''"> 
+                ,PROMT_APRV_REJECT_DT = #{promtAprvRejectDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="promtAprvRejectResnCont != null and promtAprvRejectResnCont != ''"> 
+                ,PROMT_APRV_REJECT_RESN_CONT = #{promtAprvRejectResnCont,jdbcType=VARCHAR}
+                </if>
+                <if test="promtTpCd != null and promtTpCd != ''"> 
+                ,PROMT_TP_CD = #{promtTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="promtSprtrTpCd != null and promtSprtrTpCd != ''"> 
+                ,PROMT_SPRTR_TP_CD = #{promtSprtrTpCd,jdbcType=VARCHAR}
+                </if>
+                <if test="dspBegDt != null and dspBegDt != ''"> 
+                ,DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspEndDt != null and dspEndDt != ''"> 
+                ,DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+                </if>
+                <if test="dspYn != null and dspYn != ''"> 
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="gnbUpendBannerExpsrYn != null and gnbUpendBannerExpsrYn != ''"> 
+                ,GNB_UPEND_BANNER_EXPSR_YN = #{gnbUpendBannerExpsrYn,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''"> 
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+                <if test="spcifyUrlDspYn != null and spcifyUrlDspYn != ''"> 
+                ,SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="promtExpsrSectCd != null and promtExpsrSectCd != ''"> 
+                ,PROMT_EXPSR_SECT_CD = #{promtExpsrSectCd,jdbcType=VARCHAR}
+                </if>
+                <if test="dspGodSortStdrCd != null and dspGodSortStdrCd != ''"> 
+                ,DSP_GOD_SORT_STDR_CD = #{dspGodSortStdrCd,jdbcType=VARCHAR}
+                </if>
+                <if test="pcListExpsrCntCd != null and pcListExpsrCntCd != ''"> 
+                ,PC_LIST_EXPSR_CNT_CD = #{pcListExpsrCntCd,jdbcType=VARCHAR}
+                </if>
+                <if test="mobileListExpsrCntCd != null and mobileListExpsrCntCd != ''"> 
+                ,MOBILE_LIST_EXPSR_CNT_CD = #{mobileListExpsrCntCd,jdbcType=VARCHAR}
+                </if>
+ 
+                ,CHRG_MD_ADMIN_ID = #{chrgMdAdminId,jdbcType=VARCHAR}
+                <if test="dspPdExpsrYn != null and dspPdExpsrYn != ''"> 
+                ,DSP_PD_EXPSR_YN = #{dspPdExpsrYn,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 기획전 언어 merge --> 
+    <update id="saveDspPromtLangInfo" parameterType="dspPromtLang" >
+    	MERGE INTO /*[plan.xml][saveDspPromtLangInfo][기획전 언어 merge][Dian]*/ 
+    	dsp_promt_lang dpl
+		USING (
+		        SELECT
+		             #{promtSn,jdbcType=NUMERIC} as promt_sn
+		            ,#{langCd,jdbcType=VARCHAR} as lang_cd
+		        FROM DUAL    			
+		) fch ON (dpl.promt_sn = fch.promt_sn and dpl.lang_cd = fch.lang_cd)
+		WHEN MATCHED THEN 
+		    UPDATE SET
+		    	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		        ,UDT_DT = SYSDATE
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(promtNm)">
+	            ,PROMT_NM = #{promtNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(promtNm)">
+	            ,PROMT_NM = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileNm)">
+	            ,PC_IMG_FILE_NM = #{pcImgFileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileNm)">
+	            ,PC_IMG_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileUrl)">
+	            ,PC_IMG_FILE_URL = #{pcImgFileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileUrl)">
+	            ,PC_IMG_FILE_URL = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgAltrtvCont)">
+	            ,PC_IMG_ALTRTV_CONT = #{pcImgAltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgAltrtvCont)">
+	            ,PC_IMG_ALTRTV_CONT = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileNm)">
+	            ,MOBILE_IMG_FILE_NM = #{mobileImgFileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileNm)">
+	            ,MOBILE_IMG_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileUrl)">
+	            ,MOBILE_IMG_FILE_URL = #{mobileImgFileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileUrl)">
+	            ,MOBILE_IMG_FILE_URL = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgAltrtvCont)">
+	            ,MOBILE_IMG_ALTRTV_CONT = #{mobileImgAltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgAltrtvCont)">
+	            ,MOBILE_IMG_ALTRTV_CONT = null
+	            </if>
+		WHEN NOT MATCHED THEN 
+		    INSERT   (
+		        PROMT_SN
+		       ,LANG_CD
+		       ,PROMT_NM
+		       ,PC_IMG_FILE_NM
+		       ,PC_IMG_FILE_URL
+		       ,PC_IMG_ALTRTV_CONT
+		       ,MOBILE_IMG_FILE_NM
+		       ,MOBILE_IMG_FILE_URL
+		       ,MOBILE_IMG_ALTRTV_CONT
+		       ,REGTR_ID
+		       ,UDTER_ID
+	           ,REG_DT
+	           ,UDT_DT
+		    )
+		    VALUES
+		    (
+		        #{promtSn,jdbcType=NUMERIC}
+		       ,#{langCd,jdbcType=VARCHAR}
+		       ,#{promtNm,jdbcType=VARCHAR}
+		       ,#{pcImgFileNm,jdbcType=VARCHAR}
+		       ,#{pcImgFileUrl,jdbcType=VARCHAR}
+		       ,#{pcImgAltrtvCont,jdbcType=VARCHAR}
+		       ,#{mobileImgFileNm,jdbcType=VARCHAR}
+		       ,#{mobileImgFileUrl,jdbcType=VARCHAR}
+		       ,#{mobileImgAltrtvCont,jdbcType=VARCHAR}
+		       ,#{regtrId,jdbcType=VARCHAR}
+		       ,#{udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+		    ) 
+    </update>
+    
+    <!-- 기획전(언어) 등록여부 체크 -->
+    <select id="selectDspPromtLangCnt" parameterType="dspPromtLang" resultType="Integer">
+    	SELECT /*[plan.xml][selectDspPromtLangCnt][기획전 언어 등록여부 체크][Dian]*/  
+    		count(*)
+    	FROM dsp_promt_lang
+    	WHERE 1=1
+	    AND promt_sn =  #{promtSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 기획전(언어) - 기획전명 수정 -->
+    <update id="updateDspPromtLangNm" parameterType="dspPromtLang" >
+    	UPDATE /*[plan.xml][updateDspPromtLangNm][기획전 언어 기획전명 수정][Dian]*/  
+    	dsp_promt_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(promtNm)">
+	        ,PROMT_NM = #{promtNm,jdbcType=VARCHAR}
+	        </if>
+	        <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(promtNm)">
+	        ,PROMT_NM = null
+	        </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(promtDscr)">
+            ,PROMT_DSCR = #{promtDscr,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(promtDscr)">
+            ,PROMT_DSCR = null
+            </if>
+	    WHERE 1=1
+	    AND promt_sn =  #{promtSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 기획전(언어) - 기획전 PC 이미지 수정 -->
+	<update id="updateDspPromtLangPcImg" parameterType="dspPromtLang" >
+    	UPDATE /*[plan.xml][updateDspPromtLangPcImg][기획전 언어 기획전 PC 이미지 수정][Dian]*/  
+    	dsp_promt_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileNm)">
+            ,PC_IMG_FILE_NM = #{pcImgFileNm,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileNm)">
+            ,PC_IMG_FILE_NM = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileUrl)">
+            ,PC_IMG_FILE_URL = #{pcImgFileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgFileUrl)">
+            ,PC_IMG_FILE_URL = null
+            </if>
+               <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgAltrtvCont)">
+            ,PC_IMG_ALTRTV_CONT = #{pcImgAltrtvCont,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcImgAltrtvCont)">
+            ,PC_IMG_ALTRTV_CONT = null
+            </if>
+	    WHERE 1=1
+	    AND promt_sn =  #{promtSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 기획전(언어) - 기획전 Mobile 이미지 수정 -->
+	<update id="updateDspPromtLangMobileImg" parameterType="dspPromtLang" >
+    	UPDATE /*[plan.xml][updateDspPromtLangMobileImg][기획전 언어 기획전 Mobile 이미지 수정][Dian]*/  
+    	dsp_promt_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileNm)">
+            ,MOBILE_IMG_FILE_NM = #{mobileImgFileNm,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileNm)">
+            ,MOBILE_IMG_FILE_NM = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileUrl)">
+            ,MOBILE_IMG_FILE_URL = #{mobileImgFileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgFileUrl)">
+            ,MOBILE_IMG_FILE_URL = null
+            </if>
+               <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgAltrtvCont)">
+            ,MOBILE_IMG_ALTRTV_CONT = #{mobileImgAltrtvCont,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileImgAltrtvCont)">
+            ,MOBILE_IMG_ALTRTV_CONT = null
+            </if>
+	    WHERE 1=1
+	    AND promt_sn =  #{promtSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 기획전(언어) - 기획전 상품상세 PC 이미지 수정 -->
+	<update id="updateDspPromtLangPcGodImg" parameterType="dspPromtLang" >
+    	UPDATE /*[plan.xml][updateDspPromtLangPcGodImg][기획전 언어 기획전 PC 상품상세 이미지 수정][Dian]*/  
+    	dsp_promt_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcGodImgFileNm)">
+            ,PC_GOD_IMG_FILE_NM = #{pcGodImgFileNm,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcGodImgFileNm)">
+            ,PC_GOD_IMG_FILE_NM = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcGodImgFileUrl)">
+            ,PC_GOD_IMG_FILE_URL = #{pcGodImgFileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcGodImgFileUrl)">
+            ,PC_GOD_IMG_FILE_URL = null
+            </if>
+               <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcGodImgAltrtvCont)">
+            ,PC_GOD_IMG_ALTRTV_CONT = #{pcGodImgAltrtvCont,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcGodImgAltrtvCont)">
+            ,PC_GOD_IMG_ALTRTV_CONT = null
+            </if>
+	    WHERE 1=1
+	    AND promt_sn =  #{promtSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 기획전(언어) - 기획전 상품상세 Mobile 이미지 수정 -->
+	<update id="updateDspPromtLangMobileGodImg" parameterType="dspPromtLang" >
+    	UPDATE /*[plan.xml][updateDspPromtLangMobileGodImg][기획전 언어 기획전 상품상세 Mobile 이미지 수정][Dian]*/  
+    	dsp_promt_lang 
+    	SET
+    		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodImgFileNm)">
+            ,MOBILE_GOD_IMG_FILE_NM = #{mobileGodImgFileNm,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodImgFileNm)">
+            ,MOBILE_GOD_IMG_FILE_NM = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodImgFileUrl)">
+            ,MOBILE_GOD_IMG_FILE_URL = #{mobileGodImgFileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodImgFileUrl)">
+            ,MOBILE_GOD_IMG_FILE_URL = null
+            </if>
+               <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodImgAltrtvCont)">
+            ,MOBILE_GOD_IMG_ALTRTV_CONT = #{mobileGodImgAltrtvCont,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileGodImgAltrtvCont)">
+            ,MOBILE_GOD_IMG_ALTRTV_CONT = null
+            </if>
+	    WHERE 1=1
+	    AND promt_sn =  #{promtSn,jdbcType=NUMERIC}
+	    AND lang_cd  = #{langCd,jdbcType=VARCHAR}
+	</update>
+    
+    <!-- 기획전(언어) 삭제 -->
+    <delete id="deleteDspPromtLangInfo" parameterType="dspPromtLang">
+        DELETE /*[corner.xml][deleteDspPromtLangInfo][기획전(언어) 삭제][Dian]*/ 
+        FROM DSP_PROMT_LANG 
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 기획전 브랜드 삭제 -->
+	<delete id="deleteDspPromtBrndInfo" parameterType="dspPromtBrnd">
+        DELETE /*[plan.xml][deleteDspPromtBrndInfo][기획전 브랜드 삭제][Dian]*/ 
+        FROM DSP_PROMT_BRND 
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 기획전 전시대상 삭제 -->
+    <delete id="deleteDspPromtDspTgtInfo" parameterType="dspPromtDspTgt">
+        DELETE /*[plan.xml][deleteDspPromtDspTgtInfo][기획전 전시대상 삭제][Dian]*/ 
+        FROM DSP_PROMT_DSP_TGT 
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </delete>	
+    
+
+    <!-- 기획전 구분타이틀 수정 - 이미지, 타이틀  -->
+    <update id="updateDspPromtSprtrInfo" parameterType="dspPromtSprtr">
+        UPDATE /*[plan.xml][updateDspPromtSprtrInfo][기획전 구분타이틀 수정 - 이미지, 타이틀][Dian]*/ 
+        DSP_PROMT_SPRTR SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="sprtrNm != null and sprtrNm != ''"> 
+                ,SPRTR_NM = #{sprtrNm,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileNm)">
+	            ,SPRTR_IMG_FILE_NM = #{sprtrImgFileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileNm)">
+	            ,SPRTR_IMG_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileUrl)">
+	            ,SPRTR_IMG_FILE_URL = #{sprtrImgFileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileUrl)">
+	            ,SPRTR_IMG_FILE_URL = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgAltrtvCont)">
+	            ,SPRTR_IMG_ALTRTV_CONT = #{sprtrImgAltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgAltrtvCont)">
+	            ,SPRTR_IMG_ALTRTV_CONT = null
+	            </if>
+	            <if test="dspYn != null and dspYn != ''"> 
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''"> 
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+                <if test="sprtrAditCont != null and sprtrAditCont != ''"> 
+                ,SPRTR_ADIT_CONT = #{sprtrAditCont,jdbcType=VARCHAR}
+                </if>
+                <if test="sprtrAditUrl != null and sprtrAditUrl != ''"> 
+                ,SPRTR_ADIT_URL = #{sprtrAditUrl,jdbcType=VARCHAR}
+                </if>
+                <if test="sprtrAditContOutptTpCd != null and sprtrAditContOutptTpCd != ''"> 
+                ,SPRTR_ADIT_CONT_OUTPT_TP_CD = #{sprtrAditContOutptTpCd,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 기획전 구분타이틀 수정 - 그리드에서 전시순서, 전시여부 -->
+    <update id="updateDspPromtSprtrForGrid" parameterType="dspPromtSprtr">
+        UPDATE /*[plan.xml][updateDspPromtSprtrForGrid][기획전 구분타이틀 수정 - 그리드에서 전시순서, 전시여부][Dian]*/ 
+        DSP_PROMT_SPRTR SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="dspYn != null and dspYn != ''"> 
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''"> 
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+                <if test="rprstSprtrYn != null and rprstSprtrYn != ''">
+                ,RPRST_SPRTR_YN = #{rprstSprtrYn,jdbcType=VARCHAR}
+                </if>
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 기획전 구분타이틀 언어 merge -->
+    <update id="saveDspPromtSprtrLangInfo" parameterType="dspPromtSprtrLang" >
+    	MERGE INTO /*[plan.xml][saveDspPromtLang][기획전 구분타이틀 언어 merge][Dian]*/ 
+    	dsp_promt_sprtr_lang dpl
+		USING (
+		        SELECT
+		             #{promtSn,jdbcType=NUMERIC} as promt_sn
+		            ,#{sprtrTurn,jdbcType=NUMERIC} as sprtr_turn 
+		            ,#{langCd,jdbcType=VARCHAR} as lang_cd
+		        FROM DUAL    			
+		) fch ON (dpl.promt_sn = fch.promt_sn and dpl.sprtr_turn = fch.sprtr_turn and dpl.lang_cd = fch.lang_cd)
+		WHEN MATCHED THEN 
+		    UPDATE SET
+		    	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrNm)">
+	            ,SPRTR_NM = #{sprtrNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrNm)">
+	            ,SPRTR_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileNm)">
+	            ,SPRTR_IMG_FILE_NM = #{sprtrImgFileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileNm)">
+	            ,SPRTR_IMG_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileUrl)">
+	            ,SPRTR_IMG_FILE_URL = #{sprtrImgFileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgFileUrl)">
+	            ,SPRTR_IMG_FILE_URL = null
+	            </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgAltrtvCont)">
+	            ,SPRTR_IMG_ALTRTV_CONT = #{sprtrImgAltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(sprtrImgAltrtvCont)">
+	            ,SPRTR_IMG_ALTRTV_CONT = null
+	            </if>
+		WHEN NOT MATCHED THEN 
+		    INSERT   (
+		        PROMT_SN
+		       ,SPRTR_TURN
+		       ,LANG_CD
+		       ,SPRTR_NM
+		       ,SPRTR_IMG_FILE_NM
+		       ,SPRTR_IMG_FILE_URL
+		       ,SPRTR_IMG_ALTRTV_CONT
+		       ,REGTR_ID
+		       ,UDTER_ID
+	           ,REG_DT
+	           ,UDT_DT
+		    )
+		    VALUES
+		    (
+		        #{promtSn,jdbcType=NUMERIC}
+		       ,#{sprtrTurn,jdbcType=VARCHAR}
+		       ,#{langCd,jdbcType=VARCHAR}
+		       ,#{sprtrNm,jdbcType=VARCHAR}
+		       ,#{sprtrImgFileNm,jdbcType=VARCHAR}
+		       ,#{sprtrImgFileUrl,jdbcType=VARCHAR}
+		       ,#{sprtrImgAltrtvCont,jdbcType=VARCHAR}
+		       ,#{regtrId,jdbcType=VARCHAR}
+		       ,#{udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+		    ) 
+    </update>
+    
+    <!-- 기획전 구분타이틀 언어 삭제 -->
+    <delete id="deleteDspPromtSprtrLangInfo" parameterType="dspPromtSprtrLang">
+        DELETE /*[plan.xml][deleteDspPromtSprtrLangInfo][기획전 구분타이틀 언어 삭제][Dian]*/ 
+        FROM DSP_PROMT_SPRTR_LANG
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 기획전 연결 상품 수 조회 -->
+    <select id="selectPromtGodCnt" parameterType="dspPromtSprtr" resultType="Integer">
+    	select /*[plan.xml][selectPromtGodCnt][기획전 연결 상품 수 조회][Dian]*/ 
+    		count(god_no) 
+        from dsp_promt_god 
+        where promt_sn =  #{promtSn,jdbcType=NUMERIC} 
+        and sprtr_turn =  #{sprtrTurn,jdbcType=NUMERIC} 
+    </select>
+    	
+    
+    <!-- 기획전 상품 수정     -->
+    <update id="updateDspPromtGodInfo" parameterType="dspPromtGod">
+        UPDATE /*[plan.xml][updateDspPromtGodInfo][기획전 상품 수정  - 그리드에서 전시순서, 전시여부][Dian]*/ 
+        DSP_PROMT_GOD SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="dspYn != null and dspYn != ''"> 
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="godEvlExpsrYn != null and godEvlExpsrYn != ''">
+                ,GOD_EVL_EXPSR_YN = #{godEvlExpsrYn,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''">
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+        AND		GOD_NO	= #{godNo,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 기획전 상품 리뷰정렬 기준 수정 -->
+    <update id="updatePromtGodReviewSortCd" parameterType="dspPromtGod">
+        UPDATE /*[plan.xml][updatePromtGodReviewSortCd][기획전 상품 리뷰정렬 기준 수정]*/
+                 DSP_PROMT
+        SET  	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,GOD_EVL_EXPSR_SECT_CD = #{godEvlExpsrSectCd,jdbcType=VARCHAR}
+                ,PC_GOD_EVL_LIST_QTY = #{pcGodEvlListQty,jdbcType=NUMERIC}
+                ,IMG_GOD_EVL_PRIO_EXPSR_YN = #{imgGodEvlPrioExpsrYn,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </update>
+
+    <!-- 기획전 상품 전시순서 update -->
+    <update id="updateSortSeqPromtGod" parameterType="dspPromtGod">
+        UPDATE /*[plan.xml][updateSortSeqPromtGod][기획전 상품 전시순서 update][Dian]*/ 
+        DSP_PROMT_GOD SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+        AND		GOD_NO	= #{godNo,jdbcType=VARCHAR}
+    </update>
+        
+    <!-- 기획전 상품 삭제 -->
+    <delete id="deleteDspPromtGodInfo" parameterType="dspPromtGod">
+        DELETE /*[plan.xml][deleteDspPromtGodInfo][기획전 상품 삭제][Dian]*/ 
+        FROM DSP_PROMT_GOD
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 기등록 기획전 상품 목록 -->
+	<select id="selectPromtGodCnncedList" parameterType="dspPromtGod"  resultType="String">
+        SELECT /*[plan.xml][selectPromtGodCnncedList][기등록 기획전 상품 목록][Dian]*/ 
+			  god_no
+		FROM    DSP_PROMT_GOD g
+		WHERE   1 = 1
+        AND     g.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     g.SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+	</select>
+	
+	<!-- 기획전 등록여부 체크 
+	* 2016.03.30
+	 * SR : #15522 [기획전 타이틀/상품 일괄 업로드 기능 개선]
+	 * 담당자 : 주동민
+	 * 요청자 : 이원희
+	-->
+    <select id="selectDspPromtSnCnt" parameterType="dspPromt" resultType="Integer">
+    	SELECT /*[plan.xml][selectDspPromtSnCnt][기획전 등록여부 체크]*/  
+    		   count(*)
+    	  FROM dsp_promt
+    	 WHERE promt_sn =  #{promtSn,jdbcType=NUMERIC}
+    </select>
+    
+    
+    <update id="updateDspPromtImgPc" parameterType="dspPromtImg">
+        UPDATE /*[plan.xml][updateDspPromtImgPc][기획전 PC이미지 수정][Dian]*/ 
+        DSP_PROMT_IMG SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcMobileImgIndUseYn)">
+	            ,PC_MOBILE_IMG_IND_USE_YN = #{pcMobileImgIndUseYn,jdbcType=VARCHAR}
+	            </if>
+	            ,PC_IMG_FILE_NM = #{pcImgFileNm,jdbcType=VARCHAR}
+				,PC_IMG_FILE_URL = #{pcImgFileUrl,jdbcType=VARCHAR}
+				,PC_IMG_ALTRTV_CONT = #{pcImgAltrtvCont,jdbcType=VARCHAR}
+				,PC_IMG_EXPSR_TXT1_CONT = #{pcImgExpsrTxt1Cont,jdbcType=VARCHAR}
+				,PC_IMG_EXPSR_TXT2_CONT = #{pcImgExpsrTxt2Cont,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateDspPromtImgMobile" parameterType="dspPromtImg">
+        UPDATE /*[plan.xml][updateDspPromtImgMobile][기획전 MOBILE이미지 수정][Dian]*/ 
+        DSP_PROMT_IMG SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcMobileImgIndUseYn)">
+	            ,PC_MOBILE_IMG_IND_USE_YN = #{pcMobileImgIndUseYn,jdbcType=VARCHAR}
+	            </if>
+	            ,MOBILE_IMG_FILE_NM = #{mobileImgFileNm,jdbcType=VARCHAR}
+				,MOBILE_IMG_FILE_URL = #{mobileImgFileUrl,jdbcType=VARCHAR}
+				,MOBILE_IMG_ALTRTV_CONT = #{mobileImgAltrtvCont,jdbcType=VARCHAR}
+				,MOBILE_IMG_EXPSR_TXT1_CONT = #{mobileImgExpsrTxt1Cont,jdbcType=VARCHAR}
+				,MOBILE_IMG_EXPSR_TXT2_CONT = #{mobileImgExpsrTxt2Cont,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateDspPromtImgLangPc" parameterType="dspPromtImgLang">
+        UPDATE /*[plan.xml][updateDspPromtImgLangPc][기획전 PC이미지 언어 수정][Dian]*/ 
+        DSP_PROMT_IMG_LANG SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,PC_IMG_FILE_NM = #{pcImgFileNm,jdbcType=VARCHAR}
+				,PC_IMG_FILE_URL = #{pcImgFileUrl,jdbcType=VARCHAR}
+				,PC_IMG_ALTRTV_CONT = #{pcImgAltrtvCont,jdbcType=VARCHAR}
+				,PC_IMG_EXPSR_TXT1_CONT = #{pcImgExpsrTxt1Cont,jdbcType=VARCHAR}
+				,PC_IMG_EXPSR_TXT2_CONT = #{pcImgExpsrTxt2Cont,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=NUMERIC}
+        AND     LANG_CD = #{langCd,jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateDspPromtImgLangMobile" parameterType="dspPromtImgLang">
+        UPDATE /*[plan.xml][updateDspPromtImgLangMobile][기획전 MOBILE이미지 언어 수정][Dian]*/ 
+        DSP_PROMT_IMG_LANG SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,MOBILE_IMG_FILE_NM = #{mobileImgFileNm,jdbcType=VARCHAR}
+				,MOBILE_IMG_FILE_URL = #{mobileImgFileUrl,jdbcType=VARCHAR}
+				,MOBILE_IMG_ALTRTV_CONT = #{mobileImgAltrtvCont,jdbcType=VARCHAR}
+				,MOBILE_IMG_EXPSR_TXT1_CONT = #{mobileImgExpsrTxt1Cont,jdbcType=VARCHAR}
+				,MOBILE_IMG_EXPSR_TXT2_CONT = #{mobileImgExpsrTxt2Cont,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=NUMERIC}
+        AND     LANG_CD = #{langCd,jdbcType=NUMERIC}
+    </update>
+	
+	
+	<select id="selectDspPromtImgLangList" parameterType="dspPromtImg" resultType="dspPromtImgLang">
+    	SELECT /*[plan.xml][selectDspPromtImgLangList][기획전 이미지 언어 목록조회][Dian]*/  
+                PROMT_SN
+               ,PROMT_IMG_SECT_CD
+               ,LANG_CD
+               ,PC_IMG_FILE_NM
+               ,PC_IMG_FILE_URL
+               ,PC_IMG_ALTRTV_CONT
+               ,PC_IMG_EXPSR_TXT1_CONT
+               ,PC_IMG_EXPSR_TXT2_CONT
+               ,MOBILE_IMG_FILE_NM
+               ,MOBILE_IMG_FILE_URL
+               ,MOBILE_IMG_ALTRTV_CONT
+               ,MOBILE_IMG_EXPSR_TXT1_CONT
+               ,MOBILE_IMG_EXPSR_TXT2_CONT
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    DSP_PROMT_IMG_LANG t
+        WHERE   1 = 1
+        AND     PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        AND     PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.size">
+	<resultMap id="basicSize" type="com.plgrim.ncp.biz.member.data.MysizeDTO">
+		<result property="height" column="MBR_HEIGHT"/>
+		<result property="weight" column="MBR_WEIGHT"/>
+		<result property="body"   column="body"/>
+	</resultMap>
+	<select id="selectMyBasicSize" parameterType="String" resultMap="basicSize">
+		SELECT
+			MBR_NO
+			,MAX(MBR_HEIGHT) AS MBR_HEIGHT
+			,MAX(MBR_WEIGHT) AS MBR_WEIGHT
+			,MAX(MBR_WAIST) AS MBR_WAIST
+			,MAX(MBR_BODY) AS body
+		FROM (
+			SELECT
+				T3.MBR_NO
+				, CASE WHEN T4.MBR_SIZE_CD = 'HEIGHT' THEN T4.SIZE_VAL ELSE NULL END MBR_HEIGHT
+				, CASE WHEN T4.MBR_SIZE_CD = 'BD_WT' THEN T4.SIZE_VAL ELSE NULL END MBR_WEIGHT
+				, CASE WHEN T4.MBR_SIZE_CD = 'WAIST_GRTH' THEN T4.SIZE_VAL ELSE NULL END MBR_WAIST
+				, CASE WHEN T4.MBR_SIZE_CD = 'BODY' THEN T4.SIZE_VAL ELSE NULL END MBR_BODY
+			FROM MBR_SIZE_CLFC T3
+			INNER JOIN MBR_SIZE_CLFC_DETAIL T4
+			ON T3.mbr_no = T4.mbr_no
+			AND T3.mbr_size_turn = T4.mbr_size_turn
+			WHERE 1 = 1
+			AND T3.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			AND T3.MBR_SIZE_CLFC_CD = 'ALL_BASE_SIZE'
+		)
+		GROUP BY MBR_NO
+	</select>
+
+	<!-- /* [biz.mbr.size.xml][myBasicSizeMap][나의 사이즈 정보 결과 맵][이영은] */ -->
+	<resultMap id="myBasicSizeMap" type="com.plgrim.ncp.biz.member.result.MypageMysizeResult">
+	  	<result property="mbrNo"                column="MBR_NO" />                <!-- 회원번호 -->
+	    <result property="mbrSizeTurn"          column="MBR_SIZE_TURN" />         <!-- 사이즈 순번 -->
+	    <result property="mbrSizeNm"       	    column="MBR_SIZE_NM" />           <!-- 사이즈 이름-->
+	    <result property="mbrSizeClfcCd"        column="MBR_SIZE_CLFC_CD" />      <!-- 회원사이즈 분류 -->
+	    <result property="height"               column="MBR_HEIGHT" />            <!-- 키 -->
+	    <result property="weight"               column="MBR_WEIGHT" />            <!-- 몸무게 -->
+	    <result property="waist"                column="MBR_WAIST" />             <!-- 허리 -->
+	    <result property="body"                 column="MBR_BODY" />              <!-- 체형 -->
+	</resultMap>  
+
+	<select id="selectMyBasicSizeList" parameterType="String" resultMap="myBasicSizeMap">
+		SELECT  /* [biz.mbr.size.xml][selectMyBasicSizeList][나의 사이즈 정보 취득][이영은] */
+			T1.MBR_NO AS MBR_NO
+			, T1.MBR_SIZE_TURN AS MBR_SIZE_TURN
+			, T1.MBR_SIZE_CLFC_CD AS MBR_SIZE_CLFC_CD
+			, T1.MBR_SIZE_NM AS MBR_SIZE_NM
+			, T1.MBR_HEIGHT AS MBR_HEIGHT
+			, T1.MBR_WEIGHT AS MBR_WEIGHT
+			, T1.MBR_WAIST AS MBR_WAIST
+			, T1.MBR_BODY AS MBR_BODY
+		FROM (
+		SELECT 
+		  MSC.MBR_NO
+		  , MSC.MBR_SIZE_TURN
+		  , TO_NUMBER(MSC.MBR_SIZE_TURN) AS MBR_SIZE_TURN_NUM
+		  , MSC.MBR_SIZE_CLFC_CD
+		  , MSC.MBR_SIZE_NM
+		  , mscd1.size_val AS MBR_HEIGHT
+		  , mscd2.size_val AS MBR_WEIGHT
+		  , mscd3.size_val AS MBR_WAIST
+		  , mscd4.size_val AS MBR_BODY
+		  , CASE WHEN MSC.MBR_SIZE_CLFC_CD = 'ALL_BASE_SIZE' 	THEN 1
+		  		 WHEN MSC.MBR_SIZE_CLFC_CD = 'WOMEN_BASE_SIZE' 	THEN 2
+		  		 WHEN MSC.MBR_SIZE_CLFC_CD = 'MEN_BASE_SIZE' 	THEN 3
+		  		 WHEN MSC.MBR_SIZE_CLFC_CD = 'KIDS_BASE_SIZE' 	THEN 4
+		  		 ELSE 5 END ORD_1
+		FROM mbr mbr
+		  JOIN mbr_size_clfc msc ON mbr.mbr_no = msc.mbr_no AND  MSC.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd1 ON msc.mbr_no = mscd1.mbr_no AND msc.mbr_size_turn = mscd1.mbr_size_turn AND mscd1.MBR_SIZE_CD = 'HEIGHT'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd2 ON msc.mbr_no = mscd2.mbr_no AND msc.mbr_size_turn = mscd2.mbr_size_turn AND mscd2.MBR_SIZE_CD = 'BD_WT'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd3 ON msc.mbr_no = mscd3.mbr_no AND msc.mbr_size_turn = mscd3.mbr_size_turn AND mscd3.MBR_SIZE_CD = 'WAIST_GRTH'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd4 ON msc.mbr_no = mscd4.mbr_no AND msc.mbr_size_turn = mscd4.mbr_size_turn AND mscd4.MBR_SIZE_CD = 'BODY'
+		) T1 ORDER BY T1.ORD_1 ASC, T1.MBR_SIZE_TURN_NUM ASC
+	</select>
+
+    <update id="updateMbrSizeClfcUnds" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrSizeClfc"  >
+
+		UPDATE MBR_SIZE_CLFC /* [biz.mbr.size.xml][updateMbrSizeClfcUnds][기본사이즈 미지정 설정][이영은] */ 
+		SET 
+	   		MBR_SIZE_CLFC_CD = 'BASE_SIZE_UNDS'
+			, UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			, UDT_DT = SYSDATE
+		WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			AND MBR_SIZE_CLFC_CD =  #{mbrSizeClfcCd,jdbcType=VARCHAR}
+			AND MBR_SIZE_TURN <![CDATA[<>]]> #{mbrSizeTurn, jdbcType=INTEGER}
+			
+    </update>
+
+
+    <update id="mergeMbrSizeClfc" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrSizeClfc"  >
+    	
+    	MERGE /* [biz.mbr.size.xml][mergeMbrSizeClfc][나의 사이즈 등록 및 변경][이영은] */
+    		INTO MBR_SIZE_CLFC
+	     	USING DUAL
+	        ON (
+		        MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		        AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=VARCHAR}
+	        	)
+		WHEN MATCHED
+		THEN
+			UPDATE SET 
+	   			MBR_SIZE_CLFC_CD = #{mbrSizeClfcCd,jdbcType=VARCHAR}
+		        , MBR_SIZE_NM = #{mbrSizeNm,jdbcType=VARCHAR}
+				, UDTER_ID = #{udterId,jdbcType=VARCHAR}
+				, UDT_DT = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		   	INSERT (
+				MBR_NO
+				, MBR_SIZE_TURN
+				, MBR_SIZE_CLFC_CD
+				, MBR_SIZE_NM
+				, REGTR_ID
+				, REG_DT
+				, UDTER_ID
+				, UDT_DT
+			) VALUES (
+		       	#{mbrNo,jdbcType=VARCHAR}
+				, #{mbrSizeTurn,jdbcType=VARCHAR}
+				, #{mbrSizeClfcCd,jdbcType=VARCHAR}
+				, #{mbrSizeNm,jdbcType=VARCHAR}
+				, #{regtrId,jdbcType=VARCHAR}
+				, SYSDATE
+				, #{udterId,jdbcType=VARCHAR}
+				, SYSDATE
+		   )
+    </update>
+
+    <update id="mergeMbrSizeClfcDetail" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrSizeClfcDetail"  >
+    	
+    	MERGE /* [biz.mbr.size.xml][mergeMbrSizeClfcDetail][나의 사이즈 상세 등록 및 변경][이영은] */
+    		INTO MBR_SIZE_CLFC_DETAIL
+	     	USING DUAL
+	        ON (
+		        MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		        AND MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=VARCHAR}
+		        AND MBR_SIZE_CD = #{mbrSizeCd,jdbcType=VARCHAR}
+	        	)
+		WHEN MATCHED
+		THEN
+			UPDATE SET 
+				SIZE_VAL  = #{sizeVal,jdbcType=VARCHAR}
+				, SIZE_UNIT_CD = #{sizeUnitCd,jdbcType=VARCHAR}
+				, UDTER_ID = #{udterId,jdbcType=VARCHAR}
+				, UDT_DT = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		   	INSERT (
+				MBR_NO
+				, MBR_SIZE_TURN
+				, MBR_SIZE_CD
+				, SIZE_VAL
+				, SIZE_UNIT_CD
+				, REGTR_ID
+				, REG_DT
+				, UDTER_ID
+				, UDT_DT
+			) VALUES (
+		       	#{mbrNo,jdbcType=VARCHAR}
+				, #{mbrSizeTurn,jdbcType=VARCHAR}
+				, #{mbrSizeCd,jdbcType=VARCHAR}
+				, #{sizeVal,jdbcType=VARCHAR}
+				, #{sizeUnitCd,jdbcType=VARCHAR}
+				, #{regtrId,jdbcType=VARCHAR}
+				, SYSDATE
+				, #{udterId,jdbcType=VARCHAR}
+				, SYSDATE
+		   )
+    </update>
+    
+    <delete id="deleteMbrSizeClfc" parameterType="String">
+        DELETE /* com.plgrim.ncp.base.repository.mbr.deleteMbrSizeClfc  20170818 */  
+        FROM MBR_SIZE_CLFC 
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrSizeTurn)">
+        AND     MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+	</if>
+    </delete>
+    
+    <delete id="deleteMbrSizeClfcDetail" parameterType="String">
+        DELETE /* com.plgrim.ncp.base.repository.mbr.deleteMbrSizeClfcDetail  20170818 */  
+        FROM MBR_SIZE_CLFC_DETAIL 
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrSizeTurn)">
+        AND     MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=NUMERIC}
+	</if>
+    </delete>
+
+    <select id="selectMbrSizeOne" parameterType="com.plgrim.ncp.biz.member.data.MemberSizeClfcDTO" resultMap="myBasicSizeMap">
+        SELECT /* [biz.mbr.size.xml][selectMbrSizeOne][나의 사이즈 정보 1건 얻기][emily] */
+                  MSC.MBR_NO
+                  , MSC.MBR_SIZE_TURN
+                  , MSC.MBR_SIZE_CLFC_CD
+                  , MSC.MBR_SIZE_NM
+                  , mscd1.SIZE_VAL AS MBR_HEIGHT
+                  , mscd2.SIZE_VAL AS MBR_WEIGHT
+                  , mscd3.SIZE_VAL AS MBR_WAIST
+                  , mscd4.SIZE_VAL AS MBR_BODY
+		FROM      MBR_SIZE_CLFC MSC
+	LEFT OUTER JOIN MBR_SIZE_CLFC_DETAIL mscd1 ON mscd1.MBR_NO = MSC.MBR_NO AND mscd1.MBR_SIZE_TURN = MSC.MBR_SIZE_TURN AND mscd1.MBR_SIZE_CD = 'HEIGHT'
+	LEFT OUTER JOIN MBR_SIZE_CLFC_DETAIL mscd2 ON mscd2.MBR_NO = MSC.MBR_NO AND mscd2.MBR_SIZE_TURN = MSC.MBR_SIZE_TURN AND mscd2.MBR_SIZE_CD = 'BD_WT'
+	LEFT OUTER JOIN MBR_SIZE_CLFC_DETAIL mscd3 ON mscd3.MBR_NO = MSC.MBR_NO AND mscd3.MBR_SIZE_TURN = MSC.MBR_SIZE_TURN AND mscd3.MBR_SIZE_CD = 'WAIST_GRTH'
+	LEFT OUTER JOIN MBR_SIZE_CLFC_DETAIL mscd4 ON mscd4.MBR_NO = MSC.MBR_NO AND mscd4.MBR_SIZE_TURN = MSC.MBR_SIZE_TURN AND mscd4.MBR_SIZE_CD = 'BODY'
+		WHERE     MSC.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		  AND     MSC.MBR_SIZE_TURN = #{mbrSizeTurn,jdbcType=VARCHAR}
+    </select>
+
+	<select id="selectMysizeCnt" parameterType="mbrSizeClfc" resultType="int">
+		SELECT /* [biz.mbr.size.xml][selectMysizeCnt][나의 사이즈 등록 건수][이영은] */
+				COUNT(*)
+		  FROM	MBR_SIZE_CLFC
+		 WHERE	1 = 1
+		   AND 	MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		   AND	MBR_SIZE_CLFC_CD = #{mbrSizeClfcCd, jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="selectMbrMySizeList" parameterType="com.plgrim.ncp.biz.member.data.MysizeDTO" resultType="com.plgrim.ncp.biz.member.result.MemberMySizeResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [biz.mbr.size.xml][selectMbrMySizeList][나의 사이즈 조회][YOON] */
+			    mbr.mbr_no
+			  , msc.mbr_size_nm
+			  , mscd1.size_val || ' ' || lower(mscd1.size_unit_cd) AS height
+			  , mscd2.size_val || ' ' || lower(mscd2.size_unit_cd) AS weight
+			  , mscd3.size_val || ' ' || lower(mscd3.size_unit_cd) AS waist
+			  , msc3.cd_nm AS body
+			  , msc2.CD_NM AS mbrSizeClfcCdNm
+		FROM mbr mbr
+		  JOIN mbr_size_clfc msc ON mbr.mbr_no = msc.mbr_no
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd1 ON msc.mbr_no = mscd1.mbr_no AND msc.mbr_size_turn = mscd1.mbr_size_turn AND mscd1.MBR_SIZE_CD = 'HEIGHT'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd2 ON msc.mbr_no = mscd2.mbr_no AND msc.mbr_size_turn = mscd2.mbr_size_turn AND mscd2.MBR_SIZE_CD = 'BD_WT'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd3 ON msc.mbr_no = mscd3.mbr_no AND msc.mbr_size_turn = mscd3.mbr_size_turn AND mscd3.MBR_SIZE_CD = 'WAIST_GRTH'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd4 ON msc.mbr_no = mscd4.mbr_no AND msc.mbr_size_turn = mscd4.mbr_size_turn AND mscd4.MBR_SIZE_CD = 'BODY'
+		  LEFT OUTER JOIN mv_sys_cd msc2  ON msc.mbr_size_clfc_cd = msc2.cd AND msc2.lang_cd = 'KOR' AND msc2.upper_cd = 'MBR_SIZE_CLFC'
+		  LEFT OUTER JOIN mv_sys_cd msc3  ON mscd4.size_val = msc3.cd AND msc3.lang_cd = 'KOR' AND msc3.upper_cd = 'BD_TP'
+		WHERE mbr.mbr_no = #{mbrNo}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrSizeClfcCd)">
+		  AND msc.MBR_SIZE_CLFC_CD = #{mbrSizeClfcCd}
+		</if>
+		ORDER BY msc.REG_DT
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectMbrSizeClfcCd" parameterType="String" resultType="String">
+		/* [biz.mbr.size.xml][selectMbrSizeClfcCd][카테고리 별 회원 사이즈 구분 코드 조회][Owen] */
+		SELECT 
+    		cd
+		FROM mv_sys_cd
+		WHERE 1 = 1
+		AND asstn_cd_1 IN (
+	    	SELECT
+	        	strtgy_ctgry_atrb_cd
+	    	FROM dsp_ctgry
+	    	WHERE 1 = 1
+	    	AND dsp_ctgry_no = #{dspCtgryNo, jdbcType=VARCHAR}
+		)
+		AND lang_cd = 'KOR'
+	</select>
+	
+	<select id="selectMbrSizeClfcInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrSizeClfc" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrSizeClfc">
+		/* [biz.mbr.size.xml][selectMbrSizeClfcInfo][회원 사이즈 정보 조회][Owen] */
+		SELECT
+			MBR_NO
+			, MBR_SIZE_TURN
+			, MBR_SIZE_CLFC_CD
+			, MBR_SIZE_NM
+		FROM MBR_SIZE_CLFC
+		WHERE 1 = 1
+		AND MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		AND MBR_SIZE_CLFC_CD = #{mbrSizeClfcCd, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectMysizeCount" parameterType="String" resultType="int">
+		SELECT
+				COUNT(*)
+		  FROM	MBR_SIZE_CLFC
+		 WHERE	1 = 1
+		   AND 	MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectMbrSizeAllInputCount" parameterType="String" resultType="int">
+		SELECT	/* [biz.mbr.size.xml][selectMbrSizeClfcInfo][회원 사이즈 입력 정보 조회][YOON] */
+				count(*)
+		  FROM mbr mbr
+		  JOIN mbr_size_clfc msc ON mbr.mbr_no = msc.mbr_no
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd1 ON msc.mbr_no = mscd1.mbr_no AND msc.mbr_size_turn = mscd1.mbr_size_turn AND mscd1.MBR_SIZE_CD = 'HEIGHT'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd2 ON msc.mbr_no = mscd2.mbr_no AND msc.mbr_size_turn = mscd2.mbr_size_turn AND mscd2.MBR_SIZE_CD = 'BD_WT'
+		  LEFT OUTER JOIN mbr_size_clfc_detail mscd3 ON msc.mbr_no = mscd3.mbr_no AND msc.mbr_size_turn = mscd3.mbr_size_turn AND mscd3.MBR_SIZE_CD = 'WAIST_GRTH'
+		 WHERE mbr.mbr_no = #{mbrNo}
+		   AND mscd1.size_val IS NOT NULL
+		   AND mscd2.size_val IS NOT NULL
+		   AND mscd3.size_val IS NOT NULL
+	</select>
+
+
+	<select id="selectPurchaseGodList" parameterType="String" resultType="String">
+		/* [goods.xml][selectPurchaseGodList][주문상품 세트단품 리스트 조회][lee] */
+		SELECT CPST_GOD_NO AS GOD_NO
+		FROM GOD_CPST_GOD_CNNC
+		WHERE GOD_NO = #{godNo}
+		ORDER BY SORT_SEQ ASC
+	</select>
+	
+	<insert id="insertMbrSizeInfoConnectedGoodsReview">
+		/* [biz.mbr.size.xml][insertMbrSizeInfoConnectedGoodsReview][상품리뷰에 연결된 회원 사이즈 정보 저장][Owen] */
+		INSERT INTO GOD_GOD_EVL_SIZE (
+			god_no
+			, god_evl_turn
+			, mbr_size_cd
+			, size_val
+			, size_unit_cd
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+		)
+		SELECT
+			#{godNo} AS god_no
+			, #{godEvlTurn} AS god_evl_turn
+			, mbr_size_cd
+			, size_val
+			, size_unit_cd
+			, mbr_no AS regtr_id
+			, SYSDATE AS reg_dt
+			, mbr_no AS udter_id
+			, SYSDATE AS udt_dt
+		FROM (
+			SELECT
+				DENSE_RANK() OVER(PARTITION BY s1.mbr_no ORDER BY cd.sort_seq DESC) AS rnk
+				, s2.mbr_no
+				, s2.mbr_size_turn
+				, s2.mbr_size_cd
+				, s2.size_val
+				, s2.size_unit_cd
+			FROM MBR_SIZE_CLFC s1
+			INNER JOIN MBR_SIZE_CLFC_DETAIL s2
+			ON s1.mbr_no = s2.mbr_no
+			AND s1.mbr_size_turn = s2.mbr_size_turn
+			INNER JOIN (
+				SELECT
+					cd, sort_seq
+				FROM MV_SYS_CD
+				WHERE 1 = 1
+				AND UPPER_CD = 'MBR_SIZE_CLFC'
+				AND LANG_CD = #{langCd}
+			) cd
+			ON S1.MBR_SIZE_CLFC_CD = cd.cd    
+			WHERE 1 = 1
+			AND s1.mbr_no = #{mbrNo}
+			AND (
+				s1.mbr_size_clfc_cd = #{mbrSizeClfcCd}
+				OR s1.mbr_size_clfc_cd = 'ALL_BASE_SIZE'
+			)
+			AND EXISTS (
+				SELECT 1 FROM god_god_evl
+				WHERE 1 = 1
+				AND god_no = #{godNo}
+				AND god_evl_turn = #{godEvlTurn}
+			)
+		)
+		WHERE 1 = 1
+		AND rnk = 1
+	</insert>
+
+
+
+</mapper>

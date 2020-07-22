@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCnrSet" parameterType="dspCnrSet" resultType="dspCnrSet">
+		SELECT /* com.plgrim.ncp.base.selectDspCnrSet		Generator(Generator)	2018-05-23 */
+			   REV_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , CNR_TP_GRP_SN
+			 , SET_NM
+			 , SET_DSCR
+			 , DSP_YN
+			 , RND_YN
+			 , SORT_SEQ
+			 , ALTRTV_DSP_GOD_TP_CD
+			 , DSP_CTGRY_NO
+			 , DSP_BRND_CTGRY_NO
+			 , DSP_BRND_ID
+			 , PROMT_SN
+			 , EVT_NO
+			 , STRND_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CNR_SET
+		 WHERE 1 = 1
+	   	   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspCnrSet" parameterType="dspCnrSet">
+		UPDATE /* com.plgrim.ncp.base.updateDspCnrSet		Generator(Generator)	2018-05-23 */
+		DSP_CNR_SET SET
+			   CNR_TP_GRP_SN = #{cnrTpGrpSn,jdbcType=NUMERIC}
+			 , SET_NM = #{setNm,jdbcType=VARCHAR}
+			 , SET_DSCR = #{setDscr,jdbcType=VARCHAR}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , RND_YN = #{rndYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , ALTRTV_DSP_GOD_TP_CD = #{altrtvDspGodTpCd,jdbcType=VARCHAR}
+			 , DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+			 , DSP_BRND_CTGRY_NO = #{dspBrndCtgryNo,jdbcType=VARCHAR}
+			 , DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+			 , PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+			 , EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			 , STRND_SN = #{strndSn,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspCnrSet" parameterType="dspCnrSet">
+		INSERT /* com.plgrim.ncp.base.insertDspCnrSet		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CNR_SET (
+			   REV_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , CNR_TP_GRP_SN
+			 , SET_NM
+			 , SET_DSCR
+			 , DSP_YN
+			 , RND_YN
+			 , SORT_SEQ
+			 , ALTRTV_DSP_GOD_TP_CD
+			 , DSP_CTGRY_NO
+			 , DSP_BRND_CTGRY_NO
+			 , DSP_BRND_ID
+			 , PROMT_SN
+			 , EVT_NO
+			 , STRND_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{revSn,jdbcType=NUMERIC}
+			 , #{cnrSn,jdbcType=NUMERIC}
+			 , #{cnrSetSn,jdbcType=NUMERIC}
+			 , #{cnrTpGrpSn,jdbcType=NUMERIC}
+			 , #{setNm,jdbcType=VARCHAR}
+			 , #{setDscr,jdbcType=VARCHAR}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{rndYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{altrtvDspGodTpCd,jdbcType=VARCHAR}
+			 , #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{dspBrndCtgryNo,jdbcType=VARCHAR}
+			 , #{dspBrndId,jdbcType=VARCHAR}
+			 , #{promtSn,jdbcType=NUMERIC}
+			 , #{evtNo,jdbcType=VARCHAR}
+			 , #{strndSn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCnrSet" parameterType="dspCnrSet">
+		DELETE /* com.plgrim.ncp.base.deleteDspCnrSet		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CNR_SET
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

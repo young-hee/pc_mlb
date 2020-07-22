@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysPopupNotiAplTgt" parameterType="sysPopupNotiAplTgt" resultType="sysPopupNotiAplTgt">
+		SELECT /* com.plgrim.ncp.base.selectSysPopupNotiAplTgt		Generator(Generator)	2018-05-23 */
+			   POPUP_NOTI_SN
+			 , APL_TURN
+			 , POPUP_NOTI_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_POPUP_NOTI_APL_TGT
+		 WHERE 1 = 1
+	   	   AND POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysPopupNotiAplTgt" parameterType="sysPopupNotiAplTgt">
+		UPDATE /* com.plgrim.ncp.base.updateSysPopupNotiAplTgt		Generator(Generator)	2018-05-23 */
+		SYS_POPUP_NOTI_APL_TGT SET
+			   POPUP_NOTI_TGT_TP_CD = #{popupNotiTgtTpCd,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , TGT_MBR_ATRB_CD = #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysPopupNotiAplTgt" parameterType="sysPopupNotiAplTgt">
+		INSERT /* com.plgrim.ncp.base.insertSysPopupNotiAplTgt		Generator(Generator)	2018-05-23 */
+		INTO   SYS_POPUP_NOTI_APL_TGT (
+			   POPUP_NOTI_SN
+			 , APL_TURN
+			 , POPUP_NOTI_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{popupNotiSn,jdbcType=NUMERIC}
+			 , #{aplTurn,jdbcType=NUMERIC}
+			 , #{popupNotiTgtTpCd,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , #{grpcoId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysPopupNotiAplTgt" parameterType="sysPopupNotiAplTgt">
+		DELETE /* com.plgrim.ncp.base.deleteSysPopupNotiAplTgt		Generator(Generator)	2018-05-23 */
+		  FROM SYS_POPUP_NOTI_APL_TGT
+		 WHERE 1 = 1
+		   AND POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfMbrGrdInfoRecptn" parameterType="infMbrGrdInfoRecptn" resultType="infMbrGrdInfoRecptn">
+		SELECT /* com.plgrim.ncp.base.selectInfMbrGrdInfoRecptn		Generator(Generator)	2018-06-11 */
+			   ERP_CSTMR_NO
+			 , MBR_GRD_MOD_DT
+			 , MBR_GRD_CD
+			 , BRND_ID
+			 , PRM_TP_CD
+			 , ERP_CPN_ID
+			 , REG_DT
+		  FROM INF_MBR_GRD_INFO_RECPTN
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfMbrGrdInfoRecptn" parameterType="infMbrGrdInfoRecptn">
+		UPDATE /* com.plgrim.ncp.base.updateInfMbrGrdInfoRecptn		Generator(Generator)	2018-06-11 */
+		INF_MBR_GRD_INFO_RECPTN SET
+			   ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+			 , MBR_GRD_MOD_DT = #{mbrGrdModDt,jdbcType=TIMESTAMP}
+			 , MBR_GRD_CD = #{mbrGrdCd,jdbcType=VARCHAR}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , PRM_TP_CD = #{prmTpCd,jdbcType=VARCHAR}
+			 , ERP_CPN_ID = #{erpCpnId,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfMbrGrdInfoRecptn" parameterType="infMbrGrdInfoRecptn">
+		INSERT /* com.plgrim.ncp.base.insertInfMbrGrdInfoRecptn		Generator(Generator)	2018-06-11 */
+		INTO   INF_MBR_GRD_INFO_RECPTN (
+			   ERP_CSTMR_NO
+			 , MBR_GRD_MOD_DT
+			 , MBR_GRD_CD
+			 , BRND_ID
+			 , PRM_TP_CD
+			 , ERP_CPN_ID
+			 , REG_DT
+		)
+		VALUES (
+			   #{erpCstmrNo,jdbcType=VARCHAR}
+			 , #{mbrGrdModDt,jdbcType=TIMESTAMP}
+			 , #{mbrGrdCd,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{prmTpCd,jdbcType=VARCHAR}
+			 , #{erpCpnId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfMbrGrdInfoRecptn" parameterType="infMbrGrdInfoRecptn">
+		DELETE /* com.plgrim.ncp.base.deleteInfMbrGrdInfoRecptn		Generator(Generator)	2018-06-11 */
+		  FROM INF_MBR_GRD_INFO_RECPTN
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

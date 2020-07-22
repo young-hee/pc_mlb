@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfOrdGodErpDstb" parameterType="infOrdGodErpDstb" resultType="infOrdGodErpDstb">
+		SELECT /* com.plgrim.ncp.base.selectInfOrdGodErpDstb		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , ORD_GOD_QTY_TURN
+			 , SKU_NO
+			 , ERP_INTRLCK_TGT_YN
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_UNT_PRC
+			 , PAY_EXCHG_RT_CRNCY_UNT_PRC
+			 , RTL_PRC
+			 , SALE_UNT_PRC
+			 , WEB_DC_UNT_PRC
+			 , EMP_DC_UNT_PRC
+			 , PKAG_TAX_UNT_PRC
+			 , GOD_DC_UNT_PRC
+			 , BUNDLE_DC_UNT_PRC
+			 , CRS_DC_UNT_PRC
+			 , GOD_CPN_DC_UNT_PRC
+			 , BSK_CPN_DC_UNT_PRC
+			 , IMDTL_DC_UNT_PRC
+			 , UNITY_PNT_USE_UNT_PRC
+			 , EVT_PNT_USE_UNT_PRC
+			 , MILE_USE_UNT_PRC
+			 , WEBPNT_USE_UNT_PRC
+			 , UNITY_PNT_ACCML_UNT_PRC
+			 , EVT_PNT_ACCML_UNT_PRC
+			 , MILE_ACCML_UNT_PRC
+			 , WEBPNT_ACCML_UNT_PRC
+			 , PRM_COM_BND_UNT_PRC
+			 , CLM_NO
+			 , CLM_WRHS_GOD_TURN
+			 , CLM_ERP_INTRLCK_YN
+			 , CLM_ERP_INTRLCK_DT
+			 , CLM_PRCS_ERR_CONT
+			 , DRT_EXCHG_QTY_TURN
+			 , DRT_EXCHG_STO_NO
+			 , OPT_MOD_NO
+			 , CNTR_DLIVY_CNFIRM_YN
+			 , CNTR_DLIVY_CNFIRM_DT
+			 , DLIVY_DRCT_GOD_NO
+			 , DLIVY_DRCT_TGT_YN
+			 , DLIVY_DRCT_YN
+			 , DLIVY_DRCT_DT
+			 , DLIVY_DRCT_CNCL_YN
+			 , DLIVY_DRCT_CNCL_DT
+			 , PKUP_MOD_YN
+			 , PKUP_MOD_DT
+			 , RCPTFR_NO
+			 , RESVE_RCPTFR_CREAT_YN
+			 , RESVE_RCPTFR_CREAT_DT
+			 , RESVE_RCPTFR_DLIVY_YN
+			 , RESVE_RCPTFR_DLIVY_DT
+			 , RESVE_RCPTFR_DCSN_YN
+			 , RESVE_RCPTFR_DCSN_DT
+			 , RTGOD_RCPTFR_NO
+			 , RTGOD_RCPTFR_CREAT_YN
+			 , RTGOD_RCPTFR_CREAT_DT
+			 , ERP_RESVE_RCPTFR_NO
+			 , ERP_RESVE_CNCL_RCPTFR_NO
+			 , ERP_RESVE_RCPTFR_CREAT_CNT
+			 , ERP_RESVE_RCPTFR_CREAT_YN
+			 , ERP_RESVE_RCPTFR_CREAT_DT
+			 , ERP_RESVE_RCPTFR_RECREAT_YN
+			 , ERP_RESVE_RCPTFR_RECREAT_DT
+			 , ERP_RESVE_RCPTFR_CNCL_YN
+			 , ERP_RESVE_RCPTFR_CNCL_DT
+			 , REPAIR_NO
+			 , REPAIR_COMPT_YN
+			 , REPAIR_COMPT_CD
+			 , REPAIR_CONT
+			 , BADN_GOD_AFF_COM_CNFIRM_DT
+			 , BADN_GOD_CNFIRM_ADMIN_ID
+			 , RTGOD_SHOP_INV_MVMT_YN
+			 , RTGOD_SHOP_INV_MVMT_DT
+			 , P_STO_NO
+			 , S_STO_NO
+			 , S_DOC_NO
+			 , R_DOC_NO
+			 , CP_ERR_YN
+			 , CP_ERR_DT
+			 , CP_ERR_CONT
+			 , ST_ERR_YN
+			 , ST_ERR_DT
+			 , ST_ERR_CONT
+			 , DOCNO_A
+			 , DOCNO_B
+			 , DOCNO_C
+			 , DOCNO_D
+			 , DOCNO_E
+			 , DOCNO_F
+			 , DOCNO_G
+			 , DOCNO_H
+			 , DOCNO_J
+			 , DOCNO_K
+			 , ERP_GOD_SN
+			 , ERP_GOD_SN_MOD_YN
+			 , ERP_GOD_SN_MOD_DT
+			 , DLIVY_ACPT_YN
+			 , WRHS_ACPT_YN
+			 , SHOP_INV_AF_SUPLE_SUCCES_YN
+			 , SHOP_INV_DLIVY_DRCT_DOC_NO
+			 , SHOP_INV_AF_SUPLE_FAILR_CONT
+			 , PKUP_REDISP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_ORD_GOD_ERP_DSTB
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateInfOrdGodErpDstb" parameterType="infOrdGodErpDstb">
+		UPDATE /* com.plgrim.ncp.base.updateInfOrdGodErpDstb		Generator(Generator)	2018-05-23 */
+		INF_ORD_GOD_ERP_DSTB SET
+			   ORD_GOD_QTY_TURN = #{ordGodQtyTurn,jdbcType=NUMERIC}
+			 , SKU_NO = #{skuNo,jdbcType=VARCHAR}
+			 , ERP_INTRLCK_TGT_YN = #{erpIntrlckTgtYn,jdbcType=VARCHAR}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , STDR_CRNCY_UNT_PRC = #{stdrCrncyUntPrc,jdbcType=NUMERIC}
+			 , PAY_EXCHG_RT_CRNCY_UNT_PRC = #{payExchgRtCrncyUntPrc,jdbcType=NUMERIC}
+			 , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+			 , SALE_UNT_PRC = #{saleUntPrc,jdbcType=NUMERIC}
+			 , WEB_DC_UNT_PRC = #{webDcUntPrc,jdbcType=NUMERIC}
+			 , EMP_DC_UNT_PRC = #{empDcUntPrc,jdbcType=NUMERIC}
+			 , PKAG_TAX_UNT_PRC = #{pkagTaxUntPrc,jdbcType=NUMERIC}
+			 , GOD_DC_UNT_PRC = #{godDcUntPrc,jdbcType=NUMERIC}
+			 , BUNDLE_DC_UNT_PRC = #{bundleDcUntPrc,jdbcType=NUMERIC}
+			 , CRS_DC_UNT_PRC = #{crsDcUntPrc,jdbcType=NUMERIC}
+			 , GOD_CPN_DC_UNT_PRC = #{godCpnDcUntPrc,jdbcType=NUMERIC}
+			 , BSK_CPN_DC_UNT_PRC = #{bskCpnDcUntPrc,jdbcType=NUMERIC}
+			 , IMDTL_DC_UNT_PRC = #{imdtlDcUntPrc,jdbcType=NUMERIC}
+			 , UNITY_PNT_USE_UNT_PRC = #{unityPntUseUntPrc,jdbcType=NUMERIC}
+			 , EVT_PNT_USE_UNT_PRC = #{evtPntUseUntPrc,jdbcType=NUMERIC}
+			 , MILE_USE_UNT_PRC = #{mileUseUntPrc,jdbcType=NUMERIC}
+			 , WEBPNT_USE_UNT_PRC = #{webpntUseUntPrc,jdbcType=NUMERIC}
+			 , UNITY_PNT_ACCML_UNT_PRC = #{unityPntAccmlUntPrc,jdbcType=NUMERIC}
+			 , EVT_PNT_ACCML_UNT_PRC = #{evtPntAccmlUntPrc,jdbcType=NUMERIC}
+			 , MILE_ACCML_UNT_PRC = #{mileAccmlUntPrc,jdbcType=NUMERIC}
+			 , WEBPNT_ACCML_UNT_PRC = #{webpntAccmlUntPrc,jdbcType=NUMERIC}
+			 , PRM_COM_BND_UNT_PRC = #{prmComBndUntPrc,jdbcType=NUMERIC}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , CLM_ERP_INTRLCK_YN = #{clmErpIntrlckYn,jdbcType=VARCHAR}
+			 , CLM_ERP_INTRLCK_DT = #{clmErpIntrlckDt,jdbcType=TIMESTAMP}
+			 , CLM_PRCS_ERR_CONT = #{clmPrcsErrCont,jdbcType=VARCHAR}
+			 , DRT_EXCHG_QTY_TURN = #{drtExchgQtyTurn,jdbcType=NUMERIC}
+			 , DRT_EXCHG_STO_NO = #{drtExchgStoNo,jdbcType=VARCHAR}
+			 , OPT_MOD_NO = #{optModNo,jdbcType=VARCHAR}
+			 , CNTR_DLIVY_CNFIRM_YN = #{cntrDlivyCnfirmYn,jdbcType=VARCHAR}
+			 , CNTR_DLIVY_CNFIRM_DT = #{cntrDlivyCnfirmDt,jdbcType=TIMESTAMP}
+			 , DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+			 , DLIVY_DRCT_TGT_YN = #{dlivyDrctTgtYn,jdbcType=VARCHAR}
+			 , DLIVY_DRCT_YN = #{dlivyDrctYn,jdbcType=VARCHAR}
+			 , DLIVY_DRCT_DT = #{dlivyDrctDt,jdbcType=TIMESTAMP}
+			 , DLIVY_DRCT_CNCL_YN = #{dlivyDrctCnclYn,jdbcType=VARCHAR}
+			 , DLIVY_DRCT_CNCL_DT = #{dlivyDrctCnclDt,jdbcType=TIMESTAMP}
+			 , PKUP_MOD_YN = #{pkupModYn,jdbcType=VARCHAR}
+			 , PKUP_MOD_DT = #{pkupModDt,jdbcType=TIMESTAMP}
+			 , RCPTFR_NO = #{rcptfrNo,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_CREAT_YN = #{resveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_CREAT_DT = #{resveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , RESVE_RCPTFR_DLIVY_YN = #{resveRcptfrDlivyYn,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_DLIVY_DT = #{resveRcptfrDlivyDt,jdbcType=TIMESTAMP}
+			 , RESVE_RCPTFR_DCSN_YN = #{resveRcptfrDcsnYn,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_DCSN_DT = #{resveRcptfrDcsnDt,jdbcType=TIMESTAMP}
+			 , RTGOD_RCPTFR_NO = #{rtgodRcptfrNo,jdbcType=VARCHAR}
+			 , RTGOD_RCPTFR_CREAT_YN = #{rtgodRcptfrCreatYn,jdbcType=VARCHAR}
+			 , RTGOD_RCPTFR_CREAT_DT = #{rtgodRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , ERP_RESVE_RCPTFR_NO = #{erpResveRcptfrNo,jdbcType=VARCHAR}
+			 , ERP_RESVE_CNCL_RCPTFR_NO = #{erpResveCnclRcptfrNo,jdbcType=VARCHAR}
+			 , ERP_RESVE_RCPTFR_CREAT_CNT = #{erpResveRcptfrCreatCnt,jdbcType=NUMERIC}
+			 , ERP_RESVE_RCPTFR_CREAT_YN = #{erpResveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , ERP_RESVE_RCPTFR_CREAT_DT = #{erpResveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , ERP_RESVE_RCPTFR_RECREAT_YN = #{erpResveRcptfrRecreatYn,jdbcType=VARCHAR}
+			 , ERP_RESVE_RCPTFR_RECREAT_DT = #{erpResveRcptfrRecreatDt,jdbcType=TIMESTAMP}
+			 , ERP_RESVE_RCPTFR_CNCL_YN = #{erpResveRcptfrCnclYn,jdbcType=VARCHAR}
+			 , ERP_RESVE_RCPTFR_CNCL_DT = #{erpResveRcptfrCnclDt,jdbcType=TIMESTAMP}
+			 , REPAIR_NO = #{repairNo,jdbcType=VARCHAR}
+			 , REPAIR_COMPT_YN = #{repairComptYn,jdbcType=VARCHAR}
+			 , REPAIR_COMPT_CD = #{repairComptCd,jdbcType=VARCHAR}
+			 , REPAIR_CONT = #{repairCont,jdbcType=VARCHAR}
+			 , BADN_GOD_AFF_COM_CNFIRM_DT = #{badnGodAffComCnfirmDt,jdbcType=TIMESTAMP}
+			 , BADN_GOD_CNFIRM_ADMIN_ID = #{badnGodCnfirmAdminId,jdbcType=VARCHAR}
+			 , RTGOD_SHOP_INV_MVMT_YN = #{rtgodShopInvMvmtYn,jdbcType=VARCHAR}
+			 , RTGOD_SHOP_INV_MVMT_DT = #{rtgodShopInvMvmtDt,jdbcType=TIMESTAMP}
+			 , P_STO_NO = #{pStoNo,jdbcType=VARCHAR}
+			 , S_STO_NO = #{sStoNo,jdbcType=VARCHAR}
+			 , S_DOC_NO = #{sDocNo,jdbcType=VARCHAR}
+			 , R_DOC_NO = #{rDocNo,jdbcType=VARCHAR}
+			 , CP_ERR_YN = #{cpErrYn,jdbcType=VARCHAR}
+			 , CP_ERR_DT = #{cpErrDt,jdbcType=TIMESTAMP}
+			 , CP_ERR_CONT = #{cpErrCont,jdbcType=VARCHAR}
+			 , ST_ERR_YN = #{stErrYn,jdbcType=VARCHAR}
+			 , ST_ERR_DT = #{stErrDt,jdbcType=TIMESTAMP}
+			 , ST_ERR_CONT = #{stErrCont,jdbcType=VARCHAR}
+			 , DOCNO_A = #{docnoA,jdbcType=VARCHAR}
+			 , DOCNO_B = #{docnoB,jdbcType=VARCHAR}
+			 , DOCNO_C = #{docnoC,jdbcType=VARCHAR}
+			 , DOCNO_D = #{docnoD,jdbcType=VARCHAR}
+			 , DOCNO_E = #{docnoE,jdbcType=VARCHAR}
+			 , DOCNO_F = #{docnoF,jdbcType=VARCHAR}
+			 , DOCNO_G = #{docnoG,jdbcType=VARCHAR}
+			 , DOCNO_H = #{docnoH,jdbcType=VARCHAR}
+			 , DOCNO_J = #{docnoJ,jdbcType=VARCHAR}
+			 , DOCNO_K = #{docnoK,jdbcType=VARCHAR}
+			 , ERP_GOD_SN = #{erpGodSn,jdbcType=VARCHAR}
+			 , ERP_GOD_SN_MOD_YN = #{erpGodSnModYn,jdbcType=VARCHAR}
+			 , ERP_GOD_SN_MOD_DT = #{erpGodSnModDt,jdbcType=TIMESTAMP}
+			 , DLIVY_ACPT_YN = #{dlivyAcptYn,jdbcType=VARCHAR}
+			 , WRHS_ACPT_YN = #{wrhsAcptYn,jdbcType=VARCHAR}
+			 , SHOP_INV_AF_SUPLE_SUCCES_YN = #{shopInvAfSupleSuccesYn,jdbcType=VARCHAR}
+			 , SHOP_INV_DLIVY_DRCT_DOC_NO = #{shopInvDlivyDrctDocNo,jdbcType=VARCHAR}
+			 , SHOP_INV_AF_SUPLE_FAILR_CONT = #{shopInvAfSupleFailrCont,jdbcType=VARCHAR}
+			 , PKUP_REDISP_CD = #{pkupRedispCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertInfOrdGodErpDstb" parameterType="infOrdGodErpDstb">
+		INSERT /* com.plgrim.ncp.base.insertInfOrdGodErpDstb		Generator(Generator)	2018-05-23 */
+		INTO   INF_ORD_GOD_ERP_DSTB (
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , ORD_GOD_QTY_TURN
+			 , SKU_NO
+			 , ERP_INTRLCK_TGT_YN
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_UNT_PRC
+			 , PAY_EXCHG_RT_CRNCY_UNT_PRC
+			 , RTL_PRC
+			 , SALE_UNT_PRC
+			 , WEB_DC_UNT_PRC
+			 , EMP_DC_UNT_PRC
+			 , PKAG_TAX_UNT_PRC
+			 , GOD_DC_UNT_PRC
+			 , BUNDLE_DC_UNT_PRC
+			 , CRS_DC_UNT_PRC
+			 , GOD_CPN_DC_UNT_PRC
+			 , BSK_CPN_DC_UNT_PRC
+			 , IMDTL_DC_UNT_PRC
+			 , UNITY_PNT_USE_UNT_PRC
+			 , EVT_PNT_USE_UNT_PRC
+			 , MILE_USE_UNT_PRC
+			 , WEBPNT_USE_UNT_PRC
+			 , UNITY_PNT_ACCML_UNT_PRC
+			 , EVT_PNT_ACCML_UNT_PRC
+			 , MILE_ACCML_UNT_PRC
+			 , WEBPNT_ACCML_UNT_PRC
+			 , PRM_COM_BND_UNT_PRC
+			 , CLM_NO
+			 , CLM_WRHS_GOD_TURN
+			 , CLM_ERP_INTRLCK_YN
+			 , CLM_ERP_INTRLCK_DT
+			 , CLM_PRCS_ERR_CONT
+			 , DRT_EXCHG_QTY_TURN
+			 , DRT_EXCHG_STO_NO
+			 , OPT_MOD_NO
+			 , CNTR_DLIVY_CNFIRM_YN
+			 , CNTR_DLIVY_CNFIRM_DT
+			 , DLIVY_DRCT_GOD_NO
+			 , DLIVY_DRCT_TGT_YN
+			 , DLIVY_DRCT_YN
+			 , DLIVY_DRCT_DT
+			 , DLIVY_DRCT_CNCL_YN
+			 , DLIVY_DRCT_CNCL_DT
+			 , PKUP_MOD_YN
+			 , PKUP_MOD_DT
+			 , RCPTFR_NO
+			 , RESVE_RCPTFR_CREAT_YN
+			 , RESVE_RCPTFR_CREAT_DT
+			 , RESVE_RCPTFR_DLIVY_YN
+			 , RESVE_RCPTFR_DLIVY_DT
+			 , RESVE_RCPTFR_DCSN_YN
+			 , RESVE_RCPTFR_DCSN_DT
+			 , RTGOD_RCPTFR_NO
+			 , RTGOD_RCPTFR_CREAT_YN
+			 , RTGOD_RCPTFR_CREAT_DT
+			 , ERP_RESVE_RCPTFR_NO
+			 , ERP_RESVE_CNCL_RCPTFR_NO
+			 , ERP_RESVE_RCPTFR_CREAT_CNT
+			 , ERP_RESVE_RCPTFR_CREAT_YN
+			 , ERP_RESVE_RCPTFR_CREAT_DT
+			 , ERP_RESVE_RCPTFR_RECREAT_YN
+			 , ERP_RESVE_RCPTFR_RECREAT_DT
+			 , ERP_RESVE_RCPTFR_CNCL_YN
+			 , ERP_RESVE_RCPTFR_CNCL_DT
+			 , REPAIR_NO
+			 , REPAIR_COMPT_YN
+			 , REPAIR_COMPT_CD
+			 , REPAIR_CONT
+			 , BADN_GOD_AFF_COM_CNFIRM_DT
+			 , BADN_GOD_CNFIRM_ADMIN_ID
+			 , RTGOD_SHOP_INV_MVMT_YN
+			 , RTGOD_SHOP_INV_MVMT_DT
+			 , P_STO_NO
+			 , S_STO_NO
+			 , S_DOC_NO
+			 , R_DOC_NO
+			 , CP_ERR_YN
+			 , CP_ERR_DT
+			 , CP_ERR_CONT
+			 , ST_ERR_YN
+			 , ST_ERR_DT
+			 , ST_ERR_CONT
+			 , DOCNO_A
+			 , DOCNO_B
+			 , DOCNO_C
+			 , DOCNO_D
+			 , DOCNO_E
+			 , DOCNO_F
+			 , DOCNO_G
+			 , DOCNO_H
+			 , DOCNO_J
+			 , DOCNO_K
+			 , ERP_GOD_SN
+			 , ERP_GOD_SN_MOD_YN
+			 , ERP_GOD_SN_MOD_DT
+			 , DLIVY_ACPT_YN
+			 , WRHS_ACPT_YN
+			 , SHOP_INV_AF_SUPLE_SUCCES_YN
+			 , SHOP_INV_DLIVY_DRCT_DOC_NO
+			 , SHOP_INV_AF_SUPLE_FAILR_CONT
+			 , PKUP_REDISP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{qtyTurn,jdbcType=NUMERIC}
+			 , #{ordGodQtyTurn,jdbcType=NUMERIC}
+			 , #{skuNo,jdbcType=VARCHAR}
+			 , #{erpIntrlckTgtYn,jdbcType=VARCHAR}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , #{stdrCrncyUntPrc,jdbcType=NUMERIC}
+			 , #{payExchgRtCrncyUntPrc,jdbcType=NUMERIC}
+			 , #{rtlPrc,jdbcType=NUMERIC}
+			 , #{saleUntPrc,jdbcType=NUMERIC}
+			 , #{webDcUntPrc,jdbcType=NUMERIC}
+			 , #{empDcUntPrc,jdbcType=NUMERIC}
+			 , #{pkagTaxUntPrc,jdbcType=NUMERIC}
+			 , #{godDcUntPrc,jdbcType=NUMERIC}
+			 , #{bundleDcUntPrc,jdbcType=NUMERIC}
+			 , #{crsDcUntPrc,jdbcType=NUMERIC}
+			 , #{godCpnDcUntPrc,jdbcType=NUMERIC}
+			 , #{bskCpnDcUntPrc,jdbcType=NUMERIC}
+			 , #{imdtlDcUntPrc,jdbcType=NUMERIC}
+			 , #{unityPntUseUntPrc,jdbcType=NUMERIC}
+			 , #{evtPntUseUntPrc,jdbcType=NUMERIC}
+			 , #{mileUseUntPrc,jdbcType=NUMERIC}
+			 , #{webpntUseUntPrc,jdbcType=NUMERIC}
+			 , #{unityPntAccmlUntPrc,jdbcType=NUMERIC}
+			 , #{evtPntAccmlUntPrc,jdbcType=NUMERIC}
+			 , #{mileAccmlUntPrc,jdbcType=NUMERIC}
+			 , #{webpntAccmlUntPrc,jdbcType=NUMERIC}
+			 , #{prmComBndUntPrc,jdbcType=NUMERIC}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , #{clmErpIntrlckYn,jdbcType=VARCHAR}
+			 , #{clmErpIntrlckDt,jdbcType=TIMESTAMP}
+			 , #{clmPrcsErrCont,jdbcType=VARCHAR}
+			 , #{drtExchgQtyTurn,jdbcType=NUMERIC}
+			 , #{drtExchgStoNo,jdbcType=VARCHAR}
+			 , #{optModNo,jdbcType=VARCHAR}
+			 , #{cntrDlivyCnfirmYn,jdbcType=VARCHAR}
+			 , #{cntrDlivyCnfirmDt,jdbcType=TIMESTAMP}
+			 , #{dlivyDrctGodNo,jdbcType=VARCHAR}
+			 , #{dlivyDrctTgtYn,jdbcType=VARCHAR}
+			 , #{dlivyDrctYn,jdbcType=VARCHAR}
+			 , #{dlivyDrctDt,jdbcType=TIMESTAMP}
+			 , #{dlivyDrctCnclYn,jdbcType=VARCHAR}
+			 , #{dlivyDrctCnclDt,jdbcType=TIMESTAMP}
+			 , #{pkupModYn,jdbcType=VARCHAR}
+			 , #{pkupModDt,jdbcType=TIMESTAMP}
+			 , #{rcptfrNo,jdbcType=VARCHAR}
+			 , #{resveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , #{resveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , #{resveRcptfrDlivyYn,jdbcType=VARCHAR}
+			 , #{resveRcptfrDlivyDt,jdbcType=TIMESTAMP}
+			 , #{resveRcptfrDcsnYn,jdbcType=VARCHAR}
+			 , #{resveRcptfrDcsnDt,jdbcType=TIMESTAMP}
+			 , #{rtgodRcptfrNo,jdbcType=VARCHAR}
+			 , #{rtgodRcptfrCreatYn,jdbcType=VARCHAR}
+			 , #{rtgodRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , #{erpResveRcptfrNo,jdbcType=VARCHAR}
+			 , #{erpResveCnclRcptfrNo,jdbcType=VARCHAR}
+			 , #{erpResveRcptfrCreatCnt,jdbcType=NUMERIC}
+			 , #{erpResveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , #{erpResveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , #{erpResveRcptfrRecreatYn,jdbcType=VARCHAR}
+			 , #{erpResveRcptfrRecreatDt,jdbcType=TIMESTAMP}
+			 , #{erpResveRcptfrCnclYn,jdbcType=VARCHAR}
+			 , #{erpResveRcptfrCnclDt,jdbcType=TIMESTAMP}
+			 , #{repairNo,jdbcType=VARCHAR}
+			 , #{repairComptYn,jdbcType=VARCHAR}
+			 , #{repairComptCd,jdbcType=VARCHAR}
+			 , #{repairCont,jdbcType=VARCHAR}
+			 , #{badnGodAffComCnfirmDt,jdbcType=TIMESTAMP}
+			 , #{badnGodCnfirmAdminId,jdbcType=VARCHAR}
+			 , #{rtgodShopInvMvmtYn,jdbcType=VARCHAR}
+			 , #{rtgodShopInvMvmtDt,jdbcType=TIMESTAMP}
+			 , #{pStoNo,jdbcType=VARCHAR}
+			 , #{sStoNo,jdbcType=VARCHAR}
+			 , #{sDocNo,jdbcType=VARCHAR}
+			 , #{rDocNo,jdbcType=VARCHAR}
+			 , #{cpErrYn,jdbcType=VARCHAR}
+			 , #{cpErrDt,jdbcType=TIMESTAMP}
+			 , #{cpErrCont,jdbcType=VARCHAR}
+			 , #{stErrYn,jdbcType=VARCHAR}
+			 , #{stErrDt,jdbcType=TIMESTAMP}
+			 , #{stErrCont,jdbcType=VARCHAR}
+			 , #{docnoA,jdbcType=VARCHAR}
+			 , #{docnoB,jdbcType=VARCHAR}
+			 , #{docnoC,jdbcType=VARCHAR}
+			 , #{docnoD,jdbcType=VARCHAR}
+			 , #{docnoE,jdbcType=VARCHAR}
+			 , #{docnoF,jdbcType=VARCHAR}
+			 , #{docnoG,jdbcType=VARCHAR}
+			 , #{docnoH,jdbcType=VARCHAR}
+			 , #{docnoJ,jdbcType=VARCHAR}
+			 , #{docnoK,jdbcType=VARCHAR}
+			 , #{erpGodSn,jdbcType=VARCHAR}
+			 , #{erpGodSnModYn,jdbcType=VARCHAR}
+			 , #{erpGodSnModDt,jdbcType=TIMESTAMP}
+			 , #{dlivyAcptYn,jdbcType=VARCHAR}
+			 , #{wrhsAcptYn,jdbcType=VARCHAR}
+			 , #{shopInvAfSupleSuccesYn,jdbcType=VARCHAR}
+			 , #{shopInvDlivyDrctDocNo,jdbcType=VARCHAR}
+			 , #{shopInvAfSupleFailrCont,jdbcType=VARCHAR}
+			 , #{pkupRedispCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfOrdGodErpDstb" parameterType="infOrdGodErpDstb">
+		DELETE /* com.plgrim.ncp.base.deleteInfOrdGodErpDstb		Generator(Generator)	2018-05-23 */
+		  FROM INF_ORD_GOD_ERP_DSTB
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

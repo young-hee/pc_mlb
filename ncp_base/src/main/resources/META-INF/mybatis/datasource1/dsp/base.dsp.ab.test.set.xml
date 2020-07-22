@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspAbTestSet" parameterType="dspAbTestSet" resultType="dspAbTestSet">
+		SELECT /* com.plgrim.ncp.base.selectDspAbTestSet		Generator(Generator)	2018-05-23 */
+			   AB_TEST_SN
+			 , SET_TURN
+			 , EXPSR_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_AB_TEST_SET
+		 WHERE 1 = 1
+	   	   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspAbTestSet" parameterType="dspAbTestSet">
+		UPDATE /* com.plgrim.ncp.base.updateDspAbTestSet		Generator(Generator)	2018-05-23 */
+		DSP_AB_TEST_SET SET
+			   EXPSR_RT = #{expsrRt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspAbTestSet" parameterType="dspAbTestSet">
+		INSERT /* com.plgrim.ncp.base.insertDspAbTestSet		Generator(Generator)	2018-05-23 */
+		INTO   DSP_AB_TEST_SET (
+			   AB_TEST_SN
+			 , SET_TURN
+			 , EXPSR_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{abTestSn,jdbcType=NUMERIC}
+			 , #{setTurn,jdbcType=NUMERIC}
+			 , #{expsrRt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspAbTestSet" parameterType="dspAbTestSet">
+		DELETE /* com.plgrim.ncp.base.deleteDspAbTestSet		Generator(Generator)	2018-05-23 */
+		  FROM DSP_AB_TEST_SET
+		 WHERE 1 = 1
+		   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

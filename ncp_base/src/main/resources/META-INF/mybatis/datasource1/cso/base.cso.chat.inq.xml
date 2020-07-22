@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoChatInq" parameterType="csoChatInq" resultType="csoChatInq">
+		SELECT /* com.plgrim.ncp.base.selectCsoChatInq		Generator(Generator)	2018-05-23 */
+			   CHAT_INQ_SN
+			 , INQ_TP_CD
+			 , MBR_NO
+			 , INQ_CSTMR_NM
+			 , INQ_SJ
+			 , PRCS_COMPT_DT
+			 , SENARIO_CHAT_YN
+			 , CHAT_TICKET_ID
+			 , CHAT_TRANS_YN
+			 , MALL_ID
+			 , LANG_CD
+			 , LDIN_PATH_SECT_CD
+			 , LDIN_MEDIA_TP_CD
+			 , LDIN_SCRIN_SECT_CD
+			 , ANS_EVL_CD
+			 , ANS_EVL_CONT
+			 , ANS_EVL_WRITNG_DT
+			 , ANS_EVL_ADMIN_ANS_CONT
+			 , ANS_EVL_ADMIN_ANS_DT
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CHAT_INQ
+		 WHERE 1 = 1
+	   	   AND CHAT_INQ_SN = #{chatInqSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoChatInq" parameterType="csoChatInq">
+		UPDATE /* com.plgrim.ncp.base.updateCsoChatInq		Generator(Generator)	2018-05-23 */
+		CSO_CHAT_INQ SET
+			   INQ_TP_CD = #{inqTpCd,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , INQ_CSTMR_NM = #{inqCstmrNm,jdbcType=VARCHAR}
+			 , INQ_SJ = #{inqSj,jdbcType=VARCHAR}
+			 , PRCS_COMPT_DT = #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , SENARIO_CHAT_YN = #{senarioChatYn,jdbcType=VARCHAR}
+			 , CHAT_TICKET_ID = #{chatTicketId,jdbcType=VARCHAR}
+			 , CHAT_TRANS_YN = #{chatTransYn,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , LDIN_PATH_SECT_CD = #{ldinPathSectCd,jdbcType=VARCHAR}
+			 , LDIN_MEDIA_TP_CD = #{ldinMediaTpCd,jdbcType=VARCHAR}
+			 , LDIN_SCRIN_SECT_CD = #{ldinScrinSectCd,jdbcType=VARCHAR}
+			 , ANS_EVL_CD = #{ansEvlCd,jdbcType=VARCHAR}
+			 , ANS_EVL_CONT = #{ansEvlCont,jdbcType=VARCHAR}
+			 , ANS_EVL_WRITNG_DT = #{ansEvlWritngDt,jdbcType=TIMESTAMP}
+			 , ANS_EVL_ADMIN_ANS_CONT = #{ansEvlAdminAnsCont,jdbcType=VARCHAR}
+			 , ANS_EVL_ADMIN_ANS_DT = #{ansEvlAdminAnsDt,jdbcType=TIMESTAMP}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CHAT_INQ_SN = #{chatInqSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoChatInq" parameterType="csoChatInq">
+		INSERT /* com.plgrim.ncp.base.insertCsoChatInq		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CHAT_INQ (
+			   CHAT_INQ_SN
+			 , INQ_TP_CD
+			 , MBR_NO
+			 , INQ_CSTMR_NM
+			 , INQ_SJ
+			 , PRCS_COMPT_DT
+			 , SENARIO_CHAT_YN
+			 , CHAT_TICKET_ID
+			 , CHAT_TRANS_YN
+			 , MALL_ID
+			 , LANG_CD
+			 , LDIN_PATH_SECT_CD
+			 , LDIN_MEDIA_TP_CD
+			 , LDIN_SCRIN_SECT_CD
+			 , ANS_EVL_CD
+			 , ANS_EVL_CONT
+			 , ANS_EVL_WRITNG_DT
+			 , ANS_EVL_ADMIN_ANS_CONT
+			 , ANS_EVL_ADMIN_ANS_DT
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{chatInqSn,jdbcType=NUMERIC}
+			 , #{inqTpCd,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{inqCstmrNm,jdbcType=VARCHAR}
+			 , #{inqSj,jdbcType=VARCHAR}
+			 , #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , #{senarioChatYn,jdbcType=VARCHAR}
+			 , #{chatTicketId,jdbcType=VARCHAR}
+			 , #{chatTransYn,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{ldinPathSectCd,jdbcType=VARCHAR}
+			 , #{ldinMediaTpCd,jdbcType=VARCHAR}
+			 , #{ldinScrinSectCd,jdbcType=VARCHAR}
+			 , #{ansEvlCd,jdbcType=VARCHAR}
+			 , #{ansEvlCont,jdbcType=VARCHAR}
+			 , #{ansEvlWritngDt,jdbcType=TIMESTAMP}
+			 , #{ansEvlAdminAnsCont,jdbcType=VARCHAR}
+			 , #{ansEvlAdminAnsDt,jdbcType=TIMESTAMP}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoChatInq" parameterType="csoChatInq">
+		DELETE /* com.plgrim.ncp.base.deleteCsoChatInq		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CHAT_INQ
+		 WHERE 1 = 1
+		   AND CHAT_INQ_SN = #{chatInqSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

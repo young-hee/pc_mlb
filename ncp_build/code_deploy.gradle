@@ -1,0 +1,124 @@
+def 대상_시스템 = System.getProperty('SYSTEM', 'dev')
+
+rootProject.SERVER_PROJECTS.each { cfg ->
+    project(cfg.projectName) {
+
+        task('deployScript') << {
+            def appspecScript = """
+version: 0.0
+os: linux
+files:
+  - source: """ + cfg.appArchiveName + """
+    destination: /app/deploy/
+  - source: """ + cfg.contentsArchiveName + """
+    destination: /app/deploy/
+hooks:
+  BeforeInstall:
+    - location: scripts/stop_server.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/unzip_data_bundle.sh
+    - location: scripts/unzip_resource_bundle.sh
+    - location: scripts/upload_resource.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_server.sh
+      timeout: 300
+      runas: root
+"""
+            project(cfg.projectName).file("build/libs/appspec.yml").write(appspecScript)
+
+
+            project(cfg.projectName).file("build/libs/scripts").mkdir()
+
+            def unzipDataBundleScript = ""
+            def unzipResourceBundleScript = ""
+            def uploadResourceScript = ""
+            def startServerScript = ""
+            def stopServerScript = ""
+
+            if (대상_시스템 == 'prod') {
+        unzipDataBundleScript = """
+rm -Rf /app/tomcat/webapps/ROOT
+sudo unzip /app/deploy/""" + cfg.appArchiveName + """ -d /app/tomcat/webapps/ROOT
+chown -R app.app /app/tomcat/webapps/ROOT
+rm /app/deploy/""" + cfg.appArchiveName + """
+"""
+
+        unzipResourceBundleScript = """
+rm -Rf /app/deploy/resource
+sudo unzip /app/deploy/""" + cfg.contentsArchiveName + """ -d /app/deploy/resource
+rm /app/deploy/""" + cfg.contentsArchiveName + """
+"""
+
+
+                def resourceBucket = cfg.resourceBucket.replace("dev-static-online-mall", "prd-static-fnf-online-mall")
+                uploadResourceScript = """
+aws s3 sync /app/deploy/resource/ """ + resourceBucket + """ --acl public-read --delete 
+rm -Rf /app/deploy/resource
+"""
+
+        startServerScript = """
+sudo service tomcat start
+"""
+
+        stopServerScript = """
+sudo service tomcat stop
+"""
+            } else {
+                // STG 신규 추가로 인한 버킷 구분
+                def resourceBucket = cfg.resourceBucket
+                if (대상_시스템 == 'stg') {
+                    resourceBucket = cfg.resourceBucket.replace("dev-static-online-mall", "stg-static-fnf-online-mall")
+
+                    unzipDataBundleScript = """
+rm -Rf """ + cfg.webappPath + """/ROOT
+sudo unzip /app/deploy/""" + cfg.appArchiveName + """ -d """ + cfg.webappPath + """/ROOT >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+chown -R app.app """ + cfg.webappPath + """/ROOT 
+rm /app/deploy/""" + cfg.appArchiveName + """ >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+"""
+                } else {
+                    unzipDataBundleScript = """
+rm -Rf """ + cfg.webappPath + """/ROOT
+sudo unzip /app/deploy/""" + cfg.appArchiveName + """ -d """ + cfg.webappPath + """/ROOT >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+sudo unzip /app/deploy/""" + cfg.contentsArchiveName + """ -d """ + cfg.webappPath + """/ROOT >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+chown -R app.app """ + cfg.webappPath + """/ROOT 
+rm /app/deploy/""" + cfg.appArchiveName + """ >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+"""
+                }
+
+                unzipResourceBundleScript = """
+rm -Rf /app/deploy/""" + cfg.serviceName + """-resource >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+sudo unzip /app/deploy/""" + cfg.contentsArchiveName + """ -d /app/deploy/"""+ cfg.serviceName +"""-resource/ >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+rm /app/deploy/""" + cfg.contentsArchiveName + """ >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+"""
+
+                uploadResourceScript = """
+aws s3 sync /app/deploy/""" + cfg.serviceName + """-resource/ """ + resourceBucket + """ --acl public-read --delete >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+rm -Rf /app/deploy/""" + cfg.serviceName + """-resource/ >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+"""
+
+                startServerScript = """
+sudo service """ + cfg.serviceName + """ start >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+"""
+
+                stopServerScript = """
+sudo service """ + cfg.serviceName + """ stop >> /var/log/deploy/`date +"%Y%m%d%H%M"`.log 2>&1
+"""
+            }
+
+            project(cfg.projectName).file("build/libs/scripts/unzip_data_bundle.sh").write(unzipDataBundleScript)
+
+            project(cfg.projectName).file("build/libs/scripts/unzip_resource_bundle.sh").write(unzipResourceBundleScript)
+
+            project(cfg.projectName).file("build/libs/scripts/upload_resource.sh").write(uploadResourceScript)
+
+            project(cfg.projectName).file("build/libs/scripts/start_server.sh").write(startServerScript)
+
+            project(cfg.projectName).file("build/libs/scripts/stop_server.sh").write(stopServerScript)
+
+        }
+    }
+}

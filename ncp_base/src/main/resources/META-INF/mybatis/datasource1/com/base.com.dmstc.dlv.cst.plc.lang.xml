@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComDmstcDlvCstPlcLang" parameterType="comDmstcDlvCstPlcLang" resultType="comDmstcDlvCstPlcLang">
+		SELECT /* com.plgrim.ncp.base.selectComDmstcDlvCstPlcLang		Generator(Generator)	2018-05-29 */
+			   DMSTC_DLV_CST_PLC_SN
+			 , LANG_CD
+			 , DLV_MTHD_DSCR
+			 , MOBILE_DLV_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_DMSTC_DLV_CST_PLC_LANG
+		 WHERE 1 = 1
+	   	   AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComDmstcDlvCstPlcLang" parameterType="comDmstcDlvCstPlcLang">
+		UPDATE /* com.plgrim.ncp.base.updateComDmstcDlvCstPlcLang		Generator(Generator)	2018-05-29 */
+		COM_DMSTC_DLV_CST_PLC_LANG SET
+			   DLV_MTHD_DSCR = #{dlvMthdDscr,jdbcType=CLOB}
+			 , MOBILE_DLV_MTHD_DSCR = #{mobileDlvMthdDscr,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComDmstcDlvCstPlcLang" parameterType="comDmstcDlvCstPlcLang">
+		INSERT /* com.plgrim.ncp.base.insertComDmstcDlvCstPlcLang		Generator(Generator)	2018-05-29 */
+		INTO   COM_DMSTC_DLV_CST_PLC_LANG (
+			   DMSTC_DLV_CST_PLC_SN
+			 , LANG_CD
+			 , DLV_MTHD_DSCR
+			 , MOBILE_DLV_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dlvMthdDscr,jdbcType=CLOB}
+			 , #{mobileDlvMthdDscr,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComDmstcDlvCstPlcLang" parameterType="comDmstcDlvCstPlcLang">
+		DELETE /* com.plgrim.ncp.base.deleteComDmstcDlvCstPlcLang		Generator(Generator)	2018-05-29 */
+		  FROM COM_DMSTC_DLV_CST_PLC_LANG
+		 WHERE 1 = 1
+		   AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

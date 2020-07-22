@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysMenu" parameterType="sysMenu" resultType="sysMenu">
+		SELECT /* com.plgrim.ncp.base.selectSysMenu		Generator(Generator)	2018-05-23 */
+			   MENU_SN
+			 , UPPER_MENU_SN
+			 , BO_SITE_ID
+			 , MENU_NM
+			 , MENU_DSCR
+			 , MENU_IMG_URL
+			 , MENU_URL
+			 , AUTHOR_CHK_YN
+			 , USE_YN
+			 , SORT_SEQ
+			 , MENU_TP_CD
+			 , FIRST_PGE_YN
+			 , PSNL_INFO_USEF_PGE_YN
+			 , OUTPT_TP_CD
+			 , DELETE_YN
+			 , POPUP_LEFT_LC
+			 , POPUP_UPEND_LC
+			 , POPUP_WIDTH
+			 , POPUP_HG
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_MENU
+		 WHERE 1 = 1
+	   	   AND MENU_SN = #{menuSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysMenu" parameterType="sysMenu">
+		UPDATE /* com.plgrim.ncp.base.updateSysMenu		Generator(Generator)	2018-05-23 */
+		SYS_MENU SET
+			   UPPER_MENU_SN = #{upperMenuSn,jdbcType=NUMERIC}
+			 , BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+			 , MENU_NM = #{menuNm,jdbcType=VARCHAR}
+			 , MENU_DSCR = #{menuDscr,jdbcType=VARCHAR}
+			 , MENU_IMG_URL = #{menuImgUrl,jdbcType=VARCHAR}
+			 , MENU_URL = #{menuUrl,jdbcType=VARCHAR}
+			 , AUTHOR_CHK_YN = #{authorChkYn,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , MENU_TP_CD = #{menuTpCd,jdbcType=VARCHAR}
+			 , FIRST_PGE_YN = #{firstPgeYn,jdbcType=VARCHAR}
+			 , PSNL_INFO_USEF_PGE_YN = #{psnlInfoUsefPgeYn,jdbcType=VARCHAR}
+			 , OUTPT_TP_CD = #{outptTpCd,jdbcType=VARCHAR}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , POPUP_LEFT_LC = #{popupLeftLc,jdbcType=NUMERIC}
+			 , POPUP_UPEND_LC = #{popupUpendLc,jdbcType=NUMERIC}
+			 , POPUP_WIDTH = #{popupWidth,jdbcType=NUMERIC}
+			 , POPUP_HG = #{popupHg,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MENU_SN = #{menuSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysMenu" parameterType="sysMenu">
+		INSERT /* com.plgrim.ncp.base.insertSysMenu		Generator(Generator)	2018-05-23 */
+		INTO   SYS_MENU (
+			   MENU_SN
+			 , UPPER_MENU_SN
+			 , BO_SITE_ID
+			 , MENU_NM
+			 , MENU_DSCR
+			 , MENU_IMG_URL
+			 , MENU_URL
+			 , AUTHOR_CHK_YN
+			 , USE_YN
+			 , SORT_SEQ
+			 , MENU_TP_CD
+			 , FIRST_PGE_YN
+			 , PSNL_INFO_USEF_PGE_YN
+			 , OUTPT_TP_CD
+			 , DELETE_YN
+			 , POPUP_LEFT_LC
+			 , POPUP_UPEND_LC
+			 , POPUP_WIDTH
+			 , POPUP_HG
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{menuSn,jdbcType=NUMERIC}
+			 , #{upperMenuSn,jdbcType=NUMERIC}
+			 , #{boSiteId,jdbcType=VARCHAR}
+			 , #{menuNm,jdbcType=VARCHAR}
+			 , #{menuDscr,jdbcType=VARCHAR}
+			 , #{menuImgUrl,jdbcType=VARCHAR}
+			 , #{menuUrl,jdbcType=VARCHAR}
+			 , #{authorChkYn,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{menuTpCd,jdbcType=VARCHAR}
+			 , #{firstPgeYn,jdbcType=VARCHAR}
+			 , #{psnlInfoUsefPgeYn,jdbcType=VARCHAR}
+			 , #{outptTpCd,jdbcType=VARCHAR}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{popupLeftLc,jdbcType=NUMERIC}
+			 , #{popupUpendLc,jdbcType=NUMERIC}
+			 , #{popupWidth,jdbcType=NUMERIC}
+			 , #{popupHg,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysMenu" parameterType="sysMenu">
+		DELETE /* com.plgrim.ncp.base.deleteSysMenu		Generator(Generator)	2018-05-23 */
+		  FROM SYS_MENU
+		 WHERE 1 = 1
+		   AND MENU_SN = #{menuSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

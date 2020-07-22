@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspPromtImg" parameterType="dspPromtImg" resultType="dspPromtImg">
+		SELECT /* com.plgrim.ncp.base.selectDspPromtImg		Generator(Generator)	2018-05-23 */
+			   PROMT_SN
+			 , PROMT_IMG_SECT_CD
+			 , PC_MOBILE_IMG_IND_USE_YN
+			 , PC_IMG_FILE_NM
+			 , PC_IMG_FILE_URL
+			 , PC_IMG_ALTRTV_CONT
+			 , PC_IMG_EXPSR_TXT1_CONT
+			 , PC_IMG_EXPSR_TXT2_CONT
+			 , MOBILE_IMG_FILE_NM
+			 , MOBILE_IMG_FILE_URL
+			 , MOBILE_IMG_ALTRTV_CONT
+			 , MOBILE_IMG_EXPSR_TXT1_CONT
+			 , MOBILE_IMG_EXPSR_TXT2_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_PROMT_IMG
+		 WHERE 1 = 1
+	   	   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspPromtImg" parameterType="dspPromtImg">
+		UPDATE /* com.plgrim.ncp.base.updateDspPromtImg		Generator(Generator)	2018-05-23 */
+		DSP_PROMT_IMG SET
+			   PC_MOBILE_IMG_IND_USE_YN = #{pcMobileImgIndUseYn,jdbcType=VARCHAR}
+			 , PC_IMG_FILE_NM = #{pcImgFileNm,jdbcType=VARCHAR}
+			 , PC_IMG_FILE_URL = #{pcImgFileUrl,jdbcType=VARCHAR}
+			 , PC_IMG_ALTRTV_CONT = #{pcImgAltrtvCont,jdbcType=VARCHAR}
+			 , PC_IMG_EXPSR_TXT1_CONT = #{pcImgExpsrTxt1Cont,jdbcType=VARCHAR}
+			 , PC_IMG_EXPSR_TXT2_CONT = #{pcImgExpsrTxt2Cont,jdbcType=VARCHAR}
+			 , MOBILE_IMG_FILE_NM = #{mobileImgFileNm,jdbcType=VARCHAR}
+			 , MOBILE_IMG_FILE_URL = #{mobileImgFileUrl,jdbcType=VARCHAR}
+			 , MOBILE_IMG_ALTRTV_CONT = #{mobileImgAltrtvCont,jdbcType=VARCHAR}
+			 , MOBILE_IMG_EXPSR_TXT1_CONT = #{mobileImgExpsrTxt1Cont,jdbcType=VARCHAR}
+			 , MOBILE_IMG_EXPSR_TXT2_CONT = #{mobileImgExpsrTxt2Cont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspPromtImg" parameterType="dspPromtImg">
+		INSERT /* com.plgrim.ncp.base.insertDspPromtImg		Generator(Generator)	2018-05-23 */
+		INTO   DSP_PROMT_IMG (
+			   PROMT_SN
+			 , PROMT_IMG_SECT_CD
+			 , PC_MOBILE_IMG_IND_USE_YN
+			 , PC_IMG_FILE_NM
+			 , PC_IMG_FILE_URL
+			 , PC_IMG_ALTRTV_CONT
+			 , PC_IMG_EXPSR_TXT1_CONT
+			 , PC_IMG_EXPSR_TXT2_CONT
+			 , MOBILE_IMG_FILE_NM
+			 , MOBILE_IMG_FILE_URL
+			 , MOBILE_IMG_ALTRTV_CONT
+			 , MOBILE_IMG_EXPSR_TXT1_CONT
+			 , MOBILE_IMG_EXPSR_TXT2_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{promtSn,jdbcType=NUMERIC}
+			 , #{promtImgSectCd,jdbcType=VARCHAR}
+			 , #{pcMobileImgIndUseYn,jdbcType=VARCHAR}
+			 , #{pcImgFileNm,jdbcType=VARCHAR}
+			 , #{pcImgFileUrl,jdbcType=VARCHAR}
+			 , #{pcImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{pcImgExpsrTxt1Cont,jdbcType=VARCHAR}
+			 , #{pcImgExpsrTxt2Cont,jdbcType=VARCHAR}
+			 , #{mobileImgFileNm,jdbcType=VARCHAR}
+			 , #{mobileImgFileUrl,jdbcType=VARCHAR}
+			 , #{mobileImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{mobileImgExpsrTxt1Cont,jdbcType=VARCHAR}
+			 , #{mobileImgExpsrTxt2Cont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspPromtImg" parameterType="dspPromtImg">
+		DELETE /* com.plgrim.ncp.base.deleteDspPromtImg		Generator(Generator)	2018-05-23 */
+		  FROM DSP_PROMT_IMG
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND PROMT_IMG_SECT_CD = #{promtImgSectCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

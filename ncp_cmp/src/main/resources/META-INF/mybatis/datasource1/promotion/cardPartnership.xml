@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion">
+
+   <update id="updateCardPartnership" parameterType="com.plgrim.ncp.biz.promotion.data.CardPartnershipBoDTO">
+      UPDATE   /* com.plgrim.ncp.biz.promotion.updateCardPartnership  20150430 */
+      PRM SET
+               prm_stat_cd = #{prm.prmStatCd,jdbcType=VARCHAR}
+             , prm_cncl_dscr    = #{prm.prmCnclDscr,jdbcType=VARCHAR}
+             , udter_id    = #{prm.udterId,jdbcType=VARCHAR}
+             , udt_dt      = SYSDATE
+      WHERE    1 = 1
+      <if test="rowPrmNo != null and rowPrmNo.length > 0 ">
+        <foreach collection="rowPrmNo" item="item" open="AND prm_no IN (" close=")" separator=",">#{item}</foreach>
+      </if>
+   </update>
+   
+   <insert id="insertCardPartnership" parameterType="prm">
+     /* com.plgrim.ncp.biz.promotion.insertCardPartnership  20150506 */
+	    INSERT 
+	    INTO PRM
+		(
+	        PRM_NO
+	       ,PRM_TP_CD
+	       ,PRM_DTL_TP_CD
+	       ,PRM_STAT_CD
+	       ,PRM_CNCL_DSCR
+	       ,PRM_NM
+	       ,PRM_DSCR
+	       ,ERP_CMPG_ID
+	       ,ERP_CMPG_NM
+	       ,PRM_BEG_DATE
+	       ,PRM_END_DATE
+	       ,PRM_DATEBY_BEG_HOUR
+	       ,PRM_DATEBY_END_HOUR
+	       ,PRM_APL_DOWSMON
+	       ,COST_BND_MBD_CD
+	       ,COM_COST_BND_RT
+	       ,RPRST_IMG_USE_SECT_CD
+	       ,RPRST_IMG_PC_URL
+	       ,RPRST_IMG_PC_ALTRTV_CONT
+	       ,RPRST_IMG_MOBILE_URL
+	       ,RPRST_IMG_MOBILE_ALTRTV_CONT
+	       ,B2E_CRTFC_MENMTHD_CD
+	       ,B2E_CRTFC_KEY
+	       ,PCH_LMIT_QTY
+	       ,MAX_DC_PSB_AMT
+	       ,DC_SECT_CD
+	       ,DC_AMT
+	       ,DC_RT
+	       ,SALE_UNT_PRC
+	       ,ORD_GFT_APL_CND_AMT
+	       ,ACCML_SECT_CD
+	       ,ACCML_AMT
+	       ,ACCML_RT
+	       ,NINT_MONS
+	       ,GOD_DC_DPLCT_CD
+	       ,GOD_CPN_DPLCT_CD
+	       ,SIGNL_CRTFC_SECT_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{prmNo,jdbcType=VARCHAR}
+	       ,#{prmTpCd,jdbcType=VARCHAR}
+	       ,#{prmDtlTpCd,jdbcType=VARCHAR}
+	       ,#{prmStatCd,jdbcType=VARCHAR}
+	       ,#{prmCnclDscr,jdbcType=VARCHAR}
+	       ,#{prmNm,jdbcType=VARCHAR}
+	       ,#{prmDscr,jdbcType=VARCHAR}
+	       ,#{erpCmpgId,jdbcType=VARCHAR}
+	       ,#{erpCmpgNm,jdbcType=VARCHAR}
+	       ,#{prmBegDate,jdbcType=VARCHAR}
+	       ,#{prmEndDate,jdbcType=VARCHAR}
+	       ,#{prmDatebyBegHour,jdbcType=VARCHAR}
+	       ,#{prmDatebyEndHour,jdbcType=VARCHAR}
+	       ,#{prmAplDowsmon,jdbcType=VARCHAR}
+	       ,#{costBndMbdCd,jdbcType=VARCHAR}
+	       ,#{comCostBndRt,jdbcType=NUMERIC}
+	       ,#{rprstImgUseSectCd,jdbcType=VARCHAR}
+	       ,#{rprstImgPcUrl,jdbcType=VARCHAR}
+	       ,#{rprstImgPcAltrtvCont,jdbcType=VARCHAR}
+	       ,#{rprstImgMobileUrl,jdbcType=VARCHAR}
+	       ,#{rprstImgMobileAltrtvCont,jdbcType=VARCHAR}
+	       ,#{b2eCrtfcMenmthdCd,jdbcType=VARCHAR}
+	       ,#{b2eCrtfcKey,jdbcType=VARCHAR}
+	       ,#{pchLmitQty,jdbcType=NUMERIC}
+	       ,#{maxDcPsbAmt,jdbcType=NUMERIC}
+	       ,#{dcSectCd,jdbcType=VARCHAR}
+	       ,#{dcAmt,jdbcType=NUMERIC}
+	       ,#{dcRt,jdbcType=NUMERIC}
+	       ,#{saleUntPrc,jdbcType=NUMERIC}
+	       ,#{ordGftAplCndAmt,jdbcType=NUMERIC}
+	       ,#{accmlSectCd,jdbcType=VARCHAR}
+	       ,#{accmlAmt,jdbcType=NUMERIC}
+	       ,#{accmlRt,jdbcType=NUMERIC}
+	       ,#{nintMons,jdbcType=NUMERIC}
+	       ,#{godDcDplctCd,jdbcType=VARCHAR}
+	       ,#{godCpnDplctCd,jdbcType=VARCHAR}
+	       ,#{signlCrtfcSectCd,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+   
+</mapper>

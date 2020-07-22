@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.claim.refund">
+<sql id="whereClm"> 
+		   <choose>
+			   <when test="ordNoArr != '' and ordNoArr != null">
+				   AND o.ord_no IN (
+				   <foreach collection="ordNoArr" item="item" separator=",">
+					   #{item}
+				   </foreach>
+				   )
+			   </when>
+			   <otherwise>
+				   <if test='partmalSectCd != null and partmalSectCd == "MCOM"'>
+					   AND o.aff_com_ord_no is null
+				   </if>
+				   <if test='partmalSectCd != null and partmalSectCd == "PARTMAL"'>
+					   AND o.aff_com_ord_no is not null
+				   </if>
+				   <if test="mallId != null and mallId != ''">
+					   AND o.mall_id = #{mallId}
+				   </if>
+				   <if test="langCd != null and langCd != ''">
+					   AND o.lang_cd = #{langCd}
+				   </if>
+				   <if test='comId != null and comId != ""'>
+					   AND EXISTS ( SELECT 1 FROM clm_wrhs_god WHERE PARTMAL_SECT_CD = 'PARTMAL' AND  ord_no = c.ord_no AND clm_no = c.clm_no AND COM_ID=#{comId}) 	/* 입점사 */
+				   </if>
+				   <if test='ordTpCd != null and ordTpCd != ""'>
+					   AND o.ord_tp_cd = #{ordTpCd} /* 주문 유형 */
+				   </if>
+				   <if test='affVrscComId != null and affVrscComId != ""'>
+					   AND o.aff_vrsc_com_id = #{affVrscComId} /* 제휴 대행사 */
+				   </if>
+				   <if test='affComId != null and affComId != ""'>
+					   AND o.aff_com_id = #{affComId}		 	/* 판매 대행사 */
+				   </if>
+				   <if test='clmDtStart != null and clmDtStart != "" and clmDtEnd != null and clmDtEnd != ""'>
+					   AND (pr.rfd_requst_dt <![CDATA[>=]]> to_date(#{clmDtStart}, 'YYYY-MM-DD')) and (pr.rfd_requst_dt <![CDATA[<=]]> to_date(#{clmDtEnd},'YYYY-MM-DD') + 1)
+				   </if>
+				   <if test="clmTpCd != null and clmTpCd !=''">
+					   AND c.clm_tp_cd = #{clmTpCd}
+				   </if>
+				   <if test="clmStatCd != null and clmStatCd != ''">
+					   AND c.clm_stat_cd = #{clmStatCd}
+				   </if>
+				   <if test="rfdStatCd != null and rfdStatCd != ''">
+					   AND pr.rfd_stat_cd = #{rfdStatCd}
+				   </if>
+					<if test='payMnCd != null and payMnCd != ""'>
+						AND pr.RFD_TP_CD in
+						<foreach collection="payMnCdArr" item="item" separator="," open="(" close=")" index="idx">
+							 #{item}
+						</foreach>
+					</if>
+				   <if test="bnkNm != null and bnkNm != ''">
+					   AND p.bnk_nm = #{bnkNm}
+				   </if>
+				   <if test="acnthldrNm != null and acnthldrNm != ''">
+					   AND p.acnthldr_nm = #{acnthldrNm}
+				   </if>
+				   <if test="tel != null and tel != ''">
+					   AND (o.CSTMR_MOBIL_NATION_NO || o.CSTMR_MOBIL_AREA_NO || o.CSTMR_MOBIL_TLOF_NO || o.CSTMR_MOBIL_TLOF_WTHN_NO = REPLACE(REPLACE(#{tel}, ' ',''),'-',''))
+				   </if>
+				   <if test="cstmrNm != null and cstmrNm != ''">
+					   AND o.cstmr_nm = #{cstmrNm}
+				   </if>
+				   <if test="addrseNm != null and addrseNm != ''">
+					   AND EXISTS (SELECT 1 FROM lgs_dlvsp WHERE ord_no=r.ord_no AND clm_no = r.clm_no AND ADDRSE_NM = #{addrseNm})
+				   </if>
+				   <!-- [#48750][개발] 불량상품 고객에 대한 교환/반품 Process 개선 요청 -->
+		           <if test="clmPreprogrsSectCd != null and clmPreprogrsSectCd != ''">
+				 	   AND c.CLM_PREPROGRS_SECT_CD in
+				 	   <foreach collection="clmPreprogrsSectCdArr" item="item" separator="," open="(" close=")" index="idx">
+						   #{item}
+					   </foreach>
+				   </if>
+			   </otherwise>
+		   </choose>
+</sql>
+	<select id="selectClaimRefundList" parameterType="com.plgrim.ncp.biz.claim.data.ClaimRefundListSearchDTO" resultType="com.plgrim.ncp.biz.claim.result.ClaimRefundListResult">
+	SELECT /* [claim.refund.xml][selectClaimRefundList][환불관리 조회 CC][Henry] */ 
+	r.clm_no AS clmNo
+	,(CASE
+		 WHEN r.AFF_COM_ORD_NO IS NULL THEN
+		  '자사'
+		 ELSE
+		  CO.COM_NM
+	END) partmalSectCdNm	
+	, r.pay_no AS payNo
+	, r.rfd_turn AS rfdTurn
+	, r.ord_no AS ordNo
+	, '' AS partmalSectCdNm
+	, sm.mall_nm AS mallId
+	, sl.lang_cd_nm AS langCd
+	, r.rfd_requst_dt AS rfdRequstDt
+	, cd3.cd_nm AS clmTpCdNm
+	, cd4.cd_nm AS clmStatCdNm
+	, cd1.cd_nm AS rfdStatCdNm
+	, cd2.cd_nm AS rfdTpCdNm
+	, r.rfd_acnthldr_nm AS rfdAcnthldr
+	, r.rfd_bnk_cd AS rfdBnkCd
+	, r.rfd_bnk_acct_no AS rfdBnkAcctNo
+	, r.udt_dt  AS rfdUdtDt
+	, r.rfd_err_cont AS rfdErrCont
+	, r.stdr_crncy_rfd_amt AS stdrCrncyRfdAmt
+	, r.PAY_CRNCY_RFD_AMT AS rfdAmt
+    , FN_MASKING('FLNM', sa.admin_nm, '', #{maskingYn, jdbcType=VARCHAR}) AS rfdRegter
+	, r.rfd_compt_dt AS rfdComptDt
+	, r.ord_dt
+    , FN_MASKING('FLNM', r.cstmr_nm, '', #{maskingYn, jdbcType=VARCHAR}) AS ordCustNm
+    , FN_MASKING('PHON', (r.CSTMR_MOBIL_NATION_NO ||'-'|| r.CSTMR_MOBIL_AREA_NO ||'-'|| r.CSTMR_MOBIL_TLOF_NO ||'-'|| r.CSTMR_MOBIL_TLOF_WTHN_NO), '', #{maskingYn, jdbcType=VARCHAR}) AS refTel
+	, memo.memo_cont
+	, r.CLM_TP_CD AS clmTpCd
+	, r.acnthldr_nm as acnthldrNm
+	, CLMPRESECT.cd_nm as clmPreprogrsSectCd
+	FROM  
+	(
+		<include refid="com.plgrim.ncp.base.beginPage"/>	
+	    SELECT 
+	        c.clm_no
+	        , pr.pay_no
+	        , pr.rfd_turn
+	        , c.ord_no
+	        , o.mall_id
+	        , o.lang_cd
+	        , pr.rfd_requst_dt
+	        , c.clm_stat_cd
+	        , pr.rfd_stat_cd
+	        , pr.rfd_tp_cd
+	        , pr.rfd_acnthldr_nm
+	        , pr.rfd_bnk_cd
+	        , PKG_CRYPTO.DECRYPT(pr.rfd_bnk_acct_no, 'FNFBNT02-5200001') AS rfd_bnk_acct_no
+	        , pr.udt_dt
+	        , pr.rfd_err_cont
+	        , pr.stdr_crncy_rfd_amt
+	        , pr.PAY_CRNCY_RFD_AMT
+	        , pr.regtr_id
+	        , pr.rfd_compt_dt
+	        , o.ord_dt
+	        , o.cstmr_nm
+	        , o.CSTMR_MOBIL_NATION_NO
+	        , o.CSTMR_MOBIL_AREA_NO
+	        , o.CSTMR_MOBIL_TLOF_NO
+	        , o.CSTMR_MOBIL_TLOF_WTHN_NO
+	        , C.CLM_TP_CD
+	        , p.acnthldr_nm
+	        , p.PG_SECT_CD
+	        , o.AFF_COM_ID
+	        , o.AFF_VRSC_COM_ID
+	        , o.AFF_COM_ORD_NO
+	        , C.CLM_PREPROGRS_SECT_CD  /* 클레임 선진행 구분 코드 */
+	    FROM clm c
+	    JOIN ord o ON (c.ord_no = o.ord_no and c.CLM_TP_CD <![CDATA[<>]]> 'DRT_EXCHG' and c.CLM_TP_CD <![CDATA[<>]]> 'OPT_MOD')
+	    JOIN pay p ON (p.ord_no=c.ord_no AND p.clm_no = c.clm_no AND p.PAY_TP_CD = 'CLM')
+	    JOIN pay_rfd pr on (p.pay_no = pr.pay_no) 
+	    WHERE 1=1	    
+		<include refid="com.plgrim.ncp.biz.claim.refund.whereClm"/>
+		order by pr.rfd_requst_dt desc	    
+		<include refid="com.plgrim.ncp.base.endPage"/>	    
+	    
+	) r
+	  LEFT OUTER JOIN sys_mall sm ON (r.mall_id = sm.mall_id)
+	  LEFT OUTER JOIN sys_lang sl ON (r.lang_cd = sl.lang_cd)
+	  LEFT OUTER JOIN mv_sys_cd cd1 ON (r.rfd_stat_cd = cd1.CD and cd1.UPPER_CD = 'RFD_STAT' and cd1.LANG_CD = 'KOR')
+	  LEFT OUTER JOIN mv_sys_cd cd2 ON (r.rfd_tp_cd = cd2.CD and cd2.UPPER_CD = 'RFD_TP' and cd2.LANG_CD = 'KOR')    
+	  LEFT OUTER JOIN mv_sys_cd cd3 ON (r.CLM_TP_CD = cd3.CD and cd3.UPPER_CD = 'CLM_TP' and cd3.LANG_CD = 'KOR')
+	  LEFT OUTER JOIN mv_sys_cd cd4 ON (r.CLM_STAT_CD = cd4.CD and  cd4.UPPER_CD = 'CLM_STAT' and cd4.LANG_CD = 'KOR')
+	  LEFT OUTER JOIN MV_SYS_CD CLMPRESECT ON (CLMPRESECT.CD = r.CLM_PREPROGRS_SECT_CD AND CLMPRESECT.UPPER_CD = 'CLM_PREPROGRS_SECT' AND CLMPRESECT.LANG_CD = 'KOR')
+	  LEFT OUTER JOIN COM CO ON (CO.COM_ID = r.AFF_COM_ID)
+	  LEFT OUTER JOIN COM AFFCO ON (AFFCO.COM_ID = r.AFF_VRSC_COM_ID)	  
+	  LEFT OUTER JOIN sys_admin sa ON (sa.admin_id = r.regtr_id)
+	  LEFT OUTER JOIN (SELECT ccm.clm_no, LISTAGG(ccm.memo_cont, ',') WITHIN GROUP (ORDER BY ccm.memo_cont) AS memo_cont
+	                   FROM cso_cnslt_memo ccm
+	                   WHERE ccm.MEMO_TP_CD = 'CLM' GROUP BY ccm.clm_no) memo ON (memo.clm_no = r.clm_no)
+	</select>
+
+	<select id="selectClaimRefundListTotal" parameterType="com.plgrim.ncp.biz.claim.data.ClaimRefundListSearchDTO" resultType="long">
+	    SELECT /* [claim.refund.xml][com.plgrim.ncp.biz.claim.delay.selectClaimRefundListTotal][클레임리스트 조회][Aether] */
+			count(1) 
+	    FROM clm c
+	    JOIN ord o ON (c.ord_no = o.ord_no and c.CLM_TP_CD <![CDATA[<>]]> 'DRT_EXCHG' and c.CLM_TP_CD <![CDATA[<>]]> 'OPT_MOD')
+	    JOIN pay p ON (p.ord_no=c.ord_no AND p.clm_no = c.clm_no AND p.PAY_TP_CD = 'CLM')
+	    JOIN pay_rfd pr on (p.pay_no = pr.pay_no) 
+	    WHERE 1=1	    
+		<include refid="com.plgrim.ncp.biz.claim.refund.whereClm"/>
+	</select>
+</mapper>

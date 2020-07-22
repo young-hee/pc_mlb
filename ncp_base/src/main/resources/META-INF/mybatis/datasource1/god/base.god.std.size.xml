@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodStdSize" parameterType="godStdSize" resultType="godStdSize">
+		SELECT /* com.plgrim.ncp.base.selectGodStdSize		Generator(Generator)	2018-04-19 */
+			   STD_SIZE_SECT_CD
+			 , STD_SIZE_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_STD_SIZE
+		 WHERE 1 = 1
+	   	   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodStdSize" parameterType="godStdSize">
+		UPDATE /* com.plgrim.ncp.base.updateGodStdSize		Generator(Generator)	2018-04-19 */
+		GOD_STD_SIZE SET
+			   SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , REGTR_ID = #{regtrId,jdbcType=VARCHAR}
+			 , REG_DT = #{regDt,jdbcType=DATE}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = #{udtDt,jdbcType=DATE}
+		 WHERE 1 = 1
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodStdSize" parameterType="godStdSize">
+		INSERT /* com.plgrim.ncp.base.insertGodStdSize		Generator(Generator)	2018-04-19 */
+		INTO   GOD_STD_SIZE (
+			   STD_SIZE_SECT_CD
+			 , STD_SIZE_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stdSizeSectCd,jdbcType=VARCHAR}
+			 , #{stdSizeCd,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , #{regDt,jdbcType=DATE}
+			 , #{udterId,jdbcType=VARCHAR}
+			 , #{udtDt,jdbcType=DATE}
+        )
+    </insert>
+
+    <delete id="deleteGodStdSize" parameterType="godStdSize">
+		DELETE /* com.plgrim.ncp.base.deleteGodStdSize		Generator(Generator)	2018-04-19 */
+		  FROM GOD_STD_SIZE
+		 WHERE 1 = 1
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

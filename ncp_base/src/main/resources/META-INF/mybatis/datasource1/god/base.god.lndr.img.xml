@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodLndrImg" parameterType="godLndrImg" resultType="godLndrImg">
+		SELECT /* com.plgrim.ncp.base.selectGodLndrImg		Generator(Generator)	2018-05-27 */
+			   LNDR_CD
+			 , LANG_CD
+			 , BRND_GRP_ID
+			 , LNDR_IMG_TURN
+			 , LNDR_IMG_USE_YN
+			 , LNDR_IMG_FILE_URL
+			 , LNDR_IMG_ALTRTV_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_LNDR_IMG
+		 WHERE 1 = 1
+	   	   AND LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+		   AND LNDR_IMG_TURN = #{lndrImgTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodLndrImg" parameterType="godLndrImg">
+		UPDATE /* com.plgrim.ncp.base.updateGodLndrImg		Generator(Generator)	2018-05-27 */
+		GOD_LNDR_IMG SET
+			   LNDR_IMG_USE_YN = #{lndrImgUseYn,jdbcType=VARCHAR}
+			 , LNDR_IMG_FILE_URL = #{lndrImgFileUrl,jdbcType=VARCHAR}
+			 , LNDR_IMG_ALTRTV_CONT = #{lndrImgAltrtvCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+		   AND LNDR_IMG_TURN = #{lndrImgTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodLndrImg" parameterType="godLndrImg">
+		INSERT /* com.plgrim.ncp.base.insertGodLndrImg		Generator(Generator)	2018-05-27 */
+		INTO   GOD_LNDR_IMG (
+			   LNDR_CD
+			 , LANG_CD
+			 , BRND_GRP_ID
+			 , LNDR_IMG_TURN
+			 , LNDR_IMG_USE_YN
+			 , LNDR_IMG_FILE_URL
+			 , LNDR_IMG_ALTRTV_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{lndrCd,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{brndGrpId,jdbcType=VARCHAR}
+			 , #{lndrImgTurn,jdbcType=NUMERIC}
+			 , #{lndrImgUseYn,jdbcType=VARCHAR}
+			 , #{lndrImgFileUrl,jdbcType=VARCHAR}
+			 , #{lndrImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodLndrImg" parameterType="godLndrImg">
+		DELETE /* com.plgrim.ncp.base.deleteGodLndrImg		Generator(Generator)	2018-05-27 */
+		  FROM GOD_LNDR_IMG
+		 WHERE 1 = 1
+		   AND LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+		   AND LNDR_IMG_TURN = #{lndrImgTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

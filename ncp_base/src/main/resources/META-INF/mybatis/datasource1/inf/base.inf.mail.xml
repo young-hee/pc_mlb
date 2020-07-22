@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfMail" parameterType="infMail" resultType="infMail">
+		SELECT /* com.plgrim.ncp.base.selectInfMail		Generator(Generator)	2018-07-18 */
+			   MAIL_SN
+			 , MAIL_EVT_TP_CD
+			 , MAIL_EVT_OCCUR_DT
+			 , RETRN_MAIL_ID
+			 , MAIL_ID
+			 , MALL_EMAIL
+			 , MBR_EMAIL
+			 , SES_TMPLAT_NM
+			 , SES_TMPLAT_CONT
+			 , MAIL_SJ
+			 , MAIL_CONT
+			 , MAIL_CONT_HTML
+			 , MAIL_SND_DT
+			 , RETRN_MAIL_TP_CD
+			 , RETRN_MAIL_DETAIL_TP_CD
+			 , DSCNTT_MAIL_TP_CD
+			 , REJECT_RESN_CONT
+			 , FAILR_RESN_CONT
+			 , MAIL_READNG_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_MAIL
+		 WHERE 1 = 1
+	   	   AND MAIL_SN = #{mailSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateInfMail" parameterType="infMail">
+		UPDATE /* com.plgrim.ncp.base.updateInfMail		Generator(Generator)	2018-07-18 */
+		INF_MAIL SET
+			   MAIL_EVT_TP_CD = #{mailEvtTpCd,jdbcType=VARCHAR}
+			 , MAIL_EVT_OCCUR_DT = #{mailEvtOccurDt,jdbcType=TIMESTAMP}
+			 , RETRN_MAIL_ID = #{retrnMailId,jdbcType=VARCHAR}
+			 , MAIL_ID = #{mailId,jdbcType=VARCHAR}
+			 , MALL_EMAIL = #{mallEmail,jdbcType=VARCHAR}
+			 , MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+			 , SES_TMPLAT_NM = #{sesTmplatNm,jdbcType=VARCHAR}
+			 , SES_TMPLAT_CONT = #{sesTmplatCont,jdbcType=VARCHAR}
+			 , MAIL_SJ = #{mailSj,jdbcType=VARCHAR}
+			 , MAIL_CONT = #{mailCont,jdbcType=VARCHAR}
+			 , MAIL_CONT_HTML = #{mailContHtml,jdbcType=CLOB}
+			 , MAIL_SND_DT = #{mailSndDt,jdbcType=TIMESTAMP}
+			 , RETRN_MAIL_TP_CD = #{retrnMailTpCd,jdbcType=VARCHAR}
+			 , RETRN_MAIL_DETAIL_TP_CD = #{retrnMailDetailTpCd,jdbcType=VARCHAR}
+			 , DSCNTT_MAIL_TP_CD = #{dscnttMailTpCd,jdbcType=VARCHAR}
+			 , REJECT_RESN_CONT = #{rejectResnCont,jdbcType=VARCHAR}
+			 , FAILR_RESN_CONT = #{failrResnCont,jdbcType=VARCHAR}
+			 , MAIL_READNG_DT = #{mailReadngDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MAIL_SN = #{mailSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertInfMail" parameterType="infMail">
+		INSERT /* com.plgrim.ncp.base.insertInfMail		Generator(Generator)	2018-07-18 */
+		INTO   INF_MAIL (
+			   MAIL_SN
+			 , MAIL_EVT_TP_CD
+			 , MAIL_EVT_OCCUR_DT
+			 , RETRN_MAIL_ID
+			 , MAIL_ID
+			 , MALL_EMAIL
+			 , MBR_EMAIL
+			 , SES_TMPLAT_NM
+			 , SES_TMPLAT_CONT
+			 , MAIL_SJ
+			 , MAIL_CONT
+			 , MAIL_CONT_HTML
+			 , MAIL_SND_DT
+			 , RETRN_MAIL_TP_CD
+			 , RETRN_MAIL_DETAIL_TP_CD
+			 , DSCNTT_MAIL_TP_CD
+			 , REJECT_RESN_CONT
+			 , FAILR_RESN_CONT
+			 , MAIL_READNG_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mailSn,jdbcType=NUMERIC}
+			 , #{mailEvtTpCd,jdbcType=VARCHAR}
+			 , #{mailEvtOccurDt,jdbcType=TIMESTAMP}
+			 , #{retrnMailId,jdbcType=VARCHAR}
+			 , #{mailId,jdbcType=VARCHAR}
+			 , #{mallEmail,jdbcType=VARCHAR}
+			 , #{mbrEmail,jdbcType=VARCHAR}
+			 , #{sesTmplatNm,jdbcType=VARCHAR}
+			 , #{sesTmplatCont,jdbcType=VARCHAR}
+			 , #{mailSj,jdbcType=VARCHAR}
+			 , #{mailCont,jdbcType=VARCHAR}
+			 , #{mailContHtml,jdbcType=CLOB}
+			 , #{mailSndDt,jdbcType=TIMESTAMP}
+			 , #{retrnMailTpCd,jdbcType=VARCHAR}
+			 , #{retrnMailDetailTpCd,jdbcType=VARCHAR}
+			 , #{dscnttMailTpCd,jdbcType=VARCHAR}
+			 , #{rejectResnCont,jdbcType=VARCHAR}
+			 , #{failrResnCont,jdbcType=VARCHAR}
+			 , #{mailReadngDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfMail" parameterType="infMail">
+		DELETE /* com.plgrim.ncp.base.deleteInfMail		Generator(Generator)	2018-07-18 */
+		  FROM INF_MAIL
+		 WHERE 1 = 1
+		   AND MAIL_SN = #{mailSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

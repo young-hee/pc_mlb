@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoCnsltTmplat" parameterType="csoCnsltTmplat" resultType="csoCnsltTmplat">
+		SELECT /* com.plgrim.ncp.base.selectCsoCnsltTmplat		Generator(Generator)	2018-05-23 */
+			   CNSLT_TMPLAT_SN
+			 , MALL_ID
+			 , LANG_CD
+			 , CNSLT_TMPLAT_NM
+			 , USE_YN
+			 , CNSLT_TMPLAT_KND_CD
+			 , INQ_TP_CD
+			 , INQ_DETAIL_TP_CD
+			 , MTM_INQ_ANS_TP_CD
+			 , MTM_INQ_ANS_DETAIL_TP_CD
+			 , TRANS_TGT_CD
+			 , CHRG_JOB_TP_CD
+			 , TRANS_REQUST_TP_CD
+			 , CNSLT_TMPLAT_SJ
+			 , CNSLT_TMPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CNSLT_TMPLAT
+		 WHERE 1 = 1
+	   	   AND CNSLT_TMPLAT_SN = #{cnsltTmplatSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoCnsltTmplat" parameterType="csoCnsltTmplat">
+		UPDATE /* com.plgrim.ncp.base.updateCsoCnsltTmplat		Generator(Generator)	2018-05-23 */
+		CSO_CNSLT_TMPLAT SET
+			   MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , CNSLT_TMPLAT_NM = #{cnsltTmplatNm,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , CNSLT_TMPLAT_KND_CD = #{cnsltTmplatKndCd,jdbcType=VARCHAR}
+			 , INQ_TP_CD = #{inqTpCd,jdbcType=VARCHAR}
+			 , INQ_DETAIL_TP_CD = #{inqDetailTpCd,jdbcType=VARCHAR}
+			 , MTM_INQ_ANS_TP_CD = #{mtmInqAnsTpCd,jdbcType=VARCHAR}
+			 , MTM_INQ_ANS_DETAIL_TP_CD = #{mtmInqAnsDetailTpCd,jdbcType=VARCHAR}
+			 , TRANS_TGT_CD = #{transTgtCd,jdbcType=VARCHAR}
+			 , CHRG_JOB_TP_CD = #{chrgJobTpCd,jdbcType=VARCHAR}
+			 , TRANS_REQUST_TP_CD = #{transRequstTpCd,jdbcType=VARCHAR}
+			 , CNSLT_TMPLAT_SJ = #{cnsltTmplatSj,jdbcType=VARCHAR}
+			 , CNSLT_TMPLAT_CONT = #{cnsltTmplatCont,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CNSLT_TMPLAT_SN = #{cnsltTmplatSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoCnsltTmplat" parameterType="csoCnsltTmplat">
+		INSERT /* com.plgrim.ncp.base.insertCsoCnsltTmplat		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CNSLT_TMPLAT (
+			   CNSLT_TMPLAT_SN
+			 , MALL_ID
+			 , LANG_CD
+			 , CNSLT_TMPLAT_NM
+			 , USE_YN
+			 , CNSLT_TMPLAT_KND_CD
+			 , INQ_TP_CD
+			 , INQ_DETAIL_TP_CD
+			 , MTM_INQ_ANS_TP_CD
+			 , MTM_INQ_ANS_DETAIL_TP_CD
+			 , TRANS_TGT_CD
+			 , CHRG_JOB_TP_CD
+			 , TRANS_REQUST_TP_CD
+			 , CNSLT_TMPLAT_SJ
+			 , CNSLT_TMPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{cnsltTmplatSn,jdbcType=NUMERIC}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{cnsltTmplatNm,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{cnsltTmplatKndCd,jdbcType=VARCHAR}
+			 , #{inqTpCd,jdbcType=VARCHAR}
+			 , #{inqDetailTpCd,jdbcType=VARCHAR}
+			 , #{mtmInqAnsTpCd,jdbcType=VARCHAR}
+			 , #{mtmInqAnsDetailTpCd,jdbcType=VARCHAR}
+			 , #{transTgtCd,jdbcType=VARCHAR}
+			 , #{chrgJobTpCd,jdbcType=VARCHAR}
+			 , #{transRequstTpCd,jdbcType=VARCHAR}
+			 , #{cnsltTmplatSj,jdbcType=VARCHAR}
+			 , #{cnsltTmplatCont,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoCnsltTmplat" parameterType="csoCnsltTmplat">
+		DELETE /* com.plgrim.ncp.base.deleteCsoCnsltTmplat		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CNSLT_TMPLAT
+		 WHERE 1 = 1
+		   AND CNSLT_TMPLAT_SN = #{cnsltTmplatSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

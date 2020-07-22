@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrLoginCookieLog" parameterType="mbrLoginCookieLog" resultType="mbrLoginCookieLog">
+		SELECT /* com.plgrim.ncp.base.selectMbrLoginCookieLog		Generator(Generator)	2018-05-23 */
+			   COOKIE_ID
+			 , MBR_NO
+			 , TOKN_ID
+			 , LAST_LOGIN_DT
+		  FROM MBR_LOGIN_COOKIE_LOG
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateMbrLoginCookieLog" parameterType="mbrLoginCookieLog">
+		UPDATE /* com.plgrim.ncp.base.updateMbrLoginCookieLog		Generator(Generator)	2018-05-23 */
+		MBR_LOGIN_COOKIE_LOG SET
+			   COOKIE_ID = #{cookieId,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , TOKN_ID = #{toknId,jdbcType=VARCHAR}
+			 , LAST_LOGIN_DT = #{lastLoginDt,jdbcType=TIMESTAMP}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertMbrLoginCookieLog" parameterType="mbrLoginCookieLog">
+		INSERT /* com.plgrim.ncp.base.insertMbrLoginCookieLog		Generator(Generator)	2018-05-23 */
+		INTO   MBR_LOGIN_COOKIE_LOG (
+			   COOKIE_ID
+			 , MBR_NO
+			 , TOKN_ID
+			 , LAST_LOGIN_DT
+		)
+		VALUES (
+			   #{cookieId,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{toknId,jdbcType=VARCHAR}
+			 , #{lastLoginDt,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <delete id="deleteMbrLoginCookieLog" parameterType="mbrLoginCookieLog">
+		DELETE /* com.plgrim.ncp.base.deleteMbrLoginCookieLog		Generator(Generator)	2018-05-23 */
+		  FROM MBR_LOGIN_COOKIE_LOG
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

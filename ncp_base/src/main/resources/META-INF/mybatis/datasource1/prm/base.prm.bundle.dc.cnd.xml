@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmBundleDcCnd" parameterType="prmBundleDcCnd" resultType="prmBundleDcCnd">
+		SELECT /* com.plgrim.ncp.base.selectPrmBundleDcCnd		Generator(Generator)	2018-05-23 */
+			   PRM_NO
+			 , BUNDLE_DC_CND_TURN
+			 , BUNDLE_DC_CND_MIN_QTY
+			 , BUNDLE_DC_CND_MAX_QTY
+			 , BUNDLE_DC_SECT_CD
+			 , BUNDLE_DC_AMT
+			 , BUNDLE_DC_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM_BUNDLE_DC_CND
+		 WHERE 1 = 1
+	   	   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND BUNDLE_DC_CND_TURN = #{bundleDcCndTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updatePrmBundleDcCnd" parameterType="prmBundleDcCnd">
+		UPDATE /* com.plgrim.ncp.base.updatePrmBundleDcCnd		Generator(Generator)	2018-05-23 */
+		PRM_BUNDLE_DC_CND SET
+			   BUNDLE_DC_CND_MIN_QTY = #{bundleDcCndMinQty,jdbcType=NUMERIC}
+			 , BUNDLE_DC_CND_MAX_QTY = #{bundleDcCndMaxQty,jdbcType=NUMERIC}
+			 , BUNDLE_DC_SECT_CD = #{bundleDcSectCd,jdbcType=VARCHAR}
+			 , BUNDLE_DC_AMT = #{bundleDcAmt,jdbcType=NUMERIC}
+			 , BUNDLE_DC_RT = #{bundleDcRt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND BUNDLE_DC_CND_TURN = #{bundleDcCndTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertPrmBundleDcCnd" parameterType="prmBundleDcCnd">
+		INSERT /* com.plgrim.ncp.base.insertPrmBundleDcCnd		Generator(Generator)	2018-05-23 */
+		INTO   PRM_BUNDLE_DC_CND (
+			   PRM_NO
+			 , BUNDLE_DC_CND_TURN
+			 , BUNDLE_DC_CND_MIN_QTY
+			 , BUNDLE_DC_CND_MAX_QTY
+			 , BUNDLE_DC_SECT_CD
+			 , BUNDLE_DC_AMT
+			 , BUNDLE_DC_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{prmNo,jdbcType=VARCHAR}
+			 , #{bundleDcCndTurn,jdbcType=NUMERIC}
+			 , #{bundleDcCndMinQty,jdbcType=NUMERIC}
+			 , #{bundleDcCndMaxQty,jdbcType=NUMERIC}
+			 , #{bundleDcSectCd,jdbcType=VARCHAR}
+			 , #{bundleDcAmt,jdbcType=NUMERIC}
+			 , #{bundleDcRt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrmBundleDcCnd" parameterType="prmBundleDcCnd">
+		DELETE /* com.plgrim.ncp.base.deletePrmBundleDcCnd		Generator(Generator)	2018-05-23 */
+		  FROM PRM_BUNDLE_DC_CND
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND BUNDLE_DC_CND_TURN = #{bundleDcCndTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

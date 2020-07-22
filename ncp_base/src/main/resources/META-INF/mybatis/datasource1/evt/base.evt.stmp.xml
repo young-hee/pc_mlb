@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtStmp" parameterType="evtStmp" resultType="evtStmp">
+		SELECT /* com.plgrim.ncp.base.selectEvtStmp		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , FREE_GIFT_TURN
+			 , MBR_NO
+			 , STMP_DT
+			 , EVT_PARTCPTN_SN
+			 , APL_TURN
+			 , PARTCPTN_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_STMP
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND STMP_DT = #{stmpDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateEvtStmp" parameterType="evtStmp">
+		UPDATE /* com.plgrim.ncp.base.updateEvtStmp		Generator(Generator)	2018-05-23 */
+		EVT_STMP SET
+			   EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+			 , PARTCPTN_CONT = #{partcptnCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND STMP_DT = #{stmpDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertEvtStmp" parameterType="evtStmp">
+		INSERT /* com.plgrim.ncp.base.insertEvtStmp		Generator(Generator)	2018-05-23 */
+		INTO   EVT_STMP (
+			   EVT_NO
+			 , FREE_GIFT_TURN
+			 , MBR_NO
+			 , STMP_DT
+			 , EVT_PARTCPTN_SN
+			 , APL_TURN
+			 , PARTCPTN_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{freeGiftTurn,jdbcType=NUMERIC}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{stmpDt,jdbcType=TIMESTAMP}
+			 , #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , #{aplTurn,jdbcType=NUMERIC}
+			 , #{partcptnCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtStmp" parameterType="evtStmp">
+		DELETE /* com.plgrim.ncp.base.deleteEvtStmp		Generator(Generator)	2018-05-23 */
+		  FROM EVT_STMP
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND STMP_DT = #{stmpDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

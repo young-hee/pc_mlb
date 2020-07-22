@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.cstemplate">
+
+	<resultMap id="csTemplateResult" type="com.plgrim.ncp.biz.callcenter.result.CsTemplateResult">
+		<result property="cnsltTmplatSn" column="CNSLT_TMPLAT_SN" />
+		<result property="mallId" column="MALL_ID" />
+		<result property="mallNm" column="MALL_NM" />
+		<result property="langCd" column="LANG_CD" />
+		<result property="langNm" column="LANG_NM" />
+		<result property="cnsltTmplatNm" column="CNSLT_TMPLAT_NM" />
+		<result property="useYn" column="USE_YN" />
+		<result property="cnsltTmplatKndCd" column="CNSLT_TMPLAT_KND_CD" />
+		<result property="cnsltTmplatKndNm" column="CNSLT_TMPLAT_KND_NM" />
+		<result property="inqTpCd" column="INQ_TP_CD" />
+		<result property="inqTpNm" column="INQ_TP_NM" />
+		<result property="inqDetailTpCd" column="INQ_DETAIL_TP_CD" />
+		<result property="inqDetailTpNm" column="INQ_DETAIL_TP_NM" />
+		<result property="mtmInqAnsTpCd" column="MTM_INQ_ANS_TP_CD" />
+		<result property="mtmInqAnsTpNm" column="MTM_INQ_ANS_TP_NM" />
+		<result property="mtmInqAnsDetailTpCd" column="MTM_INQ_ANS_DETAIL_TP_CD" />
+		<result property="mtmInqAnsDetailTpNm" column="MTM_INQ_ANS_DETAIL_TP_NM" />
+		<result property="transTgtCd" column="TRANS_TGT_CD" />
+		<result property="transTgtNm" column="TRANS_TGT_NM" />
+		<result property="chrgJobTpCd" column="CHRG_JOB_TP_CD" />
+		<result property="chrgJobTpNm" column="CHRG_JOB_TP_NM" />
+		<result property="transRequstTpCd" column="TRANS_REQUST_TP_CD" />
+		<result property="transRequstTpNm" column="TRANS_REQUST_TP_NM" />
+		<result property="cnsltTmplatSj" column="CNSLT_TMPLAT_SJ" />
+		<result property="cnsltTmplatCont" column="CNSLT_TMPLAT_CONT" />
+		<result property="regtrId" column="REGTR_ID" />
+		<result property="regtrNm" column="REGTR_NM" />
+		<result property="regDt" column="REG_DT" />
+		<result property="udterId" column="UDTER_ID" />
+		<result property="udterNm" column="UDTER_NM" />
+		<result property="udtDt" column="UDT_DT " />
+	</resultMap>
+	
+	<resultMap id="emailSmsTemplateResult" type="com.plgrim.ncp.biz.callcenter.result.EmailSmsTemplateResult">
+		<result property="smsEmailTmplatSn" column="SMS_EMAIL_TMPLAT_SN" />
+		<result property="mallId" column="MALL_ID" />
+		<result property="mallNm" column="MALL_NM" />
+		<result property="langCd" column="LANG_CD" />
+		<result property="langNm" column="LANG_NM" />
+		<result property="smsEmailTmplatNm" column="SMS_EMAIL_TMPLAT_NM" />
+		<result property="useYn" column="USE_YN" />
+		<result property="smsEmailTmplatKndCd" column="SMS_EMAIL_TMPLAT_KND_CD" />
+		<result property="smsEmailTmplatKndNm" column="SMS_EMAIL_TMPLAT_KND_NM" />
+		<result property="smsClfcCd" column="SMS_CLFC_CD" />
+		<result property="smsClfcNm" column="SMS_CLFC_NM" />
+		<result property="smsClfcDetailCd" column="SMS_CLFC_DETAIL_CD" />
+		<result property="smsClfcDetailNm" column="SMS_CLFC_DETAIL_NM" />
+		<result property="emailClfcCd" column="EMAIL_CLFC_CD" />
+		<result property="emailClfcNm" column="EMAIL_CLFC_NM" />
+		<result property="emailClfcDetailCd" column="EMAIL_CLFC_DETAIL_CD" />
+		<result property="emailClfcDetailNm" column="EMAIL_CLFC_DETAIL_NM" />
+		<result property="smsEmailTmplatSj" column="SMS_EMAIL_TMPLAT_SJ" />
+		<result property="smsEmailTmplatCont" column="SMS_EMAIL_TMPLAT_CONT" />
+		<result property="regtrId" column="REGTR_ID" />
+		<result property="regtrNm" column="REGTR_NM" />
+		<result property="regDt" column="REG_DT" />
+		<result property="udterId" column="UDTER_ID" />
+		<result property="udterNm" column="UDTER_NM" />
+		<result property="udtDt" column="UDT_DT" />
+	</resultMap>
+
+	<insert id="insertCsTemplate" parameterType="com.plgrim.ncp.biz.callcenter.data.CsTemplateDTO">
+	    INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoCnsltTmplat jackie 20150514 */  
+	    INTO CSO_CNSLT_TMPLAT
+		(
+	        CNSLT_TMPLAT_SN
+	       ,MALL_ID
+	       ,LANG_CD
+	       ,CNSLT_TMPLAT_NM
+	       ,USE_YN
+	       ,CNSLT_TMPLAT_KND_CD
+	       ,INQ_TP_CD
+	       ,INQ_DETAIL_TP_CD
+	       ,MTM_INQ_ANS_TP_CD
+	       ,MTM_INQ_ANS_DETAIL_TP_CD
+	       ,TRANS_TGT_CD
+	       ,CHRG_JOB_TP_CD
+	       ,TRANS_REQUST_TP_CD
+	       ,CNSLT_TMPLAT_SJ
+	       ,CNSLT_TMPLAT_CONT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{cnsltTmplatSn,jdbcType=NUMERIC}
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{langCd,jdbcType=VARCHAR}
+	       ,#{cnsltTmplatNm,jdbcType=VARCHAR}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{cnsltTmplatKndCd,jdbcType=VARCHAR}
+	       ,#{inqTpCd,jdbcType=VARCHAR}
+	       ,#{inqDetailTpCd,jdbcType=VARCHAR}
+	       ,#{mtmInqAnsTpCd,jdbcType=VARCHAR}
+	       ,#{mtmInqAnsDetailTpCd,jdbcType=VARCHAR}
+	       ,#{transTgtCd,jdbcType=VARCHAR}
+	       ,#{chrgJobTpCd,jdbcType=VARCHAR}
+	       ,#{transRequstTpCd,jdbcType=VARCHAR}
+	       ,#{cnsltTmplatSj,jdbcType=VARCHAR}
+	       ,#{cnsltTmplatCont,jdbcType=CLOB}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+    </insert>
+    
+    <select id="selectCsTemplateList" parameterType="com.plgrim.ncp.biz.callcenter.data.CsTemplateSearchDTO" resultMap="csTemplateResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT	cct.CNSLT_TMPLAT_SN
+    	        , mall.mall_nm
+		        , (SELECT cd_nm FROM sys_cd WHERE cd=cct.lang_cd) AS lang_nm
+		        , cct.CNSLT_TMPLAT_NM
+		        , cct.USE_YN
+		        , cct.CNSLT_TMPLAT_KND_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.CNSLT_TMPLAT_KND_CD) AS CNSLT_TMPLAT_KND_NM
+		        , cct.INQ_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.INQ_TP_CD) AS INQ_TP_NM
+		        , cct.INQ_DETAIL_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.INQ_DETAIL_TP_CD) AS INQ_DETAIL_TP_NM
+		        , cct.MTM_INQ_ANS_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.MTM_INQ_ANS_TP_CD) AS MTM_INQ_ANS_TP_NM
+		        , cct.MTM_INQ_ANS_DETAIL_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.MTM_INQ_ANS_DETAIL_TP_CD) AS MTM_INQ_ANS_DETAIL_TP_NM
+		        , cct.TRANS_TGT_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.TRANS_TGT_CD) AS TRANS_TGT_NM
+		        , cct.CHRG_JOB_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.CHRG_JOB_TP_CD) AS CHRG_JOB_TP_NM
+		        , cct.TRANS_REQUST_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cct.TRANS_REQUST_TP_CD) AS TRANS_REQUST_TP_NM
+		        , cct.CNSLT_TMPLAT_SJ
+		        , cct.CNSLT_TMPLAT_CONT
+		        , cct.REGTR_ID
+		        , sa.admin_nm AS regtr_nm
+		        , cct.REG_DT
+		        , cct.UDTER_ID
+		        , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = cct.UDTER_ID) AS UDTER_NM
+		        , cct.UDT_DT 
+		  FROM	CSO_CNSLT_TMPLAT cct
+		  LEFT OUTER JOIN sys_mall mall ON (cct.mall_id = mall.mall_id)
+		  LEFT OUTER JOIN sys_admin sa ON (cct.regtr_id = sa.admin_id)
+		 WHERE	1=1
+		 <if test="cnsltTmplatKndCd != '' and cnsltTmplatKndCd != null">
+			 AND cct.cnslt_tmplat_knd_cd = #{cnsltTmplatKndCd}
+		 </if>
+		<if test="mallId != null and mallId != ''">
+			AND cct.MALL_ID = #{mallId}
+		</if>
+		<if test="langCd != null and langCd != ''">
+			AND cct.LANG_CD = #{langCd}
+		</if>
+		<if test="useYn != null and useYn != ''">
+			AND cct.USE_YN = #{useYn}
+		</if>
+
+		<if test="inqTpCd != null and inqTpCd != ''">
+			AND cct.inq_tp_cd = #{inqTpCd}
+		</if>
+		<if test="inqDetailTpCd != null and inqDetailTpCd != ''">
+			AND cct.inq_detail_tp_cd = #{inqDetailTpCd}
+		</if>
+		<if test="cnsltTmplatNm != null and cnsltTmplatNm != ''">
+			AND cct.CNSLT_TMPLAT_NM LIKE '%' || #{cnsltTmplatNm} || '%'
+		</if>
+		 ORDER BY cct.UDT_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    
+    <select id="selectCsTemplateListTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.CsTemplateSearchDTO" resultType="long">
+    	SELECT	COUNT(*)
+		  FROM	CSO_CNSLT_TMPLAT cct
+		 WHERE	1=1
+		<if test="cnsltTmplatKndCd != '' and cnsltTmplatKndCd != null">
+			AND cct.cnslt_tmplat_knd_cd = #{cnsltTmplatKndCd}
+		</if>
+		<if test="mallId != null and mallId != ''">
+			AND cct.MALL_ID = #{mallId}
+		</if>
+		<if test="langCd != null and langCd != ''">
+			AND cct.LANG_CD = #{langCd}
+		</if>
+		<if test="useYn != null and useYn != ''">
+			AND cct.USE_YN = #{useYn}
+		</if>
+
+		<if test="inqTpCd != null and inqTpCd != ''">
+			AND cct.inq_tp_cd = #{inqTpCd}
+		</if>
+		<if test="inqDetailTpCd != null and inqDetailTpCd != ''">
+			AND cct.inq_detail_tp_cd = #{inqDetailTpCd}
+		</if>
+		<if test="cnsltTmplatNm != null and cnsltTmplatNm != ''">
+			AND cct.CNSLT_TMPLAT_NM LIKE '%' || #{cnsltTmplatNm} || '%'
+		</if>
+    </select>
+    
+    <update id="updateCsTemplateGrid" parameterType="com.plgrim.ncp.biz.callcenter.data.CsTemplateGridDTO">
+    	UPDATE  
+        CSO_CNSLT_TMPLAT SET
+                CNSLT_TMPLAT_NM = #{cnsltTmplatNm,jdbcType=VARCHAR}
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     CNSLT_TMPLAT_SN = #{cnsltTmplatSn,jdbcType=NUMERIC}
+    </update>
+    
+    <select id="selectCsTemplateDetail"  parameterType="com.plgrim.ncp.biz.callcenter.data.CsTemplateSearchDTO" resultMap="csTemplateResult">
+    	SELECT	CNSLT_TMPLAT_SN
+		        , MALL_ID
+		        , LANG_CD
+		        , CNSLT_TMPLAT_NM
+		        , USE_YN
+		        , CNSLT_TMPLAT_KND_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = CNSLT_TMPLAT_KND_CD) AS CNSLT_TMPLAT_KND_NM
+		        , INQ_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = INQ_TP_CD) AS INQ_TP_NM
+		        , INQ_DETAIL_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = INQ_DETAIL_TP_CD) AS INQ_DETAIL_TP_NM
+		        , MTM_INQ_ANS_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = MTM_INQ_ANS_TP_CD) AS MTM_INQ_ANS_TP_NM
+		        , MTM_INQ_ANS_DETAIL_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = MTM_INQ_ANS_DETAIL_TP_CD) AS MTM_INQ_ANS_DETAIL_TP_NM
+		        , TRANS_TGT_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = TRANS_TGT_CD) AS TRANS_TGT_NM
+		        , CHRG_JOB_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = CHRG_JOB_TP_CD) AS CHRG_JOB_TP_NM
+		        , TRANS_REQUST_TP_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = TRANS_REQUST_TP_CD) AS TRANS_REQUST_TP_NM
+		        , CNSLT_TMPLAT_SJ
+		        , CNSLT_TMPLAT_CONT
+		        , REGTR_ID
+		        , REG_DT
+		        , UDTER_ID
+		        , UDT_DT 
+		  FROM	CSO_CNSLT_TMPLAT
+		 WHERE	1=1
+		   AND	CNSLT_TMPLAT_SN = #{cnsltTmplatSn}
+    </select>
+    
+    <update id="updateCsTemplate" parameterType="com.plgrim.ncp.biz.callcenter.data.CsTemplateDTO">
+        UPDATE  
+        CSO_CNSLT_TMPLAT SET
+                 MALL_ID = #{mallId,jdbcType=VARCHAR}
+                ,LANG_CD = #{langCd,jdbcType=VARCHAR}
+                ,CNSLT_TMPLAT_NM = #{cnsltTmplatNm,jdbcType=VARCHAR}
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,CNSLT_TMPLAT_KND_CD = #{cnsltTmplatKndCd,jdbcType=VARCHAR}
+                ,INQ_TP_CD = #{inqTpCd,jdbcType=VARCHAR}
+                ,INQ_DETAIL_TP_CD = #{inqDetailTpCd,jdbcType=VARCHAR}
+                ,MTM_INQ_ANS_TP_CD = #{mtmInqAnsTpCd,jdbcType=VARCHAR}
+                ,MTM_INQ_ANS_DETAIL_TP_CD = #{mtmInqAnsDetailTpCd,jdbcType=VARCHAR}
+                ,TRANS_TGT_CD = #{transTgtCd,jdbcType=VARCHAR}
+                ,CHRG_JOB_TP_CD = #{chrgJobTpCd,jdbcType=VARCHAR}
+                ,TRANS_REQUST_TP_CD = #{transRequstTpCd,jdbcType=VARCHAR}
+                ,CNSLT_TMPLAT_SJ = #{cnsltTmplatSj,jdbcType=VARCHAR}
+                ,CNSLT_TMPLAT_CONT = #{cnsltTmplatCont,jdbcType=CLOB}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     CNSLT_TMPLAT_SN = #{cnsltTmplatSn,jdbcType=NUMERIC}
+    </update>
+    
+    <insert id="insertEmailSmsTemplate" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateDTO">
+	    INSERT  
+	    INTO CSO_SMS_EMAIL_TMPLAT
+		(
+	        SMS_EMAIL_TMPLAT_SN
+	       ,MALL_ID
+	       ,LANG_CD
+	       ,SMS_EMAIL_TMPLAT_NM
+	       ,USE_YN
+	       ,SMS_EMAIL_TMPLAT_KND_CD
+	       ,SMS_CLFC_CD
+	       ,SMS_CLFC_DETAIL_CD
+	       ,EMAIL_CLFC_CD
+	       ,EMAIL_CLFC_DETAIL_CD
+	       ,SMS_EMAIL_TMPLAT_SJ
+	       ,SMS_EMAIL_TMPLAT_CONT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{smsEmailTmplatSn,jdbcType=NUMERIC}
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{langCd,jdbcType=VARCHAR}
+	       ,#{smsEmailTmplatNm,jdbcType=VARCHAR}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{smsEmailTmplatKndCd,jdbcType=VARCHAR}
+	       ,#{smsClfcCd,jdbcType=VARCHAR}
+	       ,#{smsClfcDetailCd,jdbcType=VARCHAR}
+	       ,#{emailClfcCd,jdbcType=VARCHAR}
+	       ,#{emailClfcDetailCd,jdbcType=VARCHAR}
+	       ,#{smsEmailTmplatSj,jdbcType=VARCHAR}
+	       ,#{smsEmailTmplatCont,jdbcType=CLOB}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <update id="updateEmailsmsTemplate" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateDTO">
+        UPDATE CSO_SMS_EMAIL_TMPLAT
+		   SET MALL_ID					= #{mallId,jdbcType=VARCHAR}
+		      ,LANG_CD					= #{langCd,jdbcType=VARCHAR}
+		      ,SMS_EMAIL_TMPLAT_NM		= #{smsEmailTmplatNm,jdbcType=VARCHAR}
+		      ,USE_YN					= #{useYn,jdbcType=VARCHAR}
+		      ,SMS_EMAIL_TMPLAT_KND_CD	= #{smsEmailTmplatKndCd,jdbcType=VARCHAR}
+		      ,SMS_CLFC_CD				= #{smsClfcCd,jdbcType=VARCHAR}
+		      ,SMS_CLFC_DETAIL_CD		= #{smsClfcDetailCd,jdbcType=VARCHAR}
+		      ,EMAIL_CLFC_CD			= #{emailClfcCd,jdbcType=VARCHAR}
+		      ,EMAIL_CLFC_DETAIL_CD		= #{emailClfcDetailCd,jdbcType=VARCHAR}
+		      ,SMS_EMAIL_TMPLAT_SJ		= #{smsEmailTmplatSj,jdbcType=VARCHAR}
+		      ,SMS_EMAIL_TMPLAT_CONT	= #{smsEmailTmplatCont,jdbcType=CLOB}
+		      ,UDTER_ID					= #{udterId,jdbcType=VARCHAR}
+		      ,UDT_DT					= SYSDATE
+		 WHERE SMS_EMAIL_TMPLAT_SN 		= #{smsEmailTmplatSn,jdbcType=NUMERIC} 
+    </update>
+    
+    <select id="selectEmailSmsTemplateList" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateSearchDTO" resultMap="emailSmsTemplateResult">
+    	SELECT	cset.SMS_EMAIL_TMPLAT_SN
+    	        , mall.mall_nm
+		        , (SELECT cd_nm FROM sys_cd WHERE cd = cset.lang_cd) AS lang_nm    	
+		        , cset.SMS_EMAIL_TMPLAT_NM
+		        , cset.USE_YN
+		        , cset.SMS_EMAIL_TMPLAT_KND_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cset.SMS_EMAIL_TMPLAT_KND_CD) AS SMS_EMAIL_TMPLAT_KND_NM
+		        , cset.SMS_CLFC_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cset.SMS_CLFC_CD) AS SMS_CLFC_NM
+		        , cset.SMS_CLFC_DETAIL_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cset.SMS_CLFC_DETAIL_CD) AS SMS_CLFC_DETAIL_NM
+		        , cset.EMAIL_CLFC_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cset.EMAIL_CLFC_CD) AS EMAIL_CLFC_NM
+		        , cset.EMAIL_CLFC_DETAIL_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cset.EMAIL_CLFC_DETAIL_CD) AS EMAIL_CLFC_DETAIL_NM
+		        , cset.SMS_EMAIL_TMPLAT_SJ
+		        , cset.SMS_EMAIL_TMPLAT_CONT
+		        , cset.REGTR_ID
+		        , cset.REG_DT
+		        , cset.UDTER_ID
+		        , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE cset.UDTER_ID = ADMIN_ID) AS UDTER_NM
+		        , cset.UDT_DT
+		  FROM	CSO_SMS_EMAIL_TMPLAT cset
+		  LEFT OUTER JOIN sys_mall mall ON (cset.mall_id = mall.mall_id)
+		 WHERE	1=1
+		 <if test="mallId != null and mallId != ''">
+		 	AND cset.MALL_ID = #{mallId}
+		 </if>
+		 <if test="langCd != null and langCd != ''">
+		 	AND cset.LANG_CD = #{langCd}
+		 </if>
+		 <if test="useYn != null and useYn != ''">
+		 	AND cset.USE_YN = #{useYn}
+		 </if>
+		 <if test="smsEmailTmplatKndCd != null and smsEmailTmplatKndCd != ''">
+		   AND cset.SMS_EMAIL_TMPLAT_KND_CD = #{smsEmailTmplatKndCd}
+			<if test="smsEmailTmplatKndCd == 'SMS'">
+				<if test="smsClfcCd != '' and smsClfcCd != null">
+					AND cset.SMS_CLFC_CD = #{smsClfcCd}
+				</if>
+				<if test="smsClfcDetailCd != '' and smsClfcDetailCd != null">
+					AND cset.SMS_CLFC_DETAIL_CD = #{smsClfcDetailCd}
+				</if>
+			</if>
+			<if test="smsEmailTmplatKndCd == 'EMAIL'">
+				<if test="emailClfcCd != '' and emailClfcCd != null">
+					AND cset.EMAIL_CLFC_CD = #{emailClfcCd}
+				</if>
+			</if>
+		</if>
+		 <if test="cnsltTmplatNm != '' and cnsltTmplatNm != null">
+			 AND cset.SMS_EMAIL_TMPLAT_NM LIKE '%' || #{cnsltTmplatNm} || '%'
+		 </if>
+		ORDER BY cset.UDT_DT DESC
+    </select>
+    
+    <select id="selectEmailSmsTemplateListTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateSearchDTO" resultType="long">
+    	SELECT	COUNT(*)
+		  FROM	CSO_SMS_EMAIL_TMPLAT cset
+		 WHERE	1=1
+		 <if test="mallId != null and mallId != ''">
+		 	AND MALL_ID = #{mallId}
+		 </if>
+		 <if test="langCd != null and langCd != ''">
+		 	AND LANG_CD = #{langCd}
+		 </if>
+		 <if test="useYn != null and useYn != ''">
+		 	AND USE_YN = #{useYn}
+		 </if>
+		<if test="smsEmailTmplatKndCd != null and smsEmailTmplatKndCd != ''">
+		   AND cset.SMS_EMAIL_TMPLAT_KND_CD = #{smsEmailTmplatKndCd}
+			<if test="smsEmailTmplatKndCd == 'SMS'">
+				<if test="smsClfcCd != '' and smsClfcCd != null">
+					AND cset.SMS_CLFC_CD = #{smsClfcCd}
+				</if>
+				<if test="smsClfcDetailCd != '' and smsClfcDetailCd != null">
+					AND cset.SMS_CLFC_DETAIL_CD = #{smsClfcDetailCd}
+				</if>
+			</if>
+			<if test="smsEmailTmplatKndCd == 'EMAIL'">
+				<if test="smsClfcCd != '' and smsClfcCd != null">
+					AND cset.EMAIL_CLFC_CD = #{smsClfcCd}
+				</if>
+				<if test="smsClfcDetailCd != '' and smsClfcDetailCd != null">
+					AND cset.EMAIL_CLFC_DETAIL_CD = #{smsClfcDetailCd}
+				</if>
+			</if>
+		</if>
+		 <if test="cnsltTmplatNm != '' and cnsltTmplatNm != null">
+			 AND SMS_EMAIL_TMPLAT_NM LIKE '%' || #{cnsltTmplatNm} || '%'
+		 </if>
+    </select>
+    
+    <update id="updateEmailSmsTemplateGrid" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateGridDTO">
+    	UPDATE  
+        CSO_SMS_EMAIL_TMPLAT SET
+                SMS_EMAIL_TMPLAT_NM = #{smsEmailTmplatNm,jdbcType=VARCHAR}
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     SMS_EMAIL_TMPLAT_SN = #{smsEmailTmplatSn,jdbcType=NUMERIC}
+    </update>
+    
+    
+    <select id="selectEmailSmsTemplateDetail" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateSearchDTO" resultMap="emailSmsTemplateResult">
+    	SELECT	SMS_EMAIL_TMPLAT_SN
+		        , MALL_ID
+		        , LANG_CD
+		        , SMS_EMAIL_TMPLAT_NM
+		        , USE_YN
+		        , SMS_EMAIL_TMPLAT_KND_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = SMS_EMAIL_TMPLAT_KND_CD) AS SMS_EMAIL_TMPLAT_KND_NM
+		        , SMS_CLFC_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = SMS_CLFC_CD) AS SMS_CLFC_NM
+		        , SMS_CLFC_DETAIL_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = SMS_CLFC_DETAIL_CD) AS SMS_CLFC_DETAIL_NM
+		        , EMAIL_CLFC_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = EMAIL_CLFC_CD) AS EMAIL_CLFC_NM
+		        , EMAIL_CLFC_DETAIL_CD
+		        , (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = EMAIL_CLFC_DETAIL_CD) AS EMAIL_CLFC_DETAIL_NM
+		        , SMS_EMAIL_TMPLAT_SJ
+		        , SMS_EMAIL_TMPLAT_CONT
+		        , REGTR_ID
+		        , REG_DT
+		        , UDTER_ID
+		        , UDT_DT
+		  FROM	CSO_SMS_EMAIL_TMPLAT
+		 WHERE	1=1
+		   AND	SMS_EMAIL_TMPLAT_SN = #{smsEmailTmplatSn}
+    </select>
+    
+    <update id="updateEmailSmsTemplate" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateDTO">
+    	UPDATE  
+        CSO_SMS_EMAIL_TMPLAT SET
+                 MALL_ID = #{mallId,jdbcType=VARCHAR}
+                ,LANG_CD = #{langCd,jdbcType=VARCHAR}
+                ,SMS_EMAIL_TMPLAT_NM = #{smsEmailTmplatNm,jdbcType=VARCHAR}
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,SMS_EMAIL_TMPLAT_KND_CD = #{smsEmailTmplatKndCd,jdbcType=VARCHAR}
+                ,SMS_CLFC_CD = #{smsClfcCd,jdbcType=VARCHAR}
+                ,SMS_CLFC_DETAIL_CD = #{smsClfcDetailCd,jdbcType=VARCHAR}
+                ,EMAIL_CLFC_CD = #{emailClfcCd,jdbcType=VARCHAR}
+                ,EMAIL_CLFC_DETAIL_CD = #{emailClfcDetailCd,jdbcType=VARCHAR}
+                ,SMS_EMAIL_TMPLAT_SJ = #{smsEmailTmplatSj,jdbcType=VARCHAR}
+                ,SMS_EMAIL_TMPLAT_CONT = #{smsEmailTmplatCont,jdbcType=CLOB}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     SMS_EMAIL_TMPLAT_SN = #{smsEmailTmplatSn,jdbcType=NUMERIC}
+    </update>
+
+	<select id="templateNameDuplicateCheck" parameterType="com.plgrim.ncp.biz.callcenter.data.EmailSmsTemplateDTO" resultType="long">
+		select count(*)
+		  from CSO_SMS_EMAIL_TMPLAT
+		 where 1=1
+		 <if test="smsEmailTmplatNm != null and smsEmailTmplatNm !=''">
+			and SMS_EMAIL_TMPLAT_NM = #{smsEmailTmplatNm,jdbcType=VARCHAR}
+		 </if>
+
+	</select>
+    
+</mapper>

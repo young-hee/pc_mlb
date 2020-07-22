@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysCcJobTp" parameterType="sysCcJobTp" resultType="sysCcJobTp">
+		SELECT /* com.plgrim.ncp.base.selectSysCcJobTp		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , CC_JOB_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_CC_JOB_TP
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND CC_JOB_TP_CD = #{ccJobTpCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysCcJobTp" parameterType="sysCcJobTp">
+		UPDATE /* com.plgrim.ncp.base.updateSysCcJobTp		Generator(Generator)	2018-05-23 */
+		SYS_CC_JOB_TP SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND CC_JOB_TP_CD = #{ccJobTpCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysCcJobTp" parameterType="sysCcJobTp">
+		INSERT /* com.plgrim.ncp.base.insertSysCcJobTp		Generator(Generator)	2018-05-23 */
+		INTO   SYS_CC_JOB_TP (
+			   ADMIN_ID
+			 , CC_JOB_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{ccJobTpCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysCcJobTp" parameterType="sysCcJobTp">
+		DELETE /* com.plgrim.ncp.base.deleteSysCcJobTp		Generator(Generator)	2018-05-23 */
+		  FROM SYS_CC_JOB_TP
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND CC_JOB_TP_CD = #{ccJobTpCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

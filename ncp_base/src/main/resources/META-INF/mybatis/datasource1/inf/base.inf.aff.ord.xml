@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfAffOrd" parameterType="infAffOrd" resultType="infAffOrd">
+		SELECT /* com.plgrim.ncp.base.selectInfAffOrd		Generator(Generator)	2018-05-23 */
+			   AFF_ORD_SN
+			 , AFF_ORD_TURN
+			 , AFF_ORD_DT
+			 , AFF_COM_NM
+			 , AFF_COM_ID
+			 , AFF_GOD_ORD_NO
+			 , AFF_ITM_ORD_NO
+			 , CSTMR_NM
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , CSTMR_POST_NO
+			 , CSTMR_BASE_ADDR
+			 , CSTMR_DETAIL_ADDR
+			 , ERP_GOD_NO
+			 , ITM_NM
+			 , QTY
+			 , DLV_MEMO
+			 , GOD_MEMO
+			 , MALL_ID
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , PCKAGESHAPE_ORD_GOD_NO
+			 , ITM_NO
+			 , COM_ID
+			 , BRND_ID
+			 , GOD_TP_CD
+			 , GOD_NO
+			 , GOD_NM
+			 , CRNCY_CD
+			 , PAY_EXCHG_RT_CSMR_PRC
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , AFF_COM_FEE_RT
+			 , SLDOUT_YN
+			 , GFT_YN
+			 , AFF_ORD_STAT_CD
+			 , AFF_ORD_STAT_CONT
+			 , AFF_VRSC_COM_ID
+			 , AFF_VRSC_COM_FEE_RT
+			 , PCKAGESHAPE_GOD_NO
+			 , PCKAGESHAPE_GOD_ITM_NM
+			 , SALE_SHOP_NO
+			 , AFF_FEE_EVENT_SN
+			 , VRSC_COM_FEE_EVENT_SN
+			 , REORD_YN
+			 , SALE_PRC
+			 , AFF_COM_SALE_PRC
+			 , AFF_COM_ORD_GOD_NO
+			 , AFF_COM_SHOP_NM
+			 , CSTMR_ID
+			 , DLV_NATION_CD
+			 , DLV_CST_CRNCY_CD
+			 , PAY_EXCHG_RT_DLV_CST
+			 , DLV_CST
+			 , CAFE24_ORD_YN
+			 , CAFE24_DLV_CST
+			 , EXCHG_RT
+			 , CAFE24_GOD_CPN_DC_AMT
+			 , CAFE24_ORD_CPN_DC_AMT
+			 , CAFE24_OVSEA_ORD_GOD_CPN_DC_AM
+			 , CAFE24_OVSEA_ORD_CPN_DC_AMT
+			 , CAFE24_GOD_CPN_NO
+			 , CAFE24_ORD_CPN_NO
+			 , COM_DLV_CST
+			 , FASTBOX_DLV_CST
+			 , PG_TP_CD
+			 , PG_STORE_ID
+			 , TMALL_GLB_LMTT_INV_USE_YN
+			 , TMALL_EVT_LMTT_INV_USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_AFF_ORD
+		 WHERE 1 = 1
+	   	   AND AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+		   AND AFF_ORD_TURN = #{affOrdTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateInfAffOrd" parameterType="infAffOrd">
+		UPDATE /* com.plgrim.ncp.base.updateInfAffOrd		Generator(Generator)	2018-05-23 */
+		INF_AFF_ORD SET
+			   AFF_ORD_DT = #{affOrdDt,jdbcType=TIMESTAMP}
+			 , AFF_COM_NM = #{affComNm,jdbcType=VARCHAR}
+			 , AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+			 , AFF_GOD_ORD_NO = #{affGodOrdNo,jdbcType=VARCHAR}
+			 , AFF_ITM_ORD_NO = #{affItmOrdNo,jdbcType=VARCHAR}
+			 , CSTMR_NM = #{cstmrNm,jdbcType=VARCHAR}
+			 , MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+			 , MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+			 , TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , CSTMR_POST_NO = #{cstmrPostNo,jdbcType=VARCHAR}
+			 , CSTMR_BASE_ADDR = #{cstmrBaseAddr,jdbcType=VARCHAR}
+			 , CSTMR_DETAIL_ADDR = #{cstmrDetailAddr,jdbcType=VARCHAR}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , ITM_NM = #{itmNm,jdbcType=VARCHAR}
+			 , QTY = #{qty,jdbcType=NUMERIC}
+			 , DLV_MEMO = #{dlvMemo,jdbcType=VARCHAR}
+			 , GOD_MEMO = #{godMemo,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+			 , PCKAGESHAPE_ORD_GOD_NO = #{pckageshapeOrdGodNo,jdbcType=VARCHAR}
+			 , ITM_NO = #{itmNo,jdbcType=VARCHAR}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , GOD_TP_CD = #{godTpCd,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , PAY_EXCHG_RT_CSMR_PRC = #{payExchgRtCsmrPrc,jdbcType=NUMERIC}
+			 , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+			 , CSMR_PRC = #{csmrPrc,jdbcType=NUMERIC}
+			 , AFF_COM_FEE_RT = #{affComFeeRt,jdbcType=NUMERIC}
+			 , SLDOUT_YN = #{sldoutYn,jdbcType=VARCHAR}
+			 , GFT_YN = #{gftYn,jdbcType=VARCHAR}
+			 , AFF_ORD_STAT_CD = #{affOrdStatCd,jdbcType=VARCHAR}
+			 , AFF_ORD_STAT_CONT = #{affOrdStatCont,jdbcType=VARCHAR}
+			 , AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+			 , AFF_VRSC_COM_FEE_RT = #{affVrscComFeeRt,jdbcType=NUMERIC}
+			 , PCKAGESHAPE_GOD_NO = #{pckageshapeGodNo,jdbcType=VARCHAR}
+			 , PCKAGESHAPE_GOD_ITM_NM = #{pckageshapeGodItmNm,jdbcType=VARCHAR}
+			 , SALE_SHOP_NO = #{saleShopNo,jdbcType=VARCHAR}
+			 , AFF_FEE_EVENT_SN = #{affFeeEventSn,jdbcType=NUMERIC}
+			 , VRSC_COM_FEE_EVENT_SN = #{vrscComFeeEventSn,jdbcType=NUMERIC}
+			 , REORD_YN = #{reordYn,jdbcType=VARCHAR}
+			 , SALE_PRC = #{salePrc,jdbcType=NUMERIC}
+			 , AFF_COM_SALE_PRC = #{affComSalePrc,jdbcType=NUMERIC}
+			 , AFF_COM_ORD_GOD_NO = #{affComOrdGodNo,jdbcType=VARCHAR}
+			 , AFF_COM_SHOP_NM = #{affComShopNm,jdbcType=VARCHAR}
+			 , CSTMR_ID = #{cstmrId,jdbcType=VARCHAR}
+			 , DLV_NATION_CD = #{dlvNationCd,jdbcType=VARCHAR}
+			 , DLV_CST_CRNCY_CD = #{dlvCstCrncyCd,jdbcType=VARCHAR}
+			 , PAY_EXCHG_RT_DLV_CST = #{payExchgRtDlvCst,jdbcType=NUMERIC}
+			 , DLV_CST = #{dlvCst,jdbcType=NUMERIC}
+			 , CAFE24_ORD_YN = #{cafe24OrdYn,jdbcType=VARCHAR}
+			 , CAFE24_DLV_CST = #{cafe24DlvCst,jdbcType=NUMERIC}
+			 , EXCHG_RT = #{exchgRt,jdbcType=NUMERIC}
+			 , CAFE24_GOD_CPN_DC_AMT = #{cafe24GodCpnDcAmt,jdbcType=NUMERIC}
+			 , CAFE24_ORD_CPN_DC_AMT = #{cafe24OrdCpnDcAmt,jdbcType=NUMERIC}
+			 , CAFE24_OVSEA_ORD_GOD_CPN_DC_AM = #{cafe24OvseaOrdGodCpnDcAm,jdbcType=NUMERIC}
+			 , CAFE24_OVSEA_ORD_CPN_DC_AMT = #{cafe24OvseaOrdCpnDcAmt,jdbcType=NUMERIC}
+			 , CAFE24_GOD_CPN_NO = #{cafe24GodCpnNo,jdbcType=VARCHAR}
+			 , CAFE24_ORD_CPN_NO = #{cafe24OrdCpnNo,jdbcType=VARCHAR}
+			 , COM_DLV_CST = #{comDlvCst,jdbcType=NUMERIC}
+			 , FASTBOX_DLV_CST = #{fastboxDlvCst,jdbcType=NUMERIC}
+			 , PG_TP_CD = #{pgTpCd,jdbcType=VARCHAR}
+			 , PG_STORE_ID = #{pgStoreId,jdbcType=VARCHAR}
+			 , TMALL_GLB_LMTT_INV_USE_YN = #{tmallGlbLmttInvUseYn,jdbcType=VARCHAR}
+			 , TMALL_EVT_LMTT_INV_USE_YN = #{tmallEvtLmttInvUseYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+		   AND AFF_ORD_TURN = #{affOrdTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertInfAffOrd" parameterType="infAffOrd">
+		INSERT /* com.plgrim.ncp.base.insertInfAffOrd		Generator(Generator)	2018-05-23 */
+		INTO   INF_AFF_ORD (
+			   AFF_ORD_SN
+			 , AFF_ORD_TURN
+			 , AFF_ORD_DT
+			 , AFF_COM_NM
+			 , AFF_COM_ID
+			 , AFF_GOD_ORD_NO
+			 , AFF_ITM_ORD_NO
+			 , CSTMR_NM
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , CSTMR_POST_NO
+			 , CSTMR_BASE_ADDR
+			 , CSTMR_DETAIL_ADDR
+			 , ERP_GOD_NO
+			 , ITM_NM
+			 , QTY
+			 , DLV_MEMO
+			 , GOD_MEMO
+			 , MALL_ID
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , PCKAGESHAPE_ORD_GOD_NO
+			 , ITM_NO
+			 , COM_ID
+			 , BRND_ID
+			 , GOD_TP_CD
+			 , GOD_NO
+			 , GOD_NM
+			 , CRNCY_CD
+			 , PAY_EXCHG_RT_CSMR_PRC
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , AFF_COM_FEE_RT
+			 , SLDOUT_YN
+			 , GFT_YN
+			 , AFF_ORD_STAT_CD
+			 , AFF_ORD_STAT_CONT
+			 , AFF_VRSC_COM_ID
+			 , AFF_VRSC_COM_FEE_RT
+			 , PCKAGESHAPE_GOD_NO
+			 , PCKAGESHAPE_GOD_ITM_NM
+			 , SALE_SHOP_NO
+			 , AFF_FEE_EVENT_SN
+			 , VRSC_COM_FEE_EVENT_SN
+			 , REORD_YN
+			 , SALE_PRC
+			 , AFF_COM_SALE_PRC
+			 , AFF_COM_ORD_GOD_NO
+			 , AFF_COM_SHOP_NM
+			 , CSTMR_ID
+			 , DLV_NATION_CD
+			 , DLV_CST_CRNCY_CD
+			 , PAY_EXCHG_RT_DLV_CST
+			 , DLV_CST
+			 , CAFE24_ORD_YN
+			 , CAFE24_DLV_CST
+			 , EXCHG_RT
+			 , CAFE24_GOD_CPN_DC_AMT
+			 , CAFE24_ORD_CPN_DC_AMT
+			 , CAFE24_OVSEA_ORD_GOD_CPN_DC_AM
+			 , CAFE24_OVSEA_ORD_CPN_DC_AMT
+			 , CAFE24_GOD_CPN_NO
+			 , CAFE24_ORD_CPN_NO
+			 , COM_DLV_CST
+			 , FASTBOX_DLV_CST
+			 , PG_TP_CD
+			 , PG_STORE_ID
+			 , TMALL_GLB_LMTT_INV_USE_YN
+			 , TMALL_EVT_LMTT_INV_USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{affOrdSn,jdbcType=NUMERIC}
+			 , #{affOrdTurn,jdbcType=NUMERIC}
+			 , #{affOrdDt,jdbcType=TIMESTAMP}
+			 , #{affComNm,jdbcType=VARCHAR}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{affGodOrdNo,jdbcType=VARCHAR}
+			 , #{affItmOrdNo,jdbcType=VARCHAR}
+			 , #{cstmrNm,jdbcType=VARCHAR}
+			 , #{mobilNationNo,jdbcType=VARCHAR}
+			 , #{mobilAreaNo,jdbcType=VARCHAR}
+			 , #{mobilTlofNo,jdbcType=VARCHAR}
+			 , #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{telNationNo,jdbcType=VARCHAR}
+			 , #{telAreaNo,jdbcType=VARCHAR}
+			 , #{telTlofNo,jdbcType=VARCHAR}
+			 , #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , #{cstmrPostNo,jdbcType=VARCHAR}
+			 , #{cstmrBaseAddr,jdbcType=VARCHAR}
+			 , #{cstmrDetailAddr,jdbcType=VARCHAR}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{itmNm,jdbcType=VARCHAR}
+			 , #{qty,jdbcType=NUMERIC}
+			 , #{dlvMemo,jdbcType=VARCHAR}
+			 , #{godMemo,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{pckageshapeOrdGodNo,jdbcType=VARCHAR}
+			 , #{itmNo,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{godTpCd,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{godNm,jdbcType=VARCHAR}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{payExchgRtCsmrPrc,jdbcType=NUMERIC}
+			 , #{rtlPrc,jdbcType=NUMERIC}
+			 , #{csmrPrc,jdbcType=NUMERIC}
+			 , #{affComFeeRt,jdbcType=NUMERIC}
+			 , #{sldoutYn,jdbcType=VARCHAR}
+			 , #{gftYn,jdbcType=VARCHAR}
+			 , #{affOrdStatCd,jdbcType=VARCHAR}
+			 , #{affOrdStatCont,jdbcType=VARCHAR}
+			 , #{affVrscComId,jdbcType=VARCHAR}
+			 , #{affVrscComFeeRt,jdbcType=NUMERIC}
+			 , #{pckageshapeGodNo,jdbcType=VARCHAR}
+			 , #{pckageshapeGodItmNm,jdbcType=VARCHAR}
+			 , #{saleShopNo,jdbcType=VARCHAR}
+			 , #{affFeeEventSn,jdbcType=NUMERIC}
+			 , #{vrscComFeeEventSn,jdbcType=NUMERIC}
+			 , #{reordYn,jdbcType=VARCHAR}
+			 , #{salePrc,jdbcType=NUMERIC}
+			 , #{affComSalePrc,jdbcType=NUMERIC}
+			 , #{affComOrdGodNo,jdbcType=VARCHAR}
+			 , #{affComShopNm,jdbcType=VARCHAR}
+			 , #{cstmrId,jdbcType=VARCHAR}
+			 , #{dlvNationCd,jdbcType=VARCHAR}
+			 , #{dlvCstCrncyCd,jdbcType=VARCHAR}
+			 , #{payExchgRtDlvCst,jdbcType=NUMERIC}
+			 , #{dlvCst,jdbcType=NUMERIC}
+			 , #{cafe24OrdYn,jdbcType=VARCHAR}
+			 , #{cafe24DlvCst,jdbcType=NUMERIC}
+			 , #{exchgRt,jdbcType=NUMERIC}
+			 , #{cafe24GodCpnDcAmt,jdbcType=NUMERIC}
+			 , #{cafe24OrdCpnDcAmt,jdbcType=NUMERIC}
+			 , #{cafe24OvseaOrdGodCpnDcAm,jdbcType=NUMERIC}
+			 , #{cafe24OvseaOrdCpnDcAmt,jdbcType=NUMERIC}
+			 , #{cafe24GodCpnNo,jdbcType=VARCHAR}
+			 , #{cafe24OrdCpnNo,jdbcType=VARCHAR}
+			 , #{comDlvCst,jdbcType=NUMERIC}
+			 , #{fastboxDlvCst,jdbcType=NUMERIC}
+			 , #{pgTpCd,jdbcType=VARCHAR}
+			 , #{pgStoreId,jdbcType=VARCHAR}
+			 , #{tmallGlbLmttInvUseYn,jdbcType=VARCHAR}
+			 , #{tmallEvtLmttInvUseYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfAffOrd" parameterType="infAffOrd">
+		DELETE /* com.plgrim.ncp.base.deleteInfAffOrd		Generator(Generator)	2018-05-23 */
+		  FROM INF_AFF_ORD
+		 WHERE 1 = 1
+		   AND AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+		   AND AFF_ORD_TURN = #{affOrdTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

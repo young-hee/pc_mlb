@@ -1,0 +1,29 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div class="orderPayList d_fix_obj">
+	<h3><spring:message code="cart.js.txt.payment.info" /></h3>
+	<div class="orderPayInfo">
+		<dl>
+			<dt><spring:message code="cart.js.txt.select.goods.price" /></dt>
+			<dd id="RSV_god_amt">0<spring:message code="common.js.crncy" /></dd>
+			<dt><spring:message code="cart.js.txt.select.dc.price" /></dt>
+			<dd class="c_r" id="RSV_dc_amt">-0<spring:message code="common.js.crncy" /></dd>
+			<dt><spring:message code="cart.js.txt.delivery.cost" /></dt>
+			<dd id="RSV_dlv_amt">+0<spring:message code="common.js.crncy" /></dd>
+		</dl>
+		<dl>
+			<dt><spring:message code="cart.js.txt.total.order.price" /></dt>
+			<dd><strong id="RSV_total_amt">0</strong><spring:message code="common.js.crncy" /></dd>
+		</dl>
+		<dl>
+			<dt><spring:message code="cart.js.txt.expect.earn.mileage" /></dt>
+			<dd class="c_r" id="RSV_mileage">0M</dd>
+		</dl>
+	</div>
+	<div class="btn_order" id="RSV_order_btn">
+		<a href="#" onclick="javascript:cart.orderCart('RSV');" class="btn lg fill"><spring:message code="cart.js.txt.ordering" /></a>
+	</div>
+	<div class="btn_order btn_two" id="RSV_emp_order_btn">
+		<a href="#" onclick="javascript:cart.orderCart('RSV','','emp')" class="btn lg"><spring:message code="cart.js.txt.employ.ordering" /></a>
+		<a href="#" onclick="javascript:cart.orderCart('RSV');" class="btn lg fill"><spring:message code="cart.js.txt.ordering" /></a>
+	</div>
+</div>

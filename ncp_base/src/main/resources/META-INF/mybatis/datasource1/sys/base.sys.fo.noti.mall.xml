@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysFoNotiMall" parameterType="sysFoNotiMall" resultType="sysFoNotiMall">
+		SELECT /* com.plgrim.ncp.base.selectSysFoNotiMall		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , NOTI_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_FO_NOTI_MALL
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysFoNotiMall" parameterType="sysFoNotiMall">
+		UPDATE /* com.plgrim.ncp.base.updateSysFoNotiMall		Generator(Generator)	2018-05-23 */
+		SYS_FO_NOTI_MALL SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysFoNotiMall" parameterType="sysFoNotiMall">
+		INSERT /* com.plgrim.ncp.base.insertSysFoNotiMall		Generator(Generator)	2018-05-23 */
+		INTO   SYS_FO_NOTI_MALL (
+			   MALL_ID
+			 , NOTI_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{notiSn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysFoNotiMall" parameterType="sysFoNotiMall">
+		DELETE /* com.plgrim.ncp.base.deleteSysFoNotiMall		Generator(Generator)	2018-05-23 */
+		  FROM SYS_FO_NOTI_MALL
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

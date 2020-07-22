@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoCnsltDetail" parameterType="csoCnsltDetail" resultType="csoCnsltDetail">
+		SELECT /* com.plgrim.ncp.base.selectCsoCnsltDetail		Generator(Generator)	2018-05-23 */
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , CNSLT_KND_CD
+			 , CNSLT_TGT_CD
+			 , CSTMR_CLM_CD
+			 , INQ_TP_CD
+			 , INQ_DETAIL_TP_CD
+			 , CNSLT_DETAIL_STAT_CD
+			 , CNSLT_DETAIL_CONT
+			 , CNSLT_DT
+			 , CNSLT_CHRGER_ID
+			 , CNSLT_DETL_TRNSMIS_REQUST_YN
+			 , SMS_SND_COUNT
+			 , EMAIL_SND_COUNT
+			 , DELETE_YN
+			 , MAIN_DSP_YN
+			 , MTM_INQ_SN
+			 , MTM_INQ_ANS_TURN
+			 , GOD_INQ_SN
+			 , GOD_ANS_TURN
+			 , TRANS_CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , CNSLT_TMPLAT_SN
+			 , CNSLT_TMPLAT_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CNSLT_DETAIL
+		 WHERE 1 = 1
+	   	   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoCnsltDetail" parameterType="csoCnsltDetail">
+		UPDATE /* com.plgrim.ncp.base.updateCsoCnsltDetail		Generator(Generator)	2018-05-23 */
+		CSO_CNSLT_DETAIL SET
+			   CNSLT_KND_CD = #{cnsltKndCd,jdbcType=VARCHAR}
+			 , CNSLT_TGT_CD = #{cnsltTgtCd,jdbcType=VARCHAR}
+			 , CSTMR_CLM_CD = #{cstmrClmCd,jdbcType=VARCHAR}
+			 , INQ_TP_CD = #{inqTpCd,jdbcType=VARCHAR}
+			 , INQ_DETAIL_TP_CD = #{inqDetailTpCd,jdbcType=VARCHAR}
+			 , CNSLT_DETAIL_STAT_CD = #{cnsltDetailStatCd,jdbcType=VARCHAR}
+			 , CNSLT_DETAIL_CONT = #{cnsltDetailCont,jdbcType=CLOB}
+			 , CNSLT_DT = #{cnsltDt,jdbcType=TIMESTAMP}
+			 , CNSLT_CHRGER_ID = #{cnsltChrgerId,jdbcType=VARCHAR}
+			 , CNSLT_DETL_TRNSMIS_REQUST_YN = #{cnsltDetlTrnsmisRequstYn,jdbcType=VARCHAR}
+			 , SMS_SND_COUNT = #{smsSndCount,jdbcType=NUMERIC}
+			 , EMAIL_SND_COUNT = #{emailSndCount,jdbcType=NUMERIC}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , MAIN_DSP_YN = #{mainDspYn,jdbcType=VARCHAR}
+			 , MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+			 , MTM_INQ_ANS_TURN = #{mtmInqAnsTurn,jdbcType=NUMERIC}
+			 , GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+			 , GOD_ANS_TURN = #{godAnsTurn,jdbcType=NUMERIC}
+			 , TRANS_CNSLT_DETAIL_TURN = #{transCnsltDetailTurn,jdbcType=NUMERIC}
+			 , TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+			 , CNSLT_TMPLAT_SN = #{cnsltTmplatSn,jdbcType=NUMERIC}
+			 , CNSLT_TMPLAT_NM = #{cnsltTmplatNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoCnsltDetail" parameterType="csoCnsltDetail">
+		INSERT /* com.plgrim.ncp.base.insertCsoCnsltDetail		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CNSLT_DETAIL (
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , CNSLT_KND_CD
+			 , CNSLT_TGT_CD
+			 , CSTMR_CLM_CD
+			 , INQ_TP_CD
+			 , INQ_DETAIL_TP_CD
+			 , CNSLT_DETAIL_STAT_CD
+			 , CNSLT_DETAIL_CONT
+			 , CNSLT_DT
+			 , CNSLT_CHRGER_ID
+			 , CNSLT_DETL_TRNSMIS_REQUST_YN
+			 , SMS_SND_COUNT
+			 , EMAIL_SND_COUNT
+			 , DELETE_YN
+			 , MAIN_DSP_YN
+			 , MTM_INQ_SN
+			 , MTM_INQ_ANS_TURN
+			 , GOD_INQ_SN
+			 , GOD_ANS_TURN
+			 , TRANS_CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , CNSLT_TMPLAT_SN
+			 , CNSLT_TMPLAT_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{cnsltSn,jdbcType=NUMERIC}
+			 , #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , #{cnsltKndCd,jdbcType=VARCHAR}
+			 , #{cnsltTgtCd,jdbcType=VARCHAR}
+			 , #{cstmrClmCd,jdbcType=VARCHAR}
+			 , #{inqTpCd,jdbcType=VARCHAR}
+			 , #{inqDetailTpCd,jdbcType=VARCHAR}
+			 , #{cnsltDetailStatCd,jdbcType=VARCHAR}
+			 , #{cnsltDetailCont,jdbcType=CLOB}
+			 , #{cnsltDt,jdbcType=TIMESTAMP}
+			 , #{cnsltChrgerId,jdbcType=VARCHAR}
+			 , #{cnsltDetlTrnsmisRequstYn,jdbcType=VARCHAR}
+			 , #{smsSndCount,jdbcType=NUMERIC}
+			 , #{emailSndCount,jdbcType=NUMERIC}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{mainDspYn,jdbcType=VARCHAR}
+			 , #{mtmInqSn,jdbcType=NUMERIC}
+			 , #{mtmInqAnsTurn,jdbcType=NUMERIC}
+			 , #{godInqSn,jdbcType=NUMERIC}
+			 , #{godAnsTurn,jdbcType=NUMERIC}
+			 , #{transCnsltDetailTurn,jdbcType=NUMERIC}
+			 , #{transRequstTurn,jdbcType=NUMERIC}
+			 , #{cnsltTmplatSn,jdbcType=NUMERIC}
+			 , #{cnsltTmplatNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoCnsltDetail" parameterType="csoCnsltDetail">
+		DELETE /* com.plgrim.ncp.base.deleteCsoCnsltDetail		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CNSLT_DETAIL
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmOfferGft" parameterType="prmOfferGft" resultType="prmOfferGft">
+		SELECT /* com.plgrim.ncp.base.selectPrmOfferGft		Generator(Generator)	2018-05-23 */
+			   PRM_NO
+			 , OFFER_GFT_TURN
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM_OFFER_GFT
+		 WHERE 1 = 1
+	   	   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND OFFER_GFT_TURN = #{offerGftTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updatePrmOfferGft" parameterType="prmOfferGft">
+		UPDATE /* com.plgrim.ncp.base.updatePrmOfferGft		Generator(Generator)	2018-05-23 */
+		PRM_OFFER_GFT SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND OFFER_GFT_TURN = #{offerGftTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertPrmOfferGft" parameterType="prmOfferGft">
+		INSERT /* com.plgrim.ncp.base.insertPrmOfferGft		Generator(Generator)	2018-05-23 */
+		INTO   PRM_OFFER_GFT (
+			   PRM_NO
+			 , OFFER_GFT_TURN
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{prmNo,jdbcType=VARCHAR}
+			 , #{offerGftTurn,jdbcType=NUMERIC}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrmOfferGft" parameterType="prmOfferGft">
+		DELETE /* com.plgrim.ncp.base.deletePrmOfferGft		Generator(Generator)	2018-05-23 */
+		  FROM PRM_OFFER_GFT
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND OFFER_GFT_TURN = #{offerGftTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,925 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.issu.cpn">
+
+	<resultMap id="mbrIssuCpnResult" type="com.plgrim.ncp.biz.member.result.MemberBoResult">
+	   <result property="mbrIssuCpn.mbrCpnNo"            column="MBR_CPN_NO" />               <!-- 회원 쿠폰 번호 -->
+	   <result property="mbrIssuCpn.mbrNo"               column="MBR_NO" />                   <!-- 회원 번호 -->
+	   <result property="mbrIssuCpn.cpnTpCd"             column="CPN_TP_CD" />                <!-- 쿠폰 유형 코드 -->
+	   <result property="mbrIssuCpn.cpnStatCd"           column="CPN_STAT_CD" />              <!-- 쿠폰 상태 코드 -->
+	   <result property="mbrIssuCpn.cpnPubliDt"          column="CPN_PUBLI_DT" />             <!-- 쿠폰 발행 일자 -->
+	   <result property="mbrIssuCpn.validBegDate"        column="VALID_BEG_DATE" />           <!-- 유효 시작 일자 -->
+	   <result property="mbrIssuCpn.validEndDate"        column="VALID_END_DATE" />           <!-- 유효 마감 일자 -->
+	   <result property="mbrIssuCpn.cpnUseDt"            column="CPN_USE_DT" />               <!-- 쿠폰 사용 일자 -->
+	   <result property="mbrIssuCpn.ordNo"               column="ORD_NO" />                   <!-- 주문 번호 -->
+	   <result property="mbrIssuCpn.clmNo"               column="CLM_NO" />                   <!-- 클레임 번호 -->
+	   <result property="mbrIssuCpn.prmNo"               column="PRM_NO" />                   <!-- 프로모션 번호 -->
+	   <result property="mbrIssuCpn.rndomCpnNo"          column="RNDOM_CPN_NO" />             <!-- 난수 쿠폰 번호 -->
+	   <result property="mbrIssuCpn.crtfcTurn"           column="CRTFC_TURN" />               <!-- 인증 순번 -->
+	   <result property="mbrIssuCpn.issuAdminId"         column="ISSU_ADMIN_ID" />            <!-- 발급 관리자 ID -->
+	   <result property="mbrIssuCpn.regtrId"             column="REGTR_ID" />                 <!-- 등록자 ID -->
+	   <result property="mbrIssuCpn.regDt"               column="REG_DT" />                   <!-- 등록 일시 -->
+	   <result property="mbrIssuCpn.udterId"             column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="mbrIssuCpn.udtDt"               column="UDT_DT" />                   <!-- 수정 일시 -->
+
+	   <result property="prmNm"	   	   	   	   	   	     column="PRM_NM" />                   <!-- 프로모션 명 -->
+       <result property="cpnTpNm"  	   	   	   	   	     column="CPN_TP_NM" />                <!-- 쿠폰 유형 명 -->
+	   <result property="cpnStatNm" 	   	   	   	     column="CPN_STAT_NM" />              <!-- 쿠폰 상태 명 -->
+	   <result property="validDate" 	   	   	   	     column="VALID_DATE" />               <!-- 쿠폰 유효기간 -->
+	   <result property="dcSectNm" 	   	   	   	   	     column="DC_SECT_NM" />               <!-- 할인유형 -->
+	   <result property="cpnKndCd"                       column="CPN_KND_CD" />               <!-- 쿠폰 종류 코드 -->
+	   <result property="cpnKndNm" 			   	   	     column="CPN_KND_NM" />   		      <!-- 쿠폰 종류 -->
+	</resultMap>
+
+	<!-- 회원 발행 쿠폰 목록 건수 조회 -->
+    <select id="selectCouponListCountForMember" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="Long">
+        SELECT /* [biz.mbr.issu.cpn.xml][selectCouponListCountForMember][회원 발행 쿠폰 목록 건수 조회][Jessi] */
+               COUNT(X.mbr_cpn_no)
+		  FROM (SELECT mic.mbr_cpn_no,
+		               CASE
+                         WHEN MIC.CPN_STAT_CD = 'NO_USE' AND MIC.VALID_END_DATE <![CDATA[ < ]]> TO_CHAR(SYSDATE, 'YYYYMMDD') THEN 'PD_CLOS'
+                         ELSE MIC.CPN_STAT_CD
+                       END CPN_STAT_CD
+		          FROM (SELECT * FROM mbr_issu_cpn UNION ALL SELECT * FROM Z$mbr_issu_cpn ) mic
+ 		         WHERE mic.mbr_no = #{mbrIssuCpn.mbrNo, jdbcType=VARCHAR}
+ 		           AND EXISTS (
+	         					SELECT 1
+	         					  FROM PRM_APL_TGT pat
+	         					 WHERE pat.prm_no = mic.prm_no
+	         					   AND pat.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	         				   )
+		       ) X
+		 WHERE 0 = 0
+           AND X.cpn_stat_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                     FROM (SELECT #{mbrIssuCpn.cpnStatCd, jdbcType=VARCHAR} AS param
+                                             FROM dual) d
+                                 CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+    </select>
+
+	<!-- 회원 발행 쿠폰 목록 조회 -->
+    <select id="selectCouponListForMember" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="mbrIssuCpnResult">
+		SELECT /* [biz.mbr.issu.cpn.xml][selectCouponListForMember][회원 발행 쿠폰 목록 조회][Jessi] */
+		        prm.prm_nm								/* 프로모션 명 */
+		      , scCpnTp.cd_nm AS cpn_tp_nm				/* 쿠폰 유형 명 */
+		      , scCpnStat.cd_nm AS cpn_stat_nm       	/* 쿠폰 상태 명 */
+		      , pc.cpn_knd_cd							/* 쿠폰 종류 */
+		      , scCpnKind.cd_nm AS cpn_knd_nm  			/* 쿠폰 종류 명 */
+		      , TO_CHAR(TO_DATE(fl.valid_beg_date, 'YYYYMMDD'), 'YYYY-MM-DD')
+		        || ' ~ ' || TO_CHAR(TO_DATE(fl.valid_end_date, 'YYYYMMDD'), 'YYYY-MM-DD') AS valid_date /* 쿠폰 유효기간 */
+		      , CASE WHEN prm.dc_sect_cd = 'DLV_CST_FREE'
+				     THEN scDcSect.cd_nm
+				     ELSE scDcSect.cd_nm || ' / ' || TRIM(TO_CHAR(DECODE(prm.dc_sect_cd, 'FIXRT', prm.dc_rt, prm.dc_amt), '999,999,999')) || DECODE(prm.dc_sect_cd, 'FIXRT', '%', '' )
+				 END AS dc_sect_nm				/* 할인 유형 */
+		      , sa.admin_nm||DECODE(fl.issu_admin_id, null,'SYSTEM', '('||fl.issu_admin_id||')') AS issu_admin_id
+		      , fl.*
+		  FROM (
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+                SELECT X.*
+                  FROM (
+						SELECT
+						        mic.mbr_cpn_no                  /* 회원 쿠폰 번호 */
+						      , mic.mbr_no                      /* 회원 번호 */
+						      , mic.reg_dt                      /* 등록 일시 */
+						      , mic.prm_no                      /* 프로모션 번호 */
+						      , mic.cpn_tp_cd                   /* 쿠폰 유형 코드 */
+                              , CASE
+                                  WHEN MIC.CPN_STAT_CD = 'NO_USE' AND MIC.VALID_END_DATE <![CDATA[ < ]]> TO_CHAR(SYSDATE, 'YYYYMMDD') THEN 'PD_CLOS'
+                                  ELSE MIC.CPN_STAT_CD
+                                END CPN_STAT_CD
+						      , mic.valid_beg_date              /* 유효 시작 일자 */
+						      , mic.valid_end_date              /* 유효 마감 일자 */
+						      , mic.cpn_use_dt                  /* 쿠폰 사용 일자 */
+						      , mic.ord_no                      /* 주문 번호 */
+						      , mic.issu_admin_id               /* 발급 관리자 ID */
+						      , mic.cpn_publi_dt				/* 쿠폰 발급 일시 */
+						  FROM (SELECT * FROM mbr_issu_cpn UNION ALL SELECT * FROM Z$mbr_issu_cpn )  mic
+		 		         WHERE mic.mbr_no = #{mbrIssuCpn.mbrNo, jdbcType=VARCHAR}
+		 		           AND EXISTS (
+			         					SELECT 1
+			         					  FROM PRM_APL_TGT pat
+			         					 WHERE pat.prm_no = mic.prm_no
+			         					   AND pat.MALL_ID = #{mallId, jdbcType=VARCHAR}
+			         				   )
+                       ) X
+				 WHERE 0 = 0
+		           AND X.cpn_stat_cd IN (    SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                               FROM (SELECT #{mbrIssuCpn.cpnStatCd, jdbcType=VARCHAR} AS param
+                                                       FROM dual) d
+                                         CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+				 ORDER BY X.cpn_publi_dt desc
+		<include refid="com.plgrim.ncp.base.endPage"/>
+		    	) fl
+		  LEFT OUTER JOIN prm prm ON prm.prm_no = fl.prm_no
+		  LEFT OUTER JOIN prm_cpn pc ON pc.prm_no = prm.prm_no
+		  LEFT OUTER JOIN sys_admin sa ON sa.admin_id = fl.issu_admin_id
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'CPN' AND lang_cd = #{lang, jdbcType=VARCHAR}) scCpnTp
+		    ON fl.cpn_tp_cd = scCpnTp.cd					/* 쿠폰 유형 코드 */
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'CPN_STAT' AND lang_cd = #{lang, jdbcType=VARCHAR}) scCpnStat
+		    ON fl.cpn_stat_cd = scCpnStat.cd				/* 쿠폰 상태 코드 */
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'DC_SECT' AND lang_cd = #{lang, jdbcType=VARCHAR}) scDcSect
+		    ON prm.dc_sect_cd = scDcSect.cd					/* 할인 구분 코드 */
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'CPN_KIND' AND lang_cd = #{lang, jdbcType=VARCHAR}) scCpnKind
+		    ON pc.cpn_knd_cd = scCpnKind.cd		/* 쿠폰 종류 코드 */
+    </select>
+
+   	<!-- 회원 발행 쿠폰 엑셀 조회 -->
+    <select id="selectCouponListExcelForMember" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.mbr.issu.cpn.xml][selectCouponListExcelForMember][회원 발행 쿠폰 엑셀 조회][Jessi] */
+		        mic.mbr_cpn_no                  			/* 회원 쿠폰 번호 */
+		      , mic.cpn_publi_dt							/* 쿠폰 발급 일시 */
+		      , scCpnKind.cd_nm AS cpn_knd_nm			  	/* 쿠폰 종류 */
+		      , mic.prm_no                      			/* 프로모션 번호 */
+		      , prm.prm_nm                    				/* 프로모션 명 */
+		      , scCpnTp.cd_nm AS cpn_tp_nm         			/* 쿠폰 유형 명 */
+		      , scCpnStat.cd_nm AS cpn_stat_nm       		/* 쿠폰 상태 명 */
+		      , scDcSect.cd_nm
+		        || ' / '
+		        || TRIM(TO_CHAR(DECODE(prm.dc_sect_cd, 'FIXRT', prm.dc_rt, prm.dc_amt), '999,999,999'))
+		        || DECODE(prm.dc_sect_cd, 'FIXRT', '%', '' )
+		        AS dc_sect_nm				    /* 할인 유형 */
+		     , TO_CHAR(TO_DATE(mic.valid_beg_date, 'YYYYMMDD'), 'YYYY-MM-DD')
+		        || ' ~ ' || TO_CHAR(TO_DATE(mic.valid_end_date, 'YYYYMMDD'), 'YYYY-MM-DD') AS valid_date /* 쿠폰 유효기간 */
+		      , mic.cpn_use_dt                  /* 쿠폰 사용 일자 */
+		      , mic.ord_no                      /* 주문 번호 */
+		      , sa.admin_nm||DECODE(mic.issu_admin_id, null,'SYSTEM', '('||mic.issu_admin_id||')') AS issu_admin_id
+		  FROM (select mbr_cpn_no
+                       , cpn_publi_dt
+                       , prm_no
+                       , valid_beg_date
+                       , valid_end_date
+                       , cpn_use_dt
+                       , cpn_tp_cd
+                       , CASE
+                           WHEN CPN_STAT_CD = 'NO_USE' AND VALID_END_DATE <![CDATA[ < ]]> TO_CHAR(SYSDATE, 'YYYYMMDD') THEN 'PD_CLOS'
+                           ELSE CPN_STAT_CD
+                         END CPN_STAT_CD
+                       , ord_no
+                       , issu_admin_id
+                  from mbr_issu_cpn mbrIssuCpn
+                 where mbr_no = #{mbrIssuCpn.mbrNo, jdbcType=VARCHAR}
+                 AND EXISTS (
+	         					SELECT 1
+	         					  FROM PRM_APL_TGT pat
+	         					 WHERE pat.prm_no = mbrIssuCpn.prm_no
+	         					   AND pat.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	         				   )
+               ) mic
+		  LEFT OUTER JOIN prm prm ON prm.prm_no = mic.prm_no
+		  LEFT OUTER JOIN prm_cpn pc ON pc.prm_no = prm.prm_no
+		  LEFT OUTER JOIN sys_admin sa ON sa.admin_id = mic.issu_admin_id
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'CPN' AND lang_cd = #{lang, jdbcType=VARCHAR}) scCpnTp
+		    ON mic.cpn_tp_cd = scCpnTp.cd					/* 쿠폰 유형 코드 */
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'CPN_STAT' AND lang_cd = #{lang, jdbcType=VARCHAR}) scCpnStat
+		    ON mic.cpn_stat_cd = scCpnStat.cd				/* 쿠폰 상태 코드 */
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'DC_SECT' AND lang_cd = #{lang, jdbcType=VARCHAR}) scDcSect
+		    ON prm.dc_sect_cd = scDcSect.cd					/* 할인 구분 코드 */
+		  LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'CPN_KIND' AND lang_cd = #{lang, jdbcType=VARCHAR}) scCpnKind
+		    ON pc.cpn_knd_cd = scCpnKind.cd				/* 쿠폰 종류 코드 */
+		 WHERE 0 = 0
+           AND mic.cpn_stat_cd IN (    SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                         FROM (SELECT #{mbrIssuCpn.cpnStatCd, jdbcType=VARCHAR} AS param
+                                                 FROM dual) d
+                                   CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+		 ORDER BY mic.cpn_publi_dt desc
+    </select>
+
+    <!-- BO END ============================================================= -->
+
+   <resultMap id="myCpnResult" type="com.plgrim.ncp.biz.member.result.MypageCpnFoResult">
+   	   <result property="mbrCpnNo"	   	   	   	   	   	 column="MBR_CPN_NO" />               <!-- 프로모션 명 -->
+	   <result property="prmNm"	   	   	   	   	   	     column="PRM_NM" />                   <!-- 프로모션 명 -->
+	   <result property="prmDscr"	   	   	   	   	   	 column="PRM_DSCR" />                 <!-- 프로모션 설명 -->
+	   <result property="prmNo"	   	   	   	   	   	     column="PRM_NO" />                   <!-- 프로모션 번호 -->
+       <result property="cpnTpCd"  	   	   	   	   	     column="CPN_TP_CD" />                <!-- 쿠폰 유형 명 -->
+	   <result property="cpnStatCd" 	   	   	   	     column="CPN_STAT_CD" />              <!-- 쿠폰 상태 명 -->
+	   <result property="validBegDate" 	   	   	   	     column="VALID_BEG_DATE" />           <!-- 쿠폰 유효시작기간 -->
+	   <result property="validEndDate" 	   	   	   	     column="VALID_END_DATE" />           <!-- 쿠폰 유효종료기간 -->
+	   <result property="validDate" 	   	   	   	     column="VALID_DATE" />               <!-- 쿠폰 유효기간 -->
+	   <result property="validTime" 	   	   	   	     column="VALID_TIME" />               <!-- 쿠폰 남은시간 -->
+	   <result property="cpnMaxDcPsbAmt" 	   	   	   	 column="CPN_MAX_DC_PSB_AMT" />       <!-- 쿠폰 최대 할인금액 -->
+	   <result property="cpnUseMinPchAmt" 	   	   	   	 column="CPN_USE_MIN_PCH_AMT" />      <!-- 쿠폰 사용 최소 구매금액 -->
+	   <result property="datebyUsePsbBegHour" 	   	   	 column="DATEBY_USE_PSB_BEG_HOUR" />  <!-- 쿠폰 유효시작시간 -->
+	   <result property="datebyUsePsbEndHour" 	   	   	 column="DATEBY_USE_PSB_END_HOUR" />  <!-- 쿠폰 유효종료시간 -->
+	   <result property="cpnUsePsbDowsmon" 	   	   	   	 column="CPN_USE_PSB_DOWSMON" />      <!-- 쿠폰 유효요일 -->
+	   <result property="dcSectCd" 	   	   	   	   	     column="DC_SECT_CD" />               <!-- 할인유형 -->
+	   <result property="cpnPubliMbdNm" 	   	   	     column="CPN_PUBLI_MBD_NM" />         <!-- 쿠폰 발행 주체 -->
+	   <result property="aplGodSecCd" 	   	   	         column="APL_GOD_SECT_CD" />		  <!-- 쿠폰적용 구분 코드 -->
+	   <result property="dcRtAmt" 	   	   	     		 column="DC_RT_AMT" />         	  	  <!-- 할인율,가격 -->
+
+	   <!-- [#31806][16.12.29] 멤버십 제도개선(쿠폰종류, 쿠폰인증 추가) -->
+	   <result property="cpnKndCd" 	   	   	     		 column="CPN_KND_CD" />         	  <!-- 쿠폰종류(온라인,온오프라인) -->
+	   <result property="cpnCrtfcCd" 	 	   	     	 column="CPN_CRTFC_CD" />         	  <!-- 쿠폰 인증 코드 -->
+
+	   <!-- #41113 나의 쿠폰 페이지에서 온오프라인 쿠폰 티켓번호 노출 170411 - 쿠폰사용가능기간 여부 조회 -->
+	   <result property="usePsbPeriodYn" 				 column="USE_PSB_PERIOD_YN" />			  <!-- 사용가능기간여부 -->
+	</resultMap>
+
+    <select id="selectMyCouponList" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultMap="myCpnResult">
+		SELECT /* [biz.mbr.issu.cpn.xml][selectMyCouponList]MyPage 쿠폰 목록 조회][csh] */
+			    fl.mbr_cpn_no
+		      , fl.prm_nm                      /* 프로모션 명 */
+		      , fl.prm_dscr
+		      , fl.prm_no
+		      , fl.prm_dscr
+		      , fl.cpn_tp_cd
+			<choose>
+				<when test="lang != null and lang != '' and lang == 'ENG' ">
+					, TO_CHAR(TO_DATE(fl.valid_beg_date, 'YYYY.MM.DD'), 'fmMon.DD,YYYY', 'NLS_DATE_LANGUAGE=ENGLISH') AS valid_beg_date
+					, TO_CHAR(TO_DATE(fl.valid_end_date, 'YYYY.MM.DD'), 'fmMon.DD,YYYY', 'NLS_DATE_LANGUAGE=ENGLISH') AS valid_end_date
+				</when>
+				<otherwise>
+					, TO_CHAR(TO_DATE(fl.valid_beg_date, 'YYYY.MM.DD'), 'YYYY.MM.DD') AS valid_beg_date
+					, TO_CHAR(TO_DATE(fl.valid_end_date, 'YYYY.MM.DD'), 'YYYY.MM.DD') AS valid_end_date
+				</otherwise>
+			</choose>
+		      , TRUNC(TO_DATE(fl.valid_end_date||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')  -  SYSDATE )  AS validDate
+              , TRUNC(MOD((TO_DATE(fl.valid_end_date||' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') -  SYSDATE), 1) * 24)  AS validTime
+              , fl.cpn_max_dc_psb_amt
+              , fl.cpn_use_min_pch_amt
+              , TO_CHAR(TO_DATE(fl.dateby_use_psb_beg_hour, 'HH24:MI:SS'), 'HH24:MI') AS dateby_use_psb_beg_hour
+			  , TO_CHAR(TO_DATE(fl.dateby_use_psb_end_hour, 'HH24:MI:SS'), 'HH24:MI') AS dateby_use_psb_end_hour
+              , fl.cpn_use_psb_dowsmon
+		      , fl.dc_sect_cd
+		      , TRIM(DECODE(fl.dc_sect_cd, 'FIXRT', fl.dc_rt, fl.dc_amt)) AS dc_rt_amt
+		      , fl.apl_god_sect_cd
+              , fl.cpn_knd_cd
+              , fl.cpn_crtfc_cd
+        	  , (CASE WHEN sysdate BETWEEN TO_DATE(fl.valid_beg_date||'000000', 'YYYYMMDDHH24MISS') AND TO_DATE(fl.valid_end_date||'235959', 'YYYYMMDDHH24MISS') THEN 'Y'
+				 ELSE 'N'
+				 END ) AS use_psb_period_yn
+    FROM (
+          <if test="pagingFlagYn == null">
+          <include refid="com.plgrim.ncp.base.beginPage"/>
+          </if>
+		  SELECT k.* FROM
+                (
+
+          SELECT DISTINCT
+                  mic.mbr_cpn_no                  /* 회원 쿠폰 번호 */
+                , mic.mbr_no                      /* 회원 번호 */
+                , mic.reg_dt                      /* 등록 일시 */
+                , mic.prm_no                      /* 프로모션 번호 */
+                , mic.cpn_tp_cd                   /* 쿠폰 유형 코드 */
+                , mic.cpn_stat_cd                 /* 쿠폰 상태 코드 */
+                , mic.valid_beg_date              /* 유효 시작 일자 */
+                , mic.valid_end_date              /* 유효 마감 일자 */
+                , mic.cpn_use_dt                  /* 쿠폰 사용 일자 */
+                , mic.ord_no                      /* 주문 번호 */
+                , mic.issu_admin_id               /* 발급 관리자 ID */
+                , mic.cpn_publi_dt				/* 쿠폰 발급 일시 */
+              <choose>
+              <when test="lang != null and lang != '' and lang != 'KOR'">
+                , (SELECT PL.PRM_NM
+                   FROM PRM_LANG PL
+                   WHERE PL.PRM_NO = pm.PRM_NO
+                   AND LANG_CD = #{lang, jdbcType=VARCHAR}
+                  ) AS PRM_NM
+              </when>
+              <otherwise>
+				, pm.PRM_NM
+              </otherwise>
+              </choose>
+                , pm.prm_dscr
+                , pm.dc_amt
+                , pm.dc_rt
+                , pm.dc_sect_cd
+                , pag.apl_god_sect_cd
+                , pc.cpn_max_dc_psb_amt
+                , pc.cpn_use_min_pch_amt
+                , pc.dateby_use_psb_beg_hour
+                , pc.dateby_use_psb_end_hour
+                , pc.cpn_use_psb_dowsmon
+                <!-- [#31806][16.12.29] 멤버십 제도개선(쿠폰종류 추가) -->
+                , pc.cpn_knd_cd
+                , mic.cpn_crtfc_cd		/* 쿠폰 인증 코드 */
+		  FROM MBR_ISSU_CPN  mic
+		  INNER JOIN PRM pm ON mic.PRM_NO = pm.PRM_NO AND mic.MBR_NO =  #{mbr.mbrNo, jdbcType=VARCHAR}
+          INNER JOIN PRM_CPN pc ON pm.PRM_NO = pc.PRM_NO
+				<!-- 다국어 구분없이 전체조회 2018.08.22 ryan <choose>
+					<when test="lang != null and lang != 'KOR' ">
+						AND ((mic.cpn_tp_cd = 'DLV_CST_CPN' and pc.dlv_cst_cpn_sect_cd = 'OVSEA_DLV_CPN') OR (mic.cpn_tp_cd != 'DLV_CST_CPN'))
+					</when>
+					<otherwise>
+						AND ((mic.cpn_tp_cd = 'DLV_CST_CPN' and pc.dlv_cst_cpn_sect_cd = 'DMSTC_DLV_CPN') OR (mic.cpn_tp_cd != 'DLV_CST_CPN'))
+					</otherwise>
+				</choose> -->
+				<if test='lang != null and lang != ""'>
+				  INNER JOIN PRM_APL_TGT pat ON pm.PRM_NO = pat.PRM_NO AND pat.PRM_TGT_TP_CD = 'LANG' <!-- AND pat.LANG_CD = #{lang, jdbcType=VARCHAR} -->
+				</if>
+                     LEFT OUTER JOIN PRM_APL_GOD pag ON  pm.PRM_NO = pag.PRM_NO AND pag.GOD_APL_YN= 'Y' AND pag.apl_god_sect_cd <![CDATA[<>]]> 'SESON'
+			     WHERE mic.cpn_stat_cd = 'NO_USE'
+<!-- 			     2018.09.06 이미 발급된 쿠폰은 상태가 중지여도 사용이 가능하기에 쿠폰함에서 조회되도록 조치. -->
+<!-- 				   AND pm.prm_stat_cd = 'APRV' -->
+				<!-- <if test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)">프로모션 대기 상태만 나타나지 않도록 수정 2019.01.15 (MLB,SA)
+					AND pm.prm_stat_cd != 'APRV_WAIT'
+				</if> -->
+				   AND mic.prm_no = pm.prm_no
+				   AND mic.valid_end_date >= TO_CHAR(SYSDATE,'YYYYMMDD')
+				   AND EXISTS (
+				   		SELECT 1
+				   		FROM prm_apl_tgt
+				   		WHERE prm_no = pc.prm_no
+				   			AND prm_tgt_tp_cd = 'MALL_ID'
+				   			AND mall_id IN <foreach collection="plgrimshopMallIdList" item="plgrimshopMallId" index="index" separator="," open="(" close=")">#{plgrimshopMallId}</foreach>
+				   )
+				<if test='mbrIssuCpn != null'>
+				<if test='mbrIssuCpn.cpnTpCd != null and mbrIssuCpn.cpnTpCd != ""'>
+				   AND mic.cpn_tp_cd = #{mbrIssuCpn.cpnTpCd, jdbcType=VARCHAR}
+				</if>
+				</if>
+				<!-- DEXC3-362 정렬 순서에 프로모션 번호 최신순 추가 -->
+				 ORDER BY mic.cpn_publi_dt desc, mic.prm_no desc
+
+			)k
+			<if test="pagingFlagYn == null">
+			<include refid="com.plgrim.ncp.base.endPage"/>
+			</if>
+		 ) fl
+    </select>
+
+    <select id="selectMyCouponCnt" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultType="Integer">
+          SELECT /* [biz.mbr.issu.cpn.xml][selectMyCouponCnt]MyPage 쿠폰 목록 조회][csh] */
+                COUNT(1) as cnt
+          FROM  (
+                   SELECT DISTINCT mic.mbr_cpn_no                  /* 회원 쿠폰 번호 */
+					    , mic.mbr_no                      /* 회원 번호 */
+					    , mic.reg_dt                      /* 등록 일시 */
+					    , mic.prm_no                      /* 프로모션 번호 */
+					    , mic.cpn_tp_cd                   /* 쿠폰 유형 코드 */
+					    , mic.cpn_stat_cd                 /* 쿠폰 상태 코드 */
+					    , mic.valid_beg_date              /* 유효 시작 일자 */
+					    , mic.valid_end_date              /* 유효 마감 일자 */
+					    , mic.cpn_use_dt                  /* 쿠폰 사용 일자 */
+					    , mic.ord_no                      /* 주문 번호 */
+					    , mic.issu_admin_id               /* 발급 관리자 ID */
+					    , mic.cpn_publi_dt				/* 쿠폰 발급 일시 */
+					    <choose>
+						    <when test="lang != null and lang != '' and lang != 'KOR'">
+							    , (SELECT PL.PRM_NM
+							    FROM PRM_LANG PL
+							    WHERE PL.PRM_NO = pm.PRM_NO
+							    AND LANG_CD = #{lang, jdbcType=VARCHAR}
+							    ) AS PRM_NM
+						    </when>
+						    <otherwise>
+							    , pm.PRM_NM
+						    </otherwise>
+					    </choose>
+					    , pm.prm_dscr
+					    , pm.dc_amt
+					    , pm.dc_rt
+					    , pm.dc_sect_cd
+					    , pag.apl_god_sect_cd
+					    , pc.cpn_max_dc_psb_amt
+					    , pc.cpn_use_min_pch_amt
+					    , pc.dateby_use_psb_beg_hour
+					    , pc.dateby_use_psb_end_hour
+					    , pc.cpn_use_psb_dowsmon
+					    <!-- [#31806][16.12.29] 멤버십 제도개선(쿠폰종류 추가) -->
+					    , pc.cpn_knd_cd
+					    , mic.cpn_crtfc_cd		/* 쿠폰 인증 코드 */
+                   FROM  MBR_ISSU_CPN mic
+                   INNER JOIN PRM pm ON mic.PRM_NO = pm.PRM_NO AND mic.MBR_NO = #{mbr.mbrNo, jdbcType=VARCHAR}
+                   INNER JOIN PRM_CPN pc ON pm.PRM_NO = pc.PRM_NO
+				<!-- 다국어 구분없이 전체조회 2018.08.22 ryan <choose>
+					<when test="lang != null and lang != 'KOR' ">
+						AND ((mic.cpn_tp_cd = 'DLV_CST_CPN' and pc.dlv_cst_cpn_sect_cd = 'OVSEA_DLV_CPN') OR (mic.cpn_tp_cd != 'DLV_CST_CPN'))
+					</when>
+					<otherwise>
+						AND ((mic.cpn_tp_cd = 'DLV_CST_CPN' and pc.dlv_cst_cpn_sect_cd = 'DMSTC_DLV_CPN') OR (mic.cpn_tp_cd != 'DLV_CST_CPN'))
+					</otherwise>
+				</choose> -->
+				<if test='lang != null and lang != ""'>
+				  INNER JOIN PRM_APL_TGT pat ON pm.PRM_NO = pat.PRM_NO AND pat.PRM_TGT_TP_CD = 'LANG' <!-- AND pat.LANG_CD = #{lang, jdbcType=VARCHAR} -->
+				</if>
+                  LEFT OUTER JOIN PRM_APL_GOD pag ON  pm.PRM_NO = pag.PRM_NO AND pag.GOD_APL_YN= 'Y' AND pag.apl_god_sect_cd <![CDATA[<>]]> 'SESON'
+                   WHERE mic.cpn_stat_cd = 'NO_USE'
+<!-- 			     2018.09.06 이미 발급된 쿠폰은 상태가 중지여도 사용이 가능하기에 쿠폰함에서 조회되도록 조치. -->
+<!--                    AND   pm.prm_stat_cd = 'APRV' -->
+					<!-- <if test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)">프로모션 대기 상태만 나타나지 않도록 수정 2019.01.15 (MLB,SA)
+						AND pm.prm_stat_cd != 'APRV_WAIT'
+					</if> -->
+                   AND   mic.prm_no = pm.prm_no
+                   AND   mic.valid_end_date >= TO_CHAR (SYSDATE, 'YYYYMMDD')
+                   AND EXISTS (
+				   		SELECT 1
+				   		FROM prm_apl_tgt
+				   		WHERE prm_no = pc.prm_no
+				   			AND prm_tgt_tp_cd = 'MALL_ID'
+				   			AND mall_id IN <foreach collection="plgrimshopMallIdList" item="plgrimshopMallId" index="index" separator="," open="(" close=")">#{plgrimshopMallId}</foreach>
+				   		)
+				<if test='mbrIssuCpn != null'>
+				<if test='mbrIssuCpn.cpnTpCd != null and mbrIssuCpn.cpnTpCd != ""'>
+				   AND mic.cpn_tp_cd = #{mbrIssuCpn.cpnTpCd, jdbcType=VARCHAR}
+				</if>
+				</if>
+                )
+    </select>
+
+	<resultMap id="myCpnHistResult" type="com.plgrim.ncp.biz.member.result.MypageCpnFoResult">
+	   <result property="prmNm"	   	   	   	   	   	     column="PRM_NM" />                   <!-- 프로모션 명 -->
+       <result property="cpnTpCd"  	   	   	   	   	     column="CPN_TP_CD" />                <!-- 쿠폰 유형 명 -->
+	   <result property="dcSectCd" 	   	   	   	   	     column="DC_SECT_Cd" />               <!-- 할인유형 -->
+	   <result property="cpnUseDt" 	   	   	     	 	 column="CPN_USE_DT" />         	  <!-- 쿠폰 사용일자 -->
+	   <result property="godNm" 	   	   	     		 column="GOD_NM" />         	  	  <!-- 상품명 -->
+	   <result property="godNo" 	   	   	     		 column="GOD_NO" />         	  	  <!-- 상품코드 -->
+	   <result property="brndNm" 	   	   	     		 column="BRND_NM" />         	  	  <!-- 브랜드명 -->
+	   <result property="ordNo" 	   	   	     		 column="ORD_NO" />         	  	  <!-- 주문번호 -->
+	   <result property="dcRtAmt" 	   	   	     		 column="DC_RT_AMT" />         	  	  <!-- 활인율,가격 -->
+	   <result property="ordCnt" 	   	   	     		 column="ORD_CNT" />         	  	  <!-- 주문건수 -->
+	   <!-- [#31806][16.12.29] 멤버십 제도개선(쿠폰종류, 쿠폰인증, 프로모션번호 추가) -->
+	   <result property="cpnKndCd" 	   	   	     		 column="CPN_KND_CD" />         	  <!-- 쿠폰종류(온라인,온오프라인) -->
+	   <result property="cpnCrtfcCd" 	 	   	     	 column="CPN_CRTFC_CD" />         	  <!-- 쿠폰 인증 코드 -->
+	   <result property="prmNo" 	   	   	     		 column="PRM_NO" />         		  <!-- 프로모션 번호 -->
+	   <result property="mallId" 	   	   	     		 column="MALL_ID" />         		  <!-- 몰ID -->
+	</resultMap>
+
+     <select id="selectMyCouponHistList" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultMap="myCpnHistResult">
+		SELECT /* [biz.mbr.issu.cpn.xml][selectMyCouponHistList]MyPage 쿠폰 사용 목록 조회][csh] */
+
+		        fl.prm_nm                      /* 프로모션 명 */
+		      , fl.cpn_tp_cd
+		      , TO_CHAR(fl.cpn_use_dt, 'YYYY.MM.DD') AS cpn_use_dt /* 쿠폰 유효기간 */
+		      , fl.dc_sect_cd
+		      , TRIM(DECODE(fl.dc_sect_cd, 'FIXRT', fl.dc_rt, fl.dc_amt))  AS dc_rt_amt
+		      , fl.ord_no
+		      , fl.god_nm
+		      , fl.god_no
+		      , fl.brnd_nm
+		      , fl.ord_cnt
+		      , fl.cpn_knd_cd 		/* 쿠폰 종류 코드 */
+		      , fl.cpn_crtfc_cd		/* 쿠폰 인증 코드 */
+		      , fl.prm_no			/* 프로모션 번호 */
+		      , fl.mall_id			/* 몰 ID */
+		  FROM (
+		  <include refid="com.plgrim.ncp.base.beginPage"/>
+		  SELECT k.* FROM
+                (
+				SELECT
+				        mic.mbr_cpn_no                  /* 회원 쿠폰 번호 */
+				      , mic.mbr_no                      /* 회원 번호 */
+				      , mic.reg_dt                      /* 등록 일시 */
+				      , mic.prm_no                      /* 프로모션 번호 */
+				      , mic.cpn_tp_cd                   /* 쿠폰 유형 코드 */
+				      , mic.cpn_stat_cd                 /* 쿠폰 상태 코드 */
+				      , mic.valid_beg_date                /* 유효 시작 일자 */
+				      , mic.valid_end_date               /* 유효 마감 일자 */
+				      , mic.cpn_use_dt                  /* 쿠폰 사용 일자 */
+				      , og.ord_no                      /* 주문 번호 */
+				      , mic.issu_admin_id               /* 발급 관리자 ID */
+				      , mic.cpn_publi_dt				/* 쿠폰 발급 일시 */
+				      , og.ord_cnt
+				      , og.god_nm
+				      , og.god_no
+				      , og.brnd_nm
+				 <choose>
+					 <when test="lang != null and lang != '' and lang != 'KOR'">
+ 					  , (SELECT PL.PRM_NM
+					       FROM PRM_LANG PL
+					      WHERE PL.PRM_NO = pm.PRM_NO
+					        AND LANG_CD = #{lang, jdbcType=VARCHAR}
+					    ) AS PRM_NM
+					 </when>
+					 <otherwise>
+					  , pm.prm_nm
+					 </otherwise>
+				 </choose>
+				      , pm.prm_dscr
+				      , pm.dc_amt
+				      , pm.dc_rt
+				      , pm.dc_sect_cd
+				      , pc.cpn_knd_cd		/* 쿠폰 종류 코드 */
+				      , mic.cpn_crtfc_cd		/* 쿠폰 인증 코드 */
+				      , og.mall_id				/* 몰 ID */
+				  FROM mbr_issu_cpn mic
+				       INNER JOIN prm pm ON mic.prm_no = pm.prm_no
+				       INNER JOIN prm_cpn pc ON mic.prm_no = pc.prm_no
+				       LEFT OUTER JOIN
+				  		  (
+                           SELECT  MAX(og.god_nm) KEEP(DENSE_RANK FIRST ORDER BY ord_god_turn DESC) as god_nm
+                                   ,MAX(og.god_no) KEEP(DENSE_RANK FIRST ORDER BY ord_god_turn DESC) as god_no
+                                   ,MAX(sb.brnd_nm) KEEP(DENSE_RANK FIRST ORDER BY ord_god_turn DESC) as brnd_nm
+                                   , COUNT(*) AS ord_cnt
+                                   , py.mbr_cpn_no
+
+                                   , og.ord_no
+                                   , MAX(o.mall_id) KEEP(DENSE_RANK FIRST ORDER BY ord_god_turn DESC) as mall_id
+                              <!-- [#44067] 무료 반품 교환 쿠폰 -->
+                              FROM ( select p.mbr_cpn_no,p.ORD_NO
+                                     	from pay p join ord o on p.ord_no = o.ord_no and o.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}
+                                     union
+                                     select b.mbr_cpn_no as MBR_CPN_NO , b.ORD_NO
+                                        from mbr_issu_cpn b
+                                        	join prm p on b.prm_no = p.prm_no and p.prm_dtl_tp_cd in ('RTGOD_CPN', 'EXCHG_CPN')
+                                        	join clm c on b.ord_no = c.ord_no and b.clm_no = c.clm_no and c.CLM_STAT_CD != 'WTHDRAW'
+                                        where b.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR} and  b.cpn_stat_cd = 'USE'
+                                   ) py , ord o , ord_god og , sys_brnd sb   , mbr_issu_cpn mic
+                             WHERE py.ord_no = o.ord_no
+                               AND o.ord_no = og.ord_no
+                               AND og.brnd_grp_id = sb.brnd_id
+                               AND mic.mbr_cpn_no = py.mbr_cpn_no
+                               AND o.ord_stat_cd NOT IN ('ALL_CNCL')
+                         GROUP BY og.ord_no   , py.mbr_cpn_no
+                       )og ON mic.mbr_cpn_no  = og.mbr_cpn_no
+				 WHERE mic.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}
+				   AND mic.cpn_stat_cd = 'USE'
+				   AND EXISTS (
+				   		SELECT 1
+				   		FROM prm_apl_tgt
+				   		WHERE prm_no = pm.prm_no
+				   			AND prm_tgt_tp_cd = 'MALL_ID'
+				   			AND mall_id IN <foreach collection="plgrimshopMallIdList" item="plgrimshopMallId" index="index" separator="," open="(" close=")">#{plgrimshopMallId}</foreach>
+				   )
+<!-- 			     2018.09.06 이미 발급된 쿠폰은 상태가 중지여도 사용이 가능하기에 쿠폰함에서 조회되도록 조치. -->
+<!-- 				   AND pm.prm_stat_cd = 'APRV' -->
+					<!-- 2019.01.15 프로모션 대기 상태만 나타나지 않도록 수정 (MLB,SA) -->
+					<!-- <if test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)"> 2019.01.23 전체 쿠폰 노출되도록 다시 수정
+						AND pm.prm_stat_cd != 'APRV_WAIT'
+					</if> -->
+				   <if test="dateStart != null ">
+				   AND ( (mic.cpn_use_dt BETWEEN  TO_DATE(#{dateStart , jdbcType=VARCHAR}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{dateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS'))
+				         OR ( (mic.valid_end_date BETWEEN TO_CHAR(TO_DATE(#{dateStart, jdbcType=VARCHAR}||' 00:00:00','YYYY-MM-DD HH24:MI:SS'),'YYYYMMDD') AND TO_CHAR(TO_DATE(#{dateEnd  }||' 23:59:59','YYYY-MM-DD HH24:MI:SS'),'YYYYMMDD') )
+							<choose>
+					         	<when test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)"><!-- 2019.01.17 사용만료 현제 날짜까지 유효 하도록 수정 (MLB,SA) -->
+									AND mic.valid_end_date <![CDATA[<]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</when>
+								<otherwise>
+						        	AND mic.valid_end_date <![CDATA[<=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</otherwise>
+							</choose>
+				         )
+				       )
+				   </if>
+				   <if test="dateStart == null ">
+				   AND ( (mic.cpn_use_dt BETWEEN  ADD_MONTHS(SYSDATE , -3) AND SYSDATE)
+				         OR ( mic.valid_end_date BETWEEN TO_CHAR(add_months(SYSDATE,-3), 'YYYYMMDD') AND TO_CHAR(SYSDATE,'YYYYMMDD')
+				         	<choose>
+					         	<when test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)"><!-- 2019.01.17 사용만료 현제 날짜까지 유효 하도록 수정 (MLB,SA) -->
+									AND mic.valid_end_date <![CDATA[<]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</when>
+								<otherwise>
+						        	AND mic.valid_end_date <![CDATA[<=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</otherwise>
+							</choose>
+				         )
+				       )
+				   </if>
+				   AND (mic.ord_no is null OR mic.ord_no = og.ord_no)
+				 ORDER BY mic.cpn_use_dt desc
+				 )k
+			  INNER JOIN PRM_APL_TGT pat ON k.PRM_NO = pat.PRM_NO AND pat.PRM_TGT_TP_CD = 'LANG'
+			  AND pat.LANG_CD = #{lang, jdbcType=VARCHAR}
+
+			<include refid="com.plgrim.ncp.base.endPage"/>
+		    	) fl
+
+		 <!-- 언어별로 사용한 리스트 조회 추가 -->
+		 <!-- INNER JOIN ord o
+		 ON O.ORD_NO = fl.ord_no
+		 WHERE 1=1
+		 AND O.LANG_CD = #{lang, jdbcType=VARCHAR} -->
+		 <!-- 언어별로 사용한 리스트 조회 추가 -->
+	 </select>
+
+     <select id="countMyCouponHistList" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultType="Long">
+		SELECT COUNT(*)
+		  FROM (
+				SELECT
+				        mic.mbr_cpn_no                  /* 회원 쿠폰 번호 */
+				      , mic.mbr_no                      /* 회원 번호 */
+				      , mic.reg_dt                      /* 등록 일시 */
+				      , mic.prm_no                      /* 프로모션 번호 */
+				      , mic.cpn_tp_cd                   /* 쿠폰 유형 코드 */
+				      , mic.cpn_stat_cd                 /* 쿠폰 상태 코드 */
+				      , mic.valid_beg_date                /* 유효 시작 일자 */
+				      , mic.valid_end_date               /* 유효 마감 일자 */
+				      , mic.cpn_use_dt                  /* 쿠폰 사용 일자 */
+				      , mic.ord_no                      /* 주문 번호 */
+				      , mic.issu_admin_id               /* 발급 관리자 ID */
+				      , mic.cpn_publi_dt				/* 쿠폰 발급 일시 */
+				      , pm.prm_nm
+				      , pm.prm_dscr
+				      , pm.dc_amt
+				      , pm.dc_rt
+				      , pm.dc_sect_cd
+				  FROM mbr_issu_cpn mic
+				       INNER JOIN prm pm ON mic.prm_no = pm.prm_no
+				  	   LEFT OUTER JOIN
+						 (
+							 SELECT  MAX(og.god_nm) KEEP(DENSE_RANK FIRST ORDER BY ord_god_turn DESC) as god_nm
+									 ,MAX(og.god_no) KEEP(DENSE_RANK FIRST ORDER BY ord_god_turn DESC) as god_no
+									 ,MAX(sb.brnd_nm) KEEP(DENSE_RANK FIRST ORDER BY ord_god_turn DESC) as brnd_nm
+									 , COUNT(*) AS ord_cnt
+									 , py.mbr_cpn_no
+
+									 , og.ord_no
+							 <!-- [#44067] 무료 반품 교환 쿠폰 -->
+							 FROM ( select p.mbr_cpn_no,p.ORD_NO
+                                     	from pay p join ord o on p.ord_no = o.ord_no and o.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}
+                                     union
+                                     select b.mbr_cpn_no as MBR_CPN_NO , b.ORD_NO
+                                        from mbr_issu_cpn b
+                                        	join prm p on b.prm_no = p.prm_no and p.prm_dtl_tp_cd in ('RTGOD_CPN', 'EXCHG_CPN')
+                                        	join clm c on b.ord_no = c.ord_no and b.clm_no = c.clm_no and c.CLM_STAT_CD != 'WTHDRAW'
+                                        where b.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR} and  b.cpn_stat_cd = 'USE'
+                                   ) py , ord o , ord_god og , sys_brnd sb   , mbr_issu_cpn mic
+							 WHERE py.ord_no = o.ord_no
+								 AND o.ord_no = og.ord_no
+								 AND og.brnd_grp_id = sb.brnd_id
+								 AND mic.mbr_cpn_no = py.mbr_cpn_no
+								 AND o.ord_stat_cd NOT IN ('ALL_CNCL')
+							 GROUP BY og.ord_no   , py.mbr_cpn_no
+						 )og ON mic.mbr_cpn_no  = og.mbr_cpn_no
+				 WHERE mic.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}
+				   AND mic.cpn_stat_cd = 'USE'
+<!-- 			     2018.09.06 이미 발급된 쿠폰은 상태가 중지여도 사용이 가능하기에 쿠폰함에서 조회되도록 조치. -->
+<!-- 				   AND pm.prm_stat_cd = 'APRV' -->
+					<!-- 2019.01.15 프로모션 대기 상태만 나타나지 않도록 수정  (MLB,SA) -->
+					<!-- <if test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)"> 2019.01.23 전체 쿠폰 노출되도록 다시 수정
+						AND pm.prm_stat_cd != 'APRV_WAIT'
+					</if> -->
+				   AND EXISTS (
+				   		SELECT 1
+				   		FROM prm_apl_tgt
+				   		WHERE prm_no = pm.prm_no
+				   			AND prm_tgt_tp_cd = 'MALL_ID'
+				   			AND mall_id IN <foreach collection="plgrimshopMallIdList" item="plgrimshopMallId" index="index" separator="," open="(" close=")">#{plgrimshopMallId}</foreach>
+				   )
+				   <if test="dateStart != null ">
+				   AND ( (mic.cpn_use_dt BETWEEN  TO_DATE(#{dateStart , jdbcType=VARCHAR}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{dateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS'))
+				         OR ( (mic.valid_end_date BETWEEN TO_CHAR(TO_DATE(#{dateStart, jdbcType=VARCHAR}||' 00:00:00','YYYY-MM-DD HH24:MI:SS'),'YYYYMMDD') AND TO_CHAR(TO_DATE(#{dateEnd  }||' 23:59:59','YYYY-MM-DD HH24:MI:SS'),'YYYYMMDD') )
+				         	<choose>
+					         	<when test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)"><!-- 2019.01.17 사용만료 현제 날짜까지 유효 하도록 수정 (MLB,SA) -->
+									AND mic.valid_end_date <![CDATA[<]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</when>
+								<otherwise>
+						        	AND mic.valid_end_date <![CDATA[<=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</otherwise>
+							</choose>
+				         )
+				       )
+				   </if>
+				   <if test="dateStart == null ">
+				   AND ( (mic.cpn_use_dt BETWEEN  ADD_MONTHS(SYSDATE , -3) AND SYSDATE)
+				         OR ( mic.valid_end_date BETWEEN TO_CHAR(add_months(SYSDATE,-3), 'YYYYMMDD') AND TO_CHAR(SYSDATE,'YYYYMMDD')
+				         	<choose>
+					         	<when test="{ 'MBM', 'SAM' }.containsAll(plgrimshopMallIdList)"><!-- 2019.01.17 사용만료 현제 날짜까지 유효 하도록 수정 (MLB,SA) -->
+									AND mic.valid_end_date <![CDATA[<]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</when>
+								<otherwise>
+						        	AND mic.valid_end_date <![CDATA[<=]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+								</otherwise>
+							</choose>
+				         )
+				       )
+				   </if>
+				   AND (mic.ord_no is null OR mic.ord_no = og.ord_no)
+
+		   	) fl
+		 INNER JOIN PRM_APL_TGT pat ON fl.PRM_NO = pat.PRM_NO AND pat.PRM_TGT_TP_CD = 'LANG'
+		 AND pat.LANG_CD = #{lang, jdbcType=VARCHAR}
+
+		 <!-- 언어별로 사용한 리스트 조회 추가 -->
+		 <!--
+		 INNER JOIN ord o
+		 ON O.ORD_NO = fl.ord_no
+		 WHERE 1=1
+		 AND O.LANG_CD = #{lang, jdbcType=VARCHAR}
+		 -->
+		 <!-- 언어별로 사용한 리스트 조회 추가 -->
+
+    </select>
+
+	<resultMap id="myCpnGoodResult" type="com.plgrim.ncp.biz.member.result.MypageCpnFoResult">
+		<result property="imgUrl"	   	   	   	   	   	 column="IMG_URL" />             	   <!-- 이미지경로 명 -->
+		<result property="godNm"  	   	   	   	   	     column="GOD_NM" />              	   <!-- 상품명  -->
+		<result property="godFullNm"  	   	   	   	   	 column="GOD_FULL_NM" />               <!-- 상품명  -->
+		<result property="godNo"  	   	   	   	   	     column="GOD_NO" />              	   <!-- 상품번호  -->
+		<result property="salePrc" 	   	   	   	   	     column="SALE_PRC" />      		       <!-- 가격 -->
+		<result property="lastSalePrc" 	   	   	     	 column="LAST_SALE_PRC" />         	   <!-- 상품 적용가격 -->
+		<result property="brndId" 	   	   	     		 column="BRND_ID" />         	 	   <!-- Brand Id -->
+		<result property="dspCtgryNm" 	   	   	         column="DSP_CTGRY_NM" />              <!-- Brand NM -->
+		<result property="godBrndNm" 	   	   	     	 column="GOD_BRND_NM" />         	   <!-- Good Brand NM -->
+		<result property="cpnBrndNm" 	   	   	     	 column="CPN_BRND_NM" />         	   <!-- Cpn Brand NM -->
+		<result property="aplGodSectCd" 	   	   	     column="APL_GOD_SECT_CD" />           <!-- 쿠폰적용 구분 코드 -->
+		<result property="dcCpnPrc" 	   	   	     	 column="DC_CPN_PRC" />           	   <!-- 쿠폰적용 가격 -->
+		<result property="dcSectCd" 	   	   	     	 column="DC_SECT_CD" />           	   <!-- 쿠폰 활인율 구분 코드 -->
+		<result property="dcRtAmt" 	   	   	     	 	 column="DC_RT_AMT" />           	   <!-- 쿠폰적용활인비율,가격 -->
+		<result property="sesonCd" 	   	   	     	 	 column="SESON_CD" />           	   <!-- SESON CD -->
+	</resultMap>
+
+	<select id="selectMyCouponGoodList" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultMap="myCpnGoodResult">
+		SELECT /* [biz.mbr.issu.cpn.xml][selectMyCouponGoodList]MyPage 쿠폰 적용상품 조회][csh] */
+			   fl.IMG_URL
+			 , fl.GOD_NM
+			 , fl.GOD_FULL_NM
+			 , fl.GOD_NO
+			 , fl.SALE_PRC
+			 , fl.LAST_SALE_PRC
+			 , fl.BRND_ID
+			 , fl.GOD_BRND_NM
+			 , fl.CPN_BRND_NM
+			 , fl.DSP_CTGRY_NM
+			 , fl.APL_GOD_SECT_CD
+			 , fl.DC_SECT_CD
+			 , fl.DC_RT_AMT
+			 , DECODE(fl.DC_SECT_CD, 'FIXRT',fl.LAST_SALE_PRC - ( fl.LAST_SALE_PRC * (fl.DC_RT_AMT/100)), fl.LAST_SALE_PRC - fl.DC_RT_AMT) AS DC_CPN_PRC
+			 , fl.SESON_CD
+		FROM (
+			<include refid="com.plgrim.ncp.base.beginPage"/>
+				SELECT SUBSTR(TRIM(NVL(gl.GOD_NM, gd.GOD_NM)), 1, 20) AS GOD_NM
+					 , NVL(gl.GOD_NM, gd.GOD_NM) AS GOD_FULL_NM
+					 , gig.IMG_URL
+					 , gd.GOD_NO
+					 <choose>
+					 <when test='aplGodSecCd == "GOD" or aplGodSecCd == "DSP_CTGRY"'>
+					 , dgp.SALE_PRC
+					 , dgp.LAST_SALE_PRC
+					 </when>
+					 <otherwise>
+					 , '' AS sale_prc
+					 , '' AS LAST_SALE_PRC
+					 </otherwise>
+					 </choose>
+					 , gd.BRND_ID
+					 , (SELECT DSP_CTGRY_NM FROM DSP_CTGRY dc WHERE dc.DSP_CTGRY_NO = pag.DSP_CTGRY_NO) AS DSP_CTGRY_NM
+					 , (SELECT BRND_NM FROM SYS_BRND sb WHERE sb.BRND_ID = pag.BRND_ID) AS CPN_BRND_NM
+					 , (SELECT BRND_NM FROM SYS_BRND sb WHERE sb.BRND_ID = gd.BRND_ID AND sb.USE_YN ='Y') AS GOD_BRND_NM
+					 , pag.APL_GOD_SECT_CD
+					 , pm.DC_SECT_CD
+					 , DECODE(pm.DC_SECT_CD, 'FIXRT', PM.DC_RT, PM.DC_AMT) AS DC_RT_AMT
+					 , pag.SESON_CD
+				FROM MBR_ISSU_CPN mic
+				<include refid="com.plgrim.ncp.biz.issu.cpn.whereMyCouponGoodList"/>
+			<include refid="com.plgrim.ncp.base.endPage"/>
+			) fl
+	</select>
+
+	<select id="countMyCouponGoodList" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultType="Long">
+		SELECT COUNT(1)
+		FROM (
+				SELECT gd.GOD_NO
+				FROM MBR_ISSU_CPN mic
+			<include refid="com.plgrim.ncp.biz.issu.cpn.whereMyCouponGoodList"/>
+	 	) fl
+	</select>
+
+	<sql id="whereMyCouponGoodList">
+				INNER JOIN PRM pm ON mic.PRM_NO = pm.PRM_NO
+				AND mic.MBR_NO = #{mbr.mbrNo, jdbcType=VARCHAR}
+				AND mic.PRM_NO = #{prmNo, jdbcType=VARCHAR}
+				AND mic.MBR_CPN_NO = #{mbrCpnNo, jdbcType=VARCHAR}
+				AND pm.prm_stat_cd IN ('APRV', 'APRV_WAIT')
+				LEFT OUTER JOIN PRM_APL_GOD pag ON pm.PRM_NO = pag.PRM_NO
+				AND pag.GOD_APL_YN = 'Y'
+				AND NOT (pag.APL_GOD_SECT_CD = 'SESON' and pag.SESON_CD = 'ALL')
+				<choose>
+				<!-- 상품 -->
+				<when test='aplGodSecCd == "GOD"'>
+					LEFT OUTER JOIN GOD gd ON pag.GOD_NO = gd.GOD_NO
+					LEFT OUTER JOIN GOD_IMG gig ON gd.GOD_NO = gig.GOD_NO
+					AND gig.IMG_TURN = 1 /* 대표 이미지 */
+					AND gig.IMG_TP_CD = 'THNAIL' /* 상품 이미지 */
+					AND gig.IMG_APRV_YN = 'Y'
+					AND gig.IMG_USE_YN = 'Y'
+					LEFT OUTER JOIN GOD_LANGBY_GOD_NM gl ON gd.GOD_NO = gl.GOD_NO AND gl.LANG_CD = #{lang, jdbcType=VARCHAR}
+					INNER JOIN DSP_GOD_PRC dgp ON dgp.GOD_NO = gd.GOD_NO AND dgp.MALL_ID = #{mallId, jdbcType=VARCHAR}
+					<if test='spcPrmTp != null and spcPrmTp != ""'>
+					AND dgp.PRC_SECT_CD = CASE
+										  WHEN (SELECT 1
+												FROM DSP_GOD_PRC A
+												WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR}
+												AND A.GOD_NO = pag.GOD_NO
+												AND ROWNUM = 1) IS NOT NULL
+										  THEN #{spcPrmTp, jdbcType=VARCHAR}
+										  ELSE #{prcSectCd, jdbcType=VARCHAR}
+										  END
+					</if>
+					<if test='spcPrmTp == null or spcPrmTp == ""'>
+					AND dgp.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+					</if>
+				</when>
+				<!-- 전시 카테고리 -->
+				<when test='aplGodSecCd == "DSP_CTGRY"'>
+					JOIN DSP_CTGRY dc ON dc.DSP_CTGRY_NO = pag.DSP_CTGRY_NO
+					JOIN DSP_CTGRY_CNNC_GOD dccg ON dccg.DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+					JOIN DSP_GOD_PRC dgp ON dgp.GOD_NO = dccg.GOD_NO AND dgp.MALL_ID = #{mallId, jdbcType=VARCHAR}
+					<if test='spcPrmTp != null and spcPrmTp != ""'>
+					AND dgp.PRC_SECT_CD = CASE
+										  WHEN (SELECT 1
+												FROM DSP_GOD_PRC A
+												WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR}
+												AND A.GOD_NO = pag.GOD_NO
+												AND ROWNUM = 1) IS NOT NULL
+										  THEN #{spcPrmTp, jdbcType=VARCHAR}
+										  ELSE #{prcSectCd, jdbcType=VARCHAR}
+										  END
+					</if>
+					<if test='spcPrmTp == null or spcPrmTp == ""'>
+					AND dgp.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+					</if>
+					LEFT OUTER JOIN GOD gd ON gd.GOD_NO = dgp.GOD_NO
+					LEFT OUTER JOIN GOD_IMG gig ON gd.GOD_NO = gig.GOD_NO
+					AND gig.IMG_TURN = 1 /* 대표 이미지 */
+					AND gig.IMG_TP_CD = 'THNAIL' /* 상품 이미지 */
+					AND gig.IMG_APRV_YN = 'Y'
+					AND gig.IMG_USE_YN = 'Y'
+					LEFT OUTER JOIN GOD_LANGBY_GOD_NM gl ON gd.GOD_NO = gl.GOD_NO AND gl.LANG_CD = 'KOR'
+				</when>
+				<!-- 그 외 -->
+				<otherwise>
+				LEFT OUTER JOIN GOD gd ON pag.GOD_NO = gd.GOD_NO
+				LEFT OUTER JOIN GOD_IMG gig ON gd.GOD_NO = gig.GOD_NO
+				AND gig.IMG_TURN = 1 /* 대표 이미지 */
+				AND gig.IMG_TP_CD = 'THNAIL' /* 상품 이미지 */
+				AND gig.IMG_APRV_YN = 'Y'
+				AND gig.IMG_USE_YN = 'Y'
+				LEFT OUTER JOIN GOD_LANGBY_GOD_NM gl ON gd.GOD_NO = gl.GOD_NO AND gl.LANG_CD = #{lang, jdbcType=VARCHAR}
+				</otherwise>
+				</choose>
+				WHERE 1=1
+				<if test='srchType == "goodNm"'>
+					<if test='srchKeyword != "" and srchKeyword != null'>
+						<if test='lang == "KOR"'>
+						AND gd.GOD_NM LIKE  '%' || #{srchKeyword} || '%'
+						</if>
+						<if test='lang != "KOR"'>
+						AND gl.GOD_NM LIKE  '%' || #{srchKeyword} || '%'
+						</if>
+					</if>
+				</if>
+				<if test='srchType == "goodNo"'>
+					<if test='srchKeyword != "" and srchKeyword != null'>
+						AND gd.GOD_NO =  #{srchKeyword}
+						OR gd.ERP_GOD_NO = #{srchKeyword}
+					</if>
+				</if>
+	</sql>
+
+    <select id="selectMyCouponComboList" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultMap="myCpnResult">
+		SELECT DISTINCT
+              mic.mbr_cpn_no                  /* 회원 쿠폰 번호 */
+            , mic.mbr_no                      /* 회원 번호 */
+            , mic.reg_dt                      /* 등록 일시 */
+            , mic.prm_no                      /* 프로모션 번호 */
+            , mic.cpn_tp_cd                   /* 쿠폰 유형 코드 */
+            , mic.cpn_stat_cd                 /* 쿠폰 상태 코드 */
+            , mic.valid_beg_date              /* 유효 시작 일자 */
+            , mic.valid_end_date               /* 유효 마감 일자 */
+            , mic.cpn_use_dt                  /* 쿠폰 사용 일자 */
+            , mic.ord_no                      /* 주문 번호 */
+            , mic.issu_admin_id               /* 발급 관리자 ID */
+            , mic.cpn_publi_dt                /* 쿠폰 발급 일시 */
+			, pm.prm_no
+	<choose>
+		<when test="lang != null and lang != '' and lang != 'KOR'">
+			, (SELECT PL.PRM_NM
+			     FROM PRM_LANG PL
+			    WHERE PL.PRM_NO = pm.PRM_NO
+			      AND LANG_CD = #{lang, jdbcType=VARCHAR}
+			) AS PRM_NM
+		</when>
+		<otherwise>
+			, pm.prm_nm
+		</otherwise>
+	</choose>
+			, pag.apl_god_sect_cd
+		FROM MBR_ISSU_CPN  mic
+        INNER JOIN PRM pm ON mic.PRM_NO = pm.PRM_NO AND mic.MBR_NO =  #{mbr.mbrNo, jdbcType=VARCHAR}
+        INNER JOIN PRM_CPN pc ON pm.PRM_NO = pc.PRM_NO
+        LEFT OUTER JOIN PRM_APL_GOD pag ON  pm.PRM_NO = pag.PRM_NO AND pag.GOD_APL_YN= 'Y'
+        WHERE mic.cpn_stat_cd = 'NO_USE'
+        AND pm.prm_stat_cd = 'APRV'
+		AND mic.valid_end_date >= TO_CHAR(SYSDATE,'YYYYMMDD')
+        AND mic.cpn_tp_cd in ('GOD_CPN','RTGOD_CPN','EXCHG_CPN')
+		AND pag.apl_god_sect_cd <![CDATA[<>]]> 'SESON'
+    </select>
+
+    <select id="selectMyCouponCount"  parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="Long">
+      SELECT COUNT(*)
+        FROM mbr_issu_cpn
+       WHERE mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}
+         AND cpn_stat_cd = 'NO_USE'
+         AND valid_beg_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+         AND valid_end_date <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+    </select>
+
+	<select id="selectIssuedNewJoinCoupon" parameterType="mbr" resultMap="myCpnResult">
+		SELECT MIC.VALID_END_DATE
+		     , P.PRM_NM
+		  FROM MBR_ISSU_CPN MIC
+		     , PRM P
+		     , PRM_CPN PC
+		     , PRM_APL_TGT PT
+		 WHERE 1=1
+		   AND MIC.PRM_NO = P.PRM_NO
+		   AND P.PRM_NO = PC.PRM_NO
+		   AND P.PRM_NO = PT.PRM_NO
+		   AND PT.MALL_ID = NVL(#{mallId}, 'DXM')
+		   <!-- AND P.ERP_CPN_ID IN ('JOIN_30000', 'JOIN_50000', 'JOIN_100000') -->
+		   AND PC.CPN_KND_CD = 'ONOFLNE_CPN'
+		   AND MIC.MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+	  ORDER BY MIC.VALID_END_DATE DESC
+	</select>
+
+</mapper>

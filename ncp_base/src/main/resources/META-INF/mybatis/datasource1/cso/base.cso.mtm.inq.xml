@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoMtmInq" parameterType="csoMtmInq" resultType="csoMtmInq">
+		SELECT /* com.plgrim.ncp.base.selectCsoMtmInq		Generator(Generator)	2018-06-21 */
+			   MTM_INQ_SN
+			 , INQ_TP_CD
+			 , INQ_MBR_NO
+			 , INQ_CSTMR_NM
+			 , INQ_SJ
+			 , INQ_CONT
+			 , INQ_DT
+			 , ANS_STAT_CD
+			 , INQIRE_COUNT
+			 , PRCS_COMPT_DT
+			 , DELETE_YN
+			 , GOD_NO
+			 , ERP_GOD_NO
+			 , CSTMR_EMAIL
+			 , CSTMRTEL_AREA_NO
+			 , CSTMRTEL_TLOF_NO
+			 , CSTMRTEL_TLOF_WTHN_NO
+			 , CSTMRTEL_NATION_NO
+			 , CSTMRMOBIL_AREA_NO
+			 , CSTMRMOBIL_TLOF_NO
+			 , CSTMRMOBIL_TLOF_WTHN_NO
+			 , CSTMRMOBIL_NATION_NO
+			 , CSTMR_SMS_RECPTN_YN
+			 , CSTMR_EMAIL_RECPTN_YN
+			 , LANG_CD
+			 , MALL_ID
+			 , DVC_CD
+			 , ANS_EVL_CD
+			 , ANS_EVL_CONT
+			 , ANS_EVL_WRITNG_DT
+			 , ANS_EVL_ADMIN_ANS_CONT
+			 , ANS_EVL_ADMIN_ANS_DT
+			 , ANS_DSCNTT_TP_CD
+			 , ANS_DSCNTT_DETAIL_CONT
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , STPLAT_CD
+			 , STPLAT_IEM_AGR_YN
+		  FROM CSO_MTM_INQ
+		 WHERE 1 = 1
+	   	   AND MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoMtmInq" parameterType="csoMtmInq">
+		UPDATE /* com.plgrim.ncp.base.updateCsoMtmInq		Generator(Generator)	2018-06-21 */
+		CSO_MTM_INQ SET
+			   INQ_TP_CD = #{inqTpCd,jdbcType=VARCHAR}
+			 , INQ_MBR_NO = #{inqMbrNo,jdbcType=VARCHAR}
+			 , INQ_CSTMR_NM = #{inqCstmrNm,jdbcType=VARCHAR}
+			 , INQ_SJ = #{inqSj,jdbcType=VARCHAR}
+			 , INQ_CONT = #{inqCont,jdbcType=CLOB}
+			 , INQ_DT = #{inqDt,jdbcType=TIMESTAMP}
+			 , ANS_STAT_CD = #{ansStatCd,jdbcType=VARCHAR}
+			 , INQIRE_COUNT = #{inqireCount,jdbcType=NUMERIC}
+			 , PRCS_COMPT_DT = #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , CSTMR_EMAIL = #{cstmrEmail,jdbcType=VARCHAR}
+			 , CSTMRTEL_AREA_NO = #{cstmrtelAreaNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_TLOF_NO = #{cstmrtelTlofNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_TLOF_WTHN_NO = #{cstmrtelTlofWthnNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_NATION_NO = #{cstmrtelNationNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_AREA_NO = #{cstmrmobilAreaNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_TLOF_NO = #{cstmrmobilTlofNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_TLOF_WTHN_NO = #{cstmrmobilTlofWthnNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_NATION_NO = #{cstmrmobilNationNo,jdbcType=VARCHAR}
+			 , CSTMR_SMS_RECPTN_YN = #{cstmrSmsRecptnYn,jdbcType=VARCHAR}
+			 , CSTMR_EMAIL_RECPTN_YN = #{cstmrEmailRecptnYn,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , ANS_EVL_CD = #{ansEvlCd,jdbcType=VARCHAR}
+			 , ANS_EVL_CONT = #{ansEvlCont,jdbcType=VARCHAR}
+			 , ANS_EVL_WRITNG_DT = #{ansEvlWritngDt,jdbcType=TIMESTAMP}
+			 , ANS_EVL_ADMIN_ANS_CONT = #{ansEvlAdminAnsCont,jdbcType=VARCHAR}
+			 , ANS_EVL_ADMIN_ANS_DT = #{ansEvlAdminAnsDt,jdbcType=TIMESTAMP}
+			 , ANS_DSCNTT_TP_CD = #{ansDscnttTpCd,jdbcType=VARCHAR}
+			 , ANS_DSCNTT_DETAIL_CONT = #{ansDscnttDetailCont,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+			 , STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+			 , STPLAT_IEM_AGR_YN = #{stplatIemAgrYn,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   AND MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoMtmInq" parameterType="csoMtmInq">
+		INSERT /* com.plgrim.ncp.base.insertCsoMtmInq		Generator(Generator)	2018-06-21 */
+		INTO   CSO_MTM_INQ (
+			   MTM_INQ_SN
+			 , INQ_TP_CD
+			 , INQ_MBR_NO
+			 , INQ_CSTMR_NM
+			 , INQ_SJ
+			 , INQ_CONT
+			 , INQ_DT
+			 , ANS_STAT_CD
+			 , INQIRE_COUNT
+			 , PRCS_COMPT_DT
+			 , DELETE_YN
+			 , GOD_NO
+			 , ERP_GOD_NO
+			 , CSTMR_EMAIL
+			 , CSTMRTEL_AREA_NO
+			 , CSTMRTEL_TLOF_NO
+			 , CSTMRTEL_TLOF_WTHN_NO
+			 , CSTMRTEL_NATION_NO
+			 , CSTMRMOBIL_AREA_NO
+			 , CSTMRMOBIL_TLOF_NO
+			 , CSTMRMOBIL_TLOF_WTHN_NO
+			 , CSTMRMOBIL_NATION_NO
+			 , CSTMR_SMS_RECPTN_YN
+			 , CSTMR_EMAIL_RECPTN_YN
+			 , LANG_CD
+			 , MALL_ID
+			 , DVC_CD
+			 , ANS_EVL_CD
+			 , ANS_EVL_CONT
+			 , ANS_EVL_WRITNG_DT
+			 , ANS_EVL_ADMIN_ANS_CONT
+			 , ANS_EVL_ADMIN_ANS_DT
+			 , ANS_DSCNTT_TP_CD
+			 , ANS_DSCNTT_DETAIL_CONT
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , STPLAT_CD
+			 , STPLAT_IEM_AGR_YN
+		)
+		VALUES (
+			   #{mtmInqSn,jdbcType=NUMERIC}
+			 , #{inqTpCd,jdbcType=VARCHAR}
+			 , #{inqMbrNo,jdbcType=VARCHAR}
+			 , #{inqCstmrNm,jdbcType=VARCHAR}
+			 , #{inqSj,jdbcType=VARCHAR}
+			 , #{inqCont,jdbcType=CLOB}
+			 , #{inqDt,jdbcType=TIMESTAMP}
+			 , #{ansStatCd,jdbcType=VARCHAR}
+			 , #{inqireCount,jdbcType=NUMERIC}
+			 , #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{cstmrEmail,jdbcType=VARCHAR}
+			 , #{cstmrtelAreaNo,jdbcType=VARCHAR}
+			 , #{cstmrtelTlofNo,jdbcType=VARCHAR}
+			 , #{cstmrtelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{cstmrtelNationNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilAreaNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilTlofNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilNationNo,jdbcType=VARCHAR}
+			 , #{cstmrSmsRecptnYn,jdbcType=VARCHAR}
+			 , #{cstmrEmailRecptnYn,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{ansEvlCd,jdbcType=VARCHAR}
+			 , #{ansEvlCont,jdbcType=VARCHAR}
+			 , #{ansEvlWritngDt,jdbcType=TIMESTAMP}
+			 , #{ansEvlAdminAnsCont,jdbcType=VARCHAR}
+			 , #{ansEvlAdminAnsDt,jdbcType=TIMESTAMP}
+			 , #{ansDscnttTpCd,jdbcType=VARCHAR}
+			 , #{ansDscnttDetailCont,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{stplatCd,jdbcType=VARCHAR}
+			 , #{stplatIemAgrYn,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteCsoMtmInq" parameterType="csoMtmInq">
+		DELETE /* com.plgrim.ncp.base.deleteCsoMtmInq		Generator(Generator)	2018-06-21 */
+		  FROM CSO_MTM_INQ
+		 WHERE 1 = 1
+		   AND MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

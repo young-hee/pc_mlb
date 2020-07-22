@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEmTranMms" parameterType="emTranMms" resultType="emTranMms">
+		SELECT /* com.plgrim.ncp.base.selectEmTranMms		Generator(Generator)	2018-05-23 */
+			   MMS_SEQ
+			 , FILE_CNT
+			 , BUILD_YN
+			 , MMS_BODY
+			 , MMS_SUBJECT
+			 , FILE_TYPE1
+			 , FILE_TYPE2
+			 , FILE_TYPE3
+			 , FILE_TYPE4
+			 , FILE_TYPE5
+			 , FILE_NAME1
+			 , FILE_NAME2
+			 , FILE_NAME3
+			 , FILE_NAME4
+			 , FILE_NAME5
+			 , SERVICE_DEP1
+			 , SERVICE_DEP2
+			 , SERVICE_DEP3
+			 , SERVICE_DEP4
+			 , SERVICE_DEP5
+			 , SKN_FILE_NAME
+		  FROM EM_TRAN_MMS
+		 WHERE 1 = 1
+	   	   AND MMS_SEQ = #{mmsSeq,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEmTranMms" parameterType="emTranMms">
+		UPDATE /* com.plgrim.ncp.base.updateEmTranMms		Generator(Generator)	2018-05-23 */
+		EM_TRAN_MMS SET
+			   FILE_CNT = #{fileCnt,jdbcType=NUMERIC}
+			 , BUILD_YN = #{buildYn,jdbcType=CHAR}
+			 , MMS_BODY = #{mmsBody,jdbcType=VARCHAR}
+			 , MMS_SUBJECT = #{mmsSubject,jdbcType=VARCHAR}
+			 , FILE_TYPE1 = #{fileType1,jdbcType=VARCHAR}
+			 , FILE_TYPE2 = #{fileType2,jdbcType=VARCHAR}
+			 , FILE_TYPE3 = #{fileType3,jdbcType=VARCHAR}
+			 , FILE_TYPE4 = #{fileType4,jdbcType=VARCHAR}
+			 , FILE_TYPE5 = #{fileType5,jdbcType=VARCHAR}
+			 , FILE_NAME1 = #{fileName1,jdbcType=VARCHAR}
+			 , FILE_NAME2 = #{fileName2,jdbcType=VARCHAR}
+			 , FILE_NAME3 = #{fileName3,jdbcType=VARCHAR}
+			 , FILE_NAME4 = #{fileName4,jdbcType=VARCHAR}
+			 , FILE_NAME5 = #{fileName5,jdbcType=VARCHAR}
+			 , SERVICE_DEP1 = #{serviceDep1,jdbcType=VARCHAR}
+			 , SERVICE_DEP2 = #{serviceDep2,jdbcType=VARCHAR}
+			 , SERVICE_DEP3 = #{serviceDep3,jdbcType=VARCHAR}
+			 , SERVICE_DEP4 = #{serviceDep4,jdbcType=VARCHAR}
+			 , SERVICE_DEP5 = #{serviceDep5,jdbcType=VARCHAR}
+			 , SKN_FILE_NAME = #{sknFileName,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   AND MMS_SEQ = #{mmsSeq,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEmTranMms" parameterType="emTranMms">
+		INSERT /* com.plgrim.ncp.base.insertEmTranMms		Generator(Generator)	2018-05-23 */
+		INTO   EM_TRAN_MMS (
+			   MMS_SEQ
+			 , FILE_CNT
+			 , BUILD_YN
+			 , MMS_BODY
+			 , MMS_SUBJECT
+			 , FILE_TYPE1
+			 , FILE_TYPE2
+			 , FILE_TYPE3
+			 , FILE_TYPE4
+			 , FILE_TYPE5
+			 , FILE_NAME1
+			 , FILE_NAME2
+			 , FILE_NAME3
+			 , FILE_NAME4
+			 , FILE_NAME5
+			 , SERVICE_DEP1
+			 , SERVICE_DEP2
+			 , SERVICE_DEP3
+			 , SERVICE_DEP4
+			 , SERVICE_DEP5
+			 , SKN_FILE_NAME
+		)
+		VALUES (
+			   #{mmsSeq,jdbcType=NUMERIC}
+			 , #{fileCnt,jdbcType=NUMERIC}
+			 , #{buildYn,jdbcType=CHAR}
+			 , #{mmsBody,jdbcType=VARCHAR}
+			 , #{mmsSubject,jdbcType=VARCHAR}
+			 , #{fileType1,jdbcType=VARCHAR}
+			 , #{fileType2,jdbcType=VARCHAR}
+			 , #{fileType3,jdbcType=VARCHAR}
+			 , #{fileType4,jdbcType=VARCHAR}
+			 , #{fileType5,jdbcType=VARCHAR}
+			 , #{fileName1,jdbcType=VARCHAR}
+			 , #{fileName2,jdbcType=VARCHAR}
+			 , #{fileName3,jdbcType=VARCHAR}
+			 , #{fileName4,jdbcType=VARCHAR}
+			 , #{fileName5,jdbcType=VARCHAR}
+			 , #{serviceDep1,jdbcType=VARCHAR}
+			 , #{serviceDep2,jdbcType=VARCHAR}
+			 , #{serviceDep3,jdbcType=VARCHAR}
+			 , #{serviceDep4,jdbcType=VARCHAR}
+			 , #{serviceDep5,jdbcType=VARCHAR}
+			 , #{sknFileName,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteEmTranMms" parameterType="emTranMms">
+		DELETE /* com.plgrim.ncp.base.deleteEmTranMms		Generator(Generator)	2018-05-23 */
+		  FROM EM_TRAN_MMS
+		 WHERE 1 = 1
+		   AND MMS_SEQ = #{mmsSeq,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

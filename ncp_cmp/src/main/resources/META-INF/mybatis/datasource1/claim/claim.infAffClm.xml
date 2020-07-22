@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.claim.infAffClm">
+	
+	
+	
+	<select id="selectInfAffClm" parameterType="com.plgrim.ncp.biz.claim.data.InfAffClmDTO" resultType="com.plgrim.ncp.biz.claim.data.InfAffClmDTO">
+          SELECT ac.aff_clm_turn /* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.selectInfAffClm][제휴클레임정보 조회 티몰용][Aether] */
+               , ac.aff_clm_dt
+               , ac.reg_dt
+               , ac.udt_dt
+               , ac.qty
+               , ac.rtl_prc
+               , ac.csmr_prc
+               , ac.pay_exchg_rt_crncy_amt
+               , ac.aff_com_sale_prc
+               , ac.dlv_cst
+               , ac.com_dlv_cst
+               , ac.aff_ord_sn
+               , ac.aff_ord_turn
+               , ac.clm_wrhs_god_turn
+               , ac.cstmr_post_no
+               , ac.mall_id
+               , ac.aff_clm_no
+               , ac.aff_clm_itm_no
+               , ac.cstmr_nm
+               , ac.dlv_memo
+               , ac.god_memo
+               , ac.rtrvl_shop_no
+               , ac.clm_no
+               , ac.god_no
+               , ac.cstmr_detail_addr
+               , ac.cstmr_base_addr
+               , ac.mobil_nation_no
+               , ac.mobil_area_no
+               , ac.mobil_tlof_no
+               , ac.mobil_tlof_wthn_no
+               , ac.tel_nation_no
+               , ac.tel_area_no
+               , ac.tel_tlof_no
+               , ac.tel_tlof_wthn_no
+               , ac.itm_no
+               , ac.pckageshape_god_no
+               , ac.regtr_id
+               , ac.udter_id
+               , ac.rtrvl_nation_cd
+               , ac.erp_god_no
+               , ac.crncy_cd               
+               , ao.ord_no
+               , ao.ord_god_turn
+		  FROM inf_aff_clm ac
+		  JOIN inf_aff_ord ao ON ao.aff_ord_sn = ac.aff_ord_sn AND ao.aff_ord_turn = ac.aff_ord_turn 
+		  WHERE 1=1
+		  AND ac.mall_id = #{mallId}
+		  AND ac.clm_no IS NULL	/*이미 PLGRIM에 등록된 클레임은 다시 처리하지 않는다.*/
+		  AND ac.clm_wrhs_god_turn IS NULL
+		  AND ac.aff_clm_no = #{affClmNo} /*T-mall 일 경우 클레임 단위*/
+		  <if test='affClmNo == null or affClmNo== ""'>
+		  	and 1=2 /*affClmNo 가 없으면 안된다.*/
+		  </if>
+		  
+	</select>
+	
+	
+	
+	<select id="selectOrdGodErpBaseList" parameterType="com.plgrim.ncp.biz.claim.data.InfAffClmDTO" resultType="com.plgrim.ncp.base.entities.datasource1.inf.InfOrdGodErpDstbExtend">
+		SELECT i.clm_erp_intrlck_dt /* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.selectOrdGodErpBaseList][제휴클레임정보 ord_god_erp 조회 티몰용][Aether] */
+             , i.cntr_dlivy_cnfirm_dt
+             , i.dlivy_drct_dt
+             , i.resve_rcptfr_creat_dt
+             , i.resve_rcptfr_dlivy_dt
+             , i.resve_rcptfr_dcsn_dt
+             , i.rtgod_rcptfr_creat_dt
+             , i.erp_resve_rcptfr_creat_dt
+             , i.erp_resve_rcptfr_recreat_dt
+             , i.erp_resve_rcptfr_cncl_dt
+             , iogsdr.badn_god_aff_com_cnfirm_dt
+             , i.rtgod_shop_inv_mvmt_dt
+             , i.cp_err_dt
+             , i.st_err_dt
+             , i.erp_god_sn_mod_dt
+             , i.stdr_crncy_unt_prc
+             , i.pay_exchg_rt_crncy_unt_prc
+             , i.rtl_prc
+             , i.sale_unt_prc
+             , i.web_dc_unt_prc
+             , i.emp_dc_unt_prc
+             , i.god_dc_unt_prc
+             , i.bundle_dc_unt_prc
+             , i.crs_dc_unt_prc
+             , i.god_cpn_dc_unt_prc
+             , i.bsk_cpn_dc_unt_prc
+             , i.imdtl_dc_unt_prc
+             , i.unity_pnt_use_unt_prc
+             , i.evt_pnt_use_unt_prc
+             , i.webpnt_use_unt_prc
+             , i.unity_pnt_accml_unt_prc
+             , i.evt_pnt_accml_unt_prc
+             , i.webpnt_accml_unt_prc
+             , i.ord_god_turn
+             , i.qty_turn
+             , i.ord_god_qty_turn
+             , i.clm_wrhs_god_turn
+             , i.drt_exchg_qty_turn
+             , i.erp_resve_rcptfr_creat_cnt
+             , i.clm_erp_intrlck_yn
+             , i.cntr_dlivy_cnfirm_yn
+             , i.dlivy_drct_tgt_yn
+             , i.dlivy_drct_yn
+             , i.resve_rcptfr_creat_yn
+             , i.resve_rcptfr_dlivy_yn
+             , i.resve_rcptfr_dcsn_yn
+             , i.rtgod_rcptfr_creat_yn
+             , i.erp_resve_rcptfr_creat_yn
+             , i.erp_resve_rcptfr_recreat_yn
+             , i.erp_resve_rcptfr_cncl_yn
+             , iogsdr.repair_compt_yn
+             , i.rtgod_shop_inv_mvmt_yn
+             , i.cp_err_yn
+             , i.st_err_yn
+             , i.erp_god_sn_mod_yn
+             , i.dlivy_acpt_yn
+             , i.wrhs_acpt_yn
+             , i.sku_no
+             , i.clm_prcs_err_cont
+             , i.cp_err_cont
+             , i.st_err_cont
+             , i.ord_no
+             , i.clm_no
+             , i.drt_exchg_sto_no
+             , i.opt_mod_no
+             , i.dlivy_drct_god_no
+             , i.rcptfr_no
+             , i.rtgod_rcptfr_no
+             , i.erp_resve_rcptfr_no
+             , i.erp_resve_cncl_rcptfr_no
+             , i.p_sto_no
+             , i.s_sto_no
+             , i.s_doc_no
+             , i.docno_a
+             , i.docno_b
+             , i.docno_c
+             , i.docno_d
+             , i.docno_e
+             , i.docno_f
+             , i.docno_g
+             , i.docno_h
+             , i.docno_j
+             , i.docno_k
+             , iogsdr.repair_cont
+             , i.erp_god_sn
+             , iogsdr.repair_no
+             , iogsdr.badn_god_cnfirm_admin_id
+             , i.crncy_cd
+             , iogsdr.repair_compt_cd
+		  FROM inf_ord_god_erp_dstb i
+		       LEFT OUTER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR iogsdr
+               ON i.ord_no = iogsdr.ord_no and i.ord_god_turn = iogsdr.ord_god_turn and i.qty_turn = iogsdr.qty_turn	
+		  WHERE 1=1
+		  AND i.clm_no is null	/*이미 PLGRIM에 등록된 클레임은 다시 처리하지 않는다.*/
+		  AND i.ord_no = #{ordNo}
+		  <if test='ordGodTurn != null and ordGodTurn !=""'>
+		  	AND i.ord_god_turn = #{ordGodTurn}
+		  </if>
+	      <if test='qty !=null and qty !=""'>
+	        AND rownum <![CDATA[<=]]>  #{qty}
+	      </if>	  
+	</select>
+
+
+
+
+	<select id="selectOrdGodAplPrm" parameterType="ordGodAplPrm" resultType="ordGodAplPrm">
+		SELECT ogap.apl_amt /* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.selectOrdGodAplPrm][클레임 접수화면 주문사은품 미리보여주기][Aether] */
+		     , ogap.apl_prm_turn
+		     , ogap.apl_qty
+		     , ogap.apl_tp_cd
+		     , ogap.apl_unit_cd
+		     , ogap.mbr_cpn_no
+		     , ogap.ord_god_gft_nm
+		     , ogap.ord_god_gft_turn
+		     , ogap.ord_god_turn
+		     , ogap.ord_no
+		     , ogap.prm_dtl_tp_cd
+		     , ogap.prm_no
+		     , ogap.prm_tp_cd
+		     , ogap.regtr_id
+		     , ogap.reg_dt
+		     , ogap.udter_id
+		     , ogap.udt_dt
+		  FROM ord_god_apl_prm ogap
+		  WHERE 1=1
+		  AND ogap.ord_no = #{ordNo}
+		  <if test='prmTpCd != null and prmTpCd != ""'>
+		  	AND ogap.prm_tp_cd = #{prmTpCd}
+		  </if>
+		  <if test='prmDtlTpCd != null and prmDtlTpCd !=""'>
+		  	AND ogap.prm_dtl_tp_cd = #{prmDtlTpCd}
+		  </if>
+		  <if test='ordGodTurn!=null and ordGodTurn!=""'>
+		  	AND ogap.ord_god_turn = #{ordGodTurn}
+		  </if>
+			<if test='ordNo == null or ordNo == ""'>
+			  AND 1=2
+			</if>
+	</select>	
+
+
+	<insert id="insertOrdClmGodCnnc" parameterType="ordClmGodCnnc">
+	    INSERT /* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.insertOrdClmGodCnnc][클레임 접수시 연결테이블 insert] */  
+	    INTO ORD_CLM_GOD_CNNC
+		(
+	        ORD_NO
+	       ,ORD_GOD_TURN
+	       ,CLM_NO
+	       ,CLM_WRHS_GOD_TURN
+	       ,GOD_CNNC_TP_CD
+	       ,ORD_CLM_QTY
+	       ,ORD_CLM_WTHDRAW_QTY
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{ordNo,jdbcType=VARCHAR}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{clmNo,jdbcType=VARCHAR}
+	       ,#{clmWrhsGodTurn,jdbcType=NUMERIC}
+	       ,#{godCnncTpCd,jdbcType=VARCHAR}
+	       ,#{ordClmQty,jdbcType=NUMERIC}
+	       ,#{ordClmWthdrawQty,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)	
+	</insert>
+	
+	
+	
+	<update id="updateInfOrdGodErpDstbByClmUnit" parameterType="infOrdGodErpDstb">
+		UPDATE INF_ORD_GOD_ERP_DSTB IOGSD /* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.updateInfOrdGodErpDstbByClmUnit][ordGodErp에 한건식 클레임정보를 update] */
+		SET    CLM_NO            = #{clmNo,jdbcType=VARCHAR},
+		       CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=VARCHAR}		       
+		WHERE  IOGSD.ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		AND	   IOGSD.ORD_GOD_TURN = #{ordGodTurn,jdbcType=VARCHAR}
+		AND	   IOGSD.QTY_TURN = #{qtyTurn,jdbcType=VARCHAR}
+		AND    IOGSD.CLM_NO IS NULL	
+	</update>
+
+	<select id="selectOrdLgsDlvsp" parameterType="lgsDlvsp" resultType="lgsDlvsp"> 		
+		SELECT lds.reg_dt	/* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.selectOrdLgsDlvsp][주문의 물류 배송지 정보를 조회] */
+		     , lds.udt_dt
+		     , lds.dlv_pcupsp_turn
+		     , lds.pkup_shop_brnd_id
+		     , lds.addrse_nm
+		     , lds.ord_no
+		     , lds.clm_no
+		     , lds.addrse_post_no
+		     , lds.addrse_base_addr
+		     , lds.addrse_detail_addr
+		     , lds.dlv_memo
+		     , lds.addrse_mobil_nation_no
+		     , lds.addrse_mobil_area_no
+		     , lds.addrse_mobil_tlof_no
+		     , lds.addrse_mobil_tlof_wthn_no
+		     , lds.addrse_tel_nation_no
+		     , lds.addrse_tel_area_no
+		     , lds.addrse_tel_tlof_no
+		     , lds.addrse_tel_tlof_wthn_no
+		     , lds.pkup_shop_id
+		     , lds.regtr_id
+		     , lds.udter_id
+		     , lds.dlv_pcupsp_sect_cd
+		     , lds.dlv_sect_cd
+		     /* , lds.dlv_mn_cd 2015-12-18 2차개발에서 컬럼삭제로 주석처리*/
+		     , lds.addr_sect_cd
+		     , lds.addrse_nation_cd
+		     , lds.pkup_shop_visit_date
+		     , lds.dlv_hope_date
+		  FROM lgs_dlvsp lds
+		 WHERE     1 = 1
+		       AND lds.dlv_pcupsp_sect_cd = 'ORD_DLVSP'
+		       AND lds.ord_no = #{ordNo}
+		       <if test='ordNo==null or ordNo == ""'>
+		       	AND 1=2
+		       </if>
+	</select>
+
+
+	<insert id="insertLgsDlvByOrdLgsDlv" parameterType="com.plgrim.ncp.biz.claim.data.LgsDlvExtendForClm">
+		INSERT INTO lgs_dlv (dmstc_waybil_no_reg_dt  /* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.insertLgsDlvByOrdLgsDlv][반품 물류 배송 데이터 적재] */
+		                   , ovsea_waybil_no_reg_dt
+		                   , waybil_no_erp_trnsmis_dt
+		                   , dlv_com_trnsmis_dt
+		                   , cal_dt
+		                   , reg_dt
+		                   , udt_dt
+		                   , reality_dlv_cst
+		                   , plc_dlv_cst
+		                   , cncl_dlv_cst
+		                   , rtgod_dlv_cst
+		                   , exchg_dlv_cst
+		                   , stdr_crncy_amt
+		                   , pay_exchg_rt_crncy_amt
+		                   , dlv_cst_cpn_dc_amt
+		                   , dmstc_dlv_cst_plc_sn
+		                   , ovsea_dlv_dmstc_dlv_cst_plc_sn
+		                   , ovsea_dlv_cst_plc_sn
+		                   , dlv_pcupsp_turn
+		                   , dlv_turn
+		                   , dlv_com_trnsmis_tgt_yn
+		                   , dlv_com_trnsmis_yn
+		                   , mail_snd_yn
+		                   , dmstc_waybil_no
+		                   , ovsea_waybil_no
+		                   , ord_no
+		                   , clm_no
+		                   , cvnstor_hdry_aprv_no
+		                   , dlv_cst_cpn_no
+		                   , waybil_no_erp_trnsmis_err_cont
+		                   , regtr_id
+		                   , udter_id
+		                   , dlv_cst_bnd_mbd_cd
+		                   , dlv_com_cd
+		                   , gdgp_stat_cd
+		                   , crncy_cd
+		                   , waybil_no_erp_trnsmis_cd
+                           , dlv_mn_cd )
+		    SELECT dmstc_waybil_no_reg_dt
+		         , ovsea_waybil_no_reg_dt
+		         , waybil_no_erp_trnsmis_dt
+		         , dlv_com_trnsmis_dt
+		         , cal_dt
+		         , SYSDATE AS reg_dt
+		         , SYSDATE AS udt_dt
+		         , 0 AS reality_dlv_cst
+		         , plc_dlv_cst
+		         , 0 AS cncl_dlv_cst
+		         , 0 AS rtgod_dlv_cst
+		         , 0 AS exchg_dlv_cst
+		         , stdr_crncy_amt
+		         , pay_exchg_rt_crncy_amt
+		         , dlv_cst_cpn_dc_amt
+		         , dmstc_dlv_cst_plc_sn
+		         , ovsea_dlv_dmstc_dlv_cst_plc_sn
+		         , ovsea_dlv_cst_plc_sn
+		         , #{dlvPcupspTurn} AS dlv_pcupsp_turn
+		         , #{dlvTurn} + ROWNUM - 1 AS dlv_turn
+		         , 'N' AS dlv_com_trnsmis_tgt_yn           /*TMALL 주문은 택배사 전송하지 않는다.*/
+		         , 'N' AS dlv_com_trnsmis_yn               /*TMALL 주문은 택배사 전송하지 않는다.*/
+		         , mail_snd_yn
+		         , dmstc_waybil_no
+		         , ovsea_waybil_no
+		         , #{ordNo} AS ord_no
+		         , #{clmNo} AS clm_no
+		         , cvnstor_hdry_aprv_no
+		         , dlv_cst_cpn_no
+		         , waybil_no_erp_trnsmis_err_cont
+		         , 'TMALL' AS regtr_id
+		         , 'TMALL' AS udter_id
+		         , dlv_cst_bnd_mbd_cd
+		         , dlv_com_cd
+		         , gdgp_stat_cd
+		         , crncy_cd
+		         , waybil_no_erp_trnsmis_cd
+                 , dlv_mn_cd
+		      FROM lgs_dlv ld
+		     WHERE     1 = 1
+		           AND ld.ord_no = #{ordNo}
+		           AND ld.dlv_pcupsp_turn = #{ordDlvPcupspTurn}
+		       <if test='ordNo==null or ordNo == ""'>
+		       	AND 1=2
+		       </if>		           
+	</insert>
+
+
+	<update id="updateInfAffClmForRegClmNo" parameterType="com.plgrim.ncp.biz.claim.data.InfAffClmDTO">
+		UPDATE INF_AFF_CLM   /* [claim.infAffClm.xml][com.plgrim.ncp.biz.claim.infAffClm.updateInfAffClmForRegClmNo][제휴클레임 테이블에 클레임정보 등록 티몰용][Aether] */
+		SET    
+		       CLM_NO                    = #{clmNo},
+		       CLM_WRHS_GOD_TURN         = #{clmWrhsGodTurn},       
+		       UDTER_ID                  = 'TMALL',
+		       UDT_DT                    = sysdate
+		WHERE  AFF_ORD_SN                = #{affOrdSn}
+		AND    AFF_ORD_TURN              = #{affOrdTurn}
+		AND    AFF_CLM_TURN              = #{affClmTurn}	
+	</update>
+
+
+
+
+</mapper>

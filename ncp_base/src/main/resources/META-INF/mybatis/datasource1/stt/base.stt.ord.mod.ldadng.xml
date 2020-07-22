@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSttOrdModLdadng" parameterType="sttOrdModLdadng" resultType="sttOrdModLdadng">
+		SELECT /* com.plgrim.ncp.base.selectSttOrdModLdadng		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , UDT_DT
+		  FROM STT_ORD_MOD_LDADNG
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSttOrdModLdadng" parameterType="sttOrdModLdadng">
+		UPDATE /* com.plgrim.ncp.base.updateSttOrdModLdadng		Generator(Generator)	2018-05-23 */
+		STT_ORD_MOD_LDADNG SET
+			   UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSttOrdModLdadng" parameterType="sttOrdModLdadng">
+		INSERT /* com.plgrim.ncp.base.insertSttOrdModLdadng		Generator(Generator)	2018-05-23 */
+		INTO   STT_ORD_MOD_LDADNG (
+			   ORD_NO
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSttOrdModLdadng" parameterType="sttOrdModLdadng">
+		DELETE /* com.plgrim.ncp.base.deleteSttOrdModLdadng		Generator(Generator)	2018-05-23 */
+		  FROM STT_ORD_MOD_LDADNG
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

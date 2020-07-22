@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrSnsCnrsHist" parameterType="mbrSnsCnrsHist" resultType="mbrSnsCnrsHist">
+		SELECT /* com.plgrim.ncp.base.selectMbrSnsCnrsHist		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , SNS_CNRS_DATE
+			 , CNRS_SNS_CD
+			 , CNRS_URL
+			 , MALL_ID
+			 , PROMT_SN
+			 , EVT_NO
+			 , STRND_SN
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_SNS_CNRS_HIST
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND SNS_CNRS_DATE = #{snsCnrsDate,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateMbrSnsCnrsHist" parameterType="mbrSnsCnrsHist">
+		UPDATE /* com.plgrim.ncp.base.updateMbrSnsCnrsHist		Generator(Generator)	2018-05-23 */
+		MBR_SNS_CNRS_HIST SET
+			   CNRS_SNS_CD = #{cnrsSnsCd,jdbcType=VARCHAR}
+			 , CNRS_URL = #{cnrsUrl,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+			 , EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			 , STRND_SN = #{strndSn,jdbcType=NUMERIC}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND SNS_CNRS_DATE = #{snsCnrsDate,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertMbrSnsCnrsHist" parameterType="mbrSnsCnrsHist">
+		INSERT /* com.plgrim.ncp.base.insertMbrSnsCnrsHist		Generator(Generator)	2018-05-23 */
+		INTO   MBR_SNS_CNRS_HIST (
+			   MBR_NO
+			 , SNS_CNRS_DATE
+			 , CNRS_SNS_CD
+			 , CNRS_URL
+			 , MALL_ID
+			 , PROMT_SN
+			 , EVT_NO
+			 , STRND_SN
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{snsCnrsDate,jdbcType=TIMESTAMP}
+			 , #{cnrsSnsCd,jdbcType=VARCHAR}
+			 , #{cnrsUrl,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{promtSn,jdbcType=NUMERIC}
+			 , #{evtNo,jdbcType=VARCHAR}
+			 , #{strndSn,jdbcType=NUMERIC}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrSnsCnrsHist" parameterType="mbrSnsCnrsHist">
+		DELETE /* com.plgrim.ncp.base.deleteMbrSnsCnrsHist		Generator(Generator)	2018-05-23 */
+		  FROM MBR_SNS_CNRS_HIST
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND SNS_CNRS_DATE = #{snsCnrsDate,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

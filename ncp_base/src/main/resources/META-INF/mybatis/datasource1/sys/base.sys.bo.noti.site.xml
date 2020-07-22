@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBoNotiSite" parameterType="sysBoNotiSite" resultType="sysBoNotiSite">
+		SELECT /* com.plgrim.ncp.base.selectSysBoNotiSite		Generator(Generator)	2018-05-23 */
+			   BO_SITE_ID
+			 , NOTI_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BO_NOTI_SITE
+		 WHERE 1 = 1
+	   	   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysBoNotiSite" parameterType="sysBoNotiSite">
+		UPDATE /* com.plgrim.ncp.base.updateSysBoNotiSite		Generator(Generator)	2018-05-23 */
+		SYS_BO_NOTI_SITE SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysBoNotiSite" parameterType="sysBoNotiSite">
+		INSERT /* com.plgrim.ncp.base.insertSysBoNotiSite		Generator(Generator)	2018-05-23 */
+		INTO   SYS_BO_NOTI_SITE (
+			   BO_SITE_ID
+			 , NOTI_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{boSiteId,jdbcType=VARCHAR}
+			 , #{notiSn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBoNotiSite" parameterType="sysBoNotiSite">
+		DELETE /* com.plgrim.ncp.base.deleteSysBoNotiSite		Generator(Generator)	2018-05-23 */
+		  FROM SYS_BO_NOTI_SITE
+		 WHERE 1 = 1
+		   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

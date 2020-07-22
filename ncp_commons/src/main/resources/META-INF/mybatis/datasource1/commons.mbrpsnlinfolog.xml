@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.mbrpsnlinfolog">
+	
+	<resultMap id="resultMbrPsnlInfoLog" type="com.plgrim.ncp.commons.result.MbrPsnlInfoLogResult">
+		<result property="mbrPsnlInfoUsefMbd.psnlInfoUsefComCd" column="PSNL_INFO_USEF_COM_CD" />
+		<result property="mbrPsnlInfoUsef.usefJobCd" column="USEF_JOB_CD" />
+		<result property="mbrId" column="MBR_ID" />
+		<result property="usefDtNm" column="USEF_DT_NM" />
+		<result property="mbrPsnlInfoUsef.mallId" column="MALL_ID" />
+		<result property="mbrPsnlInfoUsef.dvcCd" column="DVC_CD" />
+	</resultMap>
+	
+	<!-- 개인정보제공 로그 목록 -->
+	<select id="selectMbrPsnlInfoLogList" parameterType="com.plgrim.ncp.commons.data.MbrPsnlInfoLogDTO" resultMap="resultMbrPsnlInfoLog">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT
+			T.PSNL_INFO_USEF_COM_CD
+			,T.USEF_JOB_CD
+			,T.MBR_ID
+			,TO_CHAR(T.USEF_DT,'YYYY-MM-DD HH24:MI') AS USEF_DT_NM /* 이용일시 */
+			,T.MALL_ID
+			,T.DVC_CD
+		FROM (
+			SELECT
+				(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'PSNL_INFO_USEF_COM' AND LANG_CD= 'KOR' AND CD = MPIUM.PSNL_INFO_USEF_COM_CD) AS PSNL_INFO_USEF_COM_CD /* 개인정보업체명 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = MPIU.USEF_SECT_CD AND LANG_CD= 'KOR' AND CD = MPIU.USEF_JOB_CD) AS USEF_JOB_CD /* 이용업무상세코드 */  
+		      	,(SELECT MBR_ID FROM MBR WHERE MBR_NO = MPIUT.MBR_NO) AS MBR_ID /* 회원ID */
+		      	,MPIU.USEF_DT /* 이용일시 */
+		      	,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = MPIU.MALL_ID) AS MALL_ID /* 사이트 */
+		      	,(SELECT DVC_NM FROM SYS_DVC WHERE MALL_ID = MPIU.MALL_ID AND LANG_CD = 'KOR' AND DVC_CD = MPIU.DVC_CD) AS DVC_CD /* 경로 */
+			FROM MBR_PSNL_INFO_USEF MPIU
+				,MBR_PSNL_INFO_USEF_MBD MPIUM
+		    	,MBR_PSNL_INFO_USEF_TGT MPIUT
+			WHERE 1 = 1
+			AND MPIUM.PSNL_INFO_USEF_MBD_CD = 'PSNL_INFO_COM' /* 개인정보업체 */
+			AND MPIU.PSNL_INFO_USEF_SN = MPIUM.PSNL_INFO_USEF_SN
+		    AND MPIU.PSNL_INFO_USEF_SN = MPIUT.PSNL_INFO_USEF_SN
+		) T 
+		WHERE 1 = 1
+		<include refid="selectMbrPsnlInfoLogListWhere"/>
+		ORDER BY T.USEF_DT DESC, T.PSNL_INFO_USEF_COM_CD
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 개인정보제공 로그 목록 개수 -->
+	<select id="selectMbrPsnlInfoLogListCount" resultType="long"> 
+		SELECT
+			COUNT(*)
+		FROM (
+			SELECT
+				(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'PSNL_INFO_USEF_COM' AND LANG_CD= 'KOR' AND CD = MPIUM.PSNL_INFO_USEF_COM_CD) AS PSNL_INFO_USEF_COM_CD /* 개인정보업체명 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = MPIU.USEF_SECT_CD AND LANG_CD= 'KOR' AND CD = MPIU.USEF_JOB_CD) AS USEF_JOB_CD /* 이용업무상세코드 */  
+		      	,(SELECT MBR_ID FROM MBR WHERE MBR_NO = MPIUT.MBR_NO) AS MBR_ID /* 회원ID */
+		      	,MPIU.USEF_DT /* 이용일시 */
+		      	,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = MPIU.MALL_ID) AS MALL_ID /* 사이트 */
+		      	,(SELECT DVC_NM FROM SYS_DVC WHERE MALL_ID = MPIU.MALL_ID AND LANG_CD = 'KOR' AND DVC_CD = MPIU.DVC_CD) AS DVC_CD /* 경로 */
+			FROM MBR_PSNL_INFO_USEF MPIU
+				,MBR_PSNL_INFO_USEF_MBD MPIUM
+		    	,MBR_PSNL_INFO_USEF_TGT MPIUT
+			WHERE 1 = 1
+			AND MPIUM.PSNL_INFO_USEF_MBD_CD = 'PSNL_INFO_COM' /* 개인정보업체 */
+			AND MPIU.PSNL_INFO_USEF_SN = MPIUM.PSNL_INFO_USEF_SN
+		    AND MPIU.PSNL_INFO_USEF_SN = MPIUT.PSNL_INFO_USEF_SN
+		) T
+		WHERE 1 = 1
+		<include refid="selectMbrPsnlInfoLogListWhere"/>
+	</select>
+	
+	<!-- 개인정보제공 로그 목록 엑셀-->
+	<select id="selectMbrPsnlInfoLogListExcel" parameterType="com.plgrim.ncp.commons.data.MbrPsnlInfoLogDTO" resultType="java.util.LinkedHashMap">
+		SELECT
+			ROWNUM AS NUM
+			,T.PSNL_INFO_USEF_COM_CD
+			,T.USEF_JOB_CD
+			,T.MBR_ID
+			,TO_CHAR(T.USEF_DT,'YYYY-MM-DD HH24:MI') AS USEF_DT_NM /* 이용일시 */
+			,T.MALL_ID
+			,T.DVC_CD
+		FROM (
+			SELECT
+				(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'PSNL_INFO_USEF_COM' AND LANG_CD= 'KOR' AND CD = MPIUM.PSNL_INFO_USEF_COM_CD) AS PSNL_INFO_USEF_COM_CD /* 개인정보업체명 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = MPIU.USEF_SECT_CD AND LANG_CD= 'KOR' AND CD = MPIU.USEF_JOB_CD) AS USEF_JOB_CD /* 이용업무상세코드 */  
+		      	,(SELECT MBR_ID FROM MBR WHERE MBR_NO = MPIUT.MBR_NO) AS MBR_ID /* 회원ID */
+		      	,MPIU.USEF_DT /* 이용일시 */
+		      	,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = MPIU.MALL_ID) AS MALL_ID /* 사이트 */
+		      	,(SELECT DVC_NM FROM SYS_DVC WHERE MALL_ID = MPIU.MALL_ID AND LANG_CD = 'KOR' AND DVC_CD = MPIU.DVC_CD) AS DVC_CD /* 경로 */
+			FROM MBR_PSNL_INFO_USEF MPIU
+				,MBR_PSNL_INFO_USEF_MBD MPIUM
+		    	,MBR_PSNL_INFO_USEF_TGT MPIUT
+			WHERE 1 = 1
+			AND MPIUM.PSNL_INFO_USEF_MBD_CD = 'PSNL_INFO_COM' /* 개인정보업체 */
+			AND MPIU.PSNL_INFO_USEF_SN = MPIUM.PSNL_INFO_USEF_SN
+		    AND MPIU.PSNL_INFO_USEF_SN = MPIUT.PSNL_INFO_USEF_SN
+		) T 
+		WHERE 1 = 1
+		<include refid="selectMbrPsnlInfoLogListWhere"/>
+		ORDER BY T.USEF_DT DESC, T.PSNL_INFO_USEF_COM_CD
+	</select>
+	
+	<!-- 개인정보제공 로그 목록 조건문 -->
+	<sql id="selectMbrPsnlInfoLogListWhere"> 
+		<if test='search.psnlInfoUsefComCd != null and search.psnlInfoUsefComCd != ""'>
+			AND UPPER(T.PSNL_INFO_USEF_COM_CD) LIKE '%' || UPPER(#{search.psnlInfoUsefComCd}) || '%' /* 수탁업체명 */
+		</if>
+		<if test='search.mbrId != null and search.mbrId != ""'>
+			AND UPPER(T.MBR_ID) = UPPER(#{search.mbrId}) /* 회원ID */
+		</if>
+		<if test='search.usefBegDt != null and search.usefBegDt != "" and search.usefEndDt != null and search.usefEndDt != ""'>
+			AND T.USEF_DT >= TO_DATE(#{search.usefBegDt}, 'YYYY-MM-DD') AND T.USEF_DT &lt;= TO_DATE(#{search.usefEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 이용일시 */
+		</if>
+	</sql>
+</mapper>

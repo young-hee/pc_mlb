@@ -1,0 +1,47 @@
+rootProject.name = 'ncp_build'
+
+def SUB_PROJECTS = [
+	"ncp_base",
+	"ncp_batch_server",
+	"ncp_cmp",
+	"ncp_commons",
+	"ncp_config",
+	"ncp_if",
+	"ncp_if_internal_server",
+	"ncp_if_external_server",
+	"ncp_web_bo",
+	"ncp_web_mb_dx",
+	"ncp_web_pc_dx",
+	"ncp_framework",
+	"ncp_web_tutorial",
+	"ncp_web_mb_mlb",
+	"ncp_web_pc_mlb",
+	"ncp_web_mb_sa",
+	"ncp_web_pc_sa",
+]
+
+if (file("workspaces").exists()) {
+	println "In CI Server"
+
+	gradle.ext["PREFIX"] = ":workspaces"
+	SUB_PROJECTS.each { sub ->
+		def prjPath =  "workspaces:${sub}"
+		include prjPath
+	}
+
+	NEW_PROJECTS.each { sub ->
+		if ( file("workspaces/$sub").exists()) {
+			def prjPath =  "workspaces:${sub}"
+			include prjPath
+		}
+	}
+}
+else {
+	println "In Local Server"
+	gradle.ext["PREFIX"] = ""
+	//  이클립스 같은 플랫한 구조의 멀티 프로젝트의 프로젝트 목록을 지정함
+	SUB_PROJECTS.each { sub ->
+		includeFlat sub
+	}
+
+}

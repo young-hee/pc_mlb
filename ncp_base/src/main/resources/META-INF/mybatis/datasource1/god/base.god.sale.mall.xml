@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodSaleMall" parameterType="godSaleMall" resultType="godSaleMall">
+		SELECT /* com.plgrim.ncp.base.selectGodSaleMall		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , MALL_ID
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_SALE_MALL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodSaleMall" parameterType="godSaleMall">
+		UPDATE /* com.plgrim.ncp.base.updateGodSaleMall		Generator(Generator)	2018-05-23 */
+		GOD_SALE_MALL SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodSaleMall" parameterType="godSaleMall">
+		INSERT /* com.plgrim.ncp.base.insertGodSaleMall		Generator(Generator)	2018-05-23 */
+		INTO   GOD_SALE_MALL (
+			   GOD_NO
+			 , MALL_ID
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodSaleMall" parameterType="godSaleMall">
+		DELETE /* com.plgrim.ncp.base.deleteGodSaleMall		Generator(Generator)	2018-05-23 */
+		  FROM GOD_SALE_MALL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

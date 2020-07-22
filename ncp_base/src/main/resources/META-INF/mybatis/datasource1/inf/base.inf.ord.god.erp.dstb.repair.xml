@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfOrdGodErpDstbRepair" parameterType="infOrdGodErpDstbRepair" resultType="infOrdGodErpDstbRepair">
+		SELECT /* com.plgrim.ncp.base.selectInfOrdGodErpDstbRepair		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , REPAIR_NO
+			 , REPAIR_TP_CD
+			 , REPAIR_RECR_NM
+			 , REPAIR_RECR_PHON
+			 , REPAIR_RCEPT_CHRGER_NM
+			 , REPAIR_RCEPT_SHOP_ID
+			 , REPAIR_RCEPT_CHRGER_PHON
+			 , REPAIR_RCEPT_DT
+			 , REPAIR_CNCL_DT
+			 , REPAIR_COMPT_YN
+			 , REPAIR_COMPT_CD
+			 , REPAIR_COMPT_DT
+			 , REPAIR_CONT
+			 , REPAIR_DLV_SECT_CD
+			 , REPAIR_DLV_HDRY_COM_CD
+			 , REPAIR_DLV_WAYBIL_NO
+			 , CLM_NO
+			 , CLM_WRHS_GOD_TURN
+			 , BADN_GOD_AFF_COM_CNFIRM_DT
+			 , BADN_GOD_CNFIRM_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_ORD_GOD_ERP_DSTB_REPAIR
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateInfOrdGodErpDstbRepair" parameterType="infOrdGodErpDstbRepair">
+		UPDATE /* com.plgrim.ncp.base.updateInfOrdGodErpDstbRepair		Generator(Generator)	2018-05-23 */
+		INF_ORD_GOD_ERP_DSTB_REPAIR SET
+			   REPAIR_NO = #{repairNo,jdbcType=VARCHAR}
+			 , REPAIR_TP_CD = #{repairTpCd,jdbcType=VARCHAR}
+			 , REPAIR_RECR_NM = #{repairRecrNm,jdbcType=VARCHAR}
+			 , REPAIR_RECR_PHON = #{repairRecrPhon,jdbcType=VARCHAR}
+			 , REPAIR_RCEPT_CHRGER_NM = #{repairRceptChrgerNm,jdbcType=VARCHAR}
+			 , REPAIR_RCEPT_SHOP_ID = #{repairRceptShopId,jdbcType=VARCHAR}
+			 , REPAIR_RCEPT_CHRGER_PHON = #{repairRceptChrgerPhon,jdbcType=VARCHAR}
+			 , REPAIR_RCEPT_DT = #{repairRceptDt,jdbcType=TIMESTAMP}
+			 , REPAIR_CNCL_DT = #{repairCnclDt,jdbcType=TIMESTAMP}
+			 , REPAIR_COMPT_YN = #{repairComptYn,jdbcType=VARCHAR}
+			 , REPAIR_COMPT_CD = #{repairComptCd,jdbcType=VARCHAR}
+			 , REPAIR_COMPT_DT = #{repairComptDt,jdbcType=TIMESTAMP}
+			 , REPAIR_CONT = #{repairCont,jdbcType=VARCHAR}
+			 , REPAIR_DLV_SECT_CD = #{repairDlvSectCd,jdbcType=VARCHAR}
+			 , REPAIR_DLV_HDRY_COM_CD = #{repairDlvHdryComCd,jdbcType=VARCHAR}
+			 , REPAIR_DLV_WAYBIL_NO = #{repairDlvWaybilNo,jdbcType=VARCHAR}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , BADN_GOD_AFF_COM_CNFIRM_DT = #{badnGodAffComCnfirmDt,jdbcType=TIMESTAMP}
+			 , BADN_GOD_CNFIRM_ADMIN_ID = #{badnGodCnfirmAdminId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertInfOrdGodErpDstbRepair" parameterType="infOrdGodErpDstbRepair">
+		INSERT /* com.plgrim.ncp.base.insertInfOrdGodErpDstbRepair		Generator(Generator)	2018-05-23 */
+		INTO   INF_ORD_GOD_ERP_DSTB_REPAIR (
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , REPAIR_NO
+			 , REPAIR_TP_CD
+			 , REPAIR_RECR_NM
+			 , REPAIR_RECR_PHON
+			 , REPAIR_RCEPT_CHRGER_NM
+			 , REPAIR_RCEPT_SHOP_ID
+			 , REPAIR_RCEPT_CHRGER_PHON
+			 , REPAIR_RCEPT_DT
+			 , REPAIR_CNCL_DT
+			 , REPAIR_COMPT_YN
+			 , REPAIR_COMPT_CD
+			 , REPAIR_COMPT_DT
+			 , REPAIR_CONT
+			 , REPAIR_DLV_SECT_CD
+			 , REPAIR_DLV_HDRY_COM_CD
+			 , REPAIR_DLV_WAYBIL_NO
+			 , CLM_NO
+			 , CLM_WRHS_GOD_TURN
+			 , BADN_GOD_AFF_COM_CNFIRM_DT
+			 , BADN_GOD_CNFIRM_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{qtyTurn,jdbcType=NUMERIC}
+			 , #{repairNo,jdbcType=VARCHAR}
+			 , #{repairTpCd,jdbcType=VARCHAR}
+			 , #{repairRecrNm,jdbcType=VARCHAR}
+			 , #{repairRecrPhon,jdbcType=VARCHAR}
+			 , #{repairRceptChrgerNm,jdbcType=VARCHAR}
+			 , #{repairRceptShopId,jdbcType=VARCHAR}
+			 , #{repairRceptChrgerPhon,jdbcType=VARCHAR}
+			 , #{repairRceptDt,jdbcType=TIMESTAMP}
+			 , #{repairCnclDt,jdbcType=TIMESTAMP}
+			 , #{repairComptYn,jdbcType=VARCHAR}
+			 , #{repairComptCd,jdbcType=VARCHAR}
+			 , #{repairComptDt,jdbcType=TIMESTAMP}
+			 , #{repairCont,jdbcType=VARCHAR}
+			 , #{repairDlvSectCd,jdbcType=VARCHAR}
+			 , #{repairDlvHdryComCd,jdbcType=VARCHAR}
+			 , #{repairDlvWaybilNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , #{badnGodAffComCnfirmDt,jdbcType=TIMESTAMP}
+			 , #{badnGodCnfirmAdminId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfOrdGodErpDstbRepair" parameterType="infOrdGodErpDstbRepair">
+		DELETE /* com.plgrim.ncp.base.deleteInfOrdGodErpDstbRepair		Generator(Generator)	2018-05-23 */
+		  FROM INF_ORD_GOD_ERP_DSTB_REPAIR
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

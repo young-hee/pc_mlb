@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.memo">
+
+
+	<insert id="insertCsoCnsltMemo"  parameterType="csoCnsltMemo">
+		INSERT INTO CSO_CNSLT_MEMO (  /* [callcenter.memo.xml][insertCsoCnsltMemo][CS 메모저장][Aether] */
+		                                MEMO_SN
+		                                , MEMO_REGTR_ID
+		                                , MEMO_TP_CD
+		                                , CSTMR_TP_CD
+		                                , EXPSR_YN
+		                                , MEMO_CONT
+		                                , ORD_NO
+		                                , CLM_NO
+		                                , MBR_NO
+		                                , GOD_NO
+		                                , REGTR_ID
+		                                , REG_DT
+		                                , UDTER_ID
+		                                , UDT_DT)
+		VALUES
+		(
+		  SQ_CSO_CNSLT_MEMO.NEXTVAL,
+		 #{memoRegtrId, jdbcType=VARCHAR},
+		 #{memoTpCd, jdbcType=VARCHAR},
+		 #{cstmrTpCd, jdbcType=VARCHAR},
+		 #{expsrYn, jdbcType=VARCHAR},
+		 #{memoCont, jdbcType=VARCHAR},
+		 #{ordNo, jdbcType=VARCHAR},
+		 #{clmNo, jdbcType=VARCHAR},
+		 #{mbrNo, jdbcType=VARCHAR},
+		 #{godNo, jdbcType=VARCHAR},
+		 #{regtrId, jdbcType=VARCHAR},
+		 sysdate,
+		 #{udterId, jdbcType=VARCHAR},
+		 sysdate
+		 )
+	</insert>
+
+
+	<select id="selectCsoCnsltMemoList" parameterType="csoCnsltMemo" resultType="com.plgrim.ncp.biz.callcenter.data.CsoCnsltMemoExtendDTO">        
+        SELECT CCM.MEMO_SN AS memoSn    /* [callcenter.memo.xml][selectCsoCnsltMemoList][CS 메모 리스트][Aether] */
+               ,CCM.MEMO_REGTR_ID AS memoRegtrId
+               ,CCM.MEMO_TP_CD AS memoTpCd
+               ,CCM.CSTMR_TP_CD AS cstmrTpCd
+               ,CCM.EXPSR_YN AS expsrYn
+               ,CCM.MEMO_CONT AS memoCont
+               ,CCM.ORD_NO AS ordNo
+               ,CCM.CLM_NO AS clmNo
+               ,CCM.MBR_NO AS mbrNo
+               ,CCM.REGTR_ID AS regtrId
+               ,CCM.REG_DT AS regDt
+               ,CCM.UDTER_ID AS udterId
+               ,CCM.UDT_DT AS udtDt
+               ,sa.ADMIN_NM||'('||sa.ADMIN_ID||')' AS regTrInfo
+          FROM CSO_CNSLT_MEMO ccm
+          LEFT OUTER JOIN SYS_ADMIN sa ON sa.ADMIN_ID = CCM.MEMO_REGTR_ID 
+         WHERE 1=1
+           <if test='mbrNo != null and mbrNo != ""'>
+           	AND ccm.MBR_NO = #{mbrNo}
+           </if>
+           <if test='expsrYn != null and expsrYn != ""'>
+           	AND ccm.EXPSR_YN = #{expsrYn}
+           </if>
+           <if test='ordNo != null and ordNo != ""'>
+           	AND ccm.ORD_NO = #{ordNo}
+           </if>
+           <if test='clmNo != null and clmNo != ""'>
+           	AND ccm.CLM_NO = #{clmNo}
+           </if>
+           <if test='memoTpCd != null and memoTpCd != ""'>
+           	AND CCM.MEMO_TP_CD = #{memoTpCd}
+           </if>        
+           <if test='(mbrNo == null or mbrNo == "") and (expsrYn == null or expsrYn == "") and (ordNo == null or ordNo == "") and (clmNo == null or clmNo == "") and (memoTpCd == null or memoTpCd == "")'>
+		   	AND 1=0           
+           </if>   
+           <if test='regtrId != null and regtrId != ""'>
+            AND CCM.REGTR_ID IN
+            (
+            	SELECT admin_id
+				FROM SYS_ADMIN
+				WHERE com_id IN (
+				  SELECT com_id
+				  FROM SYS_ADMIN
+				  WHERE admin_id = #{regtrId}
+				)
+            )
+           </if>
+         ORDER BY CCM.REG_DT DESC
+	</select>
+	
+	
+	<select id="getCsoCnsltMemo" parameterType="csoCnsltMemo" resultType="csoCnsltMemo">
+	select * /* [callcenter.memo.xml][selectCsoCnsltMemoList][CS 메모 조회 해당조건의 가장 최신메모만 반환한다.][Aether] */
+	from( 
+        SELECT 
+                MEMO_SN
+               ,MEMO_REGTR_ID
+               ,MEMO_TP_CD
+               ,CSTMR_TP_CD
+               ,EXPSR_YN
+               ,MEMO_CONT
+               ,ORD_NO
+               ,CLM_NO
+               ,MBR_NO
+               ,GOD_NO
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    CSO_CNSLT_MEMO
+        WHERE   1 = 1
+        <if test='memoSn != null and memoSn != ""'>
+        	AND     MEMO_SN = #{memoSn,jdbcType=NUMERIC}
+        </if>
+        <if test='memoTpCd != null and memoTpCd != ""'>
+        	AND     MEMO_TP_CD = #{memoTpCd,jdbcType=VARCHAR}
+        </if>        
+		<if test='ordNo != null and ordNo != ""'>
+        	AND     ORD_NO = #{ordNo,jdbcType=VARCHAR}
+        </if>
+        <if test='clmNo != null and clmNo != ""'>
+        	AND     CLM_NO = #{clmNo,jdbcType=VARCHAR}
+        </if>
+        <if test='godNo != null and godNo != ""'>
+            AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+        </if>
+        <if test='expsrYn != null and expsrYn != ""'>
+        	AND     EXPSR_YN = #{expsrYn,jdbcType=VARCHAR}
+        </if>       
+        <if test='regtrId != null and regtrId != ""'>
+            AND REGTR_ID IN
+            (
+            	SELECT admin_id
+				FROM SYS_ADMIN
+				WHERE com_id IN (
+				  SELECT com_id
+				  FROM SYS_ADMIN
+				  WHERE admin_id = #{regtrId}
+				)
+            )
+           </if>
+        	ORDER BY  MEMO_SN DESC
+        ) where rownum = 1
+    </select>
+	
+	<update id="updateCsoCnsltMemo" parameterType="csoCnsltMemo">	
+		UPDATE cso_cnslt_memo
+		   SET 
+		   memo_cont = #{memoCont}
+		   , udter_id = #{udterId}
+		   , udt_dt = SYSDATE
+		 WHERE memo_sn = #{memoSn}	
+	</update>
+	
+
+	
+</mapper>

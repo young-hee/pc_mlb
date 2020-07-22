@@ -1,0 +1,34 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="com.plgrim.ncp.framework.utils.JSPEnvHelper"%>
+<%@page import="com.plgrim.ncp.framework.utils.CookieUtil"%>
+<%-- javascript bootstrapping variables --%>
+<script languag="javascript">
+(function(w) {
+	// global variables : for user objects
+	w.BASE = {
+		imageUrl: "${_env.getProperty('ncp.image.url')}",
+		webResourceUrl: "${_env.getProperty('ncp.web.resource.url')}",
+		locale: "${_locale}",
+
+	    csrf: {
+	    	header_key: "X-CSRF-TOKEN",
+	        key: "<c:out value="${_csrf.parameterName}"/>",
+	        value: "<c:out value="${_csrf.token}"/>"
+	    }
+	};
+	
+	w.USER = {
+		mbrNo: "${_user.mbr.mbrNo}",
+		mbrId: "${_user.mbr.mbrId}",
+		mbrNm: "${_user.mbr.mbrNm}",
+		mbrSexSectCd: "${_user.mbr.mbrSexSectCd}",
+		mbrEmail: "${_user.mbr.mbrEmail}",
+	};
+	
+	w.MESSAGES = {};
+	w.JSRENDER_HELPER = {
+		messages : MESSAGES
+	};
+})(window);
+</script>
+<%-- javascript bootstrapping variables --%>

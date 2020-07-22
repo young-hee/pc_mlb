@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodNtfcDetail" parameterType="godNtfcDetail" resultType="godNtfcDetail">
+		SELECT /* com.plgrim.ncp.base.selectGodNtfcDetail		Generator(Generator)	2018-11-08 */
+			   GOD_NO
+			 , LANG_CD
+			 , PRDLST_GRP_CD
+			 , PCL_MATTER_DSCR
+			 , KC_CRTFC_DSCR
+			 , IMPR_STTEMNT_DSCR
+			 , KFDA_JDGMN_YN
+			 , USE_AGE_DSCR
+			 , WRGRNTI_OFFER_DSCR
+			 , COLOR_DSCR
+			 , MATR_DSCR
+			 , MG_DSCR
+			 , MEASR_DSCR
+			 , CPST_DSCR
+			 , BUK_INTRCN_DSCR
+			 , PCL_IRDNT_DSCR
+			 , DTL_MATTER_DSCR
+			 , MAKR_NM
+			 , MNFCTUR_NATION_NM
+			 , ORG_PL_NM
+			 , FNCL_CSMT_YN
+			 , LNDR_CD
+			 , LNDR_MTHD_DSCR
+			 , MNFCTUR_DATE
+			 , DLV_INSTL_COST_DSCR
+			 , USE_PD_DSCR
+			 , OFFER_MENMTHD_DSCR
+			 , MIN_SPEC_ESSNTL_SW_DSCR
+			 , CONTR_TRMNAT_DSCR
+			 , QLTY_ASSRNC_STDR_DSCR
+			 , CRTFC_PRMISN_DSCR
+			 , IMPRCOM_NM
+			 , TRTMNT_ATND_MATTER_DSCR
+			 , CSMR_CNSLT_RELAT_DSCR
+			 , GOD_KND_DSCR
+			 , GOD_SFETUR_DSCR
+			 , GOD_DETAIL_DSCR
+			 , GOD_DETAIL_ADIT_DSCR
+			 , AFF_COM_GOD_DETAIL_DSCR
+			 , IMG_ALT_TAG_NM
+			 , MODEL_INFO_DSCR
+			 , ACMSR_SIZE_DSCR
+			 , SIZE_LKTB_HTML
+			 , MOBILE_SIZE_LKTB_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_NTFC_DETAIL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodNtfcDetail" parameterType="godNtfcDetail">
+		UPDATE /* com.plgrim.ncp.base.updateGodNtfcDetail		Generator(Generator)	2018-11-08 */
+		GOD_NTFC_DETAIL SET
+			   PRDLST_GRP_CD = #{prdlstGrpCd,jdbcType=VARCHAR}
+			 , PCL_MATTER_DSCR = #{pclMatterDscr,jdbcType=VARCHAR}
+			 , KC_CRTFC_DSCR = #{kcCrtfcDscr,jdbcType=VARCHAR}
+			 , IMPR_STTEMNT_DSCR = #{imprSttemntDscr,jdbcType=VARCHAR}
+			 , KFDA_JDGMN_YN = #{kfdaJdgmnYn,jdbcType=VARCHAR}
+			 , USE_AGE_DSCR = #{useAgeDscr,jdbcType=VARCHAR}
+			 , WRGRNTI_OFFER_DSCR = #{wrgrntiOfferDscr,jdbcType=VARCHAR}
+			 , COLOR_DSCR = #{colorDscr,jdbcType=VARCHAR}
+			 , MATR_DSCR = #{matrDscr,jdbcType=VARCHAR}
+			 , MG_DSCR = #{mgDscr,jdbcType=VARCHAR}
+			 , MEASR_DSCR = #{measrDscr,jdbcType=VARCHAR}
+			 , CPST_DSCR = #{cpstDscr,jdbcType=VARCHAR}
+			 , BUK_INTRCN_DSCR = #{bukIntrcnDscr,jdbcType=VARCHAR}
+			 , PCL_IRDNT_DSCR = #{pclIrdntDscr,jdbcType=VARCHAR}
+			 , DTL_MATTER_DSCR = #{dtlMatterDscr,jdbcType=VARCHAR}
+			 , MAKR_NM = #{makrNm,jdbcType=VARCHAR}
+			 , MNFCTUR_NATION_NM = #{mnfcturNationNm,jdbcType=VARCHAR}
+			 , ORG_PL_NM = #{orgPlNm,jdbcType=VARCHAR}
+			 , FNCL_CSMT_YN = #{fnclCsmtYn,jdbcType=VARCHAR}
+			 , LNDR_CD = #{lndrCd,jdbcType=VARCHAR}
+			 , LNDR_MTHD_DSCR = #{lndrMthdDscr,jdbcType=VARCHAR}
+			 , MNFCTUR_DATE = #{mnfcturDate,jdbcType=VARCHAR}
+			 , DLV_INSTL_COST_DSCR = #{dlvInstlCostDscr,jdbcType=VARCHAR}
+			 , USE_PD_DSCR = #{usePdDscr,jdbcType=VARCHAR}
+			 , OFFER_MENMTHD_DSCR = #{offerMenmthdDscr,jdbcType=VARCHAR}
+			 , MIN_SPEC_ESSNTL_SW_DSCR = #{minSpecEssntlSwDscr,jdbcType=VARCHAR}
+			 , CONTR_TRMNAT_DSCR = #{contrTrmnatDscr,jdbcType=VARCHAR}
+			 , QLTY_ASSRNC_STDR_DSCR = #{qltyAssrncStdrDscr,jdbcType=VARCHAR}
+			 , CRTFC_PRMISN_DSCR = #{crtfcPrmisnDscr,jdbcType=VARCHAR}
+			 , IMPRCOM_NM = #{imprcomNm,jdbcType=VARCHAR}
+			 , TRTMNT_ATND_MATTER_DSCR = #{trtmntAtndMatterDscr,jdbcType=VARCHAR}
+			 , CSMR_CNSLT_RELAT_DSCR = #{csmrCnsltRelatDscr,jdbcType=VARCHAR}
+			 , GOD_KND_DSCR = #{godKndDscr,jdbcType=VARCHAR}
+			 , GOD_SFETUR_DSCR = #{godSfeturDscr,jdbcType=VARCHAR}
+			 , GOD_DETAIL_DSCR = #{godDetailDscr,jdbcType=CLOB}
+			 , GOD_DETAIL_ADIT_DSCR = #{godDetailAditDscr,jdbcType=CLOB}
+			 , AFF_COM_GOD_DETAIL_DSCR = #{affComGodDetailDscr,jdbcType=CLOB}
+			 , IMG_ALT_TAG_NM = #{imgAltTagNm,jdbcType=VARCHAR}
+			 , MODEL_INFO_DSCR = #{modelInfoDscr,jdbcType=VARCHAR}
+			 , ACMSR_SIZE_DSCR = #{acmsrSizeDscr,jdbcType=VARCHAR}
+			 , SIZE_LKTB_HTML = #{sizeLktbHtml,jdbcType=CLOB}
+			 , MOBILE_SIZE_LKTB_HTML = #{mobileSizeLktbHtml,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodNtfcDetail" parameterType="godNtfcDetail">
+		INSERT /* com.plgrim.ncp.base.insertGodNtfcDetail		Generator(Generator)	2018-11-08 */
+		INTO   GOD_NTFC_DETAIL (
+			   GOD_NO
+			 , LANG_CD
+			 , PRDLST_GRP_CD
+			 , PCL_MATTER_DSCR
+			 , KC_CRTFC_DSCR
+			 , IMPR_STTEMNT_DSCR
+			 , KFDA_JDGMN_YN
+			 , USE_AGE_DSCR
+			 , WRGRNTI_OFFER_DSCR
+			 , COLOR_DSCR
+			 , MATR_DSCR
+			 , MG_DSCR
+			 , MEASR_DSCR
+			 , CPST_DSCR
+			 , BUK_INTRCN_DSCR
+			 , PCL_IRDNT_DSCR
+			 , DTL_MATTER_DSCR
+			 , MAKR_NM
+			 , MNFCTUR_NATION_NM
+			 , ORG_PL_NM
+			 , FNCL_CSMT_YN
+			 , LNDR_CD
+			 , LNDR_MTHD_DSCR
+			 , MNFCTUR_DATE
+			 , DLV_INSTL_COST_DSCR
+			 , USE_PD_DSCR
+			 , OFFER_MENMTHD_DSCR
+			 , MIN_SPEC_ESSNTL_SW_DSCR
+			 , CONTR_TRMNAT_DSCR
+			 , QLTY_ASSRNC_STDR_DSCR
+			 , CRTFC_PRMISN_DSCR
+			 , IMPRCOM_NM
+			 , TRTMNT_ATND_MATTER_DSCR
+			 , CSMR_CNSLT_RELAT_DSCR
+			 , GOD_KND_DSCR
+			 , GOD_SFETUR_DSCR
+			 , GOD_DETAIL_DSCR
+			 , GOD_DETAIL_ADIT_DSCR
+			 , AFF_COM_GOD_DETAIL_DSCR
+			 , IMG_ALT_TAG_NM
+			 , MODEL_INFO_DSCR
+			 , ACMSR_SIZE_DSCR
+			 , SIZE_LKTB_HTML
+			 , MOBILE_SIZE_LKTB_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{prdlstGrpCd,jdbcType=VARCHAR}
+			 , #{pclMatterDscr,jdbcType=VARCHAR}
+			 , #{kcCrtfcDscr,jdbcType=VARCHAR}
+			 , #{imprSttemntDscr,jdbcType=VARCHAR}
+			 , #{kfdaJdgmnYn,jdbcType=VARCHAR}
+			 , #{useAgeDscr,jdbcType=VARCHAR}
+			 , #{wrgrntiOfferDscr,jdbcType=VARCHAR}
+			 , #{colorDscr,jdbcType=VARCHAR}
+			 , #{matrDscr,jdbcType=VARCHAR}
+			 , #{mgDscr,jdbcType=VARCHAR}
+			 , #{measrDscr,jdbcType=VARCHAR}
+			 , #{cpstDscr,jdbcType=VARCHAR}
+			 , #{bukIntrcnDscr,jdbcType=VARCHAR}
+			 , #{pclIrdntDscr,jdbcType=VARCHAR}
+			 , #{dtlMatterDscr,jdbcType=VARCHAR}
+			 , #{makrNm,jdbcType=VARCHAR}
+			 , #{mnfcturNationNm,jdbcType=VARCHAR}
+			 , #{orgPlNm,jdbcType=VARCHAR}
+			 , #{fnclCsmtYn,jdbcType=VARCHAR}
+			 , #{lndrCd,jdbcType=VARCHAR}
+			 , #{lndrMthdDscr,jdbcType=VARCHAR}
+			 , #{mnfcturDate,jdbcType=VARCHAR}
+			 , #{dlvInstlCostDscr,jdbcType=VARCHAR}
+			 , #{usePdDscr,jdbcType=VARCHAR}
+			 , #{offerMenmthdDscr,jdbcType=VARCHAR}
+			 , #{minSpecEssntlSwDscr,jdbcType=VARCHAR}
+			 , #{contrTrmnatDscr,jdbcType=VARCHAR}
+			 , #{qltyAssrncStdrDscr,jdbcType=VARCHAR}
+			 , #{crtfcPrmisnDscr,jdbcType=VARCHAR}
+			 , #{imprcomNm,jdbcType=VARCHAR}
+			 , #{trtmntAtndMatterDscr,jdbcType=VARCHAR}
+			 , #{csmrCnsltRelatDscr,jdbcType=VARCHAR}
+			 , #{godKndDscr,jdbcType=VARCHAR}
+			 , #{godSfeturDscr,jdbcType=VARCHAR}
+			 , #{godDetailDscr,jdbcType=CLOB}
+			 , #{godDetailAditDscr,jdbcType=CLOB}
+			 , #{affComGodDetailDscr,jdbcType=CLOB}
+			 , #{imgAltTagNm,jdbcType=VARCHAR}
+			 , #{modelInfoDscr,jdbcType=VARCHAR}
+			 , #{acmsrSizeDscr,jdbcType=VARCHAR}
+			 , #{sizeLktbHtml,jdbcType=CLOB}
+			 , #{mobileSizeLktbHtml,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodNtfcDetail" parameterType="godNtfcDetail">
+		DELETE /* com.plgrim.ncp.base.deleteGodNtfcDetail		Generator(Generator)	2018-11-08 */
+		  FROM GOD_NTFC_DETAIL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

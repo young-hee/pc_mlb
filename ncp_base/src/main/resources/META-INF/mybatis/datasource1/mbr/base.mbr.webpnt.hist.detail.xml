@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrWebpntHistDetail" parameterType="mbrWebpntHistDetail" resultType="mbrWebpntHistDetail">
+		SELECT /* com.plgrim.ncp.base.selectMbrWebpntHistDetail		Generator(Generator)	2018-05-23 */
+			   WEBPNT_SN
+			 , HIST_DT
+			 , UPPER_WEBPNT_SN
+			 , MBR_NO
+			 , WEBPNT_TP_CD
+			 , WEBPNT_RESN_CD
+			 , WEBPNT_DETAIL_RESN_CD
+			 , WEBPNT_STAT_CD
+			 , WEBPNT_AMT
+			 , REMNDR_WEBPNT_AMT
+			 , OCCUR_DT
+			 , USE_BEG_DT
+			 , USE_END_DT
+			 , CNCL_DT
+			 , RESN_DSCR
+			 , MALL_ID
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , CLM_NO
+			 , CLM_WRHS_GOD_TURN
+			 , EVT_NO
+			 , GOD_NO
+			 , GOD_EVL_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_WEBPNT_HIST_DETAIL
+		 WHERE 1 = 1
+	   	   AND WEBPNT_SN = #{webpntSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateMbrWebpntHistDetail" parameterType="mbrWebpntHistDetail">
+		UPDATE /* com.plgrim.ncp.base.updateMbrWebpntHistDetail		Generator(Generator)	2018-05-23 */
+		MBR_WEBPNT_HIST_DETAIL SET
+			   UPPER_WEBPNT_SN = #{upperWebpntSn,jdbcType=NUMERIC}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , WEBPNT_TP_CD = #{webpntTpCd,jdbcType=VARCHAR}
+			 , WEBPNT_RESN_CD = #{webpntResnCd,jdbcType=VARCHAR}
+			 , WEBPNT_DETAIL_RESN_CD = #{webpntDetailResnCd,jdbcType=VARCHAR}
+			 , WEBPNT_STAT_CD = #{webpntStatCd,jdbcType=VARCHAR}
+			 , WEBPNT_AMT = #{webpntAmt,jdbcType=NUMERIC}
+			 , REMNDR_WEBPNT_AMT = #{remndrWebpntAmt,jdbcType=NUMERIC}
+			 , OCCUR_DT = #{occurDt,jdbcType=TIMESTAMP}
+			 , USE_BEG_DT = #{useBegDt,jdbcType=TIMESTAMP}
+			 , USE_END_DT = #{useEndDt,jdbcType=TIMESTAMP}
+			 , CNCL_DT = #{cnclDt,jdbcType=TIMESTAMP}
+			 , RESN_DSCR = #{resnDscr,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+			 , QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND WEBPNT_SN = #{webpntSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertMbrWebpntHistDetail" parameterType="mbrWebpntHistDetail">
+		INSERT /* com.plgrim.ncp.base.insertMbrWebpntHistDetail		Generator(Generator)	2018-05-23 */
+		INTO   MBR_WEBPNT_HIST_DETAIL (
+			   WEBPNT_SN
+			 , HIST_DT
+			 , UPPER_WEBPNT_SN
+			 , MBR_NO
+			 , WEBPNT_TP_CD
+			 , WEBPNT_RESN_CD
+			 , WEBPNT_DETAIL_RESN_CD
+			 , WEBPNT_STAT_CD
+			 , WEBPNT_AMT
+			 , REMNDR_WEBPNT_AMT
+			 , OCCUR_DT
+			 , USE_BEG_DT
+			 , USE_END_DT
+			 , CNCL_DT
+			 , RESN_DSCR
+			 , MALL_ID
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , CLM_NO
+			 , CLM_WRHS_GOD_TURN
+			 , EVT_NO
+			 , GOD_NO
+			 , GOD_EVL_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{webpntSn,jdbcType=NUMERIC}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{upperWebpntSn,jdbcType=NUMERIC}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{webpntTpCd,jdbcType=VARCHAR}
+			 , #{webpntResnCd,jdbcType=VARCHAR}
+			 , #{webpntDetailResnCd,jdbcType=VARCHAR}
+			 , #{webpntStatCd,jdbcType=VARCHAR}
+			 , #{webpntAmt,jdbcType=NUMERIC}
+			 , #{remndrWebpntAmt,jdbcType=NUMERIC}
+			 , #{occurDt,jdbcType=TIMESTAMP}
+			 , #{useBegDt,jdbcType=TIMESTAMP}
+			 , #{useEndDt,jdbcType=TIMESTAMP}
+			 , #{cnclDt,jdbcType=TIMESTAMP}
+			 , #{resnDscr,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{qtyTurn,jdbcType=NUMERIC}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , #{evtNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{godEvlTurn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrWebpntHistDetail" parameterType="mbrWebpntHistDetail">
+		DELETE /* com.plgrim.ncp.base.deleteMbrWebpntHistDetail		Generator(Generator)	2018-05-23 */
+		  FROM MBR_WEBPNT_HIST_DETAIL
+		 WHERE 1 = 1
+		   AND WEBPNT_SN = #{webpntSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

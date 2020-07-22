@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.sys.shop">
+
+	<resultMap id="sysShopBrndResult" type="com.plgrim.ncp.biz.vendor.result.SysShopResult">
+	   <result property="sysShopBrnd.shopId"               column="SHOP_ID" />                  <!-- 매장 ID -->
+	   <result property="sysShopBrnd.erpBrndId"            column="ERP_BRND_ID" />              <!-- 브랜드 ID -->
+	   <result property="sysShopBrnd.dlvShopYn"            column="DLV_SHOP_YN" />              <!-- 배송 매장 여부 -->
+	   <result property="sysShopBrnd.pkupShopYn"           column="PKUP_SHOP_YN" />             <!-- 픽업 매장 여부 -->	   
+	   <result property="dlvShopFeeUse"                    column="DLV_SHOP_FEE_USE" />         <!-- 배송 매장 수수료 사용 금액 또는 율 -->
+	   <result property="sysShopBrnd.dlvShopFeeSectCd"     column="DLV_SHOP_FEE_SECT_CD" />     <!-- 배송 매장 수수료 구분 코드 -->
+	   <result property="sysShopBrnd.dlvShopFeeAmt"        column="DLV_SHOP_FEE_AMT" />         <!-- 배송 매장 수수료 금액 -->
+	   <result property="sysShopBrnd.dlvShopFeeRt"         column="DLV_SHOP_FEE_RT" />          <!-- 배송 매장 수수료 율 -->
+	   <result property="pkupShopFeeUse"                   column="PKUP_SHOP_FEE_USE" />        <!-- 픽업 매장 수수료 사용 금액 또는 율 -->	   
+	   <result property="sysShopBrnd.pkupShopFeeSectCd"    column="PKUP_SHOP_FEE_SECT_CD" />    <!-- 픽업 매장 수수료 구분 코드 -->
+	   <result property="sysShopBrnd.pkupShopFeeAmt"       column="PKUP_SHOP_FEE_AMT" />        <!-- 픽업 매장 수수료 금액 -->
+	   <result property="sysShopBrnd.pkupShopFeeRt"        column="PKUP_SHOP_FEE_RT" />         <!-- 픽업 매장 수수료 율 - 자기재고 -->
+	   <result property="pkupShopLgsFeeUse"                column="PKUP_SHOP_LGS_FEE_USE" />    <!-- 픽업 매장 물류 수수료 사용 금액 또는 율 -->	   
+	   <result property="sysShopBrnd.pkupShopLgsFeeSectCd" column="PKUP_SHOP_LGS_FEE_SECT_CD"/> <!-- 픽업 매장 물류 수수료 구분 코드 -->
+	   <result property="sysShopBrnd.pkupShopLgsFeeAmt"    column="PKUP_SHOP_LGS_FEE_AMT" />    <!-- 픽업 매장 물류 수수료 금액 -->
+	   <result property="sysShopBrnd.pkupShopLgsFeeRt"     column="PKUP_SHOP_LGS_FEE_RT" />     <!-- 픽업 매장 수수료 율 - CDC재고 -->
+	   <result property="sysShopBrnd.regtrId"              column="REGTR_ID" />                 <!-- 등록자 ID -->
+	   <result property="sysShopBrnd.regDt"                column="REG_DT" />                   <!-- 등록 일시 -->
+	   <result property="sysShopBrnd.udterId"              column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="sysShopBrnd.udtDt"                column="UDT_DT" />                   <!-- 수정 일시 -->	   
+	   <result property="sysShop.shopNm"                   column="SHOP_NM" />                  <!-- 매장 명 -->
+	   <result property="sysBrnd.brndNm"                   column="BRND_NM" />                  <!-- 브랜드 명 -->	   
+	   <result property="regterNm"	                       column="REGTR_NM" />                 <!-- 등록자명 -->
+	   <result property="udterNm"	                       column="UDTER_NM" />                 <!-- 수정자명 -->
+	   <result property="viewRegDt"	                       column="VIEW_REG_DT" />              <!-- 등록일 -->
+	   <result property="viewUdtDt"	                       column="VIEW_UDT_DT" />              <!-- 수정일 -->
+	   <result property="sysShopBrndFeeHist.modAfShopFeeSectCd"	                       column="MOD_AF_SHOP_FEE_SECT_CD" />              <!-- 변경 이후 매장 수수료 구분 코드 -->
+	   <result property="sysShopBrndFeeHist.modAfShopFeeAmt"	                       column="MOD_AF_SHOP_FEE_AMT" />              <!-- 변경 이후 매장 수수료 금액 -->
+	   <result property="sysShopBrndFeeHist.modAfShopFeeRt"	                       column="MOD_AF_SHOP_FEE_RT" /> <!-- 변경 이후 매장 수수료 율 -->
+	   <result property="sysShopBrndFeeHist.modBfShopFeeSectCd"	                       column="MOD_BF_SHOP_FEE_SECT_CD" />              <!-- 변경 이전 매장 수수료 구분 코드 -->
+	   <result property="sysShopBrndFeeHist.modBfShopFeeAmt"	                       column="MOD_BF_SHOP_FEE_AMT" />              <!-- 변경 이전 매장 수수료 금액 -->
+	   <result property="sysShopBrndFeeHist.modBfShopFeeRt"	                       column="MOD_BF_SHOP_FEE_RT" />  <!-- 변경 이전 매장 수수료 율 -->
+	</resultMap>
+
+    <!-- 매장 브랜드별 수수료율 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereShopBrandListCountForFee">
+        <if test="searchShop eq 'ID' and searchShopValue != null and searchShopValue != ''">
+            AND UPPER(ssb.shop_id) LIKE '%'||UPPER(#{searchShopValue, jdbcType=VARCHAR})||'%'
+        </if>
+        <if test="searchShop eq 'NM' and searchShopValue != null and searchShopValue != ''">
+            AND UPPER(ss.shop_nm) LIKE '%'||UPPER(#{searchShopValue, jdbcType=VARCHAR})||'%'
+        </if>
+        <if test="searchBrand eq 'ID' and searchBrandValue != null and searchBrandValue != ''">
+            AND UPPER(ssb.erp_brnd_id) LIKE '%'||UPPER(#{searchBrandValue, jdbcType=VARCHAR})||'%'
+        </if>
+		<if test="searchBrand eq 'NM' and searchBrandValue != null and searchBrandValue != ''">
+            AND UPPER(sb.brnd_nm) LIKE '%'||UPPER(#{searchBrandValue, jdbcType=VARCHAR})||'%'
+        </if>
+        <if test="dlvShopYn != null and dlvShopYn != ''">
+            AND ssb.dlv_shop_yn IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                        FROM (SELECT #{dlvShopYn, jdbcType=VARCHAR} AS param FROM dual) d
+                                     CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+        </if>
+        <if test="pkupShopYn != null and pkupShopYn != ''">
+            AND ssb.pkup_shop_yn IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                        FROM (SELECT #{pkupShopYn, jdbcType=VARCHAR} AS param FROM dual) d
+                                     CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+')) 
+        </if>
+    </sql>
+    
+    <!-- 매장 브랜드별 수수료율 목록 건수 조회 -->
+    <select id="selectShopBrandListCountForFee" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+		SELECT /* [biz.sys.shop][selectShopBrandListCountForFee][매장브랜드별수수료율목록 건수 조회][Jessi] */
+		      COUNT(*)
+		  FROM sys_shop_brnd ssb
+		  JOIN sys_shop ss ON ssb.shop_id = ss.shop_id
+		  JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id AND LENGTH(sb.brnd_id) = 2
+		 WHERE 1 = 1 
+		 <include refid="com.plgrim.ncp.biz.sys.shop.whereShopBrandListCountForFee"/>
+    </select>
+
+    <!-- 매장 브랜드별 수수료율 목록 조회 -->
+    <select id="selectShopBrandListForFee" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="sysShopBrndResult">
+    	SELECT /* [biz.sys.shop][selectShopBrandListForFee][매장브랜드별수수료율목록조회][Jessi] */
+    		   fl.shop_id                     /* 매장 ID */
+		       , fl.shop_nm                      /* 매장 명 */
+		       , (
+		         SELECT SUBSTR(SYS_CONNECT_BY_PATH(brnd_nm, '>'), 2) path
+		           FROM sys_brnd
+		          WHERE CONNECT_BY_ISLEAF = 1
+		            AND erp_brnd_id = fl.erp_brnd_id
+		            AND LENGTH(brnd_id) = 2
+				  START WITH upper_brnd_id is null
+				CONNECT BY PRIOR brnd_id = upper_brnd_id
+				) AS brnd_path
+		       , fl.erp_brnd_id
+		       , fl.brnd_nm
+		       , CASE WHEN fl.dlv_shop_fee_sect_cd = 'FIXAMT' THEN fl.dlv_shop_fee_amt
+		              WHEN fl.dlv_shop_fee_sect_cd = 'FIXRT' THEN fl.dlv_shop_fee_rt
+		              ELSE 0 END AS dlv_shop_fee_use
+		       , fl.dlv_shop_fee_sect_cd       /* 배송 매장 수수료 구분 코드 */
+		       , fl.dlv_shop_fee_amt           /* 배송 매장 수수료 금액 */
+		       , fl.dlv_shop_fee_rt            /* 배송 매장 수수료 율 */
+		       , CASE WHEN fl.pkup_shop_fee_sect_cd = 'FIXAMT' THEN fl.pkup_shop_fee_amt 
+		              WHEN fl.pkup_shop_fee_sect_cd = 'FIXRT' THEN fl.pkup_shop_fee_rt
+		              ELSE 0 END AS pkup_shop_fee_use
+		       , fl.pkup_shop_fee_sect_cd      /* 픽업 매장 수수료 구분 코드 */
+		       , fl.pkup_shop_fee_amt          /* 픽업 매장 수수료 금액 */
+		       , fl.pkup_shop_fee_rt           /* 픽업 매장 수수료 율 - 자기재고*/
+		       , CASE WHEN fl.pkup_shop_lgs_fee_sect_cd = 'FIXAMT' THEN fl.pkup_shop_lgs_fee_amt 
+		              WHEN fl.pkup_shop_lgs_fee_sect_cd = 'FIXRT' THEN fl.pkup_shop_lgs_fee_rt
+		              ELSE 0 END AS pkup_shop_lgs_fee_use
+		       , fl.pkup_shop_lgs_fee_sect_cd  /* 픽업 매장 물류 수수료 구분 코드 */
+		       , fl.pkup_shop_lgs_fee_amt      /* 픽업 매장 물류 수수료 금액 */
+		       , fl.pkup_shop_lgs_fee_rt       /* 픽업 매장 수수료 율 - CDC재고*/
+		       , DECODE(fl.dlv_shop_yn,'Y','사용','미사용') AS dlv_shop_yn               /* 배송 매장 여부 */
+		       , DECODE(fl.pkup_shop_yn,'Y','사용','미사용') AS pkup_shop_yn             /* 픽업 매장 여부 */
+		       , fl.regtr_id                   /* 등록자 ID */
+		       , fl.reg_dt                     /* 등록 일시 */
+		       , fl.udter_id                   /* 수정자 ID */
+		       , fl.udt_dt                     /* 수정 일시 */
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = fl.regtr_id) || CASE WHEN fl.regtr_id IS NOT NULL THEN '(' || fl.regtr_id || ')' END AS REGTR_NM /*등록자명*/
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = fl.udter_id) || CASE WHEN fl.udter_id IS NOT NULL THEN '(' || fl.udter_id || ')' END AS UDTER_NM /*수정자명*/
+		       , TO_CHAR(fl.reg_dt, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/		       
+		       , TO_CHAR(fl.udt_dt,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+    	  FROM (
+				<include refid="com.plgrim.ncp.base.beginPage"/>
+				SELECT 
+				        ssb.shop_id                     /* 매장 ID */
+				      , ss.shop_nm                      /* 매장 명 */
+				      , ssb.erp_brnd_id
+				      , sb.brnd_nm
+				      , ssb.dlv_shop_fee_sect_cd       /* 배송 매장 수수료 구분 코드 */
+				      , ssb.dlv_shop_fee_amt           /* 배송 매장 수수료 금액 */
+				      , ssb.dlv_shop_fee_rt            /* 배송 매장 수수료 율 */
+				      , ssb.pkup_shop_fee_sect_cd      /* 픽업 매장 수수료 구분 코드 */
+				      , ssb.pkup_shop_fee_amt          /* 픽업 매장 수수료 금액 */
+				      , ssb.pkup_shop_fee_rt           /* 픽업 매장 수수료 율 */
+				      , ssb.pkup_shop_lgs_fee_sect_cd  /* 픽업 매장 물류 수수료 구분 코드 */
+				      , ssb.pkup_shop_lgs_fee_amt      /* 픽업 매장 물류 수수료 금액 */
+				      , ssb.pkup_shop_lgs_fee_rt       /* 픽업 매장 수수료 율 - CDC재고*/
+				      , ssb.dlv_shop_yn                /* 배송 매장 여부 */
+				      , ssb.pkup_shop_yn               /* 픽업 매장 여부 */
+				      , ssb.regtr_id                   /* 등록자 ID */
+				      , ssb.reg_dt                     /* 등록 일시 */
+				      , ssb.udter_id                   /* 수정자 ID */
+				      , ssb.udt_dt                     /* 수정 일시 */
+				  FROM sys_shop_brnd ssb
+				  JOIN sys_shop ss ON ssb.shop_id = ss.shop_id
+				  JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id AND LENGTH(sb.brnd_id) = 2
+				 WHERE 1 = 1 
+				 <include refid="com.plgrim.ncp.biz.sys.shop.whereShopBrandListCountForFee"/>  
+				 ORDER BY ss.shop_nm, sb.brnd_nm
+				 <include refid="com.plgrim.ncp.base.endPage"/>
+    	       ) fl
+    </select>
+
+    <!-- 매장 브랜드별 수수료율 목록 엑셀 -->
+    <select id="selectShopBrandExcelForFee" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.sys.shop][selectShopBrandExcelForFee][매장브랜드별수수료율엑셀조회][Jessi] */
+		        ssb.shop_id                     /* 매장 ID */
+		      , ss.shop_nm                      /* 매장 명 */
+		      , (
+		         SELECT SUBSTR(SYS_CONNECT_BY_PATH(brnd_nm, '>'), 2) path
+		           FROM sys_brnd
+		          WHERE CONNECT_BY_ISLEAF = 1
+		            AND erp_brnd_id = ssb.erp_brnd_id
+		            AND LENGTH(brnd_id) = 2
+				  START WITH upper_brnd_id is null
+				CONNECT BY PRIOR brnd_id = upper_brnd_id
+				) AS brnd_path
+		      , sb.brnd_nm
+		      , ssb.erp_brnd_id
+		      ,(SELECT CD_NM FROM MV_SYS_CD WHERE LANG_CD='KOR' AND UPPER_CD = 'DLV_SHOP_FEE_SECT' AND CD = ssb.dlv_shop_fee_sect_cd) AS dlv_shop_fee_sect_nm
+		      , CASE WHEN ssb.dlv_shop_fee_sect_cd = 'FIXAMT' THEN ssb.dlv_shop_fee_amt
+		             WHEN ssb.dlv_shop_fee_sect_cd = 'FIXRT' THEN ssb.dlv_shop_fee_rt
+		             ELSE 0 END AS dlv_shop_fee_use
+		      ,(SELECT CD_NM FROM MV_SYS_CD WHERE LANG_CD='KOR' AND UPPER_CD = 'PKUP_SHOP_FEE_SECT' AND CD = ssb.pkup_shop_fee_sect_cd) AS pkup_shop_fee_sect_nm
+		      , CASE WHEN ssb.pkup_shop_fee_sect_cd = 'FIXAMT' THEN ssb.pkup_shop_fee_amt 
+		             WHEN ssb.pkup_shop_fee_sect_cd = 'FIXRT' THEN ssb.pkup_shop_fee_rt
+		             ELSE 0 END AS pkup_shop_fee_use
+		      ,(SELECT CD_NM FROM MV_SYS_CD WHERE LANG_CD='KOR' AND UPPER_CD = 'PKUP_SHOP_LGS_FEE_SECT' AND CD = ssb.pkup_shop_lgs_fee_sect_cd) AS pkup_shop_lgs_fee_sect_nm
+		      , CASE WHEN ssb.pkup_shop_lgs_fee_sect_cd = 'FIXAMT' THEN ssb.pkup_shop_lgs_fee_amt 
+		             WHEN ssb.pkup_shop_lgs_fee_sect_cd = 'FIXRT' THEN ssb.pkup_shop_lgs_fee_rt
+		             ELSE 0 END AS pkup_shop_lgs_fee_use
+		      , DECODE(ssb.dlv_shop_yn,'Y','사용','미사용') AS dlv_shop_yn               /* 배송 매장 여부 */
+		      , DECODE(ssb.pkup_shop_yn,'Y','사용','미사용') AS pkup_shop_yn             /* 픽업 매장 여부 */
+		      , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = ssb.regtr_id) || CASE WHEN ssb.regtr_id IS NOT NULL THEN '(' || ssb.regtr_id || ')' END AS REGTR_NM /*등록자명*/
+		      , TO_CHAR(ssb.reg_dt, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/		
+		      , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = ssb.udter_id) || CASE WHEN ssb.udter_id IS NOT NULL THEN '(' || ssb.udter_id || ')' END AS UDTER_NM /*수정자명*/           
+		      , TO_CHAR(ssb.udt_dt,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+		  FROM sys_shop_brnd ssb
+		  JOIN sys_shop ss ON ssb.shop_id = ss.shop_id
+		  JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id AND LENGTH(sb.brnd_id) = 2
+		 WHERE 1 = 1 
+		 <include refid="com.plgrim.ncp.biz.sys.shop.whereShopBrandListCountForFee"/>  
+		 ORDER BY ss.shop_nm, sb.brnd_nm
+    </select>
+
+    <!-- 매장별 수수료율 수정 -->
+    <update id="updateShopBrandForFee" parameterType="sysShopBrnd">
+		UPDATE /* [biz.sys.shop][updateShopBrandForFee][매장별수수료율수정][Jessi] */
+		       sys_shop_brnd
+		   SET 
+		   		dlv_shop_fee_sect_cd = #{dlvShopFeeSectCd, jdbcType=VARCHAR}           /* 배송 매장 수수료 구분 코드 */
+		   	  , dlv_shop_fee_amt = NVL(#{dlvShopFeeAmt, jdbcType=NUMERIC}, 0)          /* 배송 매장 수수료 금액 */
+		      , dlv_shop_fee_rt = NVL(#{dlvShopFeeRt, jdbcType=NUMERIC}, 0)            /* 배송 매장 수수료 율 */
+		      , pkup_shop_fee_sect_cd = #{pkupShopFeeSectCd, jdbcType=VARCHAR}         /* 픽업 매장 수수료 구분 코드 */
+		      , pkup_shop_fee_amt = NVL(#{pkupShopFeeAmt, jdbcType=NUMERIC}, 0)        /* 픽업 매장 수수료 금액 */
+		      , pkup_shop_fee_rt = NVL(#{pkupShopFeeRt, jdbcType=NUMERIC}, 0)          /* 픽업 매장 수수료 율  */
+		      , pkup_shop_lgs_fee_sect_cd = #{pkupShopLgsFeeSectCd, jdbcType=VARCHAR}  /* 픽업 매장 물류 수수료 구분 코드 */
+		      , pkup_shop_lgs_fee_amt = NVL(#{pkupShopLgsFeeAmt, jdbcType=NUMERIC}, 0) /* 픽업 매장 물류 수수료 금액 */
+		      , pkup_shop_lgs_fee_rt = NVL(#{pkupShopLgsFeeRt, jdbcType=NUMERIC}, 0)   /* 픽업 매장 물류 수수료 율 */
+		      , udter_id = #{udterId, jdbcType=VARCHAR}                                /* 수정자 ID */
+		      , udt_dt = SYSDATE                                                       /* 수정 일시 */
+		 WHERE shop_id = #{shopId, jdbcType=VARCHAR}
+		   AND erp_brnd_id = #{erpBrndId, jdbcType=VARCHAR}
+    </update>
+    
+    
+	<resultMap id="selectSysShopResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndListResult">
+		<result property="sysShop.shopId"	         column="SHOP_ID"	          /><!-- 매장 ID -->
+		<result property="sysShop.shopNm"	         column="SHOP_NM"	          /><!-- 매장 명 -->
+		<result property="sysShop.drtstorDrdlShopYn" column="DRTSTOR_DRDL_SHOP_YN"/><!-- 백화점 직거래 매장 여부 -->
+		<result property="sysShop.wrhusYn"	         column="WRHUS_YN"	          /><!-- 창고 여부 -->
+		<result property="sysShop.useYn"	         column="USE_YN"	          /><!-- 사용 여부 -->
+		<result property="sysShop.sortSeq"	         column="SORT_SEQ"	          /><!-- 정렬 순서 -->
+		<result property="sysShop.spotNm"	         column="SPOT_NM"	          /><!-- 지점 명 -->
+		<result property="sysShop.sidoCd"	         column="SIDO_CD"	          /><!-- 우편시도 코드 -->
+		<result property="sysShop.sigunguCd"	     column="SIGUNGU_CD"	      /><!--우편시군구 코드  -->
+		<result property="sysShop.regtrId"	         column="REGTR_ID"	          /><!-- 등록자 ID -->
+		<result property="sysShop.regDt"	         column="REG_DT"	          /><!-- 등록 일시 -->
+		<result property="sysShop.udterId"	         column="UDTER_ID"	          /><!-- 수정자 ID -->
+		<result property="sysShop.udtDt"	         column="UDT_DT"	          /><!-- 수정 일시 -->
+	</resultMap>
+    
+    <!-- 매장 목록 조회 -->
+    <select id="selectSysShop" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShop" resultMap="selectSysShopResultMap">
+        SELECT /* [biz.sys.shop.xml][selectSysShop][매장조회]][Mark] */
+                SHOP_ID
+               ,SHOP_NM
+               ,DRTSTOR_DRDL_SHOP_YN
+               ,WRHUS_YN
+               ,USE_YN
+               ,SORT_SEQ
+               ,SPOT_NM
+               ,SIDO_CD
+               ,SIGUNGU_CD
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    SYS_SHOP t
+        WHERE   1 = 1
+        <if test='shopId != null and shopId != ""'>
+          AND     SHOP_ID = #{shopId,jdbcType=VARCHAR}
+        </if>
+        <if test='shopNm != null and shopNm != ""'>
+          AND     SHOP_NM LIKE '%'||#{shopNm,jdbcType=VARCHAR}||'%'
+        </if>
+        
+    </select>
+    
+    <select id="selectFeeHistSectList" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrndFeeHist" resultMap="sysShopBrndResult">
+    	SELECT /* [biz.sys.shop.xml][selectFeeHistSectList][브랜드 매장 히스토리 데이터 조회]][Steven] */
+   			SHOP_ID
+   			,ERP_BRND_ID
+   			,FEE_HIST_SECT_CD
+   			,MOD_BF_SHOP_FEE_RT
+   			,MOD_BF_SHOP_FEE_AMT
+   			,MOD_BF_SHOP_FEE_RT
+   			,MOD_AF_SHOP_FEE_SECT_CD
+   			,MOD_AF_SHOP_FEE_AMT
+   			,MOD_AF_SHOP_FEE_RT
+ 		FROM 
+ 			SYS_SHOP_BRND_FEE_HIST
+		WHERE SHOP_ID = #{shopId}
+		AND ERP_BRND_ID = #{erpBrndId}
+		AND FEE_HIST_SECT_CD = #{feeHistSectCd}
+		AND  TO_CHAR(HIST_END_DT,'YYYYMM') = '999912'   
+   			   
+    </select>
+
+	<insert id="insertFeeHistSectCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrndFeeHist">
+				
+	INSERT /* [biz.sys.shop.xml][insertFeeHistSectCd][매장별 수수료율 이력 등록]][Steven]*/
+	    	 INTO SYS_SHOP_BRND_FEE_HIST
+			(
+		        SHOP_ID
+		       ,ERP_BRND_ID
+		       ,FEE_HIST_SECT_CD
+		       ,HIST_BEG_DT
+		       ,HIST_END_DT
+		       ,MOD_AF_SHOP_FEE_SECT_CD
+	         <if test="dlvShopFeeSectCd == 'FIXAMT'">
+	          ,MOD_AF_SHOP_FEE_AMT 
+	         </if>
+	          <if test="dlvShopFeeSectCd == 'FIXRT'">
+	          ,MOD_AF_SHOP_FEE_RT
+	          </if>
+		       ,REGTR_ID
+		       ,REG_DT
+		       ,UDTER_ID
+	           ,UDT_DT
+			)    
+			values(
+				  #{shopId}    ,
+				  #{erpBrndId}   ,
+				  #{feeHistSectCd}   ,
+				  sysdate  ,
+				  to_date('99991231 23:59:59','yyyymmdd hh24:mi:ss')   ,
+				  #{dlvShopFeeSectCd} ,
+		          <if test="dlvShopFeeSectCd ==  'FIXAMT'">
+					  #{dlvShopFeeAmt} ,
+				  </if>
+	        	  <if test="dlvShopFeeSectCd == 'FIXRT'">
+				  #{dlvShopFeeRt} ,
+				  </if>
+				  #{regtrId}   ,
+				  sysdate       ,
+				  #{udterId}   ,
+				  sysdate  
+			  )
+	</insert>
+	
+	
+	<insert id="insertAfFeeHistSectCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrndFeeHist">
+				
+	INSERT /* [biz.sys.shop.xml][insertFeeHistSectCd][매장별 수수료율 이력 등록]][Steven]*/
+	    	 INTO SYS_SHOP_BRND_FEE_HIST
+			(
+		        SHOP_ID
+		       ,ERP_BRND_ID
+		       ,FEE_HIST_SECT_CD
+		       ,HIST_BEG_DT
+		       ,HIST_END_DT
+		       ,MOD_BF_SHOP_FEE_SECT_CD
+	          ,MOD_BF_SHOP_FEE_AMT 
+	          ,MOD_BF_SHOP_FEE_RT
+	          ,MOD_AF_SHOP_FEE_SECT_CD
+	          ,MOD_AF_SHOP_FEE_AMT 
+	          ,MOD_AF_SHOP_FEE_RT
+		       ,REGTR_ID
+		       ,REG_DT
+		       ,UDTER_ID
+	           ,UDT_DT
+			)    
+			values(
+				  #{shopId}    ,
+				  #{erpBrndId}   ,
+				  #{feeHistSectCd}   ,
+				  sysdate  ,
+				  to_date('99991231 23:59:59','yyyymmdd hh24:mi:ss')   ,
+				  #{modBfShopFeeSectCd} ,
+				  #{modBfShopFeeAmt} ,
+				  #{modBfShopFeeRt} ,
+				  #{modAfShopFeeSectCd} ,
+				  #{modAfShopFeeAmt} ,
+				  #{modAfShopFeeRt} ,
+				  #{regtrId}   ,
+				  sysdate       ,
+				  #{udterId}   ,
+				  sysdate  
+			  )
+	</insert>
+	
+	<update id ="updateInitFeeHistSectCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrndFeeHist">
+		    UPDATE 
+		    	SYS_SHOP_BRND_FEE_HIST
+		    SET 
+		    		MOD_AF_SHOP_FEE_SECT_CD=  #{modAfShopFeeSectCd}
+		           ,MOD_AF_SHOP_FEE_AMT =#{modAfShopFeeAmt} 
+		           ,MOD_AF_SHOP_FEE_RT=  #{modAfShopFeeRt}
+		           ,UDTER_ID = #{udterId}
+		       	   ,UDT_DT = sysdate
+		    WHERE SHOP_ID = #{shopId}
+			AND ERP_BRND_ID = #{erpBrndId}
+			AND FEE_HIST_SECT_CD = #{feeHistSectCd}
+			AND  TO_CHAR(HIST_END_DT,'YYYYMM') = '999912'   
+	</update>
+	
+	<update id ="updateFeeHistSectCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrndFeeHist">
+		    UPDATE 
+		    	SYS_SHOP_BRND_FEE_HIST
+		    SET 
+			        HIST_END_DT = sysdate
+			        ,UDTER_ID = #{udterId}
+			        ,UDT_DT = sysdate
+		    WHERE SHOP_ID = #{shopId}
+			AND ERP_BRND_ID = #{erpBrndId}
+			AND FEE_HIST_SECT_CD = #{feeHistSectCd}
+			AND  TO_CHAR(HIST_END_DT,'YYYYMM') = '999912'   
+	</update>
+</mapper>

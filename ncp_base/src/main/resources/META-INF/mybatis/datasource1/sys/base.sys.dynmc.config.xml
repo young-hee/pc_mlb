@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysDynmcConfig" parameterType="sysDynmcConfig" resultType="sysDynmcConfig">
+		SELECT /* com.plgrim.ncp.base.selectSysDynmcConfig		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , CONFIG_NM
+			 , CONFIG_BEG_DT
+			 , CONFIG_END_DT
+			 , CONFIG_SECT_CD
+			 , USE_YN
+			 , CONFIG_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_DYNMC_CONFIG
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND CONFIG_NM = #{configNm,jdbcType=VARCHAR}
+		   AND CONFIG_BEG_DT = #{configBegDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateSysDynmcConfig" parameterType="sysDynmcConfig">
+		UPDATE /* com.plgrim.ncp.base.updateSysDynmcConfig		Generator(Generator)	2018-05-23 */
+		SYS_DYNMC_CONFIG SET
+			   CONFIG_END_DT = #{configEndDt,jdbcType=TIMESTAMP}
+			 , CONFIG_SECT_CD = #{configSectCd,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , CONFIG_DSCR = #{configDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND CONFIG_NM = #{configNm,jdbcType=VARCHAR}
+		   AND CONFIG_BEG_DT = #{configBegDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertSysDynmcConfig" parameterType="sysDynmcConfig">
+		INSERT /* com.plgrim.ncp.base.insertSysDynmcConfig		Generator(Generator)	2018-05-23 */
+		INTO   SYS_DYNMC_CONFIG (
+			   MALL_ID
+			 , CONFIG_NM
+			 , CONFIG_BEG_DT
+			 , CONFIG_END_DT
+			 , CONFIG_SECT_CD
+			 , USE_YN
+			 , CONFIG_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{configNm,jdbcType=VARCHAR}
+			 , #{configBegDt,jdbcType=TIMESTAMP}
+			 , #{configEndDt,jdbcType=TIMESTAMP}
+			 , #{configSectCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{configDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysDynmcConfig" parameterType="sysDynmcConfig">
+		DELETE /* com.plgrim.ncp.base.deleteSysDynmcConfig		Generator(Generator)	2018-05-23 */
+		  FROM SYS_DYNMC_CONFIG
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND CONFIG_NM = #{configNm,jdbcType=VARCHAR}
+		   AND CONFIG_BEG_DT = #{configBegDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

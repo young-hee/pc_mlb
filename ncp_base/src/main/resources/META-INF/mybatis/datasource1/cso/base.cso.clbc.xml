@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoClbc" parameterType="csoClbc" resultType="csoClbc">
+		SELECT /* com.plgrim.ncp.base.selectCsoClbc		Generator(Generator)	2018-05-23 */
+			   CLBC_ID
+			 , CLBC_REG_DT
+			 , CLBC_DSTB_DT
+			 , CLBC_PHON
+			 , CLBC_RECPTN_PHON
+			 , CLBC_PRCS_STAT_CD
+			 , CLBC_PRCS_STAT_NM
+			 , CLBC_COMPT_DT
+			 , CNSLT_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CLBC
+		 WHERE 1 = 1
+	   	   AND CLBC_ID = #{clbcId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateCsoClbc" parameterType="csoClbc">
+		UPDATE /* com.plgrim.ncp.base.updateCsoClbc		Generator(Generator)	2018-05-23 */
+		CSO_CLBC SET
+			   CLBC_REG_DT = #{clbcRegDt,jdbcType=TIMESTAMP}
+			 , CLBC_DSTB_DT = #{clbcDstbDt,jdbcType=TIMESTAMP}
+			 , CLBC_PHON = #{clbcPhon,jdbcType=VARCHAR}
+			 , CLBC_RECPTN_PHON = #{clbcRecptnPhon,jdbcType=VARCHAR}
+			 , CLBC_PRCS_STAT_CD = #{clbcPrcsStatCd,jdbcType=VARCHAR}
+			 , CLBC_PRCS_STAT_NM = #{clbcPrcsStatNm,jdbcType=VARCHAR}
+			 , CLBC_COMPT_DT = #{clbcComptDt,jdbcType=TIMESTAMP}
+			 , CNSLT_ADMIN_ID = #{cnsltAdminId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CLBC_ID = #{clbcId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertCsoClbc" parameterType="csoClbc">
+		INSERT /* com.plgrim.ncp.base.insertCsoClbc		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CLBC (
+			   CLBC_ID
+			 , CLBC_REG_DT
+			 , CLBC_DSTB_DT
+			 , CLBC_PHON
+			 , CLBC_RECPTN_PHON
+			 , CLBC_PRCS_STAT_CD
+			 , CLBC_PRCS_STAT_NM
+			 , CLBC_COMPT_DT
+			 , CNSLT_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{clbcId,jdbcType=VARCHAR}
+			 , #{clbcRegDt,jdbcType=TIMESTAMP}
+			 , #{clbcDstbDt,jdbcType=TIMESTAMP}
+			 , #{clbcPhon,jdbcType=VARCHAR}
+			 , #{clbcRecptnPhon,jdbcType=VARCHAR}
+			 , #{clbcPrcsStatCd,jdbcType=VARCHAR}
+			 , #{clbcPrcsStatNm,jdbcType=VARCHAR}
+			 , #{clbcComptDt,jdbcType=TIMESTAMP}
+			 , #{cnsltAdminId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoClbc" parameterType="csoClbc">
+		DELETE /* com.plgrim.ncp.base.deleteCsoClbc		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CLBC
+		 WHERE 1 = 1
+		   AND CLBC_ID = #{clbcId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComChrger" parameterType="comChrger" resultType="comChrger">
+		SELECT /* com.plgrim.ncp.base.selectComChrger		Generator(Generator)	2018-05-23 */
+			   COM_ID
+			 , CHRGER_JOB_CD
+			 , CHRGER_TURN
+			 , BRND_ID
+			 , CHRGER_NM
+			 , CHRGER_CLSF
+			 , CHRGER_EMAIL
+			 , CHRGER_TEL_NATION_NO
+			 , CHRGER_TEL_AREA_NO
+			 , CHRGER_TEL_TLOF_NO
+			 , CHRGER_TEL_TLOF_WTHN_NO
+			 , CHRGER_MOBIL_NATION_NO
+			 , CHRGER_MOBIL_AREA_NO
+			 , CHRGER_MOBIL_TLOF_NO
+			 , CHRGER_MOBIL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_CHRGER
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+		   AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateComChrger" parameterType="comChrger">
+		UPDATE /* com.plgrim.ncp.base.updateComChrger		Generator(Generator)	2018-05-23 */
+		COM_CHRGER SET
+			   BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+			 , CHRGER_CLSF = #{chrgerClsf,jdbcType=VARCHAR}
+			 , CHRGER_EMAIL = #{chrgerEmail,jdbcType=VARCHAR}
+			 , CHRGER_TEL_NATION_NO = #{chrgerTelNationNo,jdbcType=VARCHAR}
+			 , CHRGER_TEL_AREA_NO = #{chrgerTelAreaNo,jdbcType=VARCHAR}
+			 , CHRGER_TEL_TLOF_NO = #{chrgerTelTlofNo,jdbcType=VARCHAR}
+			 , CHRGER_TEL_TLOF_WTHN_NO = #{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_NATION_NO = #{chrgerMobilNationNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_AREA_NO = #{chrgerMobilAreaNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_TLOF_NO = #{chrgerMobilTlofNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_TLOF_WTHN_NO = #{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+		   AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertComChrger" parameterType="comChrger">
+		INSERT /* com.plgrim.ncp.base.insertComChrger		Generator(Generator)	2018-05-23 */
+		INTO   COM_CHRGER (
+			   COM_ID
+			 , CHRGER_JOB_CD
+			 , CHRGER_TURN
+			 , BRND_ID
+			 , CHRGER_NM
+			 , CHRGER_CLSF
+			 , CHRGER_EMAIL
+			 , CHRGER_TEL_NATION_NO
+			 , CHRGER_TEL_AREA_NO
+			 , CHRGER_TEL_TLOF_NO
+			 , CHRGER_TEL_TLOF_WTHN_NO
+			 , CHRGER_MOBIL_NATION_NO
+			 , CHRGER_MOBIL_AREA_NO
+			 , CHRGER_MOBIL_TLOF_NO
+			 , CHRGER_MOBIL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comId,jdbcType=VARCHAR}
+			 , #{chrgerJobCd,jdbcType=VARCHAR}
+			 , #{chrgerTurn,jdbcType=NUMERIC}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{chrgerNm,jdbcType=VARCHAR}
+			 , #{chrgerClsf,jdbcType=VARCHAR}
+			 , #{chrgerEmail,jdbcType=VARCHAR}
+			 , #{chrgerTelNationNo,jdbcType=VARCHAR}
+			 , #{chrgerTelAreaNo,jdbcType=VARCHAR}
+			 , #{chrgerTelTlofNo,jdbcType=VARCHAR}
+			 , #{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilNationNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilAreaNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilTlofNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComChrger" parameterType="comChrger">
+		DELETE /* com.plgrim.ncp.base.deleteComChrger		Generator(Generator)	2018-05-23 */
+		  FROM COM_CHRGER
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+		   AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

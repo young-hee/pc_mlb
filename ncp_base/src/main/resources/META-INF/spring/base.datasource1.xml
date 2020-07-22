@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="dataSource1" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="realDataSource" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="SQL:::" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="readOnlyJdbcTemplate1" class="org.springframework.jdbc.core.JdbcTemplate">
+    	<property name="dataSource" ref="dataSource1"/>
+	</bean>
+	
+	
+	<bean id="jdbcTemplate1" class="org.springframework.jdbc.core.JdbcTemplate">
+    	<property name="dataSource" ref="dataSource1"/>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="dataSource1" />
+
+	<!-- Mybatis Configuration -->
+	<bean id="sessionFactory1" class="com.plgrim.ncp.framework.mybatis.RefreshableSqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource1" />
+		<property name="interval" value="5000" />
+		<property name="typeAliasesPackage"
+			value="${ncp_base.datasource1.mybatis.type.alias.package}" />
+		<property name="configLocation" value="${ncp_base.datasource1.mybatis.config.location}" />
+		<property name="mapperLocations">
+			<list>
+				<value>${ncp_base.mybatis.mapper.location}</value>
+				<value>${ncp_base.datasource1.mybatis.mapper.location}</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="sessionTemplate1" class="org.mybatis.spring.SqlSessionTemplate"
+		destroy-method="clearCache">
+		<constructor-arg index="0" ref="sessionFactory1" />
+		<constructor-arg index="1" value="REUSE" />
+	</bean>
+
+	<beans profile="default,local">
+		<!-- Main Datasource -->
+		<bean id="realDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="${ncp_base.oracle.driver}" />
+			<property name="url" value="${ncp_base.datasource1.url}" />
+			<property name="username" value="${ncp_base.datasource1.user}" />
+			<property name="password" value="${ncp_base.datasource1.password}" />
+			<property name="initialSize" value="1" />
+			<property name="minIdle" value="1" />
+			<property name="maxIdle" value="1" />
+			<property name="maxActive" value="15" />
+			<property name="defaultAutoCommit" value="${ncp_base.datasource1.auto.commit}" />
+			<property name="testOnBorrow" value="true" />
+			<property name="validationQuery" value="select 1 from dual" />
+			<property name="removeAbandoned" value="true" />
+		</bean>
+	</beans>
+	
+	<beans profile="stg2,stg,prj,dev">
+		<!-- Main Datasource -->
+		<bean id="realDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="${ncp_base.oracle.driver}" />
+			<property name="url" value="${ncp_base.datasource1.url}" />
+			<property name="username" value="${ncp_base.datasource1.user}" />
+			<property name="password" value="${ncp_base.datasource1.password}" />
+			<property name="initialSize" value="1" />
+			<property name="minIdle" value="1" />
+			<property name="maxIdle" value="1" />
+			<property name="maxActive" value="20" />
+			<property name="defaultAutoCommit" value="${ncp_base.datasource1.auto.commit}" />
+			<property name="testOnBorrow" value="true" />
+			<property name="validationQuery" value="select 1 from dual" />
+			<property name="removeAbandoned" value="true" />
+		</bean>
+	</beans>
+	
+	<beans profile="prod">
+		<!-- Main Datasource -->
+		<bean id="realDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+			  destroy-method="close">
+			<property name="driverClassName" value="${ncp_base.oracle.driver}" />
+			<property name="url" value="${ncp_base.datasource1.url}" />
+			<property name="username" value="${ncp_base.datasource1.user}" />
+			<property name="password" value="${ncp_base.datasource1.password}" />
+			<property name="initialSize" value="1" />
+			<property name="minIdle" value="1" />
+			<property name="maxIdle" value="1" />
+			<property name="maxActive" value="100" />
+			<property name="defaultAutoCommit" value="${ncp_base.datasource1.auto.commit}" />
+			<property name="testOnBorrow" value="true" />
+			<property name="validationQuery" value="select 1 from dual" />
+			<property name="removeAbandoned" value="true" />
+		</bean>
+	</beans>
+</beans>

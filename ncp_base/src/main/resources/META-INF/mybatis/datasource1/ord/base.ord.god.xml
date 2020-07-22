@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectOrdGod" parameterType="ordGod" resultType="ordGod">
+		SELECT /* com.plgrim.ncp.base.selectOrdGod		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , DLV_PCUPSP_TURN
+			 , GOD_NO
+			 , ITM_NO
+			 , GOD_HIST_TURN
+			 , ITM_HIST_TURN
+			 , ERP_GOD_NO
+			 , SKU_NO
+			 , GOD_NM
+			 , MOBILE_GOD_NM
+			 , ITM_NM
+			 , COLOR_NM
+			 , COLOR_CD
+			 , CLOR_CHIP_IMG_URL
+			 , BRND_ID
+			 , BRND_GRP_ID
+			 , GOD_VOL
+			 , GOD_WT
+			 , GOD_TP_CD
+			 , PARTMAL_SECT_CD
+			 , LST_IMG_URL
+			 , COM_ID
+			 , PARTMAL_COM_FEE_RT
+			 , PARTMAL_COM_CNFIRM_YN
+			 , PARTMAL_COM_CNFIRM_DT
+			 , PARTMAL_COM_CNFIRM_ADMIN_ID
+			 , ORDMK_GOD_YN
+			 , GOD_DLIVY_WAIT_TIME
+			 , DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_CST_PLC_SN
+			 , SALE_SHOP_CD
+			 , ORD_QTY
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_AMT
+			 , PAY_EXCHG_RT_CRNCY_AMT
+			 , RTL_PRC
+			 , SALE_AMT
+			 , WEB_DC_AMT
+			 , EMP_DC_AMT
+			 , PKAG_TAX_AMT
+			 , ALL_DC_AMT
+			 , GOD_DC_AMT
+			 , BUNDLE_DC_AMT
+			 , CRS_DC_AMT
+			 , GOD_CPN_DC_AMT
+			 , BSK_CPN_DC_AMT
+			 , IMDTL_DC_AMT
+			 , UNITY_PNT_USE_AMT
+			 , EVT_PNT_USE_AMT
+			 , WEBPNT_USE_AMT
+			 , MILE_USE_AMT
+			 , UNITY_PNT_ACCML_AMT
+			 , EVT_PNT_ACCML_AMT
+			 , WEBPNT_ACCML_AMT
+			 , MILE_ACCML_AMT
+			 , RESVE_SALE_GOD_YN
+			 , RESVE_ORD_PAY_SECT_CD
+			 , RESVE_ORD_PART_PAY_AMT
+			 , RESVE_ORD_PAY_CLOS_DT
+			 , RESVE_ORD_DLIVY_APRV_CD
+			 , RESVE_ORD_DLIVY_PREARNGE_DATE
+			 , CAL_DT
+			 , AFF_COM_ORD_GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , HOFF_INV_ORD_QTY
+		  FROM ORD_GOD
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateOrdGod" parameterType="ordGod">
+		UPDATE /* com.plgrim.ncp.base.updateOrdGod		Generator(Generator)	2018-05-23 */
+		ORD_GOD SET
+			   DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ITM_NO = #{itmNo,jdbcType=VARCHAR}
+			 , GOD_HIST_TURN = #{godHistTurn,jdbcType=NUMERIC}
+			 , ITM_HIST_TURN = #{itmHistTurn,jdbcType=NUMERIC}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , SKU_NO = #{skuNo,jdbcType=VARCHAR}
+			 , GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , MOBILE_GOD_NM = #{mobileGodNm,jdbcType=VARCHAR}
+			 , ITM_NM = #{itmNm,jdbcType=VARCHAR}
+			 , COLOR_NM = #{colorNm,jdbcType=VARCHAR}
+			 , COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+			 , CLOR_CHIP_IMG_URL = #{clorChipImgUrl,jdbcType=VARCHAR}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+			 , GOD_VOL = #{godVol,jdbcType=NUMERIC}
+			 , GOD_WT = #{godWt,jdbcType=NUMERIC}
+			 , GOD_TP_CD = #{godTpCd,jdbcType=VARCHAR}
+			 , PARTMAL_SECT_CD = #{partmalSectCd,jdbcType=VARCHAR}
+			 , LST_IMG_URL = #{lstImgUrl,jdbcType=VARCHAR}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , PARTMAL_COM_FEE_RT = #{partmalComFeeRt,jdbcType=NUMERIC}
+			 , PARTMAL_COM_CNFIRM_YN = #{partmalComCnfirmYn,jdbcType=VARCHAR}
+			 , PARTMAL_COM_CNFIRM_DT = #{partmalComCnfirmDt,jdbcType=TIMESTAMP}
+			 , PARTMAL_COM_CNFIRM_ADMIN_ID = #{partmalComCnfirmAdminId,jdbcType=VARCHAR}
+			 , ORDMK_GOD_YN = #{ordmkGodYn,jdbcType=VARCHAR}
+			 , GOD_DLIVY_WAIT_TIME = #{godDlivyWaitTime,jdbcType=NUMERIC}
+			 , DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN = #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , SALE_SHOP_CD = #{saleShopCd,jdbcType=VARCHAR}
+			 , ORD_QTY = #{ordQty,jdbcType=NUMERIC}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , STDR_CRNCY_AMT = #{stdrCrncyAmt,jdbcType=NUMERIC}
+			 , PAY_EXCHG_RT_CRNCY_AMT = #{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+			 , SALE_AMT = #{saleAmt,jdbcType=NUMERIC}
+			 , WEB_DC_AMT = #{webDcAmt,jdbcType=NUMERIC}
+			 , EMP_DC_AMT = #{empDcAmt,jdbcType=NUMERIC}
+			 , PKAG_TAX_AMT = #{pkagTaxAmt,jdbcType=NUMERIC}
+			 , ALL_DC_AMT = #{allDcAmt,jdbcType=NUMERIC}
+			 , GOD_DC_AMT = #{godDcAmt,jdbcType=NUMERIC}
+			 , BUNDLE_DC_AMT = #{bundleDcAmt,jdbcType=NUMERIC}
+			 , CRS_DC_AMT = #{crsDcAmt,jdbcType=NUMERIC}
+			 , GOD_CPN_DC_AMT = #{godCpnDcAmt,jdbcType=NUMERIC}
+			 , BSK_CPN_DC_AMT = #{bskCpnDcAmt,jdbcType=NUMERIC}
+			 , IMDTL_DC_AMT = #{imdtlDcAmt,jdbcType=NUMERIC}
+			 , UNITY_PNT_USE_AMT = #{unityPntUseAmt,jdbcType=NUMERIC}
+			 , EVT_PNT_USE_AMT = #{evtPntUseAmt,jdbcType=NUMERIC}
+			 , WEBPNT_USE_AMT = #{webpntUseAmt,jdbcType=NUMERIC}
+			 , MILE_USE_AMT = #{mileUseAmt,jdbcType=NUMERIC}
+			 , UNITY_PNT_ACCML_AMT = #{unityPntAccmlAmt,jdbcType=NUMERIC}
+			 , EVT_PNT_ACCML_AMT = #{evtPntAccmlAmt,jdbcType=NUMERIC}
+			 , WEBPNT_ACCML_AMT = #{webpntAccmlAmt,jdbcType=NUMERIC}
+			 , MILE_ACCML_AMT = #{mileAccmlAmt,jdbcType=NUMERIC}
+			 , RESVE_SALE_GOD_YN = #{resveSaleGodYn,jdbcType=VARCHAR}
+			 , RESVE_ORD_PAY_SECT_CD = #{resveOrdPaySectCd,jdbcType=VARCHAR}
+			 , RESVE_ORD_PART_PAY_AMT = #{resveOrdPartPayAmt,jdbcType=NUMERIC}
+			 , RESVE_ORD_PAY_CLOS_DT = #{resveOrdPayClosDt,jdbcType=TIMESTAMP}
+			 , RESVE_ORD_DLIVY_APRV_CD = #{resveOrdDlivyAprvCd,jdbcType=VARCHAR}
+			 , RESVE_ORD_DLIVY_PREARNGE_DATE = #{resveOrdDlivyPrearngeDate,jdbcType=VARCHAR}
+			 , CAL_DT = #{calDt,jdbcType=TIMESTAMP}
+			 , AFF_COM_ORD_GOD_NO = #{affComOrdGodNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+			 , HOFF_INV_ORD_QTY = #{hoffInvOrdQty,jdbcType=NUMERIC}
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertOrdGod" parameterType="ordGod">
+		INSERT /* com.plgrim.ncp.base.insertOrdGod		Generator(Generator)	2018-05-23 */
+		INTO   ORD_GOD (
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , DLV_PCUPSP_TURN
+			 , GOD_NO
+			 , ITM_NO
+			 , GOD_HIST_TURN
+			 , ITM_HIST_TURN
+			 , ERP_GOD_NO
+			 , SKU_NO
+			 , GOD_NM
+			 , MOBILE_GOD_NM
+			 , ITM_NM
+			 , COLOR_NM
+			 , COLOR_CD
+			 , CLOR_CHIP_IMG_URL
+			 , BRND_ID
+			 , BRND_GRP_ID
+			 , GOD_VOL
+			 , GOD_WT
+			 , GOD_TP_CD
+			 , PARTMAL_SECT_CD
+			 , LST_IMG_URL
+			 , COM_ID
+			 , PARTMAL_COM_FEE_RT
+			 , PARTMAL_COM_CNFIRM_YN
+			 , PARTMAL_COM_CNFIRM_DT
+			 , PARTMAL_COM_CNFIRM_ADMIN_ID
+			 , ORDMK_GOD_YN
+			 , GOD_DLIVY_WAIT_TIME
+			 , DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_CST_PLC_SN
+			 , SALE_SHOP_CD
+			 , ORD_QTY
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_AMT
+			 , PAY_EXCHG_RT_CRNCY_AMT
+			 , RTL_PRC
+			 , SALE_AMT
+			 , WEB_DC_AMT
+			 , EMP_DC_AMT
+			 , PKAG_TAX_AMT
+			 , ALL_DC_AMT
+			 , GOD_DC_AMT
+			 , BUNDLE_DC_AMT
+			 , CRS_DC_AMT
+			 , GOD_CPN_DC_AMT
+			 , BSK_CPN_DC_AMT
+			 , IMDTL_DC_AMT
+			 , UNITY_PNT_USE_AMT
+			 , EVT_PNT_USE_AMT
+			 , WEBPNT_USE_AMT
+			 , MILE_USE_AMT
+			 , UNITY_PNT_ACCML_AMT
+			 , EVT_PNT_ACCML_AMT
+			 , WEBPNT_ACCML_AMT
+			 , MILE_ACCML_AMT
+			 , RESVE_SALE_GOD_YN
+			 , RESVE_ORD_PAY_SECT_CD
+			 , RESVE_ORD_PART_PAY_AMT
+			 , RESVE_ORD_PAY_CLOS_DT
+			 , RESVE_ORD_DLIVY_APRV_CD
+			 , RESVE_ORD_DLIVY_PREARNGE_DATE
+			 , CAL_DT
+			 , AFF_COM_ORD_GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , HOFF_INV_ORD_QTY
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{itmNo,jdbcType=VARCHAR}
+			 , #{godHistTurn,jdbcType=NUMERIC}
+			 , #{itmHistTurn,jdbcType=NUMERIC}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{skuNo,jdbcType=VARCHAR}
+			 , #{godNm,jdbcType=VARCHAR}
+			 , #{mobileGodNm,jdbcType=VARCHAR}
+			 , #{itmNm,jdbcType=VARCHAR}
+			 , #{colorNm,jdbcType=VARCHAR}
+			 , #{colorCd,jdbcType=VARCHAR}
+			 , #{clorChipImgUrl,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{brndGrpId,jdbcType=VARCHAR}
+			 , #{godVol,jdbcType=NUMERIC}
+			 , #{godWt,jdbcType=NUMERIC}
+			 , #{godTpCd,jdbcType=VARCHAR}
+			 , #{partmalSectCd,jdbcType=VARCHAR}
+			 , #{lstImgUrl,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{partmalComFeeRt,jdbcType=NUMERIC}
+			 , #{partmalComCnfirmYn,jdbcType=VARCHAR}
+			 , #{partmalComCnfirmDt,jdbcType=TIMESTAMP}
+			 , #{partmalComCnfirmAdminId,jdbcType=VARCHAR}
+			 , #{ordmkGodYn,jdbcType=VARCHAR}
+			 , #{godDlivyWaitTime,jdbcType=NUMERIC}
+			 , #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{saleShopCd,jdbcType=VARCHAR}
+			 , #{ordQty,jdbcType=NUMERIC}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , #{stdrCrncyAmt,jdbcType=NUMERIC}
+			 , #{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+			 , #{rtlPrc,jdbcType=NUMERIC}
+			 , #{saleAmt,jdbcType=NUMERIC}
+			 , #{webDcAmt,jdbcType=NUMERIC}
+			 , #{empDcAmt,jdbcType=NUMERIC}
+			 , #{pkagTaxAmt,jdbcType=NUMERIC}
+			 , #{allDcAmt,jdbcType=NUMERIC}
+			 , #{godDcAmt,jdbcType=NUMERIC}
+			 , #{bundleDcAmt,jdbcType=NUMERIC}
+			 , #{crsDcAmt,jdbcType=NUMERIC}
+			 , #{godCpnDcAmt,jdbcType=NUMERIC}
+			 , #{bskCpnDcAmt,jdbcType=NUMERIC}
+			 , #{imdtlDcAmt,jdbcType=NUMERIC}
+			 , #{unityPntUseAmt,jdbcType=NUMERIC}
+			 , #{evtPntUseAmt,jdbcType=NUMERIC}
+			 , #{webpntUseAmt,jdbcType=NUMERIC}
+			 , #{mileUseAmt,jdbcType=NUMERIC}
+			 , #{unityPntAccmlAmt,jdbcType=NUMERIC}
+			 , #{evtPntAccmlAmt,jdbcType=NUMERIC}
+			 , #{webpntAccmlAmt,jdbcType=NUMERIC}
+			 , #{mileAccmlAmt,jdbcType=NUMERIC}
+			 , #{resveSaleGodYn,jdbcType=VARCHAR}
+			 , #{resveOrdPaySectCd,jdbcType=VARCHAR}
+			 , #{resveOrdPartPayAmt,jdbcType=NUMERIC}
+			 , #{resveOrdPayClosDt,jdbcType=TIMESTAMP}
+			 , #{resveOrdDlivyAprvCd,jdbcType=VARCHAR}
+			 , #{resveOrdDlivyPrearngeDate,jdbcType=VARCHAR}
+			 , #{calDt,jdbcType=TIMESTAMP}
+			 , #{affComOrdGodNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{hoffInvOrdQty,jdbcType=NUMERIC}
+        )
+    </insert>
+
+    <delete id="deleteOrdGod" parameterType="ordGod">
+		DELETE /* com.plgrim.ncp.base.deleteOrdGod		Generator(Generator)	2018-05-23 */
+		  FROM ORD_GOD
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComDmstcDlvCstPlcHist" parameterType="comDmstcDlvCstPlcHist" resultType="comDmstcDlvCstPlcHist">
+		SELECT /* com.plgrim.ncp.base.selectComDmstcDlvCstPlcHist		Generator(Generator)	2018-05-29 */
+			   DMSTC_DLV_CST_PLC_SN
+			 , HIST_DT
+			 , DLV_PLC_NM
+			 , COM_ID
+			 , BASE_DLV_CST_PLC_YN
+			 , RTRVL_DRCT_PSB_YN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_YN
+			 , USE_YN
+			 , DLV_MN_CD
+			 , DLV_COM_CD
+			 , DLV_PSB_DAY
+			 , DLVSP_POST_NO
+			 , DLVSP_BASE_ADDR
+			 , DLVSP_DETAIL_ADDR
+			 , DMSTC_DLV_BOX_PSB_VOL
+			 , DMSTC_DLV_BOX_PSB_WT
+			 , DLV_CST_LEVY_SECT_CD
+			 , DMSTC_DLV_CST_EXM_STDR_AMT
+			 , DMSTC_DLV_CST
+			 , QDLV_CST_LEVY_SECT_CD
+			 , QDLV_CST_EXM_STDR_AMT
+			 , QDLV_CST
+			 , REPAIR_DLV_CST_LEVY_SECT_CD
+			 , REPAIR_DLV_CST
+			 , RETRN_MN_CD
+			 , RETRN_COM_CD
+			 , RETRN_POST_NO
+			 , RETRN_BASE_ADDR
+			 , RETRN_DETAIL_ADDR
+			 , SLR_IMPT_RTGOD_DLV_CST
+			 , SLR_IMPT_EXCHG_DLV_CST
+			 , RTGOD_DLIVY_DLV_CST_INCLS_YN
+			 , BUYER_IMPT_RTGOD_DLV_CST
+			 , BUYER_IMPT_EXCHG_DLV_CST
+			 , DLV_MTHD_DSCR
+			 , MOBILE_DLV_MTHD_DSCR
+			 , GFCT_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_DMSTC_DLV_CST_PLC_HIST
+		 WHERE 1 = 1
+	   	   AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateComDmstcDlvCstPlcHist" parameterType="comDmstcDlvCstPlcHist">
+		UPDATE /* com.plgrim.ncp.base.updateComDmstcDlvCstPlcHist		Generator(Generator)	2018-05-29 */
+		COM_DMSTC_DLV_CST_PLC_HIST SET
+			   DLV_PLC_NM = #{dlvPlcNm,jdbcType=VARCHAR}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , BASE_DLV_CST_PLC_YN = #{baseDlvCstPlcYn,jdbcType=VARCHAR}
+			 , RTRVL_DRCT_PSB_YN = #{rtrvlDrctPsbYn,jdbcType=VARCHAR}
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_YN = #{ovseaDlvDmstcDlvCstPlcYn,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , DLV_MN_CD = #{dlvMnCd,jdbcType=VARCHAR}
+			 , DLV_COM_CD = #{dlvComCd,jdbcType=VARCHAR}
+			 , DLV_PSB_DAY = #{dlvPsbDay,jdbcType=VARCHAR}
+			 , DLVSP_POST_NO = #{dlvspPostNo,jdbcType=VARCHAR}
+			 , DLVSP_BASE_ADDR = #{dlvspBaseAddr,jdbcType=VARCHAR}
+			 , DLVSP_DETAIL_ADDR = #{dlvspDetailAddr,jdbcType=VARCHAR}
+			 , DMSTC_DLV_BOX_PSB_VOL = #{dmstcDlvBoxPsbVol,jdbcType=NUMERIC}
+			 , DMSTC_DLV_BOX_PSB_WT = #{dmstcDlvBoxPsbWt,jdbcType=NUMERIC}
+			 , DLV_CST_LEVY_SECT_CD = #{dlvCstLevySectCd,jdbcType=VARCHAR}
+			 , DMSTC_DLV_CST_EXM_STDR_AMT = #{dmstcDlvCstExmStdrAmt,jdbcType=NUMERIC}
+			 , DMSTC_DLV_CST = #{dmstcDlvCst,jdbcType=NUMERIC}
+			 , QDLV_CST_LEVY_SECT_CD = #{qdlvCstLevySectCd,jdbcType=VARCHAR}
+			 , QDLV_CST_EXM_STDR_AMT = #{qdlvCstExmStdrAmt,jdbcType=NUMERIC}
+			 , QDLV_CST = #{qdlvCst,jdbcType=NUMERIC}
+			 , REPAIR_DLV_CST_LEVY_SECT_CD = #{repairDlvCstLevySectCd,jdbcType=VARCHAR}
+			 , REPAIR_DLV_CST = #{repairDlvCst,jdbcType=NUMERIC}
+			 , RETRN_MN_CD = #{retrnMnCd,jdbcType=VARCHAR}
+			 , RETRN_COM_CD = #{retrnComCd,jdbcType=VARCHAR}
+			 , RETRN_POST_NO = #{retrnPostNo,jdbcType=VARCHAR}
+			 , RETRN_BASE_ADDR = #{retrnBaseAddr,jdbcType=VARCHAR}
+			 , RETRN_DETAIL_ADDR = #{retrnDetailAddr,jdbcType=VARCHAR}
+			 , SLR_IMPT_RTGOD_DLV_CST = #{slrImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , SLR_IMPT_EXCHG_DLV_CST = #{slrImptExchgDlvCst,jdbcType=NUMERIC}
+			 , RTGOD_DLIVY_DLV_CST_INCLS_YN = #{rtgodDlivyDlvCstInclsYn,jdbcType=VARCHAR}
+			 , BUYER_IMPT_RTGOD_DLV_CST = #{buyerImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , BUYER_IMPT_EXCHG_DLV_CST = #{buyerImptExchgDlvCst,jdbcType=NUMERIC}
+			 , DLV_MTHD_DSCR = #{dlvMthdDscr,jdbcType=CLOB}
+			 , MOBILE_DLV_MTHD_DSCR = #{mobileDlvMthdDscr,jdbcType=CLOB}
+			 , GFCT_DSCR = #{gfctDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertComDmstcDlvCstPlcHist" parameterType="comDmstcDlvCstPlcHist">
+		INSERT /* com.plgrim.ncp.base.insertComDmstcDlvCstPlcHist		Generator(Generator)	2018-05-29 */
+		INTO   COM_DMSTC_DLV_CST_PLC_HIST (
+			   DMSTC_DLV_CST_PLC_SN
+			 , HIST_DT
+			 , DLV_PLC_NM
+			 , COM_ID
+			 , BASE_DLV_CST_PLC_YN
+			 , RTRVL_DRCT_PSB_YN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_YN
+			 , USE_YN
+			 , DLV_MN_CD
+			 , DLV_COM_CD
+			 , DLV_PSB_DAY
+			 , DLVSP_POST_NO
+			 , DLVSP_BASE_ADDR
+			 , DLVSP_DETAIL_ADDR
+			 , DMSTC_DLV_BOX_PSB_VOL
+			 , DMSTC_DLV_BOX_PSB_WT
+			 , DLV_CST_LEVY_SECT_CD
+			 , DMSTC_DLV_CST_EXM_STDR_AMT
+			 , DMSTC_DLV_CST
+			 , QDLV_CST_LEVY_SECT_CD
+			 , QDLV_CST_EXM_STDR_AMT
+			 , QDLV_CST
+			 , REPAIR_DLV_CST_LEVY_SECT_CD
+			 , REPAIR_DLV_CST
+			 , RETRN_MN_CD
+			 , RETRN_COM_CD
+			 , RETRN_POST_NO
+			 , RETRN_BASE_ADDR
+			 , RETRN_DETAIL_ADDR
+			 , SLR_IMPT_RTGOD_DLV_CST
+			 , SLR_IMPT_EXCHG_DLV_CST
+			 , RTGOD_DLIVY_DLV_CST_INCLS_YN
+			 , BUYER_IMPT_RTGOD_DLV_CST
+			 , BUYER_IMPT_EXCHG_DLV_CST
+			 , DLV_MTHD_DSCR
+			 , MOBILE_DLV_MTHD_DSCR
+			 , GFCT_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{dlvPlcNm,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{baseDlvCstPlcYn,jdbcType=VARCHAR}
+			 , #{rtrvlDrctPsbYn,jdbcType=VARCHAR}
+			 , #{ovseaDlvDmstcDlvCstPlcYn,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{dlvMnCd,jdbcType=VARCHAR}
+			 , #{dlvComCd,jdbcType=VARCHAR}
+			 , #{dlvPsbDay,jdbcType=VARCHAR}
+			 , #{dlvspPostNo,jdbcType=VARCHAR}
+			 , #{dlvspBaseAddr,jdbcType=VARCHAR}
+			 , #{dlvspDetailAddr,jdbcType=VARCHAR}
+			 , #{dmstcDlvBoxPsbVol,jdbcType=NUMERIC}
+			 , #{dmstcDlvBoxPsbWt,jdbcType=NUMERIC}
+			 , #{dlvCstLevySectCd,jdbcType=VARCHAR}
+			 , #{dmstcDlvCstExmStdrAmt,jdbcType=NUMERIC}
+			 , #{dmstcDlvCst,jdbcType=NUMERIC}
+			 , #{qdlvCstLevySectCd,jdbcType=VARCHAR}
+			 , #{qdlvCstExmStdrAmt,jdbcType=NUMERIC}
+			 , #{qdlvCst,jdbcType=NUMERIC}
+			 , #{repairDlvCstLevySectCd,jdbcType=VARCHAR}
+			 , #{repairDlvCst,jdbcType=NUMERIC}
+			 , #{retrnMnCd,jdbcType=VARCHAR}
+			 , #{retrnComCd,jdbcType=VARCHAR}
+			 , #{retrnPostNo,jdbcType=VARCHAR}
+			 , #{retrnBaseAddr,jdbcType=VARCHAR}
+			 , #{retrnDetailAddr,jdbcType=VARCHAR}
+			 , #{slrImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , #{slrImptExchgDlvCst,jdbcType=NUMERIC}
+			 , #{rtgodDlivyDlvCstInclsYn,jdbcType=VARCHAR}
+			 , #{buyerImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , #{buyerImptExchgDlvCst,jdbcType=NUMERIC}
+			 , #{dlvMthdDscr,jdbcType=CLOB}
+			 , #{mobileDlvMthdDscr,jdbcType=CLOB}
+			 , #{gfctDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComDmstcDlvCstPlcHist" parameterType="comDmstcDlvCstPlcHist">
+		DELETE /* com.plgrim.ncp.base.deleteComDmstcDlvCstPlcHist		Generator(Generator)	2018-05-29 */
+		  FROM COM_DMSTC_DLV_CST_PLC_HIST
+		 WHERE 1 = 1
+		   AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

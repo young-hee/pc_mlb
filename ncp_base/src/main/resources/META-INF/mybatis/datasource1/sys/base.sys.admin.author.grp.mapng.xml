@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminAuthorGrpMapng" parameterType="sysAdminAuthorGrpMapng" resultType="sysAdminAuthorGrpMapng">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminAuthorGrpMapng		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , AUTHOR_GRP_SN
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_ADMIN_AUTHOR_GRP_MAPNG
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysAdminAuthorGrpMapng" parameterType="sysAdminAuthorGrpMapng">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminAuthorGrpMapng		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_AUTHOR_GRP_MAPNG SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysAdminAuthorGrpMapng" parameterType="sysAdminAuthorGrpMapng">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminAuthorGrpMapng		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_AUTHOR_GRP_MAPNG (
+			   ADMIN_ID
+			 , AUTHOR_GRP_SN
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{authorGrpSn,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAdminAuthorGrpMapng" parameterType="sysAdminAuthorGrpMapng">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminAuthorGrpMapng		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_AUTHOR_GRP_MAPNG
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

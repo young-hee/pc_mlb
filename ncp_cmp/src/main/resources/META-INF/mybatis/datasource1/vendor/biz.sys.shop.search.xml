@@ -1,0 +1,1980 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.sys.shop.search">
+
+	<!-- 브랜드 목록 조회 -->
+	<resultMap id="brndComboResultMap" type="com.plgrim.ncp.biz.vendor.result.SearchShopResult">
+		<result property="sysBrnd.brndId"	         column="BRND_ID"	       /><!-- 브랜드 ID -->
+		<result property="sysBrnd.brndNm"	         column="BRND_NM"	       /><!-- 브랜드 명 -->
+		<result property="sysBrnd.brndImgUrl"	     column="BRND_IMG_URL"	   /><!-- 브랜드 명 -->
+		<result property="sysBrnd.brndDscr"	     	 column="BRND_DSCR"	       /><!-- 브랜드 스토리 -->
+	</resultMap>
+
+	<!-- 브랜드 목록 조회(콤보박스) -->
+	<select id="selectShopSrchBrndList" resultMap="brndComboResultMap" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO">
+		SELECT  sb.BRND_ID
+		,sb.BRND_NM
+		,sb.BRND_IMG_URL
+		,sb.BRND_DSCR
+		FROM (
+		SELECT  sb.UPPER_BRND_ID AS UPPER_BRND_ID
+		FROM SYS_SHOP_BRND ssb INNER JOIN  SYS_BRND  sb ON ssb.ERP_BRND_ID = sb.ERP_BRND_ID
+		INNER JOIN SYS_SHOP ss  ON ssb.SHOP_ID = ss.SHOP_ID
+		WHERE 1 = 1
+		AND ssb.USE_YN = 'Y'
+		AND sb.USE_YN = 'Y'
+		AND ss.USE_YN = 'Y'
+
+
+		GROUP BY  sb.UPPER_BRND_ID
+		) shBrnd
+		INNER JOIN SYS_BRND sb ON shBrnd.UPPER_BRND_ID =  sb.BRND_ID
+		WHERE sb.USE_YN = 'Y'
+		AND  (sb.UPPER_BRND_ID != 'MCBR' OR (sb.BRND_ID = 'MCBR' AND SB.ERP_BRND_ID = 'MC') )
+		AND  sb.BRND_ID != 'ECBTI'
+		<if test='brndId != null and brndId != ""'>
+			AND sb.BRND_ID = #{brndId}
+		</if>
+		ORDER BY sb.SORT_SEQ
+
+	</select>
+
+	
+
+
+	<resultMap id="shopResultMap" type="com.plgrim.ncp.biz.vendor.result.SearchShopResult" >
+		<result property="shopId"                   column="SHOP_ID"/>
+		<result property="shopNm"                   column="SHOP_NM"/>
+		<result property="shopTpCd"                 column="SHOP_TP_CD"/>
+		<result property="otltShopYn"               column="OTLT_SHOP_YN"/>
+		<result property="eventYn"               	column="EVENT_YN"/>
+		<result property="baseAddr"                 column="BASE_ADDR"/>
+		<result property="detailAddr"               column="DETAIL_ADDR"/>
+		<result property="shopTelAreaNo"        	column="SHOP_TEL_AREA_NO"/>
+		<result property="shopTelTlofNo"        	column="SHOP_TEL_TLOF_NO"/>
+		<result property="shopTelTlofWthnNo"        column="SHOP_TEL_TLOF_WTHN_NO"/>
+		<result property="wkdyOperBegHhmm"          column="WKDY_OPER_BEG_HHMM"/>
+		<result property="wkdyOperEndHhmm"          column="WKDY_OPER_END_HHMM"/>
+		<result property="lttd"         			column="LTTD"/>
+		<result property="lgtd"          			column="LGTD"/>
+		<result property="brndId"          			column="BRND_ID"/>
+		<result property="brndNm"          			column="BRND_NM"/>
+		<result property="parkngPsbYn"        		column="PARKNG_PSB_YN"/>
+		<result property="parkngUpodnlInfoCont"     column="PARKNG_UPODNL_INFO_CONT"/>
+		<result property="trnsportInfoCont"         column="TRNSPORT_INFO_CONT"/>
+		<result property="pkupShopYn"         		column="PKUP_SHOP_YN"/>
+		<result property="emenge01"         		column="INV_01"/>
+		<result property="emenge02"         		column="INV_02"/>
+		<result property="itmNm"         		column="ITM_NM"/>
+		<result property="itmQtyStr"         		column="ITM_QTY_STR"/>
+		<result property="distance"         		column="distance"/>
+		<result property="repairShopYn"				column="REPAIR_SHOP_YN" />
+		<result property="rtgodShopYn"			column="RTGOD_SHOP_YN" />
+		<result property="exchgShopYn"			column="EXCHG_SHOP_YN" />
+		<collection property="shopImgUrl" ofType="String">
+			<id column="SHOP_IMG_URL" jdbcType="VARCHAR"/>
+		</collection>
+	</resultMap>
+
+	<select id="selectShopSearchList" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="shopResultMap">
+		/* [biz.sys.shop.search.xml][selectShopSearchList][매장조회][csh] */
+		SELECT
+			result.*
+		FROM (
+			select
+				ROWNUM AS rnum
+				, shr.*
+			from (
+				SELECT
+					  sh.shop_id
+					, sh.shop_nm
+					, sh.sido_cd
+					, sh.sigungu_cd
+					, sh.shop_tp_cd
+					, sh.otlt_shop_yn
+					, sh.event_yn
+					, sh.base_addr
+					, sh.detail_addr
+					, sh.shop_tel_area_no
+					, sh.shop_tel_tlof_no
+					, sh.shop_tel_tlof_wthn_no
+					, regexp_replace(sh.wkdy_oper_beg_hhmm,'(^.{2})','\1:') AS wkdy_oper_beg_hhmm
+					, regexp_replace(sh.wkdy_oper_end_hhmm,'(^.{2})','\1:') AS wkdy_oper_end_hhmm
+					/* TODO 주차가능여부 등 필드 추가 */
+					, sh.parkng_psb_yn
+					, sh.parkng_upodnl_info_cont
+					, sh.trnsport_info_cont
+					, decode(sho.pkup_shop_yn, 'Y', sho.pkup_shop_yn, 'N') AS pkup_shop_yn
+					, sh.lttd
+					, sh.lgtd
+					, sh.shop_img_url
+					, (SELECT brnd_id FROM sys_brnd WHERE brnd_id = #{brndId}) AS brnd_id
+					, (SELECT brnd_nm FROM sys_brnd WHERE brnd_id = #{brndId}) AS brnd_nm
+					, decode(shb.repair_shop_yn, 'Y', shb.repair_shop_yn, 'N') AS repair_shop_yn
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+					, sh.rtgod_shop_yn
+					, sh.exchg_shop_yn
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				FROM (
+					SELECT DISTINCT
+						  ssb.shop_id
+						, ss.shop_nm
+						, ss.sido_cd
+						, ss.sigungu_cd
+						, ss.shop_tp_cd
+						, ss.otlt_shop_yn
+						, ss.base_addr
+						, ss.detail_addr
+						, ss.shop_tel_area_no
+						, ss.shop_tel_tlof_no
+						, ss.shop_tel_tlof_wthn_no
+						, ss.wkdy_oper_beg_hhmm
+						, ss.wkdy_oper_end_hhmm
+						/* 주차가능여부 등 필드 추가 */
+						, ss.parkng_psb_yn
+						, ss.parkng_upodnl_info_cont
+						, ss.trnsport_info_cont
+						, ss.lttd
+						, ss.lgtd
+						, ss.sort_seq
+						<if test='mobileYn == null or mobileYn == "" or mobileYn == "N"'>
+						, '' AS shop_img_url /* 페이징 처리로 변경 ssp.shop_img_url */
+						</if>
+						<if test='mobileYn != null and mobileYn != "" and mobileYn == "Y"'>
+						, '' AS shop_img_url
+						</if>
+						, CASE
+							WHEN (SELECT COUNT(shop_evt_sn)
+									FROM sys_shop_evt
+								   WHERE shop_id = ssb.shop_id
+									 AND SYSDATE BETWEEN TO_DATE(evt_beg_date , 'YYYY-MM-DD') AND TO_DATE(evt_end_date , 'YYYY-MM-DD')
+									 AND use_yn = 'Y') <![CDATA[>]]> 0  THEN 'Y'
+							ELSE 'N'
+						  END event_yn
+						/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+						, ssb.rtgod_shop_yn
+						, ssb.exchg_shop_yn
+						/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+					FROM sys_shop_brnd ssb
+					JOIN sys_shop ss ON ssb.shop_id = ss.shop_id AND ssb.shop_id != 'X30004'
+					JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id
+					<if test='godNo != null and godNo != ""'>
+						AND sb.brnd_id = (SELECT brnd_id FROM god WHERE god_no = #{godNo})
+					</if>
+					<if test='mobileYn == null or mobileYn == "" or mobileYn == "N"'>
+					LEFT OUTER JOIN sys_shop_photo ssp ON ssb.shop_id = ssp.shop_id AND ssp.use_yn = 'Y'
+					</if>
+					WHERE 1 = 1
+					AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+					<if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+						AND EXISTS
+						(SELECT 1
+						   FROM god_shop_itm_inv gsii
+						  WHERE 1 = 1
+							AND ssb.shop_id = gsii.shop_id
+							AND gsii.god_no = #{godNo}
+							AND (CASE WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+									  ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+								 END) <![CDATA[>]]> 0)
+			
+					</if>
+					<if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+						<foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+							AND EXISTS
+							(SELECT 1
+							   FROM god_shop_itm_inv gsii
+							  WHERE 1 = 1
+								AND ssb.shop_id = gsii.shop_id
+								AND gsii.god_no = #{cpstGodNo}
+								AND (CASE WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+										  ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+									 END) <![CDATA[>]]> 0)
+						</foreach>
+					</if>
+					<if test='brndId != null and brndId != ""'>
+						<if test="brndId == 'MCBR'">
+							AND ssb.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+							,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+						</if>
+						<if test="brndId != 'MCBR'">
+							AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+						</if>
+					</if>
+					<if test="shopIdArray != null">
+						AND ss.shop_id IN
+						<foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+							#{shop,jdbcType=VARCHAR}
+						</foreach>
+					</if>
+					AND ssb.use_yn = 'Y'
+					AND sb.use_yn = 'Y'
+					AND ss.use_yn = 'Y'
+					AND ss.fo_expsr_yn = 'Y'
+					ORDER BY decode(ss.shop_tp_cd, 'FLGSHP_STORE', 1, 'STRET', 2, 'DRTSTOR', 3, 'OTLT', 4, 5) ASC
+					,CONVERT(ss.shop_nm, 'ISO2022-KR')
+				) sh
+				LEFT OUTER JOIN (
+					SELECT DISTINCT
+						ssb.shop_id
+					  , ssb.pkup_shop_yn
+					  FROM sys_shop_brnd ssb
+					  JOIN sys_shop ss ON ssb.shop_id = ss.shop_id AND ssb.shop_id != 'X30004'
+					  JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id
+					  <if test='godNo != null and godNo != ""'>
+						  AND sb.brnd_id = (SELECT brnd_id FROM god WHERE god_no = #{godNo})
+					  </if>
+					  <if test='mobileYn == null or mobileYn == "" or mobileYn == "N"'>
+						  LEFT OUTER JOIN sys_shop_photo ssp ON ssb.shop_id = ssp.shop_id AND ssp.use_yn = 'Y'
+					  </if>
+					 WHERE 1 = 1
+					   AND ss.shop_tp_cd <![CDATA[ <> ]]> 'ONLINE_STORE'
+					   <if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+						   AND EXISTS
+							   (SELECT 1
+								  FROM god_shop_itm_inv gsii
+								 WHERE 1 = 1
+								   AND ssb.shop_id = gsii.shop_id
+								   AND gsii.god_no = #{godNo}
+								   AND (CASE WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+											 ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+										END) <![CDATA[>]]> 0)
+					   </if>
+					   <if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+						   <foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+							   AND EXISTS
+								   (SELECT 1
+									  FROM god_shop_itm_inv gsii
+									 WHERE 1 = 1
+									   AND ssb.shop_id = gsii.shop_id
+									   AND gsii.god_no = #{cpstGodNo}
+									   AND (CASE WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+												 ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+											END) <![CDATA[>]]> 0)
+						   </foreach>
+					   </if>
+					   <if test='brndId != null and brndId != ""'>
+						   <if test="brndId == 'MCBR'">
+							   AND ssb.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+							   ,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718')
+						   </if>
+						   <if test="brndId != 'MCBR'">
+							   AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+						   </if>
+					   </if>
+					   <if test="shopIdArray != null">
+						   AND ss.shop_id IN
+						   <foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+							   #{shop,jdbcType=VARCHAR}
+						   </foreach>
+					   </if>
+					   AND ssb.use_yn = 'Y'
+					   AND sb.use_yn = 'Y'
+					   AND ss.use_yn = 'Y'
+					   AND ss.fo_expsr_yn = 'Y'
+					   AND ssb.pkup_shop_yn = 'Y'
+				) sho ON 1=1 AND sh.shop_id = sho.shop_id
+				LEFT OUTER JOIN (
+					SELECT DISTINCT
+						ssb.shop_id
+					  , ssb.repair_shop_yn
+					  FROM sys_shop_brnd ssb
+					  JOIN sys_shop ss ON ssb.shop_id = ss.shop_id AND ssb.shop_id != 'X30004'
+					  JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id
+					  <if test='godNo != null and godNo != ""'>
+						  AND sb.brnd_id = (SELECT brnd_id FROM god WHERE god_no = #{godNo})
+					  </if>
+					  <if test='mobileYn == null or mobileYn == "" or mobileYn == "N"'>
+						  LEFT OUTER JOIN sys_shop_photo ssp ON ssb.shop_id = ssp.shop_id AND ssp.use_yn = 'Y'
+					  </if>
+					 WHERE 1 = 1
+					   AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+					   <if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+						  AND EXISTS
+							  (SELECT 1
+								 FROM god_shop_itm_inv gsii
+								WHERE 1 = 1
+								  AND ssb.shop_id = gsii.shop_id
+								  AND gsii.god_no = #{godNo}
+								  AND (CASE
+								  		 WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+										 ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+									   END) <![CDATA[>]]> 0)
+					   </if>
+					   <if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+						   <foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+							   AND EXISTS
+								   (SELECT 1
+									  FROM god_shop_itm_inv gsii
+									 WHERE 1 = 1
+									   AND ssb.shop_id = gsii.shop_id
+									   AND gsii.god_no = #{cpstGodNo}
+									   AND (CASE
+									   		  WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+											  ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+											END) <![CDATA[>]]> 0)
+						   </foreach>
+					   </if>
+					   <if test='brndId != null and brndId != ""'>
+						   <if test="brndId == 'MCBR'">
+							   AND ssb.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+							   ,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+						   </if>
+						   <if test="brndId != 'MCBR'">
+							   AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+						   </if>
+					   </if>
+					   <if test="shopIdArray != null">
+						   AND ss.shop_id IN
+						   <foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+							   #{shop,jdbcType=VARCHAR}
+						   </foreach>
+					   </if>
+					   AND ssb.use_yn = 'Y'
+					   AND sb.use_yn = 'Y'
+					   AND ss.use_yn = 'Y'
+					   AND ss.fo_expsr_yn = 'Y'
+					   AND ssb.repair_shop_yn = 'Y'
+				) shb ON 1=1 and shb.shop_id = sh.shop_id
+			) shr
+			WHERE 1=1
+			<if test='srchKeyword != null and srchKeyword != ""'>
+				AND (shr.shop_nm LIKE '%' || #{srchKeyword} || '%' OR shr.base_addr LIKE '%' || #{srchKeyword} || '%' OR shr.detail_addr LIKE '%' || #{srchKeyword} || '%')
+			</if>
+			<if test='sidocd != null and sidocd != ""'>
+				AND shr.sido_cd = #{sidocd}
+			</if>
+			<if test='guguncd != null and guguncd != ""'>
+				AND shr.sigungu_cd = #{guguncd}
+			</if>
+			<if test='mobileSrchKeyword != null and mobileSrchKeyword != ""'>
+				AND (shr.shop_nm LIKE '%' || #{mobileSrchKeyword} || '%' OR shr.base_addr LIKE '%' || #{mobileSrchKeyword} || '%' OR shr.detail_addr LIKE '%' || #{mobileSrchKeyword} || '%')
+			</if>
+			<if test='srchType != null and srchType != ""'>
+				<if test='srchType == "O" or srchType == "o"'>
+					AND shr.otlt_shop_yn = 'Y'
+				</if>
+				<if test='srchType == "F" or srchType == "f"'>
+					AND shr.shop_tp_cd = 'FLGSHP_STORE'
+				</if>
+				<if test='srchType == "D" or srchType == "d"'>
+					AND shr.shop_tp_cd = 'DRTSTOR'
+				</if>
+				<if test='srchType == "S" or srchType == "s"'>
+					AND shr.shop_tp_cd = 'STRET'
+				</if>
+				<if test='srchType == "E" or srchType == "e"'>
+					AND shr.event_yn = 'Y'
+				</if>
+				<if test='srchType == "P" or srchType == "p"'>
+					AND shr.pkup_shop_yn = 'Y'
+				</if>
+				<if test='srchType == "R" or srchType == "r"'>
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+					AND (shr.repair_shop_yn = 'Y' OR shr.rtgod_shop_yn = 'Y' OR shr.exchg_shop_yn = 'Y')
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				</if>
+			</if>
+			<if test='shopId != null and shopId != ""'>
+				AND shr.shop_id = #{shopId}
+			</if>
+		) result
+		<if test='beginIndex != null and beginIndex != "" and endIndex != null and endIndex != ""'>
+			WHERE result.rnum &gt;= #{beginIndex}
+			AND result.rnum &lt;= #{endIndex}
+		</if>
+	</select>
+
+	<resultMap id="shopCountResultMap" type="com.plgrim.ncp.biz.vendor.result.SearchShopResult" >
+		<result property="otltCnt"           column="OTLT_CNT"/>
+		<result property="gnlrCnt"           column="GNLR_CNT"/>
+		<result property="flgshpCnt"         column="FLGSHP_CNT"/>
+		<result property="drtstorCnt"        column="DRTSTOR_CNT"/>
+		<result property="stretCnt"          column="STRET_CNT"/>
+		<result property="eventCnt"         column="EVENT_CNT"/>
+		<result property="totCnt"            column="TOT_CNT"/>
+		<result property="pickupCnt"            column="PKUP_CNT"/>
+		<result property="repairCnt"		column="REPAIR_CNT" />
+	</resultMap>
+
+
+	<select id="selectShopSearchCount" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="shopCountResultMap">
+		/* [biz.sys.shop.search.xml][selectShopSearchCount]매장조회][csh] */
+		SELECT
+			<!-- COUNT(*) AS TOT_CNT -->
+			 NVL(SUM(otlt_shop_cnt+gnlr_cnt+flgshp_cnt+drtstor_cnt+stret_cnt),0) AS TOT_CNT
+			,NVL(SUM(otlt_cnt),0) AS otlt_cnt
+			,NVL(SUM(gnlr_cnt),0) AS gnlr_cnt
+			,NVL(SUM(flgshp_cnt),0) AS flgshp_cnt
+			,NVL(SUM(drtstor_cnt),0) AS drtstor_cnt
+			,NVL(SUM(stret_cnt),0) AS stret_cnt
+			,NVL(SUM(event_cnt),0) AS event_cnt
+			,NVL(SUM(pkup_cnt),0) AS pkup_cnt
+			,NVL(SUM(repair_cnt), 0) AS repair_cnt
+		FROM (
+			SELECT
+			  DECODE(otlt_shop_yn, 'Y', 1, 0) AS otlt_cnt
+			, DECODE(shop_tp_cd, 'OTLT', 1, 0) AS otlt_shop_cnt
+			, DECODE(shop_tp_cd, 'GNRL', 1, 0) AS gnlr_cnt
+			, DECODE(shop_tp_cd, 'FLGSHP_STORE', 1, 0) AS flgshp_cnt
+			, DECODE(shop_tp_cd, 'DRTSTOR', 1, 0) AS drtstor_cnt
+			, DECODE(shop_tp_cd, 'STRET', 1, 0) AS stret_cnt
+			, 0 AS pkup_cnt
+			, 0 AS repair_cnt
+			, event_cnt
+			, shop_nm
+			, sido_cd
+			, sigungu_cd
+			, shop_tp_cd
+			, otlt_shop_yn
+			, base_addr
+			, detail_addr
+			, event_yn
+			, 'N' AS pkup_shop_yn
+			, 'N' AS repair_shop_yn
+			, 'N' AS rtgod_shop_yn
+			, 'N' AS exchg_shop_yn
+			FROM (
+				SELECT DISTINCT
+				  ss.shop_id
+				, ss.sido_cd
+				, ss.sigungu_cd
+				, ss.shop_nm
+				, ss.shop_tp_cd
+				, ss.otlt_shop_yn
+				, (SELECT COUNT(shopEvt.shop_id)
+				   FROM (
+						SELECT evt.shop_id
+						FROM sys_shop_evt evt, sys_shop_brnd ssb
+						WHERE evt.shop_id = ssb.shop_id
+						AND SYSDATE BETWEEN TO_DATE (evt_beg_date,'YYYY-MM-DD')
+						AND TO_DATE (evt_end_date,'YYYY-MM-DD')
+						AND evt.use_yn = 'Y'
+						GROUP BY evt.shop_id
+				   ) shopEvt
+				   WHERE shopEvt.shop_id = ssb.shop_id) AS event_cnt
+				, CASE
+					WHEN (SELECT COUNT(shop_evt_sn) FROM sys_shop_evt
+						  WHERE shop_id = ssb.shop_id
+						  AND SYSDATE BETWEEN TO_DATE(evt_beg_date , 'YYYY-MM-DD') AND TO_DATE(evt_end_date , 'YYYY-MM-DD')
+						  AND use_yn = 'Y') <![CDATA[>]]> 0  THEN 'Y'
+					ELSE 'N'
+				  END event_yn
+				, ss.base_addr
+				, ss.detail_addr
+                /* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+                , pkup_shop_yn
+                , repair_shop_yn
+                , rtgod_shop_yn
+                , exchg_shop_yn
+                /* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				FROM sys_shop_brnd ssb
+				JOIN sys_shop ss on ssb.shop_id = ss.shop_id AND ssb.shop_id != 'X30004'
+				JOIN sys_brnd sb on ssb.erp_brnd_id = sb.erp_brnd_id
+				<if test='godNo != null and godNo != ""'>
+					AND sb.brnd_id = (SELECT brnd_id FROM god WHERE god_no = #{godNo})
+				</if>
+				WHERE 1 = 1
+				AND ss.shop_tp_cd <![CDATA[ <> ]]> 'ONLINE_STORE'
+				<if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+					AND EXISTS (
+						SELECT 1
+						FROM god_shop_itm_inv gsii
+						WHERE 1 = 1
+						AND ssb.shop_id = gsii.shop_id
+						AND gsii.god_no = #{godNo}
+						AND (CASE
+								WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+								ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+							END) <![CDATA[>]]> 0
+					)
+				</if>
+				<if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+					<foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+						AND EXISTS (
+							SELECT 1
+							FROM god_shop_itm_inv gsii
+							WHERE 1 = 1
+							AND ssb.shop_id = gsii.shop_id
+							AND gsii.god_no = #{cpstGodNo}
+							AND (CASE
+									WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+									ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+								END) <![CDATA[>]]> 0
+						)
+					</foreach>
+				</if>
+				<if test='brndId != null and brndId != "" and godNo == null '>
+					<if test="brndId == 'MCBR'">
+						AND ssb.shop_id IN ('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+						,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+					</if>
+					<if test="brndId != 'MCBR'">
+						AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+					</if>
+				</if>
+				<if test="shopIdArray != null">
+					AND ss.shop_id IN
+					<foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+						#{shop,jdbcType=VARCHAR}
+					</foreach>
+				</if>
+				AND ssb.use_yn = 'Y'
+				AND sb.use_yn = 'Y'
+				AND ss.use_yn = 'Y'
+				AND ss.fo_expsr_yn = 'Y'
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+				<if test='srchKeyword != null and srchKeyword != ""'>
+					AND (ss.shop_nm LIKE '%' || #{srchKeyword} || '%' OR ss.base_addr LIKE '%' || #{srchKeyword} || '%' OR ss.detail_addr LIKE '%' || #{srchKeyword} || '%')
+				</if>
+				<if test='mobileSrchKeyword != null and mobileSrchKeyword != ""'>
+					AND (ss.shop_nm LIKE '%' || #{mobileSrchKeyword} || '%' OR ss.base_addr LIKE '%' || #{mobileSrchKeyword} || '%' OR ss.detail_addr LIKE '%' || #{mobileSrchKeyword} || '%')
+				</if>
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+			)
+			UNION ALL
+			SELECT
+			  0 AS otlt_cnt
+			, 0 AS otlt_shop_cnt
+			, 0 AS gnlr_cnt
+			, 0 AS flgshp_cnt
+			, 0 AS drtstor_cnt
+			, 0 AS stret_cnt
+			, DECODE(pkup_shop_yn, 'Y', 1, 0) AS pkup_cnt
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+			, CASE
+				WHEN repair_shop_yn = 'Y' OR rtgod_shop_yn = 'Y' OR exchg_shop_yn = 'Y' THEN 1
+				ELSE 0
+			  END AS repair_cnt
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+			, event_cnt
+			, shop_nm
+			, sido_cd
+			, sigungu_cd
+			, shop_tp_cd
+			, otlt_shop_yn
+			, base_addr
+			, detail_addr
+			, event_yn
+			, pkup_shop_yn
+			, repair_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+			, rtgod_shop_yn
+			, exchg_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+			FROM (
+				SELECT DISTINCT
+				  ss.shop_id
+				, ss.sido_cd
+				, ss.sigungu_cd
+				, ss.shop_nm
+				, ss.shop_tp_cd
+				, ss.otlt_shop_yn
+				, (SELECT COUNT(shopEvt.shop_id)
+				   FROM (
+					  SELECT evt.shop_id
+					  FROM sys_shop_evt evt, sys_shop_brnd ssb
+					  WHERE evt.shop_id = ssb.shop_id
+					  AND SYSDATE BETWEEN TO_DATE (evt_beg_date,'YYYY-MM-DD')
+					  AND TO_DATE (evt_end_date,'YYYY-MM-DD')
+					  AND evt.use_yn = 'Y'
+					  GROUP BY evt.shop_id) shopEvt
+				   WHERE shopEvt.shop_id = ssb.shop_id
+				  ) AS event_cnt
+				, CASE
+					 WHEN (SELECT COUNT(shop_evt_sn) FROM sys_shop_evt
+						   WHERE shop_id = ssb.shop_id
+						   AND SYSDATE BETWEEN TO_DATE(evt_beg_date , 'YYYY-MM-DD') AND TO_DATE(evt_end_date , 'YYYY-MM-DD')
+						   AND use_yn = 'Y') <![CDATA[>]]> 0  THEN 'Y'
+					 ELSE 'N'
+				  END event_yn
+				, ss.base_addr
+				, ss.detail_addr
+				, ssb.pkup_shop_yn
+				, ssb.repair_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+				, ssb.rtgod_shop_yn
+				, ssb.exchg_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				FROM sys_shop_brnd ssb
+				JOIN sys_shop ss on ssb.shop_id = ss.shop_id AND ssb.shop_id != 'X30004'
+				JOIN sys_brnd sb on ssb.erp_brnd_id = sb.erp_brnd_id
+				<if test='godNo != null and godNo != ""'>
+					AND sb.brnd_id = (SELECT brnd_id FROM god WHERE god_no = #{godNo})
+				</if>
+				WHERE 1 = 1
+				AND ss.SHOP_TP_CD <![CDATA[ <> ]]> 'ONLINE_STORE'
+				<if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+					AND EXISTS (
+						SELECT 1
+						FROM god_shop_itm_inv gsii
+						WHERE 1 = 1
+						AND ssb.shop_id = gsii.shop_id
+						AND gsii.god_no = #{godNo}
+						AND (CASE
+								WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+								ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+							 END) <![CDATA[ > ]]> 0
+					)
+				</if>
+				<if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+					<foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+						AND EXISTS (
+							SELECT 1
+							FROM god_shop_itm_inv gsii
+							WHERE 1 = 1
+							AND ssb.shop_id = gsii.shop_id
+							AND gsii.god_no = #{cpstGodNo}
+							AND (CASE
+									WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+									ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+								 END) <![CDATA[>]]> 0
+							)
+					</foreach>
+				</if>
+				<if test='brndId != null and brndId != "" and godNo == null '>
+					<if test="brndId == 'MCBR'">
+						AND ssb.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+						,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+					</if>
+					<if test="brndId != 'MCBR'">
+						AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+					</if>
+				</if>
+				<if test="shopIdArray != null">
+					AND ss.shop_id IN
+					<foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+						#{shop,jdbcType=VARCHAR}
+					</foreach>
+				</if>
+				AND ssb.use_yn = 'Y'
+				AND sb.use_yn = 'Y'
+				AND ss.use_yn = 'Y'
+				AND ss.fo_expsr_yn = 'Y'
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+				<if test='srchKeyword != null and srchKeyword != ""'>
+					AND (ss.shop_nm LIKE '%' || #{srchKeyword} || '%' OR ss.base_addr LIKE '%' || #{srchKeyword} || '%' OR ss.detail_addr LIKE '%' || #{srchKeyword} || '%')
+				</if>
+				<if test='mobileSrchKeyword != null and mobileSrchKeyword != ""'>
+					AND (ss.shop_nm LIKE '%' || #{mobileSrchKeyword} || '%' OR ss.base_addr LIKE '%' || #{mobileSrchKeyword} || '%' OR ss.detail_addr LIKE '%' || #{mobileSrchKeyword} || '%')
+				</if>
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+			)
+		) sh
+		WHERE 1=1
+		<if test="mobileYn != null and mobileYn != ''">
+			<if test='srchType != null and srchType != ""'>
+				<if test='srchType == "O" or srchType == "o"'>
+					AND sh.otlt_shop_yn = 'Y'
+				</if>
+				<if test='srchType == "F" or srchType == "f"'>
+					AND sh.shop_tp_cd = 'FLGSHP_STORE'
+				</if>
+				<if test='srchType == "D" or srchType == "d"'>
+					AND sh.shop_tp_cd = 'DRTSTOR'
+				</if>
+				<if test='srchType == "S" or srchType == "s"'>
+					AND sh.shop_tp_cd = 'STRET'
+				</if>
+				<if test='srchType == "E" or srchType == "e"'>
+					AND sh.event_yn = 'Y'
+				</if>
+				<if test='srchType == "P" or srchType == "p"'>
+					AND sh.pkup_shop_yn = 'Y'
+				</if>
+				<if test='srchType == "R" or srchType == "r"'>
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+					AND (sh.repair_shop_yn = 'Y' OR sh.rtgod_shop_yn = 'Y' OR sh.exchg_shop_yn = 'Y')
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				</if>
+			</if>
+		</if>
+		<if test='sidocd != null and sidocd != ""'>
+			AND sh.sido_cd   = #{sidocd}
+		</if>
+		<if test='guguncd != null and guguncd != ""'>
+			AND sh.sigungu_cd   = #{guguncd}
+		</if>
+	</select>
+
+	<resultMap id="shopEvtResultMap" type="com.plgrim.ncp.biz.vendor.result.SearchShopResult" >
+		<result property="shopId"                   column="SHOP_ID"/>
+		<result property="shopNm"                   column="SHOP_NM"/>
+		<result property="evtNm"                    column="EVT_NM"/>
+		<result property="evtCont"                  column="EVT_CONT"/>
+		<result property="evtBegDate"               column="EVT_BEG_DATE"/>
+		<result property="evtEndDate"               column="EVT_END_DATE"/>
+	</resultMap>
+
+	<select id="selectShopSearchEvent" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="shopEvtResultMap">
+		SELECT /* [biz.sys.shop.search.xml][selectShopSearchEvent]매장이벤트조회][csh] */
+		ss.SHOP_ID
+		, ss.SHOP_NM
+		, sse.EVT_NM
+		, sse.EVT_CONT
+		, TO_CHAR(TO_DATE(EVT_BEG_DATE , 'YYYY.MM.DD'), 'YYYY.MM.DD') AS EVT_BEG_DATE
+		, TO_CHAR(TO_DATE(EVT_END_DATE , 'YYYY.MM.DD'), 'YYYY.MM.DD') AS EVT_END_DATE
+		FROM SYS_SHOP ss
+		JOIN SYS_SHOP_EVT sse ON ss.SHOP_ID = sse.SHOP_ID
+
+		WHERE 1 = 1
+		AND ss.SHOP_TP_CD <![CDATA[ <> ]]>'ONLINE_STORE'
+		AND SYSDATE BETWEEN TO_DATE(sse.EVT_BEG_DATE , 'YYYY.MM.DD') AND TO_DATE(sse.EVT_END_DATE , 'YYYY.MM.DD')
+		<if test='shopId != null and shopId != ""'>
+			AND ss.SHOP_ID = #{shopId}
+			AND ROWNUM = 1
+		</if>
+		<if test='shopId == null or shopId == ""'>
+			<if test="brndId == 'MCBR'">
+				AND ss.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+				,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+			</if>
+			AND ROWNUM <![CDATA[ < ]]> 6
+		</if>
+		<if test="shopIdArray != null">
+			AND SS.SHOP_ID in
+			<foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+				#{shop,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		AND ss.USE_YN = 'Y'
+		AND ss.FO_EXPSR_YN = 'Y'
+		AND sse.USE_YN = 'Y'
+		ORDER BY sse.UDT_DT DESC
+	</select>
+
+	<resultMap id="nearShopResultMap" type="com.plgrim.ncp.biz.vendor.result.SearchShopResult" >
+		<result property="shopId"                   column="SHOP_ID"/>
+		<result property="shopNm"                   column="SHOP_NM"/>
+		<result property="brndId"                   column="BRND_ID"/>
+		<result property="sysBrnd.upperBrndId"      column="UPPER_BRND_ID"/>
+		<result property="brndNm"                   column="BRND_NM"/>
+		<result property="shopTpCd"                 column="SHOP_TP_CD"/>
+		<result property="otltShopYn"               column="OTLT_SHOP_YN"/>
+		<result property="eventYn"               	column="EVENT_YN"/>
+		<result property="baseAddr"                 column="BASE_ADDR"/>
+		<result property="detailAddr"               column="DETAIL_ADDR"/>
+		<result property="shopTelAreaNo"        column="SHOP_TEL_AREA_NO"/>
+		<result property="shopTelTlofNo"        column="SHOP_TEL_TLOF_NO"/>
+		<result property="shopTelTlofWthnNo"        column="SHOP_TEL_TLOF_WTHN_NO"/>
+		<result property="wkdyOperBegHhmm"          column="WKDY_OPER_BEG_HHMM"/>
+		<result property="wkdyOperEndHhmm"          column="WKDY_OPER_END_HHMM"/>
+		<result property="lttd"         			column="LTTD"/>
+		<result property="lgtd"          			column="LGTD"/>
+		<result property="distance"          		column="DISTANCE"/>
+		<result property="eventYn"          		column="EVENT_YN"/>
+		<result property="mainShopImgUrl"          	column="MAIN_SHOP_IMG_URL"/>
+		<result property="parkngPsbYn"          	column="PARKNG_PSB_YN"/>
+		<result property="pkupShopYn"         		column="PKUP_SHOP_YN"/>
+		<result property="emenge01"         		column="INV_01"/>
+		<result property="emenge02"         		column="INV_02"/>
+		<result property="trnsportInfoCont"         column="TRNSPORT_INFO_CONT"/>
+		<result property="parkngUpodnlInfoCont"     column="PARKNG_UPODNL_INFO_CONT"/>
+		<result property="repairShopYn"     		column="REPAIR_SHOP_YN"/>
+		<result property="rtgodShopYn"				column="RTGOD_SHOP_YN" />
+		<result property="exchgShopYn"				column="EXCHG_SHOP_YN" />
+	</resultMap>
+
+
+
+	<select id="selectNearShopSearchList" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="nearShopResultMap">
+		/* [biz.sys.shop.search.xml][selectNearShopSearchList][가까운 매장목록조회][allen][Henry] */
+		SELECT
+			result4.*
+		FROM (
+			SELECT
+				  ROW_NUMBER() OVER(ORDER BY TO_NUMBER (result3.distance)) AS NUM
+				, result3.*
+			FROM (
+				SELECT
+					result2.*
+				FROM (
+					SELECT shopResult.*
+<!--                     , brnds.brnd_id    -->
+					FROM (
+						SELECT shr.*
+						FROM (
+							SELECT sh.*, decode(sho.pkup_shop_yn, 'Y', sho.pkup_shop_yn, 'N') AS pkup_shop_yn
+							FROM (
+								SELECT DISTINCT
+								  ss.shop_id
+								, ss.shop_nm
+								, ss.shop_tp_cd
+								, ss.fo_expsr_yn
+								, ss.otlt_shop_yn
+								, ss.open_date
+								, ss.rprstiv_nm
+								, ss.shop_tel_nation_no
+								, ss.shop_tel_area_no
+								, ss.shop_tel_tlof_no
+								, ss.shop_tel_tlof_wthn_no
+								, ss.rprstiv_mobil_nation_no
+								, ss.rprstiv_mobil_area_no
+								, ss.rprstiv_mobil_tlof_no
+								, ss.rprstiv_mobil_tlof_wthn_no
+								, ss.post_no
+								, ss.base_addr
+								, ss.detail_addr
+								, ss.shop_rprst_img_url
+								, ss.shop_width_dscr
+								, ss.sat_oper_beg_hhmm
+								, ss.sat_oper_end_hhmm
+								, ss.hldy_oper_beg_hhmm
+								, ss.hldy_oper_end_hhmm
+								, ss.lttd
+								, ss.lgtd
+								, ss.cpn_prm_no
+								, ss.parkng_psb_yn
+								, regexp_replace(ss.wkdy_oper_beg_hhmm,'(^.{2})','\1:') AS wkdy_oper_beg_hhmm
+								, regexp_replace(ss.wkdy_oper_end_hhmm,'(^.{2})','\1:') AS wkdy_oper_end_hhmm
+								, RTRIM( TO_CHAR( ROUND( 6371 * ACOS ( COS( #{lttd} * 0.017453293 )
+									* COS( ss.lttd * 0.017453293 )
+									* COS( (ss.lgtd * 0.017453293) - (#{lgtd} * 0.017453293))
+									+ SIN( #{lttd} * 0.017453293 )
+									* SIN( ss.lttd * 0.017453293 )
+								  ), 1), 'FM9990D99'), '.') AS distance
+								, CASE
+									WHEN (SELECT COUNT(shop_evt_sn)
+										  FROM sys_shop_evt
+										  WHERE shop_id = ssb.shop_id
+										  AND SYSDATE BETWEEN TO_DATE(evt_beg_date , 'YYYY-MM-DD') AND TO_DATE(evt_end_date , 'YYYY-MM-DD')
+										  AND use_yn = 'Y') <![CDATA[>]]> 0  THEN 'Y'
+								  	ELSE 'N'
+								  END event_yn
+								, ssb.repair_shop_yn
+								/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+								, ssb.rtgod_shop_yn
+								, ssb.exchg_shop_yn
+								/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+								FROM sys_shop ss
+								JOIN sys_shop_brnd ssb ON ss.shop_id = ssb.shop_id AND ssb.shop_id != 'X30004'
+								JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id
+								AND ss.use_yn      = 'Y'
+								AND ssb.use_yn     = 'Y'
+								AND ss.fo_expsr_yn = 'Y'
+								AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+								<if test='brndId != null and brndId != ""'>
+									<if test="brndId == 'MCBR'">
+										AND ss.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+										,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+									</if>
+									<if test="brndId != 'MCBR'">
+										AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}) OR sb.brnd_id = #{brndId})
+									</if>
+								</if>
+								<if test='mobileSrchKeyword != null and mobileSrchKeyword != ""'>
+									AND (ss.shop_nm LIKE '%' || #{mobileSrchKeyword} || '%'
+									OR
+									ss.base_addr LIKE '%' || #{mobileSrchKeyword} || '%'
+									OR
+									ss.detail_addr LIKE '%' || #{mobileSrchKeyword} || '%')
+								</if>
+								<if test='sidocd != null and sidocd != ""'>
+									AND ss.sido_cd   = #{sidocd}
+								</if>
+								<if test='guguncd != null and guguncd != ""'>
+									AND ss.sigungu_cd   = #{guguncd}
+								</if>
+								<if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+									AND EXISTS (
+										SELECT 1
+										FROM god_shop_itm_inv gsii
+										WHERE 1 = 1
+										AND ssb.shop_id = gsii.shop_id
+										AND gsii.god_no = #{godNo}
+										AND (
+											CASE
+												WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+												ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+											END
+											) <![CDATA[>]]> 0
+									)
+								</if>
+								<if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+									<foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+										AND EXISTS (
+											SELECT 1
+											FROM god_shop_itm_inv gsii
+											WHERE 1 = 1
+											AND ssb.shop_id = gsii.shop_id
+											AND gsii.god_no = #{cpstGodNo}
+											AND (
+												CASE
+													WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+													ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+												END
+											) <![CDATA[>]]> 0
+										)
+									</foreach>
+								</if>
+								AND ss.lttd IS NOT NULL
+								AND ss.lgtd IS NOT NULL
+								AND ss.lttd >  0
+								AND ss.lgtd > 0
+								ORDER BY TO_NUMBER(distance) ASC
+							) sh
+							LEFT OUTER JOIN(
+								SELECT DISTINCT
+									  ss.shop_id
+									, ssb.pkup_shop_yn
+								FROM sys_shop ss JOIN sys_shop_brnd ssb ON ss.shop_id = ssb.shop_id AND ssb.shop_id != 'X30004'
+								JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id
+								AND ss.use_yn      = 'Y'
+								AND ssb.use_yn     = 'Y'
+								AND ss.fo_expsr_yn = 'Y'
+								AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+								AND ssb.pkup_shop_yn = 'Y'
+								<if test='brndId != null and brndId != ""'>
+									<if test="brndId == 'MCBR'">
+										AND ss.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+										,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+									</if>
+									<if test="brndId != 'MCBR'">
+										AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}) OR sb.brnd_id = #{brndId})
+									</if>
+								</if>
+								<if test='mobileSrchKeyword != null and mobileSrchKeyword != ""'>
+									AND (ss.shop_nm LIKE '%' || #{mobileSrchKeyword} || '%'
+									OR
+									ss.base_addr LIKE '%' || #{mobileSrchKeyword} || '%'
+									OR
+									ss.detail_addr LIKE '%' || #{mobileSrchKeyword} || '%')
+								</if>
+								<if test='sidocd != null and sidocd != ""'>
+									AND ss.sido_cd   = #{sidocd}
+								</if>
+								<if test='guguncd != null and guguncd != ""'>
+									AND ss.sigungu_cd   = #{guguncd}
+								</if>
+								<if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+									AND EXISTS (
+										SELECT 1
+										FROM god_shop_itm_inv gsii
+										WHERE 1 = 1
+										AND ssb.shop_id = gsii.shop_id
+										AND gsii.god_no = #{godNo}
+										AND (
+											CASE
+												WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+												ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+											END
+										) <![CDATA[>]]> 0
+									)
+								</if>
+								<if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+									<foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+										AND EXISTS (
+											SELECT 1
+											FROM god_shop_itm_inv gsii
+											WHERE 1 = 1
+											AND ssb.shop_id = gsii.shop_id
+											AND gsii.god_no = #{cpstGodNo}
+											AND (
+												CASE
+													WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+													ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+												END
+											) <![CDATA[>]]> 0
+										)
+									</foreach>
+								</if>
+								AND ss.lttd IS NOT NULL
+								AND ss.lgtd IS NOT NULL
+								AND ss.lttd >  0
+								AND ss.lgtd > 0
+							) sho ON 1=1 AND sh.shop_id = sho.shop_id
+						) shr
+						WHERE 1=1
+						<if test='srchType != null and srchType != ""'>
+							<if test='srchType == "O" or srchType == "o"'>
+								AND shr.otlt_shop_yn = 'Y'
+							</if>
+							<if test='srchType == "F" or srchType == "f"'>
+								AND shr.shop_tp_cd = 'FLGSHP_STORE'
+							</if>
+							<if test='srchType == "D" or srchType == "d"'>
+								AND shr.shop_tp_cd = 'DRTSTOR'
+							</if>
+							<if test='srchType == "S" or srchType == "s"'>
+								AND shr.shop_tp_cd = 'STRET'
+							</if>
+							<if test='srchType == "E" or srchType == "e"'>
+								AND shr.event_yn = 'Y'
+							</if>
+							<if test='srchType == "P" or srchType == "p"'>
+								AND shr.pkup_shop_yn = 'Y'
+							</if>
+							<if test='srchType == "R" or srchType == "r"'>
+								/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+								AND (shr.repair_shop_yn = 'Y' OR shr.rtgod_shop_yn = 'Y' OR shr.exchg_shop_yn = 'Y')
+								/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+							</if>
+						</if>
+					) shopResult
+					JOIN ( 
+						SELECT   result.shop_id
+                        <!-- #52695 2017-10-18 listagg 에서 문자열 4000Byte 넘음 START -->
+						<!--<if test="brndId == 'MCBR'">-->
+						<!--, 'BEAKER' AS brnd_id -->
+						<!--</if>-->
+ 						<!--<if test="brndId != 'MCBR'">-->
+ 						<!-- , listagg (result.brnd_id, ',') within group(order by result.brnd_id) AS brnd_id -->
+ 						<!--</if>-->
+                        <!-- #52695 2017-10-18 listagg 에서 문자열 4000Byte 넘음 END -->
+						FROM (
+							SELECT
+								  brndResult.shop_id
+								, brndResult.shop_nm
+								,brndResult.BRND_ID
+								, (SELECT brnd.brnd_nm FROM sys_brnd brnd WHERE brnd.brnd_id = brndResult.brnd_id) AS brnd_nm
+							FROM (
+								SELECT
+								  sb.BRND_ID
+								, shBrnd.shop_id
+								, shBrnd.shop_nm
+								FROM (
+									SELECT sb.brnd_id, sb.upper_brnd_id AS upper_brnd_id, ss.shop_id, ss.shop_nm
+									FROM sys_shop_brnd ssb INNER JOIN  sys_brnd  sb ON ssb.erp_brnd_id = sb.erp_brnd_id
+									INNER JOIN sys_shop ss  ON ssb.shop_id = ss.shop_id
+									WHERE 1 = 1
+									AND ssb.use_yn = 'Y'
+									AND sb.use_yn = 'Y'
+									AND ss.use_yn = 'Y'
+									AND ss.fo_expsr_yn = 'Y'
+									AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+									<if test='brndId != null and brndId != ""'>
+										<if test="brndId == 'MCBR'">
+											AND ss.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+											,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+										</if>
+										<if test="brndId != 'MCBR'">
+											AND (SB.BRND_ID IN (SELECT BRND_ID FROM SYS_BRND WHERE UPPER_BRND_ID = #{brndId}) OR SB.BRND_ID = #{brndId})
+										</if>
+									</if>
+									GROUP BY  sb.BRND_ID,sb.UPPER_BRND_ID, ss.shop_id, ss.shop_nm
+								) shBrnd
+								INNER JOIN sys_brnd sb ON shBrnd.upper_brnd_id =  sb.brnd_id
+								WHERE sb.use_yn = 'Y'
+								<if test='brndId != null and brndId != ""'>
+									<if test="brndId != 'MCBR'">
+										AND sb.upper_brnd_id != 'MCBR'
+									</if>
+								</if>
+								AND sb.brnd_id != 'ECBTI'
+							) brndResult
+							GROUP BY brndResult.shop_id, brndResult.shop_nm, brndResult.BRND_ID
+						) result
+						GROUP BY result.shop_id
+					) brnds ON shopResult.shop_id = brnds.shop_id
+				) result2
+			) result3
+			ORDER BY TO_NUMBER(DISTANCE) ASC
+		) result4
+		WHERE num &gt;= #{beginIndex}
+		AND num &lt;= #{endIndex}
+	</select>
+
+	<select id="selectNearShopSearchForAvailList" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="nearShopResultMap">
+
+		SELECT /* [biz.sys.shop.search.xml][selectNearShopSearchForAvailList][가까운 매장목록조회][allen][Henry] */
+		result4.*
+		FROM (
+		SELECT
+		ROW_NUMBER() OVER(ORDER BY TO_NUMBER (result3.DISTANCE)) AS NUM
+		, result3.*
+		FROM (
+		SELECT
+		result2.*
+		FROM (
+		SELECT shopResult.*
+		/*
+		, brnds.brnd_id , brnds.brnd_nm
+		*/
+		FROM (
+
+		SELECT * FROM (
+		SELECT
+		DISTINCT
+		SS.SHOP_ID
+		, SS.SHOP_NM
+		, SS.SHOP_TP_CD
+		, SS.FO_EXPSR_YN
+		, SS.OTLT_SHOP_YN
+		, SS.OPEN_DATE
+		, SS.RPRSTIV_NM
+		, SS.SHOP_TEL_NATION_NO
+		, SS.SHOP_TEL_AREA_NO
+		, SS.SHOP_TEL_TLOF_NO
+		, SS.SHOP_TEL_TLOF_WTHN_NO
+		, SS.RPRSTIV_MOBIL_NATION_NO
+		, SS.RPRSTIV_MOBIL_AREA_NO
+		, SS.RPRSTIV_MOBIL_TLOF_NO
+		, SS.RPRSTIV_MOBIL_TLOF_WTHN_NO
+		, SS.POST_NO
+		, SS.BASE_ADDR
+		, SS.DETAIL_ADDR
+		, SS.SHOP_RPRST_IMG_URL
+		, SS.SHOP_WIDTH_DSCR
+		, SS.SAT_OPER_BEG_HHMM
+		, SS.SAT_OPER_END_HHMM
+		, SS.HLDY_OPER_BEG_HHMM
+		, SS.HLDY_OPER_END_HHMM
+		, SS.LTTD
+		, SS.LGTD
+		, SS.CPN_PRM_NO
+		, SS.PARKNG_PSB_YN
+		, SSB.PKUP_SHOP_YN
+		, regexp_replace(SS.WKDY_OPER_BEG_HHMM,'(^.{2})','\1:') AS WKDY_OPER_BEG_HHMM
+		, regexp_replace(SS.WKDY_OPER_END_HHMM,'(^.{2})','\1:') AS WKDY_OPER_END_HHMM
+		, RTRIM( TO_CHAR( ROUND( 6371 * ACOS (
+		COS( #{lttd} * 0.017453293 )
+		* COS( SS.LTTD * 0.017453293 )
+		* COS( (SS.LGTD * 0.017453293) - (#{lgtd} * 0.017453293))
+		+ SIN( #{lttd} * 0.017453293 )
+		* SIN( SS.LTTD * 0.017453293 )
+		), 1), 'FM9990D99'), '.')  AS DISTANCE
+		, CASE WHEN (SELECT COUNT(SHOP_EVT_SN)
+		FROM SYS_SHOP_EVT
+		WHERE SHOP_ID = ssb.SHOP_ID
+		AND SYSDATE BETWEEN TO_DATE(EVT_BEG_DATE , 'YYYY-MM-DD') AND TO_DATE(EVT_END_DATE , 'YYYY-MM-DD')
+		AND USE_YN = 'Y') <![CDATA[ > ]]> 0  THEN 'Y'
+		ELSE 'N'
+		END EVENT_YN
+		,T40.EMENGE AS INV_01
+		<if test='godTpCd=="SET_GOD"'>
+			,T41.EMENGE AS INV_02
+		</if>
+		<if test='godTpCd != "SET_GOD"'>
+			,0 AS INV_02
+		</if>
+		,SS.PARKNG_UPODNL_INFO_CONT
+		,SS.TRNSPORT_INFO_CONT
+		FROM SYS_SHOP SS JOIN SYS_SHOP_BRND SSB ON SS.SHOP_ID = SSB.SHOP_ID AND ssb.SHOP_ID != 'X30004'
+		JOIN SYS_BRND SB       ON SSB.ERP_BRND_ID = SB.ERP_BRND_ID
+		<if test='infUntInvList != null and infUntInvList != ""'>
+			<foreach collection="infUntInvList" item="infUntInv" index="index" >
+				<if test='index == 0'>
+					JOIN INF_UNTBY_USEFUL_INV_DETL T40 ON SSB.SHOP_ID=T40.STORE
+					AND T40.SATNR = #{infUntInv.satnr}
+					AND T40.MATNR = #{infUntInv.matnr}
+					AND T40.EMENGE <![CDATA[ > ]]> 0
+				</if>
+				<if test='index == 1'>
+					JOIN INF_UNTBY_USEFUL_INV_DETL T41 ON SSB.SHOP_ID=T41.STORE
+					AND T41.SATNR = #{infUntInv.satnr}
+					AND T41.MATNR = #{infUntInv.matnr}
+					AND T41.EMENGE <![CDATA[ > ]]> 0
+				</if>
+			</foreach>
+		</if>
+		AND SS.use_yn      = 'Y'
+		AND SSB.use_yn     = 'Y'
+		AND SS.FO_EXPSR_YN = 'Y'
+		AND ss.SHOP_TP_CD <![CDATA[ <> ]]> 'ONLINE_STORE'
+		<if test='brndId != null and brndId != ""'>
+			<if test="brndId == 'MCBR'">
+				AND ss.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+				,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728', 'A718'	)
+			</if>
+			<if test="brndId != 'MCBR'">
+				AND (SB.BRND_ID IN (SELECT BRND_ID FROM SYS_BRND WHERE UPPER_BRND_ID = #{brndId}) OR SB.BRND_ID = #{brndId})
+			</if>
+		</if>
+		<if test='mobileSrchKeyword != null and mobileSrchKeyword != ""'>
+			AND (SS.SHOP_NM LIKE '%' || #{mobileSrchKeyword} || '%'
+			OR
+			SS.BASE_ADDR LIKE '%' || #{mobileSrchKeyword} || '%'
+			OR
+			SS.DETAIL_ADDR LIKE '%' || #{mobileSrchKeyword} || '%')
+		</if>
+		<if test='sidocd != null and sidocd != ""'>
+			AND SS.SIDO_CD   = #{sidocd}
+		</if>
+		<if test='guguncd != null and guguncd != ""'>
+			AND SS.SIGUNGU_CD   = #{guguncd}
+		</if>
+		<if test='infUntInvList != null and infUntInvList != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+			<foreach collection="infUntInvList" item="infUntInv" >
+				AND EXISTS
+				(SELECT 1
+				FROM INF_UNTBY_USEFUL_INV_DETL gsii
+				WHERE 1 = 1
+				AND ssb.SHOP_ID = gsii.STORE
+				AND gsii.SATNR = #{infUntInv.satnr}
+				AND gsii.MATNR = #{infUntInv.matnr}
+				AND gsii.EMENGE <![CDATA[ > ]]> 0)
+			</foreach>
+		</if>
+		<if test='infUntInvList != null and infUntInvList != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+			<foreach collection="infUntInvList" item="infUntInv" >
+				AND EXISTS
+				(SELECT 1
+				FROM INF_UNTBY_USEFUL_INV_DETL gsii
+				WHERE 1 = 1
+				AND ssb.SHOP_ID = gsii.STORE
+				AND gsii.SATNR = #{infUntInv.satnr}
+				AND gsii.MATNR = #{infUntInv.matnr}
+				AND gsii.EMENGE <![CDATA[ > ]]> 0)
+			</foreach>
+		</if>
+		AND SS.LTTD IS NOT NULL
+		AND SS.LGTD IS NOT NULL
+		AND SS.LTTD >  0
+		AND SS.LGTD > 0
+		ORDER BY TO_NUMBER(DISTANCE) ASC
+		) sh
+		WHERE 1=1
+		<if test='srchType != null and srchType != ""'>
+			<if test='srchType == "O" or srchType == "o"'>
+				AND sh.OTLT_SHOP_YN = 'Y'
+			</if>
+			<if test='srchType == "F" or srchType == "f"'>
+				AND sh.SHOP_TP_CD = 'FLGSHP_STORE'
+			</if>
+			<if test='srchType == "D" or srchType == "d"'>
+				AND sh.SHOP_TP_CD = 'DRTSTOR'
+			</if>
+			<if test='srchType == "S" or srchType == "s"'>
+				AND sh.SHOP_TP_CD = 'STRET'
+			</if>
+			<if test='srchType == "E" or srchType == "e"'>
+				AND sh.EVENT_YN = 'Y'
+			</if>
+			<if test='srchType == "P" or srchType == "p"'>
+				AND sh.PKUP_SHOP_YN = 'Y'
+			</if>
+		</if>
+		<if test='srchKeyword != null and srchKeyword != ""'>
+			AND (sh.SHOP_NM LIKE '%' || #{srchKeyword} || '%'
+			OR
+			sh.BASE_ADDR LIKE '%' || #{srchKeyword} || '%'
+			OR
+			sh.DETAIL_ADDR LIKE '%' || #{srchKeyword} || '%')
+		</if>
+		) shopResult
+		) result2
+		) result3
+		ORDER BY TO_NUMBER(DISTANCE) ASC
+		) result4
+		WHERE num &gt;= #{beginIndex}
+		AND num &lt;= #{endIndex}
+
+	</select>
+
+	<select id="selectSearchShopInfo" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="shopEvtResultMap">
+		SELECT /* [biz.sys.shop.search.xml][selectSearchShopInfo]매장정보 조회][allen] */
+		DISTINCT
+		ss.SHOP_NM
+		, (select brnd_nm from sys_brnd where brnd_id = #{brndId}) brnd_nm
+		FROM SYS_SHOP_BRND ssb
+		JOIN SYS_SHOP ss ON ssb.SHOP_ID = ss.SHOP_ID
+		JOIN SYS_BRND sb ON ssb.ERP_BRND_ID = sb.ERP_BRND_ID
+		WHERE 1 = 1
+		AND ss.SHOP_TP_CD <![CDATA[ <> ]]>'ONLINE_STORE'
+		<if test='shopId != null and shopId != ""'>
+			AND ss.SHOP_ID = #{shopId}
+		</if>
+		<if test='brndId != null and brndId != ""'>
+			AND sb.UPPER_BRND_ID = #{brndId}
+		</if>
+	</select>
+
+
+	<sql id="selectShopSearchForGnrlGodAvailableQuery">
+		/* [biz.sys.shop.search.xml][selectShopSearchForGnrlGodAvailableQuery 일반상품 오프라인 가용재고 매장조회][Neps][kenny수정] */
+		SELECT
+			  ss.shop_id
+			, ss.sido_cd
+			, ss.sigungu_cd
+			, ss.shop_nm
+			, ss.shop_tp_cd
+			, ss.otlt_shop_yn
+			, ss.base_addr
+			, ss.detail_addr
+			, ss.shop_tel_area_no
+			, ss.shop_tel_tlof_no
+			, ss.shop_tel_tlof_wthn_no
+			, ss.wkdy_oper_beg_hhmm
+			, ss.wkdy_oper_end_hhmm
+			/* 주차가능여부 등 필드 추가 */
+			, ss.parkng_psb_yn
+			, ss.parkng_upodnl_info_cont
+			, ss.trnsport_info_cont
+			, ss.lttd
+			, ss.lgtd
+			, ss.sort_seq
+			, shop.brnd_id
+			, shop.brnd_nm
+			, shop.pkup_shop_yn
+			, shop.repair_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+			, shop.rtgod_shop_yn
+			, shop.exchg_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+			, shop.event_cnt
+			, CASE
+				WHEN shop.event_cnt > 0 THEN 'Y'
+				ELSE 'N'
+			  END AS event_yn
+			, DECODE(ss.otlt_shop_yn, 'Y', 1, 0) AS otlt_cnt
+			, DECODE(ss.shop_tp_cd, 'OTLT', 1, 0) AS otlt_shop_cnt
+			, DECODE(ss.shop_tp_cd, 'GNRL', 1, 0) AS gnlr_cnt
+			, DECODE(ss.shop_tp_cd, 'FLGSHP_STORE', 1, 0) AS flgshp_cnt
+			, DECODE(ss.shop_tp_cd, 'DRTSTOR', 1, 0) AS drtstor_cnt
+			, DECODE(ss.shop_tp_cd, 'STRET', 1, 0) AS stret_cnt
+			, DECODE(shop.pkup_shop_yn, 'Y', 1, 0) AS pkup_cnt
+			, DECODE(shop.repair_shop_yn, 'Y', 1, 0) AS repair_cnt
+			, DECODE(SIGN(shop.emenge), 1, (shop.emenge), 0) AS emenge
+			, ITM_NM
+			, '' AS ITM_QTY_STR
+		FROM sys_shop ss
+		JOIN (
+			SELECT
+				  g.erp_god_no     AS satnr
+				, gi.sku_no        AS matnr
+				, gsii.shop_id     AS store
+				, DECODE(gsii.web_sale_psb_yn,'Y',ssb.pkup_shop_yn,'N') pkup_shop_yn
+				, ssb.repair_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+				, ssb.rtgod_shop_yn
+				, ssb.exchg_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				, CASE
+					WHEN ssb.pkup_shop_yn <![CDATA[<>]]> 'Y' AND ssb.dlv_shop_yn <![CDATA[<>]]> 'Y' THEN 0
+					ELSE NVL(gsii.inv_qty,0)
+				  END AS emenge
+				, CASE gsii.safe_inv_rt_use_yn
+					WHEN 'Y' THEN
+						CASE
+							WHEN ssb.safe_inv_use_yn = 'Y' AND ssb.use_yn = 'Y' THEN NVL(ssb.safe_inv_rt,0)
+							ELSE 0
+						END
+					ELSE NVL(gsii.safe_inv_qty,0)
+				  END safe_inv
+				, NVL(sse.event_cnt, 0) AS event_cnt
+				, g.brnd_id
+				, sb.brnd_nm
+				, gi.itm_nm
+			FROM god g
+			JOIN god_itm gi ON (g.god_no = gi.god_no)
+			JOIN god_shop_itm_inv gsii ON (gi.itm_no = gsii.itm_no)
+			JOIN sys_brnd sb ON (g.brnd_id = sb.brnd_id)
+			JOIN sys_shop_brnd ssb ON (sb.erp_brnd_id = ssb.erp_brnd_id AND gsii.shop_id = ssb.shop_id)
+			LEFT OUTER JOIN (
+				SELECT
+					  shop_id
+					, COUNT(shop_evt_sn) AS event_cnt
+				FROM sys_shop_evt
+				WHERE 1 = 1
+				AND use_yn = 'Y'
+				AND SYSDATE BETWEEN TO_DATE (evt_beg_date, 'YYYY-MM-DD') AND TO_DATE (evt_end_date, 'YYYY-MM-DD')
+				GROUP BY shop_id
+			) sse ON ssb.shop_id = sse.shop_id
+			WHERE 1 = 1
+			AND g.erp_inv_intrlck_yn = 'Y'
+			AND g.cdc_inv_only_yn = 'N'
+			<foreach collection="infUntInvList" item="infUntInv" >
+				AND g.erp_god_no = #{infUntInv.satnr}
+				AND gi.sku_no = #{infUntInv.matnr}
+			</foreach>
+			AND gsii.shop_id <![CDATA[<>]]> 'B031'
+			AND gsii.shop_id <![CDATA[<>]]> 'X30004'
+			AND sb.use_yn = 'Y'
+			AND (ssb.pkup_shop_yn = 'Y' OR ssb.dlv_shop_yn = 'Y')
+			AND (
+				CASE
+					WHEN ssb.pkup_shop_yn <![CDATA[<>]]> 'Y' AND ssb.dlv_shop_yn <![CDATA[<>]]> 'Y' THEN 0
+					ELSE NVL(gsii.inv_qty,0)
+				END)
+			 - (
+				CASE gsii.safe_inv_rt_use_yn
+					WHEN 'Y' THEN
+						CASE
+							WHEN ssb.safe_inv_use_yn = 'Y' AND ssb.use_yn = 'Y' THEN NVL(ssb.safe_inv_rt,0)
+							ELSE 0
+						END
+					ELSE NVL(GSII.SAFE_INV_QTY,0)
+				END) <![CDATA[>]]> 0
+			UNION ALL
+			SELECT
+				  iuuid.satnr
+				, iuuid.matnr
+				, iuuid.store
+				, 'N'       AS pkup_shop_yn
+				, 'N'		 AS repair_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+				, 'N'		 AS rtgod_shop_yn
+				, 'N'		 AS exchg_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				, iuuid.emenge
+				, 0         AS safe_inv
+				, 0         AS event_cnt
+				, g.brnd_id
+				, sb.brnd_nm
+				, SUBSTR(iuuid.matnr, 11, LENGTH(iuuid.matnr)) AS itm_nm
+			FROM inf_untby_useful_inv_detl iuuid
+			JOIN god g ON (iuuid.satnr = g.erp_god_no)
+			JOIN sys_brnd sb ON (g.brnd_id = sb.brnd_id)
+			WHERE 1 = 1
+			<foreach collection="infUntInvList" item="infUntInv" >
+				AND iuuid.satnr = #{infUntInv.satnr}
+				AND iuuid.matnr = #{infUntInv.matnr}
+			</foreach>
+			AND iuuid.emenge  <![CDATA[>]]> 0
+			AND g.god_tp_cd = 'GNRL_GOD'
+			AND NOT EXISTS (
+				SELECT 1
+				FROM god g
+				JOIN god_itm gi ON (g.god_no = gi.god_no)
+				JOIN god_shop_itm_inv gsii ON (gi.itm_no = gsii.itm_no)
+				JOIN sys_brnd sb ON (g.brnd_id = sb.brnd_id)
+				JOIN sys_shop_brnd ssb ON (sb.erp_brnd_id = ssb.erp_brnd_id AND gsii.shop_id = ssb.shop_id)
+				WHERE iuuid.satnr = g.erp_god_no
+				AND iuuid.matnr = gi.sku_no
+				AND iuuid.store = (CASE WHEN g.cdc_inv_only_yn = 'N' THEN gsii.shop_id ELSE 'X30004' END)
+				AND g.erp_inv_intrlck_yn = 'Y'
+				AND ssb.use_yn = 'Y'
+				AND sb.use_yn = 'Y'
+			)
+		) shop ON (ss.shop_id = shop.store)
+		WHERE 1 = 1
+		AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+		AND ss.use_yn = 'Y'
+		AND ss.fo_expsr_yn = 'Y'
+	</sql>
+
+	<sql id="selectShopSearchForSetGodAvailableQuery">
+		SELECT  /* [biz.sys.shop.search.xml][selectShopSearchForSetGodAvailableQuery 세트상품 오프라인 가용재고 매장조회][Neps] */
+			ss.shop_id
+			, ss.sido_cd
+			, ss.sigungu_cd
+			, ss.shop_nm
+			, ss.shop_tp_cd
+			, ss.otlt_shop_yn
+			, ss.base_addr
+			, ss.detail_addr
+			, shop.pkup_shop_yn
+			, shop.repair_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+			, shop.rtgod_shop_yn
+			, shop.exchg_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+			, shop.event_cnt
+			, CASE
+				WHEN shop.event_cnt > 0 THEN 'Y'
+				ELSE 'N'
+			  END AS event_yn
+			, DECODE(ss.otlt_shop_yn, 'Y', 1, 0) AS otlt_cnt
+			, DECODE(ss.shop_tp_cd, 'OTLT', 1, 0) AS otlt_shop_cnt
+			, DECODE(ss.shop_tp_cd, 'GNRL', 1, 0) AS gnlr_cnt
+			, DECODE(ss.shop_tp_cd, 'FLGSHP_STORE', 1, 0) AS flgshp_cnt
+			, DECODE(ss.shop_tp_cd, 'DRTSTOR', 1, 0) AS drtstor_cnt
+			, DECODE(ss.shop_tp_cd, 'STRET', 1, 0) AS stret_cnt
+			, DECODE(shop.pkup_shop_yn, 'Y', 1, 0) AS pkup_cnt
+			, DECODE(shop.repair_shop_yn, 'Y', 1, 0) AS repair_cnt
+			, ss.shop_tel_area_no
+			, ss.shop_tel_tlof_no
+			, ss.shop_tel_tlof_wthn_no
+			, ss.wkdy_oper_beg_hhmm
+			, ss.wkdy_oper_end_hhmm
+			/* 주차가능여부 등 필드 추가 */
+			, ss.parkng_psb_yn
+			, ss.parkng_upodnl_info_cont
+			, ss.trnsport_info_cont
+			, ss.lttd
+			, ss.lgtd
+			, ss.sort_seq
+			, 0 AS emenge
+			, shop.itm_nm
+			, shop.itm_qty_str
+		FROM sys_shop ss
+		JOIN (
+			SELECT
+				  t2.store
+				, t2.pkup_shop_yn
+				, t2.repair_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+				, t2.rtgod_shop_yn
+				, t2.exchg_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				, LISTAGG(t2.itm_nm, '/') WITHIN GROUP (ORDER BY t2.store, t2.sort_seq) AS itm_nm
+				, LISTAGG(DECODE(SIGN(t2.emenge - t2.safe_inv), 1, (t2.emenge - t2.safe_inv), 0), '/') WITHIN GROUP (ORDER BY t2.store, t2.sort_seq) AS itm_qty_str
+				, MAX(NVL(t2.event_cnt, 0)) AS event_cnt
+			FROM(
+				SELECT t1.*
+				FROM (
+					SELECT t.*
+						, COUNT(*) OVER (PARTITION BY t.store) AS store_cnt
+					FROM (
+						SELECT g.erp_god_no     AS satnr
+							, gi.sku_no        AS matnr
+							, gi.itm_nm
+							, gsii.shop_id     AS store
+							, DECODE(gsii.web_sale_psb_yn,'Y',ssb.pkup_shop_yn,'N') pkup_shop_yn
+							, ssb.repair_shop_yn
+							/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+							, ssb.rtgod_shop_yn
+							, ssb.exchg_shop_yn
+							/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+							, CASE
+								WHEN ssb.pkup_shop_yn <![CDATA[<>]]> 'Y' AND ssb.dlv_shop_yn <![CDATA[<>]]> 'Y' THEN 0
+								ELSE NVL(gsii.inv_qty,0)
+							  END AS emenge
+							, CASE gsii.safe_inv_rt_use_yn
+								WHEN 'Y' THEN
+									CASE
+										WHEN ssb.safe_inv_use_yn = 'Y' AND ssb.use_yn = 'Y' THEN NVL(ssb.safe_inv_rt,0)
+										ELSE 0
+									END
+								ELSE
+								NVL(gsii.safe_inv_qty,0)
+							  END safe_inv
+							, NVL(sse.event_cnt, 0) AS event_cnt
+							, gcgc.sort_seq
+						FROM god g
+						JOIN god_cpst_god_cnnc gcgc ON (g.god_no = gcgc.cpst_god_no)
+						JOIN god_itm gi ON (g.god_no = gi.god_no)
+						JOIN god_shop_itm_inv gsii ON (gi.itm_no = gsii.itm_no)
+						JOIN sys_brnd sb ON (g.brnd_id = sb.brnd_id)
+						JOIN sys_shop_brnd ssb ON (sb.erp_brnd_id = ssb.erp_brnd_id AND gsii.shop_id = ssb.shop_id)
+						LEFT OUTER JOIN (
+							SELECT shop_id
+							, COUNT(shop_evt_sn) AS event_cnt
+							FROM sys_shop_evt
+							WHERE 1 = 1
+							AND use_yn = 'Y'
+							AND SYSDATE BETWEEN TO_DATE (evt_beg_date, 'YYYY-MM-DD') AND TO_DATE (evt_end_date, 'YYYY-MM-DD')
+							GROUP BY shop_id
+						) SSE ON ssb.shop_id = sse.shop_id
+						WHERE 1 = 1
+						AND g.erp_inv_intrlck_yn = 'Y'
+						AND g.cdc_inv_only_yn = 'N'
+						AND g.erp_god_no IN (<foreach collection="infUntInvList" item="infUntInv" separator="," >#{infUntInv.satnr}</foreach>)
+						AND gi.sku_no IN  (<foreach collection="infUntInvList" item="infUntInv"  separator="," >#{infUntInv.matnr}</foreach>)
+						AND gsii.shop_id <![CDATA[<>]]> 'B031'
+						AND gsii.shop_id <![CDATA[<>]]> 'X30004'
+						AND sb.use_yn = 'Y'
+						AND (ssb.pkup_shop_yn = 'Y' OR ssb.dlv_shop_yn = 'Y')
+						AND (CASE
+								WHEN ssb.pkup_shop_yn <![CDATA[ <> ]]> 'Y' AND ssb.dlv_shop_yn <![CDATA[ <> ]]> 'Y' THEN 0
+								ELSE NVL(GSII.INV_QTY,0)
+							 END)
+						  - (CASE gsii.safe_inv_rt_use_yn
+								WHEN 'Y' THEN
+									CASE
+										WHEN ssb.safe_inv_use_yn = 'Y' AND ssb.use_yn = 'Y' THEN NVL(ssb.safe_inv_rt,0)
+										ELSE 0
+									END
+								ELSE
+								NVL(gsii.safe_inv_qty,0)
+							 END) <![CDATA[>]]> 0
+						UNION ALL
+						SELECT ta.satnr
+						, ta.matnr
+						, gi.itm_nm
+						, ta.store
+						, 'N'       AS pkup_shop_yn
+						, 'N'		 AS repair_shop_yn
+						/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+						, 'N'		 AS rtgod_shop_yn
+						, 'N'		 AS exchg_shop_yn
+						/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+						, ta.emenge
+						, 0         AS safe_inv
+						, 0         AS event_cnt
+						, gcgc.sort_seq
+						FROM inf_untby_useful_inv_detl ta
+						JOIN god_itm gi ON (ta.matnr = gi.sku_no)
+						JOIN god_cpst_god_cnnc gcgc ON (gi.god_no = gcgc.cpst_god_no)
+						WHERE 1 = 1
+						AND ta.satnr IN (<foreach collection="infUntInvList" item="infUntInv" separator=",">#{infUntInv.satnr}</foreach>)
+						AND ta.matnr IN (<foreach collection="infUntInvList" item="infUntInv" separator=",">#{infUntInv.matnr}</foreach>)
+						AND ta.emenge <![CDATA[ > ]]> 0
+						AND NOT EXISTS (
+							SELECT 1
+							FROM god g
+							JOIN god_itm gi ON (g.god_no = gi.god_no)
+							JOIN god_shop_itm_inv gsii ON (gi.itm_no = gsii.itm_no)
+							JOIN sys_brnd sb ON (g.brnd_id = sb.brnd_id)
+							JOIN sys_shop_brnd ssb ON (sb.erp_brnd_id = ssb.erp_brnd_id AND gsii.shop_id = ssb.shop_id)
+							WHERE ta.satnr = g.erp_god_no
+							AND ta.matnr = gi.sku_no
+							AND ta.store = (CASE WHEN g.cdc_inv_only_yn = 'N' THEN gsii.shop_id ELSE 'X30004' END)
+							AND ssb.use_yn = 'Y'
+							AND sb.use_yn = 'Y'
+							AND g.erp_inv_intrlck_yn = 'Y'
+						)
+						ORDER BY store, sort_seq
+					) t
+				) t1
+			WHERE t1.store_cnt = (SELECT COUNT(sku_no) FROM god_itm WHERE sku_no IN (<foreach collection="infUntInvList" item="infUntInv" separator=",">#{infUntInv.matnr}</foreach>) )
+			) t2
+			GROUP BY t2.store, t2.pkup_shop_yn, t2.repair_shop_yn, t2.rtgod_shop_yn, t2.exchg_shop_yn
+		) shop ON (ss.shop_id = shop.store)
+		WHERE 1 = 1
+		AND ss.shop_tp_cd <![CDATA[ <> ]]> 'ONLINE_STORE'
+		AND ss.use_yn = 'Y'
+		AND ss.fo_expsr_yn = 'Y'
+	</sql>
+
+	<sql id="selectShopSearchForAvailableWhere">
+		<if test='srchType != null and srchType != "" and whereType!="count"'>
+			<if test='srchType == "O" or srchType == "o"'>
+				AND sh.OTLT_SHOP_YN = 'Y'
+			</if>
+			<if test='srchType == "F" or srchType == "f"'>
+				AND sh.SHOP_TP_CD = 'FLGSHP_STORE'
+			</if>
+			<if test='srchType == "D" or srchType == "d"'>
+				AND sh.SHOP_TP_CD = 'DRTSTOR'
+			</if>
+			<if test='srchType == "S" or srchType == "s"'>
+				AND sh.SHOP_TP_CD = 'STRET'
+			</if>
+			<if test='srchType == "E" or srchType == "e"'>
+				AND sh.EVENT_YN = 'Y'
+			</if>
+			<if test='srchType == "P" or srchType == "p"'>
+				AND sh.PKUP_SHOP_YN = 'Y'
+			</if>
+			<if test='srchType == "R" or srchType == "r"'>
+				AND sh.REPAIR_SHOP_YN = 'Y'
+			</if>
+		</if>
+		<if test='srchKeyword != null and srchKeyword != ""'>
+			AND (sh.SHOP_NM LIKE '%' || #{srchKeyword} || '%'
+			OR
+			sh.BASE_ADDR LIKE '%' || #{srchKeyword} || '%'
+			OR
+			sh.DETAIL_ADDR LIKE '%' || #{srchKeyword} || '%')
+		</if>
+		<if test='sidocd != null and sidocd != ""'>
+			AND sh.SIDO_CD   = #{sidocd}
+		</if>
+		<if test='guguncd != null and guguncd != ""'>
+			AND sh.SIGUNGU_CD   = #{guguncd}
+		</if>
+		<if test='mobileSrchKeyword != null and mobileSrchKeyword != ""'>
+			AND (sh.SHOP_NM LIKE '%' || #{mobileSrchKeyword} || '%'
+			OR
+			sh.BASE_ADDR LIKE '%' || #{mobileSrchKeyword} || '%'
+			OR
+			sh.DETAIL_ADDR LIKE '%' || #{mobileSrchKeyword} || '%')
+		</if>
+	</sql>
+
+	<sql id="selectShopSearchListQuery">
+		/* [biz.sys.shop.search.xml][selectShopSearchListQuery 매장조회 수선][daelim.im 20170421] */
+		 SELECT 
+		 	  sh.shop_id
+	        , sh.shop_nm
+	        , sh.sido_cd
+	        , sh.sigungu_cd
+	        , sh.shop_tp_cd
+	        , sh.otlt_shop_yn
+	        , sh.event_yn
+	        , sh.base_addr
+	        , sh.detail_addr
+	        , sh.shop_tel_area_no
+	        , sh.shop_tel_tlof_no
+	        , sh.shop_tel_tlof_wthn_no
+	        , sh.wkdy_oper_beg_hhmm
+			, sh.wkdy_oper_end_hhmm
+			/* TODO 주차가능여부 등 필드 추가 */
+			, sh.parkng_psb_yn
+			, sh.parkng_upodnl_info_cont
+			, sh.trnsport_info_cont
+			, DECODE(sho.pkup_shop_yn, 'Y', 1,0) AS pkup_cnt
+			, sho.pkup_shop_yn
+	        , sh.lttd
+	        , sh.lgtd
+	        , sh.shop_img_url
+            , '' AS emenge
+            , '' AS itm_nm
+            , '' AS itm_qty_str
+            , sh.otlt_cnt
+            , sh.gnlr_cnt
+            , sh.flgshp_cnt
+            , sh.drtstor_cnt
+            , sh.stret_cnt
+            , 0 AS event_cnt
+            , DECODE(repair_shop_yn, 'Y', 1, 0) AS repair_cnt
+            , NVL(repair_shop_yn,'N') repair_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+			, sh.rtgod_shop_yn
+			, sh.exchg_shop_yn
+			/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+	       FROM
+	            (
+	              SELECT DISTINCT
+					  ssb.shop_id
+					, ss.shop_nm
+					, ss.sido_cd
+					, ss.sigungu_cd
+					, ss.shop_tp_cd
+					, ss.otlt_shop_yn
+					, ss.base_addr
+					, ss.detail_addr
+					, ss.shop_tel_area_no
+					, ss.shop_tel_tlof_no
+					, ss.shop_tel_tlof_wthn_no
+					, ss.wkdy_oper_beg_hhmm
+					, ss.wkdy_oper_end_hhmm
+					/* 주차가능여부 등 필드 추가 */
+					, ss.parkng_psb_yn
+					, ss.parkng_upodnl_info_cont
+					, ss.trnsport_info_cont
+					, ss.lttd
+					, ss.lgtd
+					, ss.sort_seq
+					<if test='mobileYn == null or mobileYn == "" or mobileYn == "N"'>
+					, '' AS shop_img_url /* 페이징 처리로 변경 ssp.shop_img_url */
+					</if>
+					<if test='mobileYn != null and mobileYn != "" and mobileYn == "Y"'>
+					, '' AS shop_img_url
+					</if>
+	                  , CASE WHEN (SELECT COUNT(shop_evt_sn) FROM sys_shop_evt
+	                                       WHERE shop_id = ssb.shop_id
+	                                         AND SYSDATE BETWEEN TO_DATE(evt_beg_date , 'YYYY-MM-DD') AND TO_DATE(evt_end_date , 'YYYY-MM-DD')
+	                                         AND use_yn = 'Y') <![CDATA[ > ]]> 0  THEN 'Y'
+	                         ELSE 'N'
+	                         END event_yn
+					, DECODE(ss.otlt_shop_yn, 'Y', 1, 0) AS otlt_cnt
+					, DECODE(ss.shop_tp_cd, 'GNRL', 1, 0) AS gnlr_cnt
+					, DECODE(ss.shop_tp_cd, 'FLGSHP_STORE', 1, 0) AS flgshp_cnt
+					, DECODE(ss.shop_tp_cd, 'DRTSTOR', 1, 0) AS drtstor_cnt
+					, DECODE(ss.shop_tp_cd, 'STRET', 1, 0) AS stret_cnt
+					, 0 AS pkup_cnt
+					, 0 AS emenge
+					, ssb.repair_shop_yn
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+					, ssb.rtgod_shop_yn
+					, ssb.exchg_shop_yn
+					/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				  FROM sys_shop_brnd ssb
+	              JOIN sys_shop ss ON ssb.shop_id = ss.shop_id AND ssb.shop_id != 'X30004'
+	              JOIN sys_brnd sb ON ssb.erp_brnd_id = sb.erp_brnd_id
+	              <if test='godNo != null and godNo != ""'>
+					  AND sb.brnd_id = (SELECT brnd_id FROM god WHERE god_no = #{godNo})
+                  </if>
+	              <if test='mobileYn == null or mobileYn == "" or mobileYn == "N"'>
+	              LEFT OUTER JOIN sys_shop_photo ssp ON ssb.shop_id = ssp.shop_id AND ssp.use_yn = 'Y'
+                  </if>
+	             WHERE 1 = 1
+	               AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+	               <if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+	               AND EXISTS
+                        (SELECT 1
+                           FROM god_shop_itm_inv gsii
+                          WHERE 1 = 1
+                            AND ssb.shop_id = gsii.shop_id
+                            AND gsii.god_no = #{godNo}
+                            AND (CASE WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+									ELSE NVL(gsii.INV_QTY,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+		                            END) <![CDATA[>]]> 0)
+
+                   </if>
+                   <if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+		           <foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+	               AND EXISTS
+                        (SELECT 1
+                           FROM god_shop_itm_inv gsii
+                          WHERE 1 = 1
+                            AND ssb.shop_id = gsii.shop_id
+                            AND gsii.god_no = #{cpstGodNo}
+                            AND (CASE
+                            		WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+									ELSE NVL(gsii.INV_QTY,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+		                         END) <![CDATA[>]]> 0)
+				  </foreach>
+                   </if>
+                   <if test='brndId != null and brndId != ""'>
+					   <if test="brndId == 'MCBR'">
+							AND ssb.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+							,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728'	)
+						</if>
+					   	<if test="brndId != 'MCBR'">
+							AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+						</if>
+				   </if>
+		   			<if test="shopIdArray != null">
+					    AND ss.shop_id IN
+					    <foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+					        #{shop,jdbcType=VARCHAR}
+					    </foreach>
+					</if>
+                    AND ssb.use_yn = 'Y'
+                    AND sb.use_yn = 'Y'
+                    AND ss.use_yn = 'Y'
+                    AND ss.fo_expsr_yn = 'Y'
+					<if test='brndId != null and brndId != ""'>
+                    AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+                    </if>
+	             ORDER BY DECODE(ss.shop_tp_cd, 'FLGSHP_STORE', 1, 'STRET', 2, 'DRTSTOR', 3, 'OTLT', 4, 5) ASC
+                       		,convert (ss.shop_nm, 'ISO2022-KR')
+	           ) sh
+	           LEFT OUTER JOIN(
+	           		SELECT
+	              		DISTINCT
+	                    ssb.shop_id
+				      , NVL(ssb.pkup_shop_yn,'N') pkup_shop_yn
+	              FROM sys_shop_brnd ssb
+	              JOIN sys_shop ss on ssb.shop_id = ss.shop_id AND ssb.shop_id != 'X30004'
+	              JOIN sys_brnd sb on ssb.erp_brnd_id = sb.erp_brnd_id
+	              <if test='godNo != null and godNo != ""'>
+					  AND sb.brnd_id = (SELECT brnd_id FROM god WHERE god_no = #{godNo})
+                  </if>
+	              <if test='mobileYn == null or mobileYn == "" or mobileYn == "N"'>
+	              LEFT OUTER JOIN sys_shop_photo ssp ON ssb.shop_id = ssp.shop_id AND ssp.use_yn = 'Y'
+                  </if>
+	             WHERE 1 = 1
+	               AND ss.shop_tp_cd <![CDATA[<>]]> 'ONLINE_STORE'
+	               <if test='godNo != null and godNo != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+	               AND EXISTS
+                        (SELECT 1
+                           FROM god_shop_itm_inv gsii
+                          WHERE 1 = 1
+                            AND ssb.shop_id = gsii.shop_id
+                            AND gsii.god_no = #{godNo}
+                            AND (CASE
+                            		WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+									ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+		                         END) <![CDATA[>]]> 0)
+
+                   </if>
+                   <if test='cpstGodNoArr != null and cpstGodNoArr != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+		           <foreach collection="cpstGodNoArr" item="cpstGodNo" index="index" >
+	               AND EXISTS
+                        (SELECT 1
+                           FROM god_shop_itm_inv gsii
+                          WHERE 1 = 1
+                            AND ssb.shop_id = gsii.shop_id
+                            AND gsii.god_no = #{cpstGodNo}
+                            AND (CASE
+                            		WHEN gsii.safe_inv_rt_use_yn = 'N' THEN NVL(gsii.inv_qty,0)-(NVL(gsii.safe_inv_qty,0)+NVL(gsii.sale_prearnge_qty,0))
+									ELSE NVL(gsii.inv_qty,0)- (NVL(ssb.safe_inv_rt,0) + NVL(gsii.sale_prearnge_qty,0))
+		                         END) <![CDATA[>]]> 0)
+				  </foreach>
+                   </if>
+                   <if test='brndId != null and brndId != ""'>
+					   <if test="brndId == 'MCBR'">
+							AND ssb.shop_id IN('C689','D829','D846','D474','D475','D498','D366','D447','D612','D613','D642','D673','D676','D687','D688','A281','A000','A246','A310','A150','A151','A152','A172','A204'
+							,'D004','A321','A570','D097','A446','A602','A668','A622','A552','A613','A412','D124','D096','A635','A667','D700','A655','D449','C915','A416','D728'	)
+						</if>
+					   	<if test="brndId != 'MCBR'">
+							AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+						</if>
+				   </if>
+		   			<if test="shopIdArray != null">
+					    AND ss.shop_id IN
+					    <foreach item="shop" collection="shopIdArray" open="(" separator="," close=")">
+					        #{shop,jdbcType=VARCHAR}
+					    </foreach>
+					</if>
+                    AND ssb.use_yn = 'Y'
+                    AND sb.use_yn = 'Y'
+                    AND ss.use_yn = 'Y'
+                    AND ss.fo_expsr_yn = 'Y'
+                    AND ssb.pkup_shop_yn = 'Y'
+                    <if test='brndId != null and brndId != ""'>
+                    AND (sb.brnd_id IN (SELECT brnd_id FROM sys_brnd WHERE upper_brnd_id = #{brndId}))
+                    </if>
+	           ) sho
+	       ON 1=1
+                 and sh.shop_id = sho.shop_id
+                 ORDER BY sh.shop_id DESC
+	</sql>
+
+	<select id="selectShopSearchForAvailCount" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="shopCountResultMap">
+		SELECT  /* [biz.sys.shop.search.xml][selectShopSearchForAvailCount 매장조회][csh] */
+		NVL(SUM(OTLT_CNT+GNLR_CNT+FLGSHP_CNT+DRTSTOR_CNT+STRET_CNT),0) AS TOT_CNT
+		,NVL(SUM(OTLT_CNT),0) AS OTLT_CNT
+		,NVL(SUM(GNLR_CNT),0) AS GNLR_CNT
+		,NVL(SUM(FLGSHP_CNT),0) AS FLGSHP_CNT
+		,NVL(SUM(DRTSTOR_CNT),0) AS DRTSTOR_CNT
+		,NVL(SUM(STRET_CNT),0) AS STRET_CNT
+		,NVL(SUM(EVENT_CNT),0) AS EVENT_CNT
+		,NVL(SUM(PKUP_CNT),0) AS PKUP_CNT
+		,NVL(SUM(REPAIR_CNT),0) AS REPAIR_CNT
+		FROM (
+		<if test='infUntInvList != null and infUntInvList != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+			<include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchForGnrlGodAvailableQuery"/>
+		</if>
+		<if test='infUntInvList != null and infUntInvList != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+			<include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchForSetGodAvailableQuery"/>
+		</if>
+        <if test='godTpCd=="REPAIR"'><!-- 수선 경우 -->
+            <include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchListQuery"/>
+        </if>
+		) sh
+		WHERE 1=1
+		<bind name="whereType" value="'count'"/>
+		<include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchForAvailableWhere"/>
+	</select>
+
+	<select id="selectShopSearchForAvailableList" parameterType="com.plgrim.ncp.biz.vendor.data.ShopSearchDTO" resultMap="shopResultMap">
+		/* [biz.sys.shop.search.xml][selectShopSearchForAvailableList]매장조회][csh] */
+		SELECT
+			result.*
+		FROM (
+			SELECT ROWNUM AS rnum
+				, sh.shop_id
+				, sh.shop_nm
+				, sh.sido_cd
+				, sh.sigungu_cd
+				, sh.shop_tp_cd
+				, sh.otlt_shop_yn
+				, sh.event_yn
+				, sh.base_addr
+				, sh.detail_addr
+				, sh.shop_tel_area_no
+				, sh.shop_tel_tlof_no
+				, sh.shop_tel_tlof_wthn_no
+				, regexp_replace(sh.wkdy_oper_beg_hhmm,'(^.{2})','\1:') AS wkdy_oper_beg_hhmm
+				, regexp_replace(sh.wkdy_oper_end_hhmm,'(^.{2})','\1:') AS wkdy_oper_end_hhmm
+				/* TODO 주차가능여부 등 필드 추가 */
+				, sh.parkng_psb_yn
+				, sh.parkng_upodnl_info_cont
+				, sh.trnsport_info_cont
+				, sh.pkup_shop_yn
+				, sh.repair_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 START */
+				, sh.rtgod_shop_yn
+				, sh.exchg_shop_yn
+				/* #51297 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 END */
+				, sh.lttd
+				, sh.lgtd
+				, '' AS shop_img_url
+				, sh.emenge AS inv_01
+				, sh.itm_nm
+				, sh.itm_qty_str
+				, RTRIM( TO_CHAR( ROUND( 6371 * ACOS (
+					COS( #{lttd} * 0.017453293 )
+					* COS( sh.lttd * 0.017453293 )
+					* COS( (sh.lgtd * 0.017453293) - (#{lgtd} * 0.017453293))
+					+ SIN( #{lttd} * 0.017453293 )
+					* SIN(sh.lttd * 0.017453293 )
+					), 1), 'FM9990D99'), '.')  AS distance
+			FROM (
+			<if test='infUntInvList != null and infUntInvList != "" and godTpCd=="GNRL_GOD"'><!-- 일반 상품인 경우 -->
+				<include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchForGnrlGodAvailableQuery"/>
+			</if>
+			<if test='infUntInvList != null and infUntInvList != "" and godTpCd=="SET_GOD"'><!-- 세트 상품인 경우 -->
+				<include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchForSetGodAvailableQuery"/>
+			</if>
+	        <if test='godTpCd=="REPAIR"'><!-- 수선 경우 -->
+	            <include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchListQuery"/>
+	        </if>
+			) sh
+			WHERE 1=1
+			<bind name="whereType" value="'list'"/>
+			<include refid="com.plgrim.ncp.biz.sys.shop.search.selectShopSearchForAvailableWhere"/>
+			<if test='(lttd != null and lttd != "") and (lgtd != null and lgtd != "")'>
+				ORDER BY TO_NUMBER(distance) ASC
+			</if>
+		) result
+		<if test='beginIndex != null and beginIndex != "" and endIndex != null and endIndex != ""'>
+			WHERE result.rnum &gt;= #{beginIndex}
+			AND result.rnum &lt;= #{endIndex}
+		</if>
+	</select>
+</mapper>

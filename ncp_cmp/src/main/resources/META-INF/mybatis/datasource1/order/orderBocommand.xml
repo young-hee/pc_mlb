@@ -1,0 +1,1886 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.order"> 
+    <update id="updateGoodsShopItmInvOrd" parameterType="godShopItmInvExtend">
+        /* [goods.xml][updateGoodsShopItmInv][매장별 단품 재고정보 업데이트][Sean] */
+        UPDATE GOD_SHOP_ITM_INV
+           SET UDT_DT = SYSDATE
+             , UDTER_ID = #{udterId}
+              <if test="salePrearngeQty != null">
+               <if test="salePrearngeQty >  0">
+<!--              , SALE_PREARNGE_QTY = NVL(SALE_PREARNGE_QTY,0) + #{salePrearngeQty} -->   
+             </if> 
+              <if test="0 > salePrearngeQty">
+<!--              , SALE_PREARNGE_QTY = NVL(SALE_PREARNGE_QTY,0) + #{salePrearngeQty} -->   
+             </if> 
+             </if>
+         WHERE ITM_NO  = #{itmNo}
+           AND SHOP_ID = #{shopId}
+           AND GOD_NO = #{godNo}
+    </update>
+
+
+    <update id="updateGoodsItmOrd" parameterType="godItm">
+        UPDATE /* [orderBocommand.xml][updateGoodsItmOrd][상품 단품 업데이트][KEN] */  
+        GOD_ITM SET
+                  udter_id = #{udterId, jdbcType=VARCHAR}
+                , udt_dt = SYSDATE             
+                <if test="salePrearngeQty != null">
+                <if test="salePrearngeQty >  0">
+<!--                 , sale_prearnge_qty = NVL(sale_prearnge_qty,0) +  #{salePrearngeQty, jdbcType=NUMERIC} -->
+                </if>
+                <if test="0 > salePrearngeQty">
+<!--                 , sale_prearnge_qty = NVL(sale_prearnge_qty,0) +  #{salePrearngeQty, jdbcType=NUMERIC} -->
+                </if>
+                </if>
+                
+                <if test="onlneLmttInvQty != null">
+                <if test="onlneLmttInvQty > 0">
+                , onlne_lmtt_inv_qty = NVL(onlne_lmtt_inv_qty,0) + #{onlneLmttInvQty, jdbcType=NUMERIC}
+                </if>
+                <if test="0 > onlneLmttInvQty">
+                , onlne_lmtt_inv_qty = NVL(onlne_lmtt_inv_qty,0) +  #{onlneLmttInvQty, jdbcType=NUMERIC}
+                </if>
+                </if>
+                
+                <if test="affComLmttInvQty != null">
+                <if test="affComLmttInvQty > 0">
+                , aff_com_lmtt_inv_qty = NVL(aff_com_lmtt_inv_qty,0)+ #{affComLmttInvQty, jdbcType=NUMERIC}
+                </if>
+                <if test="0 > affComLmttInvQty">
+                , aff_com_lmtt_inv_qty = NVL(aff_com_lmtt_inv_qty,0) + #{affComLmttInvQty, jdbcType=NUMERIC}
+                </if>
+                </if>
+                <if test="resveInvQty != null">
+                <if test="resveInvQty > 0">
+                , resve_inv_qty = NVL(resve_inv_qty,0) + #{affComLmttInvQty, jdbcType=NUMERIC}
+                </if>
+                <if test="0 > resveInvQty">
+                , resve_inv_qty = NVL(resve_inv_qty,0) + #{affComLmttInvQty, jdbcType=NUMERIC}
+                </if>
+                </if>
+                
+        WHERE   1 = 1
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(itmNo)">
+        AND     itm_no = #{itmNo, jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+        AND     god_no = #{godNo, jdbcType=VARCHAR}
+        </if>        
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(skuNo)">
+        AND     sku_no = #{skuNo, jdbcType=VARCHAR}
+        </if>        
+    </update>
+    <update id="updateOptionChange" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodExtend">
+        UPDATE ORD_GOD
+           SET itm_no = #{itmNo,jdbcType=VARCHAR}
+             , itm_nm = #{itmNm,jdbcType=VARCHAR}
+             , sku_no = #{skuNo,jdbcType=VARCHAR}
+             , itm_hist_turn = #{itmHistTurn}
+             , udt_dt = SYSDATE
+             , udter_id = #{udterId,jdbcType=VARCHAR}
+         WHERE ord_no   = #{ordNo,jdbcType=VARCHAR}
+          AND  ord_god_turn =#{ordGodTurn}
+    </update>
+
+
+	<!-- 주문상태 수정 -->
+	<update id="updateOrdStatCd" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.Ord">
+		UPDATE ORD
+		   SET 
+		       udter_id = #{udterId,jdbcType=VARCHAR}
+		     , udt_dt = SYSDATE
+		     <if test="ordStatCd != null and ordStatCd != ''">
+		     ,ord_stat_cd = #{ordStatCd,jdbcType=VARCHAR}
+		     </if>
+             <if test="ordTpCd != null and ordTpCd != ''">
+             ,ord_tp_cd = #{ordTpCd,jdbcType=VARCHAR}
+             </if>
+             <if test='depstWaitCnclYn =="Y"'>
+              ,depst_wait_cncl_yn = #{depstWaitCnclYn,jdbcType=VARCHAR}
+             </if>
+          WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+		     <if test="ordStatCd != null and ordStatCd != '' and ordStatCd == 'DLV_PRPARE'">
+            AND ord_stat_cd NOT IN('DLV_PROGRS', 'DLV_COMPT')
+		     </if>
+	</update>
+
+	<!-- 주문상태 배송완료 수정 -->
+	<update id="updateOrdStatAboutCompt" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.Ord">
+		UPDATE ORD
+		   SET ord_stat_cd = #{ordStatCd,jdbcType=VARCHAR}
+		     , udter_id = #{udterId,jdbcType=VARCHAR}
+		     , udt_dt = SYSDATE
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+		   AND 0 = (SELECT COUNT(1) 
+		              FROM lgs_dlivy_drct_god
+		             WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+		               AND dlv_stat_cd NOT IN ('DLV_COMPT', 'DLIVY_DRCT_CNCL'))
+	</update>
+
+
+   <update id="updatelagQtyOrdDcsn" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdExtend">
+      UPDATE ORD
+         SET lag_qty_ord_dcsn_yn = #{lagQtyOrdDcsnYn,jdbcType=VARCHAR}
+           , udter_id = #{udterId,jdbcType=VARCHAR}
+           , udt_dt = SYSDATE
+      WHERE  ord_no = #{ordNo} 
+        AND  ord_stat_cd IN('PAY_WAIT','DEPST_WAIT','PAY_COMPT')
+   </update>
+
+   <update id="confirmDeposit" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdExtend">
+      UPDATE ORD
+         SET ord_stat_cd = 'PAY_COMPT'
+           , udter_id = #{udterId,jdbcType=VARCHAR}
+           , udt_dt = SYSDATE
+      WHERE  ord_no = #{ordNo} 
+        AND  ord_stat_cd IN('PAY_WAIT','DEPST_WAIT','PAY_COMPT')
+   </update>
+
+   <update id="updateAffOrd" parameterType="infAffOrd">
+      UPDATE INF_AFF_ORD 
+         SET aff_ord_stat_cd = #{affOrdStatCd}
+            <if test="ordNo != null and ordNo != ''">
+           , ord_no          = #{ordNo}
+           </if>
+           <if test="ordGodTurn > 0">
+           , ord_god_turn          = #{ordGodTurn}
+           </if>
+           <if test="affComFeeRt > 0">
+           , aff_com_fee_rt          = aff_com_fee_rt + #{affComFeeRt}
+           </if>
+           <if test="affVrscComFeeRt > 0">
+           , aff_vrsc_com_fee_rt          = aff_com_fee_rt + #{affVrscComFeeRt}
+           </if>
+           <if test="affVrscComId != null  and affVrscComId != '' ">
+           , aff_vrsc_com_id = #{affVrscComId}
+            </if>
+           <if test="affOrdStatCont != null  and affOrdStatCont != '' ">
+           , aff_ord_stat_cont = #{affOrdStatCont}
+            </if>
+           <if test="sldoutYn != null  and sldoutYn != '' ">
+           , sldout_yn = #{sldoutYn}
+            </if>
+           , udter_id        = #{udterId,jdbcType=VARCHAR}
+           , udt_dt          = SYSDATE
+      WHERE  aff_god_ord_no = #{affGodOrdNo}
+       <if test='affItmOrdNo != null and affItmOrdNo != ""'>
+       AND aff_itm_ord_no  = #{affItmOrdNo}
+       </if>
+       <if test='godNo != null and godNo != ""'>
+       AND god_no = #{godNo}
+       </if>
+       <if test='itmNo != null and itmNo != ""'>
+       AND itm_no = #{itmNo}
+       </if>
+       <if test="affOrdSn > 0">
+       AND aff_ord_sn = #{affOrdSn}
+       </if>
+       <if test="affOrdTurn > 0">
+       AND aff_ord_turn = #{affOrdTurn}
+       </if>
+        <if test='affOrdStatCd == "ORD_CNCL" || affOrdStatCd == "ORD_WAIT" '>
+        AND aff_ord_stat_cd = 'ORD_CNCL_WAIT'
+         </if>
+       <if test='affComNm != null and affComNm != ""'>
+       AND aff_com_nm = #{affComNm}
+       </if>
+   </update>
+
+   <update id="updateAffOrdRt" parameterType="infAffOrd">
+      UPDATE INF_AFF_ORD 
+         SET aff_ord_stat_cd = #{affOrdStatCd}
+            <if test="ordNo != null and ordNo != ''">
+           , ord_no          = #{ordNo}
+           </if>
+
+           <if test="affComFeeRt > 0">
+           , aff_com_fee_rt          = aff_com_fee_rt + #{affComFeeRt}
+           </if>
+           <if test="affVrscComFeeRt > 0">
+           , aff_vrsc_com_fee_rt          = aff_com_fee_rt + #{affVrscComFeeRt}
+           </if>
+
+           <if test="affFeeEventSn > 0">
+           , aff_fee_event_sn          =   #{affFeeEventSn}
+           </if>
+           <if test="vrscComFeeEventSn > 0">
+           , vrsc_com_fee_event_sn          = #{vrscComFeeEventSn}
+           </if>
+           , udter_id        = #{udterId,jdbcType=VARCHAR}
+           , udt_dt          = SYSDATE
+      WHERE  aff_god_ord_no = #{affGodOrdNo}
+       <if test='affItmOrdNo != null and affItmOrdNo != ""'>
+       AND aff_itm_ord_no  = #{affItmOrdNo}
+       </if>
+       <if test="affOrdSn > 0">
+       AND aff_ord_sn = #{affOrdSn}
+       </if>
+       <if test="affOrdTurn > 0">
+       AND aff_ord_turn = #{affOrdTurn}
+       </if>
+       <if test='affComNm != null and affComNm != ""'>
+       AND aff_com_nm = #{affComNm}
+       </if>
+   </update>
+
+   <update id="deleteAffOrd" parameterType="infAffOrd">
+      DELETE FROM INF_AFF_ORD 
+       WHERE  aff_god_ord_no = #{affGodOrdNo}
+       <if test='affItmOrdNo != null and affItmOrdNo != ""'>
+       AND aff_itm_ord_no  = #{affItmOrdNo}
+       </if>
+       <if test='godNo != null and godNo != ""'>
+       AND god_no = #{godNo}
+       </if>
+       <if test='itmNo != null and itmNo != ""'>
+       AND itm_no = #{itmNo}
+       </if>
+       <if test='affComNm != null and affComNm != ""'>
+       AND aff_com_nm = #{affComNm}
+       </if>
+         AND  aff_ord_stat_cd <![CDATA[<>]]> 'ORD_COMPT'
+   </update>
+
+   <update id="virtlDlvCompt" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.Ord">
+      UPDATE ORD
+         SET virtl_dlv_compt_yn = 'Y'
+           , ord_stat_cd = 'DLV_COMPT'
+           , udter_id = #{udterId,jdbcType=VARCHAR}
+           , udt_dt = SYSDATE
+      WHERE  ord_no = #{ordNo}  
+   </update>
+   
+    <update id="virtlDlvCompt4PayWait" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.Ord">
+      UPDATE ORD
+         SET virtl_dlv_compt_yn = 'Y'
+           , udter_id = #{udterId,jdbcType=VARCHAR}
+           , udt_dt = SYSDATE
+      WHERE  ord_no = #{ordNo}  
+    </update>
+               
+    <insert id="insertInfTmprAffOrdTemp" parameterType="java.util.List">
+        INSERT /* com.plgrim.ncp.base.repository.inf.insertInfTmprAffOrd  20150521 */  
+        INTO INF_TMPR_AFF_ORD
+        (
+             AFF_ORD_SN
+           , AFF_ORD_TURN
+           , AFF_VRSC_COM_ID
+           , MALL_ID
+           , AFF_COM_NM
+           , AFF_GOD_ORD_NO
+           , AFF_ITM_ORD_NO
+           , CSTMR_NM
+           , MOBIL_NO
+           , TEL_NO
+           , CSTMR_POST_NO
+           , CSTMR_ADDR
+           , PCKAGESHAPE_GOD_NO
+           , PCKAGESHAPE_GOD_ITM_NM
+           , ERP_GOD_NO
+           , ITM_NM
+           , QTY
+           , DLV_MEMO
+        )
+ 
+<foreach collection="list" item="item" separator="UNION ALL">
+
+   SELECT   #{item.affOrdSn}                              AS  AFF_ORD_SN 
+           ,#{item.affOrdTurn}                            AS  AFF_ORD_TURN 
+           ,#{item.affVrscComId,jdbcType=VARCHAR}         AS  AFF_VRSC_COM_ID     
+           ,NVL( #{item.mallId,jdbcType=VARCHAR} ,'DXM' )  AS  MALL_ID
+           ,#{item.affComNm,jdbcType=VARCHAR}             AS  AFF_COM_NM
+           ,#{item.affGodOrdNo,jdbcType=VARCHAR}          AS  AFF_GOD_ORD_NO      
+           ,#{item.affItmOrdNo,jdbcType=VARCHAR}          AS  AFF_ITM_ORD_NO      
+           ,#{item.cstmrNm,jdbcType=VARCHAR}              AS  CSTMR_NM            
+           ,#{item.mobilNo,jdbcType=VARCHAR}              AS  MOBIL_NO            
+           ,#{item.telNo,jdbcType=VARCHAR}                AS  TEL_NO              
+           ,#{item.cstmrPostNo,jdbcType=VARCHAR}          AS  CSTMR_POST_NO       
+           ,#{item.cstmrAddr,jdbcType=VARCHAR}            AS  CSTMR_ADDR          
+           ,#{item.pckageshapeGodNo,jdbcType=VARCHAR}     AS  PCKAGESHAPE_GOD_NO  
+           ,#{item.pckageshapeGodItmNm,jdbcType=VARCHAR}  AS  PCKAGESHAPE_GOD_ITM_NM  
+           ,#{item.erpGodNo,jdbcType=VARCHAR}             AS  ERP_GOD_NO
+           ,#{item.itmNm,jdbcType=VARCHAR}                AS  ITM_NM              
+           ,#{item.qty,jdbcType=NUMERIC}                  AS  QTY                 
+           ,#{item.dlvMemo,jdbcType=VARCHAR}              AS  DLV_MEMO            
+   FROM DUAL
+   WHERE #{item.mallId,jdbcType=VARCHAR} <![CDATA[ <> ]]> 'TMALL'
+
+</foreach>
+
+    </insert>
+
+
+   <update id="updateTmprAffOrdTemp" >
+  MERGE INTO INF_TMPR_AFF_ORD A USING (
+                SELECT  T1.aff_god_ord_no , MAX(T1.pckageshape_god_no) AS pckageshape_god_no
+                  FROM INF_TMPR_AFF_ORD T1
+                 GROUP BY T1.aff_god_ord_no
+    ) B
+
+    ON (A.aff_god_ord_no = B.aff_god_ord_no)
+
+    WHEN MATCHED THEN 
+
+    UPDATE SET A.pckageshape_god_no  = B.pckageshape_god_no
+
+   </update>
+    
+    <insert id="insertInfAffOrdExcel" parameterType="infAffOrd">
+    /* [mybatis.datasource1.order.orderBocommand.xml][insertInfAffOrdExcel][주문상품목록 조회 ][2015-05-21][ken] */ 
+    
+      MERGE INTO INF_AFF_ORD A USING (
+      
+      WITH tmp AS (
+         SELECT
+                tm.AFF_ORD_SN
+              , tm.AFF_ORD_TURN         AS AFF_ORD_TURN
+              , SYSDATE                 AS aff_ord_dt
+              , tm.AFF_COM_NM
+              , cc.aff_com_id
+              , cc.aff_com_id           AS aff_com_id_tmp
+              , tm.AFF_GOD_ORD_NO       AS AFF_GOD_ORD_NO_TMP
+              , tm.AFF_GOD_ORD_NO
+              , tm.AFF_ITM_ORD_NO
+              , tm.AFF_ITM_ORD_NO       AS AFF_ITM_ORD_NO_TMP
+              , tm.CSTMR_NM
+              , decode ( tm.aff_vrsc_com_id , 'F02' , '86' , '82' ) AS MOBIL_NATION_NO  -- TMALL(86)
+              , SUBSTR(tm.MOBIL_NO, 1, INSTR(tm.MOBIL_NO, '-', 1, 1) - 1) AS MOBIL_AREA_NO
+              , SUBSTR(tm.MOBIL_NO, INSTR(tm.MOBIL_NO, '-', 1, 1) + 1, INSTR(tm.MOBIL_NO, '-', 1, 2) - INSTR(tm.MOBIL_NO, '-', 1, 1) - 1) AS MOBIL_TLOF_NO
+              , SUBSTR(tm.MOBIL_NO, INSTR(tm.MOBIL_NO, '-', 1, 2) + 1) AS  MOBIL_TLOF_WTHN_NO
+              , decode ( tm.aff_vrsc_com_id , 'F02' , '86' , '82' )  AS TEL_NATION_NO -- TMALL(86)
+              , SUBSTR(tm.TEL_NO, 1, INSTR(tm.TEL_NO, '-', 1, 1) - 1) AS TEL_AREA_NO
+              , SUBSTR(tm.TEL_NO, INSTR(tm.TEL_NO, '-', 1, 1) + 1, INSTR(tm.TEL_NO, '-', 1, 2) - INSTR(tm.TEL_NO, '-', 1, 1) - 1) AS TEL_TLOF_NO
+              , SUBSTR(tm.TEL_NO, INSTR(tm.TEL_NO, '-', 1, 2) + 1) AS  TEL_TLOF_WTHN_NO      
+              , tm.CSTMR_POST_NO
+              , CASE WHEN  REGEXP_COUNT(tm.CSTMR_ADDR,' ') <![CDATA[<]]>  3 AND REGEXP_COUNT(tm.CSTMR_ADDR,' ') > 0   THEN SUBSTR(tm.CSTMR_ADDR, 1, INSTR(tm.CSTMR_ADDR, ' ', 1, 1) - 1)
+                     WHEN  REGEXP_COUNT(tm.CSTMR_ADDR,' ') = 0 THEN  SUBSTR(tm.CSTMR_ADDR,0,8) 
+                     WHEN  REGEXP_COUNT(tm.CSTMR_ADDR,' ') > 2 THEN SUBSTR(tm.CSTMR_ADDR, 1, INSTR(tm.CSTMR_ADDR, ' ', 1, 3) - 1) 
+                     END   AS  CSTMR_BASE_ADDR
+              , CASE WHEN  REGEXP_COUNT(tm.CSTMR_ADDR,' ') <![CDATA[<]]> 3 AND REGEXP_COUNT(tm.CSTMR_ADDR,' ') > 0  THEN SUBSTR(tm.CSTMR_ADDR,INSTR(tm.CSTMR_ADDR, ' ', 1, 1) + 1 )
+                     WHEN  REGEXP_COUNT(tm.CSTMR_ADDR,' ') = 0  THEN  SUBSTR(tm.CSTMR_ADDR,9) 
+                     WHEN  REGEXP_COUNT(tm.CSTMR_ADDR,' ') > 2 THEN SUBSTR(tm.CSTMR_ADDR, INSTR(tm.CSTMR_ADDR, ' ', 2,3) + 1)
+                     END   AS  CSTMR_DETAIL_ADDR
+              , g.erp_god_no
+              , gi.ITM_NM
+              , tm.QTY
+              , tm.DLV_MEMO
+              , tm.MALL_ID
+              , tm.pckageshape_god_itm_nm  
+              , gi.ITM_NO   
+              , gi.ITM_NM  AS ITM_NM_TMP
+              , g.COM_ID
+              , g.BRND_ID
+              , g.GOD_TP_CD
+              , g.GOD_NO
+              , g.GOD_NO AS GOD_NO_TMP
+              , g.GOD_NM
+              , g.rtl_prc
+              , g.csmr_prc
+              , 'ORD_WAIT'  AS AFF_ORD_STAT_CD  
+              , cc.aff_vrsc_com_id
+              , tm.PCKAGESHAPE_GOD_NO
+              , cb.sale_shop_cd                                 AS SALE_SHOP_NO
+              , NULL                                 AS affFeeEventSn
+              , NULL                                 AS vrscComFeeEventSn
+              , cb.aff_com_fee_rt      AS affComFeeRt
+              , cb.aff_vrsc_com_fee_rt AS affVrscComFeeRt           
+              , g.csmr_prc                                             AS plgrimSalePrc
+              , CASE WHEN NVL(RS.RESVE_CSMR_PRC, 0) = 0 AND NVL(cg.aff_com_unt_prc, 0) = 0
+                     THEN CASE WHEN ROUND(g.RTL_PRC - (g.RTL_PRC * (NVL(cc.aff_com_god_dc_rt,0) / 100) ), -1) > g.csmr_prc
+                               THEN  g.csmr_prc
+                               ELSE ROUND(g.RTL_PRC - (g.RTL_PRC * (NVL(cc.aff_com_god_dc_rt,0) / 100) ), -1) END
+                     WHEN  NVL(RS.RESVE_CSMR_PRC, 0) > 0 AND NVL(cg.aff_com_unt_prc, 0) > 0
+                     THEN  CASE WHEN NVL(RS.RESVE_CSMR_PRC, 0) > NVL(cg.aff_com_unt_prc, 0)
+                                THEN NVL(cg.aff_com_unt_prc, 0) ELSE NVL(RS.RESVE_CSMR_PRC, 0) END
+                     WHEN  NVL(RS.RESVE_CSMR_PRC, 0) > 0 AND NVL(cg.aff_com_unt_prc, 0) = 0
+                     THEN  NVL(RS.RESVE_CSMR_PRC, 0)
+                     WHEN  NVL(RS.RESVE_CSMR_PRC, 0) = 0 AND NVL(cg.aff_com_unt_prc, 0) > 0
+                     THEN  NVL(cg.aff_com_unt_prc, 0)
+                               ELSE  g.csmr_prc
+                END  as affComSalePrc
+              , 'N'    AS reordYn
+              , 'N'    AS cafe24OrdYn
+              , #{regtrId,jdbcType=VARCHAR} AS regtrId
+              , #{regtrId,jdbcType=VARCHAR} AS udterId
+              , SYSDATE  AS REG_DT
+              , SYSDATE  AS UDT_DT
+              , CASE WHEN LENGTH( TRIM(tm.aff_vrsc_com_id)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.mall_id)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.aff_com_nm)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.aff_god_ord_no)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.aff_itm_ord_no)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.cstmr_nm)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.mobil_no)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.cstmr_post_no)) <![CDATA[<]]> 5 THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.cstmr_addr)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.erp_god_no ))IS NULL THEN  'Y'
+                     WHEN LENGTH( TRIM(tm.itm_nm)) IS NULL THEN  'Y'   
+                     WHEN LENGTH( TRIM(tm.qty)) IS NULL  THEN  'Y'  
+                     WHEN  tm.qty <![CDATA[<]]> 1  THEN  'Y'  
+                     WHEN cb.aff_com_id IS NULL THEN  'Y'
+                     WHEN g.god_no  IS NULL THEN  'Y'
+                     WHEN gi.itm_no IS NULL THEN  'Y'   
+                     WHEN cb.brnd_id IS NULL THEN  'Y' 
+                     WHEN tm.pckageshape_god_no IS NOT NULL  AND gc.god_no IS NULL AND tm.pckageshape_god_no  <![CDATA[<>]]>  tm.erp_god_no  THEN  'Y'
+                     WHEN tm.pckageshape_god_itm_nm <![CDATA[<>]]>  'F' AND pk.qty <![CDATA[<>]]>  tm.qty THEN 'Y'    
+                ELSE 'N'                    
+                END  AS errYn
+              , tm.crncy_cd
+              , tm.pay_exchg_rt_crncy_amt as pay_exchg_rt_csmr_prc
+              , tm.tmall_Glb_Lmtt_Inv_Use_Yn
+              , tm.tmall_evt_Lmtt_Inv_Use_Yn
+           FROM INF_TMPR_AFF_ORD tm
+LEFT OUTER JOIN COM c 
+             ON tm.aff_com_nm = c.com_nm AND c.com_tp_cd ='AFF_SELR'  
+LEFT OUTER JOIN com_aff_vrsc_com_cnnc cc ON cc.aff_com_id = c.com_id AND cc.aff_vrsc_com_id = tm.aff_vrsc_com_id
+LEFT OUTER JOIN (
+                  SELECT DISTINCT
+                         g.erp_god_no
+                       , io.erp_god_no AS  io_erp_god_no
+                       , g.COM_ID
+                       , g.BRND_ID
+                       , g.GOD_TP_CD
+                       , g.GOD_NO
+                       , g.GOD_NM
+                       , g.rtl_prc
+                       , g.csmr_prc
+                       , g.otlt_yn
+                       , g.lmtt_inv_yn
+                       , g.inv_manage_yn
+                       , g.god_aprv_sect_cd 
+                       , g.god_sale_sect_cd
+                    FROM INF_TMPR_AFF_ORD io 
+                    JOIN GOD g 
+                      ON g.god_no = io.erp_god_no
+                     AND g.GOD_TP_CD  NOT IN('PCHS_GFT','CNVRS_GFT')
+                    UNION ALL 
+                           
+                 SELECT DISTINCT
+                         g.erp_god_no
+                       , io.erp_god_no AS  io_erp_god_no
+                       , g.COM_ID
+                       , g.BRND_ID
+                       , g.GOD_TP_CD
+                       , g.GOD_NO
+                       , g.GOD_NM
+                       , g.rtl_prc
+                       , g.csmr_prc
+                       , g.otlt_yn
+                       , g.lmtt_inv_yn
+                       , g.inv_manage_yn
+                       , g.god_aprv_sect_cd 
+                       , g.god_sale_sect_cd
+                    FROM INF_TMPR_AFF_ORD io 
+                    JOIN GOD g 
+                      ON g.erp_god_no = io.erp_god_no
+                     AND g.GOD_TP_CD  NOT IN('PCHS_GFT','CNVRS_GFT') 
+               ) g 
+             ON g.io_erp_god_no  = tm.erp_god_no
+LEFT OUTER JOIN GOD_ITM gi ON  g.god_no = gi.god_no AND tm.itm_nm = gi.itm_nm
+LEFT OUTER JOIN GOD_PRC_RESVE RS 
+             ON RS.GOD_NO = g.GOD_NO 
+            AND SYSDATE BETWEEN RS.RESVE_BEG_DT AND RS.RESVE_END_DT 
+            /* #48764 - 임직원 할인가 로직 추가 - [인픽스] 제휴 주문 미생성 되는 현상 발생 - 2017.08.08 */
+            AND RS.PRC_RESVE_SECT_CD = 'CSMR_PRC'
+            AND RS.resve_yn = 'Y'
+LEFT OUTER JOIN GOD_CPST_GOD_CNNC gc ON tm.pckageshape_god_no = gc.god_no AND g.god_no  = gc.cpst_god_no
+LEFT OUTER JOIN INF_TMPR_AFF_ORD  pk ON pk.erp_god_no = gc.god_no AND pk.aff_god_ord_no  = tm.aff_god_ord_no
+LEFT OUTER JOIN COM_AFF_VRSC_COM_BRND cb 
+             ON cc.aff_vrsc_com_id = cb.aff_vrsc_com_id 
+            AND cc.aff_com_id = cb.aff_com_id
+            AND g.brnd_id = cb.brnd_id 
+LEFT OUTER JOIN COM_AFF_COM_DC_EXCP_GOD cg 
+             ON cc.aff_vrsc_com_id = cg.aff_vrsc_com_id 
+            AND cc.aff_com_id = cg.aff_com_id
+            AND g.god_no = cg.god_no 
+      )
+         SELECT DISTINCT 
+                t.aff_ord_sn
+              , t.aff_ord_turn
+              , t.aff_ord_dt
+              , t.aff_com_nm
+              , t.aff_com_id
+              , t.aff_god_ord_no
+              , t.aff_itm_ord_no
+              , t.cstmr_nm
+              , t.mobil_nation_no
+              , t.mobil_area_no
+              , t.mobil_tlof_no
+              , t.mobil_tlof_wthn_no
+              , t.tel_nation_no
+              , t.tel_area_no
+              , t.tel_tlof_no
+              , t.tel_tlof_wthn_no      
+              , t.cstmr_post_no
+              , t.cstmr_base_addr
+              , t.cstmr_detail_addr
+              , t.erp_god_no
+              , t.itm_nm
+              , t.qty
+              , t.sale_shop_no
+              , t.dlv_memo
+              , t.mall_id
+              , t.itm_no
+              , t.com_id
+              , t.brnd_id
+              , t.god_tp_cd
+              , t.god_no
+              , t.god_nm
+              , t.rtl_prc
+              , t.csmr_prc
+              , t.aff_ord_stat_cd 
+              , '' AS aff_ord_stat_cont
+              , t.aff_vrsc_com_id
+              , t.pckageshape_god_no
+              , t.pckageshape_god_itm_nm
+              , t.afffeeeventsn
+              , t.vrsccomfeeeventsn
+              , t.affcomfeert
+              , t.affvrsccomfeert
+              , t.plgrimsaleprc
+              , t.affcomsaleprc            
+              , t.reordyn
+              , t.cafe24ordyn
+              , t.regtrid
+              , t.udterid
+              , t.reg_dt
+              , t.udt_dt
+              , t.aff_god_ord_no_tmp
+              , t.aff_itm_ord_no_tmp
+              , t.god_no_tmp
+              , t.itm_nm_tmp
+              , t.aff_com_id_tmp
+              , t.crncy_cd
+              , t.pay_exchg_rt_csmr_prc
+              , decode (t.mall_id , 'TMALL' , 'CNY' , 'KRW') as dlv_cst_crncy_cd
+              , t.tmall_Glb_Lmtt_Inv_Use_Yn
+              , t.tmall_evt_Lmtt_Inv_Use_Yn
+           FROM TMP t
+           WHERE  (t.aff_god_ord_no,t.aff_com_nm)  NOT IN (
+                                         SELECT aff_god_ord_no ,aff_com_nm FROM TMP  WHERE  errYn = 'Y'
+                                        
+                                        ) 
+    ) B
+    ON (A.aff_com_id =B.aff_com_id_tmp AND A.aff_god_ord_no = B.aff_god_ord_no_tmp AND  A.AFF_ITM_ORD_NO = B.AFF_ITM_ORD_NO_TMP AND A.GOD_NO = B.GOD_NO_TMP AND A.ITM_NM = B.ITM_NM_TMP )
+
+    WHEN NOT MATCHED THEN     
+        INSERT  
+
+        (
+            A.aff_ord_sn
+           ,A.aff_ord_turn
+           ,A.aff_ord_dt
+           ,A.aff_com_nm
+           ,A.aff_com_id
+           ,A.aff_god_ord_no
+           ,A.aff_itm_ord_no
+           ,A.cstmr_nm
+           ,A.mobil_nation_no
+           ,A.mobil_area_no
+           ,A.mobil_tlof_no
+           ,A.mobil_tlof_wthn_no
+           ,A.tel_nation_no
+           ,A.tel_area_no
+           ,A.tel_tlof_no
+           ,A.tel_tlof_wthn_no
+           ,A.cstmr_post_no
+           ,A.cstmr_base_addr
+           ,A.cstmr_detail_addr
+           ,A.erp_god_no
+           ,A.itm_nm
+           ,A.qty
+           ,A.sale_shop_no
+           ,A.dlv_memo
+           ,A.mall_id
+           ,A.itm_no
+           ,A.com_id
+           ,A.brnd_id
+           ,A.god_tp_cd
+           ,A.god_no
+           ,A.god_nm
+           ,A.rtl_prc
+           ,A.csmr_prc
+           ,A.aff_ord_stat_cd
+           ,A.aff_ord_stat_cont
+           ,A.aff_vrsc_com_id                      
+           ,A.pckageshape_god_no
+           ,A.pckageshape_god_itm_nm     
+           ,A.aff_fee_event_sn
+           ,A.vrsc_com_fee_event_sn
+           ,A.aff_com_fee_rt
+           ,A.aff_vrsc_com_fee_rt
+           ,A.plgrim_sale_prc
+           ,A.aff_com_sale_prc
+           ,A.reord_yn
+           ,A.cafe24_ord_yn
+           ,A.regtr_id
+           ,A.udter_id
+           ,A.reg_dt
+           ,A.udt_dt
+           ,A.sldout_yn
+           ,A.crncy_cd
+           ,A.pay_exchg_rt_csmr_prc
+           ,A.dlv_cst_crncy_cd
+           ,A.tmall_Glb_Lmtt_Inv_Use_Yn
+           ,A.tmall_evt_Lmtt_Inv_Use_Yn
+
+        )
+      VALUES
+      (  
+                B.aff_ord_sn
+              , B.aff_ord_turn
+              , B.aff_ord_dt
+              , B.aff_com_nm
+              , B.aff_com_id
+              , B.aff_god_ord_no
+              , B.aff_itm_ord_no
+              , B.cstmr_nm
+              , B.mobil_nation_no
+              , B.mobil_area_no
+              , B.mobil_tlof_no
+              , B.mobil_tlof_wthn_no
+              , B.tel_nation_no
+              , B.tel_area_no
+              , B.tel_tlof_no
+              , B.tel_tlof_wthn_no      
+              , B.cstmr_post_no
+              , B.cstmr_base_addr
+              , B.cstmr_detail_addr
+              , B.erp_god_no
+              , B.itm_nm
+              , B.qty
+              , B.sale_shop_no
+              , B.dlv_memo
+              , B.mall_id
+              , B.itm_no
+              , B.com_id
+              , B.brnd_id
+              , B.god_tp_cd
+              , B.god_no
+              , B.god_nm
+              , B.rtl_prc
+              , B.csmr_prc
+              , B.aff_ord_stat_cd
+              , B.aff_ord_stat_cont
+              , B.aff_vrsc_com_id
+              , B.pckageshape_god_no
+              , B.pckageshape_god_itm_nm
+              , B.afffeeeventsn
+              , B.vrsccomfeeeventsn
+              , B.affcomfeert
+              , B.affvrsccomfeert
+              , B.plgrimsaleprc
+              , B.affcomsaleprc           
+              , B.reordyn
+              , B.cafe24ordyn
+              , B.regtrid
+              , B.udterid
+              , B.reg_dt
+              , B.udt_dt
+              , 'N'
+              , B.crncy_cd
+              , B.pay_exchg_rt_csmr_prc
+              , B.dlv_cst_crncy_cd
+              , B.tmall_Glb_Lmtt_Inv_Use_Yn
+              , B.tmall_evt_Lmtt_Inv_Use_Yn
+      )
+             
+    </insert>
+    <!-- 
+    <select id="selectErrExcelAffList" parameterType="infTmprAffOrd" resultType="com.plgrim.ncp.base.entities.datasource1.inf.InfTmprAffOrdExtend">
+         SELECT DISTINCT tm.AFF_VRSC_COM_ID   
+              , tm.MALL_ID                  
+              , tm.AFF_COM_NM               
+              , tm.AFF_GOD_ORD_NO           
+              , tm.AFF_ITM_ORD_NO           
+              , tm.CSTMR_NM                 
+              , tm.MOBIL_NO                 
+              , tm.TEL_NO                   
+              , tm.CSTMR_POST_NO            
+              , tm.CSTMR_ADDR               
+              , tm.PCKAGESHAPE_GOD_NO       
+              , tm.ERP_GOD_NO
+              , tm.ITM_NM                   
+              , tm.QTY                      
+              , tm.DLV_MEMO      
+              , CASE WHEN LENGTH( TRIM(tm.aff_vrsc_com_id)) IS NULL THEN  '판매자 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.mall_id)) IS NULL THEN  '사이트 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.aff_com_nm)) IS NULL THEN  '쇼핑몰 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.aff_god_ord_no)) IS NULL THEN  '주문번호 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.aff_itm_ord_no)) IS NULL THEN  '품목별 주문번호 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.cstmr_nm)) IS NULL THEN  '수령인 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.mobil_no)) IS NULL THEN  '수령인 핸드폰 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.cstmr_post_no)) <![CDATA[<]]>  5  THEN  '수령인 우편번호 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.cstmr_addr)) IS NULL THEN  '수령인 주소 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.erp_god_no ))IS NULL THEN  '상품번호 필드 누락'
+                     WHEN LENGTH( TRIM(tm.itm_nm)) IS NULL THEN  '상품옵션 필드 누락'   
+                     WHEN LENGTH( TRIM(tm.qty)) IS NULL  THEN  '수량 필드 누락'  
+                     WHEN  tm.qty <![CDATA[<]]> 1  THEN  '수량 필드는 1 이상이여야합니다.'  
+                     WHEN cc.aff_com_id IS NULL THEN  '존재하지 않는 제휴몰'
+                     WHEN cb.aff_vrsc_com_id IS NULL THEN  '존재하지 않는 제휴 대행사'
+                     WHEN g.god_no  IS NULL  THEN  '존재하지 않는 상품'
+                     WHEN gi.itm_no IS NULL  THEN  '존재하지 않는 단품' 
+                     WHEN cd.brnd_id IS NULL THEN  '제휴몰 에서 관리하는 브랜드가 아님' 
+                     WHEN tm.pckageshape_god_no IS NOT NULL  AND gc.god_no IS NULL AND tm.pckageshape_god_no <![CDATA[<>]]>  tm.erp_god_no  THEN '존재하지 않는패키지형 상품'
+                     WHEN tm.pckageshape_god_itm_nm <![CDATA[<>]]>  'F' AND pk.qty <![CDATA[<>]]>  tm.qty THEN '구성 상품 수량 불일치'                                       
+                ELSE '관리자 한테 문의 하세요'                    
+                 END  AS errMsg
+           FROM INF_TMPR_AFF_ORD tm 
+LEFT OUTER JOIN INF_AFF_ORD  io 
+             ON tm.AFF_GOD_ORD_NO = io.AFF_GOD_ORD_NO AND tm.AFF_COM_NM = io.AFF_COM_NM
+LEFT OUTER JOIN COM c 
+             ON tm.aff_com_nm = c.com_nm AND c.com_tp_cd ='AFF_SELR'  
+LEFT OUTER JOIN com_aff_vrsc_com_cnnc cc ON cc.aff_com_id = c.com_id
+LEFT OUTER JOIN (
+                  SELECT 
+                         MAX(g.erp_god_no) AS erp_god_no
+                       , MAX(io.erp_god_no) AS  io_erp_god_no
+                       , MAX(g.COM_ID)  AS COM_ID
+                       , MAX(g.BRND_ID) AS  BRND_ID
+                       , MAX(g.GOD_TP_CD) AS  GOD_TP_CD
+                       , g.GOD_NO 
+                       , MAX(g.GOD_NM) AS GOD_NM
+                       , MAX(g.rtl_prc) AS rtl_prc
+                       , MAX(g.csmr_prc) AS csmr_prc
+                       , MAX(g.otlt_yn) AS otlt_yn
+                       , MAX(g.lmtt_inv_yn) AS lmtt_inv_yn
+                       , MAX(g.inv_manage_yn) AS inv_manage_yn
+                       , MAX(g.god_aprv_sect_cd ) AS god_aprv_sect_cd
+                       , MAX(g.god_sale_sect_cd) AS god_sale_sect_cd
+                       , MAX(gi.itm_no) AS itm_no
+                    FROM INF_TMPR_AFF_ORD io 
+                    JOIN GOD g 
+                      ON g.god_no = io.erp_god_no
+                     AND g.GOD_TP_CD  NOT IN('PCHS_GFT','CNVRS_GFT')
+                    JOIN GOD_ITM gi 
+                      ON g.god_no = gi.god_no 
+                     AND io.itm_nm = gi.itm_nm
+                GROUP BY g.GOD_NO
+                    UNION ALL 
+                           
+                 SELECT 
+                         MAX(g.erp_god_no) AS erp_god_no
+                       , MAX(io.erp_god_no) AS  io_erp_god_no
+                       , MAX(g.COM_ID) AS COM_ID
+                       , MAX(g.BRND_ID) AS BRND_ID
+                       , MAX(g.GOD_TP_CD) AS GOD_TP_CD
+                       , g.GOD_NO
+                       , MAX(g.GOD_NM) AS GOD_NM
+                       , MAX(g.rtl_prc) AS rtl_prc
+                       , MAX(g.csmr_prc) AS csmr_prc
+                       , MAX( g.otlt_yn) AS otlt_yn
+                       , MAX(g.lmtt_inv_yn) AS lmtt_inv_yn
+                       , MAX(g.inv_manage_yn) AS inv_manage_yn
+                       , MAX(g.god_aprv_sect_cd ) AS god_aprv_sect_cd
+                       , MAX(g.god_sale_sect_cd) AS god_sale_sect_cd
+                       , MAX(gi.itm_no) AS itm_no
+                    FROM INF_TMPR_AFF_ORD io 
+                    JOIN GOD g 
+                      ON g.erp_god_no = io.erp_god_no
+                     AND g.GOD_TP_CD  NOT IN('PCHS_GFT','CNVRS_GFT') 
+                    JOIN GOD_ITM gi 
+                      ON g.god_no = gi.god_no 
+                     AND io.itm_nm = gi.itm_nm
+                GROUP BY g.GOD_NO
+               ) g 
+             ON g.io_erp_god_no  = tm.erp_god_no
+LEFT OUTER JOIN god_itm gi ON  g.god_no = gi.god_no AND g.itm_no = gi.itm_no
+LEFT OUTER JOIN GOD_CPST_GOD_CNNC gc ON tm.pckageshape_god_no = gc.god_no AND g.god_no  = gc.cpst_god_no
+LEFT OUTER JOIN INF_TMPR_AFF_ORD  pk ON pk.erp_god_no = gc.god_no AND pk.aff_god_ord_no  = tm.aff_god_ord_no
+LEFT OUTER JOIN COM_AFF_VRSC_COM_BRND cb 
+             ON tm.aff_vrsc_com_id = cb.aff_vrsc_com_id 
+            AND cc.aff_com_id = cb.aff_com_id
+LEFT OUTER JOIN COM_AFF_VRSC_COM_BRND cd 
+             ON tm.aff_vrsc_com_id = cd.aff_vrsc_com_id 
+            AND cc.aff_com_id = cd.aff_com_id
+            AND g.brnd_id = cd.brnd_id         
+            
+          WHERE io.AFF_GOD_ORD_NO IS NULL
+          
+          UNION ALL
+         SELECT DISTINCT tm.AFF_VRSC_COM_ID          
+              , tm.MALL_ID                  
+              , tm.AFF_COM_NM               
+              , tm.AFF_GOD_ORD_NO           
+              , tm.AFF_ITM_ORD_NO           
+              , tm.CSTMR_NM                 
+              , tm.MOBIL_NO                 
+              , tm.TEL_NO                   
+              , tm.CSTMR_POST_NO            
+              , tm.CSTMR_ADDR               
+              , tm.PCKAGESHAPE_GOD_NO       
+              , tm.ERP_GOD_NO
+              , tm.ITM_NM                   
+              , tm.QTY                      
+              , tm.DLV_MEMO      
+              , '중복된 주문' AS errMsg
+           FROM INF_TMPR_AFF_ORD tm 
+           JOIN (
+                  SELECT DISTINCT
+                         g.erp_god_no
+                       , io.erp_god_no AS  io_erp_god_no
+                       , g.COM_ID
+                       , g.BRND_ID
+                       , g.GOD_TP_CD
+                       , g.GOD_NO
+                       , g.GOD_NM
+                       , g.rtl_prc
+                       , g.csmr_prc
+                       , g.otlt_yn
+                       , g.lmtt_inv_yn
+                       , g.god_aprv_sect_cd 
+                       , g.god_sale_sect_cd
+                    FROM INF_TMPR_AFF_ORD io 
+                    JOIN GOD g 
+                      ON g.god_no = io.erp_god_no
+                       
+                    UNION ALL 
+                           
+                 SELECT DISTINCT
+                         g.erp_god_no
+                       , io.erp_god_no AS  io_erp_god_no
+                       , g.COM_ID
+                       , g.BRND_ID
+                       , g.GOD_TP_CD
+                       , g.GOD_NO
+                       , g.GOD_NM
+                       , g.rtl_prc
+                       , g.csmr_prc
+                       , g.otlt_yn
+                       , g.lmtt_inv_yn
+                       , g.god_aprv_sect_cd 
+                       , g.god_sale_sect_cd
+                    FROM INF_TMPR_AFF_ORD io 
+                    JOIN GOD g 
+                      ON g.erp_god_no = io.erp_god_no
+               ) g 
+             ON g.io_erp_god_no                    = tm.erp_god_no
+           JOIN INF_AFF_ORD  io 
+             ON tm.aff_god_ord_no                  = io.aff_god_ord_no 
+            AND tm.aff_itm_ord_no                  = io.aff_itm_ord_no
+            AND tm.pckageshape_god_itm_nm          = io.pckageshape_god_itm_nm
+            AND tm.aff_ord_sn <![CDATA[<>]]>  io.aff_ord_sn
+            AND g.god_no                           = io.god_no 
+            AND tm.AFF_COM_NM = io.AFF_COM_NM
+          WHERE io.aff_god_ord_no IS not  NULL
+          
+    </select>
+    -->
+    
+    <resultMap id="orderAffResult" type="com.plgrim.ncp.base.entities.datasource1.ord.OrdExtend"> 
+
+     <collection property="infAffOrdList" column="{affComOrdNo=SALE_AFF_COM_ORD_NO_TMP,affOrdSn=SALE_AFF_ORD_SN,affComId=AFF_COM_ID_TMP}"  ofType="com.plgrim.ncp.base.entities.datasource1.inf.InfAffOrd" select="selectAffCoOrdList"/> 
+    </resultMap>
+  
+      <select id="selectAffAditFeeRt" parameterType="com.plgrim.ncp.base.entities.datasource1.inf.InfAffOrd" resultType="com.plgrim.ncp.base.entities.datasource1.inf.InfAffOrd">
+        SELECT * FROM (
+                       SELECT  NVL(pe.adit_fee_rt,0) AS affComFeeRt   
+                             , pe.fee_event_tp_cd    AS affOrdStatCd
+                             , pe.fee_event_sn       AS affFeeEventSn
+                         FROM PRM_FEE_EVENT pe
+                         JOIN PRM_FEE_EVENT_COM pc
+                           ON pc.fee_event_sn = pe.fee_event_sn 
+              LEFT OUTER JOIN PRM_FEE_EVENT_APL_GOD pg  
+                           ON pe.event_apl_tgt_cd ='GOD'  AND pg.fee_event_sn = pe.fee_event_sn AND pg.use_yn ='Y' 
+              LEFT OUTER JOIN PRM_FEE_EVENT_BRND pb  
+                           ON pe.event_apl_tgt_cd ='BRND' AND pb.fee_event_sn = pe.fee_event_sn AND pb.use_yn ='Y' 
+                        WHERE SYSDATE BETWEEN pe.event_beg_dt  AND pe.event_end_dt
+                          AND pe.fee_event_tp_cd ='AFF_SELR'
+                          AND pe.use_yn ='Y' 
+                          AND pc.use_yn ='Y'
+                          AND NOT EXISTS(
+                                          SELECT 1
+                                            FROM PRM_FEE_EVENT_EXCLS_GOD ex
+                                           WHERE pe.event_apl_tgt_cd ='BRND' 
+                                             AND pe.fee_event_sn = fee_event_sn 
+                                             AND ex.excls_god_no = #{godNo}
+                                             AND ex.use_yn ='Y'
+                                           
+                                        )
+                          AND EXISTS(
+                                          SELECT 1
+                                            FROM PRM_FEE_EVENT_BRND cb
+                                           WHERE pe.event_apl_tgt_cd ='BRND' 
+                                             AND cb.fee_event_sn = pe.fee_event_sn
+                                             AND cb.BRND_ID= #{brndId}
+                                             AND cb.use_yn ='Y'
+                                      UNION ALL 
+                          
+                                      SELECT 1
+                                         FROM PRM_FEE_EVENT_APL_GOD pa
+                                        WHERE pe.event_apl_tgt_cd ='GOD' 
+                                         AND pe.fee_event_sn = pa.fee_event_sn 
+                                         AND pa.apl_god_no = #{godNo}
+                                         AND pa.use_yn ='Y'
+                                        )
+                         AND pc.com_id= #{affComId} AND pc.AFF_VRSC_COM_ID = #{affVrscComId}
+                         ORDER  BY pe.adit_fee_rt DESC
+                         )
+                         WHERE ROWNUM = 1
+                         
+                         UNION ALL
+
+        SELECT * FROM (
+                       SELECT  NVL(pe.adit_fee_rt,0) AS affComFeeRt   
+                             , pe.fee_event_tp_cd    AS affOrdStatCd
+                             , pe.fee_event_sn       AS affFeeEventSn
+                         FROM PRM_FEE_EVENT pe
+                         JOIN PRM_FEE_EVENT_COM pc
+                           ON pc.fee_event_sn = pe.fee_event_sn 
+              LEFT OUTER JOIN PRM_FEE_EVENT_APL_GOD pg  
+                           ON pe.event_apl_tgt_cd ='GOD'  AND pg.fee_event_sn = pe.fee_event_sn AND pg.use_yn ='Y' 
+              LEFT OUTER JOIN PRM_FEE_EVENT_BRND pb  
+                           ON pe.event_apl_tgt_cd ='BRND' AND pb.fee_event_sn = pe.fee_event_sn AND pb.use_yn ='Y' 
+                        WHERE SYSDATE BETWEEN pe.event_beg_dt  AND pe.event_end_dt
+                          AND pe.fee_event_tp_cd ='AFF_AGNC'
+                          AND pe.use_yn ='Y' 
+                          AND pc.use_yn ='Y'
+                          AND NOT EXISTS(
+                                          SELECT 1
+                                            FROM PRM_FEE_EVENT_EXCLS_GOD  ex
+                                           WHERE pe.event_apl_tgt_cd ='BRND' 
+                                             AND pe.fee_event_sn = ex.fee_event_sn 
+                                             AND ex.excls_god_no = #{godNo}
+                                             AND ex.use_yn ='Y'
+                                           
+                                        )
+                          AND EXISTS(
+                                          SELECT 1
+                                            FROM PRM_FEE_EVENT_BRND cb
+                                           WHERE pe.event_apl_tgt_cd ='BRND' 
+                                             AND cb.fee_event_sn = pe.fee_event_sn
+                                             AND cb.BRND_ID= #{brndId}
+                                             AND cb.use_yn ='Y'
+                                      UNION ALL 
+                          
+                                      SELECT 1
+                                         FROM PRM_FEE_EVENT_APL_GOD pa
+                                        WHERE pe.event_apl_tgt_cd ='GOD' 
+                                         AND pe.fee_event_sn = pa.fee_event_sn 
+                                         AND pa.apl_god_no = #{godNo}
+                                         AND pa.use_yn ='Y'
+                                        )
+                         AND pc.com_id= #{affComId} AND pc.AFF_VRSC_COM_ID = #{affVrscComId}
+                         ORDER  BY pe.adit_fee_rt DESC
+                         )
+                         WHERE ROWNUM = 1
+      </select>  
+
+    
+    
+    <select id="selectAffOrd" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="orderAffResult">
+    SELECT 
+           MAX(CSTMR_NM)            AS CSTMR_NM
+         , MAX(CSTMR_POST_NO)       AS POST_NO
+         , MAX(CSTMR_BASE_ADDR)     AS BASE_ADDR
+         , MAX(CSTMR_DETAIL_ADDR)   AS DETAIL_ADDR
+         , MAX(MOBIL_NATION_NO)     AS CSTMR_MOBIL_NATION_NO
+         , MAX(MOBIL_AREA_NO)       AS CSTMR_MOBIL_AREA_NO
+         , MAX(MOBIL_TLOF_NO)       AS CSTMR_MOBIL_TLOF_NO
+         , MAX(MOBIL_TLOF_WTHN_NO)  AS CSTMR_MOBIL_TLOF_WTHN_NO
+         , MAX(TEL_NATION_NO)       AS CSTMR_TEL_NATION_NO
+         , MAX(TEL_AREA_NO)         AS CSTMR_TEL_AREA_NO
+         , MAX(TEL_TLOF_NO)         AS CSTMR_TEL_TLOF_NO
+         , MAX(TEL_TLOF_WTHN_NO)    AS CSTMR_TEL_TLOF_WTHN_NO
+         , SUM(RTL_PRC*QTY)         AS RTL_PRC_SUM_AMT
+         , SUM(RTL_PRC*QTY) - SUM(AFF_COM_SALE_PRC*QTY)       AS webDcSumAmt
+         , SUM(CSMR_PRC*QTY)            AS CSMR_PRC_SUM_AMT
+         , SUM(AFF_COM_SALE_PRC*QTY)    AS STDR_CRNCY_SUM_AMT
+         , SUM(AFF_COM_SALE_PRC*QTY)    AS PAY_EXCHG_RT_CRNCY_SUM_AMT
+         , SUM(AFF_COM_SALE_PRC*QTY)    AS saleSumAmt
+         , MAX(MALL_ID)             AS MALL_ID
+         , AFF_GOD_ORD_NO           AS AFF_COM_ORD_NO
+         , AFF_GOD_ORD_NO           AS SALE_AFF_COM_ORD_NO_TMP
+         , AFF_COM_ID          AS AFF_COM_ID
+         , AFF_COM_ID          AS AFF_COM_ID_TMP
+         , MAX(AFF_VRSC_COM_ID)     AS AFF_VRSC_COM_ID
+         , MAX(aff_ord_sn)          AS AFF_ORD_SN
+         , MAX(aff_ord_sn)          AS SALE_AFF_ORD_SN
+         , MAX(sale_shop_no)        AS saleShopCd
+         , CASE WHEN COUNT(*) > 1 THEN MAX(GOD_NM)||'외'||(count(*)-1)||'건' ELSE MAX(GOD_NM) END AS GOD_SUMRY
+         , MAX(AFF_COM_SHOP_NM)     AS AFF_COM_SHOP_NM
+         , MAX(CRNCY_CD)            AS CRNCY_CD
+         , MAX(PAY_EXCHG_RT_CSMR_PRC)    AS PAY_EXCHG_RT_CRNCY_AMT
+         , MAX(TMALL_GLB_LMTT_INV_USE_YN)   AS TMALL_GLB_LMTT_INV_USE_YN
+         , MAX(TMALL_EVT_LMTT_INV_USE_YN)   AS TMALL_EVT_LMTT_INV_USE_YN
+     FROM INF_AFF_ORD io
+    WHERE aff_ord_stat_cd = 'ORD_WAIT' 
+      AND (REGEXP_COUNT(PCKAGESHAPE_GOD_ITM_NM,'_') <![CDATA[<>]]> 1
+            OR PCKAGESHAPE_GOD_NO IS NULL)
+     <if test="affComOrdNos != null">
+      AND (0,AFF_GOD_ORD_NO) IN (
+                    <foreach collection="affComOrdNos" item="affComOrdNo" separator=",">(0,#{affComOrdNo})</foreach>     
+                             
+                               )
+     </if> 
+     <if test="affOrdSn > 0">
+      AND NOT EXISTS ( 
+                            SELECT AFF_GOD_ORD_NO 
+                              FROM INF_AFF_ORD i 
+                             WHERE aff_ord_stat_cd <![CDATA[<>]]> 'ORD_WAIT' 
+                               AND io.aff_ord_sn = i.aff_ord_sn
+                               AND io.aff_god_ord_no = i.aff_god_ord_no
+                               AND AFF_ORD_SN = #{affOrdSn}
+                       
+                       )
+      AND io.aff_ord_sn = #{affOrdSn}
+     </if>
+    GROUP BY aff_com_id ,AFF_GOD_ORD_NO
+    </select>
+    
+    <select id="selectAffPckageshape" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="com.plgrim.ncp.base.entities.datasource1.god.GodCpstGodCnnc">
+        SELECT 
+                GOD_NO
+               ,CPST_GOD_NO
+               ,CPST_GOD_NM
+               ,PCKAGE_GOD_TP_CD
+               ,ESSNTL_PCH_YN
+               ,ADIT_PCH_PSB_YN
+               ,CPST_GOD_QTY
+               ,SORT_SEQ
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+           FROM GOD_CPST_GOD_CNNC t
+          WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+            AND ESSNTL_PCH_YN = 'Y'
+    </select>
+    
+    
+    
+    
+    <select id="selectAffCoOrdList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="com.plgrim.ncp.base.entities.datasource1.inf.InfAffOrd">
+     SELECT 
+            aff_ord_sn
+          , aff_ord_turn
+          , aff_ord_dt
+          , aff_com_nm
+          , aff_com_id
+          , aff_god_ord_no
+          , aff_itm_ord_no
+          , cstmr_nm
+          , mobil_nation_no
+          , mobil_area_no
+          , mobil_tlof_no
+          , mobil_tlof_wthn_no
+          , tel_nation_no
+          , tel_area_no
+          , tel_tlof_no
+          , tel_tlof_wthn_no
+          , cstmr_post_no
+          , cstmr_base_addr
+          , cstmr_detail_addr
+          , erp_god_no
+          , itm_nm
+          , qty
+          , dlv_memo
+          , mall_id
+          , ord_no
+          , ord_god_turn
+          , itm_no
+          , com_id
+          , brnd_id
+          , god_tp_cd
+          , god_no
+          , god_nm
+          , rtl_prc
+          , csmr_prc
+          , aff_com_fee_rt
+          , sldout_yn
+          , aff_ord_stat_cd
+          , aff_ord_stat_cont
+          , aff_vrsc_com_id
+          , aff_vrsc_com_fee_rt
+          , pckageshape_god_no
+          , pckageshape_god_itm_nm
+          , sale_shop_no
+          , aff_fee_event_sn
+          , vrsc_com_fee_event_sn
+          , reord_yn
+          , plgrim_sale_prc
+          , aff_com_sale_prc *qty AS aff_com_sale_prc
+          , aff_com_shop_nm
+          , cstmr_id
+          , dlv_nation_cd
+          , dlv_cst
+          , com_dlv_cst
+          , regtr_id
+          , reg_dt
+          , udter_id
+          , udt_dt
+          , pay_exchg_rt_csmr_prc as pay_exchg_rt_crncy_amt
+          , crncy_cd
+          , tmall_glb_lmtt_inv_use_yn
+          , tmall_evt_lmtt_inv_use_yn
+      FROM INF_AFF_ORD
+     WHERE aff_ord_sn = #{affOrdSn}
+       <if test='affComOrdNo != null and affComOrdNo != ""'>
+       AND aff_god_ord_no = #{affComOrdNo}
+       </if>
+       <if test='affComId != null and affComId != ""'>
+       AND aff_com_id = #{affComId}
+       </if>
+       AND aff_ord_stat_cd = 'ORD_WAIT'
+     ORDER BY CASE WHEN god_tp_cd IN('SET_GOD','PCKAGE_GOD') THEN 1 else 2 END
+    </select>
+    
+    <!-- 주문 - 교환접수시 주문상품 등록 -->
+    <insert id="insertOrdGodForClm" parameterType="ordGodExtend">
+        INSERT INTO ord_god(
+                            ord_god_turn
+                          , ord_no
+                          , dlv_pcupsp_turn
+                          , god_no
+                          , itm_no
+                          , god_hist_turn
+                          , itm_hist_turn
+                          , god_nm
+                          , mobile_god_nm
+                          , itm_nm
+                          , color_nm
+                          , color_cd
+                          , erp_god_no
+                          , sku_no
+                          , brnd_id
+                          , brnd_grp_id
+                          , god_wt
+                          , god_tp_cd
+                          , partmal_sect_cd
+                          , lst_img_url
+                          , com_id
+                          , partmal_com_fee_rt
+                          , dmstc_dlv_cst_plc_sn
+                          , ovsea_dlv_dmstc_dlv_cst_plc_sn
+                          , ovsea_dlv_cst_plc_sn
+                          , sale_shop_cd
+                          , ord_qty
+                          , crncy_cd
+                          , stdr_crncy_amt
+                          , pay_exchg_rt_crncy_amt
+                          , rtl_prc
+                          , sale_amt
+                          , web_dc_amt
+                          , emp_dc_amt
+                          , all_dc_amt
+                          , god_dc_amt
+                          , imdtl_dc_amt
+                          , bundle_dc_amt
+                          , crs_dc_amt
+                          , god_cpn_dc_amt
+                          , bsk_cpn_dc_amt
+                          , unity_pnt_use_amt
+                          , evt_pnt_use_amt
+                          , webpnt_use_amt
+                          , unity_pnt_accml_amt
+                          , evt_pnt_accml_amt
+                          , webpnt_accml_amt
+                          , regtr_id
+                          , reg_dt
+		     			  , udter_id
+		     			  , udt_dt
+                          )
+             SELECT 
+                    #{newOrdGodTurn,jdbcType=NUMERIC}                                              
+                  , og.ord_no
+                  , #{newDlvPcupspTurn,jdbcType=NUMERIC}                                            
+                  , tp.god_no
+                  , tp.itm_no AS itmno
+                  , tp.god_hist_turn
+                  , tp.itm_hist_turn AS itmhistturn
+                  , tp.god_nm
+                  , tp.mobile_god_nm
+                  , tp.itm_nm AS itmnm
+                  , tp.color_nm
+                  , tp.color_cd
+                  , tp.erp_god_no
+                  , tp.sku_no AS skuno
+                  , og.brnd_id
+                  , og.brnd_grp_id
+                  , og.god_wt
+                  , og.god_tp_cd
+                  , og.partmal_sect_cd
+                  , img.img_url as lstImgUrl		
+                  , og.com_id
+                  , og.partmal_com_fee_rt
+                  , og.dmstc_dlv_cst_plc_sn
+                  , og.ovsea_dlv_dmstc_dlv_cst_plc_sn
+                  , og.ovsea_dlv_cst_plc_sn
+                  , og.sale_shop_cd
+                  , #{ordQty,jdbcType=NUMERIC}
+                  , og.crncy_cd
+                  , #{stdrCrncyAmt,jdbcType=NUMERIC}            
+                  , #{payExchgRtCrncyAmt,jdbcType=NUMERIC}  
+                  , #{rtlPrc,jdbcType=NUMERIC}              
+                  , #{saleAmt,jdbcType=NUMERIC}             
+                  , #{webDcAmt,jdbcType=NUMERIC}            
+                  , #{empDcAmt,jdbcType=NUMERIC}                       
+                  , #{allDcAmt,jdbcType=NUMERIC}            
+                  , #{godDcAmt,jdbcType=NUMERIC}            
+                  , #{imdtlDcAmt,jdbcType=NUMERIC}              
+                  , #{bundleDcAmt,jdbcType=NUMERIC}         
+                  , #{crsDcAmt,jdbcType=NUMERIC}            
+                  , #{godCpnDcAmt,jdbcType=NUMERIC}         
+                  , #{bskCpnDcAmt,jdbcType=NUMERIC}         
+                  , #{unityPntUseAmt,jdbcType=NUMERIC}      
+                  , #{evtPntUseAmt,jdbcType=NUMERIC}        
+                  , #{webpntUseAmt,jdbcType=NUMERIC}                  
+                  , #{unityPntAccmlAmt,jdbcType=NUMERIC}    
+                  , #{evtPntAccmlAmt,jdbcType=NUMERIC}      
+                  , #{webpntAccmlAmt,jdbcType=NUMERIC}              
+                  , #{regtrId,jdbcType=VARCHAR}  
+                  , SYSDATE
+                  , #{regtrId,jdbcType=VARCHAR}  
+                  , SYSDATE
+               FROM ord_god og
+                    INNER JOIN
+                    (SELECT gi.god_no
+                          , gi.itm_no
+                          , gi.itm_nm
+                          , gi.sku_no
+                          , gih.itm_hist_turn
+                          , g.god_nm
+                          , (SELECT MAX(god_hist_turn) FROM god_hist WHERE god_no = g.god_no) AS god_hist_turn
+                          , g.erp_god_no
+                          , g.mobile_god_nm
+                          , g.color_nm
+                          , g.color_cd
+                       FROM god_itm gi
+                       		INNER JOIN god g ON(gi.god_no = g.god_no)
+                            LEFT OUTER JOIN
+                            (  SELECT god_no
+                                    , itm_no
+                                    , MAX(itm_hist_turn) AS itm_hist_turn
+                                 FROM god_itm_hist
+                                WHERE god_no = #{godNo,jdbcType=VARCHAR}
+                             GROUP BY god_no, itm_no) gih
+                                 ON gi.god_no = gih.god_no
+                                AND gi.itm_no = gih.itm_no
+                      WHERE gi.god_no = #{godNo,jdbcType=VARCHAR}
+                        AND gi.itm_no = #{itmNo,jdbcType=VARCHAR}) tp
+                         ON (1=1)
+                     LEFT OUTER JOIN GOD_IMG img ON tp.god_no = img.god_no 
+                      AND img.img_tp_cd ='THNAIL' 
+                      AND img.img_turn = 1
+              WHERE 1 = 1
+                AND og.ord_no           = #{ordNo,jdbcType=VARCHAR}
+                AND og.ord_god_turn     = #{ordGodTurn,jdbcType=NUMERIC}
+                    
+    </insert>
+
+    <!-- 주문 - 교환접수시 주문상품적용프로모션 등록 -->
+    <insert id="insertOrdGodAplPrmForClm" parameterType="ordGodAplPrmExtend">
+		INSERT INTO ord_god_apl_prm(
+                            apl_prm_turn        /* 적용 프로모션 순번       */
+                          , ord_no              /* 주문 번호                */
+                          , prm_no              /* 프로모션 번호            */
+                          , apl_tp_cd           /* 적용 유형 코드           */
+                          , apl_unit_cd         /* 적용 단위 코드           */
+                          , prm_tp_cd           /* 프로모션 유형 코드       */
+                          , prm_dtl_tp_cd       /* 프로모션 세부 유형 코드  */
+                          , apl_amt             /* 적용 금액                */
+                          , ord_god_turn        /* 주문 상품 순번           */
+                          , apl_qty             /* 적용 수량                */
+                          , ord_god_gft_turn    /* 주문 상품 사은품 순번    */
+                          , ord_god_gft_nm      /* 주문 상품 사은품 명      */
+                          , mbr_cpn_no          /* 회원 쿠폰 번호           */
+                          , regtr_id            /* 등록자 ID                */
+                          , reg_dt              /* 등록 일시                */
+		     			  , udter_id
+		     			  , udt_dt
+                          )
+                    SELECT
+                           #{aplPrmTurn,jdbcType=NUMERIC}
+                         , ogap.ord_no
+                         , ogap.prm_no
+                         , #{aplTpCd,jdbcType=VARCHAR}
+                         , ogap.apl_unit_cd
+                         , ogap.prm_tp_cd
+                         , ogap.prm_dtl_tp_cd
+                         , #{aplAmt,jdbcType=NUMERIC}
+                         , #{newOrdGodTurn,jdbcType=NUMERIC}
+                         , #{aplQty,jdbcType=NUMERIC}
+                         , ogap.ord_god_gft_turn
+                         , ogap.ord_god_gft_nm
+                         , ogap.mbr_cpn_no
+                         , #{regtrId,jdbcType=VARCHAR}
+                         , SYSDATE
+                         , #{regtrId,jdbcType=VARCHAR}
+                         , SYSDATE
+                      FROM ord_god_apl_prm ogap
+                     where 1=1
+                       AND ogap.ord_no           = #{ordNo,jdbcType=VARCHAR}
+                       AND ogap.ord_god_turn     = #{ordGodTurn,jdbcType=NUMERIC}
+    </insert>    
+    
+    
+    <select id="selectOrdGodAplPrmForClmList" parameterType="ordGodAplPrmExtend" resultType="ordGodAplPrmExtend">
+		SELECT
+		       ogap.apl_prm_turn        AS apl_prm_turn             /* 적용 프로모션 순번       */
+		     , ogap.ord_no              AS ord_no                   /* 주문 번호                */
+		     , ogap.prm_no              AS prm_no                   /* 프로모션 번호            */
+		     , ogap.apl_tp_cd           AS apl_tp_cd                /* 적용 유형 코드           */
+		     , ogap.apl_unit_cd         AS apl_unit_cd              /* 적용 단위 코드           */
+		     , ogap.prm_tp_cd           AS prm_tp_cd                /* 프로모션 유형 코드       */
+		     , ogap.prm_dtl_tp_cd       AS prm_dtl_tp_cd            /* 프로모션 세부 유형 코드  */
+		     , ogap.apl_amt             AS apl_amt                  /* 적용 금액                */
+		     , ogap.ord_god_turn        AS ord_god_turn             /* 주문 상품 순번           */
+		     , ogap.apl_qty             AS apl_qty                  /* 적용 수량                */
+		     , ogap.ord_god_gft_turn    AS ord_god_gft_turn         /* 주문 상품 사은품 순번    */
+		     , ogap.ord_god_gft_nm      AS ord_god_gft_nm           /* 주문 상품 사은품 명      */
+		     , ogap.mbr_cpn_no          AS mbr_cpn_no
+		  FROM ord_god_apl_prm ogap
+		 WHERE 1 = 1
+		   AND ogap.ord_no 			= #{ordNo,jdbcType=VARCHAR}
+		   AND ogap.ord_god_turn 	= #{ordGodTurn,jdbcType=NUMERIC}    
+    </select>    
+    
+    <update id="pkUpdateLgsDlvsp" parameterType="lgsDlvsp">
+        UPDATE /* com.plgrim.ncp.base.repository.lgs.updateLgsDlvsp  20150609 */  
+        LGS_DLVSP SET
+                 DLV_PCUPSP_SECT_CD = #{dlvPcupspSectCd,jdbcType=VARCHAR}
+                ,ADDRSE_NM = #{addrseNm,jdbcType=VARCHAR}
+                ,DLV_SECT_CD = #{dlvSectCd,jdbcType=VARCHAR}
+                ,PKUP_SHOP_ID = #{pkupShopId,jdbcType=VARCHAR}
+                ,PKUP_SHOP_BRND_ID = #{pkupShopBrndId,jdbcType=VARCHAR}
+                ,PKUP_SHOP_VISIT_DATE = #{pkupShopVisitDate,jdbcType=VARCHAR}
+                ,ADDR_SECT_CD = #{addrSectCd,jdbcType=VARCHAR}
+                ,ADDRSE_POST_NO = #{addrsePostNo,jdbcType=VARCHAR}
+                ,ADDRSE_BASE_ADDR = #{addrseBaseAddr,jdbcType=VARCHAR}
+                ,ADDRSE_DETAIL_ADDR = #{addrseDetailAddr,jdbcType=VARCHAR}
+                ,ADDRSE_MOBIL_NATION_NO = #{addrseMobilNationNo,jdbcType=VARCHAR}
+                ,ADDRSE_MOBIL_AREA_NO = #{addrseMobilAreaNo,jdbcType=VARCHAR}
+                ,ADDRSE_MOBIL_TLOF_NO = #{addrseMobilTlofNo,jdbcType=VARCHAR}
+                ,ADDRSE_MOBIL_TLOF_WTHN_NO = #{addrseMobilTlofWthnNo,jdbcType=VARCHAR}
+                ,ADDRSE_TEL_NATION_NO = #{addrseTelNationNo,jdbcType=VARCHAR}
+                ,ADDRSE_TEL_AREA_NO = #{addrseTelAreaNo,jdbcType=VARCHAR}
+                ,ADDRSE_TEL_TLOF_NO = #{addrseTelTlofNo,jdbcType=VARCHAR}
+                ,ADDRSE_TEL_TLOF_WTHN_NO = #{addrseTelTlofWthnNo,jdbcType=VARCHAR}
+                ,DLV_MEMO = #{dlvMemo,jdbcType=VARCHAR}
+                ,DLV_HOPE_DATE = #{dlvHopeDate,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     ORD_NO = #{ordNo,jdbcType=VARCHAR}
+        AND     DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+    </update>
+
+    <!--
+    	1. 수정일자   : 2016-02-26
+	    2. 수정자     : 김재성 (jskim27)
+	    3. 요청 SR NO : #17045
+	    4. 수정내용   : [제휴] '주문상품' 데이터 생성 시 '입점업체수수료율' 등록
+	                    - ORD_GOD 데이터 생성 시, GOD 테이블에서 조회해서 INSERT
+	                    - ORD_GOD 테이블 컬럼 수정/추가 시 base.ord.god.xml 를 참조해서 수정이 필요함
+     -->
+    <insert id="insertOrdGod" parameterType="ordGod">
+        INSERT /* com.plgrim.ncp.base.repository.ord.insertOrdGod yoon 20151123 */
+        INTO ORD_GOD
+        (
+        ORD_NO
+        ,ORD_GOD_TURN
+        ,DLV_PCUPSP_TURN
+        ,GOD_NO
+        ,ITM_NO
+        ,GOD_HIST_TURN
+        ,ITM_HIST_TURN
+        ,ERP_GOD_NO
+        ,SKU_NO
+        ,GOD_NM
+        ,MOBILE_GOD_NM
+        ,ITM_NM
+        ,COLOR_NM
+        ,COLOR_CD
+        ,CLOR_CHIP_IMG_URL
+        ,BRND_ID
+        ,BRND_GRP_ID
+        <!-- ,GOD_VOL  #49874 로 주석처리-->
+        ,GOD_WT
+        ,GOD_TP_CD
+        ,PARTMAL_SECT_CD
+        ,LST_IMG_URL
+        ,COM_ID
+        ,PARTMAL_COM_FEE_RT
+        ,PARTMAL_COM_CNFIRM_YN
+        ,PARTMAL_COM_CNFIRM_DT
+        ,PARTMAL_COM_CNFIRM_ADMIN_ID
+        ,ORDMK_GOD_YN
+        ,GOD_DLIVY_WAIT_TIME
+        ,DMSTC_DLV_CST_PLC_SN
+        ,OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+        ,OVSEA_DLV_CST_PLC_SN
+        ,SALE_SHOP_CD
+        ,ORD_QTY
+        ,CRNCY_CD
+        ,STDR_CRNCY_AMT
+        ,PAY_EXCHG_RT_CRNCY_AMT
+        ,RTL_PRC
+        ,SALE_AMT
+        ,WEB_DC_AMT
+        ,EMP_DC_AMT
+        ,ALL_DC_AMT
+        ,GOD_DC_AMT
+        ,BUNDLE_DC_AMT
+        ,CRS_DC_AMT
+        ,GOD_CPN_DC_AMT
+        ,BSK_CPN_DC_AMT
+        ,IMDTL_DC_AMT
+        ,UNITY_PNT_USE_AMT
+        ,EVT_PNT_USE_AMT
+        ,WEBPNT_USE_AMT
+        ,UNITY_PNT_ACCML_AMT
+        ,EVT_PNT_ACCML_AMT
+        ,WEBPNT_ACCML_AMT
+        ,CAL_DT
+        ,AFF_COM_ORD_GOD_NO
+        ,REGTR_ID
+        ,UDTER_ID
+        ,REG_DT
+        ,UDT_DT
+        )
+        VALUES
+        (
+        #{ordNo,jdbcType=VARCHAR}
+        ,#{ordGodTurn,jdbcType=NUMERIC}
+        ,#{dlvPcupspTurn,jdbcType=NUMERIC}
+        ,#{godNo,jdbcType=VARCHAR}
+        ,#{itmNo,jdbcType=VARCHAR}
+        ,#{godHistTurn,jdbcType=NUMERIC}
+        ,#{itmHistTurn,jdbcType=NUMERIC}
+        ,#{erpGodNo,jdbcType=VARCHAR}
+        ,#{skuNo,jdbcType=VARCHAR}
+        ,#{godNm,jdbcType=VARCHAR}
+        ,#{mobileGodNm,jdbcType=VARCHAR}
+        ,#{itmNm,jdbcType=VARCHAR}
+        ,#{colorNm,jdbcType=VARCHAR}
+        ,#{colorCd,jdbcType=VARCHAR}
+        ,#{clorChipImgUrl,jdbcType=VARCHAR}
+        ,#{brndId,jdbcType=VARCHAR}
+        ,#{brndGrpId,jdbcType=VARCHAR}
+        <!-- ,#{godVol,jdbcType=NUMERIC}  #49874 로 주석처리-->
+        ,#{godWt,jdbcType=NUMERIC}
+        ,#{godTpCd,jdbcType=VARCHAR}
+        ,#{partmalSectCd,jdbcType=VARCHAR}
+        ,#{lstImgUrl,jdbcType=VARCHAR}
+        ,#{comId,jdbcType=VARCHAR}
+        <!--
+        ,#{partmalComFeeRt,jdbcType=NUMERIC}
+        -->
+        ,NVL( ( SELECT partmal_com_fee_rt FROM god WHERE god_no = #{godNo,jdbcType=VARCHAR}), 0 )
+        ,#{partmalComCnfirmYn,jdbcType=VARCHAR}
+        ,#{partmalComCnfirmDt,jdbcType=TIMESTAMP}
+        ,#{partmalComCnfirmAdminId,jdbcType=VARCHAR}
+        ,#{ordmkGodYn,jdbcType=VARCHAR}
+        ,#{godDlivyWaitTime,jdbcType=NUMERIC}
+        ,#{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+        ,#{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+        ,#{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+        ,#{saleShopCd,jdbcType=VARCHAR}
+        ,#{ordQty,jdbcType=NUMERIC}
+        ,#{crncyCd,jdbcType=VARCHAR}
+        ,#{stdrCrncyAmt,jdbcType=NUMERIC}
+        ,#{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+        ,#{rtlPrc,jdbcType=NUMERIC}
+        ,#{saleAmt,jdbcType=NUMERIC}
+        ,#{webDcAmt,jdbcType=NUMERIC}
+        ,#{empDcAmt,jdbcType=NUMERIC}
+        ,#{allDcAmt,jdbcType=NUMERIC}
+        ,#{godDcAmt,jdbcType=NUMERIC}
+        ,#{bundleDcAmt,jdbcType=NUMERIC}
+        ,#{crsDcAmt,jdbcType=NUMERIC}
+        ,#{godCpnDcAmt,jdbcType=NUMERIC}
+        ,#{bskCpnDcAmt,jdbcType=NUMERIC}
+        ,#{imdtlDcAmt,jdbcType=NUMERIC}
+        ,#{unityPntUseAmt,jdbcType=NUMERIC}
+        ,#{evtPntUseAmt,jdbcType=NUMERIC}
+        ,#{webpntUseAmt,jdbcType=NUMERIC}
+        ,#{unityPntAccmlAmt,jdbcType=NUMERIC}
+        ,#{evtPntAccmlAmt,jdbcType=NUMERIC}
+        ,#{webpntAccmlAmt,jdbcType=NUMERIC}
+        ,#{calDt,jdbcType=TIMESTAMP}
+        ,#{affComOrdGodNo,jdbcType=VARCHAR}
+        ,#{regtrId,jdbcType=VARCHAR}
+        ,#{udterId,jdbcType=VARCHAR}
+        ,SYSDATE
+        ,SYSDATE
+        )
+    </insert>
+
+    <!--
+		#23145 [주문모듈]픽업 주문 지정 픽업 매장 변경 기능
+			- 변경될 픽업매장 주소 정보로 수정
+	-->
+    <update id="updatePkup2pkupLgsDlvsp" parameterType="lgsDlvsp">
+        UPDATE lgs_dlvsp /* [order.command.xml][updatePkup2pkupLgsDlvsp][픽업주문 배송처 변경 시 물류배송지 정보 수정][김재성] */
+        SET (pkup_shop_id, addrse_post_no, addrse_base_addr, addrse_detail_addr, udter_id, udt_dt ) =
+        (
+            SELECT
+                shop_id
+                , post_no
+                , base_addr
+                , detail_addr
+                , #{udterId, jdbcType=VARCHAR}
+                , SYSDATE
+            FROM sys_shop
+            WHERE shop_id = #{pkupShopId4Change, jdbcType=VARCHAR}
+        )
+        WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+    </update>
+
+    <!--
+		#23145 [주문모듈]픽업 주문 지정 픽업 매장 변경 기능
+			- 픽업번호 등 수정
+	-->
+    <update id="updatePkup2pkupLgsDlv" parameterType="lgsDlv">
+        UPDATE lgs_dlv /* [order.command.xml][updatePkup2pkupLgsDlv][픽업주문 배송처 변경 시 물류배송 정보 수정][김재성] */
+          SET
+            dmstc_waybil_no = NULL
+            , dmstc_waybil_no_reg_dt = NULL
+            , shop_pkup_sms_snd_yn = 'N'
+            , udter_id = #{udterId, jdbcType=VARCHAR}
+            , udt_dt = SYSDATE
+        WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+          AND dlv_pcupsp_turn = #{dlvPcupspTurn, jdbcType=NUMERIC}
+    </update>
+
+    <!--
+        #23145 [주문모듈]픽업 주문 지정 픽업 매장 변경 기능
+            - 물류출고지시 정보 수정
+            - 물류센터에서 픽업매장으로 재고 이동 관련 정보는 NULL 처리
+            - 이전에 분리된 픽업번호가 있더라도 픽업매장 변경 시에는 초기화하기 위해
+                가장 작은 '배송순번'(DLV_TURN) 으로 수정
+         #30547 [배송매장] 픽업 매장변경 오류 확인의 건
+            - 결품('SHTG_RCEPT') 상태 건도 재고를 확인하여 재고 보유 매장으로 변경 가능하도록 수정
+            - 결품상태 관련 정보 초기화 처리
+    -->
+    <update id="updatePkup2pkupLgsDlvDrctGod" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlivyDrctGodExtend">
+        /* [order.command.xml]["updatePkup2pkupLgsDlvDrctGod"][픽업주문 배송처 변경 시 물류출고지시 정보 수정][김재성] */
+        UPDATE lgs_dlivy_drct_god
+          SET dlv_shop_id = #{dlvShopId,jdbcType=VARCHAR}		/* 변경될 신규픽업매장ID */
+            , dlivy_shop_id = NULL 							/* 출고매장ID */
+            , dlivy_drct_grp_dgre = NULL					/* 출고지시그룹차수 */
+            , dlivy_drct_user_grp_dgre = NULL				/* 사용자그룹차수 */
+            , dlivy_drct_tgt_yn = 'N'						/* 출고지시대상여부 */
+            , dlivy_drct_yn = 'N'   						/* 출고지시여부 */
+            , dlv_shop_dlivy_lc_id = 'FC01'                 /* 배송매장출고위치ID */
+            , dlivy_drct_dt = SYSDATE
+            , dlv_stat_cd = #{dlvStatCd,jdbcType=VARCHAR}   /* 배송상태코드 */
+            , shtg_qty = NULL								/* 결품 수량 */
+            , shtg_dt = NULL								/* 결품일시 */
+            , shtg_dcsn_yn = 'N'							/* 결품확정 여부 */
+            , shtg_dcsn_dt = NULL                           /* 결품확정 일시 */
+            , dlv_turn = (
+                SELECT MIN( dlv_turn )
+                FROM lgs_dlv
+                WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+                    AND dlv_pcupsp_turn = #{dlvPcupspTurn, jdbcType=NUMERIC} )
+            , dlivy_drct_count = NVL(dlivy_drct_count, 0) + 1 /* 배정카운트 : 배정카운트가 1 이상인 것들에 대해 예약영수증 발행 */
+            , udter_id = #{udterId,jdbcType=VARCHAR}
+            , udt_dt = SYSDATE
+        WHERE 1 = 1
+          AND dlivy_drct_god_no = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 물류 출고지시 상품 이력 등록 -->
+    <insert id="insertLgsDlivyDrctGodHist" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlivyDrctGodHist">
+        /* [orderBocmmand.xml][insertLgsDlivyDrctGodHist][물류 출고지시 상품 이력 등록][] */
+        INSERT INTO LGS_DLIVY_DRCT_GOD_HIST
+        ( dlivy_drct_god_no
+            , hist_turn
+            , ord_no
+            , ord_god_turn
+            , pckage_god_turn
+            , gft_yn
+            , dlv_pcupsp_turn
+            , dlv_turn
+            , dlv_shop_id
+            , dlv_shop_dlivy_lc_id
+            , dlivy_shop_id
+            , acmtl_god_vol
+            , acmtl_god_wt
+            , lgs_itm_yn
+            , dlivy_drct_tgt_yn
+            , dlivy_drct_yn
+            , dlivy_drct_grp_dgre
+            , dlivy_drct_user_grp_dgre
+            , dlivy_drct_count
+            , dlivy_drct_tp_cd
+            , dlivy_drct_dt
+            , dlivy_drct_qty
+            , dlivy_drct_cncl_qty
+            , dlivy_drct_cncl_dt
+            , dlv_stat_cd
+            , shtg_qty
+            , shtg_dt
+            , shtg_dcsn_yn
+            , shtg_dcsn_dt
+            , dlivy_compt_qty
+            , dlivy_compt_dt
+            , dlv_compt_dt
+            , dlivy_drct_god_memo_cont
+            , rcptfr_no
+            , resve_rcptfr_creat_yn
+            , resve_rcptfr_creat_dt
+            , resve_rcptfr_dlivy_yn
+            , resve_rcptfr_dlivy_dt
+            , resve_rcptfr_dcsn_yn
+            , resve_rcptfr_dcsn_dt
+            , erp_resve_rcptfr_creat_cnt
+            , erp_resve_rcptfr_creat_yn
+            , erp_resve_rcptfr_creat_dt
+            , erp_resve_rcptfr_recreat_yn
+            , erp_resve_rcptfr_recreat_dt
+            , erp_resve_rcptfr_cncl_yn
+            , erp_resve_rcptfr_cncl_dt
+            , cntr_dlivy_cnfirm_yn
+            , cntr_dlivy_cnfirm_dt
+            , inv_apl_yn
+            , p_sto_no
+            , s_sto_no
+            , s_doc_no
+            , regtr_id
+            , reg_dt
+            , udter_id
+            , udt_dt
+            , asgn_sect_cd
+            , asgn_count
+            , reject_count
+            , dlivy_acpt_yn
+            , itm_dlivy_acpt_tgt_yn)
+        SELECT dlivy_drct_god_no
+            , (SELECT NVL(MAX(hist_turn),0) + 1
+            FROM LGS_DLIVY_DRCT_GOD_HIST
+            WHERE dlivy_drct_god_no = #{dlivyDrctGodNo,jdbcType=VARCHAR})
+            , ord_no
+            , ord_god_turn
+            , pckage_god_turn
+            , gft_yn
+            , dlv_pcupsp_turn
+            , dlv_turn
+            , dlv_shop_id
+            , dlv_shop_dlivy_lc_id
+            , dlivy_shop_id
+            , acmtl_god_vol
+            , acmtl_god_wt
+            , lgs_itm_yn
+            , dlivy_drct_tgt_yn
+            , dlivy_drct_yn
+            , dlivy_drct_grp_dgre
+            , dlivy_drct_user_grp_dgre
+            , dlivy_drct_count
+            , dlivy_drct_tp_cd
+            , dlivy_drct_dt
+            , dlivy_drct_qty
+            , dlivy_drct_cncl_qty
+            , dlivy_drct_cncl_dt
+            , dlv_stat_cd
+            , shtg_qty
+            , shtg_dt
+            , shtg_dcsn_yn
+            , shtg_dcsn_dt
+            , dlivy_compt_qty
+            , dlivy_compt_dt
+            , dlv_compt_dt
+            , dlivy_drct_god_memo_cont
+            , rcptfr_no
+            , resve_rcptfr_creat_yn
+            , resve_rcptfr_creat_dt
+            , resve_rcptfr_dlivy_yn
+            , resve_rcptfr_dlivy_dt
+            , resve_rcptfr_dcsn_yn
+            , resve_rcptfr_dcsn_dt
+            , erp_resve_rcptfr_creat_cnt
+            , erp_resve_rcptfr_creat_yn
+            , erp_resve_rcptfr_creat_dt
+            , erp_resve_rcptfr_recreat_yn
+            , erp_resve_rcptfr_recreat_dt
+            , erp_resve_rcptfr_cncl_yn
+            , erp_resve_rcptfr_cncl_dt
+            , cntr_dlivy_cnfirm_yn
+            , cntr_dlivy_cnfirm_dt
+            , inv_apl_yn
+            , p_sto_no
+            , s_sto_no
+            , s_doc_no
+            , #{regtrId,jdbcType=VARCHAR}
+            , SYSDATE
+            , #{udterId,jdbcType=VARCHAR}
+            , SYSDATE
+            , asgn_sect_cd
+            , asgn_count
+            , reject_count
+            , dlivy_acpt_yn
+            , itm_dlivy_acpt_tgt_yn
+        FROM LGS_DLIVY_DRCT_GOD
+        WHERE dlivy_drct_god_no = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+    </insert>
+    
+    <!-- 세트 교환접수시 세트대표상품 등록 -->
+    <insert id="insertSetExchgGodForClm" parameterType="ordGodExtend">
+        INSERT INTO ord_god(
+                            ord_god_turn
+                          , ord_no
+                          , dlv_pcupsp_turn
+                          , god_no
+                          , itm_no
+                          , god_hist_turn
+                          , itm_hist_turn
+                          , god_nm
+                          , mobile_god_nm
+                          , itm_nm
+                          , color_nm
+                          , erp_god_no
+                          , sku_no
+                          , brnd_id
+                          , brnd_grp_id
+                           <!-- , god_vol  #49874 로 주석처리-->
+                          , god_wt
+                          , god_tp_cd
+                          , partmal_sect_cd
+                          , lst_img_url
+                          , com_id
+                          , partmal_com_fee_rt	/* 2016.03.07 정재민 - 교환 출고 주문에 원 주문 상품과 동일한 입점사수수료를 적용 */
+                          , dmstc_dlv_cst_plc_sn
+                          , ovsea_dlv_dmstc_dlv_cst_plc_sn
+                          , ovsea_dlv_cst_plc_sn
+                          , sale_shop_cd
+                          , ord_qty
+                          , crncy_cd
+                          , stdr_crncy_amt
+                          , pay_exchg_rt_crncy_amt
+                          , rtl_prc
+                          , sale_amt
+                          , web_dc_amt
+                          , emp_dc_amt
+                          , all_dc_amt
+                          , god_dc_amt
+                          , imdtl_dc_amt
+                          , bundle_dc_amt
+                          , crs_dc_amt
+                          , god_cpn_dc_amt
+                          , bsk_cpn_dc_amt
+                          , unity_pnt_use_amt
+                          , evt_pnt_use_amt
+                          , webpnt_use_amt
+                          , unity_pnt_accml_amt
+                          , evt_pnt_accml_amt
+                          , webpnt_accml_amt
+                          , regtr_id
+                          , reg_dt
+		     			  , udter_id
+		     			  , udt_dt
+                          )
+             SELECT 
+                    #{newOrdGodTurn,jdbcType=NUMERIC}                                              
+                  , og.ord_no
+                  , #{newDlvPcupspTurn,jdbcType=NUMERIC}                                            
+                  , og.god_no
+                  , tp.itm_no AS itmno
+                  , og.god_hist_turn
+                  , tp.itm_hist_turn AS itmhistturn
+                  , og.god_nm
+                  , og.mobile_god_nm
+                  , tp.itm_nm AS itmnm
+                  , og.color_nm
+                  , og.erp_god_no
+                  , tp.sku_no AS skuno
+                  , og.brnd_id
+                  , og.brnd_grp_id
+                  <!-- , og.god_vol  #49874 로 주석처리-->
+                  , og.god_wt
+                  , og.god_tp_cd
+                  , og.partmal_sect_cd
+                  , og.lst_img_url
+                  , og.com_id
+                  , og.partmal_com_fee_rt
+                  , og.dmstc_dlv_cst_plc_sn
+                  , og.ovsea_dlv_dmstc_dlv_cst_plc_sn
+                  , og.ovsea_dlv_cst_plc_sn
+                  , og.sale_shop_cd
+                  , #{ordQty,jdbcType=NUMERIC}
+                  , og.crncy_cd
+                  , b.stdr_crncy_unt_prc_sum            
+                  , b.pay_exchg_rt_crncy_unt_prc_sum  
+                  , b.rtl_prc_sum              
+                  , b.sale_unt_prc_sum             
+                  , b.web_dc_unt_prc_sum            
+                  , b.emp_dc_unt_prc_sum                      
+                  , b.all_dc_unt_prc_sum           
+                  , b.god_dc_unt_prc_sum            
+                  , b.imdtl_dc_unt_prc_sum              
+                  , b.bundle_dc_unt_prc_sum         
+                  , b.crs_dc_unt_prc_sum            
+                  , b.god_cpn_dc_unt_prc_sum         
+                  , b.bsk_cpn_dc_unt_prc_sum         
+                  , b.unity_pnt_use_unt_prc_sum      
+                  , b.evt_pnt_use_unt_prc_sum        
+                  , b.webpnt_use_unt_prc_sum                 
+                  , b.unity_pnt_accml_unt_prc_sum    
+                  , b.evt_pnt_accml_unt_prc_sum      
+                  , b.webpnt_accml_unt_prc_sum             
+                  , #{regtrId,jdbcType=VARCHAR}  
+                  , SYSDATE
+                  , #{regtrId,jdbcType=VARCHAR}  
+                  , SYSDATE
+               FROM ord_god og
+                    INNER JOIN
+                    (
+                            SELECT t.ord_no
+					             , ocgc.ord_god_turn
+					             , SUM(t.stdr_crncy_unt_prc)             AS stdr_crncy_unt_prc_sum               /* 기준 통화 단가 */
+					             , SUM(t.pay_exchg_rt_crncy_unt_prc)     AS pay_exchg_rt_crncy_unt_prc_sum       /* 결제 환율 통화 단가 */
+					             , SUM(t.rtl_prc)                        AS rtl_prc_sum                          /* 정소가 */
+					             , SUM(t.sale_unt_prc)                   AS sale_unt_prc_sum                     /* 판매 단가 */
+					             , SUM(t.web_dc_unt_prc)                 AS web_dc_unt_prc_sum                   /* 웹 할인 단가 */
+					             , SUM(t.emp_dc_unt_prc)                 AS emp_dc_unt_prc_sum                   /* 임직원 할인 단가 */
+					             , SUM(t.imdtl_dc_unt_prc)               AS imdtl_dc_unt_prc_sum                 /* 즉시 할인 단가 */            
+					             , SUM(t.god_dc_unt_prc) + SUM(t.bundle_dc_unt_prc) + SUM(t.crs_dc_unt_prc) + SUM(t.god_cpn_dc_unt_prc) + SUM(t.bsk_cpn_dc_unt_prc) AS all_dc_unt_prc_sum
+					             , SUM(t.god_dc_unt_prc)                 AS god_dc_unt_prc_sum                   /* 상품 할인 단가 */
+					             , SUM(t.bundle_dc_unt_prc)              AS bundle_dc_unt_prc_sum                /* 묶음 할인 단가 */
+					             , SUM(t.crs_dc_unt_prc)                 AS crs_dc_unt_prc_sum                   /* 교차 할인 단가 */
+					             , SUM(t.god_cpn_dc_unt_prc)             AS god_cpn_dc_unt_prc_sum               /* 상품 쿠폰 할인 단가 */
+					             , SUM(t.bsk_cpn_dc_unt_prc)             AS bsk_cpn_dc_unt_prc_sum               /* 장바구니 쿠폰 할인 단가 */
+					             , SUM(t.unity_pnt_use_unt_prc)          AS unity_pnt_use_unt_prc_sum            /* 통합 포인트 사용 단가 */
+					             , SUM(t.evt_pnt_use_unt_prc)            AS evt_pnt_use_unt_prc_sum              /* 이벤트 포인트 사용 단가 */
+					             , SUM(t.webpnt_use_unt_prc)             AS webpnt_use_unt_prc_sum               /* 웹포인트 사용 단가 */
+					             , SUM(t.unity_pnt_accml_unt_prc)        AS unity_pnt_accml_unt_prc_sum          /* 통합 포인트 적립 단가 */
+					             , SUM(t.evt_pnt_accml_unt_prc)          AS evt_pnt_accml_unt_prc_sum            /* 이벤트 포인트 적립 단가 */
+					             , SUM(t.webpnt_accml_unt_prc)           AS webpnt_accml_unt_prc_sum             /* 웹포인트 적립 단가 */
+					          FROM inf_ord_god_erp_dstb t JOIN ORD_CPST_GOD_CNNC ocgc ON t.ord_no = ocgc.ord_no AND t.ord_god_turn = ocgc.ord_cpst_god_turn
+					         WHERE 1=1
+					           AND t.ord_no = #{ordNo,jdbcType=VARCHAR}
+					           AND ocgc.ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}
+					           AND t.clm_no IS NOT NULL
+					           AND ocgc.pckage_god_tp_cd in ('SET_GOD', 'PCKAGE_GOD')
+					           <!-- 
+					           AND rownum <![CDATA[<=]]> #{ordQty,jdbcType=NUMERIC}
+                    		   -->
+                    		 GROUP BY t.ord_no, ocgc.ord_god_turn
+                    ) b ON og.ord_no = b.ord_no and og.ord_god_turn = b.ord_god_turn
+                    LEFT OUTER JOIN
+                    (SELECT gi.god_no
+                          , gi.itm_no
+                          , gi.itm_nm
+                          , gi.sku_no
+                          , gih.itm_hist_turn
+                       FROM god_itm gi
+                            LEFT OUTER JOIN
+                            (  SELECT god_no
+                                    , itm_no
+                                    , MAX(itm_hist_turn) AS itm_hist_turn
+                                 FROM god_itm_hist
+                                WHERE god_no = #{godNo,jdbcType=VARCHAR}
+                             GROUP BY god_no, itm_no) gih
+                                 ON gi.god_no = gih.god_no
+                                AND gi.itm_no = gih.itm_no
+                      WHERE gi.god_no = #{godNo,jdbcType=VARCHAR}
+                        AND gi.itm_no = #{itmNo,jdbcType=VARCHAR}) tp
+                         ON (tp.god_no = og.god_no)
+              WHERE 1 = 1
+                AND og.ord_no           = #{ordNo,jdbcType=VARCHAR}
+                AND og.ord_god_turn     = #{ordGodTurn,jdbcType=NUMERIC}
+                AND og.god_no           = #{godNo,jdbcType=VARCHAR}              
+    </insert>
+</mapper>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.psnl.info">
+	<resultMap id="mbrPsnlInfoModHistResult" type="com.plgrim.ncp.biz.member.result.MemberBoResult">
+	   <result property="mbrPsnlInfoModHist.psnlInfoModHistSn"   column="PSNL_INFO_MOD_HIST_SN" />    <!-- 개인정보 변경 이력 일련번호 -->
+	   <result property="mbrPsnlInfoModHist.psnlInfoModHistTurn" column="PSNL_INFO_MOD_HIST_TURN" />  <!-- 개인정보 변경 이력 순번 -->
+	   <result property="mbrPsnlInfoModHist.mbrNo"               column="MBR_NO" />                   <!-- 회원 번호 -->
+	   <result property="mbrPsnlInfoModHist.psnlInfoModDt"       column="PSNL_INFO_MOD_DT" />         <!-- 개인정보 변경 일시 -->
+	   <result property="mbrPsnlInfoModHist.psnlInfoUdtSectCd"   column="PSNL_INFO_UDT_SECT_CD" />    <!-- 개인정보 수정 구분 코드 -->
+	   <result property="mbrPsnlInfoModHist.modBfVal"            column="MOD_BF_VAL" />               <!-- 변경 이전 값 -->
+	   <result property="mbrPsnlInfoModHist.modAfVal"            column="MOD_AF_VAL" />               <!-- 변경 이후 값 -->
+	   <result property="mbrPsnlInfoModHist.modMbrNo"            column="MOD_MBR_NO" />               <!-- 변경 회원 번호 -->
+	   <result property="mbrPsnlInfoModHist.modAdminId"          column="MOD_ADMIN_ID" />             <!-- 변경 관리자 ID -->
+	   <result property="mbrPsnlInfoModHist.modResnDscr"         column="MOD_RESN_DSCR" />            <!-- 변경 사유 설명 -->
+	   <result property="mbrPsnlInfoModHist.erpTrnsmisYn"        column="ERP_TRNSMIS_YN" />           <!-- ERP 전송 여부 -->
+	   <result property="mbrPsnlInfoModHist.erpTrnsmisDt"        column="ERP_TRNSMIS_DT" />           <!-- ERP 전송 일시 -->
+	   <result property="mbrPsnlInfoModHist.regtrId"             column="REGTR_ID" />                 <!-- 등록자 ID -->
+	   <result property="mbrPsnlInfoModHist.regDt"               column="REG_DT" />                   <!-- 등록 일시 -->
+	   <result property="mbrPsnlInfoModHist.udterId"             column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="mbrPsnlInfoModHist.udtDt"               column="UDT_DT" />                   <!-- 수정 일시 -->
+	   <result property="mbrPsnlInfoModHist.modLcSectCd"               column="MOD_LC_SECT_CD" />                   <!-- 수정 매장 -->
+	   
+	   <result property="psnlInfoUdtSectNm"               column="psnl_info_udt_sect_nm" />    	      <!-- 개인정보 수정 구분 명 -->
+	   <result property="regtrInfo"                       column="regtr_info" />    	              <!-- 등록자 정보 -->    
+	</resultMap>
+
+	
+	<!-- 회원 개인정보 변경 이력 건수 조회 -->
+    <select id="selectPersonalInfoModHistoryListCountForMember" parameterType="mbrPsnlInfoModHist" resultType="Long">
+        SELECT /* [biz.mbr.psnl.info.xml][selectPersonalInfoModHistoryListCountForMember][회원 개인정보 변경 이력 건수 조회][Jessi] */
+               COUNT(*)
+          FROM (
+                 SELECT 
+                       psnl_info_mod_hist_sn
+                  FROM mbr_psnl_info_mod_hist mpimh
+                 WHERE mpimh.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+                 GROUP BY psnl_info_mod_hist_sn
+               )
+    </select>
+    
+	<!-- 회원 개인정보 변경 목록 조회 -->
+    <select id="selectPersonalInfoModHistoryListForMember" parameterType="mbrPsnlInfoModHist" resultMap="mbrPsnlInfoModHistResult">
+		SELECT /* [biz.mbr.psnl.info.xml][selectPersonalInfoModHistoryListForMember][회원 개인정보 변경 이력 목록 조회][Jessi] */
+			     DECODE(fl.mod_mbr_no, null, sa.admin_nm||'('||fl.mod_admin_id||')', mb.mbr_nm || '(' || mb.mbr_id || ')') AS regtr_info
+			   , fl.*
+		  FROM (
+		<include refid="com.plgrim.ncp.base.beginPage"/> 
+			SELECT 
+			       sub2.psnl_info_mod_hist_sn
+			     , SUBSTR( MAX( SYS_CONNECT_BY_PATH( sub2.psnl_info_udt_sect_cd, ',' )), 2 ) psnl_info_udt_sect_cd
+			     , SUBSTR( MAX( SYS_CONNECT_BY_PATH( sub2.cd_nm, ',' )), 2 ) psnl_info_udt_sect_nm
+			     , MIN(sub2.psnl_info_mod_dt) AS psnl_info_mod_dt
+			     , MIN(sub2.mod_mbr_no) AS mod_mbr_no
+			     , MIN(sub2.mod_admin_id) AS mod_admin_id
+			     , MIN(sub2.mod_lc_sect_cd) AS mod_lc_sect_cd
+			  FROM
+			        (
+			        SELECT
+			               sub1.*
+			              ,ROW_NUMBER() OVER( PARTITION BY sub1.psnl_info_mod_hist_sn ORDER BY psnl_info_mod_dt) sub1_row_no
+			          FROM (
+			                SELECT
+			                        mpimh.psnl_info_mod_hist_sn       /* 개인정보 변경 이력 일련번호 */
+			                      , mpimh.psnl_info_mod_hist_turn     /* 개인정보 변경 이력 순번 */
+			                      , mpimh.mbr_no                      /* 회원 번호 */
+			                      , mpimh.psnl_info_mod_dt            /* 개인정보 변경 일시 */
+			                      , mpimh.psnl_info_udt_sect_cd       /* 개인정보 수정 구분 코드 */
+			                      , mpimh.mod_bf_val                  /* 변경 이전 값 */
+			                      , mpimh.mod_af_val                  /* 변경 이후 값 */
+			                      , mpimh.mod_mbr_no                  /* 변경 회원 번호 */
+			                      , mpimh.mod_admin_id                /* 변경 관리자 ID */
+			                      , mpimh.mod_resn_dscr               /* 변경 사유 설명 */
+			                      , mpimh.erp_trnsmis_yn              /* ERP 전송 여부 */
+			                      , mpimh.erp_trnsmis_dt              /* ERP 전송 일시 */
+			                      , mpimh.regtr_id                    /* 등록자 ID */
+			                      , mpimh.reg_dt                      /* 등록 일시 */
+			                      , mpimh.udter_id                    /* 수정자 ID */
+			                      , mpimh.udt_dt                      /* 수정 일시 */
+			                      , mscd.cd_nm as mod_lc_sect_cd	/*수정매장*/
+			                      , msc.cd_nm
+			                  FROM mbr_psnl_info_mod_hist mpimh
+			                  LEFT OUTER JOIN mv_sys_cd msc
+			                    ON (mpimh.psnl_info_udt_sect_cd = msc.cd
+			                   AND msc.upper_cd = 'PSNL_INFO_UDT_SECT'
+			                   AND msc.lang_cd = #{lang, jdbcType=VARCHAR})
+			                  LEFT OUTER JOIN mv_sys_cd mscd
+			                    ON (mpimh.mod_lc_sect_cd = mscd.cd
+			                   AND mscd.upper_cd = 'MOD_LC_SECT'
+			                   AND mscd.lang_cd = #{lang, jdbcType=VARCHAR}) 
+			                 WHERE mpimh.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+			                 ORDER BY mpimh.psnl_info_mod_hist_sn DESC, mpimh.psnl_info_mod_hist_turn
+			               ) sub1
+			        )sub2
+			  START WITH sub1_row_no = 1
+			CONNECT BY PRIOR psnl_info_mod_hist_sn = psnl_info_mod_hist_sn
+			    AND PRIOR sub1_row_no = sub1_row_no - 1
+			  GROUP BY psnl_info_mod_hist_sn
+			  ORDER BY psnl_info_mod_hist_sn DESC 
+		<include refid="com.plgrim.ncp.base.endPage"/>
+		    ) fl
+	   LEFT OUTER JOIN sys_admin sa ON (fl.mod_admin_id = sa.admin_id)
+	   LEFT OUTER JOIN mbr mb ON (fl.mod_mbr_no = mb.mbr_no)	    
+    </select>
+
+    <!-- 개인정보 변경 이력 등록 -->
+    <insert id="insertPersonalInfoModHistory" parameterType="mbrPsnlInfoModHist">
+		INSERT /* [biz.mbr.psnl.info.xml][insertPersonalInfoModHistory][개인정보변경 이력 등록][Jessi] */
+		  INTO mbr_psnl_info_mod_hist (
+		         psnl_info_mod_hist_sn
+		       , psnl_info_mod_hist_turn
+		       , mbr_no
+		       , psnl_info_mod_dt
+		       , psnl_info_udt_sect_cd
+		       , mod_bf_val
+		       , mod_af_val
+		       , mod_mbr_no
+		       , mod_admin_id
+		       , mod_resn_dscr
+		       , erp_trnsmis_yn
+		       , erp_trnsmis_dt
+		       , regtr_id
+		       , reg_dt
+		       , udter_id
+		       , udt_dt
+		       , mod_lc_sect_cd
+		) VALUES (
+		         #{psnlInfoModHistSn, jdbcType=NUMERIC}       					/* 개인정보 변경 이력 일련번호 */
+		       , #{psnlInfoModHistTurn, jdbcType=NUMERIC}     					/* 개인정보 변경 이력 순번 */
+		       , #{mbrNo, jdbcType=VARCHAR}                   					/* 회원 번호 */
+		       , SYSDATE                                      					/* 개인정보 변경 일시 */
+		       , #{psnlInfoUdtSectCd, jdbcType=VARCHAR}       					/* 개인정보 수정 구분 코드 */
+		       , #{modBfVal, jdbcType=VARCHAR}                					/* 변경 이전 값 */
+		       , #{modAfVal, jdbcType=VARCHAR}                					/* 변경 이후 값 */
+		       , #{modMbrNo, jdbcType=VARCHAR}                					/* 변경 회원 번호 */
+		       , #{modAdminId, jdbcType=VARCHAR}              					/* 변경 관리자 ID */
+		       , #{modResnDscr, jdbcType=VARCHAR}             					/* 변경 사유 설명 */
+		       , #{erpTrnsmisYn, jdbcType=VARCHAR}            					/* ERP 전송 여부 */
+		       , DECODE(#{erpTrnsmisYn, jdbcType=VARCHAR}, 'Y', SYSDATE, null)	/* ERP 전송 일시 */
+		       , #{udterId, jdbcType=VARCHAR}
+		       , SYSDATE
+		       , #{udterId, jdbcType=VARCHAR}
+		       , SYSDATE
+		       , #{modLcSectCd, jdbcType=VARCHAR}             					/* 수정매장 */
+		)
+	</insert>
+	
+	<!-- 개인정보변경이력 ERP 전송 여부 업데이트 -->
+    <update id="updatePersonalInfoErpTrnsmisYn" parameterType="mbrPsnlInfoModHist">
+		UPDATE /* [biz.mbr.psnl.info.xml][updatePersonalInfoErpTrnsmisYn][개인정보변경이력 ERP 전송 여부 업데이트 ][Jessi] */
+		       mbr_psnl_info_mod_hist
+		   SET 
+		         erp_trnsmis_yn = #{erpTrnsmisYn, jdbcType=VARCHAR}                  /* ERP 전송 여부 */
+		       , erp_trnsmis_dt = SYSDATE                                            /* ERP 전송 일시 */
+		       , udter_id = #{udterId, jdbcType=VARCHAR}
+		       , udt_dt = SYSDATE
+		 WHERE psnl_info_mod_hist_sn = #{psnlInfoModHistSn, jdbcType=NUMERIC}
+    </update>
+    
+</mapper>

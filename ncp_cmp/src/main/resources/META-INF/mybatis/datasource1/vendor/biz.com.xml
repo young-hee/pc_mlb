@@ -1,0 +1,2940 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.vendor">
+
+    <resultMap id="comResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorListResult">
+		<result property="com.comId"	      column="COM_ID"	    />
+		<result property="com.comStatCd"      column="COM_STAT_CD"/>
+		<result property="com.comTpCd"        column="COM_TP_CD"  />
+		<result property="comDetailTpNm"  	  column="COM_DETAIL_TP_CD" />
+		<result property="comTpNm"            column="COM_TP_NM"  />
+		<result property="com.comNm"          column="COM_NM"     />
+		<result property="com.rprstivNm"      column="RPRSTIV_NM"     />
+		<result property="com.krBmanRegNo"    column="KR_BMAN_REG_NO"     />
+		<result property="telNo"              column="TEL_NO"     />
+		<result property="com.regtrId"        column="REGTR_ID"   />
+		<result property="com.regDt"          column="REG_DT"     />
+		<result property="com.udterId"        column="UDTER_ID"   />
+		<result property="com.udtDt"          column="UDT_DT"     />
+		<result property="regterNm"           column="REGTR_NM"   />
+		<result property="viewRegDt"          column="VIEW_REG_DT"     />
+    </resultMap>
+
+    <!-- 업체 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereVendor">
+        <if test='searchComTpCd != null and searchComTpCd != "" and searchComTpCd.size() > 0'>
+        	AND    COM_TP_CD IN (<foreach collection="searchComTpCd" item="comTpCd" separator=",">#{comTpCd}</foreach>)       /* 업체유형 */
+        </if>
+        <if test='com.comTpCd != null and com.comTpCd != ""'>
+        	AND    COM_TP_CD = #{com.comTpCd}      /* 업체유형 */
+        </if>
+        <if test='com.rprstivNm != null and com.rprstivNm != ""'>
+        	AND    UPPER(RPRSTIV_NM) = UPPER(#{com.rprstivNm})      /* 대표자명 */
+        </if>
+        <if test='com.krBmanRegNo != null and com.krBmanRegNo != ""'>
+        	AND    KR_BMAN_REG_NO = #{com.krBmanRegNo}      /* 사업자번호 */
+        </if>
+		<if test='searchGubun != null and searchGubun != ""'>
+			<if test='searchGubun eq "comCode"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND    UPPER(COM_ID) = UPPER(#{searchTxt,jdbcType=VARCHAR})
+				</if>
+			</if>
+			<if test='searchGubun eq "comName"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND    UPPER(COM_NM) = UPPER(#{searchTxt,jdbcType=VARCHAR})
+				</if>
+			</if>
+		</if>
+		<if test='searchComStatCd != null and searchComStatCd != "" and searchComStatCd.size() > 0'>
+			AND    COM_STAT_CD IN (<foreach collection="searchComStatCd" item="comStatCd" separator=",">#{comStatCd}</foreach>)       /*  업체상태*/
+		</if>
+		<if test='searchAffVrscComId != null and searchAffVrscComId != ""'>
+			AND COM_ID IN (select AFF_COM_ID from COM_AFF_VRSC_COM_CNNC WHERE AFF_VRSC_COM_ID= #{searchAffVrscComId,jdbcType=VARCHAR})
+		</if>
+		<if test='searchComId != null and searchComId != ""'>
+			AND COM_ID = #{searchComId,jdbcType=VARCHAR}
+		</if>
+		<if test='com.comDetailTpCd != null and com.comDetailTpCd != ""'>
+			AND COM_DETAIL_TP_CD = #{com.comDetailTpCd,jdbcType=VARCHAR}	/* 업체상세코드 */
+		</if>
+    </sql>
+
+    <!-- 업체 목록 조회를 위한 카운트 쿼리 (order by, 불핑요한 컬럼 삭제) -->
+    <select id="selectVendorListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+        /* [biz.com.xml][selectVendorListCount][조회 : 업체 목록 건수 ][Izabel] */
+        <![CDATA[
+                SELECT
+                       COUNT(*)
+                  FROM COM C, MV_SYS_CD MSC
+                 WHERE C.COM_TP_CD = MSC.CD
+				   AND USE_YN = 'Y'
+				   AND LANG_CD = 'KOR'
+				   AND UPPER_CD = 'COM_TP'
+        ]]>
+        <include refid="com.plgrim.ncp.biz.vendor.whereVendor"/>
+    </select>
+
+
+    <!-- 업체 목록 조회 -->
+    <select id="selectVendorList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comResultMap">
+        /* [biz.com.xml][selectVendorList][조회 : 업체 목록 ][Izabel] */
+        SELECT
+			  	 COM.COM_ID					  /*  업체 ID            */
+              ,  COM.COM_STAT_CD                 /*  업체 상태 코드           */
+              ,  COM.COM_TP_CD                   /*  업체 유형 코드           */
+		      ,  (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'PARTMAL_COM' AND CD = COM.COM_DETAIL_TP_CD) AS COM_DETAIL_TP_NM            /*  업체 상세 유형 명           */
+              ,  COM.COM_TP_NM                   /*  업체 유형 명           */
+              ,  COM.COM_NM                      /*  업체 명                  */
+              ,  COM.RPRSTIV_NM					 /*  대표자명            */
+              ,  COM.KR_BMAN_REG_NO				 /*  사업자번호          */
+              ,  DECODE(COM.TEL_NO,'--','',COM.TEL_NO) AS TEL_NO /* 전화번호 */
+              ,  COM.REGTR_ID                    /*  등록자 ID          */
+              ,  COM.REG_DT                      /*  등록 일시                */
+              ,  COM.UDTER_ID                    /*  수정자 ID          */
+              ,  COM.UDT_DT                      /*  수정 일시                */
+              , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = COM.REGTR_ID) || CASE WHEN COM.REGTR_ID IS NOT NULL THEN '(' || COM.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		      , TO_CHAR(COM.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+          FROM (
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+		            <![CDATA[
+		                    SELECT
+									  C.COM_ID					    /*  업체 ID          */
+					               ,  C.COM_STAT_CD                 /*  업체 상태 코드     */
+					               ,  C.COM_TP_CD                   /*  업체 유형 코드     */
+					               ,  C.COM_DETAIL_TP_CD            /*  업체 상세 유형 코드     */
+					               ,  MSC.CD_NM AS COM_TP_NM        /*  업체 유형 명       */
+					               ,  C.COM_NM                      /*  업체 명            */
+					               ,  C.RPRSTIV_NM			        /*  대표자명           */
+					               ,  C.KR_BMAN_REG_NO			    /*  사업자번호         */
+					               ,  C.TEL_AREA_NO||'-'||C.TEL_TLOF_NO||'-'||C.TEL_TLOF_WTHN_NO AS TEL_NO/* 전화번호 */
+					               ,  C.REGTR_ID                    /*  등록자 ID         */
+					               ,  C.REG_DT                      /*  등록 일시           */
+					               ,  C.UDTER_ID                    /*  수정자 ID          */
+					               ,  C.UDT_DT                      /*  수정 일시            */
+		                      FROM COM C, MV_SYS_CD MSC
+		                     WHERE C.COM_TP_CD = MSC.CD
+							   AND USE_YN = 'Y'
+							   AND LANG_CD = 'KOR'
+							   AND UPPER_CD = 'COM_TP'
+		            ]]>
+		            <include refid="com.plgrim.ncp.biz.vendor.whereVendor"/>
+		                     ORDER BY C.COM_NM
+		        <include refid="com.plgrim.ncp.base.endPage"/>
+		        ) COM
+    </select>
+
+    <!-- 업체 목록 조회 엑셀 -->
+    <select id="selectVendorListExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="java.util.LinkedHashMap">
+		                    SELECT  /* [biz.com.xml][selectVendorListExcel][조회 : 업체 목록 ][Izabel] */
+		                          /* MSC.CD_NM AS COM_TP_NM          업체 유형 명       */
+									<if test='com.comTpCd == "PARTMAL_COM" '>
+		  								(SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'PARTMAL_COM' AND CD = C.COM_DETAIL_TP_CD) AS COM_DETAIL_TP_NM,	/* 업체 상세 유형 명 */
+									</if>
+
+								     C.COM_ID					  /*  업체 ID            */
+					               ,  C.COM_NM                      /*  업체 명              */
+					               ,  C.KR_BMAN_REG_NO			  /*  사업자번호           */
+					               ,  C.RPRSTIV_NM			      /*  대표자명             */
+					               ,  DECODE(C.TEL_AREA_NO||'-'||C.TEL_TLOF_NO||'-'||C.TEL_TLOF_WTHN_NO,'--','',C.TEL_AREA_NO||'-'||C.TEL_TLOF_NO||'-'||C.TEL_TLOF_WTHN_NO) AS TEL_NO /*전화번호*/
+					               /*,  DECODE(C.COM_STAT_CD,'USE','사용','승인대기') AS USE_YN   업체 상태 코드       */
+                                    <if test='com.comTpCd == "PARTMAL_COM" '>
+                                        , (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'COM_STAT' AND CD = C.COM_STAT_CD) AS COM_STAT_NM		/* 업체 상태 명 */
+                                    </if>
+					               , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID) || CASE WHEN C.REGTR_ID IS NOT NULL THEN '(' || C.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+							       , TO_CHAR(C.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		                      FROM COM C, MV_SYS_CD MSC
+		                     WHERE C.COM_TP_CD = MSC.CD
+							   AND USE_YN = 'Y'
+							   AND LANG_CD = 'KOR'
+							   AND UPPER_CD = 'COM_TP'
+		            <include refid="com.plgrim.ncp.biz.vendor.whereVendor"/>
+		                     ORDER BY C.REG_DT DESC
+    </select>
+
+    <!-- 업체상세조회 -->
+    <select id="selectVendor" parameterType="com.plgrim.ncp.base.entities.datasource1.com.Com" resultType="com.plgrim.ncp.base.entities.datasource1.com.Com">
+        SELECT /* [biz.com.xml][selectVendor][업체상세조회 ][Mark] */
+                C.COM_ID                      /* 업체 ID */
+               ,C.COM_STAT_CD                 /* 업체 상태 코드 */
+               ,C.DELETE_YN                   /* 삭제 여부 */
+               ,C.COM_TP_CD                   /* 업체 유형 코드*/
+               ,C.COM_DETAIL_TP_CD            /* 업체 상세 유형 코드 */
+               ,C.TAXAT_TP_CD                 /* 과세 유형 코드 */
+               ,C.COM_NM                      /* 업체 명 */
+               ,C.COM_URL                     /* 업체 URL */
+               ,C.RPRSTIV_NM                  /* 대표자 명 */
+               ,C.RPRSTIV_BRTHDY              /* 대표자 생년월일 */
+               ,C.KR_CPR_REG_NO               /* 대한민국 법인등록번호 */
+               ,C.KR_BMAN_REG_NO              /* 대한민국 사업자등록번호 */
+               ,C.RPRST_EMAIL                 /* 대표 이메일 */
+               ,C.TPINDU_NM                   /* 업종 명 */
+               ,C.BIZCND_NM                   /* 업태 명 */
+               ,C.NATION_CD                   /* 국가 코드 */
+               ,C.SIDO_CD                     /* 우편시도 코드 */
+               ,REPLACE(C.LNM_ADDR_POST_NO,'-','') AS LNM_ADDR_POST_NO            /* 지번주소 우편번호 */
+               ,C.LNM_ADDR_BASE_ADDR          /* 지번주소 기본주소 */
+               ,C.LNM_ADDR_DETAIL_ADDR        /* 지번주소 상세주소 */
+               ,REPLACE(C.RD_ADDR_POST_NO,'-','') AS RD_ADDR_POST_NO             /* 도로명주소 우편번호 */
+               ,C.RD_ADDR_BASE_ADDR           /* 도로명주소 기본주소 */
+               ,C.RD_ADDR_DETAIL_ADDR         /* 도로명주소 상세주소 */
+               ,C.CONTR_BEG_DT                /* 계약 시작 일시 */
+               ,C.CONTR_END_DT                /* 계약 종료 일시 */
+               ,C.FEE_RT                      /* 수수료 율 */
+               ,C.DEAL_BNK_CD                 /* 거래 은행 코드 */
+               ,C.BNK_ACCT_NO                 /* 계좌번호 */
+               ,C.ACNTHLDR_NM                 /* 예금주 명 */
+               ,C.CAL_DAY                     /* 정산 일 */
+               ,C.OVSEA_DLV_PSB_YN            /* 해외 배송 가능 여부 */
+               /*,C.HDRY_COM_RTRVL_DRCT_PSB_YN   택배사 회수 지시 가능 여부 */
+               ,C.CHRGER_NM                   /* 담당자 명 */
+               ,C.CHRGER_CLSF                 /* 담당자 직급 */
+               ,C.CHRGER_EMAIL                /* 담당자 이메일 */
+               ,C.CHRGER_TEL_NATION_NO        /* 담당자 전화 국가번호 */
+               ,C.CHRGER_TEL_AREA_NO          /* 담당자 전화 지역번호 */
+               ,C.CHRGER_TEL_TLOF_NO          /* 담당자 전화 국번호 */
+               ,C.CHRGER_TEL_TLOF_WTHN_NO     /* 담당자 전화 국내번호 */
+               ,C.CHRGER_MOBIL_NATION_NO      /* 담당자 휴대전화 국가번호 */
+               ,C.CHRGER_MOBIL_AREA_NO        /* 담당자 휴대전화 지역번호 */
+               ,C.CHRGER_MOBIL_TLOF_NO        /* 담당자 휴대전화 국번호 */
+               ,C.CHRGER_MOBIL_TLOF_WTHN_NO   /* 담당자 휴대전화 국내번호 */
+               ,C.COM_PRIO_RANK               /* 업체 우선 순위 */
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = C.REGTR_ID) || CASE WHEN C.REGTR_ID IS NOT NULL THEN '(' || C.REGTR_ID || ')' END AS REGTR_ID /*등록자명*/
+               ,C.REG_DT                      /* 등록 일시 */
+               ,C.UDTER_ID                    /* 수정자 ID */
+               ,C.UDT_DT                      /* 수정 일시 */
+        FROM    COM C
+        WHERE   C.COM_ID = #{comId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 판매제휴사 상세조회 -->
+    <select id="selectAffCom" parameterType="com.plgrim.ncp.base.entities.datasource1.com.Com" resultType="com.plgrim.ncp.base.entities.datasource1.com.Com">
+        SELECT /* [biz.com.xml][selectAffCom][판매제휴가 상세조회 ][KROMANO] */
+               AFF_VRSC_COM_ID ,              /* 제휴 대행 업체 ID */
+               (SELECT COM_NM FROM COM WHERE COM_ID = AFF_VRSC_COM_ID) AS COM_NM
+         FROM  COM_AFF_VRSC_COM_CNNC
+        WHERE  AFF_COM_ID = #{comId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 업체등록 -->
+    <insert id="insertVendor" parameterType="com.plgrim.ncp.base.entities.datasource1.com.Com">
+    	<selectKey keyProperty="comId" resultType="String" order="BEFORE">
+        	SELECT COM_ID
+			  FROM COM_ID_SEQ
+			 WHERE SUBSTR (COM_ID, 0, 1) =
+			              (SELECT ASSTN_CD_1
+			                 FROM MV_SYS_CD
+			                WHERE     USE_YN = 'Y'
+			                      AND LANG_CD = 'KOR'
+			                      AND UPPER_CD = 'COM_TP'
+			                      AND CD = #{comTpCd,jdbcType=VARCHAR})
+			   AND SEQ =
+			             NVL (
+			                 (SELECT SEQ + 1
+			                    FROM COM_ID_SEQ
+			                   WHERE COM_ID =
+			                            (SELECT MAX (COM_ID)
+			                               FROM COM
+			                              WHERE SUBSTR (COM_ID, 0, 1) =
+			                                       (SELECT ASSTN_CD_1
+			                                          FROM MV_SYS_CD
+			                                         WHERE USE_YN = 'Y'
+			                                           AND LANG_CD = 'KOR'
+			                                           AND UPPER_CD = 'COM_TP'
+			                                           AND CD = #{comTpCd,jdbcType=VARCHAR}))),
+			                 (SELECT MIN (SEQ)
+			                    FROM COM_ID_SEQ
+			                   WHERE SUBSTR (COM_ID, 0, 1) =
+			                            (SELECT ASSTN_CD_1
+			                               FROM MV_SYS_CD
+			                              WHERE USE_YN = 'Y'
+			                                AND LANG_CD = 'KOR'
+			                                AND UPPER_CD = 'COM_TP'
+			                                AND CD = #{comTpCd,jdbcType=VARCHAR})))
+        </selectKey>
+	    INSERT /* [biz.com.xml][insertVendor][업체등록][Mark] */
+	    INTO COM
+		(
+	        COM_ID
+	       ,COM_STAT_CD
+	       ,DELETE_YN
+	       ,COM_TP_CD
+	       ,COM_DETAIL_TP_CD
+	       ,COM_NM
+	       ,COM_URL
+	       ,RPRSTIV_NM
+	       ,KR_CPR_REG_NO
+	       ,KR_BMAN_REG_NO
+	       ,TPINDU_NM
+	       ,BIZCND_NM
+	       ,LNM_ADDR_POST_NO
+	       ,LNM_ADDR_BASE_ADDR
+	       ,LNM_ADDR_DETAIL_ADDR
+	       ,RD_ADDR_POST_NO
+	       ,RD_ADDR_BASE_ADDR
+	       ,RD_ADDR_DETAIL_ADDR
+	       ,CHRGER_TEL_NATION_NO
+	       ,CHRGER_TEL_AREA_NO
+	       ,CHRGER_TEL_TLOF_NO
+	       ,CHRGER_TEL_TLOF_WTHN_NO
+	       ,CHRGER_MOBIL_NATION_NO
+	       ,CHRGER_MOBIL_AREA_NO
+	       ,CHRGER_MOBIL_TLOF_NO
+	       ,CHRGER_MOBIL_TLOF_WTHN_NO
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDT_DT
+           ,OVSEA_DLV_PSB_YN
+		)
+		VALUES
+		(
+	        #{comId,jdbcType=VARCHAR}
+	       ,#{comStatCd,jdbcType=VARCHAR}
+	       ,'N'
+	       ,#{comTpCd,jdbcType=VARCHAR}
+	       ,#{comDetailTpCd,jdbcType=VARCHAR}
+	       ,#{comNm,jdbcType=VARCHAR}
+	       ,#{comUrl,jdbcType=VARCHAR}
+	       ,#{rprstivNm,jdbcType=VARCHAR}
+	       ,#{krCprRegNo,jdbcType=VARCHAR}
+	       ,#{krBmanRegNo,jdbcType=VARCHAR}
+	       ,#{tpinduNm,jdbcType=VARCHAR}
+	       ,#{bizcndNm,jdbcType=VARCHAR}
+	       ,#{lnmAddrPostNo,jdbcType=VARCHAR}
+	       ,#{lnmAddrBaseAddr,jdbcType=VARCHAR}
+	       ,#{lnmAddrDetailAddr,jdbcType=VARCHAR}
+	       ,#{rdAddrPostNo,jdbcType=VARCHAR}
+	       ,#{rdAddrBaseAddr,jdbcType=VARCHAR}
+	       ,#{rdAddrDetailAddr,jdbcType=VARCHAR}
+	       ,#{chrgerTelNationNo,jdbcType=VARCHAR}
+	       ,#{chrgerTelAreaNo,jdbcType=VARCHAR}
+	       ,#{chrgerTelTlofNo,jdbcType=VARCHAR}
+	       ,#{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+	       ,#{chrgerMobilNationNo,jdbcType=VARCHAR}
+	       ,#{chrgerMobilAreaNo,jdbcType=VARCHAR}
+	       ,#{chrgerMobilTlofNo,jdbcType=VARCHAR}
+	       ,#{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+	       ,'N'
+		)
+    </insert>
+
+    <!-- 판매제휴사등록 -->
+    <insert id="insertAffCom" parameterType="com.plgrim.ncp.base.entities.datasource1.com.Com">
+    	/* [biz.com.xml][insertAffCom][판매제휴업체등록][KROMANO] */
+    	INSERT
+		INTO COM_AFF_VRSC_COM_CNNC
+		  (
+		    AFF_VRSC_COM_ID ,
+		    AFF_COM_ID ,
+		    GOD_DC_STDR_CD ,
+		    AFF_COM_GOD_DC_RT ,
+		    MCOM_RTRVL_PSB_YN ,	/* 자사회수가능여부 */
+		    REGTR_ID ,
+		    REG_DT ,
+		    UDTER_ID ,
+		    UDT_DT
+		  )
+		  VALUES
+		  (
+		    #{affAgncCom} ,
+		    #{comId} ,
+		    #{godDcStdtCd} ,
+		    #{affComGodDcRt} ,
+		    'Y' ,
+		    #{regtrId} ,
+		    SYSDATE ,
+		    #{regtrId} ,
+		    SYSDATE
+		  )
+    </insert>
+
+	<update id="updateVendorOvseaCstPlc" >
+	  <selectKey keyProperty="feeRt" resultType="java.math.BigDecimal" order="BEFORE">
+	      /* Com.java에서 BigDecimal이 feeRt라서 해당 property를 사용함. feeRt는 해외정책번호를 가리킴 */
+		  SELECT OVSEA_DLV_CST_PLC_SN FROM COM_OVSEA_DLV_CST_PLC WHERE BASE_DLV_CST_PLC_YN = 'Y'
+	   </selectKey>
+
+	MERGE INTO COM_OVSEA_DLV_CST_PLC_CNNC A
+	USING ( SELECT COUNT(1) AS CNT
+			FROM   COM_OVSEA_DLV_CST_PLC_CNNC
+			WHERE  COM_ID = #{comId,jdbcType=VARCHAR}
+            AND    OVSEA_DLV_CST_PLC_SN = #{feeRt}
+        ) B
+	ON ( B.CNT > 0
+         AND A.COM_ID = #{comId,jdbcType=VARCHAR}
+         AND OVSEA_DLV_CST_PLC_SN NOT IN ( SELECT OVSEA_DLV_CST_PLC_SN  FROM COM_OVSEA_DLV_CST_PLC WHERE BASE_DLV_CST_PLC_YN = 'N' ) )
+
+	WHEN MATCHED THEN
+
+	UPDATE SET OVSEA_DLV_CST_PLC_SN = #{feeRt}
+
+	WHEN NOT MATCHED THEN
+
+	INSERT ( COM_ID , OVSEA_DLV_CST_PLC_SN , USE_YN , REGTR_ID , REG_DT , UDTER_ID , UDT_DT )
+	VALUES ( #{comId,jdbcType=VARCHAR}
+		   , #{feeRt}
+		   , 'Y'
+		   , 'sysadmin'
+		   , SYSDATE
+		   , 'sysadmin'
+		   , SYSDATE
+           )
+	</update>
+
+	<update id="updateVendor" >
+	UPDATE /* [biz.com.xml][updateVendor] */
+        COM SET
+                 DEAL_BNK_CD = #{dealBnkCd,jdbcType=VARCHAR}
+                ,BNK_ACCT_NO = #{bnkAcctNo,jdbcType=NUMERIC}
+                ,ACNTHLDR_NM = #{acnthldrNm,jdbcType=VARCHAR}
+                ,CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+                ,CHRGER_CLSF = #{chrgerClsf,jdbcType=VARCHAR}
+                ,CHRGER_EMAIL = #{chrgerEmail,jdbcType=VARCHAR}
+                ,CHRGER_TEL_NATION_NO = #{chrgerTelNationNo,jdbcType=VARCHAR}
+                ,CHRGER_TEL_AREA_NO = #{chrgerTelAreaNo,jdbcType=VARCHAR}
+                ,CHRGER_TEL_TLOF_NO = #{chrgerTelTlofNo,jdbcType=VARCHAR}
+                ,CHRGER_TEL_TLOF_WTHN_NO = #{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+                ,CHRGER_MOBIL_NATION_NO = #{chrgerMobilNationNo,jdbcType=VARCHAR}
+                ,CHRGER_MOBIL_AREA_NO = #{chrgerMobilAreaNo,jdbcType=VARCHAR}
+                ,CHRGER_MOBIL_TLOF_NO = #{chrgerMobilTlofNo,jdbcType=VARCHAR}
+                ,CHRGER_MOBIL_TLOF_WTHN_NO = #{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+                ,CAL_DAY= #{calDay,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     COM_ID = #{comId,jdbcType=VARCHAR}
+	</update>
+
+    <!-- 브랜드 수수료율 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereBrndCommission">
+		<if test='searchGubun != null and searchGubun != ""'>
+			<if test='searchGubun eq "brndId"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND  UPPER(A.BRND_ID) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+				</if>
+			</if>
+			<if test='searchGubun eq "brndNm"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND  A.BRND_ID IN  ( SELECT BRND_ID
+							   FROM SYS_BRND
+							   WHERE UPPER(BRND_NM) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%')
+				</if>
+			</if>
+		</if>
+		<if test='searchGubun != null and searchGubun == "" and searchTxt != null and searchTxt != ""'>
+			AND (UPPER(A.BRND_ID) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%' OR A.BRND_ID IN  ( SELECT BRND_ID
+							   FROM SYS_BRND
+							   WHERE UPPER(BRND_NM) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'))
+		</if>
+    </sql>
+	<select id="selectBrandCommissionListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+	 SELECT /* [biz.com.xml][selectBrandCommissionListCount] izabel 20150414 */
+              COUNT(*)
+        FROM    COM_BRND A
+        WHERE   A.COM_ID = #{com.comId,jdbcType=VARCHAR}
+        <include refid="com.plgrim.ncp.biz.vendor.whereBrndCommission"/>
+     </select>
+
+	<resultMap id="comResveResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorListResult">
+	   <result property="comTpCd"                         column="COM_TP_CD" />           <!-- 유형코드 -->
+	   <result property="comBrnd.comId"                   column="COM_ID" />              <!-- 업체 ID -->
+	   <result property="comBrnd.brndId"                  column="BRND_ID" />             <!-- 브랜드 ID -->
+	   <result property="brndNm"                          column="BRND_NM" />             <!-- 브랜드 명 -->
+	   <result property="brndPath"                        column="BRND_PATH" />           <!-- 브랜드 경로 -->
+	   <result property="baseFeeRt"                       column="BASE_FEE_RT" />         <!-- 브랜드 기본 수수료율 -->
+	   <result property="comBrnd.relateBrndAutoExpsrYn"   column="RELATE_BRND_AUTO_EXPSR_YN" /> <!-- 연관 브랜드 자동 노출 여부 -->
+	   <result property="comBrnd.deleteYn"   			column="DELETE_YN" /> <!-- 삭제 여부 -->
+	   <result property="comBrnd.regtrId"                 column="REGTR_ID" />
+	   <result property="comBrnd.regDt"                   column="REG_DT" />
+	   <result property="comBrnd.udterId"                 column="UDTER_ID" />
+	   <result property="comBrnd.udtDt"                   column="UDT_DT" />
+	   <result property="regterNm"                        column="REGTR_NM" />
+	   <result property="viewRegDt"                       column="VIEW_REG_DT" />
+	   <result property="udterNm"                         column="UDTER_NM" />
+	   <result property="viewUdtDt"                       column="VIEW_UDT_DT" />
+	</resultMap>
+
+	<select id="selectBrandCommissionList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comResveResultMap">
+	 SELECT /* [biz.com.xml][selectBrandCommissionList] izabel 20150414 */
+	           #{comTpCd,jdbcType=VARCHAR} as COM_TP_CD
+	           , B.COM_ID
+	           , B.BRND_ID
+	           , B.BRND_NM
+	           , (
+	              SELECT SUBSTR(SYS_CONNECT_BY_PATH(brnd_nm, '>'), 2) path
+				  FROM sys_brnd
+				  WHERE BRND_ID = B.BRND_ID
+				  START WITH UPPER_BRND_ID IS NULL
+				  CONNECT BY PRIOR brnd_id =UPPER_BRND_ID
+				  ) AS BRND_PATH
+	           , B.BASE_FEE_RT
+	           , B.RELATE_BRND_AUTO_EXPSR_YN
+	           , B.DELETE_YN
+	           , B.REGTR_ID
+	           , B.REG_DT
+	           , B.UDTER_ID
+	           , B.UDT_DT
+ 			   , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.REGTR_ID) || CASE WHEN B.REGTR_ID IS NOT NULL THEN '(' || B.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		       , TO_CHAR(B.reg_dt, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		       , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.UDTER_ID) || CASE WHEN B.UDTER_ID IS NOT NULL THEN '(' || B.UDTER_ID || ')' END AS UDTER_NM /*수정자명*/
+		       , TO_CHAR(B.udt_dt,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+          FROM (
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+						 SELECT /* com.plgrim.ncp.biz.vendor.selectBrandCommissionListCount izabel 20150414 */
+					              A.COM_ID
+					            , A.BRND_ID
+					            , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = A.BRND_ID) BRND_NM
+					            , A.PARTMAL_COM_FEE_RT AS BASE_FEE_RT
+					            , A.RELATE_BRND_AUTO_EXPSR_YN
+					            , A.DELETE_YN
+					            , A.REGTR_ID
+					            , A.REG_DT
+					            , A.UDTER_ID
+					            , A.UDT_DT
+					        FROM    COM_BRND A
+					        WHERE   A.COM_ID = #{com.comId,jdbcType=VARCHAR}
+		            <include refid="com.plgrim.ncp.biz.vendor.whereBrndCommission"/>
+		                     ORDER BY A.BRND_ID
+		        <include refid="com.plgrim.ncp.base.endPage"/>
+		        ) B
+     </select>
+
+    <!-- 브랜드 수수료율 목록 조회 엑셀 -->
+    <select id="selectBrandCommissionListExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="java.util.LinkedHashMap">
+	 SELECT /* [biz.com.xml][selectBrandCommissionListExcel] izabel 20150414 */
+	            (
+	              SELECT SUBSTR(SYS_CONNECT_BY_PATH(brnd_nm, '>'), 2) path
+				  FROM sys_brnd
+				  WHERE CONNECT_BY_ISLEAF = 1
+				  AND   BRND_ID = B.BRND_ID
+				  START WITH UPPER_BRND_ID IS NULL
+				  CONNECT BY PRIOR brnd_id =UPPER_BRND_ID
+				  ) AS BRND_PATH
+	           , B.BRND_NM
+	           , B.BRND_ID
+	           , B.BASE_FEE_RT
+	           , B.DELETE_YN
+	           , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.REGTR_ID) || CASE WHEN B.REGTR_ID IS NOT NULL THEN '(' || B.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		       , TO_CHAR(B.reg_dt, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		       , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.UDTER_ID) || CASE WHEN B.UDTER_ID IS NOT NULL THEN '(' || B.UDTER_ID || ')' END AS UDTER_NM /*수정자명*/
+		       , TO_CHAR(B.udt_dt,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+          FROM (
+						 SELECT /* com.plgrim.ncp.biz.vendor.selectBrandCommissionListCount izabel 20150414 */
+					              A.COM_ID
+					            , A.BRND_ID
+					            , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = A.BRND_ID) BRND_NM
+					            , A.PARTMAL_COM_FEE_RT AS BASE_FEE_RT
+					            , A.DELETE_YN
+					            , A.REGTR_ID
+					            , A.REG_DT
+					            , A.UDTER_ID
+					            , A.UDT_DT
+					            , #{comTpCd,jdbcType=VARCHAR} AS RESVE_TP_CD
+					        FROM    COM_BRND A
+					        WHERE   A.COM_ID = #{com.comId,jdbcType=VARCHAR}
+		            <include refid="com.plgrim.ncp.biz.vendor.whereBrndCommission"/>
+		                     ORDER BY A.BRND_ID
+		        ) B
+     </select>
+
+
+	<update id="mergeBrndCommission">
+            MERGE /* [biz.com.xml][mergeBrndCommission] */
+             INTO COM_BRND COB
+               USING (
+                    SELECT
+                        #{comBrnd.comId}   AS COM_ID
+                        ,#{comBrnd.brndId} AS BRND_ID
+                        ,#{baseFeeRt}      AS BASE_FEE_RT
+                        ,#{comBrnd.deleteYn} AS DELETE_YN
+                    FROM DUAL
+               ) FCH ON (COB.COM_ID = FCH.COM_ID
+                     AND COB.BRND_ID = FCH.BRND_ID)
+               WHEN MATCHED THEN
+                   UPDATE SET
+						      PARTMAL_COM_FEE_RT = FCH.BASE_FEE_RT
+						      ,DELETE_YN = FCH.DELETE_YN
+                              ,UDTER_ID  = #{comBrnd.udterId,jdbcType=VARCHAR}
+                              ,UDT_DT    = SYSDATE
+               WHEN NOT MATCHED THEN
+                   INSERT
+                       (COM_ID
+                        ,BRND_ID
+                        ,PARTMAL_COM_FEE_RT
+						,REGTR_ID
+						,REG_DT
+						,RELATE_BRND_AUTO_EXPSR_YN
+						,DELETE_YN
+						)
+                 VALUES
+                     (FCH.COM_ID
+                      ,FCH.BRND_ID
+					  ,FCH.BASE_FEE_RT
+					  ,#{comBrnd.udterId,jdbcType=VARCHAR}
+					  ,SYSDATE
+					  ,'Y'
+					  ,FCH.DELETE_YN
+					  )
+	</update>
+
+	<select id="selectComBrndHist" parameterType="com.plgrim.ncp.biz.vendor.data.VendorGridDTO" resultType="long">
+		SELECT /* [biz.com.xml][selectComBrndHist] */
+		       COUNT(*)
+		FROM COM_BRND_HIST
+		WHERE COM_ID = #{comBrnd.comId}
+		AND BRND_ID = #{comBrnd.brndId}
+	</select>
+
+	<update id="updateComBrndHist">
+		UPDATE COM_BRND_HIST /* [biz.com.xml][updateComBrndHist] */
+		SET  HIST_END_DT = TO_DATE(TO_CHAR(SYSDATE - 1/24/60/60,'YYYYMMDD HH24:MI:SS'),'YYYYMMDD HH24:MI:SS')
+		    ,UDTER_ID = #{comBrnd.udterId,jdbcType=VARCHAR}
+		    ,UDT_DT = SYSDATE
+		WHERE COM_ID = #{comBrnd.comId}
+		AND BRND_ID = #{comBrnd.brndId}
+		AND TO_CHAR(HIST_BEG_DT, 'YYYYMMDD HH24:MI:SS') = (
+		                                                   SELECT MAX(TO_CHAR(HIST_BEG_DT, 'YYYYMMDD HH24:MI:SS'))
+		                                                   FROM COM_BRND_HIST
+		                                                   WHERE COM_ID = #{comBrnd.comId}
+		                                                   AND BRND_ID = #{comBrnd.brndId}
+		                                                   )
+
+	</update>
+
+	<insert id="insertComBrndHist">
+		INSERT INTO /* [biz.com.xml][insertComBrndHist] */
+		COM_BRND_HIST
+		   (
+		    COM_ID,
+		    BRND_ID,
+		    HIST_BEG_DT,
+		    HIST_END_DT,
+		    PARTMAL_COM_FEE_RT,
+		    RELATE_BRND_AUTO_EXPSR_YN,
+		    DELETE_YN,
+		    REGTR_ID,
+		    REG_DT,
+		    UDTER_ID,
+		    UDT_DT
+		    ) VALUES (
+		     #{comBrnd.comId}
+		    ,#{comBrnd.brndId}
+		    ,TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD HH24:MI:SS'),'YYYYMMDD HH24:MI:SS')
+		    ,CASE WHEN #{comBrnd.deleteYn} = 'N' THEN
+		    				TO_DATE('99991231 23:59:59', 'YYYYMMDD HH24:MI:SS')
+		    		 ELSE
+		    		 		TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD HH24:MI:SS'),'YYYYMMDD HH24:MI:SS')
+		     END
+		    ,#{baseFeeRt}
+		    ,'Y'
+		    ,#{comBrnd.deleteYn,jdbcType=VARCHAR}
+		    ,#{comBrnd.udterId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,#{comBrnd.udterId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    )
+	</insert>
+
+	<delete id="deleteBrndCommission">
+        DELETE /* [biz.com.xml][deleteBrndCommission] */
+          FROM COM_BRND
+		 WHERE COM_ID = #{comBrnd.comId}
+		   AND BRND_ID = #{comBrnd.brndId}
+	</delete>
+
+	<delete id="deleteBrndCommissionChrger">
+		DELETE /* [biz.com.xml][deleteBrndCommissionChrger] */
+  		  FROM COM_CHRGER
+  		 WHERE COM_ID = #{comBrnd.comId}
+		   AND BRND_ID = #{comBrnd.brndId}
+	</delete>
+
+
+
+
+
+    <!-- 제휴사별 상품속성관리 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereComAffVrscComCnnc">
+		<if test='searchGubun != null and searchGubun != ""'>
+			<if test='searchGubun eq "comCd"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND  UPPER(C.COM_ID) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+				</if>
+			</if>
+			<if test='searchGubun eq "comNm"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND  UPPER(C.COM_NM) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+				</if>
+			</if>
+		</if>
+    </sql>
+    <!-- 제휴사별 상품속성관리 조회 건수 -->
+	<select id="selectComAffVrscComCnncListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+		 SELECT /* [biz.com.xml][selectComAffVrscComCnncListCount][제휴사별 상품속성관리 조회 건수][Mark] */
+	              COUNT(*)
+		 FROM  COM_AFF_VRSC_COM_CNNC A, COM C
+		 WHERE A.AFF_VRSC_COM_ID=#{com.comId,jdbcType=VARCHAR}
+		   AND A.AFF_COM_ID = C.COM_ID
+	     <include refid="com.plgrim.ncp.biz.vendor.whereComAffVrscComCnnc"/>
+     </select>
+	<resultMap id="comAffVrscComCnncResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorListResult">
+	   <result property="comAffVrscComCnnc.affVrscComId"             column="AFF_VRSC_COM_ID" />             <!-- 제휴 대행 업체 ID	  -->
+	   <result property="affComNm"                                   column="AFF_COM_NM" />                  <!-- 제휴사명 -->
+	   <result property="comAffVrscComCnnc.affComId"                 column="AFF_COM_ID" />                  <!-- 제휴사ID -->
+	   <result property="comAffVrscComCnnc.affComGodDcRt"            column="AFF_COM_GOD_DC_RT" />           <!-- 제휴 업체 상품 할인 율 -->
+	   <result property="comAffVrscComCnnc.mcomRtrvlPsbYn"           column="MCOM_RTRVL_PSB_YN" />           <!-- 자사회수가능여부 -->
+	   <result property="comAffVrscComCnnc.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+	   <result property="comAffVrscComCnnc.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="comAffVrscComCnnc.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+	   <result property="comAffVrscComCnnc.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+	   <result property="regterNm"                                   column="REGTR_NM" />
+	   <result property="viewRegDt"                                  column="VIEW_REG_DT" />
+	   <result property="udterNm"                                    column="UDTER_NM" />
+	   <result property="viewUdtDt"                                  column="VIEW_UDT_DT" />
+	</resultMap>
+    <!-- 제휴사별 상품속성관리 조회 -->
+	<select id="selectComAffVrscComCnncList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comAffVrscComCnncResultMap">
+	 SELECT /* [biz.com.xml][selectComAffVrscComCnncList][ 제휴사별 상품속성관리 조회][Mark] */
+	          B.AFF_VRSC_COM_ID
+	          ,B.COM_NM AS AFF_COM_NM
+	          ,B.AFF_COM_ID
+	          ,B.AFF_COM_GOD_DC_RT
+	          ,B.MCOM_RTRVL_PSB_YN
+	          ,B.REGTR_ID
+	          ,B.REG_DT
+	          ,B.UDTER_ID
+	          ,B.UDT_DT
+	          ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.REGTR_ID) || CASE WHEN B.REGTR_ID IS NOT NULL THEN '(' || B.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		      ,TO_CHAR(B.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		      ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.UDTER_ID) || CASE WHEN B.UDTER_ID IS NOT NULL THEN '(' || B.UDTER_ID || ')' END AS UDTER_NM /*수정자명*/
+		      ,TO_CHAR(B.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+          FROM (
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+		            <![CDATA[
+						SELECT A.AFF_VRSC_COM_ID
+						       ,C.COM_NM
+						       ,A.AFF_COM_ID
+							   ,A.AFF_COM_GOD_DC_RT
+							   ,A.MCOM_RTRVL_PSB_YN
+						       ,A.REGTR_ID
+						       ,A.REG_DT
+						       ,A.UDTER_ID
+						       ,A.UDT_DT
+						FROM  COM_AFF_VRSC_COM_CNNC A, COM C
+					   WHERE A.AFF_VRSC_COM_ID=#{com.comId,jdbcType=VARCHAR}
+						 AND A.AFF_COM_ID = C.COM_ID
+		            ]]>
+		            <include refid="com.plgrim.ncp.biz.vendor.whereComAffVrscComCnnc"/>
+		               ORDER BY C.COM_NM
+		        <include refid="com.plgrim.ncp.base.endPage"/>
+		        ) B
+     </select>
+
+    <!-- 제휴사별 상품속성관리 조회 엑셀 -->
+	<select id="selectComAffVrscComCnncListExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="java.util.LinkedHashMap">
+	 SELECT /* [biz.com.xml][selectComAffVrscComCnncListExcel][제휴사별 상품속성관리 조회 엑셀][Mark] */
+              B.COM_NM AS AFF_COM_NM
+	          ,B.AFF_COM_ID
+	          ,B.AFF_COM_GOD_DC_RT
+	          ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.REGTR_ID) || CASE WHEN B.REGTR_ID IS NOT NULL THEN '(' || B.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		      ,TO_CHAR(B.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		      ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.UDTER_ID) || CASE WHEN B.UDTER_ID IS NOT NULL THEN '(' || B.UDTER_ID || ')' END AS UDTER_NM /*수정자명*/
+		      ,TO_CHAR(B.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+       FROM(
+	            <![CDATA[
+					SELECT A.AFF_VRSC_COM_ID
+					       ,C.COM_NM
+					       ,A.AFF_COM_ID
+						   ,A.AFF_COM_GOD_DC_RT
+					       ,A.REGTR_ID
+					       ,A.REG_DT
+					       ,A.UDTER_ID
+					       ,A.UDT_DT
+					  FROM  COM_AFF_VRSC_COM_CNNC A, COM C
+					 WHERE A.AFF_VRSC_COM_ID=#{com.comId,jdbcType=VARCHAR}
+					   AND A.AFF_COM_ID = C.COM_ID
+	            ]]>
+	            <include refid="com.plgrim.ncp.biz.vendor.whereComAffVrscComCnnc"/>
+	                 ORDER BY C.COM_NM
+		        ) B
+     </select>
+
+	<update id="mergeComAffVrscComCnnc">
+            MERGE /* [biz.com.xml][mergeComAffVrscComCnnc] */
+             INTO COM_AFF_VRSC_COM_CNNC CAVCC
+               USING (
+                    SELECT
+                        #{comAffVrscComCnnc.affVrscComId} as AFF_VRSC_COM_ID,
+                        #{comAffVrscComCnnc.affComId} as AFF_COM_ID
+                    FROM DUAL
+               ) TARGET ON (CAVCC.AFF_VRSC_COM_ID = TARGET.AFF_VRSC_COM_ID
+                     AND CAVCC.AFF_COM_ID = TARGET.AFF_COM_ID)
+               WHEN MATCHED THEN
+                   UPDATE SET
+                       AFF_COM_GOD_DC_RT = #{comAffVrscComCnnc.affComGodDcRt,jdbcType=NUMERIC}
+                       ,MCOM_RTRVL_PSB_YN = #{comAffVrscComCnnc.mcomRtrvlPsbYn,jdbcType=VARCHAR}
+                       ,UDTER_ID  = #{comAffVrscComCnnc.udterId,jdbcType=VARCHAR}
+                       ,UDT_DT    = SYSDATE
+               WHEN NOT MATCHED THEN
+                   INSERT
+					(
+				        AFF_VRSC_COM_ID
+				       ,AFF_COM_ID
+				       ,AFF_COM_GOD_DC_RT
+				       ,MCOM_RTRVL_PSB_YN
+				       ,REGTR_ID
+			           ,REG_DT
+					)
+                 VALUES
+                     (
+                        TARGET.AFF_VRSC_COM_ID
+                       ,TARGET.AFF_COM_ID
+                       ,#{comAffVrscComCnnc.affComGodDcRt,jdbcType=NUMERIC}
+                       ,#{comAffVrscComCnnc.mcomRtrvlPsbYn,jdbcType=VARCHAR}
+				       ,#{comAffVrscComCnnc.udterId,jdbcType=VARCHAR}
+				       ,SYSDATE
+				       )
+	</update>
+
+	<resultMap id="comDmstcDlvCstPlcComboResult" type="com.plgrim.ncp.biz.vendor.result.ComDmstcDlvCstPlcResult">
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCstPlcSn"         column="DMSTC_DLV_CST_PLC_SN" />        <!-- 국내 배송비 정책 일련번호 -->
+	   <result property="comDmstcDlvCstPlc.dlvPlcNm"                 column="DLV_PLC_NM" />                  <!-- 배송 정책 명 -->
+	   <result property="comDmstcDlvCstPlc.comId"                    column="COM_ID" />                      <!-- 업체 ID -->
+	   <result property="comDmstcDlvCstPlc.dlvMnCd"                  column="DLV_MN_CD" />                   <!-- 배송 수단 코드 -->
+	   <result property="comDmstcDlvCstPlc.dlvComCd"                 column="DLV_COM_CD" />                  <!-- 배송 업체 코드 -->
+	   <result property="comDmstcDlvCstPlc.dlvPsbDay"                column="DLV_PSB_DAY" />                 <!-- 배송 가능 일 -->
+	   <result property="comDmstcDlvCstPlc.dlvspPostNo"              column="DLVSP_POST_NO" />               <!-- 배송지 우편번호 -->
+	   <result property="comDmstcDlvCstPlc.dlvspBaseAddr"            column="DLVSP_BASE_ADDR" />             <!-- 배송지 기본주소 -->
+	   <result property="comDmstcDlvCstPlc.dlvspDetailAddr"          column="DLVSP_DETAIL_ADDR" />           <!-- 배송지 상세주소 -->
+	   <result property="comDmstcDlvCstPlc.retrnPostNo"              column="RETRN_POST_NO" />               <!-- 반송 우편번호 -->
+	   <result property="comDmstcDlvCstPlc.retrnBaseAddr"            column="RETRN_BASE_ADDR" />             <!-- 반송 기본주소 -->
+	   <result property="comDmstcDlvCstPlc.retrnDetailAddr"          column="RETRN_DETAIL_ADDR" />           <!-- 반송 상세주소 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvBoxPsbVol"        column="DMSTC_DLV_BOX_PSB_VOL" />       <!-- 국내 배송 박스 가능 부피 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvBoxPsbWt"         column="DMSTC_DLV_BOX_PSB_WT" />        <!-- 국내 배송 박스 가능 무게 -->
+	   <result property="comDmstcDlvCstPlc.dlvCstLevySectCd"         column="DLV_CST_LEVY_SECT_CD" />        <!-- 배송비 부과 구분 코드 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCstExmStdrAmt"    column="DMSTC_DLV_CST_EXM_STDR_AMT" />  <!-- 국내 배송비 면제 기준 금액 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCst"              column="DMSTC_DLV_CST" />               <!-- 국내 배송비 -->
+
+	   <result property="comDmstcDlvCstPlc.slrImptRtgodDlvCst"       column="SLR_IMPT_RTGOD_DLV_CST" />   	 <!-- 판매자 귀책 반품 배송비 -->
+	   <result property="comDmstcDlvCstPlc.slrImptExchgDlvCst"       column="SLR_IMPT_EXCHG_DLV_CST" />   	 <!-- 판매자 귀책 교환 배송비 -->
+	   <result property="comDmstcDlvCstPlc.buyerImptRtgodDlvCst"     column="BUYER_IMPT_RTGOD_DLV_CST" /> 	 <!-- 구매자 귀책 반품 배송비 -->
+	   <result property="comDmstcDlvCstPlc.buyerImptExchgDlvCst"     column="BUYER_IMPT_EXCHG_DLV_CST" /> 	 <!-- 구매자 귀책 교환 배송비 -->
+
+	   <result property="comDmstcDlvCstPlc.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+	   <result property="comDmstcDlvCstPlc.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="comDmstcDlvCstPlc.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+	   <result property="comDmstcDlvCstPlc.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+	   <result property="comDmstcDlvCstPlc.rtrvlDrctPsbYn"           column="RTRVL_DRCT_PSB_YN" />           <!-- 회수 지시 가능 여부 -->
+	   <result property="comDmstcDlvCstPlc.dlvMthdDscr"              column="DLV_MTHD_DSCR" />               <!-- 배송 방법 설명 -->
+	   <result property="comDmstcDlvCstPlc.gfctDscr"                 column="GFCT_DSCR" />                   <!-- 상품권 설명 -->
+	</resultMap>
+
+	<!-- 배송비정책 조회(콤보) -->
+    <select id="selectComDmstcDlvCstPlcCombo" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comDmstcDlvCstPlcComboResult">
+        SELECT /* [biz.com.xml][selectComDmstcDlvCstPlcCombo][Mark] */
+		       T.DMSTC_DLV_CST_PLC_SN,
+		       T.DLV_PLC_NM,
+		       T.COM_ID,
+		       T.DLV_MN_CD,
+		       T.DLV_COM_CD,
+		       T.DLV_PSB_DAY,
+		       REPLACE(T.DLVSP_POST_NO,'-','') AS DLVSP_POST_NO,
+		       T.DLVSP_BASE_ADDR,
+		       T.DLVSP_DETAIL_ADDR,
+		       REPLACE(T.RETRN_POST_NO,'-','') AS RETRN_POST_NO,
+		       T.RETRN_BASE_ADDR,
+		       T.RETRN_DETAIL_ADDR,
+		       T.DMSTC_DLV_BOX_PSB_VOL,
+		       T.DMSTC_DLV_BOX_PSB_WT,
+		       T.DLV_CST_LEVY_SECT_CD,
+		       T.DMSTC_DLV_CST_EXM_STDR_AMT,
+		       T.DMSTC_DLV_CST,
+
+		       T.SLR_IMPT_RTGOD_DLV_CST,
+               T.SLR_IMPT_EXCHG_DLV_CST,
+               T.BUYER_IMPT_RTGOD_DLV_CST,
+               T.BUYER_IMPT_EXCHG_DLV_CST,
+
+		       T.REGTR_ID,
+		       T.REG_DT,
+		       T.UDTER_ID,
+		       T.UDT_DT,
+		       T.RTRVL_DRCT_PSB_YN,
+		       T.DLV_MTHD_DSCR,
+		       T.GFCT_DSCR
+        FROM   COM_DMSTC_DLV_CST_PLC T
+        WHERE  T.COM_ID = #{com.comId,jdbcType=VARCHAR}
+        AND    T.USE_YN = 'Y'
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ovseaDlvdmstcDlvCstPlcYn)">
+        AND    T.OVSEA_DLV_DMSTC_DLV_CST_PLC_YN = #{ovseaDlvdmstcDlvCstPlcYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+        AND    T.MALL_ID = #{mallId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <resultMap id="comDmstcDlvCstPlcListResult" type="com.plgrim.ncp.biz.vendor.result.ComDmstcDlvCstPlcResult">
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCstPlcSn"         column="DMSTC_DLV_CST_PLC_SN" />        <!-- 국내 배송비 정책 일련번호 -->
+	   <result property="comDmstcDlvCstPlc.dlvPlcNm"                 column="DLV_PLC_NM" />                  <!-- 배송 정책 명 -->
+	   <result property="comDmstcDlvCstPlc.comId"                    column="COM_ID" />                      <!-- 업체 ID -->
+	   <result property="comDmstcDlvCstPlc.dlvMnCd"                  column="DLV_MN_CD" />                   <!-- 배송 수단 코드 -->
+	   <result property="dlvMnNm"                                    column="DLV_MN_NM" />                   <!-- 배송 수단 명 -->
+	   <result property="comDmstcDlvCstPlc.dlvComCd"                 column="DLV_COM_CD" />                  <!-- 배송 업체 코드 -->
+	   <result property="dlvComNm"                                   column="DLV_COM_NM" />                  <!-- 배송 업체 명 -->
+	   <result property="comDmstcDlvCstPlc.dlvPsbDay"                column="DLV_PSB_DAY" />                 <!-- 배송 가능 일 -->
+	   <result property="comDmstcDlvCstPlc.dlvspPostNo"              column="DLVSP_POST_NO" />               <!-- 배송지 우편번호 -->
+	   <result property="comDmstcDlvCstPlc.dlvspBaseAddr"            column="DLVSP_BASE_ADDR" />             <!-- 배송지 기본주소 -->
+	   <result property="comDmstcDlvCstPlc.dlvspDetailAddr"          column="DLVSP_DETAIL_ADDR" />           <!-- 배송지 상세주소 -->
+	   <result property="comDmstcDlvCstPlc.retrnPostNo"              column="RETRN_POST_NO" />               <!-- 반송 우편번호 -->
+	   <result property="comDmstcDlvCstPlc.retrnBaseAddr"            column="RETRN_BASE_ADDR" />             <!-- 반송 기본주소 -->
+	   <result property="comDmstcDlvCstPlc.retrnDetailAddr"          column="RETRN_DETAIL_ADDR" />           <!-- 반송 상세주소 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvBoxPsbVol"        column="DMSTC_DLV_BOX_PSB_VOL" />       <!-- 국내 배송 박스 가능 부피 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvBoxPsbWt"         column="DMSTC_DLV_BOX_PSB_WT" />        <!-- 국내 배송 박스 가능 무게 -->
+	   <result property="comDmstcDlvCstPlc.dlvCstLevySectCd"         column="DLV_CST_LEVY_SECT_CD" />        <!-- 배송비 부과 구분 코드 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCstExmStdrAmt"    column="DMSTC_DLV_CST_EXM_STDR_AMT" />  <!-- 국내 배송비 면제 기준 금액 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCst"              column="DMSTC_DLV_CST" />               <!-- 국내 배송비 -->
+	   <result property="dmstcDlvCstList"                            column="DMSTC_DLV_CST_LIST" />          <!-- 국내 배송비 LIST노출-->
+
+	   <result property="comDmstcDlvCstPlc.slrImptRtgodDlvCst"       column="SLR_IMPT_RTGOD_DLV_CST" />   	 <!-- 판매자 귀책 반품 배송비 -->
+	   <result property="comDmstcDlvCstPlc.slrImptExchgDlvCst"       column="SLR_IMPT_EXCHG_DLV_CST" />   	 <!-- 판매자 귀책 교환 배송비 -->
+	   <result property="comDmstcDlvCstPlc.buyerImptRtgodDlvCst"     column="BUYER_IMPT_RTGOD_DLV_CST" /> 	 <!-- 구매자 귀책 반품 배송비 -->
+	   <result property="comDmstcDlvCstPlc.buyerImptExchgDlvCst"     column="BUYER_IMPT_EXCHG_DLV_CST" /> 	 <!-- 구매자 귀책 교환 배송비 -->
+
+	   <result property="comDmstcDlvCstPlc.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+	   <result property="comDmstcDlvCstPlc.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="comDmstcDlvCstPlc.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+	   <result property="comDmstcDlvCstPlc.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+	   <result property="comDmstcDlvCstPlc.rtrvlDrctPsbYn"           column="RTRVL_DRCT_PSB_YN" />           <!-- 회수 지시 가능 여부 -->
+	   <result property="comDmstcDlvCstPlc.dlvMthdDscr"              column="DLV_MTHD_DSCR" />               <!-- 배송 방법 설명 -->
+	   <result property="comDmstcDlvCstPlc.mobileDlvMthdDscr"              column="MOBILE_DLV_MTHD_DSCR" />               <!-- 모바일 배송 방법 설명 -->               
+	   <result property="dlvMthdDscrEng"              column="DLV_MTHD_DSCR_ENG" />               <!-- 영어 배송 방법 설명 -->
+	   <result property="mobileDlvMthdDscrEng"              column="MOBILE_DLV_MTHD_DSCR_ENG" />               <!-- 모바일 영어 배송 방법 설명 -->               
+	   
+	   <result property="comDmstcDlvCstPlc.gfctDscr"                 column="GFCT_DSCR" />                   <!-- 상품권 설명 -->
+	   <result property="comDmstcDlvCstPlc.useYn"                    column="USE_YN" />                      <!-- 사용여부 -->
+	   <result property="comDmstcDlvCstPlc.baseDlvCstPlcYn"          column="BASE_DLV_CST_PLC_YN" />         <!-- 기본 배송비 정책 여부 -->
+	   <result property="regterNm"                                   column="REGTR_NM" />
+	   <result property="viewRegDt"                                  column="VIEW_REG_DT" />
+	   <result property="udterNm"                                    column="UDTER_NM" />
+	   <result property="viewUdtDt"                                  column="VIEW_UDT_DT" />
+	   <result property="ovseaDlvdmstcDlvCstPlcYn"                   column="OVSEA_DLV_DMSTC_DLV_CST_PLC_YN" />
+	   
+	   <result property="comDmstcDlvCstPlc.qdlvCstLevySectCd"        column="QDLV_CST_LEVY_SECT_CD"         />		<!-- 퀵배송비 부과 구분 코드 -->
+	   <result property="comDmstcDlvCstPlc.qdlvCstExmStdrAmt"        column="QDLV_CST_EXM_STDR_AMT"         />		<!-- 퀵배송비 면제 기준 금액 -->
+	   <result property="comDmstcDlvCstPlc.qdlvCst"                  column="QDLV_CST"                      />		<!-- 퀵배송비  -->
+
+	</resultMap>
+    <!-- 배송비정책 리스트 조회 -->
+    <select id="selectComDmstcDlvCstPlcList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comDmstcDlvCstPlcListResult">
+		SELECT /* [biz.com.xml][selectComDmstcDlvCstPlcList][Mark] */
+		       B.DMSTC_DLV_CST_PLC_SN,
+		       B.DLV_PLC_NM,
+		       B.COM_ID,
+		       B.DLV_MN_CD,
+		       (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'DLV_MN' AND CD = B.DLV_MN_CD) AS DLV_MN_NM,
+		       B.DLV_COM_CD,
+		       (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'DLV_COM' AND CD = B.DLV_COM_CD) AS DLV_COM_NM,
+		       B.DLV_PSB_DAY,
+		       REPLACE(B.DLVSP_POST_NO,'-','') AS DLVSP_POST_NO,
+		       B.DLVSP_BASE_ADDR,
+		       B.DLVSP_DETAIL_ADDR,
+		       REPLACE(B.RETRN_POST_NO,'-','') AS RETRN_POST_NO,
+		       B.RETRN_BASE_ADDR,
+		       B.RETRN_DETAIL_ADDR,
+		       B.DMSTC_DLV_BOX_PSB_VOL,
+		       B.DMSTC_DLV_BOX_PSB_WT,
+		       B.DLV_CST_LEVY_SECT_CD,
+		       B.DMSTC_DLV_CST_EXM_STDR_AMT,
+		       B.DMSTC_DLV_CST,
+		       DECODE(B.DLV_CST_LEVY_SECT_CD,'FREE','무료배송',B.DMSTC_DLV_CST) AS DMSTC_DLV_CST_LIST,
+
+		       B.SLR_IMPT_RTGOD_DLV_CST,
+               B.SLR_IMPT_EXCHG_DLV_CST,
+               B.BUYER_IMPT_RTGOD_DLV_CST,
+               B.BUYER_IMPT_EXCHG_DLV_CST,
+
+		       B.REGTR_ID,
+		       B.REG_DT,
+		       B.UDTER_ID,
+		       B.UDT_DT,
+		       B.RTRVL_DRCT_PSB_YN,
+               B.DLV_MTHD_DSCR,
+               B.MOBILE_DLV_MTHD_DSCR,
+               B.DLV_MTHD_DSCR_ENG,
+               B.MOBILE_DLV_MTHD_DSCR_ENG,
+		       B.GFCT_DSCR,
+		       B.USE_YN,
+		       DECODE(B.BASE_DLV_CST_PLC_YN,'Y','1','0') AS BASE_DLV_CST_PLC_YN,
+		       (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.REGTR_ID) || CASE WHEN B.REGTR_ID IS NOT NULL THEN '(' || B.REGTR_ID || ')' END AS REGTR_NM, /*등록자명*/
+		       TO_CHAR(B.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT,                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		       (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.UDTER_ID) || CASE WHEN B.UDTER_ID IS NOT NULL THEN '(' || B.UDTER_ID || ')' END AS UDTER_NM, /*수정자명*/
+		       TO_CHAR(B.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT,                    /*수정일(YYYY-MM-DD HH24:MI)*/
+		       B.QDLV_CST_LEVY_SECT_CD,
+			   B.QDLV_CST_EXM_STDR_AMT,
+			   B.QDLV_CST
+		FROM(
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+		        SELECT T.DMSTC_DLV_CST_PLC_SN,
+				       T.DLV_PLC_NM,
+				       T.COM_ID,
+				       T.DLV_MN_CD,
+				       T.DLV_COM_CD,
+				       T.DLV_PSB_DAY,
+				       T.DLVSP_POST_NO,
+				       T.DLVSP_BASE_ADDR,
+				       T.DLVSP_DETAIL_ADDR,
+				       T.RETRN_POST_NO,
+				       T.RETRN_BASE_ADDR,
+				       T.RETRN_DETAIL_ADDR,
+				       T.DMSTC_DLV_BOX_PSB_VOL,
+				       T.DMSTC_DLV_BOX_PSB_WT,
+				       T.DLV_CST_LEVY_SECT_CD,
+				       T.DMSTC_DLV_CST_EXM_STDR_AMT,
+				       T.DMSTC_DLV_CST,
+
+				       T.SLR_IMPT_RTGOD_DLV_CST,
+               		   T.SLR_IMPT_EXCHG_DLV_CST,
+               		   T.BUYER_IMPT_RTGOD_DLV_CST,
+               		   T.BUYER_IMPT_EXCHG_DLV_CST,
+
+				       T.REGTR_ID,
+				       T.REG_DT,
+				       T.UDTER_ID,
+				       T.UDT_DT,
+				       T.RTRVL_DRCT_PSB_YN,
+                       T.DLV_MTHD_DSCR,
+                       T.MOBILE_DLV_MTHD_DSCR,
+                       TEN.DLV_MTHD_DSCR AS DLV_MTHD_DSCR_ENG,
+                       TEN.MOBILE_DLV_MTHD_DSCR AS MOBILE_DLV_MTHD_DSCR_ENG, 
+				       T.GFCT_DSCR,
+				       T.USE_YN,
+				       T.BASE_DLV_CST_PLC_YN,
+				       T.QDLV_CST_LEVY_SECT_CD,
+					   T.QDLV_CST_EXM_STDR_AMT,
+					   T.QDLV_CST
+		        FROM   COM_DMSTC_DLV_CST_PLC T 
+                     , (SELECT * FROM COM_DMSTC_DLV_CST_PLC_LANG WHERE LANG_CD='ENG') TEN		        
+		        WHERE  T.COM_ID = #{com.comId,jdbcType=VARCHAR}
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ovseaDlvdmstcDlvCstPlcYn)">
+                AND    T.OVSEA_DLV_DMSTC_DLV_CST_PLC_YN = #{ovseaDlvdmstcDlvCstPlcYn,jdbcType=VARCHAR}
+                </if>
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+                AND    T.MALL_ID = #{mallId,jdbcType=VARCHAR}
+                </if>
+                AND T.DMSTC_DLV_CST_PLC_SN = TEN.DMSTC_DLV_CST_PLC_SN(+)
+		       	ORDER BY T.DMSTC_DLV_CST_PLC_SN DESC
+		       	<include refid="com.plgrim.ncp.base.endPage"/>
+		     ) B
+    </select>
+
+     <!-- 배송비정책 리스트 조회 건수-->
+    <select id="selectComDmstcDlvCstPlcListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+		SELECT /* [biz.com.xml][selectComDmstcDlvCstPlcListCount][Mark] */
+		       COUNT(*)
+        FROM   COM_DMSTC_DLV_CST_PLC T
+             , (SELECT * FROM COM_DMSTC_DLV_CST_PLC_LANG WHERE LANG_CD='ENG') TEN        
+        WHERE  T.COM_ID = #{com.comId,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ovseaDlvdmstcDlvCstPlcYn)">
+        AND    T.OVSEA_DLV_DMSTC_DLV_CST_PLC_YN = #{ovseaDlvdmstcDlvCstPlcYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+        AND    T.MALL_ID = #{mallId,jdbcType=VARCHAR}
+        </if>
+        AND    T.DMSTC_DLV_CST_PLC_SN = TEN.DMSTC_DLV_CST_PLC_SN(+)        
+    </select>
+
+	<!-- 배송비정책 조회갯수 -->
+<!-- 	 <select id="selectComDmstcDlvCstPlcCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long"> -->
+<!--         SELECT /* com.plgrim.ncp.base.repository.com.selectComDmstcDlvCstPlc jackie 20150425 */ -->
+<!--                 COUNT(*) -->
+<!--         FROM    COM_DMSTC_DLV_CST_PLC t -->
+<!--         WHERE   1 = 1 -->
+<!--         AND     COM_ID = #{comId,jdbcType=NUMERIC} -->
+<!--     </select> -->
+
+	<resultMap id="comDmstcDlvCstPlcResult" type="com.plgrim.ncp.biz.vendor.result.ComDmstcDlvCstPlcResult">
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCstPlcSn"         column="DMSTC_DLV_CST_PLC_SN" />        <!-- 국내 배송비 정책 일련번호 -->
+	   <result property="comDmstcDlvCstPlc.dlvPlcNm"                 column="DLV_PLC_NM" />                  <!-- 배송 정책 명 -->
+	   <result property="comDmstcDlvCstPlc.comId"                    column="COM_ID" />                      <!-- 업체 ID -->
+	   <result property="comDmstcDlvCstPlc.dlvMnCd"                  column="DLV_MN_CD" />                   <!-- 배송 수단 코드 -->
+	   <result property="comDmstcDlvCstPlc.dlvComCd"                 column="DLV_COM_CD" />                  <!-- 배송 업체 코드 -->
+	   <result property="dlvComUrl"                                  column="DLV_COM_URL" />                 <!-- 배송 업체 url -->
+	   <result property="comDmstcDlvCstPlc.dlvPsbDay"                column="DLV_PSB_DAY" />                 <!-- 배송 가능 일 -->
+	   <result property="comDmstcDlvCstPlc.dlvspPostNo"              column="DLVSP_POST_NO" />               <!-- 배송지 우편번호 -->
+	   <result property="comDmstcDlvCstPlc.dlvspBaseAddr"            column="DLVSP_BASE_ADDR" />             <!-- 배송지 기본주소 -->
+	   <result property="comDmstcDlvCstPlc.dlvspDetailAddr"          column="DLVSP_DETAIL_ADDR" />           <!-- 배송지 상세주소 -->
+	   <result property="comDmstcDlvCstPlc.retrnPostNo"              column="RETRN_POST_NO" />               <!-- 반송 우편번호 -->
+	   <result property="comDmstcDlvCstPlc.retrnBaseAddr"            column="RETRN_BASE_ADDR" />             <!-- 반송 기본주소 -->
+	   <result property="comDmstcDlvCstPlc.retrnDetailAddr"          column="RETRN_DETAIL_ADDR" />           <!-- 반송 상세주소 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvBoxPsbVol"        column="DMSTC_DLV_BOX_PSB_VOL" />       <!-- 국내 배송 박스 가능 부피 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvBoxPsbWt"         column="DMSTC_DLV_BOX_PSB_WT" />        <!-- 국내 배송 박스 가능 무게 -->
+	   <result property="comDmstcDlvCstPlc.dlvCstLevySectCd"         column="DLV_CST_LEVY_SECT_CD" />        <!-- 배송비 부과 구분 코드 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCstExmStdrAmt"    column="DMSTC_DLV_CST_EXM_STDR_AMT" />  <!-- 국내 배송비 면제 기준 금액 -->
+	   <result property="comDmstcDlvCstPlc.dmstcDlvCst"              column="DMSTC_DLV_CST" />               <!-- 국내 배송비 -->
+
+	   <result property="comDmstcDlvCstPlc.slrImptRtgodDlvCst"       column="SLR_IMPT_RTGOD_DLV_CST" />   	 <!-- 판매자 귀책 반품 배송비 -->
+	   <result property="comDmstcDlvCstPlc.slrImptExchgDlvCst"       column="SLR_IMPT_EXCHG_DLV_CST" />   	 <!-- 판매자 귀책 교환 배송비 -->
+	   <result property="comDmstcDlvCstPlc.buyerImptRtgodDlvCst"     column="BUYER_IMPT_RTGOD_DLV_CST" /> 	 <!-- 구매자 귀책 반품 배송비 -->
+	   <result property="comDmstcDlvCstPlc.buyerImptExchgDlvCst"     column="BUYER_IMPT_EXCHG_DLV_CST" /> 	 <!-- 구매자 귀책 교환 배송비 -->
+
+	   <result property="comDmstcDlvCstPlc.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+	   <result property="comDmstcDlvCstPlc.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="comDmstcDlvCstPlc.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+	   <result property="comDmstcDlvCstPlc.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+	   <result property="comDmstcDlvCstPlc.rtrvlDrctPsbYn"           column="RTRVL_DRCT_PSB_YN" />           <!-- 회수 지시 가능 여부 -->
+	   <result property="comDmstcDlvCstPlc.dlvMthdDscr"              column="DLV_MTHD_DSCR" />               <!-- 배송 방법 설명 -->
+<!-- 	   <result property="dlvMthdDscrEng"           column="DLV_MTHD_DSCR_ENG" />           글로벌 배송 방법 설명 -->
+<!-- 	   <result property="dlvMthdDscrChi"           column="DLV_MTHD_DSCR_CHI" />           중국 배송 방법 설명 -->
+	   <result property="comDmstcDlvCstPlc.mobileDlvMthdDscr"              column="MOBILE_DLV_MTHD_DSCR" />               <!-- 모바일 배송 방법 설명 -->               
+	   <result property="dlvMthdDscrEng"              column="DLV_MTHD_DSCR_ENG" />               <!-- 영어 배송 방법 설명 -->
+	   <result property="mobileDlvMthdDscrEng"              column="MOBILE_DLV_MTHD_DSCR_ENG" />               <!-- 모바일 영어 배송 방법 설명 -->               
+	   
+	   <result property="comDmstcDlvCstPlc.gfctDscr"                 column="GFCT_DSCR" />                   <!-- 상품권 설명 -->
+	   <result property="comDmstcDlvCstPlc.useYn"                    column="USE_YN" />                      <!-- 사용여부 -->
+	   <result property="comDmstcDlvCstPlc.baseDlvCstPlcYn"          column="BASE_DLV_CST_PLC_YN" />         <!-- 기본 배송비 정책 여부 -->
+	   <result property="comDmstcDlvCstPlc.ovseaDlvDmstcDlvCstPlcYn" column="OVSEA_DLV_DMSTC_DLV_CST_PLC_YN" />         <!-- 해외배송정책여부 -->
+	   <result property="comDmstcDlvCstPlc.repairDlvCstLevySectCd"          column="REPAIR_DLV_CST_LEVY_SECT_CD" />         <!-- 수선 배송비 부과 구분 -->
+	   <result property="comDmstcDlvCstPlc.repairDlvCst" column="REPAIR_DLV_CST" />         <!-- 수선 배송비 -->
+	   <result property="regterNm"                                   column="REGTR_NM" />
+	   <result property="viewRegDt"                                  column="VIEW_REG_DT" />
+	   <result property="udterNm"                                    column="UDTER_NM" />
+	   <result property="viewUdtDt"                                  column="VIEW_UDT_DT" />
+	   <result property="chrgerTurn"               column="CHRGER_TURN"                    />
+	   <result property="chrgerNm"                 column="CHRGER_NM"                    />
+	   <result property="chrgerEmail"              column="CHRGER_EMAIL"                 />
+	   <result property="chrgerTelNationNo"        column="CHRGER_TEL_NATION_NO"         />
+	   <result property="chrgerTelAreaNo"          column="CHRGER_TEL_AREA_NO"           />
+	   <result property="chrgerTelTlofNo"          column="CHRGER_TEL_TLOF_NO"           />
+	   <result property="chrgerTelTlofWthnNo"      column="CHRGER_TEL_TLOF_WTHN_NO"      />
+	   <result property="chrgerMobilNationNo"      column="CHRGER_MOBIL_NATION_NO"        />
+	   <result property="chrgerMobilAreaNo"        column="CHRGER_MOBIL_AREA_NO"          />
+	   <result property="chrgerMobilTlofNo"        column="CHRGER_MOBIL_TLOF_NO"          />
+	   <result property="chrgerMobilTlofWthnNo"    column="CHRGER_MOBIL_TLOF_WTHN_NO"     />
+	   <result property="retChrgerTurn"            column="RET_CHRGER_TURN"                    />
+	   <result property="retChrgerNm"              column="RET_CHRGER_NM"                 />
+	   <result property="retChrgerEmail"           column="RET_CHRGER_EMAIL"              />
+	   <result property="retChrgerTelNationNo"     column="RET_CHRGER_TEL_NATION_NO"      />
+	   <result property="retChrgerTelAreaNo"       column="RET_CHRGER_TEL_AREA_NO"        />
+	   <result property="retChrgerTelTlofNo"       column="RET_CHRGER_TEL_TLOF_NO"        />
+	   <result property="retChrgerTelTlofWthnNo"   column="RET_CHRGER_TEL_TLOF_WTHN_NO"   />
+	   <result property="retChrgerMobilNationNo"   column="RET_CHRGER_MOBIL_NATION_NO"    />
+	   <result property="retChrgerMobilAreaNo"     column="RET_CHRGER_MOBIL_AREA_NO"      />
+	   <result property="retChrgerMobilTlofNo"     column="RET_CHRGER_MOBIL_TLOF_NO"      />
+	   <result property="retChrgerMobilTlofWthnNo" column="RET_CHRGER_MOBIL_TLOF_WTHN_NO" />
+	   <result property="dlvComNm"                 column="DLV_COM_NM" />
+
+	   <result property="comDmstcDlvCstPlc.qdlvCstLevySectCd"        column="QDLV_CST_LEVY_SECT_CD"         />		<!-- 퀵배송비 부과 구분 코드 -->
+	   <result property="comDmstcDlvCstPlc.qdlvCstExmStdrAmt"        column="QDLV_CST_EXM_STDR_AMT"         />		<!-- 퀵배송비 면제 기준 금액 -->
+	   <result property="comDmstcDlvCstPlc.qdlvCst"                  column="QDLV_CST"                      />		<!-- 퀵배송비 -->
+	</resultMap>
+
+	<!-- 배송비정책 상세 조회 -->
+    <select id="selectComDmstcDlvCstPlc" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comDmstcDlvCstPlcResult">
+        SELECT /* [biz.com.xml][selectComDmstcDlvCstPlc]Map */
+			t.dmstc_dlv_cst_plc_sn,
+			t.dlv_plc_nm,
+			t.com_id,
+			t.dlv_mn_cd,
+			t.dlv_com_cd,
+			CASE
+				WHEN t.dlv_mn_cd = 'DHL' THEN 'http://www.dhl.co.kr/ko.html'
+				WHEN t.dlv_mn_cd = 'HDRY' OR t.dlv_mn_cd = 'APPN_HDRY' OR t.dlv_mn_cd = 'GNRL_POST' OR t.dlv_mn_cd = 'RGIST_POST' OR t.dlv_mn_cd = 'CVNSTOR_HDRY' THEN
+	                (SELECT cd_dscr FROM mv_sys_cd WHERE use_yn = 'Y'
+	                 AND lang_cd = 'KOR'
+	                 AND upper_cd = 'DLV_COM'
+	                 AND cd = t.dlv_com_cd)
+				ELSE 'X'
+			END AS dlv_com_url,
+			t.dlv_psb_day,
+			REPLACE(t.dlvsp_post_no,'-','') AS dlvsp_post_no,
+			t.dlvsp_base_addr,
+			t.dlvsp_detail_addr,
+			REPLACE(t.retrn_post_no,'-','') AS retrn_post_no,
+			t.retrn_base_addr,
+			t.retrn_detail_addr,
+			t.dmstc_dlv_box_psb_vol,
+			t.dmstc_dlv_box_psb_wt,
+			t.dlv_cst_levy_sect_cd,
+			t.dmstc_dlv_cst_exm_stdr_amt,
+			t.dmstc_dlv_cst,
+			t.slr_impt_rtgod_dlv_cst,
+			t.slr_impt_exchg_dlv_cst,
+			t.buyer_impt_rtgod_dlv_cst,
+			t.buyer_impt_exchg_dlv_cst,
+			t.regtr_id,
+			t.reg_dt,
+			t.udter_id,
+			t.udt_dt,
+			t.rtrvl_drct_psb_yn,
+            T.DLV_MTHD_DSCR,
+            T.MOBILE_DLV_MTHD_DSCR,
+            TEN.DLV_MTHD_DSCR AS DLV_MTHD_DSCR_ENG,
+            TEN.MOBILE_DLV_MTHD_DSCR AS MOBILE_DLV_MTHD_DSCR_ENG, 
+			
+<!-- 		    (SELECT dlv_mthd_dscr FROM com_ovsea_dlv_cst_plc_lang WHERE ovsea_dlv_cst_plc_sn = t1.ovsea_dlv_cst_plc_sn AND lang_cd = 'ENG') AS dlv_mthd_dscr_eng, -->
+<!-- 		    (SELECT dlv_mthd_dscr FROM com_ovsea_dlv_cst_plc_lang WHERE ovsea_dlv_cst_plc_sn = t1.ovsea_dlv_cst_plc_sn AND lang_cd = 'CHI') AS dlv_mthd_dscr_chi, -->
+			t.gfct_dscr,
+			t.use_yn,
+			t.base_dlv_cst_plc_yn,
+			t.repair_dlv_cst_levy_sect_cd,
+			t.repair_dlv_cst,
+			(SELECT admin_nm FROM sys_admin WHERE admin_id = t.regtr_id) || CASE WHEN t.regtr_id IS NOT NULL THEN '(' || t.regtr_id || ')' END AS regtr_nm, /*등록자명*/
+			TO_CHAR(t.reg_dt, 'YYYY-MM-DD HH24:MI') AS view_reg_dt,                   /*등록일(YYYY-MM-DD HH24:MI)*/
+			(SELECT admin_nm FROM sys_admin WHERE admin_id = t.udter_id) || CASE WHEN t.udter_id IS NOT NULL THEN '(' || t.udter_id || ')' END AS udter_nm, /*수정자명*/
+			TO_CHAR(t.udt_dt,'YYYY-MM-DD HH24:MI') AS view_udt_dt,                    /*수정일(YYYY-MM-DD HH24:MI)*/
+			t.ovsea_dlv_dmstc_dlv_cst_plc_yn,
+			a.chrger_turn,
+			a.chrger_nm,
+			a.chrger_email,
+			a.chrger_tel_nation_no,
+			a.chrger_tel_area_no,
+			a.chrger_tel_tlof_no,
+			a.chrger_tel_tlof_wthn_no,
+			a.chrger_mobil_nation_no,
+			a.chrger_mobil_area_no,
+			a.chrger_mobil_tlof_no,
+			a.chrger_mobil_tlof_wthn_no,
+			b.chrger_turn AS ret_chrger_turn,
+			b.chrger_nm AS ret_chrger_nm,
+			b.chrger_email AS ret_chrger_email,
+			b.chrger_tel_nation_no       AS ret_chrger_tel_nation_no,
+			b.chrger_tel_area_no         AS ret_chrger_tel_area_no,
+			b.chrger_tel_tlof_no         AS ret_chrger_tel_tlof_no,
+			b.chrger_tel_tlof_wthn_no    AS ret_chrger_tel_tlof_wthn_no,
+			b.chrger_mobil_nation_no     AS ret_chrger_mobil_nation_no,
+			b.chrger_mobil_area_no       AS ret_chrger_mobil_area_no,
+			b.chrger_mobil_tlof_no       AS ret_chrger_mobil_tlof_no,
+			b.chrger_mobil_tlof_wthn_no  AS ret_chrger_mobil_tlof_wthn_no,
+			t.qdlv_cst_levy_sect_cd,
+			t.qdlv_cst_exm_stdr_amt,
+			t.qdlv_cst
+        FROM com_dmstc_dlv_cst_plc t,
+        	 com_ovsea_dlv_cst_plc_cnnc t1,
+			(SELECT *
+			   FROM (
+					SELECT *
+					  FROM com_chrger
+					 WHERE com_id = #{com.comId,jdbcType=VARCHAR}
+					   AND chrger_job_cd = 'RTGOD'
+					 ORDER BY chrger_turn
+					)
+			  WHERE ROWNUM = 1
+			) b,
+			(SELECT *
+			   FROM (
+					SELECT *
+					  FROM com_chrger
+					 WHERE com_id = #{com.comId,jdbcType=VARCHAR}
+					   AND chrger_job_cd = 'MD'
+					 ORDER BY chrger_turn
+					)
+			  WHERE ROWNUM = 1
+			) a
+            , (SELECT * FROM COM_DMSTC_DLV_CST_PLC_LANG WHERE LANG_CD='ENG') TEN		        			
+        WHERE   1 = 1
+        AND T.DMSTC_DLV_CST_PLC_SN = TEN.DMSTC_DLV_CST_PLC_SN(+)
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+        AND T.MALL_ID = #{mallId,jdbcType=VARCHAR}
+        </if>
+        AND     t.com_id = #{com.comId,jdbcType=VARCHAR}
+        AND     t.com_id = t1.com_id(+)
+<!--         AND     t1.ovsea_dlv_cst_plc_sn = 1 -->
+        AND     t.com_id = b.com_id(+)
+        AND     t.com_id = a.com_id(+)
+        <if test='comDmstcDlvCstPlc == null or comDmstcDlvCstPlc.dmstcDlvCstPlcSn == null or comDmstcDlvCstPlc.dmstcDlvCstPlcSn == ""'>
+        AND     t.dmstc_dlv_cst_plc_sn = (SELECT MIN(dmstc_dlv_cst_plc_sn)
+										  FROM   com_dmstc_dlv_cst_plc
+										  WHERE  com_id = #{com.comId,jdbcType=VARCHAR}
+										  AND    BASE_DLV_CST_PLC_YN = 'Y'
+										  <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+										  AND    MALL_ID = #{mallId,jdbcType=VARCHAR}
+										  </if>
+										 )
+		</if>
+		<if test='comDmstcDlvCstPlc != null and comDmstcDlvCstPlc.dmstcDlvCstPlcSn != null and comDmstcDlvCstPlc.dmstcDlvCstPlcSn != ""'>
+		AND     t.dmstc_dlv_cst_plc_sn = #{comDmstcDlvCstPlc.dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		</if>
+    </select>
+
+    <!-- 배송비정책 상세 조회 (CS 간략 조회용) -->
+    <select id="selectComDmstcDlvCstPlcFromCs" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comDmstcDlvCstPlcResult">
+        SELECT /* [biz.com.xml][selectComDmstcDlvCstPlcFromCs]Map */
+		       t.DMSTC_DLV_CST_PLC_SN,
+		       t.DLV_PLC_NM,
+		       t.COM_ID,
+		       t.DLV_MN_CD,
+		       t.DLV_COM_CD,
+		       (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'DLV_COM' AND CD = t.DLV_COM_CD) AS DLV_COM_NM,
+		       CASE WHEN t.DLV_MN_CD = 'DHL' THEN
+               			  'http://www.dhl.co.kr/ko.html'
+                    WHEN t.DLV_MN_CD = 'HDRY' OR
+                         t.DLV_MN_CD = 'APPN_HDRY' OR
+                         t.DLV_MN_CD = 'GNRL_POST' OR
+                         t.DLV_MN_CD = 'RGIST_POST' OR
+                         t.DLV_MN_CD = 'CVNSTOR_HDRY' THEN
+                         (SELECT CD_DSCR
+                          FROM MV_SYS_CD
+                          WHERE USE_YN = 'Y'
+                          AND LANG_CD = 'KOR'
+                          AND UPPER_CD = 'DLV_COM'
+                          AND CD = t.DLV_COM_CD)
+                    ELSE 'X'
+               END AS DLV_COM_URL,
+		       t.DLV_PSB_DAY,
+		       REPLACE(t.DLVSP_POST_NO,'-','') AS DLVSP_POST_NO,
+		       t.DLVSP_BASE_ADDR,
+		       t.DLVSP_DETAIL_ADDR,
+		       REPLACE(t.RETRN_POST_NO,'-','') AS RETRN_POST_NO,
+		       t.RETRN_BASE_ADDR,
+		       t.RETRN_DETAIL_ADDR,
+		       t.DMSTC_DLV_BOX_PSB_VOL,
+		       t.DMSTC_DLV_BOX_PSB_WT,
+		       t.DLV_CST_LEVY_SECT_CD,
+		       t.DMSTC_DLV_CST_EXM_STDR_AMT,
+		       t.DMSTC_DLV_CST,
+
+		       t.SLR_IMPT_RTGOD_DLV_CST,
+               t.SLR_IMPT_EXCHG_DLV_CST,
+               t.BUYER_IMPT_RTGOD_DLV_CST,
+               t.BUYER_IMPT_EXCHG_DLV_CST,
+
+		       t.REGTR_ID,
+		       t.REG_DT,
+		       t.UDTER_ID,
+		       t.UDT_DT,
+		       t.RTRVL_DRCT_PSB_YN,
+		       t.DLV_MTHD_DSCR,
+		       t.GFCT_DSCR,
+		       t.USE_YN,
+		       t.BASE_DLV_CST_PLC_YN,
+
+		       (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = t.REGTR_ID) || CASE WHEN t.REGTR_ID IS NOT NULL THEN '(' || t.REGTR_ID || ')' END AS REGTR_NM, /*등록자명*/
+		       TO_CHAR(t.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT,                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		       (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = t.UDTER_ID) || CASE WHEN t.UDTER_ID IS NOT NULL THEN '(' || t.UDTER_ID || ')' END AS UDTER_NM, /*수정자명*/
+		       TO_CHAR(t.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+		      , t.OVSEA_DLV_DMSTC_DLV_CST_PLC_YN
+		      , A.CHRGER_TURN
+              , A.CHRGER_NM
+			  , A.CHRGER_EMAIL
+			  , A.CHRGER_TEL_NATION_NO
+			  , A.CHRGER_TEL_AREA_NO
+			  , A.CHRGER_TEL_TLOF_NO
+			  , A.CHRGER_TEL_TLOF_WTHN_NO
+			  , A.CHRGER_MOBIL_NATION_NO
+			  , A.CHRGER_MOBIL_AREA_NO
+			  , A.CHRGER_MOBIL_TLOF_NO
+			  , A.CHRGER_MOBIL_TLOF_WTHN_NO
+			  , B.CHRGER_TURN AS RET_CHRGER_TURN
+              , B.CHRGER_NM AS RET_CHRGER_NM
+			  , B.CHRGER_EMAIL AS RET_CHRGER_EMAIL
+			  , B.CHRGER_TEL_NATION_NO       AS RET_CHRGER_TEL_NATION_NO
+			  , B.CHRGER_TEL_AREA_NO         AS RET_CHRGER_TEL_AREA_NO
+			  , B.CHRGER_TEL_TLOF_NO         AS RET_CHRGER_TEL_TLOF_NO
+			  , B.CHRGER_TEL_TLOF_WTHN_NO    AS RET_CHRGER_TEL_TLOF_WTHN_NO
+			  , B.CHRGER_MOBIL_NATION_NO     AS RET_CHRGER_MOBIL_NATION_NO
+			  , B.CHRGER_MOBIL_AREA_NO       AS RET_CHRGER_MOBIL_AREA_NO
+			  , B.CHRGER_MOBIL_TLOF_NO       AS RET_CHRGER_MOBIL_TLOF_NO
+			  , B.CHRGER_MOBIL_TLOF_WTHN_NO  AS RET_CHRGER_MOBIL_TLOF_WTHN_NO
+        FROM    COM_DMSTC_DLV_CST_PLC t
+                ,(SELECT *
+			       FROM(
+			            SELECT *
+			              FROM COM_CHRGER
+			             WHERE COM_ID = #{com.comId,jdbcType=VARCHAR}
+			               AND CHRGER_JOB_CD = 'RTGOD'
+			             ORDER BY CHRGER_TURN
+			            )
+			       WHERE ROWNUM = 1
+			      ) B
+			     ,(SELECT *
+			       FROM(
+			            SELECT *
+			              FROM COM_CHRGER
+			             WHERE COM_ID = #{com.comId,jdbcType=VARCHAR}
+			               AND CHRGER_JOB_CD = 'MD'
+			             ORDER BY CHRGER_TURN
+			            )
+			       WHERE ROWNUM = 1
+			      ) A
+        WHERE   1 = 1
+        AND     t.COM_ID = #{com.comId,jdbcType=VARCHAR}
+        and     t.com_id = b.com_id(+)
+        and     t.com_id = a.com_id(+)
+        AND     BASE_DLV_CST_PLC_YN = 'Y'
+    </select>
+
+	<insert id="insertComDmstcDlvCstPlc" parameterType="comDmstcDlvCstPlc">
+	    INSERT /* [biz.com.xml][insertComDmstcDlvCstPlc] */
+	    INTO COM_DMSTC_DLV_CST_PLC
+		(
+	        DMSTC_DLV_CST_PLC_SN
+	       ,DLV_PLC_NM
+	       ,MALL_ID
+	       ,COM_ID
+	       ,DLV_MN_CD
+	       ,DLV_COM_CD
+	       ,DLV_PSB_DAY
+	       ,DLVSP_POST_NO
+	       ,DLVSP_BASE_ADDR
+	       ,DLVSP_DETAIL_ADDR
+	       ,RETRN_POST_NO
+	       ,RETRN_BASE_ADDR
+	       ,RETRN_DETAIL_ADDR
+	       ,DMSTC_DLV_BOX_PSB_VOL
+	       ,DMSTC_DLV_BOX_PSB_WT
+	       ,DLV_CST_LEVY_SECT_CD
+	       ,DMSTC_DLV_CST_EXM_STDR_AMT
+	       ,DMSTC_DLV_CST
+
+	       ,SLR_IMPT_RTGOD_DLV_CST
+           ,SLR_IMPT_EXCHG_DLV_CST
+           ,BUYER_IMPT_RTGOD_DLV_CST
+           ,BUYER_IMPT_EXCHG_DLV_CST
+
+	       ,REGTR_ID
+           ,REG_DT
+           ,RTRVL_DRCT_PSB_YN
+           ,DLV_MTHD_DSCR
+           ,GFCT_DSCR
+           ,USE_YN
+           ,BASE_DLV_CST_PLC_YN
+           ,OVSEA_DLV_DMSTC_DLV_CST_PLC_YN
+           <if test='repairDlvCstLevySectCd != null and repairDlvCstLevySectCd != ""'>
+           ,REPAIR_DLV_CST_LEVY_SECT_CD
+           </if>
+           <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(repairDlvCst) and repairDlvCstLevySectCd == "PCHRG"'>
+		   ,REPAIR_DLV_CST
+		   </if>
+		   <if test='qdlvCstLevySectCd != null and qdlvCstLevySectCd != ""'>
+		   ,QDLV_CST_LEVY_SECT_CD
+		   ,QDLV_CST_EXM_STDR_AMT
+		   ,QDLV_CST
+		   </if>
+		)
+		VALUES
+		(
+	        SQ_COM_DMSTC_DLV_CST_PLC.nextval
+	       ,#{dlvPlcNm,jdbcType=VARCHAR}
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{comId,jdbcType=VARCHAR}
+	       ,#{dlvMnCd,jdbcType=VARCHAR}
+	       ,#{dlvComCd,jdbcType=VARCHAR}
+	       ,#{dlvPsbDay,jdbcType=VARCHAR}
+	       ,#{dlvspPostNo,jdbcType=VARCHAR}
+	       ,#{dlvspBaseAddr,jdbcType=VARCHAR}
+	       ,#{dlvspDetailAddr,jdbcType=VARCHAR}
+	       ,#{retrnPostNo,jdbcType=VARCHAR}
+	       ,#{retrnBaseAddr,jdbcType=VARCHAR}
+	       ,#{retrnDetailAddr,jdbcType=VARCHAR}
+	       ,#{dmstcDlvBoxPsbVol,jdbcType=NUMERIC}
+	       ,#{dmstcDlvBoxPsbWt,jdbcType=NUMERIC}
+	       ,#{dlvCstLevySectCd,jdbcType=VARCHAR}
+	       ,NVL(#{dmstcDlvCstExmStdrAmt,jdbcType=NUMERIC},0)
+	       ,NVL(#{dmstcDlvCst,jdbcType=NUMERIC},0)
+
+	       ,#{slrImptRtgodDlvCst,jdbcType=NUMERIC}
+           ,#{slrImptExchgDlvCst,jdbcType=NUMERIC}
+           ,#{buyerImptRtgodDlvCst,jdbcType=NUMERIC}
+           ,#{buyerImptExchgDlvCst,jdbcType=NUMERIC}
+
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{rtrvlDrctPsbYn,jdbcType=VARCHAR}
+	       <if test='dlvMthdDscr != null and dlvMthdDscr != ""'>
+	       ,#{dlvMthdDscr,jdbcType=VARCHAR}
+	       </if>
+	       <if test='dlvMthdDscr == null or dlvMthdDscr == ""'>
+	       ,DECODE((SELECT COUNT(*) FROM COM_DMSTC_DLV_CST_PLC WHERE COM_ID=#{comId,jdbcType=VARCHAR}),0,'', (SELECT DLV_MTHD_DSCR FROM COM_DMSTC_DLV_CST_PLC WHERE COM_ID=#{comId,jdbcType=VARCHAR} AND ROWNUM=1))
+	       </if>
+
+	       <if test='gfctDscr != null and gfctDscr != ""'>
+	       ,#{dlvMthdDscr,jdbcType=VARCHAR}
+	       </if>
+	       <if test='gfctDscr == null or gfctDscr == ""'>
+	       ,DECODE((SELECT COUNT(*) FROM COM_DMSTC_DLV_CST_PLC WHERE COM_ID=#{comId,jdbcType=VARCHAR}),0,'', (SELECT GFCT_DSCR FROM COM_DMSTC_DLV_CST_PLC WHERE COM_ID=#{comId,jdbcType=VARCHAR} AND ROWNUM=1))
+	       </if>
+
+	       ,#{useYn,jdbcType=VARCHAR}
+	       <if test='baseDlvCstPlcYn != null and baseDlvCstPlcYn != ""'>
+	       ,#{baseDlvCstPlcYn,jdbcType=VARCHAR}
+	       </if>
+	       <if test='baseDlvCstPlcYn == null or baseDlvCstPlcYn == ""'>
+	       ,DECODE((SELECT COUNT(*) FROM COM_DMSTC_DLV_CST_PLC WHERE COM_ID=#{comId,jdbcType=VARCHAR} AND OVSEA_DLV_DMSTC_DLV_CST_PLC_YN=#{ovseaDlvDmstcDlvCstPlcYn,jdbcType=VARCHAR}),0,'Y','N')
+	       </if>
+           <if test='ovseaDlvDmstcDlvCstPlcYn != null and ovseaDlvDmstcDlvCstPlcYn != ""'>
+           ,#{ovseaDlvDmstcDlvCstPlcYn,jdbcType=VARCHAR}
+           </if>
+           <if test='ovseaDlvDmstcDlvCstPlcYn == null or ovseaDlvDmstcDlvCstPlcYn == ""'>
+           ,'N'
+           </if>
+           <if test='repairDlvCstLevySectCd != null and repairDlvCstLevySectCd != ""'>
+           ,#{repairDlvCstLevySectCd,jdbcType=VARCHAR}
+           </if>
+           <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(repairDlvCst) and repairDlvCstLevySectCd == "PCHRG"'>
+           ,NVL(#{repairDlvCst,jdbcType=NUMERIC},0)
+           </if>
+		   <if test='qdlvCstLevySectCd != null and qdlvCstLevySectCd != ""'>
+		   ,#{qdlvCstLevySectCd,jdbcType=VARCHAR}
+		   ,nvl(#{qdlvCstExmStdrAmt,jdbcType=NUMERIC},0)
+		   ,nvl(#{qdlvCst,jdbcType=NUMERIC},0)
+		   </if>
+		)
+    </insert>
+
+    <!-- 배송비정책 수정 -->
+    <update id="updateComDmstcDlvCstPlc" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComDmstcDlvCstPlc">
+		UPDATE /* [biz.com.xml][updateComDmstcDlvCstPlc][Mark] */
+        COM_DMSTC_DLV_CST_PLC SET
+        		UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		<if test='comId == null or comId == ""'>
+	                ,DLV_PLC_NM = #{dlvPlcNm,jdbcType=VARCHAR}
+	                <if test='comId != null and comId != ""'>
+	                ,COM_ID = #{comId,jdbcType=VARCHAR}
+	                </if>
+	                <if test='baseDlvCstPlcYn != null and baseDlvCstPlcYn != ""'>
+	                ,BASE_DLV_CST_PLC_YN = #{baseDlvCstPlcYn,jdbcType=VARCHAR}
+	                </if>
+	                <if test='rtrvlDrctPsbYn != null and rtrvlDrctPsbYn != ""'>
+	                ,RTRVL_DRCT_PSB_YN = #{rtrvlDrctPsbYn,jdbcType=VARCHAR}
+	                </if>
+	                ,DLV_MN_CD = #{dlvMnCd,jdbcType=VARCHAR}
+	                ,DLV_COM_CD = #{dlvComCd,jdbcType=VARCHAR}
+	                ,DLV_PSB_DAY = #{dlvPsbDay,jdbcType=VARCHAR}
+	                ,DLVSP_POST_NO = #{dlvspPostNo,jdbcType=VARCHAR}
+	                ,DLVSP_BASE_ADDR = #{dlvspBaseAddr,jdbcType=VARCHAR}
+	                ,DLVSP_DETAIL_ADDR = #{dlvspDetailAddr,jdbcType=VARCHAR}
+	                ,RETRN_POST_NO = #{retrnPostNo,jdbcType=VARCHAR}
+	                ,RETRN_BASE_ADDR = #{retrnBaseAddr,jdbcType=VARCHAR}
+	                ,RETRN_DETAIL_ADDR = #{retrnDetailAddr,jdbcType=VARCHAR}
+	                <if test='dmstcDlvBoxPsbVol != null and dmstcDlvBoxPsbVol != ""'>
+	                ,DMSTC_DLV_BOX_PSB_VOL = #{dmstcDlvBoxPsbVol,jdbcType=NUMERIC}
+	                </if>
+	                <if test='dmstcDlvBoxPsbWt != null and dmstcDlvBoxPsbWt != ""'>
+	                ,DMSTC_DLV_BOX_PSB_WT = #{dmstcDlvBoxPsbWt,jdbcType=NUMERIC}
+	                </if>
+	                ,DLV_CST_LEVY_SECT_CD = #{dlvCstLevySectCd,jdbcType=VARCHAR}
+	                ,DMSTC_DLV_CST_EXM_STDR_AMT = NVL(#{dmstcDlvCstExmStdrAmt,jdbcType=NUMERIC},0)
+	                ,DMSTC_DLV_CST = NVL(#{dmstcDlvCst,jdbcType=NUMERIC},0)
+
+	                ,SLR_IMPT_RTGOD_DLV_CST = #{slrImptRtgodDlvCst,jdbcType=NUMERIC}
+                    ,SLR_IMPT_EXCHG_DLV_CST = #{slrImptExchgDlvCst,jdbcType=NUMERIC}
+                    ,BUYER_IMPT_RTGOD_DLV_CST = #{buyerImptRtgodDlvCst,jdbcType=NUMERIC}
+                    ,BUYER_IMPT_EXCHG_DLV_CST = #{buyerImptExchgDlvCst,jdbcType=NUMERIC}
+
+	                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+					<if test='qdlvCstLevySectCd != null and qdlvCstLevySectCd != ""'>
+						,QDLV_CST_LEVY_SECT_CD = #{qdlvCstLevySectCd,jdbcType=VARCHAR}
+						,QDLV_CST_EXM_STDR_AMT = nvl(#{qdlvCstExmStdrAmt,jdbcType=NUMERIC},0)
+						,QDLV_CST = nvl(#{qdlvCst,jdbcType=NUMERIC},0)
+					</if>
+                </if>
+                <if test='comId != null and comId != ""'>
+                	<if test='dlvMthdDscr != null and dlvMthdDscr != ""'>
+                		,DLV_MTHD_DSCR = #{dlvMthdDscr,jdbcType=CLOB}
+                	</if>
+                	<if test='mobileDlvMthdDscr != null and mobileDlvMthdDscr != ""'>
+                		,MOBILE_DLV_MTHD_DSCR = #{mobileDlvMthdDscr,jdbcType=CLOB}
+                	</if>
+	                <if test='gfctDscr != null and gfctDscr != ""'>
+	                	,GFCT_DSCR = #{gfctDscr,jdbcType=VARCHAR}
+	                </if>
+                </if>
+                <if test='ovseaDlvDmstcDlvCstPlcYn != null and ovseaDlvDmstcDlvCstPlcYn != ""'>
+                    ,OVSEA_DLV_DMSTC_DLV_CST_PLC_YN = #{ovseaDlvDmstcDlvCstPlcYn,jdbcType=VARCHAR}
+                </if>
+                <if test='repairDlvCstLevySectCd != null and repairDlvCstLevySectCd != ""'>
+	           		,REPAIR_DLV_CST_LEVY_SECT_CD = #{repairDlvCstLevySectCd,jdbcType=VARCHAR}
+	            </if>
+	            <if test='repairDlvCst != null and repairDlvCst != ""'>
+	           		,REPAIR_DLV_CST = #{repairDlvCst,jdbcType=NUMERIC}
+	            </if>
+        WHERE	1 = 1
+        		<if test='dmstcDlvCstPlcSn != null and dmstcDlvCstPlcSn != ""'>
+        			AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+        		</if>
+        		<if test='comId != null and comId != ""'>
+        			AND COM_ID = #{comId,jdbcType=VARCHAR}
+        		</if>
+    </update>
+
+    <!-- 글로벌 해외 배송비정책 수정  -->
+    <update id="updateComOvseaDlvCstPlcEng" parameterType="com.plgrim.ncp.biz.vendor.result.ComDmstcDlvCstPlcResult">
+		UPDATE /* [biz.com.xml][updateComOvseaDlvCstPlcEng][sungmin Lee] */
+        	com_ovsea_dlv_cst_plc_lang
+           SET
+            <if test='dlvMthdDscrEng != null and dlvMthdDscrEng != ""'>
+			dlv_mthd_dscr = #{dlvMthdDscrEng,jdbcType=VARCHAR},
+			</if>
+        	udter_id = #{comDmstcDlvCstPlc.udterId,jdbcType=VARCHAR},
+            udt_dt = SYSDATE
+        WHERE 1 = 1
+		  AND ovsea_dlv_cst_plc_sn = 1
+		  AND lang_cd = 'ENG'
+    </update>
+
+    <!-- 중문 해외 배송비정책 수정  -->
+    <update id="updateComOvseaDlvCstPlcChi" parameterType="com.plgrim.ncp.biz.vendor.result.ComDmstcDlvCstPlcResult">
+		UPDATE /* [biz.com.xml][updateComOvseaDlvCstPlcChi][sungmin Lee] */
+        	com_ovsea_dlv_cst_plc_lang
+           SET
+            <if test='dlvMthdDscrChi != null and dlvMthdDscrChi != ""'>
+			dlv_mthd_dscr = #{dlvMthdDscrChi,jdbcType=VARCHAR},
+			</if>
+        	udter_id = #{comDmstcDlvCstPlc.udterId,jdbcType=VARCHAR},
+            udt_dt = SYSDATE
+        WHERE 1 = 1
+		  AND ovsea_dlv_cst_plc_sn = 1
+		  AND lang_cd = 'CHI'
+    </update>
+
+    <!-- 배송비정책 기본배송지 수정  -->
+    <update id="updateComDmstcDlvCstPlcBaseDlv" parameterType="com.plgrim.ncp.biz.vendor.result.ComDmstcDlvCstPlcResult">
+	    UPDATE /* [biz.com.xml][updateComDmstcDlvCstPlcBaseDlv][Mark] */
+	    COM_DMSTC_DLV_CST_PLC
+	       SET BASE_DLV_CST_PLC_YN = #{baseDlvCstPlcYn,jdbcType=VARCHAR}
+	       ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+           ,UDT_DT = SYSDATE
+	     WHERE COM_ID = #{comId,jdbcType=VARCHAR}
+	     <if test='ovseaDlvDmstcDlvCstPlcYn != null and ovseaDlvDmstcDlvCstPlcYn != ""'>
+	       AND OVSEA_DLV_DMSTC_DLV_CST_PLC_YN = #{ovseaDlvDmstcDlvCstPlcYn,jdbcType=NUMERIC}
+	     </if>
+	    <if test='dmstcDlvCstPlcSn != null and dmstcDlvCstPlcSn != ""'>
+	       AND DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+	    </if>
+    </update>
+
+    <!-- 상품 배송정책번호 변경  -->
+    <update id="updateGodDlvCstPlcSn" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComDmstcDlvCstPlc">
+	    UPDATE /* [biz.com.xml][updateGodDlvCstPlcSn][Seed] */
+	    GOD
+	       SET UDTER_ID = #{udterId,jdbcType=VARCHAR}
+             , UDT_DT = SYSDATE
+        <choose>
+            <when test='ovseaDlvDmstcDlvCstPlcYn eq "Y"'>
+           	 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+            </when>
+            <otherwise>
+           	 , DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+            </otherwise>
+		</choose>
+	     WHERE COM_ID = #{comId,jdbcType=VARCHAR}
+    </update>
+
+	<!--  배송정책 이력저장 -->
+	<insert id="insertComDmstcDlvCstPlcHist" parameterType="comDmstcDlvCstPlcHist">
+	    INSERT /* [biz.com.xml][insertComDmstcDlvCstPlcHist] */
+	    INTO COM_DMSTC_DLV_CST_PLC_HIST
+		(
+	        DMSTC_DLV_CST_PLC_SN
+	       ,HIST_DT
+	       ,DLV_PLC_NM
+	       ,MALL_ID
+	       ,COM_ID
+	       ,DLV_MN_CD
+	       ,DLV_COM_CD
+	       ,DLVSP_POST_NO
+	       ,DLVSP_BASE_ADDR
+	       ,DLVSP_DETAIL_ADDR
+	       ,RETRN_POST_NO
+	       ,RETRN_BASE_ADDR
+	       ,RETRN_DETAIL_ADDR
+	       ,DMSTC_DLV_BOX_PSB_VOL
+	       ,DMSTC_DLV_BOX_PSB_WT
+	       ,DLV_CST_LEVY_SECT_CD
+	       ,DMSTC_DLV_CST_EXM_STDR_AMT
+	       ,DMSTC_DLV_CST
+
+	       ,SLR_IMPT_RTGOD_DLV_CST
+           ,SLR_IMPT_EXCHG_DLV_CST
+           ,BUYER_IMPT_RTGOD_DLV_CST
+           ,BUYER_IMPT_EXCHG_DLV_CST
+           ,USE_YN
+
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+           ,RTRVL_DRCT_PSB_YN
+           ,REPAIR_DLV_CST_LEVY_SECT_CD
+		   ,REPAIR_DLV_CST
+		   ,QDLV_CST_LEVY_SECT_CD
+		   ,QDLV_CST_EXM_STDR_AMT
+		   ,QDLV_CST
+		)
+		SELECT
+			DMSTC_DLV_CST_PLC_SN
+	       ,SYSDATE
+	       ,DLV_PLC_NM
+	       ,MALL_ID
+	       ,COM_ID
+	       ,DLV_MN_CD
+	       ,DLV_COM_CD
+	       ,DLVSP_POST_NO
+	       ,DLVSP_BASE_ADDR
+	       ,DLVSP_DETAIL_ADDR
+	       ,RETRN_POST_NO
+	       ,RETRN_BASE_ADDR
+	       ,RETRN_DETAIL_ADDR
+	       ,DMSTC_DLV_BOX_PSB_VOL
+	       ,DMSTC_DLV_BOX_PSB_WT
+	       ,DLV_CST_LEVY_SECT_CD
+	       ,DMSTC_DLV_CST_EXM_STDR_AMT
+	       ,DMSTC_DLV_CST
+
+	       ,SLR_IMPT_RTGOD_DLV_CST
+           ,SLR_IMPT_EXCHG_DLV_CST
+           ,BUYER_IMPT_RTGOD_DLV_CST
+           ,BUYER_IMPT_EXCHG_DLV_CST
+           ,USE_YN
+
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,SYSDATE
+           ,SYSDATE
+           ,RTRVL_DRCT_PSB_YN
+           ,REPAIR_DLV_CST_LEVY_SECT_CD
+		   ,REPAIR_DLV_CST
+		   ,QDLV_CST_LEVY_SECT_CD
+		   ,QDLV_CST_EXM_STDR_AMT
+		   ,QDLV_CST
+		FROM	COM_DMSTC_DLV_CST_PLC
+        WHERE   1 = 1
+        AND     DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+    </insert>
+
+	<!-- 기본 배송기간안내문구 조회 -->
+	<select id="selectBaseDlvMthdDscr" resultType="String">
+		SELECT
+			  	DLV_MTHD_DSCR
+		  FROM	COM_DMSTC_DLV_CST_PLC
+		 WHERE	1 = 1
+		   AND  COM_ID = 'M00'
+		   AND 	USE_YN = 'Y'
+		   AND 	OVSEA_DLV_DMSTC_DLV_CST_PLC_YN = 'N'
+		   AND  BASE_DLV_CST_PLC_YN = 'Y'
+		   AND 	ROWNUM = 1
+	</select>
+
+    <!-- 도서산간배송비 조회를 위한 조건 쿼리 -->
+    <sql id="whereDlvCstPlcExcp">
+		<if test='searchGubun != null and searchGubun != ""'>
+			<if test='searchGubun eq "postNo"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND  A.EXCP_POST_NO LIKE '%'||#{searchTxt,jdbcType=VARCHAR}||'%'
+				</if>
+			</if>
+			<if test='searchGubun eq "baseAddr"'>
+				<if test='searchTxt != null and searchTxt != ""'>
+				AND  UPPER(A.EXCP_BASE_ADDR) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+				</if>
+			</if>
+		</if>
+		<if test='searchGubun != null and searchGubun == "" and searchTxt != null and searchTxt != ""'>
+			AND (UPPER(A.EXCP_POST_NO) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%' OR  UPPER(A.EXCP_BASE_ADDR) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%')
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+			AND A.MALL_ID = #{mallId,jdbcType=VARCHAR}
+		</if>
+    </sql>
+
+    <!-- 도서산간배송비 조회 -->
+    <select id="selectComDmstcDlvCstPlcExcpCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+        SELECT /* [biz.com.xml][selectComDmstcDlvCstPlcExcpCount] */
+                COUNT(*)
+        FROM    COM_DMSTC_DLV_CST_PLC_EXCP A
+        WHERE   1 = 1
+        AND     A.DMSTC_DLV_CST_PLC_SN IN (SELECT DMSTC_DLV_CST_PLC_SN FROM COM_DMSTC_DLV_CST_PLC B WHERE B.COM_ID = #{com.comId,jdbcType=NUMERIC})
+        <include refid="com.plgrim.ncp.biz.vendor.whereDlvCstPlcExcp"/>
+    </select>
+
+	<resultMap id="comDmstcDlvCstPlcExcpResult" type="com.plgrim.ncp.biz.vendor.result.ComDmstcDlvCstPlcExcpResult">
+	   <result property="comDmstcDlvCstPlcExcp.dmstcDlvCstPlcSn"         column="DMSTC_DLV_CST_PLC_SN" />        <!-- 국내 배송비 정책 일련번호 -->
+	   <result property="comDmstcDlvCstPlcExcp.excpTurn"                 column="EXCP_TURN" />                   <!-- 예외 순번 -->
+	   <result property="comDmstcDlvCstPlcExcp.excpPostNo"               column="EXCP_POST_NO" />                <!-- 예외 우편번호 -->
+	   <result property="comDmstcDlvCstPlcExcp.excpBaseAddr"             column="EXCP_BASE_ADDR" />              <!-- 예외 기본주소 -->
+	   <result property="comDmstcDlvCstPlcExcp.excpDmstcDlvCst"          column="EXCP_DMSTC_DLV_CST" />          <!-- 예외 국내 배송비 -->
+	   <result property="comDmstcDlvCstPlcExcp.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+	   <result property="comDmstcDlvCstPlcExcp.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="comDmstcDlvCstPlcExcp.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+	   <result property="comDmstcDlvCstPlcExcp.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+	</resultMap>
+	<!-- 도서산간배송비 조회 -->
+    <select id="selectComDmstcDlvCstPlcExcp" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comDmstcDlvCstPlcExcpResult">
+       SELECT /* [biz.com.xml][selectComDmstcDlvCstPlcExcp] */
+              B.DMSTC_DLV_CST_PLC_SN
+            , B.EXCP_TURN
+            , REPLACE(B.EXCP_POST_NO,'-','') AS EXCP_POST_NO
+            , B.EXCP_BASE_ADDR
+            , B.EXCP_DMSTC_DLV_CST
+            , B.REGTR_ID
+            , B.REG_DT
+            , B.UDTER_ID
+            , B.UDT_DT
+       FROM (
+	            <include refid="com.plgrim.ncp.base.beginPage"/>
+		        SELECT /* com.plgrim.ncp.base.repository.com.selectComDmstcDlvCstPlcExcp jackie 20150425 */
+		                DMSTC_DLV_CST_PLC_SN
+		               ,EXCP_TURN
+		               ,EXCP_POST_NO
+		               ,EXCP_BASE_ADDR
+		               ,EXCP_DMSTC_DLV_CST
+		               ,REGTR_ID
+		               ,REG_DT
+		               ,UDTER_ID
+		               ,UDT_DT
+		        FROM    COM_DMSTC_DLV_CST_PLC_EXCP A
+		        WHERE   1 = 1
+		        AND     DMSTC_DLV_CST_PLC_SN IN(SELECT DMSTC_DLV_CST_PLC_SN FROM COM_DMSTC_DLV_CST_PLC B WHERE B.COM_ID = #{com.comId,jdbcType=NUMERIC})
+	            <include refid="com.plgrim.ncp.biz.vendor.whereDlvCstPlcExcp"/>
+	                     ORDER BY EXCP_TURN
+	        	<include refid="com.plgrim.ncp.base.endPage"/>
+		     ) B
+	</select>
+
+	<!-- 도서산간배송비 조회 엑셀 -->
+    <select id="selectComDmstcDlvCstPlcExcpExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="java.util.LinkedHashMap">
+       SELECT /* [biz.com.xml][selectComDmstcDlvCstPlcExcpExcel] */
+            (SELECT C.DLV_PLC_NM FROM COM_DMSTC_DLV_CST_PLC C WHERE C.DMSTC_DLV_CST_PLC_SN = B.DMSTC_DLV_CST_PLC_SN) AS DLV_PLC_NM
+            , REPLACE(B.EXCP_POST_NO,'-','') AS EXCP_POST_NO
+            , B.EXCP_BASE_ADDR
+            , B.EXCP_DMSTC_DLV_CST
+<!--             , B.REGTR_ID -->
+<!--             , B.REG_DT -->
+<!--             , B.UDTER_ID -->
+<!--             , B.UDT_DT     -->
+       FROM (
+		        SELECT /* com.plgrim.ncp.base.repository.com.selectComDmstcDlvCstPlcExcp jackie 20150425 */
+		                DMSTC_DLV_CST_PLC_SN
+		               ,EXCP_TURN
+		               ,EXCP_POST_NO
+		               ,EXCP_BASE_ADDR
+		               ,EXCP_DMSTC_DLV_CST
+		               ,REGTR_ID
+		               ,REG_DT
+		               ,UDTER_ID
+		               ,UDT_DT
+		        FROM    COM_DMSTC_DLV_CST_PLC_EXCP A
+		        WHERE   1 = 1
+		        AND     DMSTC_DLV_CST_PLC_SN IN(SELECT DMSTC_DLV_CST_PLC_SN FROM COM_DMSTC_DLV_CST_PLC B WHERE B.COM_ID = #{com.comId,jdbcType=NUMERIC})
+	            <include refid="com.plgrim.ncp.biz.vendor.whereDlvCstPlcExcp"/>
+	                     ORDER BY EXCP_TURN
+		     ) B
+	</select>
+
+	<!-- 도서산간배송비 저장 -->
+	<update id="mergeDlvCstPlcExcp">
+            MERGE /* [biz.com.xml][mergeDlvCstPlcExcp] */
+             INTO COM_DMSTC_DLV_CST_PLC_EXCP COB
+               USING (
+                    SELECT
+                        #{comDmstcDlvCstPlcExcp.dmstcDlvCstPlcSn} as DMSTC_DLV_CST_PLC_SN,
+                        #{comDmstcDlvCstPlcExcp.excpTurn} as EXCP_TURN,
+                        #{comDmstcDlvCstPlcExcp.excpPostNo}          as EXCP_POST_NO,
+                        #{comDmstcDlvCstPlcExcp.excpBaseAddr}        as EXCP_BASE_ADDR,
+                        #{comDmstcDlvCstPlcExcp.excpDmstcDlvCst}     as EXCP_DMSTC_DLV_CST
+                    FROM DUAL
+               ) FCH ON (COB.DMSTC_DLV_CST_PLC_SN = FCH.DMSTC_DLV_CST_PLC_SN AND COB.EXCP_TURN = FCH.EXCP_TURN)
+               WHEN MATCHED THEN
+                   UPDATE SET
+					   EXCP_POST_NO = FCH.EXCP_POST_NO,
+					   EXCP_BASE_ADDR = FCH.EXCP_BASE_ADDR,
+					   EXCP_DMSTC_DLV_CST = FCH.EXCP_DMSTC_DLV_CST,
+                       UDTER_ID  = #{comDmstcDlvCstPlcExcp.udterId,jdbcType=VARCHAR},
+                       UDT_DT    = SYSDATE
+               WHEN NOT MATCHED THEN
+                   INSERT
+				        (DMSTC_DLV_CST_PLC_SN
+				       ,EXCP_TURN
+				       ,EXCP_POST_NO
+				       ,EXCP_BASE_ADDR
+				       ,EXCP_DMSTC_DLV_CST
+				       ,REGTR_ID
+				       ,UDTER_ID
+			           ,REG_DT
+			           ,UDT_DT )
+                 VALUES
+                     (  FCH.DMSTC_DLV_CST_PLC_SN
+				       ,(SELECT NVL(MAX(EXCP_TURN),0)+1 FROM COM_DMSTC_DLV_CST_PLC_EXCP WHERE DMSTC_DLV_CST_PLC_SN = #{comDmstcDlvCstPlcExcp.dmstcDlvCstPlcSn})
+				       ,FCH.EXCP_POST_NO
+				       ,FCH.EXCP_BASE_ADDR
+				       ,FCH.EXCP_DMSTC_DLV_CST
+				       ,#{comDmstcDlvCstPlcExcp.udterId,jdbcType=VARCHAR}
+				       ,#{comDmstcDlvCstPlcExcp.udterId,jdbcType=VARCHAR}
+			           ,SYSDATE
+			           ,SYSDATE)
+	</update>
+
+
+	<!--  브랜드수수료율 이력저장 -->
+
+	<!-- 운영자 건수 조회 -->
+    <select id="selectAdminListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+        /* [biz.com.xml][selectAdminListCount][조회 : 운영자 건수 ][Izabel] */
+        <![CDATA[
+                SELECT
+                       COUNT(*)
+                FROM  SYS_ADMIN A,
+                      SYS_ADMIN_CHRG_JOB B
+                WHERE 1 = 1
+                AND   A.ADMIN_ID = B.ADMIN_ID
+	            AND   COM_ID = #{com.comId,jdbcType=VARCHAR}
+        ]]>
+        <include refid="com.plgrim.ncp.biz.vendor.whereVendor"/>
+    </select>
+
+	<resultMap id="sysAdminResultMap" type="com.plgrim.ncp.biz.vendor.result.SysAdminListResult">
+	   <result property="sysAdminChrgJob.chrgJobTpCd"       column="CHRG_JOB_TP_CD" />              <!-- 담당 업무 유형 코드 -->
+	   <result property="chrgJobDscr"                       column="CHRG_JOB_DSCR" />               <!-- 담당 업무 설명 -->
+	   <result property="sysAdmin.adminId"                  column="ADMIN_ID" />                    <!-- 관리자 ID -->
+	   <result property="sysAdmin.adminNm"                  column="ADMIN_NM" />                    <!-- 관리자 명 -->
+	   <result property="sysAdmin.email"                    column="EMAIL" />                       <!-- 이메일 -->
+	   <result property="sysAdmin.mobilNationNo"            column="MOBIL_NATION_NO" />             <!-- 휴대전화 국가번호 -->
+	   <result property="sysAdmin.mobilAreaNo"              column="MOBIL_AREA_NO" />               <!-- 휴대전화 지역번호 -->
+	   <result property="sysAdmin.mobilTlofNo"              column="MOBIL_TLOF_NO" />               <!-- 휴대전화 국번호 -->
+	   <result property="sysAdmin.mobilTlofWthnNo"          column="MOBIL_TLOF_WTHN_NO" />          <!-- 휴대전화 국내번호 -->
+	   <result property="sysAdmin.telNationNo"              column="TEL_NATION_NO" />               <!-- 전화 국가번호 -->
+	   <result property="sysAdmin.telAreaNo"                column="TEL_AREA_NO" />                 <!-- 전화 지역번호 -->
+	   <result property="sysAdmin.telTlofNo"                column="TEL_TLOF_NO" />                 <!-- 전화 국번호 -->
+	   <result property="sysAdmin.telTlofWthnNo"            column="TEL_TLOF_WTHN_NO" />            <!-- 전화 국내번호 -->
+	   <result property="sysAdmin.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="viewRegDt"                         column="VIEW_REG_DT" />                 <!-- 등록일 -->
+	</resultMap>
+    <!-- 운영자 목록 조회 -->
+    <select id="selectAdminList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="sysAdminResultMap">
+        /* [biz.com.xml][selectAdminList][조회 : 운영자 목록 ][Izabel] */
+        SELECT
+			      B.CHRG_JOB_TP_CD
+			    , (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'CHRG_JOB_TP' AND CD = B.CHRG_JOB_TP_CD) AS CHRG_JOB_DSCR
+			    , B.ADMIN_ID
+			    , B.ADMIN_NM
+			    , B.EMAIL
+			    , B.TEL_NATION_NO
+			    , B.TEL_AREA_NO
+			    , B.TEL_TLOF_NO
+			    , B.TEL_TLOF_WTHN_NO
+			    , B.MOBIL_NATION_NO
+			    , B.MOBIL_AREA_NO
+			    , B.MOBIL_TLOF_NO
+			    , B.MOBIL_TLOF_WTHN_NO
+			    , B.REG_DT
+			    , TO_CHAR(B.REG_DT, 'YYYY-MM-DD') AS VIEW_REG_DT
+          FROM (
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+		            <![CDATA[
+							SELECT
+							      B.CHRG_JOB_TP_CD
+							    , A.ADMIN_ID
+							    , ADMIN_NM
+							    , EMAIL
+							    , TEL_NATION_NO
+							    , TEL_AREA_NO
+							    , TEL_TLOF_NO
+							    , TEL_TLOF_WTHN_NO
+							    , MOBIL_NATION_NO
+							    , MOBIL_AREA_NO
+							    , MOBIL_TLOF_NO
+							    , MOBIL_TLOF_WTHN_NO
+							    , A.REG_DT
+                            FROM SYS_ADMIN A,
+                                 SYS_ADMIN_CHRG_JOB B
+                           WHERE 1 = 1
+                           AND   A.ADMIN_ID = B.ADMIN_ID
+		                   AND   COM_ID = #{com.comId,jdbcType=VARCHAR}
+		            ]]>
+		                     ORDER BY CHRG_JOB_TP_CD
+		        <include refid="com.plgrim.ncp.base.endPage"/>
+		        ) B
+    </select>
+
+    <resultMap id="sysAdminResultMap2" type="com.plgrim.ncp.biz.vendor.result.SysAdminListResult">
+<!-- 	   <result property="sysAdminChrgJob.chrgJobTpCd"       column="CHRG_JOB_TP_CD" />              담당 업무 유형 코드 -->
+	   <result property="chrgJobDscr"                       column="CHRG_JOB_DSCR" />               <!-- 담당 업무 설명 -->
+	   <result property="sysAdmin.adminId"                  column="ADMIN_ID" />                    <!-- 관리자 ID -->
+	   <result property="sysAdmin.adminNm"                  column="ADMIN_NM" />                    <!-- 관리자 명 -->
+	   <result property="sysAdmin.email"                    column="EMAIL" />                       <!-- 이메일 -->
+	   <result property="telNo"                             column="TEL_NO" />                      <!-- 전화번호 -->
+	   <result property="mobilNo"                           column="MOBIL_NO" />                    <!-- 휴대폰번호 -->
+	   <result property="sysAdmin.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+	   <result property="viewRegDt"                         column="VIEW_REG_DT" />                 <!-- 등록일 -->
+	</resultMap>
+
+    <!-- 운영자 목록 조회 -->
+    <select id="selectAdminInfoList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="sysAdminResultMap2">
+		SELECT /* [biz.com.xml][selectAdminInfoList][조회 : 운영자 목록 ][Izabel] */
+		       (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'CHRG_JOB_TP' AND CD = A.ADMIN_TP_CD) AS CHRG_JOB_DSCR
+		       , ADMIN_ID
+		       , ADMIN_NM
+		       , EMAIL
+		       , TEL_NATION_NO||'-'||TEL_AREA_NO||'-'||TEL_TLOF_NO||'-'||TEL_TLOF_WTHN_NO AS TEL_NO
+		       , MOBIL_NATION_NO||'-'||MOBIL_AREA_NO||'-'||MOBIL_TLOF_NO||'-'||MOBIL_TLOF_WTHN_NO AS MOBIL_NO
+		       , REG_DT
+		       , TO_CHAR(REG_DT, 'YYYY-MM-DD') AS VIEW_REG_DT
+	      FROM SYS_ADMIN A
+	     WHERE COM_ID = #{com.comId,jdbcType=VARCHAR}
+	       AND ADMIN_TP_CD = #{com.comTpCd,jdbcType=VARCHAR}
+	     ORDER BY ADMIN_NM
+    </select>
+
+
+
+    <!-- 운영자 비밀번호 초기화 -->
+    <update id="updateAdminPassword" parameterType="sysAdmin">
+        UPDATE /* [biz.com.xml][updateAdminPassword][ 운영자 비밀번호 초기화][Izabel] */
+               SYS_ADMIN
+           SET
+                pw = #{pw,jdbcType=VARCHAR}                   /* 회원 비밀번호 */
+              , PW_INTZ_YN =  'Y'                             /* 비밀번호 초기화 여부 */
+              , PW_INTZ_DT = SYSDATE                         /* 비밀번호 초기화 일시 */
+              , udter_id = #{udterId,jdbcType=VARCHAR}               /* 수정자 ID */
+              , udt_dt = SYSDATE                                     /* 수정 일시 */
+         WHERE ADMIN_iD = #{adminId,jdbcType=VARCHAR}                    /* 어드민 아이디 */
+    </update>
+
+    <!-- 업체 상품 옵션 등록 -->
+    <insert id="mergeComGodOpt" parameterType="com.plgrim.ncp.biz.vendor.data.VendorGoodsOptionDTO">
+		MERGE /* [biz.com.xml][mergeComGodOpt][업체 상품 옵션 등록][Mark] */
+		 INTO COM_GOD_OPT CGO
+		   USING (
+		   			 SELECT  #{comId,jdbcType=VARCHAR} AS COM_ID
+		   			        ,#{optTpCd,jdbcType=VARCHAR} AS OPT_TP_CD
+		   			        ,#{optCd,jdbcType=VARCHAR} AS OPT_CD
+		   			 FROM DUAL
+		          ) TARGET
+		   ON (CGO.COM_ID = TARGET.COM_ID
+		       AND CGO.OPT_CD = TARGET.OPT_CD
+		     )
+		WHEN MATCHED THEN
+			UPDATE SET
+		        CGO.UDTER_ID = #{regtrId,jdbcType=VARCHAR}
+		        , CGO.UDT_DT   = SYSDATE
+		        , CGO.USE_YN = #{useYn,jdbcType=VARCHAR}
+		WHEN NOT MATCHED THEN
+			INSERT (
+			        COM_ID
+			       ,OPT_TP_CD
+			       ,OPT_CD
+			       ,OPT_NM
+			       ,USE_YN
+                   ,SORT_SEQ
+			       ,REGTR_ID
+		           ,REG_DT
+				)
+				VALUES
+				(
+			        #{comId,jdbcType=VARCHAR}
+			       ,#{optTpCd,jdbcType=VARCHAR}
+			       ,#{optCd,jdbcType=VARCHAR}
+			       ,#{optNm,jdbcType=VARCHAR}
+			       ,#{useYn,jdbcType=VARCHAR}
+                   ,((SELECT NVL(MAX(SORT_SEQ), 0) + 1 AS SORT_SEQ FROM COM_GOD_OPT WHERE COM_ID = #{comId,jdbcType=VARCHAR}))
+			       ,#{regtrId,jdbcType=VARCHAR}
+			       ,SYSDATE
+				)
+    </insert>
+
+    <!-- 업체 상품 옵션 프리사이즈 등록 -->
+    <insert id="mergeComGodOptFreeSize" parameterType="com.plgrim.ncp.biz.vendor.data.VendorGoodsOptionDTO">
+		MERGE /* [biz.com.xml][mergeComGodOptFreeSize][업체 상품 옵션 등록][Peter] */
+		 INTO COM_GOD_OPT CGO
+		   USING (
+		   			 SELECT   #{comId,jdbcType=VARCHAR} AS COM_ID
+		   			        , #{optTpCd,jdbcType=VARCHAR} AS OPT_TP_CD
+		   			        ,'MS999' AS OPT_CD
+		   			 FROM DUAL
+		          ) TARGET
+		   ON (CGO.COM_ID = TARGET.COM_ID
+		       AND CGO.OPT_CD = TARGET.OPT_CD
+		     )
+		WHEN MATCHED THEN
+			UPDATE SET
+		        CGO.UDTER_ID = #{regtrId,jdbcType=VARCHAR}
+		        , CGO.UDT_DT   = SYSDATE
+		        , CGO.USE_YN = #{useYn,jdbcType=VARCHAR}
+		WHEN NOT MATCHED THEN
+			INSERT (
+			        COM_ID
+			       ,OPT_TP_CD
+			       ,OPT_CD
+			       ,OPT_NM
+			       ,USE_YN
+			       ,REGTR_ID
+		           ,REG_DT
+				)
+				VALUES
+				(
+			        #{comId,jdbcType=VARCHAR}
+			       ,#{optTpCd,jdbcType=VARCHAR}
+			       ,'MS999'
+			       ,'사이즈'
+			       ,#{useYn,jdbcType=VARCHAR}
+			       ,#{regtrId,jdbcType=VARCHAR}
+			       ,SYSDATE
+				)
+    </insert>
+
+
+    <!-- 업체 상품 옵션 값 등록 -->
+    <insert id="mergeComGodOptVal" parameterType="com.plgrim.ncp.biz.vendor.data.VendorGoodsOptionDTO">
+        MERGE /* [biz.com.xml][mergeComGodOptVal][업체 상품 옵션 값 등록][Mark] */
+		 INTO COM_GOD_OPT_VAL CGOV
+		   USING (
+		   			 SELECT  #{comId,jdbcType=VARCHAR} AS COM_ID
+					         , #{optCd,jdbcType=VARCHAR} AS OPT_CD
+                             , #{optValCd,jdbcType=VARCHAR} AS OPT_VAL_CD
+		   			 FROM DUAL
+		          ) TARGET
+		   ON (CGOV.COM_ID = TARGET.COM_ID
+		       AND CGOV.OPT_CD = TARGET.OPT_CD
+		       AND CGOV.OPT_VAL_CD = TARGET.OPT_VAL_CD
+		     )
+		WHEN MATCHED THEN
+			UPDATE SET
+			    CGOV.OPT_VAL_NM = #{optValNm,jdbcType=VARCHAR}
+		        , CGOV.UDTER_ID = #{regtrId,jdbcType=VARCHAR}
+		        , CGOV.UDT_DT   = SYSDATE
+		        , CGOV.USE_YN = #{useYn,jdbcType=VARCHAR}
+		        , CGOV.SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+		WHEN NOT MATCHED THEN
+			INSERT (
+			        COM_ID
+			       ,OPT_CD
+			       ,OPT_VAL_CD
+			       ,OPT_VAL_NM
+			       ,USE_YN
+                   ,SORT_SEQ
+			       ,REGTR_ID
+		           ,REG_DT
+				)
+				VALUES
+				(
+			        #{comId,jdbcType=VARCHAR}
+			       ,#{optCd,jdbcType=VARCHAR}
+			       ,#{optValCd,jdbcType=VARCHAR}
+			       ,#{optValNm,jdbcType=VARCHAR}
+			       ,#{useYn,jdbcType=VARCHAR}
+                   ,#{sortSeq,jdbcType=NUMERIC}
+			       ,#{regtrId,jdbcType=VARCHAR}
+			       ,SYSDATE
+				)
+    </insert>
+
+	<insert id="insertStdOpt" parameterType="com.plgrim.ncp.biz.vendor.data.VendorGoodsOptionDTO">
+ 	MERGE /* [biz.com.xml][mergeComGodOptVal][업체 상품 옵션 값 등록][Mark] */
+		 INTO COM_STD_OPT_CNNC CSOC
+		   USING (
+		   			 SELECT  #{comId,jdbcType=VARCHAR} AS COM_ID
+		   			         , #{optCd,jdbcType=VARCHAR} AS OPT_CD
+                             , #{optValCd,jdbcType=VARCHAR} AS OPT_VAL_CD
+		   			 FROM DUAL
+		          ) TARGET
+		   ON (CSOC.COM_ID = TARGET.COM_ID
+		       AND CSOC.OPT_CD = TARGET.OPT_CD
+		       AND CSOC.OPT_VAL_CD = TARGET.OPT_VAL_CD
+		     )
+		WHEN MATCHED THEN
+			UPDATE SET
+			      CSOC.UDTER_ID = #{regtrId,jdbcType=VARCHAR}
+		        , CSOC.UDT_DT   = SYSDATE
+		WHEN NOT MATCHED THEN
+		INSERT (
+	  		  		COM_ID,
+			  		OPT_CD,
+			  		OPT_VAL_CD,
+		  			STD_OPT_CD,
+					STD_OPT_VAL_CD,
+					REGTR_ID,
+					REG_DT
+	  			)
+		  VALUES
+				(
+			        #{comId,jdbcType=VARCHAR}
+			       ,#{optCd,jdbcType=VARCHAR}
+			       ,#{optValCd,jdbcType=VARCHAR}
+			       ,#{stdOptCd,jdbcType=VARCHAR}
+			       ,#{stdOptValCd,jdbcType=VARCHAR}
+			       ,#{regtrId,jdbcType=VARCHAR}
+			       ,SYSDATE
+				)
+	</insert>
+
+    <!-- 업체 상품 옵션 조회 -->
+    <select id="selectComGodOpt" parameterType="com.plgrim.ncp.biz.vendor.data.VendorGoodsOptionDTO" resultType="com.plgrim.ncp.biz.vendor.result.VendorGoodsOptionResult">
+      	SELECT /* [biz.com.xml][selectComGodOpt][업체 상품 옵션 조회][Mark] */
+      	       CGO.COM_ID
+		       ,CGO.OPT_CD
+		       ,CGO.OPT_NM
+		       ,CGOV.OPT_VAL_CD
+		       ,CGOV.OPT_VAL_NM
+               ,CGOV.SORT_SEQ
+		       ,CGOV.REGTR_ID
+		       ,CSOC.STD_OPT_VAL_CD
+		       ,CSOC.STD_OPT_CD
+		       ,TO_CHAR(CGOV.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT
+		  FROM COM_GOD_OPT CGO
+                LEFT OUTER JOIN COM_GOD_OPT_VAL CGOV ON CGO.COM_ID = CGOV.COM_ID
+                LEFT OUTER JOIN COM_STD_OPT_CNNC CSOC ON CSOC.COM_ID = CGO.COM_ID
+                              AND CSOC.OPT_CD = cgov.opt_cd
+                              AND csoc.opt_val_cd = cgov.opt_val_cd
+		 WHERE 1 = 1
+		   AND CGO.OPT_CD = CGOV.OPT_CD
+		   AND CGO.USE_YN = 'Y'
+		   AND CGOV.USE_YN = 'Y'
+		   AND CGO.COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND INSTR(CGO.OPT_CD,'999') = 0 /* 프리사이즈 조회 제외 */
+         ORDER BY CGO.OPT_NM, CGOV.SORT_SEQ, CGOV.OPT_VAL_CD
+    </select>
+
+    <update id="updateGodOptValSortSeq" parameterType="com.plgrim.ncp.biz.vendor.data.VendorGoodsOptionDTO">
+        UPDATE /* [biz.com.xml][updateGodOptValSortSeq][업체 상품 옵션 순서 수정][Neps] */
+        GOD_OPT_VAL SET
+                 SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                ,UDTER_ID = #{regtrId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     OPT_CD = #{optCd,jdbcType=VARCHAR}
+        AND     OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+        AND     COM_ID = #{comId,jdbcType=VARCHAR}
+        AND     NVL(SORT_SEQ, 999) <![CDATA[<>]]> #{sortSeq,jdbcType=NUMERIC}
+    </update>
+
+
+    <!-- 업체 담당자 저장 -->
+    <insert id="insertComChrger" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger">
+      INSERT /* [biz.com.xml][insertComChrger][업체 담당자 저장][Mark] */
+      INTO COM_CHRGER
+    (
+          COM_ID
+         ,CHRGER_JOB_CD
+         ,CHRGER_TURN
+         ,BRND_ID
+         ,CHRGER_NM
+         ,CHRGER_CLSF
+         ,CHRGER_EMAIL
+         ,CHRGER_TEL_NATION_NO
+         ,CHRGER_TEL_AREA_NO
+         ,CHRGER_TEL_TLOF_NO
+         ,CHRGER_TEL_TLOF_WTHN_NO
+         ,CHRGER_MOBIL_NATION_NO
+         ,CHRGER_MOBIL_AREA_NO
+         ,CHRGER_MOBIL_TLOF_NO
+         ,CHRGER_MOBIL_TLOF_WTHN_NO
+         ,REGTR_ID
+         ,REG_DT
+    )
+    VALUES
+    (
+          #{comId,jdbcType=VARCHAR}
+         ,#{chrgerJobCd,jdbcType=VARCHAR}
+         ,(SELECT NVL(MAX(CHRGER_TURN),0)+1 FROM COM_CHRGER WHERE COM_ID = #{comId,jdbcType=VARCHAR} AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR})
+         ,#{brndId,jdbcType=VARCHAR}
+         ,#{chrgerNm,jdbcType=VARCHAR}
+         ,#{chrgerClsf,jdbcType=VARCHAR}
+         ,#{chrgerEmail,jdbcType=VARCHAR}
+         ,#{chrgerTelNationNo,jdbcType=VARCHAR}
+         ,#{chrgerTelAreaNo,jdbcType=VARCHAR}
+         ,#{chrgerTelTlofNo,jdbcType=VARCHAR}
+         ,#{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+         ,#{chrgerMobilNationNo,jdbcType=VARCHAR}
+         ,#{chrgerMobilAreaNo,jdbcType=VARCHAR}
+         ,#{chrgerMobilTlofNo,jdbcType=VARCHAR}
+         ,#{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+         ,#{regtrId,jdbcType=VARCHAR}
+         ,SYSDATE
+    )
+    </insert>
+
+    <!-- 업체 담당자 수정 -->
+    <update id="updateComChrger" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger">
+		/* [biz.com.xml][updateComChrger][업체 담당자 수정][steven] 20160315 */
+		MERGE INTO COM_CHRGER
+             USING DUAL
+                ON (COM_ID = #{comId,jdbcType=VARCHAR} and CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR} and CHRGER_TURN = #{chrgerTurn,jdbcType=VARCHAR})
+              WHEN MATCHED THEN
+						 UPDATE SET 	CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+										<if test='chrgerClsf != null and chrgerClsf != ""'>
+										,CHRGER_CLSF = #{chrgerClsf,jdbcType=VARCHAR}
+										</if>
+										,CHRGER_EMAIL = #{chrgerEmail,jdbcType=VARCHAR}
+										,CHRGER_TEL_NATION_NO = #{chrgerTelNationNo,jdbcType=VARCHAR}
+										,CHRGER_TEL_AREA_NO = #{chrgerTelAreaNo,jdbcType=VARCHAR}
+										,CHRGER_TEL_TLOF_NO = #{chrgerTelTlofNo,jdbcType=VARCHAR}
+										,CHRGER_TEL_TLOF_WTHN_NO = #{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+										,CHRGER_MOBIL_NATION_NO = #{chrgerMobilNationNo,jdbcType=VARCHAR}
+										,CHRGER_MOBIL_AREA_NO = #{chrgerMobilAreaNo,jdbcType=VARCHAR}
+										,CHRGER_MOBIL_TLOF_NO = #{chrgerMobilTlofNo,jdbcType=VARCHAR}
+										,CHRGER_MOBIL_TLOF_WTHN_NO = #{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+										,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+										,UDT_DT = SYSDATE
+										<if test='brndId != null and brndId != ""'>
+										,BRND_ID = #{brndId,jdbcType=VARCHAR}
+										</if>
+            			 WHEN NOT MATCHED THEN
+                      					 INSERT (
+                      					             COM_ID
+                      					            ,CHRGER_JOB_CD
+                      					            ,CHRGER_TURN
+													,CHRGER_NM
+													,CHRGER_CLSF
+													,CHRGER_EMAIL
+													,CHRGER_TEL_NATION_NO
+													,CHRGER_TEL_AREA_NO
+													,CHRGER_TEL_TLOF_NO
+													,CHRGER_TEL_TLOF_WTHN_NO
+													,CHRGER_MOBIL_NATION_NO
+													,CHRGER_MOBIL_AREA_NO
+													,CHRGER_MOBIL_TLOF_NO
+													,CHRGER_MOBIL_TLOF_WTHN_NO
+													,REGTR_ID
+													,REG_DT
+													,UDTER_ID
+													,UDT_DT
+													,BRND_ID
+												 )
+									     VALUES (
+									                  #{comId,jdbcType=VARCHAR}
+									                , #{chrgerJobCd,jdbcType=VARCHAR}
+									                , (SELECT NVL(MAX(CHRGER_TURN),0)+1 FROM COM_CHRGER WHERE COM_ID = #{comId,jdbcType=VARCHAR} AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR})
+													, #{chrgerNm,jdbcType=VARCHAR}
+													, #{chrgerClsf,jdbcType=VARCHAR}
+													, #{chrgerEmail,jdbcType=VARCHAR}
+													, #{chrgerTelNationNo,jdbcType=VARCHAR}
+													, #{chrgerTelAreaNo,jdbcType=VARCHAR}
+													, #{chrgerTelTlofNo,jdbcType=VARCHAR}
+													, #{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+													, #{chrgerMobilNationNo,jdbcType=VARCHAR}
+													, #{chrgerMobilAreaNo,jdbcType=VARCHAR}
+													, #{chrgerMobilTlofNo,jdbcType=VARCHAR}
+													, #{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+													, #{regtrId,jdbcType=VARCHAR}
+													, SYSDATE
+													, #{udterId,jdbcType=VARCHAR}
+													, SYSDATE
+													, #{brndId,jdbcType=VARCHAR}
+												 )
+    </update>
+
+    <!-- 업체 언어별 담당자 수정 -->
+    <update id="updateComLangbyChrger" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger">
+		/* [biz.com.xml][updateComLangbyChrger][업체 언어별 담당자 수정][sangsic] 20160406 */
+		MERGE INTO COM_LANGBY_CHRGER USING DUAL ON (COM_ID = #{comId,jdbcType=VARCHAR} and CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR} and CHRGER_TURN = #{chrgerTurn,jdbcType=VARCHAR} AND LANG_CD = #{lang,jdbcType=VARCHAR})
+		WHEN MATCHED THEN
+
+				UPDATE
+				SET CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+				<if test='chrgerClsf != null and chrgerClsf != ""'> ,
+					CHRGER_CLSF = #{chrgerClsf,jdbcType=VARCHAR}
+				</if> ,
+
+				UDTER_ID = #{udterId,jdbcType=VARCHAR} ,
+				UDT_DT = SYSDATE
+		WHEN NOT MATCHED THEN
+						INSERT
+						(
+						COM_ID ,
+						CHRGER_JOB_CD ,
+						CHRGER_TURN ,
+						CHRGER_NM ,
+						CHRGER_CLSF ,
+						lang_cd,
+						REGTR_ID ,
+						REG_DT ,
+						UDTER_ID ,
+						UDT_DT
+						)
+						VALUES
+						(
+						#{comId,jdbcType=VARCHAR} ,
+						#{chrgerJobCd,jdbcType=VARCHAR} ,
+						<if test='chrgerTurn != null and chrgerTurn != ""'>
+							#{chrgerTurn,jdbcType=VARCHAR} ,
+						</if>
+						<if test='chrgerTurn == null or chrgerTurn == ""'>
+							(SELECT MAX(CHRGER_TURN) FROM COM_CHRGER WHERE COM_ID = #{comId,jdbcType=VARCHAR} AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}),
+						</if>
+						#{chrgerNm,jdbcType=VARCHAR} ,
+						#{chrgerClsf,jdbcType=VARCHAR} ,
+						#{lang,jdbcType=VARCHAR} ,
+						#{regtrId,jdbcType=VARCHAR} ,
+						SYSDATE ,
+						#{udterId,jdbcType=VARCHAR} ,
+						SYSDATE
+						)
+    </update>
+
+    <!-- 제휴대행사 브랜드 수수료 조회를 위한 조건 쿼리 -->
+    <sql id="whereComAffVrscComBrnd">
+		<if test='searchGubun != null and searchGubun != ""'>
+			<if test='searchGubun eq "comNm" and searchTxt != null and searchTxt != ""'>
+				AND UPPER(C.COM_NM) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+			</if>
+			<if test='searchGubun eq "comId" and searchTxt != null and searchTxt != ""'>
+				AND UPPER(C.COM_ID) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+			</if>
+			<if test='searchGubun eq "brndNm" and searchTxt != null and searchTxt != ""'>
+				AND UPPER(SB.BRND_NM) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+			</if>
+			<if test='searchGubun eq "brndId" and searchTxt != null and searchTxt != ""'>
+				AND UPPER(SB.BRND_ID) LIKE '%'||UPPER(#{searchTxt,jdbcType=VARCHAR})||'%'
+			</if>
+		</if>
+    </sql>
+
+    <resultMap id="comAffVrscComBrndResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorListResult">
+       <result property="comTpCd"                            column="COM_TP_CD" />          <!-- 유형코드  -->
+	   <result property="comAffVrscComBrnd.affVrscComId"     column="AFF_VRSC_COM_ID" />    <!-- 제휴대행사ID -->
+	   <result property="com.comNm"                          column="COM_NM" />             <!-- 제휴사명 -->
+	   <result property="comAffVrscComBrnd.affComId"         column="AFF_COM_ID" />         <!-- 제휴사코드 -->
+	   <result property="comAffVrscComBrnd.saleShopCd"       column="SALE_SHOP_CD" />       <!-- 판매점코드 -->
+	   <result property="brndPath"                           column="BRND_PATH" />          <!--브랜드 경로  -->
+	   <result property="brndNm"                             column="BRND_NM" />            <!-- 브래드명 -->
+	   <result property="comAffVrscComBrnd.brndId"           column="BRND_ID" />            <!-- 브래드아이디 -->
+	   <result property="comAffVrscComBrnd.affComFeeRt"      column="AFF_COM_FEE_RT" />     <!-- 제휴사 수수로율 -->
+	   <result property="comAffVrscComBrnd.affVrscComFeeRt"  column="AFF_VRSC_COM_FEE_RT" /><!-- 대행사 수수로율 -->
+	   <result property="comAffVrscComBrnd.dirtCntcYn"       column="DIRT_CNTC_YN" />       <!-- 직접 연계 여부 -->
+	   <result property="comAffVrscComBrnd.affComInvAplYn"   column="AFF_COM_INV_APL_YN" /> <!-- 제휴 업체 재고 적용 여부 -->
+	   <result property="comAffVrscComBrnd.affComInvDstbRt"  column="AFF_COM_INV_DSTB_RT" /><!-- 제휴 업체 재고 분배 율 -->
+	   <result property="regterNm"                           column="REGTR_NM" />
+	   <result property="viewRegDt"                          column="VIEW_REG_DT" />
+	   <result property="udterNm"                            column="UDTER_NM" />
+	   <result property="viewUdtDt"                          column="VIEW_UDT_DT" />
+	</resultMap>
+
+	<!-- 제휴대행사 브랜드 수수료 조회 건수-->
+	<select id="selectComAffVrscComBrndCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="long">
+		SELECT /* [biz.com.xml][selectComAffVrscComBrndCount][제휴대행사 브랜드 수수료 조회 건수][Mark] */
+               COUNT(*)
+           FROM COM C
+                ,SYS_BRND SB
+                ,COM_AFF_VRSC_COM_BRND CAVCB
+          WHERE C.COM_ID = CAVCB.AFF_COM_ID
+            AND SB.BRND_ID = CAVCB.BRND_ID
+            AND CAVCB.AFF_VRSC_COM_ID = #{com.comId,jdbcType=VARCHAR}
+            <include refid="com.plgrim.ncp.biz.vendor.whereComAffVrscComBrnd"/>
+	</select>
+
+    <!-- 제휴대행사 브랜드 수수료 조회 -->
+    <select id="selectComAffVrscComBrnd" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="comAffVrscComBrndResultMap">
+      SELECT 'AFF_AGNC' AS COM_TP_CD    /*유형코드*/
+             ,B.AFF_VRSC_COM_ID /* 제휴대행사코드 */
+             ,B.COM_NM             /*제휴사명*/
+             ,B.AFF_COM_ID     /*제휴사코드*/
+             ,B.SALE_SHOP_CD   /*판매점코드*/
+             ,(
+               SELECT SUBSTR(SYS_CONNECT_BY_PATH(brnd_nm, '>'), 2) path
+                 FROM sys_brnd
+                WHERE BRND_ID = B.BRND_ID
+                START WITH UPPER_BRND_ID IS NULL
+              CONNECT BY PRIOR brnd_id =UPPER_BRND_ID
+              ) AS BRND_PATH /* 브랜드 경로 */
+              ,B.BRND_NM /* 브래드명 */
+              ,B.BRND_ID/* 브래드 코드 */
+              ,B.AFF_COM_FEE_RT/* 제휴사 수수로율*/
+              ,B.AFF_VRSC_COM_FEE_RT/* 대행사 수수로율*/
+              ,B.DIRT_CNTC_YN/*직접연계여부*/
+              ,B.AFF_COM_INV_APL_YN   /* 제휴 업체 재고 적용 여부 */
+	          ,B.AFF_COM_INV_DSTB_RT  /* 제휴 업체 재고 분배 율 */
+              ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.REGTR_ID) || CASE WHEN B.REGTR_ID IS NOT NULL THEN '(' || B.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+              ,TO_CHAR(B.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+              ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = B.UDTER_ID) || CASE WHEN B.UDTER_ID IS NOT NULL THEN '(' || B.UDTER_ID || ')' END AS UDTER_NM /*수정자명*/
+              ,TO_CHAR(B.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+    	FROM(
+	    	<include refid="com.plgrim.ncp.base.beginPage"/>
+	    	SELECT /* [biz.com.xml][selectComAffVrscComBrnd][제휴대행사 브랜드 수수료 조회][Mark] */
+	               CAVCB.AFF_VRSC_COM_ID       /* 제휴대행사코드 */
+	               ,C.COM_NM                   /*제휴사명*/
+	               ,CAVCB.AFF_COM_ID           /*제휴사코드*/
+	               ,CAVCB.SALE_SHOP_CD         /*판매점코드*/
+	               ,SB.BRND_NM                 /* 브래드명 */
+	               ,CAVCB.BRND_ID              /* 브래드 코드 */
+	               ,CAVCB.AFF_COM_FEE_RT       /* 제휴사 수수로율*/
+	               ,CAVCB.AFF_VRSC_COM_FEE_RT  /* 대행사 수수로율*/
+	               ,CAVCB.DIRT_CNTC_YN         /* 직접연계여부 */
+	               ,CAVCB.AFF_COM_INV_APL_YN   /* 제휴 업체 재고 적용 여부 */
+	               ,CAVCB.AFF_COM_INV_DSTB_RT  /* 제휴 업체 재고 분배 율 */
+	               ,CAVCB.REGTR_ID
+	               ,CAVCB.REG_DT
+	               ,CAVCB.UDTER_ID
+	               ,CAVCB.UDT_DT               /*수정일(YYYY-MM-DD HH24:MI)*/
+	           FROM COM C
+	                ,SYS_BRND SB
+	                ,COM_AFF_VRSC_COM_BRND CAVCB
+	          WHERE C.COM_ID = CAVCB.AFF_COM_ID
+	            AND SB.BRND_ID = CAVCB.BRND_ID
+	            AND CAVCB.AFF_VRSC_COM_ID = #{com.comId,jdbcType=VARCHAR}
+	            <include refid="com.plgrim.ncp.biz.vendor.whereComAffVrscComBrnd"/>
+	          ORDER BY CAVCB.SALE_SHOP_CD
+	    	<include refid="com.plgrim.ncp.base.endPage"/>
+	    	)B
+    </select>
+
+    <!-- 제휴대행사 브랜드 수수료 엑셀 -->
+    <select id="selectComAffVrscComBrndExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultType="java.util.LinkedHashMap">
+    	SELECT /* [biz.com.xml][selectComAffVrscComBrndExcel][제휴대행사 브랜드 수수료 엑셀][Mark] */
+				C.COM_NM             /*제휴사명*/
+               ,CAVCB.AFF_COM_ID     /*제휴사코드*/
+               ,CAVCB.SALE_SHOP_CD   /*판매점코드*/
+               ,SB.BRND_NM /* 브래드명 */
+               ,CAVCB.BRND_ID/* 브래드 코드 */
+               ,CAVCB.AFF_COM_FEE_RT     /* 제휴사 수수로율*/
+               ,CAVCB.AFF_VRSC_COM_FEE_RT/* 대행사 수수로율*/
+               ,DECODE(CAVCB.DIRT_CNTC_YN,'Y','사용','미사용') AS DIRT_CNTC_YN /*직접연계여부*/
+               ,DECODE(CAVCB.AFF_COM_INV_APL_YN,'Y','사용','미사용') AS AFF_COM_INV_APL_YN /*제휴 업체 재고 적용 여부*/
+               ,CAVCB.AFF_COM_INV_DSTB_RT/* 제휴 업체 재고 분배 율 */
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = CAVCB.REGTR_ID) || CASE WHEN CAVCB.REGTR_ID IS NOT NULL THEN '(' || CAVCB.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+               ,TO_CHAR(CAVCB.reg_dt, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = CAVCB.UDTER_ID) || CASE WHEN CAVCB.UDTER_ID IS NOT NULL THEN '(' || CAVCB.UDTER_ID || ')' END AS UDTER_NM /*수정자명*/
+               ,TO_CHAR(CAVCB.udt_dt,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+           FROM COM C
+                ,SYS_BRND SB
+                ,COM_AFF_VRSC_COM_BRND CAVCB
+          WHERE C.COM_ID = CAVCB.AFF_COM_ID
+            AND SB.BRND_ID = CAVCB.BRND_ID
+            AND CAVCB.AFF_VRSC_COM_ID = #{com.comId,jdbcType=VARCHAR}
+            <include refid="com.plgrim.ncp.biz.vendor.whereComAffVrscComBrnd"/>
+          ORDER BY CAVCB.SALE_SHOP_CD
+    </select>
+
+    <!-- 제휴대행사 브랜드 수수료 등록-->
+    <insert id="mergeComAffVrscComBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComAffVrscComBrnd">
+        MERGE /* [biz.com.xml][mergeComAffVrscComBrnd][제휴대행사 브랜드 수수료 등록][Mark] */
+		 INTO COM_AFF_VRSC_COM_BRND CAVCB
+		   USING (
+	               SELECT  #{affVrscComId,jdbcType=VARCHAR} AS AFF_VRSC_COM_ID
+	                     , #{affComId,jdbcType=VARCHAR} AS AFF_COM_ID
+	                     , #{brndId,jdbcType=VARCHAR} AS BRND_ID
+	                FROM DUAL
+		          ) TARGET
+		   ON (CAVCB.AFF_VRSC_COM_ID = TARGET.AFF_VRSC_COM_ID
+		       AND CAVCB.AFF_COM_ID = TARGET.AFF_COM_ID
+		       AND CAVCB.BRND_ID = TARGET.BRND_ID
+		     )
+		WHEN MATCHED THEN
+		    UPDATE SET
+		    	CAVCB.AFF_COM_FEE_RT = #{affComFeeRt,jdbcType=VARCHAR}
+		        , CAVCB.AFF_VRSC_COM_FEE_RT = #{affVrscComFeeRt,jdbcType=VARCHAR}
+		        , CAVCB.DIRT_CNTC_YN = #{dirtCntcYn,jdbcType=VARCHAR}
+		        , CAVCB.AFF_COM_INV_APL_YN = #{affComInvAplYn,jdbcType=VARCHAR}
+		        , CAVCB.AFF_COM_INV_DSTB_RT = #{affComInvDstbRt,jdbcType=VARCHAR}
+		        , CAVCB.SALE_SHOP_CD = #{saleShopCd,jdbcType=VARCHAR}
+		        , CAVCB.UDTER_ID = #{regtrId,jdbcType=VARCHAR}
+		        , CAVCB.UDT_DT   = SYSDATE
+		WHEN NOT MATCHED THEN
+		    INSERT (
+		            AFF_VRSC_COM_ID
+		            ,AFF_COM_ID
+		            ,BRND_ID
+		            ,AFF_COM_FEE_RT
+		            ,AFF_VRSC_COM_FEE_RT
+		            ,DIRT_CNTC_YN
+		            ,AFF_COM_INV_APL_YN
+		            ,AFF_COM_INV_DSTB_RT
+		            ,SALE_SHOP_CD
+		            ,REGTR_ID
+		            ,REG_DT
+		        )
+		        VALUES
+		        (
+		            #{affVrscComId,jdbcType=VARCHAR}
+		           ,#{affComId,jdbcType=VARCHAR}
+		           ,#{brndId,jdbcType=VARCHAR}
+		           ,#{affComFeeRt,jdbcType=VARCHAR}
+		           ,#{affVrscComFeeRt,jdbcType=VARCHAR}
+		           ,#{dirtCntcYn,jdbcType=VARCHAR}
+		           ,#{affComInvAplYn,jdbcType=VARCHAR}
+		           ,#{affComInvDstbRt,jdbcType=VARCHAR}
+		           ,#{saleShopCd,jdbcType=VARCHAR}
+		           ,#{regtrId,jdbcType=VARCHAR}
+		           ,SYSDATE
+		        )
+    </insert>
+
+    <!-- 제휴대행사 브랜드 수수료 삭제 -->
+    <delete id="deleteComAffVrscComBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComAffVrscComBrnd">
+        DELETE /* [biz.com.xml][deleteComAffVrscComBrnd][제휴대행사 브랜드 수수료 삭제][Mark] */
+          FROM COM_AFF_VRSC_COM_BRND
+		 WHERE AFF_VRSC_COM_ID = #{affVrscComId}
+		   AND AFF_COM_ID = #{affComId}
+		   <if test='brndId != null and brndId != ""'>
+		   AND BRND_ID = #{brndId}
+		   </if>
+	</delete>
+
+	<resultMap id="AffComResultMap" type="com.plgrim.ncp.commons.result.ComPopupResult">
+		<result property="com.comId" column="com_id" />
+		<result property="com.comNm" column="com_nm" />
+		<result property="com.rprstivNm" column="rprstiv_nm" />
+		<result property="com.krCprRegNo" column="kr_cpr_reg_no" />
+		<result property="com.krBmanRegNo" column="kr_bman_reg_no" />
+		<result property="com.lnmAddrPostNo" column="lnm_addr_post_no" />
+		<result property="com.lnmAddrBaseAddr" column="lnm_addr_base_addr" />
+		<result property="com.lnmAddrDetailAddr" column="lnm_addr_detail_addr" />
+		<result property="com.rdAddrPostNo" column="rd_addr_post_no" />
+		<result property="com.rdAddrBaseAddr" column="rd_addr_base_addr" />
+		<result property="com.rdAddrDetailAddr" column="rd_addr_detail_addr" />
+	</resultMap>
+
+	<select id="selectAffComList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorSearchDTO" resultMap="AffComResultMap">
+			SELECT /* [biz.com.xml][selectAffComList][제휴사 조회][Mark] */
+			   c.com_id, c.com_nm, c.rprstiv_nm,
+			   c.kr_cpr_reg_no, c.kr_bman_reg_no,
+			   REPLACE(c.lnm_addr_post_no,'-','') AS lnm_addr_post_no, c.lnm_addr_base_addr, c.lnm_addr_detail_addr,
+			   REPLACE(c.rd_addr_post_no,'-','') AS rd_addr_post_no, c.rd_addr_base_addr, c.rd_addr_detail_addr
+			FROM com c
+		   WHERE c.com_stat_cd = 'USE'
+			 AND c.delete_yn = 'N'
+			 AND c.com_tp_cd = 'AFF_SELR'
+			 AND c.com_id in (SELECT AFF_COM_ID FROM COM_AFF_VRSC_COM_CNNC WHERE AFF_VRSC_COM_ID = #{com.comId,jdbcType=VARCHAR})
+			<if test='searchGubun != null and searchGubun != ""'>
+				<if test='searchGubun eq "comNm" and searchTxt != null and searchTxt != ""'>
+					AND C.COM_NM LIKE '%'||#{searchTxt,jdbcType=VARCHAR}||'%'
+				</if>
+				<if test='searchGubun eq "comId" and searchTxt != null and searchTxt != ""'>
+					AND C.COM_ID LIKE '%'||#{searchTxt,jdbcType=VARCHAR}||'%'
+				</if>
+			</if>
+		ORDER BY c.com_id ASC
+	</select>
+
+    <!-- 업체 통화 국내 배송비 이력 삭제 -->
+    <!-- 
+    <delete id="deleteComCrncyDmstcDlvCstHist" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComCrncyDmstcDlvCstHist">
+    	DELETE /* [biz.com.xml][deleteComCrncyDmstcDlvCstHist] */
+    	  FROM COM_CRNCY_DMSTC_DLV_CST_HIST
+    	 WHERE DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+    </delete>
+ 	-->
+ 	
+    <!-- 업체 통화 국내 배송비 삭제 -->
+    <!-- 
+    <delete id="deleteComCrncyDmstcDlvCst" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComCrncyDmstcDlvCst">
+    	DELETE /* [biz.com.xml][deleteComCrncyDmstcDlvCst] */
+    	  FROM COM_CRNCY_DMSTC_DLV_CST
+    	 WHERE DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+    </delete>
+ 	-->
+ 	
+    <!-- 업체 국내 배송비 정책 이력 삭제 -->
+    <delete id="deleteComDmstcDlvCstPlcHist" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComDmstcDlvCstPlcHist">
+    	DELETE /* [biz.com.xml][deleteComDmstcDlvCstPlcHist] */
+    	  FROM COM_DMSTC_DLV_CST_PLC_HIST
+    	 WHERE DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+    </delete>
+
+    <!-- 업체 국내 배송비 정책 예외 삭제 -->
+    <delete id="deleteComDmstcDlvCstPlcExcp" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComDmstcDlvCstPlcExcp">
+    	DELETE /* [biz.com.xml][deleteComDmstcDlvCstPlcExcp] */
+    	  FROM COM_DMSTC_DLV_CST_PLC_EXCP
+    	 WHERE DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+    </delete>
+
+    <!-- 업체 국내 배송비 정책 삭제 -->
+    <delete id="deleteComDmstcDlvCstPlc" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComDmstcDlvCstPlc">
+    	DELETE /* [biz.com.xml][deleteComDmstcDlvCstPlc] */
+    	  FROM COM_DMSTC_DLV_CST_PLC
+    	 WHERE DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+    </delete>
+
+    <!-- 업체 담당자 상세 조회. -->
+    <select id="selectComChrger" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger" resultType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger">
+        SELECT /* com.plgrim.ncp.base.repository.com.selectComChrger jackie 20150428 */
+                COM_ID
+               ,CHRGER_JOB_CD
+               ,CHRGER_TURN
+               ,BRND_ID
+               ,CHRGER_NM
+               ,CHRGER_CLSF
+               ,CHRGER_EMAIL
+               ,CHRGER_TEL_NATION_NO
+               ,CHRGER_TEL_AREA_NO
+               ,CHRGER_TEL_TLOF_NO
+               ,CHRGER_TEL_TLOF_WTHN_NO
+               ,CHRGER_MOBIL_NATION_NO
+               ,CHRGER_MOBIL_AREA_NO
+               ,CHRGER_MOBIL_TLOF_NO
+               ,CHRGER_MOBIL_TLOF_WTHN_NO
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    COM_CHRGER t
+        WHERE   COM_ID = #{comId,jdbcType=VARCHAR}
+        AND     CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+        <if test='chrgerTurn != null and chrgerTurn != ""'>
+        AND     CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+        </if>
+        <if test='brndId != null and brndId != ""'>
+        AND     BRND_ID = #{brndId,jdbcType=NUMERIC}
+        </if>
+    </select>
+
+    <!-- 업체 등록 건수 (참조입력용) -->
+    <select id="getComCnt" parameterType="com.plgrim.ncp.base.entities.datasource1.com.Com" resultType="Integer">
+        select /* com.plgrim.ncp.base.repository.com.getComCnt peter */
+        	   count(*) as cnt
+        from com
+        where KR_BMAN_REG_NO = #{krBmanRegNo,jdbcType=VARCHAR}
+    </select>
+
+	<resultMap id="SysStdOptMap" type="com.plgrim.ncp.biz.vendor.result.SysStdOptResult">
+		<result property="stdOptCd" column="STD_OPT_CD" />
+		<result property="optNm" column="OPT_NM" />
+		<result property="stdOptValCd" column="STD_OPT_VAL_CD" />
+		<result property="optValNm" column="OPT_VAL_NM" />
+		<result property="useYn" column="USE_YN" />
+	</resultMap>
+
+	<select id="selectSysStdOpt" parameterType="com.plgrim.ncp.biz.vendor.data.SysStdOptSearchDTO" resultMap="SysStdOptMap">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT		ssov.std_opt_cd
+				   ,sso.opt_nm
+				   ,ssov.std_opt_val_cd
+				   ,ssov.opt_val_nm
+				   ,ssov.use_yn
+		  FROM		sys_std_opt_val ssov
+LEFT OUTER JOIN   sys_std_opt sso ON ssov.std_opt_cd = sso.std_opt_cd
+	  ORDER BY     sso.sort_seq, ssov.std_opt_val_cd
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	<select id="selectSysStdOptTotal" parameterType="com.plgrim.ncp.biz.vendor.data.SysStdOptSearchDTO" resultType="long">
+		SELECT		 COUNT(*)
+		  FROM 		 sys_std_opt_val ssov
+LEFT OUTER JOIN 	 sys_std_opt sso ON ssov.std_opt_cd = sso.std_opt_cd
+    </select>
+
+	<resultMap id="comAffComBrndHistResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorListResult">
+	   <result property="comAffComBrndHist.affVrscComId"                         column="AFF_VRSC_COM_ID" />           <!-- 제휴 대행 업체 ID	  -->
+	   <result property="comAffComBrndHist.affComId"                   column="AFF_COM_ID" />              <!-- 제휴 업체 ID -->
+	   <result property="comAffComBrndHist.brndId"                  column="BRND_ID" />             <!-- 브랜드 ID -->
+	   <result property="comAffComBrndHist.comBrndHistSectCd"                          column="COM_BRND_HIST_SECT_CD" />             <!-- 업체 브랜드 이력 구분 코드 -->
+	   <result property="comAffComBrndHist.histBegDt"                        column="HIST_BEG_DT" />           <!-- 이력 시작 일시 -->
+	   <result property="comAffComBrndHist.histEndDt"                       column="HIST_END_DT" />         <!-- 이력 종료 일시 -->
+	   <result property="comAffComBrndHist.modBfHistRt"   column="MOD_BF_HIST_RT" /> <!-- 변경 이전 이력 율	 -->
+	   <result property="comAffComBrndHist.modAfHistRt"   			column="MOD_AF_HIST_RT" /> <!-- 변경 이후 이력 율	 -->
+	   <result property="comAffComBrndHist.regtrId"                 column="REGTR_ID" />
+	   <result property="comAffComBrndHist.regDt"                   column="REG_DT" />
+	   <result property="comAffComBrndHist.udterId"                 column="UDTER_ID" />
+	   <result property="comAffComBrndHist.udtDt"                   column="UDT_DT" />
+	</resultMap>
+
+    <select id="selectComAffVrscComBrndOldData" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComAffComBrndHist" resultMap="comAffComBrndHistResultMap">
+    	/* selectComAffVrscComBrndOldData */
+    		SELECT
+					AFF_VRSC_COM_ID
+					,AFF_COM_ID
+					,BRND_ID
+					,COM_BRND_HIST_SECT_CD
+					,HIST_BEG_DT
+					,HIST_END_DT
+					,MOD_BF_HIST_RT
+					,MOD_AF_HIST_RT
+			FROM
+				COM_AFF_COM_BRND_HIST
+    		WHERE
+	    		Aff_VRSC_COM_ID = #{affVrscComId}
+				AND AFF_COM_ID = #{affComId}
+				AND BRND_ID = #{brndId}
+				AND COM_BRND_HIST_SECT_CD = #{comBrndHistSectCd}
+				AND TO_CHAR(HIST_END_DT,'YYYYMM') = '999912'
+    </select>
+
+    <update id="updateComAffVrscComBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComAffComBrndHist">
+    	 /* updateComAffVrscComBrnd */
+    	UPDATE
+		    	COM_AFF_COM_BRND_HIST
+		    SET
+			        HIST_END_DT = sysdate
+			        ,UDTER_ID = #{udterId}
+			        ,UDT_DT = sysdate
+		    WHERE
+		    	Aff_VRSC_COM_ID = #{affVrscComId}
+				AND AFF_COM_ID = #{affComId}
+				AND BRND_ID = #{brndId}
+				AND COM_BRND_HIST_SECT_CD = #{comBrndHistSectCd}
+				AND TO_CHAR(HIST_END_DT,'YYYYMM') = '999912'
+    </update>
+
+
+    <insert id="insertInitComAffComBrndHist" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComAffComBrndHist">
+    	/* insertInitComAffComBrndHist */
+    	INSERT INTO
+		    	COM_AFF_COM_BRND_HIST
+		  (AFF_VRSC_COM_ID
+		  ,AFF_COM_ID
+		  ,BRND_ID
+		  ,COM_BRND_HIST_SECT_CD
+		  ,HIST_BEG_DT
+		  ,HIST_END_DT
+		  ,MOD_BF_HIST_RT
+		  ,MOD_AF_HIST_RT
+		  ,REGTR_ID
+		  ,REG_DT
+		  ,UDTER_ID
+		  ,UDT_DT)
+		   VALUES(
+		   #{affVrscComId}
+		   ,#{affComId}
+		   ,#{brndId}
+		   ,#{comBrndHistSectCd}
+		   ,sysdate
+		   ,to_date('99991231 23:59:59','yyyymmdd hh24:mi:ss')
+		   ,#{modBfHistRt}
+		   ,#{modAfHistRt}
+		   ,#{regtrId}
+		   ,sysdate
+		   ,#{udterId}
+		   ,sysdate)
+    </insert>
+
+
+       <resultMap id="selectComChrgerListMap" type="com.plgrim.ncp.biz.vendor.result.ComChrgerResult">
+	   <result property="comChrger.comId"                       column="COM_ID" />               <!-- 업쳬ID -->
+	   <result property="comChrger.chrgerJobCd"                  column="CHRGER_JOB_CD" />                    <!-- 담당자 업무 코드 -->
+	   <result property="comChrger.chrgerTurn"                  column="CHRGER_TURN" />                    <!-- 담당자 순번 -->
+	   <result property="comChrger.brndId"                    column="BRND_ID" />                       <!-- 브랜드 ID -->
+	   <result property="brndNm"                    column="BRND_NM" />                       <!-- 브랜드명 -->
+	   <result property="comChrger.chrgerNm"                             column="CHRGER_NM" />                      <!-- 담당자 명 -->
+	   <result property="comChrger.chrgerClsf"                           column="CHRGER_CLSF" />                    <!-- 담당자 직급 -->
+	   <result property="comChrger.chrgerEmail"                    column="CHRGER_EMAIL" />                      <!-- 담당자 이메일 -->
+	   <result property="comChrger.chrgerTelNationNo"                         column="CHRGER_TEL_NATION_NO" />                 <!-- 담당자 전화 국가번호 -->
+	   <result property="comChrger.chrgerTelAreaNo"                         column="CHRGER_TEL_AREA_NO" />                 <!-- 담당자 전화 지역번호 -->
+	   <result property="comChrger.chrgerTelTlofNo"                         column="CHRGER_TEL_TLOF_NO" />                 <!-- 담당자 전화 국번호 -->
+	   <result property="comChrger.chrgerTelTlofWthnNo"                         column="CHRGER_TEL_TLOF_WTHN_NO" />                 <!-- 담당자 전화 국내번호  -->
+	   <result property="comChrger.chrgerMobilNationNo"                         column="CHRGER_MOBIL_NATION_NO" />                 <!-- 담당자 휴대전화 국가번호  -->
+	   <result property="comChrger.chrgerMobilAreaNo"                         column="CHRGER_MOBIL_AREA_NO" />                 <!-- 담당자 휴대전화 지역번호 -->
+	   <result property="comChrger.chrgerMobilTlofNo"                         column="CHRGER_MOBIL_TLOF_NO" />                 <!-- 담당자 휴대전화 국번호 -->
+	   <result property="comChrger.chrgerMobilTlofWthnNo"                         column="CHRGER_MOBIL_TLOF_WTHN_NO" />                 <!-- 담당자 휴대전화 국내번호 -->
+	   <result property="comChrger.regtrId"                         column="REGTR_ID" />                 <!-- 등록자 ID  -->
+	   <result property="comChrger.regDt"                         column="REG_DT" />                 <!-- 등록 일시 -->
+	   <result property="comChrger.udterId"                         column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="comChrger.udtDt"                         column="UDT_DT" />                 <!-- 수정 일시 -->
+	   <result property="mobilTotalNumber"                         column="mobilTotalNumber" />                 <!-- 담당자 핸드폰 번호(합침) -->
+	   <result property="telTotalNumber"                         column="telTotalNumber" />                 <!-- 담당자 전화번호 (합침) -->
+	</resultMap>
+
+<!-- 업체 담당자 상세 조회. -->
+    <select id="selectComChrgerList" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger" resultMap="selectComChrgerListMap">
+        SELECT /* com.plgrim.ncp.base.repository.com.selectComChrgerList steven 20160304 */
+                t.COM_ID
+               ,t.CHRGER_JOB_CD
+               ,t.CHRGER_TURN
+               ,t.BRND_ID
+               ,brnd.brnd_nm
+               ,t.CHRGER_NM
+               ,t.CHRGER_CLSF
+               ,t.CHRGER_EMAIL
+               ,t.CHRGER_TEL_NATION_NO
+               ,t.CHRGER_TEL_AREA_NO
+               ,t.CHRGER_TEL_TLOF_NO
+               ,t.CHRGER_TEL_TLOF_WTHN_NO
+               ,t.CHRGER_MOBIL_NATION_NO
+               ,t.CHRGER_MOBIL_AREA_NO 
+               ,t.CHRGER_MOBIL_TLOF_NO
+               ,t.CHRGER_MOBIL_TLOF_WTHN_NO
+               , t.CHRGER_MOBIL_NATION_NO ||')'|| t.CHRGER_MOBIL_AREA_NO ||'-' ||t.CHRGER_MOBIL_TLOF_NO ||'-' || t.CHRGER_MOBIL_TLOF_WTHN_NO as mobilTotalNumber
+               , t.CHRGER_TEL_NATION_NO ||')'|| t.CHRGER_TEL_AREA_NO ||'-' ||t.CHRGER_TEL_TLOF_NO ||'-' || t.CHRGER_TEL_TLOF_WTHN_NO as telTotalNumber
+               ,t.REGTR_ID
+               ,t.REG_DT
+               ,t.UDTER_ID
+               ,t.UDT_DT
+        FROM    COM_CHRGER t
+        JOIN SYS_BRND brnd
+        ON T.BRND_ID = BRND.BRND_ID
+        WHERE   t.COM_ID = #{comId,jdbcType=VARCHAR}
+        AND     t.CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+        <if test='chrgerTurn != null and chrgerTurn != ""'>
+        AND     t.CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+        </if>
+        order by t.COM_ID, t.CHRGER_TURN asc
+    </select>
+
+      <!-- 업체 담당자 상세 조회. -->
+    <select id="selectComChrgerPopup" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger" resultType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger">
+        SELECT /* com.plgrim.ncp.base.repository.com.selectComChrger jackie 20150428 */
+                COM_ID
+               ,CHRGER_JOB_CD
+               ,CHRGER_TURN
+               ,BRND_ID
+               ,CHRGER_NM
+               ,CHRGER_CLSF
+               ,CHRGER_EMAIL
+               ,CHRGER_TEL_NATION_NO
+               ,CHRGER_TEL_AREA_NO
+               ,CHRGER_TEL_TLOF_NO
+               ,CHRGER_TEL_TLOF_WTHN_NO
+               ,CHRGER_MOBIL_NATION_NO
+               ,CHRGER_MOBIL_AREA_NO
+               ,CHRGER_MOBIL_TLOF_NO
+               ,CHRGER_MOBIL_TLOF_WTHN_NO
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    COM_CHRGER t
+        WHERE   COM_ID = #{comId,jdbcType=VARCHAR}
+        AND     CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+        <if test='chrgerTurn != null and chrgerTurn != ""'>
+        AND     CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+        </if>
+    </select>
+
+      <!-- 업체 언어별 담당자 조회. -->
+    <select id="selectComLangbyChrger" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger" resultMap="selectComBrndIdListMap">
+        SELECT /* com.plgrim.ncp.base.repository.com.selectComLangbyChrger sangsic 20160406 */
+			(SELECT CHRGER_NM
+			FROM COM_LANGBY_CHRGER
+			WHERE COM_ID = #{comId,jdbcType=VARCHAR}
+			AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+			<if test='chrgerTurn != null and chrgerTurn != ""'>
+				AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+			</if>
+			AND LANG_CD = 'ENG') AS EN_CHRGER_NM
+			,(SELECT CHRGER_NM
+			FROM COM_LANGBY_CHRGER
+			WHERE COM_ID = #{comId,jdbcType=VARCHAR}
+			AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+			<if test='chrgerTurn != null and chrgerTurn != ""'>
+				AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+			</if>
+			AND LANG_CD = 'CHI') AS CN_CHRGER_NM
+		FROM dual
+    </select>
+
+
+      <resultMap id="selectComBrndIdListMap" type="com.plgrim.ncp.biz.vendor.result.ComChrgerResult">
+	   <result property="comChrger.brndId"               column="BRND_ID" />                       <!-- 브랜드 ID -->
+	   <result property="brndNm"                         column="BRND_NM" />                 <!-- 담당자 핸드폰 번호(합침) -->
+	   <result property="enChrgerNm"                     column="EN_CHRGER_NM" />
+	   <result property="cnChrgerNm"                     column="CN_CHRGER_NM" />
+	</resultMap>
+
+
+      <!-- COM_ID로 브랜드 조회. -->
+    <select id="selectBrndIdList" parameterType="com.plgrim.ncp.base.entities.datasource1.com.ComChrger" resultMap="selectComBrndIdListMap">
+        SELECT /* selectBrndIdList steven 20160302 */
+            A.BRND_ID AS BRND_ID,
+		         (SELECT BRND_NM
+		            FROM SYS_BRND
+		           WHERE BRND_ID = A.BRND_ID) as BRND_NM
+		  FROM COM_BRND A
+		  WHERE A.COM_ID  = #{comId,jdbcType=VARCHAR}
+		ORDER BY BRND_ID ASC
+    </select>
+
+
+	<update id="updateCom" >
+		UPDATE /* [biz.com.xml][updateCom] */
+		COM SET
+		UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		,UDT_DT = SYSDATE
+		<if test='comStatCd != null and comStatCd != ""'>
+			,COM_STAT_CD = #{comStatCd,jdbcType=VARCHAR}
+		</if>
+		WHERE   1 = 1
+		AND     COM_ID = #{comId,jdbcType=VARCHAR}
+	</update>
+
+</mapper>

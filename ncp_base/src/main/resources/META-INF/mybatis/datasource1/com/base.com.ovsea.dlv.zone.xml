@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComOvseaDlvZone" parameterType="comOvseaDlvZone" resultType="comOvseaDlvZone">
+		SELECT /* com.plgrim.ncp.base.selectComOvseaDlvZone		Generator(Generator)	2018-05-23 */
+			   OVSEA_DLV_CST_PLC_SN
+			 , ZONE_TURN
+			 , ZONE_NM
+			 , ZONE_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_OVSEA_DLV_ZONE
+		 WHERE 1 = 1
+	   	   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND ZONE_TURN = #{zoneTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateComOvseaDlvZone" parameterType="comOvseaDlvZone">
+		UPDATE /* com.plgrim.ncp.base.updateComOvseaDlvZone		Generator(Generator)	2018-05-23 */
+		COM_OVSEA_DLV_ZONE SET
+			   ZONE_NM = #{zoneNm,jdbcType=VARCHAR}
+			 , ZONE_DSCR = #{zoneDscr,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND ZONE_TURN = #{zoneTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertComOvseaDlvZone" parameterType="comOvseaDlvZone">
+		INSERT /* com.plgrim.ncp.base.insertComOvseaDlvZone		Generator(Generator)	2018-05-23 */
+		INTO   COM_OVSEA_DLV_ZONE (
+			   OVSEA_DLV_CST_PLC_SN
+			 , ZONE_TURN
+			 , ZONE_NM
+			 , ZONE_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{zoneTurn,jdbcType=NUMERIC}
+			 , #{zoneNm,jdbcType=VARCHAR}
+			 , #{zoneDscr,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComOvseaDlvZone" parameterType="comOvseaDlvZone">
+		DELETE /* com.plgrim.ncp.base.deleteComOvseaDlvZone		Generator(Generator)	2018-05-23 */
+		  FROM COM_OVSEA_DLV_ZONE
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND ZONE_TURN = #{zoneTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

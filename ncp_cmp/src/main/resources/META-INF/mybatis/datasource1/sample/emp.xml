@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.sample">
+
+	<!-- 쿼리 테스트 -->
+	<select id="echo" resultType="int" parameterType="dept">
+        <![CDATA[
+			SELECT 1 FROM DUAL
+        ]]>
+	</select>
+	
+	<!-- Sample 20181015 - 2 -->
+	
+	<!-- 사원 상세 -->
+	<select id="selectEmpByEmpno" parameterType="int" resultType="emp">
+        <![CDATA[
+	        SELECT
+					empno AS empno,
+					ename AS ename,
+					job AS job,
+					sal AS sal,
+					deptno AS deptno
+			FROM aa_emp
+			WHERE empno = #{id}    
+        ]]>
+	</select>
+	
+	<!-- 사원 등록 -->
+	<insert id="insertEmp" parameterType="emp">
+		INSERT INTO aa_emp (
+			empno,
+			ename,
+			job,
+			sal,
+			deptno)
+		VALUES (
+			#{empno,jdbcType=NUMERIC},
+			#{ename,jdbcType=VARCHAR},
+			#{job,jdbcType=VARCHAR},
+			#{sal,jdbcType=NUMERIC},
+			#{deptNo,jdbcType=NUMERIC}
+		)
+	</insert>
+	
+	<!-- 사원 수정 -->
+	<update id="updateEmp" parameterType="emp">
+		UPDATE  aa_emp
+		SET
+				ename = #{ename},
+				job = #{job},
+				sal = #{sal},
+				deptno = #{deptNo}
+		WHERE empno = #{empno}
+	</update>
+	
+	
+	<!-- 사원 삭제 -->
+	<update id="deleteEmp" parameterType="int">
+		DELETE FROM  aa_emp
+		WHERE empno = #{id}
+	</update>
+	
+	
+	<!-- 사원 등록 -->
+	<insert id="insertDept" parameterType="dept">
+		INSERT INTO aa_dept (
+			deptno,
+			dname
+			)
+		VALUES (
+			#{deptNo,jdbcType=NUMERIC},
+			#{dName,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+</mapper>

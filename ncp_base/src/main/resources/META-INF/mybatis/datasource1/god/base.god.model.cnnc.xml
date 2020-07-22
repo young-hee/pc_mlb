@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodModelCnnc" parameterType="godModelCnnc" resultType="godModelCnnc">
+        SELECT /* com.plgrim.ncp.base.repository.god.selectGodModelCnnc  20160120 */
+                  GOD_NO
+				  ,MODEL_NO
+				  ,CSLT_SIZE_APL_YN
+				  ,PANTS_SIZE_APL_YN
+				  ,REGTR_ID
+				  ,REG_DT
+				  ,UDTER_ID
+				  ,UDT_DT
+        FROM    GOD_MODEL_CNNC t
+        WHERE   1 = 1
+        AND     MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+    
+    <update id="updateGodModelCnnc" parameterType="godModelCnnc">
+        UPDATE /* com.plgrim.ncp.base.repository.god.updateGodModelCnnc  20160120 */  
+        GOD_MODEL_CNNC SET
+                   CSLT_SIZE_APL_YN = #{csltSizeAplYn],jdbcType=VARCHAR}
+				  ,PANTS_SIZE_APL_YN = #{pantsSizeAplYn,jdbcType=VARCHAR}
+				  ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+				  ,UDT_DT = sysdate
+        WHERE   1 = 1
+        AND     MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+    
+	<insert id="insertGodModelCnnc" parameterType="godModelCnnc">
+	    INSERT /* com.plgrim.ncp.base.repository.god.insertGodModelCnnc  20160120 */  
+	    INTO GOD_MODEL_CNNC
+		(
+	      		   GOD_NO
+				  ,MODEL_NO
+				  ,CSLT_SIZE_APL_YN
+				  ,PANTS_SIZE_APL_YN
+				  ,REGTR_ID
+				  ,UDTER_ID
+				  ,REG_DT
+				  ,UDT_DT
+		)
+		VALUES
+		(
+	        #{godNo,jdbcType=NUMERIC}
+	       ,#{modelNo,jdbcType=VARCHAR}
+	       ,#{csltSizeAplYn,jdbcType=VARCHAR}
+	       ,#{pantsSizeAplYn,jdbcType=TIMESTAMP}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <delete id="deleteGodModelCnnc" parameterType="godModelCnnc">
+        DELETE /* com.plgrim.ncp.base.repository.god.deleteGodModelCnnc  20160120 */  
+        FROM GOD_MODEL_CNNC 
+        WHERE   1 = 1
+        AND     MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

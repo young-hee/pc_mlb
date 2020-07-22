@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysMallCntc" parameterType="sysMallCntc" resultType="sysMallCntc">
+		SELECT /* com.plgrim.ncp.base.selectSysMallCntc		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , CNTC_MALL_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_MALL_CNTC
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND CNTC_MALL_ID = #{cntcMallId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysMallCntc" parameterType="sysMallCntc">
+		UPDATE /* com.plgrim.ncp.base.updateSysMallCntc		Generator(Generator)	2018-05-23 */
+		SYS_MALL_CNTC SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND CNTC_MALL_ID = #{cntcMallId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysMallCntc" parameterType="sysMallCntc">
+		INSERT /* com.plgrim.ncp.base.insertSysMallCntc		Generator(Generator)	2018-05-23 */
+		INTO   SYS_MALL_CNTC (
+			   MALL_ID
+			 , CNTC_MALL_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{cntcMallId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysMallCntc" parameterType="sysMallCntc">
+		DELETE /* com.plgrim.ncp.base.deleteSysMallCntc		Generator(Generator)	2018-05-23 */
+		  FROM SYS_MALL_CNTC
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND CNTC_MALL_ID = #{cntcMallId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

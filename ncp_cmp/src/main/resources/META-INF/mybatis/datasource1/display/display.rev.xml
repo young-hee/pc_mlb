@@ -1,0 +1,2685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+	
+    <resultMap id="abTestResult" type="com.plgrim.ncp.biz.display.result.DspAbTestResult">
+		<result property="rowNumber" column="NO" />
+		<result property="dspAbTest.abTestSn" column="AB_TEST_SN" />
+		<result property="dspAbTest.abTestNm" column="AB_TEST_NM" />
+		<result property="dspAbTest.abTestDscr" column="AB_TEST_DSCR" />
+		<result property="dspAbTest.setExpsrMenmthdCd" column="SET_EXPSR_MENMTHD_CD" />
+		<result property="dspAbTest.begDt" column="BEG_DT" />
+		<result property="dspAbTest.endDt" column="END_DT" />
+		<result property="dspAbTest.progrsPsbYn" column="PROGRS_PSB_YN" />
+		<result property="udterNm" column="UDTER_NM" />
+		<result property="abTestMenuNm" column="AB_TEST_MENU_NM" />
+		<result property="abTestPageNm" column="AB_TEST_PAGE_NM" />
+		<result property="abTestStat" column="AB_TEST_STAT" />
+		<result property="abTestDate" column="AB_TEST_DATE" />
+		<result property="dspCtgryNo" column="DSP_CTGRY_NO" />
+		<result property="dspBrndCtgryNo" column="DSP_BRND_CTGRY_NO" />
+		<result property="dspBrndId" column="DSP_BRND_ID" />
+		<result property="promtSn" column="PROMT_SN" />
+		<result property="strndSn" column="STRND_SN" />
+		<result property="evtNo" column="EVT_NO" />
+		<result property="dspAbTest.udtDt" column="UDT_DT" />
+		<result property="modTurn" column="MOD_TURN" />
+		<result property="resultExistYn" column="RESULT_EXIST_YN" />
+		<result property="dvcSectCd" column="DVC_SECT_CD" />
+		<result property="setExpsrMenmthdNm" column="SET_EXPSR_MENMTHD_NM" />
+		<result property="abTestStatCd" column="AB_TEST_STAT_CD" />
+    </resultMap>
+
+	<resultMap id="revCpstResult" type="com.plgrim.ncp.biz.display.result.DspRevCpstResult">
+		<result property="dspRev.revSn" column="REV_SN" />
+		<result property="dspRev.revSectCd" column="REV_SECT_CD" />
+		<result property="dspRev.revDscr" column="REV_DSCR" />
+		<result property="dspRevCpst.revCpstTurn" column="REV_CPST_TURN" />
+		<result property="dspRevCpst.pcMobileTmplatIndUseYn" column="PC_MOBILE_TMPLAT_IND_USE_YN" />
+		<result property="dspRevCpst.pcTmplatSn" column="PC_TMPLAT_SN" />
+		<result property="dspRevCpst.mobileTmplatSn" column="MOBILE_TMPLAT_SN" />
+	</resultMap>
+
+	<!-- AB Test 목록 조회 -->
+	<select id="selectAbTestList" parameterType="com.plgrim.ncp.biz.display.data.DspAbTestBoDTO" resultMap="abTestResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT   /* [display.rev.xml][selectAbTestList2][AB Test 목록 조회][Emily] */
+			a.*
+			, SEMN.CD_NM AS SET_EXPSR_MENMTHD_NM						
+			, PS.CD_NM AS AB_TEST_STAT
+		FROM (
+				SELECT 	DISTINCT
+						dat.AB_TEST_SN,
+						dat.AB_TEST_NM,
+						CASE WHEN drc.DSP_CTGRY_NO IS NOT NULL THEN
+																	(CASE WHEN drc.DSP_CTGRY_NO LIKE 'THM%' THEN '테마페이지'
+																		  WHEN drc.DSP_CTGRY_NO LIKE 'BDM%' THEN '전시카테고리'
+																		  WHEN drc.DSP_CTGRY_NO LIKE 'DXM%' THEN '전시카테고리' END)
+							 WHEN drc.DSP_BRND_CTGRY_NO IS NOT NULL THEN '전시카테고리'
+							 WHEN drc.PROMT_SN IS NOT NULL THEN '기획전'
+							 WHEN EVT_NO IS NOT NULL THEN '이벤트'
+							 WHEN STRND_SN IS NOT NULL THEN 'S-TREND'
+						END AS AB_TEST_MENU_NM,
+						CASE WHEN drc.DSP_CTGRY_NO IS NOT NULL THEN (SELECT
+																				LISTAGG(dc.DSP_CTGRY_NM, ' > ') WITHIN GROUP (ORDER BY DSP_CTGRY_NO) AS DSP_CTGRY_NM
+																		FROM DSP_CTGRY dc
+																	   WHERE dc.CTGRY_DPTH_CD != 0
+															CONNECT BY PRIOR dc.UPPER_DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+																  START WITH dc.DSP_CTGRY_NO = drc.DSP_CTGRY_NO)
+							  WHEN drc.DSP_BRND_CTGRY_NO IS NOT NULL THEN (SELECT sb.BRND_NM || ' > ' || (SELECT
+																												  LISTAGG(dc.DSP_CTGRY_NM, ' > ') WITHIN GROUP (ORDER BY DSP_CTGRY_NO) AS DSP_CTGRY_NM
+																											FROM DSP_CTGRY dc
+																										   WHERE dc.CTGRY_DPTH_CD != 0
+																								CONNECT BY PRIOR dc.UPPER_DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+																									  START WITH dc.DSP_CTGRY_NO = drc.DSP_BRND_CTGRY_NO)
+																			 FROM SYS_BRND sb
+																			 JOIN DSP_BRND_CTGRY dc1 on sb.BRND_ID  = dc1.DSP_BRND_ID
+																			WHERE dc1.DSP_CTGRY_NO=drc.DSP_BRND_CTGRY_NO
+																			  AND dc1.DSP_BRND_ID = drc.DSP_BRND_ID)
+							  WHEN drc.PROMT_SN IS NOT NULL THEN (SELECT PROMT_NM FROM DSP_PROMT WHERE PROMT_SN = drc.PROMT_SN)
+							  WHEN drc.STRND_SN IS NOT NULL THEN (SELECT STRND_NM FROM DSP_STRND WHERE STRND_SN = drc.STRND_SN)
+						END AS AB_TEST_PAGE_NM,
+						CASE WHEN DAT.SET_EXPSR_MENMTHD_CD IS NULL or (DAT.SET_EXPSR_MENMTHD_CD = 'RND' AND (select count(*) from dsp_ab_test_rev where ab_test_sn = DATR.AB_TEST_SN and EXPSR_RT is not null and EXPSR_RT <![CDATA[>]]> 0) = 0 
+			                    or DAT.SET_EXPSR_MENMTHD_CD <![CDATA[<>]]> 'RND' AND (select count(*) from dsp_ab_test_set_flter where ab_test_sn = DATR.AB_TEST_SN ) = 0 )
+			                THEN  'WAIT'
+							ELSE 
+								CASE WHEN sysdate <![CDATA[>]]> dat.BEG_DT and sysdate <![CDATA[<]]> dat.END_DT THEN 'PROGRS'
+									 WHEN sysdate <![CDATA[>]]> dat.END_DT THEN 'END'
+									 WHEN sysdate <![CDATA[<]]> dat.BEG_DT THEN 'WAIT'
+								END 
+							END AS AB_TEST_STAT_CD,
+						(SELECT MAX(MOD_TURN) FROM DSP_AB_TEST_SET_MOD WHERE AB_TEST_SN = dat.AB_TEST_SN AND SET_TURN = 1) as MOD_TURN,
+						to_char(dat.BEG_DT, 'yyyy-mm-dd')||' ~ '||to_char(dat.END_DT,'yyyy-mm-dd') AS AB_TEST_DATE,
+						'-' AS RESULT_EXIST_YN,
+						sa.ADMIN_NM||'('||dat.UDTER_ID||')' AS UDTER_NM,
+						datr.DVC_SECT_CD,
+						dat.SET_EXPSR_MENMTHD_CD,
+						dat.PROGRS_PSB_YN,
+						dat.UDT_DT,
+						dat.REG_DT
+				FROM DSP_AB_TEST dat
+	 LEFT OUTER JOIN SYS_ADMIN sa ON dat.udter_id = sa.admin_id
+				JOIN DSP_AB_TEST_REV datr ON dat.AB_TEST_SN = datr.AB_TEST_SN
+				JOIN DSP_REV_CPST drc ON datr.REV_SN = drc.REV_SN AND drc.REV_CPST_TURN = datr.REV_CPST_TURN
+		) a
+		LEFT OUTER JOIN (SELECT CD, CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'SET_EXPSR_MENMTHD' AND LANG_CD = #{lang, jdbcType=VARCHAR}) SEMN
+		ON (SEMN.CD = a.SET_EXPSR_MENMTHD_CD)
+		LEFT OUTER JOIN (SELECT CD, CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'PROGRS_STAT' AND LANG_CD = #{lang, jdbcType=VARCHAR}) PS
+		ON (PS.CD = a.AB_TEST_STAT_CD)
+		WHERE 1 = 1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestNm)">
+			AND a.AB_TEST_NM LIKE '%'||#{scAbTestNm, jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestMenu)">
+			AND a.AB_TEST_MENU_NM = #{scAbTestMenu, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestStat)">
+			AND a.AB_TEST_STAT_CD = #{scAbTestStat, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStartDate) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEndDate)">
+			AND to_char(a.REG_DT, 'yyyy-MM-dd') BETWEEN #{scStartDate} and #{scEndDate}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestView) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestView)">
+			AND a.AB_TEST_PAGE_NM LIKE '%' || #{scAbTestView, jdbcType=VARCHAR} || '%'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDvcSectCd)">
+			AND a.DVC_SECT_CD = #{scDvcSectCd, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scSetExpsrMenmthdCd)">
+			AND a.SET_EXPSR_MENMTHD_CD = #{scSetExpsrMenmthdCd, jdbcType=VARCHAR}
+		</if>
+		ORDER BY a.AB_TEST_SN desc
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	<!-- AB Test 목록 총 Count -->
+	<select id="selectAbTestTotalCount" parameterType="com.plgrim.ncp.biz.display.data.DspAbTestBoDTO" resultType="Integer">
+	    /* [display.rev.xml][selectAbTestTotalCount][ AB Test 목록 총 Count 조회][Emily] */
+		SELECT  count(a.ab_test_sn)
+		  FROM (
+					SELECT 	DISTINCT
+							dat.AB_TEST_SN,
+							dat.AB_TEST_NM,
+							CASE WHEN drc.DSP_CTGRY_NO IS NOT NULL THEN
+																		(CASE WHEN drc.DSP_CTGRY_NO LIKE 'THM%' THEN '테마페이지'
+																			  WHEN drc.DSP_CTGRY_NO LIKE 'BDM%' THEN '전시카테고리'
+																			  WHEN drc.DSP_CTGRY_NO LIKE 'DXM%' THEN '전시카테고리' END)
+								 WHEN drc.DSP_BRND_CTGRY_NO IS NOT NULL THEN '전시카테고리'
+								 WHEN drc.PROMT_SN IS NOT NULL THEN '기획전'
+								 WHEN EVT_NO IS NOT NULL THEN '이벤트'
+								 WHEN STRND_SN IS NOT NULL THEN 'S-TREND'
+							END AS AB_TEST_MENU_NM,
+							CASE WHEN drc.DSP_CTGRY_NO IS NOT NULL THEN (SELECT
+																				  LISTAGG(dc.DSP_CTGRY_NM, ' > ') WITHIN GROUP (ORDER BY DSP_CTGRY_NO) AS DSP_CTGRY_NM
+																		   FROM DSP_CTGRY dc
+																		  WHERE dc.CTGRY_DPTH_CD != 0
+															   CONNECT BY PRIOR dc.UPPER_DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+																	 START WITH dc.DSP_CTGRY_NO = drc.DSP_CTGRY_NO)
+								 WHEN drc.DSP_BRND_CTGRY_NO IS NOT NULL THEN (SELECT sb.BRND_NM || ' > ' || (SELECT
+																													LISTAGG(dc.DSP_CTGRY_NM, ' > ') WITHIN GROUP (ORDER BY DSP_CTGRY_NO) AS DSP_CTGRY_NM
+																											   FROM DSP_CTGRY dc
+																											  WHERE dc.CTGRY_DPTH_CD != 0
+																								   CONNECT BY PRIOR dc.UPPER_DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+																										 START WITH dc.DSP_CTGRY_NO = drc.DSP_BRND_CTGRY_NO)
+																				FROM SYS_BRND sb
+																				JOIN DSP_BRND_CTGRY dc1 on sb.BRND_ID  = dc1.DSP_BRND_ID
+																			   WHERE dc1.DSP_CTGRY_NO=drc.DSP_BRND_CTGRY_NO
+																				 AND dc1.DSP_BRND_ID = drc.DSP_BRND_ID)
+								 WHEN drc.PROMT_SN IS NOT NULL THEN (SELECT PROMT_NM FROM DSP_PROMT WHERE PROMT_SN = drc.PROMT_SN)
+							END AS AB_TEST_PAGE_NM,
+							CASE WHEN DAT.SET_EXPSR_MENMTHD_CD IS NULL or (DAT.SET_EXPSR_MENMTHD_CD = 'RND' AND (select count(*) from dsp_ab_test_rev where ab_test_sn = DATR.AB_TEST_SN and EXPSR_RT is not null and EXPSR_RT <![CDATA[>]]> 0) = 0 
+			                    or DAT.SET_EXPSR_MENMTHD_CD <![CDATA[<>]]> 'RND' AND (select count(*) from dsp_ab_test_set_flter where ab_test_sn = DATR.AB_TEST_SN ) = 0 )
+			                THEN  'WAIT'
+							ELSE 
+								CASE WHEN sysdate <![CDATA[>]]> dat.BEG_DT and sysdate <![CDATA[<]]> dat.END_DT THEN 'PROGRS'
+									 WHEN sysdate <![CDATA[>]]> dat.END_DT THEN 'END'
+									 WHEN sysdate <![CDATA[<]]> dat.BEG_DT THEN 'WAIT'
+								END 
+							END AS AB_TEST_STAT_CD,
+							datr.DVC_SECT_CD,
+							dat.SET_EXPSR_MENMTHD_CD,
+							dat.REG_DT
+					FROM DSP_AB_TEST dat
+		 LEFT OUTER JOIN SYS_ADMIN sa ON dat.udter_id = sa.admin_id
+			 		JOIN DSP_AB_TEST_REV datr ON dat.AB_TEST_SN = datr.AB_TEST_SN
+					JOIN DSP_REV_CPST drc ON datr.REV_SN = drc.REV_SN AND drc.REV_CPST_TURN = datr.REV_CPST_TURN
+		) a
+		WHERE 1 = 1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestNm)">
+			AND a.AB_TEST_NM LIKE '%'||#{scAbTestNm, jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestMenu)">
+			AND a.AB_TEST_MENU_NM = #{scAbTestMenu, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestStat)">
+			AND a.AB_TEST_STAT_CD = #{scAbTestStat, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStartDate) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEndDate)">
+			AND to_char(a.REG_DT, 'yyyy-MM-dd') BETWEEN #{scStartDate} and #{scEndDate}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestView) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAbTestView)">
+			AND a.AB_TEST_PAGE_NM LIKE '%' || #{scAbTestView, jdbcType=VARCHAR} || '%'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDvcSectCd)">
+			AND a.DVC_SECT_CD = #{scDvcSectCd, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scSetExpsrMenmthdCd)">
+			AND a.SET_EXPSR_MENMTHD_CD = #{scSetExpsrMenmthdCd, jdbcType=VARCHAR}
+		</if>
+		ORDER BY a.AB_TEST_SN desc
+
+	</select>
+
+	<!-- AB Test 상세 조회 -->
+	<select id="selectAbTestDetail" parameterType="int" resultMap="abTestResult">
+				SELECT 	DISTINCT
+						dat.AB_TEST_SN,
+						dat.AB_TEST_NM,
+						dat.AB_TEST_DSCR,
+						dat.SET_EXPSR_MENMTHD_CD,
+						CASE WHEN drc.DSP_CTGRY_NO IS NOT NULL THEN
+																		(CASE WHEN drc.DSP_CTGRY_NO LIKE 'THM%' THEN '테마페이지'
+																			  WHEN drc.DSP_CTGRY_NO LIKE 'BDM%' THEN '브랜드카테고리'
+																			  WHEN drc.DSP_CTGRY_NO LIKE 'DXM%' THEN '전시카테고리' END)
+							 WHEN drc.DSP_BRND_CTGRY_NO IS NOT NULL THEN '전시카테고리'
+							 WHEN drc.PROMT_SN IS NOT NULL THEN '기획전'
+							 WHEN EVT_NO IS NOT NULL THEN '이벤트'
+							 WHEN STRND_SN IS NOT NULL THEN 'S-TREND'
+						END AS AB_TEST_MENU_NM,
+						CASE WHEN drc.DSP_CTGRY_NO IS NOT NULL THEN (SELECT
+																			LISTAGG(dc.DSP_CTGRY_NM, ' > ') WITHIN GROUP (ORDER BY DSP_CTGRY_NO) AS DSP_CTGRY_NM
+																	   FROM DSP_CTGRY dc
+																	  WHERE dc.CTGRY_DPTH_CD != 0
+														   CONNECT BY PRIOR dc.UPPER_DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+																 START WITH dc.DSP_CTGRY_NO = drc.DSP_CTGRY_NO)
+							 WHEN drc.DSP_BRND_CTGRY_NO IS NOT NULL THEN (SELECT sb.BRND_NM || ' > ' || (SELECT
+																												LISTAGG(dc.DSP_CTGRY_NM, ' > ') WITHIN GROUP (ORDER BY DSP_CTGRY_NO) AS DSP_CTGRY_NM
+																										   FROM DSP_CTGRY dc
+																										  WHERE dc.CTGRY_DPTH_CD != 0
+																							   CONNECT BY PRIOR dc.UPPER_DSP_CTGRY_NO = dc.DSP_CTGRY_NO
+																									 START WITH dc.DSP_CTGRY_NO = drc.DSP_BRND_CTGRY_NO)
+																			FROM SYS_BRND sb
+																			JOIN DSP_BRND_CTGRY dc1 on sb.BRND_ID  = dc1.DSP_BRND_ID
+																		   WHERE dc1.DSP_CTGRY_NO=drc.DSP_BRND_CTGRY_NO
+																		   AND dc1.DSP_BRND_ID = drc.DSP_BRND_ID)
+							 WHEN drc.PROMT_SN IS NOT NULL THEN (SELECT PROMT_NM FROM DSP_PROMT WHERE PROMT_SN = drc.PROMT_SN)
+						END AS AB_TEST_PAGE_NM,
+						CASE WHEN DAT.SET_EXPSR_MENMTHD_CD IS NULL or (DAT.SET_EXPSR_MENMTHD_CD = 'RND' AND (select count(*) from dsp_ab_test_rev where ab_test_sn = DATR.AB_TEST_SN and EXPSR_RT is not null and EXPSR_RT <![CDATA[>]]> 0) = 0 
+			                    or DAT.SET_EXPSR_MENMTHD_CD <![CDATA[<>]]> 'RND' AND (select count(*) from dsp_ab_test_set_flter where ab_test_sn = DATR.AB_TEST_SN ) = 0 )
+		                THEN  'WAIT'
+						ELSE 
+							CASE WHEN sysdate <![CDATA[>]]> dat.BEG_DT and sysdate <![CDATA[<]]> dat.END_DT THEN 'PROGRS'
+								 WHEN sysdate <![CDATA[>]]> dat.END_DT THEN 'END'
+								 WHEN sysdate <![CDATA[<]]> dat.BEG_DT THEN 'WAIT'
+							END 
+						END AS AB_TEST_STAT_CD,
+						to_char(dat.BEG_DT, 'yyyy-mm-dd HH:mm')||' ~ '||to_char(dat.END_DT,'yyyy-mm-dd HH:mm') AS AB_TEST_DATE,
+						sa.ADMIN_NM||'('||dat.UDTER_ID||')' AS UDTER_NM,
+						'N' AS RESULT_EXIST_YN,
+						drc.DSP_CTGRY_NO,
+						drc.DSP_BRND_CTGRY_NO,
+						drc.DSP_BRND_ID,
+						drc.PROMT_SN,
+						drc.STRND_SN,
+						drc.EVT_NO,
+						datr.DVC_SECT_CD,
+						dat.UDT_DT,
+						dat.BEG_DT,
+						dat.END_DT
+				FROM DSP_AB_TEST dat
+	 LEFT OUTER JOIN SYS_ADMIN sa ON dat.udter_id = sa.admin_id
+				JOIN DSP_AB_TEST_REV datr ON dat.AB_TEST_SN = datr.AB_TEST_SN
+				JOIN DSP_REV_CPST drc ON datr.REV_SN = drc.REV_SN AND drc.REV_CPST_TURN = datr.REV_CPST_TURN
+			   WHERE 1 = 1
+			     AND dat.AB_TEST_SN = #{abTestSn, jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectPageAbTestCount" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="String">
+		SELECT /*[display.rev.xml][selectPageAbTestCount][특정 페이지 (KEY)에 존재하는 ABTEST 존재여부 조회][Dian]*/
+		     (case when count(1) > 0 then 'Y' else 'N' end) as abTestSelectYn
+		FROM DSP_REV_CPST DRC
+		JOIN DSP_AB_TEST_REV DATR ON (DRC.REV_SN = DATR.REV_SN AND DRC.REV_CPST_TURN = DATR.REV_CPST_TURN)
+		JOIN DSP_AB_TEST DAT ON (DATR.AB_TEST_SN = DAT.AB_TEST_SN)
+		WHERE 1=1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DRC.DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DRC.DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DRC.DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND DRC.PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND DRC.STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND DRC.EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		AND   DAT.PROGRS_PSB_YN <![CDATA[<>]]> 'N' 
+		AND   DATR.DVC_SECT_CD = #{scDvcSectCd,jdbcType=VARCHAR}    
+	</select>
+	
+	<!-- 특정 KEY에 존재하는 템플릿 리비전 목록 조회   -->
+	<select id="selectRevCpstList" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultMap="revCpstResult">
+		SELECT /*[display.rev.xml][selectRevCpstList][특정 KEY에 존재하는 템플릿 리비전 목록 조회][Dian]*/
+		     REV.REV_SN
+            ,REV.REV_SECT_CD
+            ,REV.REV_DSCR
+            ,DRC.REV_CPST_TURN
+            ,DRC.PC_MOBILE_TMPLAT_IND_USE_YN
+            ,DRC.PC_TMPLAT_SN
+            ,DRC.MOBILE_TMPLAT_SN
+		FROM DSP_REV REV
+		INNER JOIN DSP_REV_CPST DRC
+			ON (REV.REV_SN = DRC.REV_SN)
+		<if test="abTestSelectYn == 'Y'.toString()">
+		JOIN DSP_AB_TEST_REV DATR 
+            ON (DRC.REV_SN = DATR.REV_SN AND DRC.REV_CPST_TURN = DATR.REV_CPST_TURN)
+		</if>	
+		WHERE 1=1
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scRevSectCd)">
+		AND REV.REV_SECT_CD <![CDATA[<>]]> 'PRVW'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scRevSectCd)">
+		AND REV.REV_SECT_CD = #{scRevSectCd,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DRC.DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DRC.DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DRC.DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND DRC.PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND DRC.STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND DRC.EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		<if test="abTestSelectYn == 'Y'.toString()">
+	    AND   DATR.MOD_TURN = (
+               SELECT MAX(MOD_TURN) 
+               FROM DSP_AB_TEST_SET_MOD
+               WHERE AB_TEST_SN = DATR.AB_TEST_SN
+               AND SET_TURN = DATR.SET_TURN
+           )
+       AND   DATR.DVC_SECT_CD = #{scDvcSectCd,jdbcType=VARCHAR}
+       </if>
+       AND 	 DRC.USE_YN = 'Y'
+       <if test="scDvcSectCd != null and scDvcSectCd == 'MOBILE'">
+       AND 	 DRC.MOBILE_TMPLAT_SN = #{scTmplatSn,jdbcType=VARCHAR}
+       </if>
+       <if test="scDvcSectCd != null and scDvcSectCd != 'MOBILE'">
+       AND 	 DRC.PC_TMPLAT_SN = #{scTmplatSn,jdbcType=VARCHAR}
+       </if>
+	</select>
+	
+	
+	<!-- 특정 페이지의 BASE REV조회   -->
+	<select id="selectBaseRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultMap="revCpstResult">
+		SELECT /*[display.rev.xml][selectBaseRev][ 특정 페이지의 BASE REV조회][Dian]*/
+		     REV.REV_SN
+            ,REV.REV_SECT_CD
+            ,REV.REV_DSCR
+            ,DRC.REV_CPST_TURN
+            ,DRC.PC_MOBILE_TMPLAT_IND_USE_YN
+            ,DRC.PC_TMPLAT_SN
+            ,DRC.MOBILE_TMPLAT_SN
+		FROM DSP_REV REV
+		INNER JOIN DSP_REV_CPST DRC
+			ON (REV.REV_SN = DRC.REV_SN)
+		WHERE 1=1
+			AND REV.REV_SECT_CD = 'BASE'
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DRC.DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DRC.DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DRC.DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND DRC.PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND DRC.STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND DRC.EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+        <if test="scDvcSectCd != null and scDvcSectCd == 'MOBILE'">
+        	AND DRC.MOBILE_TMPLAT_SN = #{scTmplatSn,jdbcType=VARCHAR}
+        </if>
+        <if test="scDvcSectCd != null and scDvcSectCd != 'MOBILE'">
+       		AND DRC.PC_TMPLAT_SN = #{scTmplatSn,jdbcType=VARCHAR}
+        </if>
+        	AND DRC.USE_YN = 'Y'
+	</select>
+
+	<!-- BO관리자의 리비전 존재여부 조회 -->
+	<select id="selectRevByAdmin" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="Long"> 
+    	SELECT /*[display.rev.xml][selectRevByAdmin][BO관리자의 리비전 존재여부 조회][Dian]*/ 
+			max(REV.REV_SN)
+		FROM DSP_REV REV 
+		WHERE 1=1 
+		AND REV.REV_SECT_CD = #{scRevSectCd,jdbcType=VARCHAR}
+		AND REV.ADMIN_ID = #{scAdminId,jdbcType=VARCHAR}
+    </select>
+    
+	<!-- 특정 페이지의 리비전 번호 조회 -->
+	<select id="selectPageRevByAdmin" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="Long"> 
+    	SELECT /*[display.rev.xml][selectPageRevByAdmin][특정 페이지의 리비전 번호 조회][Dian]*/ 
+			REV.REV_SN
+		FROM DSP_REV REV 
+		INNER JOIN DSP_REV_CPST DRC
+			ON (REV.REV_SN = DRC.REV_SN)
+		WHERE 1=1 
+		AND REV.REV_SECT_CD = #{scRevSectCd,jdbcType=VARCHAR}
+		AND REV.ADMIN_ID = #{scAdminId,jdbcType=VARCHAR}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		AND DRC.DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DRC.DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+		AND DRC.DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+		AND DRC.PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+		AND DRC.STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+		AND DRC.EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+    </select>
+
+	<!-- 리비전 복사 대상 코너 존재여부 -->
+	<select id="checkDspCnrRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="Integer">
+		SELECT /*[display.rev.xml][checkDspCnrRev][리비전 복사 대상 코너 존재여부][Dian]*/
+			COUNT(cnr_sn)
+		FROM DSP_CNR
+		WHERE 1=1
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		AND CNR_SN = #{scCpRevCnrSn,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getDspCnrRevList" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="Long">
+		SELECT /*[display.rev.xml][getDspCnrRevList][리비전 복사 대상 템플릿 코너 목록조회][Dian]*/
+			CNR_SN
+		FROM DSP_CNR_TMPLAT_INFO_CNNC
+		WHERE 1=1
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+			AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+		</if>
+	</select>
+
+	<!-- 리비전 복사 - dspCnr -->
+	<insert id="insertDspCnrRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrRev][리비전 복사 - dspCnr ][Dian]*/ 
+			DSP_CNR
+		(
+	        REV_SN 
+           ,CNR_SN
+	       ,DSP_CNR_NM
+	       ,DSP_CNR_DSCR
+	       ,USE_YN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)	
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,CNR_SN
+		    ,DSP_CNR_NM
+		    ,DSP_CNR_DSCR
+		    ,USE_YN
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		AND CNR_SN = #{scCpRevCnrSn,jdbcType=VARCHAR}	
+    </insert>
+    
+    <!-- 리비전 복사 - dspCnrTmplatInfoCnnc -->
+	<insert id="insertDspCnrTmplatInfoCnncRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrTmplatInfoCnncRev][리비전 복사 - dspCnrTmplatInfoCnncRev][Dian]*/ 
+			DSP_CNR_TMPLAT_INFO_CNNC
+		(
+	        REV_SN
+           ,TMPLAT_SN
+	       ,CNR_SN
+	       ,DSP_CNR_TMPLAT_TURN
+           ,DSP_CTGRY_NO
+           ,DSP_BRND_CTGRY_NO
+           ,DSP_BRND_ID
+           ,PROMT_SN
+           ,EVT_NO
+           ,STRND_SN
+	       ,SORT_SEQ
+	       ,DSP_CNR_USE_YN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)	
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,TMPLAT_SN
+		    ,CNR_SN
+		    ,NVL((SELECT (MAX(DSP_CNR_TMPLAT_TURN) + 1) 
+		      FROM DSP_CNR_TMPLAT_INFO_CNNC a 
+		      WHERE a.REV_SN = #{scDesRevSn,jdbcType=NUMERIC} 
+		      AND a.TMPLAT_SN = TMPLAT_SN 
+		      AND a.CNR_SN = CNR_SN),1) AS DSP_CNR_TMPLAT_TURN
+		    ,DSP_CTGRY_NO
+		    ,DSP_BRND_CTGRY_NO
+		    ,DSP_BRND_ID
+		    ,PROMT_SN
+		    ,EVT_NO
+		    ,STRND_SN
+		    ,SORT_SEQ
+		    ,DSP_CNR_USE_YN
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR_TMPLAT_INFO_CNNC
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+		AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+		AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+		AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+		AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+		AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+		</if>
+    </insert>
+    
+    <!-- 리비전 복사 - dspRevCpst -->
+	<insert id="insertDspRevCpstRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspRevCpstRev][리비전 복사 - dspRevCpstRev][Dian]*/ 
+			DSP_REV_CPST
+		(
+	        REV_SN
+	       ,REV_CPST_TURN
+	       ,DSP_CTGRY_NO
+	       ,DSP_BRND_CTGRY_NO
+	       ,DSP_BRND_ID
+	       ,PROMT_SN
+	       ,EVT_NO
+	       ,STRND_SN
+	       ,PC_MOBILE_TMPLAT_IND_USE_YN
+	       ,PC_TMPLAT_SN
+	       ,MOBILE_TMPLAT_SN
+	       ,USE_YN
+           ,REGTR_ID
+	       ,UDTER_ID
+	       ,REG_DT
+           ,UDT_DT
+		)	
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,REV_CPST_TURN
+		    ,DSP_CTGRY_NO
+		    ,DSP_BRND_CTGRY_NO
+		    ,DSP_BRND_ID
+		    ,PROMT_SN
+		    ,EVT_NO
+		    ,STRND_SN
+		    ,PC_MOBILE_TMPLAT_IND_USE_YN
+		    ,PC_TMPLAT_SN
+		    ,MOBILE_TMPLAT_SN
+			,USE_YN
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_REV_CPST
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+		AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+		AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+		AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+		AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+    </insert>
+
+
+	<!-- 리비전 복사 대상 코너컨텐츠유형 존재여부 -->
+	<select id="checkDspCnrTpGrpRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="Integer">
+		SELECT /*[display.rev.xml][checkDspCnrTpGrpRev][리비전 복사 대상 코너컨텐츠유형 존재여부][Dian]*/
+			COUNT(CNR_TP_GRP_SN)
+		FROM DSP_CNR_TP_GRP
+		WHERE 1=1
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scCpRevCnrSn)">
+		AND CNR_SN IN (
+			SELECT
+				CNR_SN
+			FROM DSP_CNR_TMPLAT_INFO_CNNC
+			WHERE 1=1
+			AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+				AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+				AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+				AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+				AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+				AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+				AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+			</if>
+		)
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scCpRevCnrSn)">
+		AND CNR_SN = #{scCpRevCnrSn,jdbcType=VARCHAR}
+		</if>	
+	</select>
+
+    <!-- 리비전 복사 - dspCnrTpGrp -->
+	<insert id="insertDspCnrTpGrpRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrTpGrpRev][리비전 복사 - dspCnrTpGrp ][Dian]*/ 
+			DSP_CNR_TP_GRP
+		(
+	        REV_SN
+	       ,CNR_SN
+	       ,CNR_TP_GRP_SN
+	       ,UPPER_CNR_TP_GRP_SN
+	       ,CONTT_TP_CD
+	       ,CNR_CONTT_TP_GRP_NM
+	       ,DSP_CNT
+	       ,SORT_SEQ
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)	
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,CNR_SN
+		    ,CNR_TP_GRP_SN
+		    ,UPPER_CNR_TP_GRP_SN
+		    ,CONTT_TP_CD
+		    ,CNR_CONTT_TP_GRP_NM
+		    ,DSP_CNT
+		    ,SORT_SEQ
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR_TP_GRP
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tpGrpUpperYn) and tpGrpUpperYn == 'Y'.toString()">
+		AND UPPER_CNR_TP_GRP_SN IS NULL
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tpGrpUpperYn) or tpGrpUpperYn == 'N'.toString()">
+		AND UPPER_CNR_TP_GRP_SN IS NOT NULL
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scCpRevCnrSn)">
+		AND CNR_SN IN (
+			SELECT  
+				 CNR_SN
+			FROM DSP_CNR_TMPLAT_INFO_CNNC
+			WHERE 1=1 
+			AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+			AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+			</if>
+		)
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scCpRevCnrSn)">
+		AND CNR_SN = #{scCpRevCnrSn,jdbcType=VARCHAR}
+		</if>		
+    </insert>
+    
+    <!-- 리비전 복사 - dspCnrSet -->
+	<insert id="insertDspCnrSetRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrSetRev][리비전 복사 - dspCnrSet ][Dian]*/ 
+			DSP_CNR_SET
+    	(
+	        REV_SN
+           ,CNR_SN
+	       ,CNR_SET_SN
+	       ,CNR_TP_GRP_SN
+	       ,SET_NM
+	       ,SET_DSCR
+	       ,DSP_YN
+	       ,RND_YN
+	       ,SORT_SEQ
+	       ,ALTRTV_DSP_GOD_TP_CD
+	       ,DSP_CTGRY_NO
+	       ,DSP_BRND_CTGRY_NO
+           ,DSP_BRND_ID
+           ,PROMT_SN
+	       ,EVT_NO
+	       ,STRND_SN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,CNR_SN
+		    ,CNR_SET_SN
+		    ,CNR_TP_GRP_SN
+		    ,SET_NM
+		    ,SET_DSCR
+		    ,DSP_YN
+		    ,RND_YN
+		    ,SORT_SEQ
+		    ,ALTRTV_DSP_GOD_TP_CD
+		    ,DSP_CTGRY_NO
+		    ,DSP_BRND_CTGRY_NO
+		    ,DSP_BRND_ID
+		    ,PROMT_SN
+		    ,EVT_NO
+		    ,STRND_SN
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR_SET
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+		AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+		AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+		AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+		AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		AND CNR_SN IN (
+			SELECT
+				CNR_SN
+			FROM DSP_CNR_TMPLAT_INFO_CNNC
+			WHERE 1=1
+			AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+				AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+				AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+				AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+				AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+				AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+				AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+			</if>
+		)
+    </insert>
+    
+     <!-- 리비전 복사 - dspCnrSetLang -->
+	<insert id="insertDspCnrSetLangRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrSetLangRev][리비전 복사 - dspCnrSetLang ][Dian]*/ 
+			DSP_CNR_SET_LANG
+    	(
+	        REV_SN
+	       ,CNR_SN
+	       ,CNR_SET_SN
+	       ,LANG_CD
+	       ,SET_NM
+	       ,SET_DSCR
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,CNR_SN
+		    ,CNR_SET_SN
+		    ,LANG_CD
+		    ,SET_NM
+		    ,SET_DSCR
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR_SET_LANG
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+    </insert>
+    
+    <!-- 리비전 복사 - dspCnrContt -->
+	<insert id="insertDspCnrConttRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrConttRev][리비전 복사 - dspCnrContt ][Dian]*/ 
+			DSP_CNR_CONTT
+    	(
+	        REV_SN
+	       ,CNR_SN
+	       ,CNR_SET_SN
+	       ,CONTT_TURN
+	       ,CONTT_TP_CD
+	       ,GOD_NO
+	       ,IMG_TURN
+	       ,STK_EXPSR_YN
+	       ,STK_LBL_CD
+	       ,STK_DC_RT
+	       ,CONTT_NM
+	       ,IMG_NM
+	       ,IMG_FILE_NM
+	       ,IMG_FILE_URL
+	       ,IMG_ALTRTV_CONT
+	       ,IMG_OV_FILE_NM
+	       ,IMG_OV_FILE_URL
+	       ,IMG_OV_ALTRTV_CONT
+	       ,IMG_BCRN_COLOR_CD
+	       ,IMG_MAP_CONT
+	       ,IMG_DSCR
+	       ,MOVI_NM
+	       ,MOVI_FILE_URL
+	       ,MOVI_IMG_FILE_NM
+	       ,MOVI_IMG_URL
+	       ,MOVI_IMG_ALTRTV_CONT
+	       ,MOVI_IMG_DSCR
+	       ,HTML_SJ
+	       ,HTML_DSCR
+	       ,HTML_CONT
+	       ,PROMT_SN
+	       ,STRND_SN
+	       ,OUTPT_TP_CD
+	       ,CONTT_CNNC_URL
+	       ,SORT_SEQ
+	       ,DSP_YN
+	       ,DSP_BEG_DT
+	       ,DSP_END_DT
+	       ,MD_BRND_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,CNR_SN
+		    ,CNR_SET_SN
+		    ,CONTT_TURN
+		    ,CONTT_TP_CD
+		    ,GOD_NO
+		    ,IMG_TURN
+		    ,STK_EXPSR_YN
+		    ,STK_LBL_CD
+		    ,STK_DC_RT
+		    ,CONTT_NM
+		    ,IMG_NM
+		    ,IMG_FILE_NM
+		    ,IMG_FILE_URL
+		    ,IMG_ALTRTV_CONT
+		    ,IMG_OV_FILE_NM
+		    ,IMG_OV_FILE_URL
+		    ,IMG_OV_ALTRTV_CONT
+		    ,IMG_BCRN_COLOR_CD
+		    ,IMG_MAP_CONT
+		    ,IMG_DSCR
+		    ,MOVI_NM
+		    ,MOVI_FILE_URL
+		    ,MOVI_IMG_FILE_NM
+		    ,MOVI_IMG_URL
+		    ,MOVI_IMG_ALTRTV_CONT
+		    ,MOVI_IMG_DSCR
+		    ,HTML_SJ
+		    ,HTML_DSCR
+		    ,HTML_CONT
+		    ,PROMT_SN
+		    ,STRND_SN
+		    ,OUTPT_TP_CD
+		    ,CONTT_CNNC_URL
+		    ,SORT_SEQ
+		    ,DSP_YN
+		    ,DSP_BEG_DT
+		    ,DSP_END_DT
+		    ,MD_BRND_CD
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR_CONTT
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+    </insert>
+    
+    <!-- 리비전 복사 - dspCnrConttLang -->
+	<insert id="insertDspCnrConttLangRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrConttLangRev][리비전 복사 - dspCnrConttLang ][Dian]*/ 
+			DSP_CNR_CONTT_LANG
+    	(
+	        REV_SN
+	       ,CNR_SN
+	       ,CNR_SET_SN
+	       ,CONTT_TURN
+	       ,LANG_CD
+	       ,CONTT_NM
+	       ,IMG_FILE_NM
+	       ,IMG_FILE_URL
+	       ,IMG_ALTRTV_CONT
+	       ,IMG_OV_FILE_NM
+	       ,IMG_OV_FILE_URL
+	       ,IMG_OV_ALTRTV_CONT
+	       ,IMG_MAP_CONT
+	       ,IMG_DSCR
+	       ,MOVI_FILE_URL
+	       ,MOVI_IMG_FILE_NM
+	       ,MOVI_IMG_URL
+	       ,MOVI_IMG_ALTRTV_CONT
+	       ,MOVI_IMG_DSCR
+	       ,HTML_SJ
+	       ,HTML_DSCR
+	       ,HTML_CONT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,CNR_SN
+		    ,CNR_SET_SN
+		    ,CONTT_TURN
+		    ,LANG_CD
+		    ,CONTT_NM
+		    ,IMG_FILE_NM
+		    ,IMG_FILE_URL
+		    ,IMG_ALTRTV_CONT
+		    ,IMG_OV_FILE_NM
+		    ,IMG_OV_FILE_URL
+		    ,IMG_OV_ALTRTV_CONT
+		    ,IMG_MAP_CONT
+		    ,IMG_DSCR
+		    ,MOVI_FILE_URL
+		    ,MOVI_IMG_FILE_NM
+		    ,MOVI_IMG_URL
+		    ,MOVI_IMG_ALTRTV_CONT
+		    ,MOVI_IMG_DSCR
+		    ,HTML_SJ
+		    ,HTML_DSCR
+		    ,HTML_CONT
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR_CONTT_LANG
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+    </insert>
+    
+    <!-- 리비전 복사 - dspCnrConttDspTgt -->
+	<insert id="insertDspCnrConttDspTgtRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		INSERT INTO /*[display.rev.xml][insertDspCnrConttDspTgtRev][리비전 복사 - dspCnrConttDspTgt ][Dian]*/ 
+			DSP_CNR_CONTT_DSP_TGT
+    	(
+	        REV_SN
+	       ,CONTT_TURN
+	       ,DSP_TGT_TURN
+	       ,CNR_SN
+	       ,CNR_SET_SN
+	       ,DSP_TGT_TP_CD
+	       ,MALL_ID
+	       ,LANG_CD
+	       ,DVC_CD
+	       ,TGT_MBR_ATRB_CD
+	       ,TGT_MBR_TP_CD
+	       ,GRPCO_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+    	SELECT  
+			 #{scDesRevSn,jdbcType=NUMERIC} as REV_SN
+		    ,CONTT_TURN
+		    ,DSP_TGT_TURN
+		    ,CNR_SN
+		    ,CNR_SET_SN
+		    ,DSP_TGT_TP_CD
+		    ,MALL_ID
+		    ,LANG_CD
+		    ,DVC_CD
+		    ,TGT_MBR_ATRB_CD
+		    ,TGT_MBR_TP_CD
+		    ,GRPCO_ID
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,#{scAdminId,jdbcType=VARCHAR}
+		    ,SYSDATE
+		    ,SYSDATE
+		FROM DSP_CNR_CONTT_DSP_TGT
+		WHERE 1=1 
+		AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scSrcRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+    </insert>
+    
+    <!-- 삭제 -->
+    <!-- 리비전 삭제 - 리비전 삭제대상 코너 존재여부 -->
+	<delete id="deleteDspCnrRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrRev][리비전 삭제 - dspCnr][Dian]*/ 
+		FROM DSP_CNR
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(revOnlyYn) or revOnlyYn == 'N'.toString()">
+		AND CNR_SN IN (
+			SELECT  
+				 CNR_SN
+			FROM DSP_CNR_TMPLAT_INFO_CNNC
+			WHERE 1=1 
+			AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+				AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+			</if>
+		)	
+		</if>	
+    </delete>
+    
+    <!-- 리비전 삭제 - dspCnrTmplatInfoCnnc -->
+	<delete id="deleteDspCnrTmplatInfoCnncRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrTmplatInfoCnncRev][리비전 삭제 - dspCnrTmplatInfoCnncRev][Dian]*/  
+    	FROM DSP_CNR_TMPLAT_INFO_CNNC
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+		AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+		AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+		AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+		AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+			AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+		</if>
+    </delete>
+    
+    
+    <!-- 리비전 삭제 - dspRevCpst -->
+	<delete id="deleteDspRevCpstRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspRevCpstRev][리비전 삭제 - dspRevCpstRev][Dian]*/  
+    	FROM DSP_REV_CPST
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+		AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+		AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+		AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+		AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+    </delete>
+    
+    <!-- 리비전 삭제 - dspCnrTpGrp -->
+	<delete id="deleteDspCnrTpGrpRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrTpGrpRev][리비전 삭제 - dspCnrTpGrp ][Dian]*/
+    	FROM DSP_CNR_TP_GRP
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tpGrpUpperYn) and tpGrpUpperYn == 'Y'.toString()">
+		AND UPPER_CNR_TP_GRP_SN IS NULL
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tpGrpUpperYn) or tpGrpUpperYn == 'N'.toString()">
+		AND UPPER_CNR_TP_GRP_SN IS NOT NULL
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(revOnlyYn) or revOnlyYn == 'N'.toString()">
+		AND CNR_SN IN (
+			SELECT  
+				 CNR_SN
+			FROM DSP_CNR_TMPLAT_INFO_CNNC
+			WHERE 1=1 
+			AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+				AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+			</if>
+		)
+		</if>		
+    </delete>
+    
+    <!-- 리비전 삭제 - dspCnrSet -->
+	<delete id="deleteDspCnrSetRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrSetRev][리비전 삭제 - dspCnrSet ][Dian]*/ 
+		FROM DSP_CNR_SET
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(revOnlyYn) or revOnlyYn == 'N'.toString()">
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+		AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+		AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+		AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+		AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		AND CNR_SN IN (
+			SELECT
+				CNR_SN
+			FROM DSP_CNR_TMPLAT_INFO_CNNC
+			WHERE 1=1
+			AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+				AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+				AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+				AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+				AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+				AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+				AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+			</if>
+		)
+		</if>
+    </delete>
+    
+     <!-- 리비전 삭제 - dspCnrSetLang -->
+	<delete id="deleteDspCnrSetLangRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrSetLangRev][리비전 삭제 - dspCnrSetLang ][Dian]*/ 
+		FROM DSP_CNR_SET_LANG
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(revOnlyYn) or revOnlyYn == 'N'.toString()">
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+		</if>
+    </delete>
+    
+    <!-- 리비전 삭제 - dspCnrContt -->
+	<delete id="deleteDspCnrConttRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrConttRev][리비전 삭제 - dspCnrContt ][Dian]*/ 
+		FROM DSP_CNR_CONTT
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(revOnlyYn) or revOnlyYn == 'N'.toString()">
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+		</if>
+    </delete>
+    
+    <!-- 리비전 삭제 - dspCnrConttLang -->
+	<delete id="deleteDspCnrConttLangRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrConttLangRev][리비전 삭제 - dspCnrConttLang ][Dian]*/ 
+		FROM DSP_CNR_CONTT_LANG
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(revOnlyYn) or revOnlyYn == 'N'.toString()">
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+		</if>
+    </delete>
+    
+    <!-- 리비전 삭제 - dspCnrConttDspTgt -->
+	<delete id="deleteDspCnrConttDspTgtRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		DELETE /*[display.rev.xml][deleteDspCnrConttDspTgtRev][리비전 삭제 - dspCnrConttDspTgt ][Dian]*/ 
+		FROM DSP_CNR_CONTT_DSP_TGT
+		WHERE 1=1 
+		AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(revOnlyYn) or revOnlyYn == 'N'.toString()">
+		AND (CNR_SN,CNR_SET_SN) IN (
+			SELECT  
+				 CNR_SN,CNR_SET_SN
+			FROM DSP_CNR_SET
+			WHERE 1=1 
+			AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scDesRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+			)
+		)
+		</if>
+    </delete>
+    
+    
+    <!-- 페이지 리비전 존재여부 조회 -->
+	<select id="selectDspRevCpstOne" parameterType="dspRevCpst" resultType="Integer">
+	    SELECT /* [display.rev.xml][selectDspRevCpstOne][페이지 리비전 존재여부 조회][Dian] */
+			 count(1)
+        FROM    DSP_REV_CPST dc
+        WHERE 	1 = 1
+        AND dc.REV_SN = #{revSn,jdbcType=NUMERIC}
+        <if test="dspBrndId != null and dspBrndId != ''" >
+        AND dc.DSP_BRND_CTGRY_NO = #{dspBrndCtgryNo,jdbcType=VARCHAR}
+        AND dc.DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+        </if>
+        <if test="(dspBrndId == null or dspBrndId == '') and (dspCtgryNo != null and dspCtgryNo != '')" >
+        AND dc.DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+        </if>
+        <if test="promtSn != null and promtSn != 0" >
+        AND dc.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        </if>
+        <if test="evtNo != null and evtNo != ''" >
+        AND dc.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        </if>
+        <if test="strndSn != null and strndSn != 0" >
+        AND dc.STRND_SN = #{strndSn,jdbcType=NUMERIC}
+        </if>
+	</select>
+	
+	<!--페이지 리비전 템플릿 수정 -->
+	<update id="updateDspRevCpstOne" parameterType="dspRevCpst" >
+		UPDATE /* [display.rev.xml][updateDspRevCpstOne][페이지 리비전 수정][Dian] */
+			DSP_REV_CPST dc
+		SET
+			 UDTER_ID = #{udterId,jdbcType=VARCHAR} 
+			,UDT_DT = SYSDATE
+			,PC_MOBILE_TMPLAT_IND_USE_YN = #{pcMobileTmplatIndUseYn,jdbcType=VARCHAR}
+			,PC_TMPLAT_SN = #{pcTmplatSn,jdbcType=NUMERIC} 
+			,MOBILE_TMPLAT_SN = #{mobileTmplatSn,jdbcType=NUMERIC}
+		WHERE 1=1
+		AND dc.REV_SN = #{revSn,jdbcType=NUMERIC}
+        <if test="dspBrndId != null and dspBrndId != ''" >
+        AND dc.DSP_BRND_CTGRY_NO = #{dspBrndCtgryNo,jdbcType=VARCHAR}
+        AND dc.DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+        </if>
+        <if test="(dspBrndId == null or dspBrndId == '') and (dspCtgryNo != null and dspCtgryNo != '')" >
+        AND dc.DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+        </if>
+        <if test="promtSn != null and promtSn != 0" >
+        AND dc.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+        </if>
+        <if test="evtNo != null and evtNo != ''" >
+        AND dc.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        </if>
+        <if test="strndSn != null and strndSn != 0" >
+        AND dc.STRND_SN = #{strndSn,jdbcType=NUMERIC}
+        </if>
+	</update>
+
+	<update id="updateDspRev" parameterType="dspRev">
+        UPDATE /* [display.rev.xml][updateDspRev][개정 수정][Dian] */
+        DSP_REV SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+        	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(revSectCd)">
+            ,REV_SECT_CD = #{revSectCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(revNm)">     
+            ,REV_NM = #{revNm,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(revDscr)">
+            ,REV_DSCR = #{revDscr,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(adminId)">
+            ,ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(useYn)">
+            ,USE_YN = #{useYn,jdbcType=VARCHAR}
+            </if>
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateDspRevCpstInfo" parameterType="dspRevCpst">
+        UPDATE /* [display.rev.xml][updateDspRevCpstInfo][전시개정구성 수정][Dian] */
+        DSP_REV_CPST SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+        	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspCtgryNo)">
+            ,DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspBrndCtgryNo)">
+            ,DSP_BRND_CTGRY_NO = #{dspBrndCtgryNo,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspBrndId)">
+            ,DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(promtSn)">
+            ,PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(evtNo)">
+            ,EVT_NO = #{evtNo,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(strndSn)">
+            ,STRND_SN = #{strndSn,jdbcType=NUMERIC}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcMobileTmplatIndUseYn)">
+            ,PC_MOBILE_TMPLAT_IND_USE_YN = #{pcMobileTmplatIndUseYn,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcTmplatSn)">
+            ,PC_TMPLAT_SN = #{pcTmplatSn,jdbcType=NUMERIC}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileTmplatSn)">
+            ,MOBILE_TMPLAT_SN = #{mobileTmplatSn,jdbcType=NUMERIC}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(useYn)">
+            ,USE_YN = #{useYn,jdbcType=VARCHAR}
+            </if>
+        WHERE   1 = 1
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+    </update>
+	
+	<!--===============================================================================================================================-->
+	<!-- AB TEST -->
+	<!--===============================================================================================================================-->
+	<resultMap id="dspAbTestRevResultMap" type="com.plgrim.ncp.biz.display.result.DspAbTestRevResult">
+		<result property="dspRevCpst.revSn" column="REV_SN" />
+		<result property="dspRevCpst.revCpstTurn" column="REV_CPST_TURN" />
+		<result property="dspRevCpst.dspCtgryNo" column="DSP_CTGRY_NO" />
+		<result property="dspRevCpst.dspBrndCtgryNo" column="DSP_BRND_CTGRY_NO" />
+		<result property="dspRevCpst.dspBrndId" column="DSP_BRND_ID" />
+		<result property="dspRevCpst.promtSn" column="PROMT_SN" />
+		<result property="dspRevCpst.evtNo" column="EVT_NO" />
+		<result property="dspRevCpst.strndSn" column="STRND_SN" />
+		<result property="dspRevCpst.pcMobileTmplatIndUseYn" column="PC_MOBILE_TMPLAT_IND_USE_YN" />
+		<result property="dspRevCpst.pcTmplatSn" column="PC_TMPLAT_SN" />
+		<result property="dspRevCpst.mobileTmplatSn" column="MOBILE_TMPLAT_SN" />
+		<result property="pcTmplatNm" column="PC_TMPLAT_NM" />
+		<result property="mobileTmplatNm" column="MOBILE_TMPLAT_NM" />
+		<result property="dspRev.revSn" column="REV_SN" />
+		<result property="dspRev.revNm" column="REV_NM" />
+		<result property="dspRev.revSectCd" column="REV_SECT_CD" />
+		<result property="dspRev.revDscr" column="REV_DSCR" />
+		<result property="dspRev.adminId" column="ADMIN_ID" />
+		<result property="dspAbTestRev.abTestSn" column="AB_TEST_SN" />
+		<result property="dspAbTestRev.revSn" column="REV_SN" />
+		<result property="dspAbTestRev.setTurn" column="SET_TURN" />
+		<result property="dspAbTestRev.revCpstTurn" column="REV_CPST_TURN" />
+		<result property="dspAbTestRev.dvcSectCd" column="DVC_SECT_CD" />
+		<result property="dspAbTestRev.abTestGrpCd" column="AB_TEST_GRP_CD" />
+		<result property="abTestGrpNm" column="AB_TEST_GRP_NM" />
+		<result property="dspAbTestRev.abTestRevDscr" column="AB_TEST_REV_DSCR" />
+		<result property="dspAbTestRev.modTurn" column="MOD_TURN" />
+		<result property="dspAbTestRev.expsrRt" column="EXPSR_RT" />
+		<result property="dspRevCpst.useYn" column="DRC_USE_YN" />
+		<result property="dspRev.useYn" column="DR_USE_YN" />
+		<result property="dspAbTestSetMod.begDt" column="BEG_DT" />
+		<result property="dspAbTestSetMod.endDt" column="END_DT" />
+	</resultMap>
+
+	<resultMap id="dspAbTestSetModMap" type="com.plgrim.ncp.biz.display.result.DspAbTestSetModResult">
+		<result property="modTurn" column="MOD_TURN" />
+
+	</resultMap>
+
+	<resultMap id="dspAbTestSetResultMap" type="com.plgrim.ncp.biz.display.result.DspConttAbTestSetResult">
+		<id property="abTestSn" column="AB_TEST_SN" />
+		<id property="setTurn" column="SET_TURN" />
+		<result property="dspAbTestSet.abTestSn" column="AB_TEST_SN" />
+		<result property="dspAbTestSet.setTurn" column="SET_TURN" />
+	
+		<collection property="dspAbTestRevList" resultMap="dspAbTestRevResultMap" javaType="java.util.ArrayList" />
+		<collection property="dspAbTestSetFlterList" ofType="com.plgrim.ncp.biz.display.result.DspAbTestSetFlterResult" column="{abTestSn=AB_TEST_SN,setTurn=SET_TURN}" select="com.plgrim.ncp.biz.display.selectDspAbTestSetFlterList"/>
+		<collection property="dspAbTestSetModList" resultMap="dspAbTestSetModMap" javaType="java.util.ArrayList" />
+	</resultMap>
+	
+	<resultMap id="conttAbTestResult" type="com.plgrim.ncp.biz.display.result.DspConttAbTestResult">
+		<id property="abTestSn" column="AB_TEST_SN" />
+		<result property="dspAbTest.abTestSn" column="AB_TEST_SN" />
+		<result property="dspAbTest.progrsPsbYn" column="PROGRS_PSB_YN" />
+		<result property="dspAbTest.setUseYn" column="SET_USE_YN" />
+		<result property="dspAbTest.setExpsrMenmthdCd" column="SET_EXPSR_MENMTHD_CD" />
+		<result property="setExpsrMenmthdNm" column="SET_EXPSR_MENMTHD_NM" />
+		<result property="dspAbTest.abTestNm" column="AB_TEST_NM" />
+		<result property="dspAbTest.abTestDscr" column="AB_TEST_DSCR" />
+		<result property="dspAbTest.begDt" column="BEG_DT" />
+		<result property="dspAbTest.endDt" column="END_DT" />
+		<result property="progrsStatusCd" column="PROGRS_STATUS_CD" />
+		<result property="dspAbTestSetMod.begDt" column="MOD_BEG_DT" />
+		<result property="dspAbTestSetMod.endDt" column="MOD_END_DT" />
+		
+		<collection property="dspAbTestSetList" resultMap="dspAbTestSetResultMap" javaType="java.util.ArrayList" />
+	</resultMap>
+
+	<!-- 컨텐츠 관리에서 해당페이지의 AB TEST 템플릿 개정 목록 -->
+	<select id="selectConttAbTestRevList" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultMap="conttAbTestResult">
+		SELECT  /* [display.rev.xml][selectConttAbTestRevList][컨텐츠 관리에서 해당페이지의 AB TEST 템플릿 개정 목록][Dian] */
+		     DRC.REV_SN
+		    ,DRC.REV_CPST_TURN
+		    ,DRC.DSP_CTGRY_NO
+		    ,DRC.DSP_BRND_CTGRY_NO
+		    ,DRC.DSP_BRND_ID
+		    ,DRC.PROMT_SN
+		    ,DRC.EVT_NO
+		    ,DRC.STRND_SN
+		    ,DRC.PC_MOBILE_TMPLAT_IND_USE_YN
+		    ,DRC.PC_TMPLAT_SN
+		    ,DRC.MOBILE_TMPLAT_SN  
+		    ,(SELECT TMPLAT_NM FROM DSP_TMPLAT WHERE TMPLAT_SN = DRC.PC_TMPLAT_SN) AS PC_TMPLAT_NM
+		    ,(SELECT TMPLAT_NM FROM DSP_TMPLAT WHERE TMPLAT_SN = DRC.MOBILE_TMPLAT_SN) AS MOBILE_TMPLAT_NM  
+		    ,DRC.USE_YN AS DRC_USE_YN
+		    ,DR.USE_YN AS DR_USE_YN
+		    ,DR.REV_SECT_CD
+		    ,DR.REV_NM
+		    ,DR.REV_DSCR
+		    ,DR.ADMIN_ID
+		    ,DATR.AB_TEST_SN
+		    ,DATR.SET_TURN
+		    ,DATR.AB_TEST_GRP_CD
+		    ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'AB_TEST_GRP' AND CD = DATR.AB_TEST_GRP_CD AND LANG_CD = #{lang, jdbcType=VARCHAR}) AS AB_TEST_GRP_NM
+		    ,DATR.AB_TEST_REV_DSCR
+		    ,DATR.MOD_TURN
+		    ,DATR.EXPSR_RT
+		    ,DAT.PROGRS_PSB_YN
+		    ,DAT.SET_USE_YN
+		    ,DAT.SET_EXPSR_MENMTHD_CD
+		    ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'SET_EXPSR_MENMTHD' AND CD = DAT.SET_EXPSR_MENMTHD_CD AND LANG_CD = #{lang, jdbcType=VARCHAR}) AS SET_EXPSR_MENMTHD_NM
+		    ,DAT.AB_TEST_NM
+		    ,DAT.AB_TEST_DSCR
+		    ,DAT.BEG_DT
+		    ,DAT.END_DT
+		    <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(scProgrsStatusYn) and scProgrsStatusYn == 'Y'.toString()">
+		    <![CDATA[
+		    ,( 
+             CASE 
+                WHEN DAT.SET_EXPSR_MENMTHD_CD IS NULL or (DAT.SET_EXPSR_MENMTHD_CD = 'RND' AND (select count(*) from dsp_ab_test_rev where ab_test_sn = DATR.AB_TEST_SN and EXPSR_RT is not null and EXPSR_RT > 0) = 0 
+                    or DAT.SET_EXPSR_MENMTHD_CD <> 'RND' AND (select count(*) from dsp_ab_test_set_flter where ab_test_sn = DATR.AB_TEST_SN ) = 0 )
+                THEN
+                     'START' 
+             ELSE
+                CASE WHEN DAT.PROGRS_PSB_YN = 'Y' THEN
+                    CASE 
+                        WHEN DAT.BEG_DT <= SYSDATE and DAT.END_DT >= SYSDATE THEN 
+                            'PROGRS'
+                        WHEN DAT.BEG_DT > SYSDATE THEN 
+                            'WAIT'      
+                        WHEN DAT.END_DT < SYSDATE THEN 
+                            'END'
+                    END
+                END
+             END
+            ) AS PROGRS_STATUS_CD
+            ]]>
+            </if>
+            , DATSM.MOD_RESN_CONT 
+            , DATSM.BEG_DT AS MOD_BEG_DT
+            , DATSM.END_DT AS MOD_END_DT
+		FROM DSP_REV_CPST DRC
+		JOIN DSP_REV DR ON (DRC.REV_SN = DR.REV_SN)
+		JOIN DSP_AB_TEST_REV DATR ON (DRC.REV_SN = DATR.REV_SN AND DRC.REV_CPST_TURN = DATR.REV_CPST_TURN)
+		JOIN DSP_AB_TEST_SET DATS ON (DATR.AB_TEST_SN = DATS.AB_TEST_SN AND DATR.SET_TURN = DATS.SET_TURN)
+		JOIN DSP_AB_TEST_SET_MOD DATSM ON (DATS.AB_TEST_SN = DATSM.AB_TEST_SN AND DATS.SET_TURN = DATSM.SET_TURN AND DATR.MOD_TURN = DATSM.MOD_TURN)
+		JOIN DSP_AB_TEST DAT ON (DATS.AB_TEST_SN = DAT.AB_TEST_SN)
+		WHERE 1=1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DRC.DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			AND DRC.DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DRC.DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND DRC.PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND DRC.STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND DRC.EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(exclsCd)">
+			AND DATR.AB_TEST_GRP_CD <![CDATA[<>]]> #{exclsCd,jdbcType=VARCHAR}
+		</if>
+			AND   DR.REV_SECT_CD <![CDATA[<>]]> 'PRVW'
+			AND   DAT.PROGRS_PSB_YN <![CDATA[<>]]> 'N'
+			AND   DATR.DVC_SECT_CD =  #{scDvcSectCd,jdbcType=VARCHAR}
+			AND   (
+                  (DR.REV_SECT_CD = 'BASE' AND DATR.MOD_TURN = 1) OR
+                  (DR.REV_SECT_CD = 'AB_TEST' 
+                       AND DATR.MOD_TURN = (
+                        SELECT MAX(MOD_TURN) 
+                        FROM DSP_AB_TEST_SET_MOD
+                        WHERE AB_TEST_SN = DATR.AB_TEST_SN
+                        AND SET_TURN = DATR.SET_TURN
+                       )
+                  )
+            )
+		ORDER BY DATS.SET_TURN,DR.REV_SN
+	</select>
+	
+	<select id="selectDspAbTestSetFlterList" parameterType="dspAbTestSetFlter" resultType="com.plgrim.ncp.biz.display.result.DspAbTestSetFlterResult">
+		SELECT  /* [display.rev.xml][selectDspAbTestSetFlterList][A/B테스트 노출설정조회][Dian] */
+		      DATSF.AB_TEST_SN
+		     ,DATSF.SET_TURN
+		     ,DATSF.FLTER_GRP_CD
+		     ,DATSF.FLTER_CD
+		     ,FGC.CD_NM AS FLTER_GRP_CD_NM
+             ,FGC.SORT_SEQ AS FLTER_GRP_SORT_SEQ
+		     ,FC.CD_NM AS FLTER_CD_NM
+             ,FC.SORT_SEQ AS FLTER_SORT_SEQ
+		     ,DATSF.ORD_BEG_DT
+		     ,DATSF.ORD_END_DT
+		     ,TO_CHAR(DATSF.ORD_BEG_DT,'YYYY-MM-DD') AS STR_ORD_BEG_DT
+		     ,TO_CHAR(DATSF.ORD_END_DT,'YYYY-MM-DD') AS STR_ORD_END_DT
+		     ,DATS.EXPSR_RT
+		     ,DATSF.REGTR_ID
+		     ,DATSF.REG_DT
+		     ,DATSF.UDTER_ID
+		     ,DATSF.UDT_DT
+		FROM DSP_AB_TEST_SET_FLTER DATSF
+		JOIN DSP_AB_TEST_SET DATS
+		ON (DATSF.AB_TEST_SN = DATS.AB_TEST_SN AND DATSF.SET_TURN = DATS.SET_TURN)
+		LEFT OUTER JOIN MV_SYS_CD FGC
+        ON (DATSF.FLTER_GRP_CD = FGC.CD AND FGC.UPPER_CD = 'FLTER_GRP' AND FGC.LANG_CD = 'KOR')
+		LEFT OUTER JOIN MV_SYS_CD FC
+        ON (DATSF.FLTER_CD = FC.CD AND FC.UPPER_CD = DATSF.FLTER_GRP_CD AND FC.LANG_CD = 'KOR')
+		WHERE 1=1
+		AND   DATSF.AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		AND   DATSF.SET_TURN = #{setTurn,jdbcType=NUMERIC} 
+		ORDER BY FGC.SORT_SEQ, FC.SORT_SEQ 
+	</select>
+	
+	<select id="selectAbTestAnlCount" parameterType="dspAbTest" resultType="Integer">
+		SELECT  /* [display.rev.xml][selectAbTestAnlCount][A/B 테스트 분석데이터 존재여부 조회][Dian] */
+			 0
+		FROM  dual
+	</select>
+
+	<select id="selectAbTestSetModList" parameterType="int" resultMap="conttAbTestResult">
+		SELECT 	dat.AB_TEST_SN,
+				dat.SET_EXPSR_MENMTHD_CD,
+				dats.SET_TURN,
+				datsm.MOD_TURN
+		  FROM DSP_AB_TEST dat
+		  JOIN DSP_AB_TEST_SET dats on dat.AB_TEST_SN = dats.AB_TEST_SN
+		  JOIN DSP_AB_TEST_SET_MOD datsm on dats.AB_TEST_SN = datsm.AB_TEST_SN and dats.SET_TURN = datsm.SET_TURN
+		 WHERE 1 = 1
+		   AND dat.AB_TEST_SN = #{abTestSn, jdbcType=NUMERIC}
+		ORDER BY dat.AB_TEST_SN, dats.SET_TURN, datsm.MOD_TURN desc
+	</select>
+
+	<select id="selectGlobalConttCntRev" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="Integer">
+		SELECT /* [display.rev.xml][selectGlobalConttCntRev][A/B테스트 리비전별 글로벌 컨텐츠 존재여부 체크][Dian] */
+			COUNT(1) 
+        FROM DSP_CNR_CONTT C
+        JOIN DSP_CNR_CONTT_LANG L ON (C.REV_SN = L.REV_SN AND C.CNR_SN = L.CNR_SN AND C.CNR_SET_SN = L.CNR_SET_SN AND C.CONTT_TURN = L.CONTT_TURN)
+        WHERE 1=1
+        <if test="scRevSn == '1'.toString()">
+        AND (L.CNR_SN,L.CNR_SET_SN) IN (
+            SELECT CNR_SN,CNR_SET_SN
+            FROM DSP_CNR_SET
+            WHERE 1 = 1
+            AND REV_SN = #{scRevSn,jdbcType=NUMERIC}
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+			AND CNR_SN IN (
+				SELECT
+					CNR_SN
+				FROM DSP_CNR_TMPLAT_INFO_CNNC
+				WHERE 1=1
+				AND REV_SN = #{scRevSn,jdbcType=NUMERIC}
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+					AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+				</if>
+				<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+					AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+					AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scTmplatSn)">
+					AND TMPLAT_SN = #{scTmplatSn,jdbcType=NUMERIC}
+				</if>
+				AND DSP_CNR_USE_YN = 'Y'
+			)
+            AND DSP_YN = 'Y'
+        )
+        </if>
+        AND L.REV_SN = #{scRevSn,jdbcType=NUMERIC}
+        AND L.LANG_CD = #{lang,jdbcType=VARCHAR}
+        AND C.DSP_YN = 'Y'
+        AND C.DSP_BEG_DT <![CDATA[<=]]> SYSDATE
+        AND C.DSP_END_DT <![CDATA[>=]]> SYSDATE
+        AND (L.CONTT_NM IS NOT NULL
+            OR L.IMG_FILE_NM IS NOT NULL
+            OR L.MOVI_FILE_URL IS NOT NULL
+            OR L.HTML_SJ IS NOT NULL 
+        )
+	</select>
+	
+	<!-- A/B 테스트 삭제 -->
+	<delete id="deleteDspAbTestSetFlterInfo" parameterType="dspAbTestSetFlter" >
+		DELETE /*[display.rev.xml][deleteDspAbTestSetFlterInfo][A/B 테스트 삭제 - dsp_ab_test_set_flter][Dian]*/ 
+		FROM DSP_AB_TEST_SET_FLTER
+		WHERE 1=1 
+		AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		<if test="setTurn != null and setTurn != 0">
+		AND SET_TURN =  #{setTurn,jdbcType=NUMERIC}
+		</if>
+    </delete>
+    
+    <delete id="deleteDspAbTestSetModInfo" parameterType="dspAbTestSetMod" >
+		DELETE /*[display.rev.xml][deleteDspAbTestSetModInfo][A/B 테스트 삭제 - dsp_ab_test_set_mod][Dian]*/ 
+		FROM DSP_AB_TEST_SET_MOD
+		WHERE 1=1 
+		AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		<if test="setTurn != null and setTurn != 0">
+		AND SET_TURN =  #{setTurn,jdbcType=NUMERIC}
+		</if>
+    </delete>
+	
+	<delete id="deleteDspAbTestSetInfo" parameterType="dspAbTestSet" >
+		DELETE /*[display.rev.xml][deleteDspAbTestSetInfo][A/B 테스트 삭제 - dsp_ab_test_set][Dian]*/ 
+		FROM DSP_AB_TEST_SET
+		WHERE 1=1 
+		AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		<if test="setTurn != null and setTurn != 0">
+		AND SET_TURN =  #{setTurn,jdbcType=NUMERIC}
+		</if>
+    </delete>
+	
+	<delete id="deleteDspAbTestRevInfo" parameterType="dspAbTestRev" >
+		DELETE /*[display.rev.xml][deleteDspAbTestSetInfo][A/B 테스트 삭제 - dsp_ab_test_rev][Dian]*/ 
+		FROM DSP_AB_TEST_REV
+		WHERE 1=1 
+		AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		<if test="revSn != null and revSn != 0">
+		AND REV_SN =  #{revSn,jdbcType=NUMERIC}
+		</if>
+    </delete>
+    
+    
+    <update id="updateDspAbTestSetModInfo" parameterType="dspAbTestSetMod">
+        UPDATE /*[display.rev.xml][updateDspAbTestSetModInfo][A/B 테스트 세트 변경 수정][Dian]*/ 
+        DSP_AB_TEST_SET_MOD SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+        	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(modResnCont)">
+            ,MOD_RESN_CONT = #{modResnCont,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(begDt)">
+            ,BEG_DT = #{begDt,jdbcType=TIMESTAMP}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(endDt)">
+            ,END_DT = #{endDt,jdbcType=TIMESTAMP}
+            </if>
+        WHERE   1 = 1
+        AND     AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+        AND     SET_TURN = #{setTurn,jdbcType=NUMERIC}
+        AND     MOD_TURN = #{modTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateAbTestModBegDt" parameterType="dspAbTest">
+        UPDATE /*[display.rev.xml][updateDspAbTestSetModInfo][A/B 테스트 시작일자 수정][Dian]*/ 
+        DSP_AB_TEST_SET_MOD SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+            ,BEG_DT = #{begDt,jdbcType=TIMESTAMP}
+        WHERE   1 = 1
+        AND     AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+        AND     MOD_TURN = 1
+    </update>
+    
+    <update id="updateAbTestModEndDt" parameterType="dspAbTest">
+        UPDATE /*[display.rev.xml][updateAbTestModEndDt][A/B 테스트 종료일자 수정][Dian]*/ 
+        DSP_AB_TEST_SET_MOD SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+        	,END_DT = #{endDt,jdbcType=TIMESTAMP}
+        WHERE   1 = 1
+        AND    AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+        AND    (SET_TURN,MOD_TURN) IN (
+        	SELECT SET_TURN, MAX(MOD_TURN) 
+			FROM   DSP_AB_TEST_SET_MOD
+			WHERE  AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC} 
+			GROUP BY SET_TURN 
+        )
+    </update>
+    
+    <resultMap id="dspCnrTmplatInfoCnncRevResult" type="com.plgrim.ncp.biz.display.result.DspCnrTmplatInfoCnncResult">
+		<result property="dspCnrTmplatInfoCnnc.revSn" column="REV_SN" />		
+		<result property="dspCnrTmplatInfoCnnc.cnrSn" column="CNR_SN" />		
+		<result property="dspCnrTmplatInfoCnnc.tmplatSn" column="TMPLAT_SN" />
+		<result property="dspCnrTmplatInfoCnnc.dspCnrTmplatTurn" column="DSP_CNR_TMPLAT_TURN" />
+		<result property="dspCnrTmplatInfoCnnc.dspCtgryNo" column="DSP_CTGRY_NO" />
+   		<result property="dspCnrTmplatInfoCnnc.dspBrndCtgryNo" column="DSP_BRND_CTGRY_NO" />
+   		<result property="dspCnrTmplatInfoCnnc.dspBrndId" column="DSP_BRND_ID" />
+   		<result property="dspCnrTmplatInfoCnnc.promtSn" column="PROMT_SN" />
+   		<result property="dspCnrTmplatInfoCnnc.evtNo" column="EVT_NO" />
+   		<result property="dspCnrTmplatInfoCnnc.strndSn" column="STRND_SN" />
+		<result property="dspCnrTmplatInfoCnnc.sortSeq" column="SORT_SEQ" />
+		<result property="dspCnrTmplatInfoCnnc.dspCnrUseYn" column="DSP_CNR_USE_YN" />
+		<result property="dspCnrTmplatInfoCnnc.regtrId" column="REGTR_ID" />
+		<result property="dspCnrTmplatInfoCnnc.regDt" column="REG_DT" />
+		<result property="dspCnrTmplatInfoCnnc.udterId" column="UDTER_ID" />
+		<result property="dspCnrTmplatInfoCnnc.udtDt" column="UDT_DT" />
+		<result property="dspCnr.dspCnrNm" column="DSP_CNR_NM" />
+		<result property="dspCnr.dspCnrDscr" column="DSP_CNR_DSCR" />
+		<result property="dspCnr.useYn" column="USE_YN" />
+    </resultMap>
+    
+    <select id="selectCnrTmplatInfoCnncRevList" parameterType="dspCnrTmplatInfoCnnc" resultMap="dspCnrTmplatInfoCnncRevResult">
+       	SELECT /* [display.rev.xml][selectCnrTmplatInfoCnncRevList][해당템플릿에 연결된 기본리비전 코너목록 조회][Dian] */
+			dct.REV_SN
+		   ,dct.TMPLAT_SN
+		   ,dct.CNR_SN
+		   ,dct.DSP_CNR_TMPLAT_TURN
+		   ,dct.DSP_CTGRY_NO
+		   ,dct.DSP_BRND_CTGRY_NO
+		   ,dct.DSP_BRND_ID
+		   ,dct.PROMT_SN
+		   ,dct.EVT_NO
+		   ,dct.STRND_SN
+		   ,dct.SORT_SEQ
+		   ,dct.DSP_CNR_USE_YN
+		   ,dct.REGTR_ID
+		   ,dct.REG_DT
+		   ,dct.UDTER_ID
+		   ,dct.UDT_DT
+		   ,dc.dsp_cnr_nm
+           ,dc.DSP_CNR_DSCR
+           ,dc.USE_YN
+		FROM (
+		    select cnnc.REV_SN, cnnc.TMPLAT_SN, cnnc.CNR_SN, max(DSP_CNR_TMPLAT_TURN) AS DSP_CNR_TMPLAT_TURN
+		    from DSP_CNR_TMPLAT_INFO_CNNC cnnc
+		    where cnnc.tmplat_sn = #{tmplatSn,jdbcType=NUMERIC}
+		    and cnnc.rev_sn = #{revSn,jdbcType=NUMERIC}
+		    group by cnnc.REV_SN, cnnc.TMPLAT_SN, cnnc.CNR_SN
+		) c
+		JOIN DSP_CNR_TMPLAT_INFO_CNNC dct
+		ON   (c.REV_SN = dct.REV_SN AND c.TMPLAT_SN = dct.TMPLAT_SN AND c.CNR_SN = dct.CNR_SN AND c.DSP_CNR_TMPLAT_TURN = dct.DSP_CNR_TMPLAT_TURN)
+		JOIN DSP_CNR dc
+        ON   (dct.rev_sn = dc.rev_sn and dct.cnr_sn = dc.cnr_sn )
+	</select>
+	
+	<select id="selectAbTestSetCount" parameterType="dspAbTestSet" resultType="Integer">
+		SELECT
+			COUNT(1)
+		FROM DSP_AB_TEST_SET
+		WHERE AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		AND   SET_TURN = #{setTurn,jdbcType=NUMERIC}
+    </select>
+    
+    
+	<update id="updateDspAbTestInfo" parameterType="dspAbTest" >
+		UPDATE /* [display.rev.xml][updateDspAbTestInfo][A/B TEST 수정][Dian] */
+			DSP_AB_TEST DAT
+		SET
+			 DAT.UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			,DAT.UDT_DT = SYSDATE
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(progrsPsbYn)">
+			,DAT.PROGRS_PSB_YN = #{progrsPsbYn,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(setUseYn)">
+			,DAT.SET_USE_YN = #{setUseYn,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(setExpsrMenmthdCd)">
+			,DAT.SET_EXPSR_MENMTHD_CD = #{setExpsrMenmthdCd,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(abTestNm)">
+			,DAT.AB_TEST_NM = #{abTestNm,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(abTestDscr)">
+			,DAT.AB_TEST_DSCR = #{abTestDscr,jdbcType=VARCHAR}
+			</if>
+			<if test="begDt != null">
+			,DAT.BEG_DT = #{begDt,jdbcType=TIMESTAMP}
+			</if>
+			<if test="endDt != null">
+			,DAT.END_DT = #{endDt,jdbcType=TIMESTAMP}
+			</if>
+		WHERE 1=1
+		AND DAT.AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+	</update>
+	
+	
+	<update id="updateDspAbTestRevInfo" parameterType="dspAbTestRev" >
+		UPDATE /* [display.rev.xml][updateDspAbTestRevInfo][A/B TEST 개정 수정][Dian] */
+        DSP_AB_TEST_REV SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(abTestGrpCd)">
+				,AB_TEST_GRP_CD = #{abTestGrpCd,jdbcType=VARCHAR}
+                </if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(abTestRevDscr)">
+				,AB_TEST_REV_DSCR = #{abTestRevDscr,jdbcType=VARCHAR}
+                </if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(modTurn)">
+				,MOD_TURN = #{modTurn,jdbcType=NUMERIC}
+                </if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(expsrRt)">
+				,EXPSR_RT = #{expsrRt,jdbcType=NUMERIC}
+                </if>
+        WHERE   1 = 1
+        AND     AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        AND     REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+    	AND     SET_TURN = #{setTurn,jdbcType=NUMERIC}
+	</update>
+	
+	
+	<update id="updateDspAbTestSetFlterInfo" parameterType="dspAbTestSetFlter">
+	    /* [display.rev.xml][updateDspAbTestSetFlterInfo][A/B TEST 세트 필터 등록][Dian] */
+	    MERGE INTO DSP_AB_TEST_SET_FLTER
+	    USING DUAL
+	    ON ( 
+	    		AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC} 
+        	AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+        	AND FLTER_GRP_CD = #{flterGrpCd,jdbcType=VARCHAR}
+        	AND FLTER_CD = #{flterCd,jdbcType=VARCHAR})
+	    WHEN MATCHED THEN
+	        UPDATE SET
+	             ORD_BEG_DT = #{ordBegDt,jdbcType=TIMESTAMP}
+                ,ORD_END_DT = #{ordEndDt,jdbcType=TIMESTAMP}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+	    WHEN NOT MATCHED THEN
+	        INSERT
+	        (
+	            AB_TEST_SN
+		       ,SET_TURN
+		       ,FLTER_GRP_CD
+		       ,FLTER_CD
+		       ,ORD_BEG_DT
+		       ,ORD_END_DT
+		       ,REGTR_ID
+		       ,UDTER_ID
+	           ,REG_DT
+	           ,UDT_DT
+	        )
+	        VALUES
+	        (
+	            #{abTestSn,jdbcType=NUMERIC}
+		       ,#{setTurn,jdbcType=NUMERIC}
+		       ,#{flterGrpCd,jdbcType=VARCHAR}
+		       ,#{flterCd,jdbcType=VARCHAR}
+		       ,#{ordBegDt,jdbcType=TIMESTAMP}
+		       ,#{ordEndDt,jdbcType=TIMESTAMP}
+		       ,#{regtrId,jdbcType=VARCHAR}
+		       ,#{udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+	        )
+	</update>
+	
+	<update id="updateDspAbTestRevExpsrRt" parameterType="dspAbTestRev" >
+		UPDATE /* [display.rev.xml][updateDspAbTestRevExpsrRt][A/B TEST 실험군대조군 노출율 수정][Dian] */
+        DSP_AB_TEST_REV SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,EXPSR_RT = #{expsrRt,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(revSn)">
+        AND     REV_SN = #{revSn,jdbcType=NUMERIC}
+        </if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(revCpstTurn)">
+		AND     REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+    	</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(setTurn)">
+		AND     SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		</if>
+	</update>
+
+	<update id="updateDspAbTestSetExpsrRt" parameterType="dspAbTestSet" >
+		UPDATE /* [display.rev.xml][updateDspAbTestSetExpsrRt][A/B TEST 세트 노출율 수정][Dian] */
+        DSP_AB_TEST_SET SET
+                 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,EXPSR_RT = #{expsrRt,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(setTurn)">
+		AND     SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		</if>
+	</update>
+
+
+	<select id="selectCstmrSgmtPercent" parameterType="com.plgrim.ncp.biz.display.data.DspConttAbTestDTO" resultType="Integer">
+		SELECT /* [display.rev.xml][selectCstmrSgmtPercent][A/B TEST 고객세그먼트 노출률 조회][Dian] */
+			round(S.CNT/(select count(1) from mbr where JOIN_MALL_ID = 'DXM' AND  MBR_STAT_CD  = 'ACT') * 100) as ALL_CNT
+ 		FROM (
+			SELECT 
+				COUNT(M.MBR_NO) AS CNT
+			FROM MBR M
+			<if test="flterGrpList.contains('PCH_COUNT')">
+			JOIN
+			(
+			    SELECT MOP.MBR_NO, COUNT(MOP.ORD_NO) AS ORD_CNT
+			    FROM MBR_ONLNE_PCH MOP
+			    WHERE 1=1
+			    AND MOP.ORD_DT BETWEEN TO_DATE(#{strCountBegDt},'YYYY-MM-DD') AND TO_DATE(#{strCountEndDt},'YYYY-MM-DD') 
+			    AND MOP.PAY_SUM_AMT - MOP.CLM_SUM_AMT > 0
+			    GROUP BY MOP.MBR_NO
+			) CNT /* 구매횟수 */ 
+			ON (M.MBR_NO = CNT.MBR_NO)
+			</if>
+			<if test="flterGrpList.contains('PCH_AMT')">
+			JOIN
+			(
+			    SELECT MOP.MBR_NO, SUM(MOP.PAY_SUM_AMT - MOP.CLM_SUM_AMT) AS SUM_AMT
+			    FROM MBR_ONLNE_PCH MOP
+			    WHERE 1=1
+			    AND MOP.ORD_DT BETWEEN TO_DATE(#{strAmtBegDt},'YYYY-MM-DD') AND TO_DATE(#{strAmtEndDt},'YYYY-MM-DD') 
+			    GROUP BY MOP.MBR_NO
+			) AMT
+			ON (M.MBR_NO = AMT.MBR_NO)
+			</if>
+			WHERE 1=1
+			AND   M.JOIN_MALL_ID = 'DXM'
+			AND   M.MBR_STAT_CD  = 'ACT'
+			<if test="flterGrpList.contains('MBR_SEX')">
+			/* 성별*/
+			<foreach collection="dspAbTestSetFlterList" item="list" open="AND ("  close=")" separator="or">
+			<trim  suffixOverrides="or">
+			<if test="list.flterGrpCd == 'MBR_SEX'" >
+				M.MBR_SEX_SECT_CD = #{list.flterCd,jdbcType=VARCHAR} 
+			</if>
+			</trim>	
+			</foreach>
+			</if>
+			<if test="flterGrpList.contains('MBR_AGE')">
+			/* 연령*/
+			<foreach collection="dspAbTestSetFlterList" item="list" open="AND ("  close=")" separator="or">
+			<trim  suffixOverrides="or">
+			<if test="list.flterGrpCd == 'MBR_AGE'">
+				<choose>
+				<when test="list.flterCd == '40AGE_OVER'">
+					TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) - TO_NUMBER(SUBSTR(M.MBR_BRTHDY,1,4)) >= TO_NUMBER(SUBSTR(#{list.flterCd},1,2)) 
+				</when>
+				<otherwise>
+					TO_NUMBER(TO_CHAR(SYSDATE,'YYYY')) - TO_NUMBER(SUBSTR(M.MBR_BRTHDY,1,4)) BETWEEN TO_NUMBER(SUBSTR(#{list.flterCd},1,2)) AND TO_NUMBER(SUBSTR(#{list.flterCd},1,2))+9 
+				</otherwise>
+				</choose>
+			</if>
+			</trim>	
+			</foreach>
+			</if>
+			<if test="flterGrpList.contains('SIDO')">
+			/* 지역*/
+			<foreach collection="dspAbTestSetFlterList" item="list" open="AND ("  close=")" separator="or">
+			<trim  suffixOverrides="or">
+			<if test="list.flterGrpCd == 'SIDO'">
+				SUBSTR(M.AUD_CD,1,2)||'000' = #{list.flterCd,jdbcType=VARCHAR} 
+			</if>
+			</trim>	
+			</foreach>
+			</if>
+			<if test="flterGrpList.contains('PCH_AMT')">
+			/* 구매금액*/
+			<foreach collection="dspAbTestSetFlterList" item="list" open="AND ("  close=")" separator="or">
+			<trim  suffixOverrides="or">
+			<if test="list.flterGrpCd == 'PCH_AMT'">
+				<choose>
+				<when test="list.flterCd == '10_TTW_BELO'">
+					<![CDATA[SUM_AMT < 100000 ]]>
+				</when>
+				<when test="list.flterCd == '100_TTW_OVER'">
+					<![CDATA[SUM_AMT >= 1000000 ]]>
+				</when>
+				<otherwise>
+					<![CDATA[(SUM_AMT >= TO_NUMBER(SUBSTR(#{list.flterCd},1,2)||'0000')  AND SUM_AMT < TO_NUMBER(SUBSTR(#{list.flterCd},4,2)||'0000')) ]]>
+				</otherwise>
+				</choose>
+			</if>
+			</trim>	
+			</foreach>
+			</if>
+			<if test="flterGrpList.contains('PCH_COUNT')">
+			/* 구매횟수*/
+			<foreach collection="dspAbTestSetFlterList" item="list" open="AND ("  close=")" separator="or">
+			<trim  suffixOverrides="or">
+			<if test="list.flterGrpCd == 'PCH_COUNT'">
+	       		<choose>
+				<when test="list.flterCd == '5_BT_BELO'">
+					<![CDATA[ORD_CNT < 5 ]]>
+				</when>
+				<when test="list.flterCd == '5_7_BT'">
+					<![CDATA[(ORD_CNT >= 5 AND ORD_CNT < 7)]]>
+				</when>
+				<when test="list.flterCd == '8_10_BT'">
+					<![CDATA[(ORD_CNT >= 8 AND ORD_CNT < 10)]]>
+				</when>
+				<when test="list.flterCd == '10_BT_OVER'">
+					<![CDATA[ORD_CNT >= 10 or]]>
+				</when>
+				</choose>
+			</if>
+			</trim>	
+			</foreach>
+			</if>
+		) S
+	</select>
+	
+	<!-- AB TEST MOD -->
+	<select id="selectDspAbTestRevListByMod" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultMap="dspAbTestRevResultMap">
+		SELECT /* [display.rev.xml][selectDspAbTestRevListByMod][A/B TEST 개정 목록 조회 ][Dian] */
+                t.AB_TEST_SN
+               ,t.REV_SN
+               ,t.REV_CPST_TURN
+               ,t.SET_TURN
+               ,t.DVC_SECT_CD
+               ,t.AB_TEST_GRP_CD
+               ,t.AB_TEST_REV_DSCR
+               ,t.MOD_TURN
+               ,t.EXPSR_RT
+               ,t.REGTR_ID
+               ,t.REG_DT
+               ,t.UDTER_ID
+               ,t.UDT_DT
+               ,r.REV_SECT_CD
+               ,r.REV_NM
+               ,r.REV_DSCR
+               ,r.USE_YN
+               ,c.REV_CPST_TURN
+               ,c.DSP_CTGRY_NO
+               ,c.DSP_BRND_CTGRY_NO
+               ,c.DSP_BRND_ID
+               ,c.PROMT_SN
+               ,c.EVT_NO
+               ,c.STRND_SN
+               ,c.PC_MOBILE_TMPLAT_IND_USE_YN
+               ,c.PC_TMPLAT_SN
+               ,c.MOBILE_TMPLAT_SN
+               ,m.BEG_DT
+               ,m.END_DT
+        FROM    DSP_AB_TEST_REV t
+        JOIN    DSP_REV r ON (t.REV_SN = r.REV_SN)
+        JOIN	DSP_REV_CPST c ON (t.rev_sn = c.rev_sn and t.rev_cpst_turn = c.rev_cpst_turn)
+        JOIN    DSP_AB_TEST_SET_MOD m ON (t.AB_TEST_SN = m.AB_TEST_SN and t.SET_TURN = m.SET_TURN and t.MOD_TURN = m.MOD_TURN)
+        WHERE   1 = 1
+        AND     t.AB_TEST_SN = #{scAbTestSn,jdbcType=NUMERIC}
+        AND     t.SET_TURN = #{scAbTestSetTurn,jdbcType=NUMERIC}
+        AND     t.MOD_TURN = #{scAbTestModTurn,jdbcType=NUMERIC}
+        AND		r.REV_SECT_CD = #{scRevSectCd,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectDspAbTestRevCount" parameterType="dspAbTestRev" resultType="Integer">
+		SELECT /* [display.rev.xml][selectDspAbTestRevCount][A/B TEST 개정 수 체크][Dian] */
+			count(1)
+        FROM    DSP_AB_TEST_REV t
+        WHERE   1 = 1
+        AND     AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+        <if test="setTurn != null and setTurn != 0">
+        AND     SET_TURN = #{setTurn,jdbcType=NUMERIC}
+        </if>
+        <if test="modTurn != null and modTurn != 0">
+        AND     MOD_TURN = #{modTurn,jdbcType=NUMERIC}
+        </if>
+	</select>
+
+	<select id="selectAbTestSysConfigList" parameterType="sysDynmcConfig" resultType="sysDynmcConfig">
+       SELECT /* [display.rev.xml][selectDspAbTestRevListByMod][A/B TEST 설정 목록조회 ][Dian] */
+		     MALL_ID
+	        ,CONFIG_NM
+	        ,CONFIG_BEG_DT
+	        ,CONFIG_END_DT
+	        ,CONFIG_SECT_CD
+	        ,USE_YN
+	        ,CONFIG_DSCR
+	        ,REGTR_ID
+	        ,REG_DT
+	        ,UDTER_ID
+	        ,UDT_DT
+		FROM SYS_DYNMC_CONFIG A
+		WHERE 1 = 1
+		<if test='mallId != null and mallId != ""'>
+        	AND A.MALL_ID = #{mallId}
+        </if>
+        <if test='configNm != null and configNm != ""'>
+        	AND A.CONFIG_NM like '%'||#{configNm}||'%'
+        </if>
+        <if test='useYn != null and useYn != ""'>
+        	AND A.USE_YN = #{useYn}
+        </if>
+	</select>
+
+	<select id="selectMallId" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="String">
+		SELECT /* [display.rev.xml][selectMallId][미리보기 URL 조회][Emily] */
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+					APL_MALL_ID
+				</if>
+				<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn) or !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn) or !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+					MALL_ID
+				</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			FROM DSP_CTGRY
+			WHERE 1 = 1
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			FROM DSP_PROMT_DSP_TGT
+			WHERE 1 = 1
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			AND DSP_TGT_TP_CD = 'MALL_ID'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			FROM DSP_STRND_DSP_TGT
+			WHERE 1 = 1
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			AND DSP_TGT_TP_CD = 'MALL_ID'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			FROM EVT_DSP_TGT
+			WHERE 1 = 1
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			AND EVT_DSP_TGT_TP_CD = 'MALL_ID'
+		</if>
+	</select>
+
+	<update id="updateBaseRevUseYn" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" >
+		UPDATE
+	  			DSP_REV_CPST
+	  	   SET	USE_YN = #{useYn, jdbcType=VARCHAR}
+		WHERE	1 = 1
+	  	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(baseRevSn)">
+		  AND	REV_SN = #{baseRevSn, jdbcType=NUMERIC}
+		  AND  	REV_CPST_TURN = #{scBaseRevCpstTurn, jdbcType=NUMERIC}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(baseRevSn)">
+		  AND	REV_SN = #{scRevSn, jdbcType=NUMERIC}
+		  AND  	REV_CPST_TURN = #{scRevCpstTurn, jdbcType=NUMERIC}
+		</if>
+	</update>
+
+	<update id="updateDspRevSectCd" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO">
+		UPDATE
+				DSP_REV
+		   SET 	REV_SECT_CD = #{scRevSectCd, jdbcType=VARCHAR}
+		 WHERE	REV_SN = #{scRevSn, jdbcType=NUMERIC}
+	</update>
+
+	<select id="selectBaseRevTmplatSn" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO" resultType="String">
+		SELECT
+				<if test="scDvcSectCd == 'MOBILE'">
+					MOBILE_TMPLAT_SN
+				</if>
+				<if test="scDvcSectCd != 'MOBILE'">
+					PC_TMPLAT_SN
+				</if>
+		  FROM  DSP_REV_CPST
+		 WHERE	1 = 1
+		   AND  REV_SN = 1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+			AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+			AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+			AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+			AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+			AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<update id="updateBaseRevTmplatSn" parameterType="com.plgrim.ncp.biz.display.data.DspCnrConttScBoDTO">
+		UPDATE
+				DSP_REV_CPST
+		   SET
+		   		<if test="scDvcSectCd == 'PC'">
+					PC_TMPLAT_SN = #{scTmplatSn, jdbcType=NUMERIC}
+				</if>
+				<if test="scDvcSectCd == 'MOBILE'">
+					MOBILE_TMPLAT_SN = #{scTmplatSn, jdbcType=NUMERIC}
+				</if>
+				<if test="scDvcSectCd == 'PC_MOBILE'">
+					PC_TMPLAT_SN = #{scTmplatSn, jdbcType=NUMERIC},
+					MOBILE_TMPLAT_SN = #{scTmplatSn, jdbcType=NUMERIC}
+				</if>
+		 WHERE 1 = 1
+			AND  REV_SN = 1
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+				AND DSP_BRND_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR} AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNo)">
+				AND DSP_CTGRY_NO = #{scDspCtgryNo,jdbcType=VARCHAR}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPromtSn)">
+				AND PROMT_SN = #{scPromtSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scStrndSn)">
+				AND STRND_SN = #{scStrndSn,jdbcType=NUMERIC}
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scEvtNo)">
+				AND EVT_NO = #{scEvtNo,jdbcType=VARCHAR}
+			</if>
+	</update>
+</mapper>

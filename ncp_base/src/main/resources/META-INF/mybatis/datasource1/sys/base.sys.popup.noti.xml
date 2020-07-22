@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysPopupNoti" parameterType="sysPopupNoti" resultType="sysPopupNoti">
+		SELECT /* com.plgrim.ncp.base.selectSysPopupNoti		Generator(Generator)	2018-05-23 */
+			   POPUP_NOTI_SN
+			 , REG_ADMIN_ID
+			 , NOTI_REG_DT
+			 , DSP_YN
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , DSP_TIME_REPTIT_YN
+			 , DSP_BEG_HOUR
+			 , DSP_END_HOUR
+			 , LINK_OUTPT_TGT_CD
+			 , NOTI_SJ
+			 , NOTI_CONT_SECT_CD
+			 , IMG_FILE_NM
+			 , IMG_FILE_URL
+			 , IMG_ALTRTV_CONT
+			 , LINK_URL
+			 , NOTI_CONT
+			 , POPUP_SECT_CD
+			 , TODAY_STP_VIEW_CONFIG_YN
+			 , CLSE_CONFIG_YN
+			 , MOBILE_POPUP_MENMTHD_CD
+			 , POPUP_UPEND_LC
+			 , POPUP_LEFT_LC
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_POPUP_NOTI
+		 WHERE 1 = 1
+	   	   AND POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysPopupNoti" parameterType="sysPopupNoti">
+		UPDATE /* com.plgrim.ncp.base.updateSysPopupNoti		Generator(Generator)	2018-05-23 */
+		SYS_POPUP_NOTI SET
+			   REG_ADMIN_ID = #{regAdminId,jdbcType=VARCHAR}
+			 , NOTI_REG_DT = #{notiRegDt,jdbcType=TIMESTAMP}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+			 , DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+			 , DSP_TIME_REPTIT_YN = #{dspTimeReptitYn,jdbcType=VARCHAR}
+			 , DSP_BEG_HOUR = #{dspBegHour,jdbcType=VARCHAR}
+			 , DSP_END_HOUR = #{dspEndHour,jdbcType=VARCHAR}
+			 , LINK_OUTPT_TGT_CD = #{linkOutptTgtCd,jdbcType=VARCHAR}
+			 , NOTI_SJ = #{notiSj,jdbcType=VARCHAR}
+			 , NOTI_CONT_SECT_CD = #{notiContSectCd,jdbcType=VARCHAR}
+			 , IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+			 , IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+			 , IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+			 , LINK_URL = #{linkUrl,jdbcType=VARCHAR}
+			 , NOTI_CONT = #{notiCont,jdbcType=CLOB}
+			 , POPUP_SECT_CD = #{popupSectCd,jdbcType=VARCHAR}
+			 , TODAY_STP_VIEW_CONFIG_YN = #{todayStpViewConfigYn,jdbcType=VARCHAR}
+			 , CLSE_CONFIG_YN = #{clseConfigYn,jdbcType=VARCHAR}
+			 , MOBILE_POPUP_MENMTHD_CD = #{mobilePopupMenmthdCd,jdbcType=VARCHAR}
+			 , POPUP_UPEND_LC = #{popupUpendLc,jdbcType=NUMERIC}
+			 , POPUP_LEFT_LC = #{popupLeftLc,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysPopupNoti" parameterType="sysPopupNoti">
+		INSERT /* com.plgrim.ncp.base.insertSysPopupNoti		Generator(Generator)	2018-05-23 */
+		INTO   SYS_POPUP_NOTI (
+			   POPUP_NOTI_SN
+			 , REG_ADMIN_ID
+			 , NOTI_REG_DT
+			 , DSP_YN
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , DSP_TIME_REPTIT_YN
+			 , DSP_BEG_HOUR
+			 , DSP_END_HOUR
+			 , LINK_OUTPT_TGT_CD
+			 , NOTI_SJ
+			 , NOTI_CONT_SECT_CD
+			 , IMG_FILE_NM
+			 , IMG_FILE_URL
+			 , IMG_ALTRTV_CONT
+			 , LINK_URL
+			 , NOTI_CONT
+			 , POPUP_SECT_CD
+			 , TODAY_STP_VIEW_CONFIG_YN
+			 , CLSE_CONFIG_YN
+			 , MOBILE_POPUP_MENMTHD_CD
+			 , POPUP_UPEND_LC
+			 , POPUP_LEFT_LC
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{popupNotiSn,jdbcType=NUMERIC}
+			 , #{regAdminId,jdbcType=VARCHAR}
+			 , #{notiRegDt,jdbcType=TIMESTAMP}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{dspBegDt,jdbcType=TIMESTAMP}
+			 , #{dspEndDt,jdbcType=TIMESTAMP}
+			 , #{dspTimeReptitYn,jdbcType=VARCHAR}
+			 , #{dspBegHour,jdbcType=VARCHAR}
+			 , #{dspEndHour,jdbcType=VARCHAR}
+			 , #{linkOutptTgtCd,jdbcType=VARCHAR}
+			 , #{notiSj,jdbcType=VARCHAR}
+			 , #{notiContSectCd,jdbcType=VARCHAR}
+			 , #{imgFileNm,jdbcType=VARCHAR}
+			 , #{imgFileUrl,jdbcType=VARCHAR}
+			 , #{imgAltrtvCont,jdbcType=VARCHAR}
+			 , #{linkUrl,jdbcType=VARCHAR}
+			 , #{notiCont,jdbcType=CLOB}
+			 , #{popupSectCd,jdbcType=VARCHAR}
+			 , #{todayStpViewConfigYn,jdbcType=VARCHAR}
+			 , #{clseConfigYn,jdbcType=VARCHAR}
+			 , #{mobilePopupMenmthdCd,jdbcType=VARCHAR}
+			 , #{popupUpendLc,jdbcType=NUMERIC}
+			 , #{popupLeftLc,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysPopupNoti" parameterType="sysPopupNoti">
+		DELETE /* com.plgrim.ncp.base.deleteSysPopupNoti		Generator(Generator)	2018-05-23 */
+		  FROM SYS_POPUP_NOTI
+		 WHERE 1 = 1
+		   AND POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

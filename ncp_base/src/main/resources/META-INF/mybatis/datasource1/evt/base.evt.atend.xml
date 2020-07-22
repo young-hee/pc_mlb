@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtAtend" parameterType="evtAtend" resultType="evtAtend">
+		SELECT /* com.plgrim.ncp.base.selectEvtAtend		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , MBR_NO
+			 , ATEND_DATE
+			 , ATEND_HOUR
+			 , EVT_PARTCPTN_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_ATEND
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND ATEND_DATE = #{atendDate,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateEvtAtend" parameterType="evtAtend">
+		UPDATE /* com.plgrim.ncp.base.updateEvtAtend		Generator(Generator)	2018-05-23 */
+		EVT_ATEND SET
+			   ATEND_HOUR = #{atendHour,jdbcType=VARCHAR}
+			 , EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND ATEND_DATE = #{atendDate,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertEvtAtend" parameterType="evtAtend">
+		INSERT /* com.plgrim.ncp.base.insertEvtAtend		Generator(Generator)	2018-05-23 */
+		INTO   EVT_ATEND (
+			   EVT_NO
+			 , MBR_NO
+			 , ATEND_DATE
+			 , ATEND_HOUR
+			 , EVT_PARTCPTN_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{atendDate,jdbcType=VARCHAR}
+			 , #{atendHour,jdbcType=VARCHAR}
+			 , #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtAtend" parameterType="evtAtend">
+		DELETE /* com.plgrim.ncp.base.deleteEvtAtend		Generator(Generator)	2018-05-23 */
+		  FROM EVT_ATEND
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND ATEND_DATE = #{atendDate,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

@@ -1,0 +1,48 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<button type="button" class="btn-open d_toggle_select"><span>Open</span></button>
+<div class="order-detail-content d_toggle_cont">
+	<div class="board-write">
+		<table>
+			<caption><spring:message code="order.js.txt.caption7" /></caption>
+			<colgroup>
+				<col style="width:200px;">
+				<col>
+			</colgroup>
+			<tr>
+				<th scope="row"><label for="labelCoupon"><spring:message code="order.js.txt.coupon" /></label></th>
+				<td>
+					<input type="text" id="labelCoupon" class="input-style01 input_required textOnly" value="0" style="width:255px;ime-mode:disabled;" maxlength="270" disabled="disabled"/>
+					<span class="btnTdArea"><a href="#layerPopupCoupon" class="btn d_layer_open" id="btnLoadCoupons"><spring:message code="order.js.txt.search.coupon" /></a></span>
+					<span class="txtSub01"><spring:message code="order.js.txt.apply.coupon.desc" /></span>
+				</td>
+			</tr>
+			<c:if test="${not empty mbr && mbr.mbrStatCd != 'BLCLST_B' && mbr.mbrStatCd != 'BLCLST_A'}">
+			<tr class="not_emp">
+				<th scope="row"><label for="mileageUse"><spring:message code="order.js.txt.mileage" /></label></th>
+				<td>
+					<input type="text" id="mileageUse" class="input-style01 align-right input_required numberOnly" value="0" style="width:255px;ime-mode:disabled;" />
+					<span class="btnTdArea">
+						<a href="#" class="btn" id="btnMileageApply"><spring:message code="order.js.txt.apply" /></a>
+                        <a href="#" class="btn fill" id="btnMileageApplyEnt"><spring:message code="order.js.txt.apply.entire" /></a>
+					</span>
+					<span class="txtSub01"><spring:message code="order.js.txt.balance" />&nbsp;<em id="mileageBalance">0M</em></span>
+					<span class="txtSub02 st"><spring:message code="order.js.txt.caption8" /></span>
+				</td>
+			</tr>
+			<tr class="not_emp">
+				<th scope="row"><label for="webPointUse"><spring:message code="order.js.txt.point" /></label></th>
+				<td>
+					<input type="text" id="webPointUse" class="input-style01 align-right input_required numberOnly" value="0" style="width:255px;ime-mode:disabled;" />
+					<span class="btnTdArea">
+						<a href="#" class="btn" id="btnWebPointApply"><spring:message code="order.js.txt.apply" /></a>
+                        <a href="#" class="btn fill" id="btnWebPointApplyEnt"><spring:message code="order.js.txt.apply.entire" /></a>
+					</span>
+					<span class="txtSub01"><spring:message code="order.js.txt.balance" />&nbsp;<em id="webPointBalance">0P</em></span>
+					<span class="txtSub02 st"><spring:message code="order.js.txt.caption9" /></span>
+				</td>
+			</tr>
+			</c:if>
+		</table>
+	</div>
+</div>
+<button type="button" class="btn-close d_toggle_select"><span>Close</span></button>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoJobRequst" parameterType="csoJobRequst" resultType="csoJobRequst">
+		SELECT /* com.plgrim.ncp.base.selectCsoJobRequst		Generator(Generator)	2018-05-23 */
+			   REQUST_SN
+			 , TRANS_STAT_CD
+			 , CHRG_JOB_TP_CD
+			 , TRANS_REQUST_TP_CD
+			 , DOI_CD
+			 , REG_ADMIN_ID
+			 , REQUST_RCEPT_ADMIN_ID
+			 , REQUST_SJ
+			 , REQUST_CONT
+			 , CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , TRANS_REQUST_DT
+			 , TRANS_CNCL_DT
+			 , TRANS_COMPT_DT
+			 , MALL_ID
+			 , LANG_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_JOB_REQUST
+		 WHERE 1 = 1
+	   	   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoJobRequst" parameterType="csoJobRequst">
+		UPDATE /* com.plgrim.ncp.base.updateCsoJobRequst		Generator(Generator)	2018-05-23 */
+		CSO_JOB_REQUST SET
+			   TRANS_STAT_CD = #{transStatCd,jdbcType=VARCHAR}
+			 , CHRG_JOB_TP_CD = #{chrgJobTpCd,jdbcType=VARCHAR}
+			 , TRANS_REQUST_TP_CD = #{transRequstTpCd,jdbcType=VARCHAR}
+			 , DOI_CD = #{doiCd,jdbcType=VARCHAR}
+			 , REG_ADMIN_ID = #{regAdminId,jdbcType=VARCHAR}
+			 , REQUST_RCEPT_ADMIN_ID = #{requstRceptAdminId,jdbcType=VARCHAR}
+			 , REQUST_SJ = #{requstSj,jdbcType=VARCHAR}
+			 , REQUST_CONT = #{requstCont,jdbcType=CLOB}
+			 , CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+			 , CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+			 , TRANS_REQUST_DT = #{transRequstDt,jdbcType=TIMESTAMP}
+			 , TRANS_CNCL_DT = #{transCnclDt,jdbcType=TIMESTAMP}
+			 , TRANS_COMPT_DT = #{transComptDt,jdbcType=TIMESTAMP}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoJobRequst" parameterType="csoJobRequst">
+		INSERT /* com.plgrim.ncp.base.insertCsoJobRequst		Generator(Generator)	2018-05-23 */
+		INTO   CSO_JOB_REQUST (
+			   REQUST_SN
+			 , TRANS_STAT_CD
+			 , CHRG_JOB_TP_CD
+			 , TRANS_REQUST_TP_CD
+			 , DOI_CD
+			 , REG_ADMIN_ID
+			 , REQUST_RCEPT_ADMIN_ID
+			 , REQUST_SJ
+			 , REQUST_CONT
+			 , CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , TRANS_REQUST_DT
+			 , TRANS_CNCL_DT
+			 , TRANS_COMPT_DT
+			 , MALL_ID
+			 , LANG_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{requstSn,jdbcType=NUMERIC}
+			 , #{transStatCd,jdbcType=VARCHAR}
+			 , #{chrgJobTpCd,jdbcType=VARCHAR}
+			 , #{transRequstTpCd,jdbcType=VARCHAR}
+			 , #{doiCd,jdbcType=VARCHAR}
+			 , #{regAdminId,jdbcType=VARCHAR}
+			 , #{requstRceptAdminId,jdbcType=VARCHAR}
+			 , #{requstSj,jdbcType=VARCHAR}
+			 , #{requstCont,jdbcType=CLOB}
+			 , #{cnsltSn,jdbcType=NUMERIC}
+			 , #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , #{transRequstTurn,jdbcType=NUMERIC}
+			 , #{transRequstDt,jdbcType=TIMESTAMP}
+			 , #{transCnclDt,jdbcType=TIMESTAMP}
+			 , #{transComptDt,jdbcType=TIMESTAMP}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoJobRequst" parameterType="csoJobRequst">
+		DELETE /* com.plgrim.ncp.base.deleteCsoJobRequst		Generator(Generator)	2018-05-23 */
+		  FROM CSO_JOB_REQUST
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

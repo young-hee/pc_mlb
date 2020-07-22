@@ -1,0 +1,303 @@
+@charset "utf-8";
+
+/* 고객센터 CSS */
+.cs .title01 {text-align:center;}
+.cs .board-write + .text-list02 {margin-top:20px;}
+.cs .board-write + .text-list02 li:after {background-color:#666;}
+.cs .board-write .input-style01 + .at {padding:0px 2px 0 1px;}
+.findStore-pop .layer-cont.scroll {padding:0 8px 0 2px;}
+.cs .btnWrapBox .btn {height:45px; line-height:45px;}
+.cs .board-write .btn-file-delete {background:url(../images/cs/btn_del_reply.png) no-repeat -2px -1px; width:15px; height:15px;}
+.cs .page > a.first, 
+.cs .page > a.prev, 
+.cs .page > a.next, 
+.cs .page > a.last {background: url(../images/cm/paging_off.png) no-repeat 0px center;}
+.cs .page > a.first:hover, 
+.cs .page > a.prev:hover, 
+.cs .page > a.next:hover, 
+.cs .page > a.last:hover {background: url(../images/cm/paging_on.png) no-repeat 0px center;}
+.cs .page > a.first,
+.cs .page > a.first:hover {background-position-x: 0px}
+.cs .page > a.prev,
+.cs .page > a.prev:hover {background-position-x: -50px}
+.cs .page > a.next,
+.cs .page > a.next:hover{background-position-x: -100px}
+.cs .page > a.last,
+.cs .page > a.last:hover {background-position-x: -150px}
+.cs .file-search span label,
+.my .file-search span label {cursor:pointer;}
+
+/* 고객센터팝업 */
+.noticeView-pop {position:absolute; z-index:150; overflow:hidden; white-space:normal; text-align:left;}
+.layer-popupinner {position:relative; width:auto; height:auto; display:inline-block; text-align:left; vertical-align:middle; padding:0; min-width:200px; min-height:200px; max-width:500px; overflow:hidden; border:0; background:transparent !important;outline:none;}
+.layer-popupinner .layer-popup-close {z-index:2; right:5px; top:5px;}
+.layer-popupinner .layer-cont {overflow-y:auto !important; margin:0 !important; min-height:200px; background:transparent;}
+.layer-popupinner .layer-cont img {max-width:100%; float:left;}
+.layer-popupinner .layer-popup-close {position:absolute; right:5px; top:5px;}
+.layer-popupinner .layer-popup-close button {display: block;width: 20px;height: 19px;background:url(../images/cm/btn_layerpopup_close.png) no-repeat 0 0;font-size: 0;}
+.layer-popupinner .layer-cont.scroll{ max-height:515px; overflow-y:scroll; margin-right:-20px; margin-bottom:-30px; }
+.popWrapbottom {width:100%; height:25px; background:transparent; padding-left:0px; z-index:2;}
+.popWrapbottom .check-skin {margin-top:5px;}
+.popWrapbottom .check-skin span {float:left; margin-right:8px;}
+.popWrapbottom .check-skin em {color:#000; letter-spacing:-0.05em; font-size:13px; margin-top:-5px; vertical-align:top;}
+.noticeView-pop .layer-popupinner .layer-cont.scroll img {margin-bottom:5px;}
+.noticeView-pop .layer-popupinner .layer-cont.scroll *:not(img) {word-break:break-all; padding-bottom:5px; width:100%; float:left;}
+.noticeView-pop .layer-popupinner .layer-cont.scroll {overflow:hidden !important; word-break:break-all; max-height:initial !important;}
+
+/* 고객센터메인 */
+.csMain-wrap .search-input02 input {width:475px;}
+.csMain-wrap .justify-wrap h3.title01 {font-weight:400;}
+.csMain-wrap .justify-wrap a.right {width:110px !important;}
+.csMain-wrap .board-list.accordion-type table td .reply {padding-bottom:17px;}
+.csMain-wrap .board-list td {padding:16px 0 15px;}
+.csMain-wrap .board-list.accordion-type table tr td.ask-wrap {padding:0;}
+.csMain-wrap .board-list.accordion-type table td .inquiry,
+.csMain-wrap .board-list.accordion-type table tr.on td .inquiry {padding:18px 20px 15px 0; background-position:calc(100% - 20px) 50%;}
+.csMain-wrap .justify-wrap {margin-top:85px;}
+.csMain-wrap .search-input02 + div ul {overflow:hidden; width:auto; display:inline-block;}
+.csMain-wrap .search-input02 + div ul li {float:left;}
+.csMain-wrap .search-wrap02 + .justify-wrap {margin-top:65px;}
+
+/* 고객센터 서브메인 상단 탭 */
+.csMainTab {width:100%; height:185px; padding:0 140px; border-bottom:1px solid #ddd; background:#f8f8f8;}
+.csMainTab ul {width:100%; height:100%;}
+.csMainTab ul li {position:relative; width:25%; height:100%; float:left;}
+.csMainTab ul li:last-child:after {display:none;}
+.csMainTab ul li:after {content:''; position:absolute; top:72px; right:0; background:#ddd; width:1px; height:40px; display:inline-block;}
+.csMainTab a {display:inline-block; width:100%; height:100%; color:#010101; font-size:16px; text-align:center; line-height:240px;}
+.csMainTab li:nth-child(1) a {background:url(../images/cs/csMainTab01.png) no-repeat 50% 25px;}
+.csMainTab li:nth-child(2) a {background:url(../images/cs/csMainTab02.png) no-repeat 50% 25px;}
+.csMainTab li:nth-child(3) a {background:url(../images/cs/csMainTab03.png) no-repeat 50% 25px;}
+.csMainTab li:nth-child(4) a {background:url(../images/cs/csMainTab04.png) no-repeat 50% 25px;}
+
+/* 고객센터 서브메인 하단 */
+.csMainTXTBox {margin-top:25px; width:100%; height:100px; border-top:1px solid #000; background:#f8f8f8;}
+.csMainTXTBox ul {width:100%; height:100%;}
+.csMainTXTBox ul li {position:relative; width:33%; height:100%; float:left;}
+.csMainTXTBox ul li:nth-child(2) {width:34%;}
+.csMainTXTBox ul li:last-child:after {display:none;}
+.csMainTXTBox ul li:after {content:''; position:absolute; top:37px; right:0; background:#ddd; width:1px; height:25px; display:inline-block;}
+.csMainTXTBox a {display:inline-block; width:100%; height:100%; color:#000; font-size:13px; text-align:left; padding-top:32px;}
+.csMainTXTBox a strong {display:inline-block; background:url(../images/cs/bg_arrow00.png) no-repeat 100% 50%; padding-right:15px;}
+.csMainTXTBox a p {color:#666; margin-top:5px;}
+.csMainTXTBox ul li:nth-child(1) a {background:url(../images/cs/csMainTXTBox01.png) no-repeat 205px 0; padding-left:125px;}
+.csMainTXTBox ul li:nth-child(1) a p {color:#000;}
+.csMainTXTBox ul li:nth-child(2) a {background:url(../images/cs/csMainTXTBox02.png) no-repeat 200px 0; padding-left:140px;}
+.csMainTXTBox ul li:nth-child(3) a {background:url(../images/cs/csMainTXTBox03.png) no-repeat 190px 0; padding-left:135px;}
+
+/* 약관안내 */
+.agreementList-wrap .tab-type03 {margin-top:10px;}
+.agreementList-wrap .tab-type03 li a {display:inline-block; width:100%; height:55px; line-height:55px; text-align:center;}
+.agreementList-wrap .select-style01 button {color:#666;}
+.agreementList-wrap .select-style01.on ul {display:block;}
+.agreementList-wrap .agree-section-content h2 {position:relative;}
+.agreementList-wrap .agree-section-content h2 span {display:inline-block; width:100%; position:absolute; top:-20px; left:0;}
+.popTermsAgree .agree-section-content .text-list02,
+.agreementList-wrap .agree-section-content .text-list02 {padding:0 !important;}
+.popTermsAgree .agree-section-content .text-list02 li,
+.agreementList-wrap .agree-section-content .text-list02 li {padding-left:7px; text-indent:0;}
+.agreementList-wrap .agree-section-content table,
+.popTermsAgree .agree-section-content table {width:100% !important; margin:0 !important;}
+.agreementList-wrap .agree-section-content .board-list,
+.popTermsAgree .agree-section-content .board-list {margin-top:7px !important; margin-bottom:10px; margin-left:-5px; border-top:0 !important;}
+.agreementList-wrap .agree-section-content table td,
+.popTermsAgree .agree-section-content table td {padding:10px !important;}
+.popTermsAgree .agree-section-content h1,
+.popTermsAgree .agree-section-content h2,
+.agreementList-wrap .agree-section-content h1,
+.agreementList-wrap .agree-section-content h2 {color:#000 !important;}
+.popTermsAgree .layer-popup-cont .layer-cont.scroll {padding-bottom:30px;}
+
+/* 이메일 무단 수집 거부-pop */
+.emailAgree-popWrap .txt-sub-info02 {margin-top:25px;}
+.emailAgree-popWrap .agree-section {margin-top:0; border-top:0;}
+.emailAgree-popWrap .agree-section-content {height:165px; overflow-y:auto;}
+.emailAgree-popWrap .agree-section-content p:first-child {font-size:16px; color:#000;}
+.emailAgree-popWrap .agree-section-content .mtSt10 {margin-top:10px;}
+.emailAgree-popWrap .btn-wrap {margin-top:30px;}
+.emailAgree-popWrap .btn-wrap a {width:160px;}
+
+/* 개인정보수집 및 이용에 대한 동의-pop */
+.agreeMent-pop .layer-popup-cont {width:529px;}
+.agreeMent-popWrap .text-list02 {margin-top:30px;}
+.agreeMent-popWrap .text-list02 li {color:#666; font-size:13px; margin-top:3px;}
+.agreeMent-popWrap .text-list02 li:after {background-color:#666;}
+.agreeMent-popWrap .btn-wrap {margin-top:30px;}
+.agreeMent-popWrap .btn-wrap a {width:160px;}
+
+/* 자주묻는질문 */
+.faqList-wrap .search-wrap01 {margin-top:30px;}
+.faqList-wrap .search-wrap01 .search-input {position:relative;}
+.faqList-wrap .search-wrap01 .search-input input {width:100%; padding-right:35px;}
+.faqList-wrap .search-wrap01 .search-input button {position:absolute; top:0; right:0; z-index:2;}
+.faqList-wrap .board-list {position:relative;}
+.faqList-wrap .boardCount {position:absolute; top:-38px;}
+.faqList-wrap .board-list.accordion-type table tr.on td .inquiry {padding-bottom:12px;}
+.faqList-wrap .no-result a {border-bottom:solid 1px #000; margin-bottom:-1px; vertical-align:bottom;}
+
+/* 공지사항 */
+.noticeList-wrap .tab-type02 li {width:33%;}
+.noticeList-wrap .tab-type02 li:nth-child(2) {width:34%;}
+.noticeList-wrap .search-wrap01 {margin-top:30px;}
+.noticeList-wrap .search-wrap01 .search-input {position:relative;}
+.noticeList-wrap .search-wrap01 .search-input input {width:100%; padding-right:35px;}
+.noticeList-wrap .search-wrap01 .search-input button {position:absolute; top:0; right:0; z-index:2;}
+.noticeList-wrap .board-list {position:relative;}
+.noticeList-wrap .boardCount {position:absolute; top:-38px;}
+.noticeList-wrap .board-list td a {color:#666;}
+.noticeView-wrap .board-view {margin-top:0; border-top:0;}
+.noticeView-wrap .board-view .board-header strong {font-size:14px;}
+.noticeView-wrap .board-view .board-header p {font-size:14px; color:#666;}
+.noticeView-wrap .board-view .board-header p b {color:#000; font-weight:400; margin-right:7px;}
+.noticeView-wrap .board-view .board-header p em {padding-left:3px;}
+.noticeView-wrap .btn-wrap a {width:200px;}
+.noticeView-wrap .board-view .board-cnt div,
+.noticeView-wrap .board-view .board-cnt div *:not(img) {width:100% !important;}
+
+/* 매장 찾기 */
+.findStore-popWrap .text-list02 {margin-top:30px;}
+.findStore-popWrap .text-list02 li:after {background-color:#666;}
+.findStore-popWrap .btn-wrap {float:left; width:100%; margin:30px 0;}
+.findStore-popWrap .btn-wrap a {width:160px;}
+.findStore-popWrap h3.title04 {float:left; margin-top:40px;}
+.findStore-popWrap .data-tbl01 {float:left;}
+.findStore-popWrap .data-tbl01 th,
+.findStore-popWrap .data-tbl01 td {padding:10px 20px 11px 21px;}
+.findStore-popWrap .data-tbl01 th {text-align:center; font-size:13px;}
+.findStore-popWrap .data-tbl01 .no-result{height:150px;color:#666;vertical-align:middle; text-align:center;}
+.findStoreRow {margin-top:20px; padding:20px 45px; float:left; width:100%;}
+.findStoreRow .select-style02 ul {top:29px;}
+.findStoreRow .select-style02 ul li a {padding-right:8px; padding-left:8px;}
+.findStoreRow .select-style02 button {padding-right:20px; padding-left:8px;}
+.findStoreRow dt:nth-child(1),
+.findStoreRow dt:nth-child(7) {width:45px; margin-right:0; text-align:left;}
+.findStoreRow dt:nth-child(5) {width:58px;}
+.findStoreRow dt {width:62px; margin-left:0; height:30px; line-height:30px; margin-right:0;}
+.findStoreRow dt,
+.findStoreRow dd {float:left;}
+.findStoreRow dd:nth-child(2) {width:calc(22% - 50px);}
+.findStoreRow dd:nth-child(4) {width:calc(46% - 62px);}
+.findStoreRow dd:nth-child(6) {width:calc(32% - 105px)}
+.findStoreRow dt:nth-child(7),
+.findStoreRow dd:last-child {margin-top:5px;}
+.findStoreRow dd:last-child {width:100% !important;}
+.findStoreRow dd:last-child strong {width:45px; float:left; display:inline-block; height:28px; line-height:28px;}
+.findStoreRow dd:last-child .search-input03 {width:calc(100% - 50px);}
+.findStoreRow dd:nth-child(4) .select-style02 + .select-style02 {margin-left:3px;} 
+.findStoreRow dd:nth-child(4) .select-style02:only-child {width:calc(100% - 10px) !important;}
+.findStoreRow dd:nth-child(6) .select-style02 {width:calc(100% - 4px) !important;}
+.findStoreRow dd:nth-child(4) .select-style02:first-child{width:calc(55% - 6px) !important;}
+.findStoreRow dd:nth-child(4) .select-style02 {width:calc(45% - 10px) !important;}
+.findStoreRow dd .select-style02 {width:calc(100% - 10px);}
+.findStoreRow dd .select-style02 button {width:100% !important;}
+.findStoreRow dd .select-style02:last-child {margin-right:0;}
+.findStoreRow .search-input03 {width:auto; border:0; width:100%;}
+.findStoreRow .search-input03 input {width:calc(100% - 82px); border:1px solid #ddd; float:left;}
+.findStoreRow .search-input03 button {width:77px; border:1px solid #000; background:transparent; margin-left:5px; float:left; background-color:#fff; color:#000; font-size:12px;}
+
+.findstorebgST {width:100%; background:#f8f8f8; margin-top:20px; padding:20px 0;}
+.findstoreBox {width:auto !important; table-layout:fixed; margin:0 auto;}
+.findstoreBox tr:last-child th,
+.findstoreBox tr:last-child td {padding-top:8px;}
+.findstoreBox tr:only-child th,
+.findstoreBox tr:only-child td {padding-top:0;}
+.findstoreBox tr th {font-size:13px; color:#000; padding-right:10px;}
+.findstoreBox tr td .select-style02 {width:calc(100% - 10px); margin-right:10px;}
+.findstoreBox tr td .select-style02 .d_select_sel {width:100% !important;}
+.findstoreBox tr td:nth-child(4) .select-style02 {width:calc(50% - 5px); margin-right:5px;}
+.findstoreBox tr td:nth-child(4) .select-style02 + .select-style02 {width:calc(50% - 10px) !important; margin-right:10px !important;}
+.findstoreBox .search-input03 {width:calc(100% - 10px);}   
+.findstoreBox .search-input03 input {width:calc(100% - 35px);}
+.findstoreBox .search-input03 {border:0;}
+.findstoreBox .search-input03 input {width:calc(100% - 82px); border:1px solid #ddd; float:left;}
+.findstoreBox .search-input03 button {width:77px; border:1px solid #000; background:transparent; margin-left:5px; float:left; background-color:#fff; color:#000; font-size:12px;}
+
+.findStoreListWrap {float:left; display:flex; width:100%; height:295px; margin-top:15px; border:1px solid #ddd; border-top-color:#000;}
+.findStoreListWrap > p {text-align:center; width:100%; line-height:295px;}
+.findStoreListWrap .no-result {width:100%; margin-top:120px; font-size:13px; color:#666; text-align:center;}
+.findStoreMap {width:400px; height:100%; overflow:hidden;}
+.findStoreMap > div {width:100%; height:100%;}
+.findStoreList {width:calc(100% - 400px); height:100%; border-right:1px solid #ddd; overflow-y:auto;}
+.findStoreList>ul>li {padding:16px 20px 16px; border-bottom:1px solid #ddd;}
+.findStoreList>ul>li {padding-left:20px; border-bottom:1px solid #ddd;}
+.findStoreList>ul>li:last-child {border-bottom:none;}
+.findStoreList>ul>li:nth-child(even) {background-color:#f8f8f8;}
+.findStoreList .storeName {font-size:14px; color:#000;}
+.findStoreList .findStoreAddress {margin-top:8px;}
+.findStoreList .findStoreAddress li {position:relative; min-height:18px; font-size:13px; color:#666; line-height:18px;}
+.findStoreList .findStoreAddress li span {}
+.findStoreList .justify-wrap {margin-top:8px; font-size:13px;}
+.findStoreList a {font-size:13px; color:#000; text-decoration:underline;}
+.findStoreList ul.store-address-info>li{ word-wrap:break-word; }
+
+/* 단체구매문의 */
+.bundleOrder-wrap .btn-wrap a {width:200px;}
+.bundleOrderBox {width:100%; background:#f8f8f8; padding:60px 0 55px;}
+.bundleOrderBox .text-list02.col-type01 {width:655px; margin:0 auto;}
+.bundleOrderBox .text-list02 li {text-align:center; margin-top:18px;}
+.bundleOrderBox .text-list02 li span {display:inline-block; width:1px; height:10px; background:#ddd; margin:0 10px; vertical-align:middle;}
+.bundleOrderBox .text-list02 li:after {display:none;}
+.bundleOrderProcess {width:655px; margin-top:28px; padding:55px 0 78px; background-color:#f8f8f8; text-align:center;}
+.bundleOrderProcessStep {width:655px; margin:0 auto;}
+.bundleOrderProcessStep ol {width:100%; padding:67px 0 35px; border-bottom:solid 1px #ddd; margin:0 auto 40px auto; background:url(../images/cs/bundleOrderProcessStep.png) no-repeat 50% 0;}
+.bundleOrderProcessStep ol:after {content:''; clear:both; display:block;}
+.bundleOrderProcessStep li {float:left; width:89px; font-size:13px; line-height:18px; color:#000; text-align:center; margin-right:99px;}
+.bundleOrderProcessStep li:last-child {margin-right:0; width:84px;}
+.bundleOrderProcessStep li span {display:block; margin-bottom:1px;}
+
+/* 단체구매문의 등록 */
+.bundleOrderWrite-wrap .btn-wrap a {width:200px;}
+.bundleOrderWrite-wrap .board-write {margin-top:0; border-bottom:1px solid #ddd;}
+.bundleOrderWrite-wrap textarea {resize:none; padding:10px; width:587px !important;}
+.bundleOrderWrite-wrap .board-write th {padding:21px 20px 10px 20px;}
+.bundleOrderWrite-wrap .text-list02 li,
+.cooperateWrite-wrap .text-list02 li,
+.oto_inquiryWrite-wrap .text-list02 li {color:#666;}
+.bundleOrderWrite-wrap .text-list02 li:after,
+.cooperateWrite-wrap .text-list02 li:after,
+.oto_inquiryWrite-wrap .text-list02 li:after {background-color:#666;}
+.bundleOrderWrite-wrap .agreement-Wraper {margin-top:60px;}
+.bundleOrderWrite-wrap .board-write .clearfix,
+.oto_inquiryWrite-wrap .board-write .clearfix,
+.cooperateWrite-wrap .board-write .clearfix {width:587px;}
+.bundleOrderWrite-wrap .board-write .clearfix .txt13-999,
+.oto_inquiryWrite-wrap .board-write .clearfix .txt13-999,
+.cooperateWrite-wrap .board-write .clearfix .txt13-999 {margin-top:9px; display:inline-block;}
+
+
+/* 제휴문의 등록 */
+.cooperateWrite-wrap .btn-wrap a {width:200px;}
+.cooperateWrite-wrap .board-write {margin-top:0; border-bottom:1px solid #ddd;}
+.cooperateWrite-wrap .board-write > p {font-size:13px; color:#666; padding:30px 0; line-height:18px;}
+.cooperateWrite-wrap .board-write table {border-top:1px solid #666;}
+.cooperateWrite-wrap textarea {resize:none; padding:10px; width:587px !important;}
+.cooperateWrite-wrap .board-write th {padding:21px 20px 10px 20px;}
+.cooperateWrite-wrap .text-list02 li {color:#666;}
+.cooperateWrite-wrap .text-list02 li:after {background-color:#666;}
+.cooperateWrite-wrap .agreement-Wraper {margin-top:60px;}
+
+.cs .agreement-Wraper h2:first-child {margin-top:0 !important;}
+.cs .agreement-Wraper h2 {color:#000 !important;}
+.cs .agreement-Wraper > strong {color:#000 !important; font-size:16px;}
+
+/* 매장찾기다국어 */
+.findStoreRow dd:last-child strong:lang(zh){width:65px;}
+.findStoreRow dt:nth-child(1):lang(zh){width:65px;}
+.findStoreRow dt:lang(zh){width:65px;}
+.findStoreRow dt:nth-child(5):lang(zh){width:73px;}
+.findStoreRow dd:nth-child(4):lang(zh){width:calc(46% - 65px);}
+.findStoreRow dd:nth-child(6):lang(zh){width:calc(32% - 93px);}
+.findStoreRow dd:last-child .search-input03:lang(zh){width:calc(100% - 70px);}
+.findStoreRow dd:last-child strong:lang(en){width:75px;}
+.findStoreRow dt:nth-child(1):lang(en){width:75px;}
+.findStoreRow dt:lang(en){width:80px;}
+.findStoreRow dt:nth-child(5):lang(en){width:95px;}
+.findStoreRow dd:nth-child(4):lang(en){width:calc(46% - 100px);}
+.findStoreRow dd:nth-child(6):lang(en){width:calc(32% - 105px);}
+.findStoreRow dd:last-child .search-input03:lang(en){width:calc(100% - 80px);}
+
+
+/*자주묻는질문 탭영역수정 - 단위테스트수정*/
+.faqList-wrap .tab-type02 {border-width:0 0 0 1px !important; overflow:hidden;}
+.faqList-wrap .tab-type02 li a {border-width:1px 1px 1px 0 !important;}
+.faqList-wrap .tab-type02 li + li + li + li + li + li a {border-width:0 1px 1px 0 !important;}

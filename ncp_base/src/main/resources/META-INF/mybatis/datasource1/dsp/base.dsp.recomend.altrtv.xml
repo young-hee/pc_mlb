@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspRecomendAltrtv" parameterType="dspRecomendAltrtv" resultType="dspRecomendAltrtv">
+		SELECT /* com.plgrim.ncp.base.selectDspRecomendAltrtv		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , BRND_GRP_USE_YN
+			 , RECOMEND_GOD_NO
+			 , BRND_GRP_ID
+			 , SORT_SEQ
+			 , UDT_DT
+		  FROM DSP_RECOMEND_ALTRTV
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND BRND_GRP_USE_YN = #{brndGrpUseYn,jdbcType=VARCHAR}
+		   AND RECOMEND_GOD_NO = #{recomendGodNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspRecomendAltrtv" parameterType="dspRecomendAltrtv">
+		UPDATE /* com.plgrim.ncp.base.updateDspRecomendAltrtv		Generator(Generator)	2018-05-23 */
+		DSP_RECOMEND_ALTRTV SET
+			   BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND BRND_GRP_USE_YN = #{brndGrpUseYn,jdbcType=VARCHAR}
+		   AND RECOMEND_GOD_NO = #{recomendGodNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspRecomendAltrtv" parameterType="dspRecomendAltrtv">
+		INSERT /* com.plgrim.ncp.base.insertDspRecomendAltrtv		Generator(Generator)	2018-05-23 */
+		INTO   DSP_RECOMEND_ALTRTV (
+			   GOD_NO
+			 , BRND_GRP_USE_YN
+			 , RECOMEND_GOD_NO
+			 , BRND_GRP_ID
+			 , SORT_SEQ
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{brndGrpUseYn,jdbcType=VARCHAR}
+			 , #{recomendGodNo,jdbcType=VARCHAR}
+			 , #{brndGrpId,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspRecomendAltrtv" parameterType="dspRecomendAltrtv">
+		DELETE /* com.plgrim.ncp.base.deleteDspRecomendAltrtv		Generator(Generator)	2018-05-23 */
+		  FROM DSP_RECOMEND_ALTRTV
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND BRND_GRP_USE_YN = #{brndGrpUseYn,jdbcType=VARCHAR}
+		   AND RECOMEND_GOD_NO = #{recomendGodNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

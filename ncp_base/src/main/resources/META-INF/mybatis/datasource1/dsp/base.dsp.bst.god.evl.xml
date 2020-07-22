@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspBstGodEvl" parameterType="dspBstGodEvl" resultType="dspBstGodEvl">
+		SELECT /* com.plgrim.ncp.base.selectDspBstGodEvl		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , STT_RANK
+			 , GOD_EVL_COUNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_BST_GOD_EVL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspBstGodEvl" parameterType="dspBstGodEvl">
+		UPDATE /* com.plgrim.ncp.base.updateDspBstGodEvl		Generator(Generator)	2018-05-23 */
+		DSP_BST_GOD_EVL SET
+			   STT_RANK = #{sttRank,jdbcType=NUMERIC}
+			 , GOD_EVL_COUNT = #{godEvlCount,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspBstGodEvl" parameterType="dspBstGodEvl">
+		INSERT /* com.plgrim.ncp.base.insertDspBstGodEvl		Generator(Generator)	2018-05-23 */
+		INTO   DSP_BST_GOD_EVL (
+			   GOD_NO
+			 , STT_RANK
+			 , GOD_EVL_COUNT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{sttRank,jdbcType=NUMERIC}
+			 , #{godEvlCount,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspBstGodEvl" parameterType="dspBstGodEvl">
+		DELETE /* com.plgrim.ncp.base.deleteDspBstGodEvl		Generator(Generator)	2018-05-23 */
+		  FROM DSP_BST_GOD_EVL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

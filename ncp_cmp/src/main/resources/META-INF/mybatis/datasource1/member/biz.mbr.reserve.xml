@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.reserve">
+
+    <!-- ERP 상품명 조회 -->
+    <select id="selectErpGoodNm" parameterType="com.plgrim.ncp.biz.member.data.MypageFoDTO" resultType="String">
+		SELECT /* [biz.mbr.reserve.xml][selectErpGoodNm][ ERP 상품명 조회][csh] */
+		       gd.god_nm        
+		FROM god gd , god_itm gt
+		WHERE gd.god_no = gt.god_no
+		  AND gt.sku_no = #{matNo, jdbcType=VARCHAR}
+		  AND ROWNUM =1
+    </select>
+    
+    <!-- 영주증에 대한 주문번호 조회 -->
+    <select id="selectOrdNo" parameterType="String" resultType="String">
+        SELECT T1.ORD_NO
+          FROM INF_ORD_GOD_ERP_DSTB T1
+         WHERE T1.RCPTFR_NO = #{rctNo, jdbcType=VARCHAR}
+    </select>
+    
+</mapper>

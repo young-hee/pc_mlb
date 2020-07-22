@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE tiles-definitions PUBLIC  
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="frameTemplate" template="/WEB-INF/tiles/layout/emptyLayout.jsp">
+		<put-attribute name="body" 	value="" />
+	</definition>
+	
+	<!-- iframe용. -->
+	<definition name="tiles:frame/*" extends="frameTemplate">
+	    <put-attribute name="body" 	value="/WEB-INF/views/frame/{1}.jsp" />
+	</definition>
+	<definition name="tiles:frame/*/*" extends="frameTemplate">
+	    <put-attribute name="body" 	value="/WEB-INF/views/frame/{1}/{2}.jsp" />
+	</definition>
+	<!-- //iframe용. -->
+	
+	<definition name="emailTemplate" template="/WEB-INF/tiles/layout/emailLayout.jsp">
+		<put-attribute name="top" 		value="/WEB-INF/tiles/layout/emailTop.jsp" />
+		<put-attribute name="body" 		value="" />
+		<put-attribute name="bottom" 	value="/WEB-INF/tiles/layout/emailBottom.jsp" />
+	</definition>
+	
+	<definition name="helpdeskEmailTemplate" template="/WEB-INF/tiles/layout/emailLayout.jsp">
+		<put-attribute name="top" 		value="/WEB-INF/tiles/layout/emailTop.jsp" />
+		<put-attribute name="body" 		value="" />
+		<put-attribute name="bottom" 	value="/WEB-INF/tiles/layout/emailBottom.jsp" />
+	</definition>
+	
+	
+	<definition name="baseTemplate" template="/WEB-INF/tiles/layout/baseLayout.jsp">
+    	<put-attribute name="header" 	value="/WEB-INF/tiles/layout/header.jsp" />
+    	<put-attribute name="gnb" 		value="/WEB-INF/tiles/layout/gnb.jsp" />
+		<put-attribute name="contents" 	value="" />
+		<put-attribute name="footer" 	value="/WEB-INF/tiles/layout/footer.jsp" />
+    	<put-attribute name="bottom" 	value="/WEB-INF/tiles/layout/bottom.jsp" />
+    	<put-attribute name="adBottom" 	value="/WEB-INF/tiles/layout/adBottom.jsp" />
+	</definition>
+	
+	<!-- test용. 운영시 삭제 예정 -->
+	<definition name="tiles:test/*" extends="baseTemplate">
+	    <put-attribute name="contents" 	value="/WEB-INF/views/test/{1}.jsp" />
+	</definition>
+	<!-- //test용. 운영시 삭제 예정 -->
+	
+	<definition name="tiles:member/*" extends="baseTemplate">
+	    <put-attribute name="contents" 	value="/WEB-INF/views/member/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:cart/*" extends="baseTemplate">
+		<put-attribute name="contents" value="/WEB-INF/views/cart/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:cart/*/*" extends="baseTemplate">
+	    <put-attribute name="contents" 	value="/WEB-INF/views/cart/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="tiles:order/*" extends="baseTemplate">
+	    <put-attribute name="contents" 	value="/WEB-INF/views/order/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:order/*/*" extends="baseTemplate">
+		<put-attribute name="contents" value="/WEB-INF/views/order/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="tiles:mypage/*" extends="baseTemplate">
+	    <put-attribute name="contents" 	value="/WEB-INF/views/mypage/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:mypage/*/*" extends="baseTemplate">
+	    <put-attribute name="contents" 	value="/WEB-INF/views/mypage/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="tiles:goods/*" extends="baseTemplate">
+		<put-attribute name="contents" 		value="/WEB-INF/views/goods/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:main/*" extends="baseTemplate">
+	    <put-attribute name="contents" 		value="/WEB-INF/views/main/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:display/*" extends="baseTemplate">
+	    <put-attribute name="contents" 		value="/WEB-INF/views/display/{1}.jsp" />
+	</definition>
+
+	<definition name="tiles:plan/*" extends="baseTemplate">
+	    <put-attribute name="contents" 		value="/WEB-INF/views/plan/{1}.jsp" />
+	</definition>
+
+	<definition name="tiles:event/*" extends="baseTemplate">
+	    <put-attribute name="contents" 		value="/WEB-INF/views/event/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:helpdesk/*" extends="baseTemplate">
+		<put-attribute name="contents" value="/WEB-INF/views/helpdesk/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:helpdesk/*/*" extends="baseTemplate">
+		<put-attribute name="contents" value="/WEB-INF/views/helpdesk/{1}/{2}.jsp" />
+	</definition>
+	
+	
+	
+	<definition name="tiles:email/order/*" extends="emailTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/email/order/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles:email/helpdesk/*" extends="helpdeskEmailTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/email/helpdesk/{1}.jsp" />
+	</definition>
+
+	<definition name="tiles:email/*/*" extends="emailTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/email/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="tiles:*/*" extends="baseTemplate">
+		<put-attribute name="contents"		value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="tiles:*/*/*" extends="baseTemplate">
+		<put-attribute name="contents"		value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+</tiles-definitions> 

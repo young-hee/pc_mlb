@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.interfaces">
+
+
+	<update id="updateInfOrdGodErpDstbByClm" parameterType="com.plgrim.ncp.biz.interfaces.data.InfOrdGodErpDstbUpdateDTO">
+		UPDATE INF_ORD_GOD_ERP_DSTB IOGSD /* com.plgrim.ncp.biz.interfaces.updateInfOrdGodErpDstbByClm Aether 20150417 */
+		SET    CLM_NO            = #{clmNo,jdbcType=VARCHAR}
+		      ,CLM_WRHS_GOD_TURN =
+		       (SELECT CLM_WRHS_GOD_TURN
+		        FROM   ORD_CLM_GOD_CNNC OCGC
+		        WHERE  1 = 1
+		        AND    IOGSD.ORD_NO = OCGC.ORD_NO
+		        AND    IOGSD.ORD_GOD_TURN = OCGC.ORD_GOD_TURN
+		        AND    OCGC.CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		        AND    OCGC.GOD_CNNC_TP_CD = 'WRHS_GOD_CNNC'
+		        AND    rownum = 1
+		        )
+		       ,udt_dt= SYSDATE
+		WHERE  IOGSD.ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		AND    IOGSD.CLM_NO IS NULL
+		<if test='dlivyDrctGodNo != null and dlivyDrctGodNo !=""'>
+		AND    IOGSD.DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+		</if>
+		AND    EXISTS (SELECT 1
+		        FROM   ORD_CLM_GOD_CNNC OCGC
+		        WHERE  OCGC.ORD_NO = IOGSD.ORD_NO
+		        AND    OCGC.ORD_GOD_TURN = IOGSD.ORD_GOD_TURN
+		        AND    OCGC.CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		        AND    OCGC.GOD_CNNC_TP_CD = 'WRHS_GOD_CNNC'
+		        AND    rownum = 1		        
+		        )
+		<if test='clmResnCont != null and clmResnCont == "매장반품"'>
+			<if test='erpGodSnArry != null and erpGodSnArry.length > 0'>
+				AND (IOGSD.ERP_GOD_SN IN (<foreach collection="erpGodSnArry" item="erpGodSnArry" separator=",">#{erpGodSnArry, jdbcType=VARCHAR}</foreach>) OR IOGSD.ERP_GOD_SN IS NULL)
+			</if>
+			<if test='erpGodSnArry == null or erpGodSnArry == ""'>
+				AND IOGSD.ERP_GOD_SN IS NULL
+			</if>
+		</if>
+		<if test='qty != null and qty != ""'>
+		AND rownum <![CDATA[<=]]> #{qty,jdbcType=VARCHAR}
+		</if>                                                       				
+	</update>
+	
+	<select id="selectInfOrdGodErpDstbListByOrdClm" parameterType="com.plgrim.ncp.biz.interfaces.data.InfOrdGodErpDstbClmSearchDTO" resultType="infOrdGodErpDstb">
+        SELECT /* com.plgrim.ncp.biz.interfaces.updateInfOrdGodErpDstbByClm Aether 20150602 */
+                t.ORD_NO
+               ,t.ORD_GOD_TURN
+               ,t.QTY_TURN
+               ,t.SKU_NO
+               ,t.RTL_PRC
+               ,t.SALE_UNT_PRC
+               ,t.WEB_DC_UNT_PRC
+               ,t.CRNCY_CD
+               ,t.STDR_CRNCY_UNT_PRC
+               ,t.PAY_EXCHG_RT_CRNCY_UNT_PRC
+               ,t.GOD_DC_UNT_PRC
+               ,t.EMP_DC_UNT_PRC
+               ,t.GOD_CPN_DC_UNT_PRC
+               ,t.BSK_CPN_DC_UNT_PRC
+               ,t.UNITY_PNT_USE_UNT_PRC
+               ,t.unity_pnt_accml_unt_prc
+               ,t.EVT_PNT_USE_UNT_PRC
+               ,nvl(t.WEBPNT_USE_UNT_PRC,0) as WEBPNT_USE_UNT_PRC
+               ,nvl(t.WEBPNT_ACCML_UNT_PRC,0) as WEBPNT_ACCML_UNT_PRC
+               ,t.CLM_NO
+               ,t.CLM_WRHS_GOD_TURN
+               ,t.CLM_ERP_INTRLCK_YN
+               ,t.CLM_ERP_INTRLCK_DT
+               ,t.CLM_PRCS_ERR_CONT
+               ,t.DRT_EXCHG_QTY_TURN
+               ,t.DRT_EXCHG_STO_NO
+               ,t.OPT_MOD_NO
+               ,t.CNTR_DLIVY_CNFIRM_YN
+               ,t.CNTR_DLIVY_CNFIRM_DT
+               ,t.DLIVY_DRCT_GOD_NO
+               ,t.DLIVY_DRCT_TGT_YN
+               ,t.DLIVY_DRCT_YN
+               ,t.DLIVY_DRCT_DT
+               ,t.RCPTFR_NO
+               ,t.RESVE_RCPTFR_CREAT_YN
+               ,t.RESVE_RCPTFR_CREAT_DT
+               ,t.RESVE_RCPTFR_DLIVY_YN
+               ,t.RESVE_RCPTFR_DLIVY_DT
+               ,t.RESVE_RCPTFR_DCSN_YN
+               ,t.RESVE_RCPTFR_DCSN_DT
+               ,t.ERP_RESVE_RCPTFR_CREAT_CNT
+               ,t.ERP_RESVE_RCPTFR_CREAT_YN
+               ,t.ERP_RESVE_RCPTFR_CREAT_DT
+               ,t.ERP_RESVE_RCPTFR_RECREAT_YN
+               ,t.ERP_RESVE_RCPTFR_RECREAT_DT
+               ,t.ERP_RESVE_RCPTFR_CNCL_YN
+               ,t.ERP_RESVE_RCPTFR_CNCL_DT
+               ,iogsdr.REPAIR_NO
+               ,iogsdr.REPAIR_COMPT_YN
+               ,iogsdr.REPAIR_COMPT_CD
+               ,iogsdr.REPAIR_CONT
+               ,t.RTGOD_SHOP_INV_MVMT_YN
+               ,t.RTGOD_SHOP_INV_MVMT_DT
+               ,t.P_STO_NO
+               ,t.S_STO_NO
+               ,t.S_DOC_NO
+               ,t.CP_ERR_YN
+               ,t.CP_ERR_DT
+               ,t.CP_ERR_CONT
+               ,t.ST_ERR_YN
+               ,t.ST_ERR_DT
+               ,t.ST_ERR_CONT
+               ,t.DOCNO_A
+               ,t.DOCNO_B
+               ,t.DOCNO_C
+               ,t.DOCNO_D
+               ,t.DOCNO_E
+               ,t.DOCNO_F
+               ,t.DOCNO_G
+               ,t.DOCNO_H
+               ,t.DOCNO_J
+               ,t.DOCNO_K
+               ,t.ERP_GOD_SN
+               ,t.ERP_GOD_SN_MOD_YN
+               ,t.ERP_GOD_SN_MOD_DT
+               ,t.DLIVY_ACPT_YN
+               ,t.ERP_INTRLCK_TGT_YN
+        FROM    INF_ORD_GOD_ERP_DSTB t
+        		LEFT OUTER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR iogsdr
+                ON t.ord_no = iogsdr.ord_no and t.ord_god_turn = iogsdr.ord_god_turn and t.qty_turn = iogsdr.qty_turn
+        <choose>
+        	<when test='exchangeDlivyGodYn == "Y"'>
+	      		JOIN (SELECT distinct ord_no, ord_god_turn
+	            	FROM ord_clm_god_cnnc
+	            	WHERE god_cnnc_tp_cd = 'DLIVY_GOD_CNNC' AND clm_no = #{clmNo,jdbcType=VARCHAR}) ocgcOr
+	    		ON ocgcOr.ord_no = t.ord_no
+	    			AND ocgcOr.ord_god_turn = t.ord_god_turn
+	    		<if test='dlvCstCpnNo != null and dlvCstCpnNo != ""'>        	
+		        JOIN ord_god og ON og.ord_no = t.ord_no AND og.ord_god_turn = t.ord_god_turn
+		        JOIN lgs_dlv ld ON ld.ord_no = t.ord_no AND ld.dlv_pcupsp_turn = og.dlv_pcupsp_turn  AND ld.dlv_cst_cpn_no = #{dlvCstCpnNo}
+		        </if> 
+		        WHERE   1 = 1
+		        <if test='ordNo != null and ordNo != ""'>
+		        AND     t.ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		        </if>
+				<if test='clmNoNullYn == "Y"'>
+				AND     t.CLM_NO IS NULL
+				</if>        	
+        	</when>
+        	<otherwise>
+		        <if test='dlvCstCpnNo != null and dlvCstCpnNo != ""'>
+		        JOIN ord_god og ON og.ord_no = t.ord_no AND og.ord_god_turn = t.ord_god_turn
+		        JOIN lgs_dlv ld ON ld.ord_no = t.ord_no AND ld.dlv_pcupsp_turn = og.dlv_pcupsp_turn  AND ld.dlv_cst_cpn_no = #{dlvCstCpnNo}
+		        </if> 
+		        WHERE   1 = 1
+		        <if test='ordNo != null and ordNo != ""'>
+		        AND     t.ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		        </if>
+		        <if test='clmNo != null and clmNo != ""'>
+		        AND     t.CLM_NO = #{clmNo,jdbcType=VARCHAR}
+				</if>
+		        <if test='clmWrhsGodTurn != null and clmWrhsGodTurn != ""'>
+		        AND     t.CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=VARCHAR}
+				</if>
+				<if test='clmNoNullYn == "Y"'>
+				AND     t.CLM_NO IS NULL
+				</if>        	
+        	</otherwise>
+        </choose>
+		<if test='exceptExchangeWithrawYn != null and exceptExchangeWithrawYn == "Y"'>
+			/* 출고지시취소(교환 철회) 건을 제외하기 위한 조건 추가 */
+			AND EXISTS (
+				SELECT 1 
+				FROM lgs_dlivy_drct_god 
+				WHERE ord_no = t.ord_no 
+					AND dlivy_drct_god_no = t.dlivy_drct_god_no
+					AND dlivy_drct_qty - NVL(dlivy_drct_cncl_qty, 0) > 0
+					AND GFT_YN = 'N'
+				)
+		</if>
+	</select>
+	
+	<select id="selectInfOrdGodErpDstbExtendListByOrdClm"
+		parameterType="com.plgrim.ncp.biz.interfaces.data.InfOrdGodErpDstbClmSearchDTO"
+		resultType="com.plgrim.ncp.base.entities.datasource1.inf.InfOrdGodErpDstbExtend">
+		/* [interface.infOrdGodErpDstb.xml][com.plgrim.ncp.biz.interfaces.updateInfOrdGodErpDstbByClm][클레임 erp 전송 배치 bp_sales_save_pm 대상쿼리][Aether] */
+        SELECT iogsd.bsk_cpn_dc_unt_prc
+             , iogsd.bundle_dc_unt_prc
+             , iogsd.clm_no
+             , iogsd.clm_prcs_err_cont
+             , iogsd.clm_erp_intrlck_dt
+             , iogsd.clm_erp_intrlck_yn
+             , iogsd.clm_wrhs_god_turn
+             , iogsd.cntr_dlivy_cnfirm_dt
+             , iogsd.cntr_dlivy_cnfirm_yn
+             , iogsd.cp_err_cont
+             , iogsd.cp_err_dt
+             , iogsd.cp_err_yn
+             , iogsd.crncy_cd
+             , iogsd.crs_dc_unt_prc
+             , iogsd.dlivy_acpt_yn
+             , iogsd.dlivy_drct_dt
+             , iogsd.dlivy_drct_god_no
+             , iogsd.dlivy_drct_tgt_yn
+             , iogsd.dlivy_drct_yn
+             , iogsd.docno_a
+             , iogsd.docno_b
+             , iogsd.docno_c
+             , iogsd.docno_d
+             , iogsd.docno_e
+             , iogsd.docno_f
+             , iogsd.docno_g
+             , iogsd.docno_h
+             , iogsd.docno_j
+             , iogsd.docno_k
+             , iogsd.drt_exchg_qty_turn
+             , iogsd.drt_exchg_sto_no
+             , iogsd.emp_dc_unt_prc
+             , iogsd.evt_pnt_accml_unt_prc
+             , iogsd.evt_pnt_use_unt_prc
+             , iogsd.god_cpn_dc_unt_prc
+             , iogsd.god_dc_unt_prc
+             , iogsd.opt_mod_no
+             , iogsd.ord_god_turn
+             , iogsd.ord_no
+             , iogsd.pay_exchg_rt_crncy_unt_prc
+             , iogsd.p_sto_no
+             , iogsd.qty_turn
+             , iogsd.rcptfr_no
+             , iogsdr.repair_compt_cd
+             , iogsdr.repair_compt_yn
+             , iogsdr.repair_cont
+             , iogsdr.repair_no
+             , iogsd.resve_rcptfr_creat_dt
+             , iogsd.resve_rcptfr_creat_yn
+             , iogsd.resve_rcptfr_dcsn_dt
+             , iogsd.resve_rcptfr_dcsn_yn
+             , iogsd.resve_rcptfr_dlivy_dt
+             , iogsd.resve_rcptfr_dlivy_yn
+             , iogsd.rtgod_rcptfr_creat_dt
+             , iogsd.rtgod_rcptfr_creat_yn
+             , iogsd.rtgod_rcptfr_no
+             , iogsd.rtgod_shop_inv_mvmt_dt
+             , iogsd.rtgod_shop_inv_mvmt_yn
+             , iogsd.rtl_prc
+             , iogsd.sale_unt_prc
+             , iogsd.erp_god_sn
+             , iogsd.erp_god_sn_mod_dt
+             , iogsd.erp_god_sn_mod_yn
+             , iogsd.erp_resve_cncl_rcptfr_no
+             , iogsd.erp_resve_rcptfr_cncl_dt
+             , iogsd.erp_resve_rcptfr_cncl_yn
+             , iogsd.erp_resve_rcptfr_creat_cnt
+             , iogsd.erp_resve_rcptfr_creat_dt
+             , iogsd.erp_resve_rcptfr_creat_yn
+             , iogsd.erp_resve_rcptfr_no
+             , iogsd.erp_resve_rcptfr_recreat_dt
+             , iogsd.erp_resve_rcptfr_recreat_yn
+             , iogsd.sku_no
+		     /*, (
+		           CASE 
+		               WHEN NVL(IMDTL_DC_UNT_PRC,0) > 0 
+		               THEN iogsd.stdr_crncy_unt_prc +NVL(IMDTL_DC_UNT_PRC,0) 
+		               WHEN NVL(iogsd.unity_pnt_accml_unt_prc,0) > 0 
+		               THEN iogsd.stdr_crncy_unt_prc -NVL(unity_pnt_accml_unt_prc,0) 
+		               ELSE iogsd.stdr_crncy_unt_prc 
+		           END 
+		       ) AS stdr_crncy_unt_prc ,*/ 
+		       ,iogsd.stdr_crncy_unt_prc,
+		       iogsd.st_err_cont , 
+		       iogsd.st_err_dt , 
+		       iogsd.st_err_yn , 
+		       iogsd.s_doc_no , 
+		       iogsd.s_sto_no , 
+		       nvl(iogsd.unity_pnt_accml_unt_prc,0) as unity_pnt_accml_unt_prc , 
+		       nvl(iogsd.unity_pnt_use_unt_prc,0) as unity_pnt_use_unt_prc, 
+		       nvl(iogsd.webpnt_accml_unt_prc,0) as webpnt_accml_unt_prc, 
+		       nvl(iogsd.webpnt_use_unt_prc,0) as webpnt_use_unt_prc, 
+		       iogsd.web_dc_unt_prc , 
+		       iogsd.wrhs_acpt_yn , 
+		       iogsd.imdtl_dc_unt_prc , 
+		       (iogsd.RTL_PRC - iogsd.SALE_UNT_PRC + nvl(iogsd.GOD_DC_UNT_PRC,0) + nvl(iogsd.bundle_dc_unt_prc,0) + nvl(iogsd.crs_dc_unt_prc,0) + nvl(iogsd.god_cpn_dc_unt_prc,0) + nvl(iogsd.bsk_cpn_dc_unt_prc,0) ) AS disAmt , 
+		       TO_CHAR(CASE 
+		           WHEN nvl(iogsd.rtl_prc,0) = 0 
+		           THEN 0 
+		           ELSE (iogsd.RTL_PRC - iogsd.SALE_UNT_PRC + nvl(iogsd.GOD_DC_UNT_PRC,0) + nvl(iogsd.bundle_dc_unt_prc,0) + nvl(iogsd.crs_dc_unt_prc,0) + nvl(iogsd.god_cpn_dc_unt_prc,0) + nvl(iogsd.bsk_cpn_dc_unt_prc,0))/nvl(iogsd.rtl_prc,0)*100
+		       END,'fm999.00')  AS disRate , 
+		       g.pnt_accml_rt AS addRate , 
+		       'P' AS gb , 
+		       'EA' AS meins , 
+		       'KRW' AS waers      
+              ,iogsd.erp_intrlck_tgt_yn /*ERP 연동 대상여부*/
+              ,g.prdlst_cd AS prdlst_cd
+              ,sb.erp_brnd_grp_id AS erp_brnd_grp_id
+              ,substr(iogsd.sku_no,10,1) AS color_cd
+              ,substr(iogsd.sku_no,11) AS opt_cd1
+            FROM inf_ord_god_erp_dstb iogsd
+            LEFT OUTER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR iogsdr
+               ON iogsd.ord_no = iogsdr.ord_no and iogsd.ord_god_turn = iogsdr.ord_god_turn and iogsd.qty_turn = iogsdr.qty_turn
+            <choose>
+          	<when test='codeOrRe == "OR"'>
+      		JOIN ( SELECT distinct a.ord_no, a.ord_god_turn 
+                   FROM ord_clm_god_cnnc a, lgs_dlivy_drct_god b
+                   WHERE a.god_cnnc_tp_cd = 'DLIVY_GOD_CNNC' 
+                   AND a.clm_no = #{clmNo} 
+                   AND a.ord_no=b.ord_no
+                   AND a.ord_god_turn=b.ord_god_turn
+                   AND b.dlv_stat_cd <![CDATA[<>]]> 'DLIVY_DRCT_CNCL'
+                  	) ocgcOr
+    		ON ocgcOr.ord_no = iogsd.ord_no
+    			AND ocgcOr.ord_god_turn = iogsd.ord_god_turn
+         	JOIN ord_god og ON IOGSD.ORD_NO = og.ord_no and IOGSD.ORD_GOD_TURN = OG.ORD_GOD_TURN and og.PARTMAL_SECT_CD = 'MCOM'
+         	JOIN god g ON og.god_no = g.god_no
+         	JOIN sys_brnd sb ON g.brnd_id = sb.brnd_id
+            WHERE 1=1          	
+          	</when>
+          	<otherwise>
+	          JOIN ord_god og ON IOGSD.ORD_NO = og.ord_no and IOGSD.ORD_GOD_TURN = OG.ORD_GOD_TURN and og.PARTMAL_SECT_CD = 'MCOM'
+	          JOIN god g ON og.god_no = g.god_no
+	          JOIN sys_brnd sb ON g.brnd_id = sb.brnd_id
+	          WHERE 1=1
+	                AND iogsd.ord_no = #{ordNo}
+	                AND iogsd.clm_no = #{clmNo} 
+	                AND iogsd.ord_god_turn in  ( 
+           SELECT DECODE(TP,'EX',EX_TURN,RT_TURN) ord_god_turn FROM   
+            (
+               SELECT DISTINCT B.ORD_GOD_TURN RT_TURN, 0 EX_TURN,'RT' TP
+               FROM CLM A, ORD_CLM_GOD_CNNC B, INF_ORD_GOD_ERP_DSTB C
+               WHERE A.ORD_NO=#{ordNo} 
+               AND C.CLM_NO=#{clmNo}
+               AND A.ORD_NO=B.ORD_NO
+               AND A.CLM_NO=B.CLM_NO
+               AND B.ORD_NO=C.ORD_NO
+               AND B.ORD_GOD_TURN=C.ORD_GOD_TURN
+               UNION ALL
+               SELECT DISTINCT 0 RT_TURN,D.ORD_GOD_TURN EX_TURN,'EX' TP
+               FROM CLM A, ORD_CLM_GOD_CNNC B, ORD_CLM_GOD_CNNC C, ORD_CLM_GOD_CNNC D,  CLM_ERP_TRNSMIS E , INF_ORD_GOD_ERP_DSTB F
+               WHERE A.ORD_NO=#{ordNo}
+               AND F.CLM_NO  =#{clmNo} 
+               AND A.CLM_TP_CD='RTGOD'
+               AND A.ORD_NO=B.ORD_NO
+               AND A.CLM_NO=B.CLM_NO
+               AND B.ORD_NO=C.ORD_NO
+               AND B.ORD_GOD_TURN=C.ORD_GOD_TURN
+               AND C.ORD_NO=D.ORD_NO
+               AND C.CLM_NO=D.CLM_NO
+               AND C.CLM_WRHS_GOD_TURN=D.CLM_WRHS_GOD_TURN
+               AND D.GOD_CNNC_TP_CD='DLIVY_GOD_CNNC'
+               AND D.ORD_NO=E.ORD_NO
+               AND D.CLM_NO=E.CLM_NO
+               AND E.CLM_ERP_TRNSMIS_TP_CD='ERP_OR_ERP'
+               AND E.ERP_TRNSMIS_CD='Y'
+               AND C.ORD_NO=F.ORD_NO
+               AND C.ORD_GOD_TURN=F.ORD_GOD_TURN
+             ) 
+            WHERE TP=DECODE( (  SELECT COUNT(1) 
+                               FROM CLM A, ORD_CLM_GOD_CNNC B, ORD_CLM_GOD_CNNC C, ORD_CLM_GOD_CNNC D,  CLM_ERP_TRNSMIS E , INF_ORD_GOD_ERP_DSTB F
+                               WHERE A.ORD_NO=#{ordNo}
+                               AND F.CLM_NO=#{clmNo} 
+                               AND A.CLM_TP_CD='RTGOD'
+                               AND A.ORD_NO=B.ORD_NO
+                               AND A.CLM_NO=B.CLM_NO
+                               AND B.ORD_NO=C.ORD_NO
+                               AND B.ORD_GOD_TURN=C.ORD_GOD_TURN
+                               AND C.ORD_NO=D.ORD_NO
+                               AND C.CLM_NO=D.CLM_NO
+                               AND C.CLM_WRHS_GOD_TURN=D.CLM_WRHS_GOD_TURN
+                               AND D.GOD_CNNC_TP_CD='DLIVY_GOD_CNNC'
+                               AND D.ORD_NO=E.ORD_NO
+                               AND D.CLM_NO=E.CLM_NO
+                               AND E.CLM_ERP_TRNSMIS_TP_CD='ERP_OR_ERP'
+                               AND E.ERP_TRNSMIS_CD='Y'
+                               AND C.ORD_NO=F.ORD_NO
+                               AND C.ORD_GOD_TURN=F.ORD_GOD_TURN
+                             )     
+                              ,0
+                              ,'RT'
+                              ,'EX'
+                            )
+             )      
+         	</otherwise>
+          </choose>
+                		       	
+	</select>	
+ 
+     <select id="selectInfOrdGodErpDstbForRefund" parameterType="infOrdGodErpDstbExtend" resultType="infOrdGodErpDstbExtend">
+        SELECT /* com.plgrim.ncp.base.repository.inf.selectInfOrdGodErpDstbForRefund  20150618 */
+                t.ORD_NO
+               ,t.ORD_GOD_TURN
+               ,t.QTY_TURN
+               ,t.SKU_NO
+               ,t.CRNCY_CD
+               ,nvl(t.STDR_CRNCY_UNT_PRC,0) as STDR_CRNCY_UNT_PRC 
+               ,nvl(t.PAY_EXCHG_RT_CRNCY_UNT_PRC, 0) as PAY_EXCHG_RT_CRNCY_UNT_PRC
+               ,nvl(t.RTL_PRC,0) as RTL_PRC 
+               ,nvl(t.SALE_UNT_PRC,0) as SALE_UNT_PRC
+               ,nvl(t.WEB_DC_UNT_PRC,0) as WEB_DC_UNT_PRC
+               ,nvl(t.EMP_DC_UNT_PRC,0) as EMP_DC_UNT_PRC
+               ,nvl(t.GOD_DC_UNT_PRC,0) as GOD_DC_UNT_PRC
+               ,nvl(t.BUNDLE_DC_UNT_PRC,0) as BUNDLE_DC_UNT_PRC
+               ,nvl(t.CRS_DC_UNT_PRC,0) as CRS_DC_UNT_PRC
+               ,nvl(t.GOD_CPN_DC_UNT_PRC,0) as GOD_CPN_DC_UNT_PRC
+               ,nvl(t.BSK_CPN_DC_UNT_PRC,0) as BSK_CPN_DC_UNT_PRC
+               ,nvl(t.UNITY_PNT_USE_UNT_PRC,0) as UNITY_PNT_USE_UNT_PRC
+               ,nvl(t.WEBPNT_USE_UNT_PRC,0) as WEBPNT_USE_UNT_PRC
+               ,nvl(t.UNITY_PNT_ACCML_UNT_PRC,0) as UNITY_PNT_ACCML_UNT_PRC
+               ,nvl(t.WEBPNT_ACCML_UNT_PRC,0) as WEBPNT_ACCML_UNT_PRC
+               ,t.CLM_NO
+               ,t.CLM_WRHS_GOD_TURN
+               ,t.CLM_ERP_INTRLCK_YN
+               ,t.CLM_ERP_INTRLCK_DT
+               ,t.CLM_PRCS_ERR_CONT
+               ,t.DRT_EXCHG_QTY_TURN
+               ,t.DRT_EXCHG_STO_NO
+               ,t.OPT_MOD_NO
+               ,t.CNTR_DLIVY_CNFIRM_YN
+               ,t.CNTR_DLIVY_CNFIRM_DT
+               ,t.DLIVY_DRCT_GOD_NO
+               ,t.DLIVY_DRCT_TGT_YN
+               ,t.DLIVY_DRCT_YN
+               ,t.DLIVY_DRCT_DT
+               ,t.RCPTFR_NO
+               ,t.RESVE_RCPTFR_CREAT_YN
+               ,t.RESVE_RCPTFR_CREAT_DT
+               ,t.RESVE_RCPTFR_DLIVY_YN
+               ,t.RESVE_RCPTFR_DLIVY_DT
+               ,t.RESVE_RCPTFR_DCSN_YN
+               ,t.RESVE_RCPTFR_DCSN_DT
+               ,t.ERP_RESVE_RCPTFR_CREAT_CNT
+               ,t.ERP_RESVE_RCPTFR_CREAT_YN
+               ,t.ERP_RESVE_RCPTFR_CREAT_DT
+               ,t.ERP_RESVE_RCPTFR_RECREAT_YN
+               ,t.ERP_RESVE_RCPTFR_RECREAT_DT
+               ,t.ERP_RESVE_RCPTFR_CNCL_YN
+               ,t.ERP_RESVE_RCPTFR_CNCL_DT
+               ,t.RTGOD_SHOP_INV_MVMT_YN
+               ,t.RTGOD_SHOP_INV_MVMT_DT
+               ,t.P_STO_NO
+               ,t.S_STO_NO
+               ,t.S_DOC_NO
+               ,t.CP_ERR_YN
+               ,t.CP_ERR_DT
+               ,t.CP_ERR_CONT
+               ,t.ST_ERR_YN
+               ,t.ST_ERR_DT
+               ,t.ST_ERR_CONT
+               ,t.DOCNO_A
+               ,t.DOCNO_B
+               ,t.DOCNO_C
+               ,t.DOCNO_D
+               ,t.DOCNO_E
+               ,t.DOCNO_F
+               ,t.DOCNO_G
+               ,t.DOCNO_H
+               ,t.DOCNO_J
+               ,t.DOCNO_K
+               ,t.ERP_GOD_SN
+               ,t.ERP_GOD_SN_MOD_YN
+               ,t.ERP_GOD_SN_MOD_DT
+               ,t.DLIVY_ACPT_YN
+               ,t.WRHS_ACPT_YN
+               ,lddg.DLV_PCUPSP_TURN
+               ,lddg.DLV_TURN
+        FROM    INF_ORD_GOD_ERP_DSTB t
+        JOIN	LGS_DLIVY_DRCT_GOD lddg on lddg.dlivy_drct_god_no = t.dlivy_drct_god_no
+        WHERE   1 = 1
+           <if test='clmNo ==null or clmNo ==""'>
+	        AND t.clm_no IS NULL
+           </if>
+	        AND t.ord_no = #{ordNo}
+	        <if test='ordGodTurn!=null and ordGodTurn!=""'>
+	        AND t.ord_god_turn = #{ordGodTurn}
+	        </if>
+	        <if test='dlivyDrctGodNo !=null and dlivyDrctGodNo !=""'>
+	        AND t.dlivy_drct_god_no = #{dlivyDrctGodNo}
+	        </if>
+	        <if test='qty !=null and qty !=""'>
+	        AND rownum <![CDATA[<=]]>  #{qty}
+	        </if>
+    </select>
+	
+	
+	<select id="selectInfOrdGodErpDstbForClm" parameterType="infOrdGodErpDstbExtend" resultType="infOrdGodErpDstb">
+        SELECT /* [orderBoSelect.xml][com.plgrim.ncp.biz.order.selectInfOrdGodErpDstbForClm][클레임 교환접수시 교환될 단품변경정보 조회][khan] */
+               t.qty_turn                       AS qty_turn                         /* 수량 순번 */
+             , t.ord_god_turn                   AS ord_god_turn                     /* 주문 상품 순번 */
+             , t.ord_no                         AS ord_no                           /* 주문 번호 */
+             , t.ord_god_qty_turn               AS ord_god_qty_turn                 /* 주문상품순번 */
+             , t.sku_no                         AS sku_no                           /* SKU 번호 */
+             , t.crncy_cd                       AS crncy_cd                         /* 통화 코드 */
+             , t.stdr_crncy_unt_prc             AS stdr_crncy_unt_prc               /* 기준 통화 단가 */
+             , t.pay_exchg_rt_crncy_unt_prc     AS pay_exchg_rt_crncy_unt_prc       /* 결제 환율 통화 단가 */
+             , t.rtl_prc                        AS rtl_prc                          /* 정소가 */
+             , t.sale_unt_prc                   AS sale_unt_prc                     /* 판매 단가 */
+             , t.web_dc_unt_prc                 AS web_dc_unt_prc                   /* 웹 할인 단가 */
+             , t.emp_dc_unt_prc                 AS emp_dc_unt_prc                   /* 임직원 할인 단가 */
+             , t.imdtl_dc_unt_prc               AS imdtl_dc_unt_prc                 /* 즉시 할인 단가 */            
+             , t.god_dc_unt_prc                 AS god_dc_unt_prc                   /* 상품 할인 단가 */
+             , t.bundle_dc_unt_prc              AS bundle_dc_unt_prc                /* 묶음 할인 단가 */
+             , t.crs_dc_unt_prc                 AS crs_dc_unt_prc                   /* 교차 할인 단가 */
+             , t.god_cpn_dc_unt_prc             AS god_cpn_dc_unt_prc               /* 상품 쿠폰 할인 단가 */
+             , t.bsk_cpn_dc_unt_prc             AS bsk_cpn_dc_unt_prc               /* 장바구니 쿠폰 할인 단가 */
+             , t.unity_pnt_use_unt_prc          AS unity_pnt_use_unt_prc            /* 통합 포인트 사용 단가 */
+             , t.evt_pnt_use_unt_prc            AS evt_pnt_use_unt_prc              /* 이벤트 포인트 사용 단가 */
+             , t.webpnt_use_unt_prc             AS webpnt_use_unt_prc               /* 웹포인트 사용 단가 */
+             , t.unity_pnt_accml_unt_prc        AS unity_pnt_accml_unt_prc          /* 통합 포인트 적립 단가 */
+             , t.evt_pnt_accml_unt_prc          AS evt_pnt_accml_unt_prc            /* 이벤트 포인트 적립 단가 */
+             , t.webpnt_accml_unt_prc           AS webpnt_accml_unt_prc             /* 웹포인트 적립 단가 */
+             , t.clm_no                         AS clm_no                           /* 클레임 번호 */
+             , t.clm_wrhs_god_turn              AS clm_wrhs_god_turn                /* 클레임 입고 상품 순번 */
+             , t.clm_erp_intrlck_yn             AS clm_erp_intrlck_yn               /* 클레임 ERP 연동 여부 */
+             , t.clm_erp_intrlck_dt             AS clm_erp_intrlck_dt               /* 클레임 ERP 연동 일시 */
+             , t.clm_prcs_err_cont              AS clm_prcs_err_cont                /* 클레임 처리 오류 내용 */
+             , t.drt_exchg_qty_turn             AS drt_exchg_qty_turn               /* 맞교환 수량 순번 */
+             , t.drt_exchg_sto_no               AS drt_exchg_sto_no                 /* 맞교환 STO 번호 */
+             , t.opt_mod_no                     AS opt_mod_no                       /* 옵션 변경 번호 */
+             , t.cntr_dlivy_cnfirm_yn           AS cntr_dlivy_cnfirm_yn             /* 센터 출고 확인 여부 */
+             , t.cntr_dlivy_cnfirm_dt           AS cntr_dlivy_cnfirm_dt             /* 센터 출고 확인 일시 */
+             , t.dlivy_drct_god_no              AS dlivy_drct_god_no                /* 출고지시 상품 번호 */
+             , t.dlivy_drct_tgt_yn              AS dlivy_drct_tgt_yn                /* 출고지시 대상 여부 */
+             , t.dlivy_drct_yn                  AS dlivy_drct_yn                    /* 출고지시 여부 */
+             , t.dlivy_drct_dt                  AS dlivy_drct_dt                    /* 출고지시 일시 */
+             , t.rcptfr_no                      AS rcptfr_no                        /* 영수증 번호 */
+             , t.resve_rcptfr_creat_yn          AS resve_rcptfr_creat_yn            /* 예약 영수증 생성 여부 */
+             , t.resve_rcptfr_creat_dt          AS resve_rcptfr_creat_dt            /* 예약 영수증 생성 일시 */
+             , t.resve_rcptfr_dlivy_yn          AS resve_rcptfr_dlivy_yn            /* 예약 영수증 출고 여부 */
+             , t.resve_rcptfr_dlivy_dt          AS resve_rcptfr_dlivy_dt            /* 예약 영수증 출고 일시 */
+             , t.resve_rcptfr_dcsn_yn           AS resve_rcptfr_dcsn_yn             /* 예약 영수증 확정 여부 */
+             , t.resve_rcptfr_dcsn_dt           AS resve_rcptfr_dcsn_dt             /* 예약 영수증 확정 일시 */
+             , t.rtgod_rcptfr_no                AS rtgod_rcptfr_no                  /* 반품 영수증 번호 */
+             , t.rtgod_rcptfr_creat_yn          AS rtgod_rcptfr_creat_yn            /* 반품 영수증 생성 여부 */
+             , t.rtgod_rcptfr_creat_dt          AS rtgod_rcptfr_creat_dt            /* 반품 영수증 생성 일시 */
+             , t.erp_resve_rcptfr_no            AS erp_resve_rcptfr_no              /* ERP 예약 영수증 번호 */
+             , t.erp_resve_cncl_rcptfr_no       AS erp_resve_cncl_rcptfr_no         /* ERP 예약 취소 영수증 번호 */
+             , t.erp_resve_rcptfr_creat_cnt     AS erp_resve_rcptfr_creat_cnt       /* ERP 예약 영수증 생성 건수 */
+             , t.erp_resve_rcptfr_creat_yn      AS erp_resve_rcptfr_creat_yn        /* ERP 예약 영수증 생성 여부 */
+             , t.erp_resve_rcptfr_creat_dt      AS erp_resve_rcptfr_creat_dt        /* ERP 예약 영수증 생성 일시 */
+             , t.erp_resve_rcptfr_recreat_yn    AS erp_resve_rcptfr_recreat_yn      /* ERP 예약 영수증 재생성 여부 */
+             , t.erp_resve_rcptfr_recreat_dt    AS erp_resve_rcptfr_recreat_dt      /* ERP 예약 영수증 재생성 일시 */
+             , t.erp_resve_rcptfr_cncl_yn       AS erp_resve_rcptfr_cncl_yn         /* ERP 예약 영수증 취소 여부 */
+             , t.erp_resve_rcptfr_cncl_dt       AS erp_resve_rcptfr_cncl_dt         /* ERP 예약 영수증 취소 일시 */
+             , iogsdr.repair_no                      AS repair_no                        /* 수선 번호 */
+             , iogsdr.repair_compt_yn                AS repair_compt_yn                  /* 수선 완료 여부 */
+             , iogsdr.repair_compt_cd                AS repair_compt_cd                  /* 수선 완료 코드 */
+             , iogsdr.repair_cont                    AS repair_cont                      /* 수선 내용 */
+             , t.rtgod_shop_inv_mvmt_yn         AS rtgod_shop_inv_mvmt_yn           /* 반품 매장 재고 이동 여부 */
+             , t.rtgod_shop_inv_mvmt_dt         AS rtgod_shop_inv_mvmt_dt           /* 반품 매장 재고 이동 일시 */
+             , t.p_sto_no                       AS p_sto_no                         /* P STO 번호 */
+             , t.s_sto_no                       AS s_sto_no                         /* S STO 번호 */
+             , t.s_doc_no                       AS s_doc_no                         /* S DOC 번호 */
+             , t.cp_err_yn                      AS cp_err_yn                        /* CP 오류 여부 */
+             , t.cp_err_dt                      AS cp_err_dt                        /* CP 오류 일시 */
+             , t.cp_err_cont                    AS cp_err_cont                      /* CP 오류 내용 */
+             , t.st_err_yn                      AS st_err_yn                        /* ST 오류 여부 */
+             , t.st_err_dt                      AS st_err_dt                        /* ST 오류 일시 */
+             , t.st_err_cont                    AS st_err_cont                      /* ST 오류 내용 */
+             , t.docno_a                        AS docno_a                          /* DOCNO A */
+             , t.docno_b                        AS docno_b                          /* DOCNO B */
+             , t.docno_c                        AS docno_c                          /* DOCNO C */
+             , t.docno_d                        AS docno_d                          /* DOCNO D */
+             , t.docno_e                        AS docno_e                          /* DOCNO E */
+             , t.docno_f                        AS docno_f                          /* DOCNO F */
+             , t.docno_g                        AS docno_g                          /* DOCNO G */
+             , t.docno_h                        AS docno_h                          /* DOCNO H */
+             , t.docno_j                        AS docno_j                          /* DOCNO J */
+             , t.docno_k                        AS docno_k                          /* DOCNO K */
+             , t.erp_god_sn                     AS erp_god_sn                       /* ERP 상품 일련번호 */
+             , t.erp_god_sn_mod_yn              AS erp_god_sn_mod_yn                /* ERP 상품 일련번호 변경 여부 */
+             , t.erp_god_sn_mod_dt              AS erp_god_sn_mod_dt                /* ERP 상품 일련번호 변경 일시 */
+             , t.dlivy_acpt_yn                  AS dlivy_acpt_yn                    /* 출고 검수 여부 */
+             , t.wrhs_acpt_yn                   AS wrhs_acpt_yn                     /* 입고 검수 여부 */
+             , t.erp_intrlck_tgt_yn				AS erp_intrlck_tgt_yn				/* ERP 연동 대상 여부 */
+          FROM inf_ord_god_erp_dstb t
+          	   LEFT OUTER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR iogsdr
+               ON t.ord_no = iogsdr.ord_no and t.ord_god_turn = iogsdr.ord_god_turn and t.qty_turn = iogsdr.qty_turn
+         WHERE 1=1
+           AND t.ord_no = #{ordNo,jdbcType=VARCHAR}
+           AND t.ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}
+           AND t.clm_no = #{clmNo,jdbcType=VARCHAR}
+           AND rownum <![CDATA[<=]]> #{ordQty,jdbcType=NUMERIC}
+	</select>
+
+
+	<select id="selectInfOrdGodErpDstbQtyTurn" parameterType="InfOrdGodErpDstb" resultType="infOrdGodErpDstb">
+		SELECT DECODE((SELECT MAX(qty_turn)
+		                 FROM inf_ord_god_erp_dstb
+		                WHERE 1 = 1
+		                  AND ord_no = #{ordNo,jdbcType=VARCHAR})
+		            , NULL, 1
+		            , (SELECT MAX(qty_turn)
+		                 FROM inf_ord_god_erp_dstb
+		                WHERE 1 = 1
+		                  AND ord_no = #{ordNo,jdbcType=VARCHAR}) + 1) 				AS qtyTurn
+		     , DECODE((SELECT MAX(ord_god_qty_turn)
+		                 FROM inf_ord_god_erp_dstb
+		                WHERE 1 = 1
+		                  AND ord_no = #{ordNo,jdbcType=VARCHAR}
+		                  AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC})
+		            , NULL, 1
+		            , (SELECT MAX(ord_god_qty_turn)
+		                 FROM inf_ord_god_erp_dstb
+		                WHERE 1 = 1
+		                  AND ord_no = #{ordNo,jdbcType=VARCHAR}
+		                  AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}) + 1) 	AS ordGodQtyTurn
+		  FROM DUAL
+	</select>
+	
+
+	<update id="updateInfOrdGodErpDstbByDrctEx" parameterType="infOrdGodErpDstb">
+		UPDATE /* com.plgrim.ncp.biz.interfaces.updateInfOrdGodErpDstbByDrctEx Khan */
+		       inf_ord_god_erp_dstb
+		   SET drt_exchg_qty_turn 	= #{drtExchgQtyTurn,jdbcType=NUMERIC}
+		     , drt_exchg_sto_no 	= #{drtExchgStoNo,jdbcType=VARCHAR}
+		     , udt_dt= SYSDATE
+		 WHERE ord_no 				= #{ordNo,jdbcType=VARCHAR}
+		   AND ord_god_turn 		= #{ordGodTurn,jdbcType=NUMERIC}
+		   AND qty_turn 			= #{qtyTurn,jdbcType=NUMERIC}
+		   AND ord_god_qty_turn 	= #{ordGodQtyTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<select id="selectRemainWt" parameterType="String" resultType="ordGod">
+		SELECT og.aff_com_ord_god_no /* [interface.infOrdGodErpDstb.xml][selectRemainWt] 클레임이 걸려있지 않은 주문의 무게정보를 ordGod단위로 추출한다. 수량과 무게만 남아있는거로 리턴*/
+		     , og.all_dc_amt
+		     , og.brnd_grp_id
+		     , og.brnd_id
+		     , og.bsk_cpn_dc_amt
+		     , og.bundle_dc_amt
+		     , og.cal_dt
+		     , og.clor_chip_img_url
+		     , og.color_cd
+		     , og.color_nm
+		     , og.com_id
+		     , og.crncy_cd
+		     , og.crs_dc_amt
+		     , og.dlv_pcupsp_turn
+		     , og.dmstc_dlv_cst_plc_sn
+		     , og.emp_dc_amt
+		     , og.evt_pnt_accml_amt
+		     , og.evt_pnt_use_amt
+		     , og.exchg_rt_apl_beg_dt
+		     , og.god_cpn_dc_amt
+		     , og.god_dc_amt
+		     , og.god_dlivy_wait_time
+		     , og.god_hist_turn
+		     , og.god_nm
+		     , og.god_no
+		     , og.god_tp_cd
+		     , og.god_vol
+		     , og.god_wt*count(I.ORD_NO) as god_wt
+		     , og.imdtl_dc_amt
+		     , og.itm_hist_turn
+		     , og.itm_nm
+		     , og.itm_no
+		     , og.lst_img_url
+		     , og.mobile_god_nm
+		     , og.ordmk_god_yn
+		     , og.ord_god_turn
+		     , og.ord_no
+		     , count(I.ORD_NO) as ord_qty 
+		     , og.ovsea_dlv_cst_plc_sn
+		     , og.ovsea_dlv_dmstc_dlv_cst_plc_sn
+		     , og.partmal_com_cnfirm_admin_id
+		     , og.partmal_com_cnfirm_dt
+		     , og.partmal_com_cnfirm_yn
+		     , og.partmal_com_fee_rt
+		     , og.partmal_sect_cd
+		     , og.pay_exchg_rt_crncy_amt
+		     , og.pkag_tax_amt
+		     , og.regtr_id
+		     , og.reg_dt
+		     , og.rtl_prc
+		     , og.sale_amt
+		     , og.sale_shop_cd
+		     , og.erp_god_no
+		     , og.sku_no
+		     , og.stdr_crncy_amt
+		     , og.udter_id
+		     , og.udt_dt
+		     , og.unity_pnt_accml_amt
+		     , og.unity_pnt_use_amt
+		     , og.webpnt_accml_amt
+		     , og.webpnt_use_amt
+		     , og.web_dc_amt
+		  FROM ord_god og
+		       JOIN
+		       inf_ord_god_erp_dstb i
+		           ON     i.ord_no = og.ord_no
+		              AND i.ord_god_turn = og.ord_god_turn
+		              AND i.clm_no IS NULL
+		 WHERE og.ord_no = #{ordNo} 
+		group by 
+		    og.aff_com_ord_god_no
+		     , og.all_dc_amt
+		     , og.brnd_grp_id
+		     , og.brnd_id
+		     , og.bsk_cpn_dc_amt
+		     , og.bundle_dc_amt
+		     , og.cal_dt
+		     , og.clor_chip_img_url
+		     , og.color_cd
+		     , og.color_nm
+		     , og.com_id
+		     , og.crncy_cd
+		     , og.crs_dc_amt
+		     , og.dlv_pcupsp_turn
+		     , og.dmstc_dlv_cst_plc_sn
+		     , og.emp_dc_amt
+		     , og.evt_pnt_accml_amt
+		     , og.evt_pnt_use_amt
+		     , og.exchg_rt_apl_beg_dt
+		     , og.god_cpn_dc_amt
+		     , og.god_dc_amt
+		     , og.god_dlivy_wait_time
+		     , og.god_hist_turn
+		     , og.god_nm
+		     , og.god_no
+		     , og.god_tp_cd
+		     , og.god_vol
+		     , og.god_wt
+		     , og.imdtl_dc_amt
+		     , og.itm_hist_turn
+		     , og.itm_nm
+		     , og.itm_no
+		     , og.lst_img_url
+		     , og.mobile_god_nm
+		     , og.ordmk_god_yn
+		     , og.ord_god_turn
+		     , og.ord_no
+		     , og.ord_qty
+		     , og.ovsea_dlv_cst_plc_sn
+		     , og.ovsea_dlv_dmstc_dlv_cst_plc_sn
+		     , og.partmal_com_cnfirm_admin_id
+		     , og.partmal_com_cnfirm_dt
+		     , og.partmal_com_cnfirm_yn
+		     , og.partmal_com_fee_rt
+		     , og.partmal_sect_cd
+		     , og.pay_exchg_rt_crncy_amt
+		     , og.pkag_tax_amt
+		     , og.regtr_id
+		     , og.reg_dt
+		     , og.rtl_prc
+		     , og.sale_amt
+		     , og.sale_shop_cd
+		     , og.erp_god_no
+		     , og.sku_no
+		     , og.stdr_crncy_amt
+		     , og.udter_id
+		     , og.udt_dt
+		     , og.unity_pnt_accml_amt
+		     , og.unity_pnt_use_amt
+		     , og.webpnt_accml_amt
+		     , og.webpnt_use_amt
+		     , og.web_dc_amt	
+	</select>
+	
+	
+	
+	
+	<select id="selectAllDcExForOrd" parameterType="String" resultType="String">
+		/*[interface.infOrdGodErpDstb.xml][selectAllDcExForOrd]*/
+		SELECT   SUM (TRUNC (iogsd.sale_unt_prc / ser.stdr_crncy_amt, 2))
+		       - SUM (iogsd.pay_exchg_rt_crncy_unt_prc)
+		  FROM ord o
+		       JOIN inf_ord_god_erp_dstb iogsd ON iogsd.ord_no = o.ord_no
+		       JOIN
+		       sys_exchg_rt ser
+		           ON     ser.crncy_cd = o.crncy_cd
+		              AND ser.exchg_rt_apl_beg_dt = o.exchg_rt_apl_beg_dt
+		 WHERE o.ord_no = #{ordNo}  		
+	</select>
+	
+	<select id="selectAllDcExForClm" parameterType="String" resultType="String">
+		/*[interface.infOrdGodErpDstb.xml][selectAllDcExForClm]*/
+        SELECT   SUM (TRUNC (iogsd.sale_unt_prc / ser.stdr_crncy_amt, 2))
+               - SUM (iogsd.pay_exchg_rt_crncy_unt_prc)
+          FROM clm c
+               JOIN inf_ord_god_erp_dstb iogsd ON iogsd.clm_no = c.clm_no
+               JOIN
+               sys_exchg_rt ser
+                   ON     ser.crncy_cd = c.crncy_cd
+                      AND ser.exchg_rt_apl_beg_dt = c.exchg_rt_apl_beg_dt
+         WHERE c.clm_no = #{clmNo}
+	</select>	
+	
+	
+	<select id="selectInfOrdGodErpDstbForRepair" parameterType="infOrdGodErpDstb" resultType="infOrdGodErpDstb">
+        SELECT /* [interface.infOrdGodErpDstb.xml][selectInfOrdGodErpDstbForRepair] 수선 신청 시 clm_no 에 해당하는 건 조회*/
+                t.ORD_NO
+               ,t.ORD_GOD_TURN
+               ,t.QTY_TURN
+               ,t.ORD_GOD_QTY_TURN
+               ,t.SKU_NO
+               ,t.ERP_INTRLCK_TGT_YN
+               ,t.CRNCY_CD
+               ,t.STDR_CRNCY_UNT_PRC
+               ,t.PAY_EXCHG_RT_CRNCY_UNT_PRC
+               ,t.RTL_PRC
+               ,t.SALE_UNT_PRC
+               ,t.WEB_DC_UNT_PRC
+               ,t.EMP_DC_UNT_PRC
+               ,t.GOD_DC_UNT_PRC
+               ,t.BUNDLE_DC_UNT_PRC
+               ,t.CRS_DC_UNT_PRC
+               ,t.GOD_CPN_DC_UNT_PRC
+               ,t.BSK_CPN_DC_UNT_PRC
+               ,t.IMDTL_DC_UNT_PRC
+               ,t.UNITY_PNT_USE_UNT_PRC
+               ,t.EVT_PNT_USE_UNT_PRC
+               ,t.WEBPNT_USE_UNT_PRC
+               ,t.UNITY_PNT_ACCML_UNT_PRC
+               ,t.EVT_PNT_ACCML_UNT_PRC
+               ,t.WEBPNT_ACCML_UNT_PRC
+               ,t.PRM_COM_BND_UNT_PRC
+               ,t.CLM_NO
+               ,t.CLM_WRHS_GOD_TURN
+               ,t.CLM_ERP_INTRLCK_YN
+               ,t.CLM_ERP_INTRLCK_DT
+               ,t.CLM_PRCS_ERR_CONT
+               ,t.DRT_EXCHG_QTY_TURN
+               ,t.DRT_EXCHG_STO_NO
+               ,t.OPT_MOD_NO
+               ,t.CNTR_DLIVY_CNFIRM_YN
+               ,t.CNTR_DLIVY_CNFIRM_DT
+               ,t.DLIVY_DRCT_GOD_NO
+               ,t.DLIVY_DRCT_TGT_YN
+               ,t.DLIVY_DRCT_YN
+               ,t.DLIVY_DRCT_DT
+               ,t.RCPTFR_NO
+               ,t.RESVE_RCPTFR_CREAT_YN
+               ,t.RESVE_RCPTFR_CREAT_DT
+               ,t.RESVE_RCPTFR_DLIVY_YN
+               ,t.RESVE_RCPTFR_DLIVY_DT
+               ,t.RESVE_RCPTFR_DCSN_YN
+               ,t.RESVE_RCPTFR_DCSN_DT
+               ,t.RTGOD_RCPTFR_NO
+               ,t.RTGOD_RCPTFR_CREAT_YN
+               ,t.RTGOD_RCPTFR_CREAT_DT
+               ,t.ERP_RESVE_RCPTFR_NO
+               ,t.ERP_RESVE_CNCL_RCPTFR_NO
+               ,t.ERP_RESVE_RCPTFR_CREAT_CNT
+               ,t.ERP_RESVE_RCPTFR_CREAT_YN
+               ,t.ERP_RESVE_RCPTFR_CREAT_DT
+               ,t.ERP_RESVE_RCPTFR_RECREAT_YN
+               ,t.ERP_RESVE_RCPTFR_RECREAT_DT
+               ,t.ERP_RESVE_RCPTFR_CNCL_YN
+               ,t.ERP_RESVE_RCPTFR_CNCL_DT
+               ,iogsdr.REPAIR_NO
+               ,iogsdr.REPAIR_COMPT_YN
+               ,iogsdr.REPAIR_COMPT_CD
+               ,iogsdr.REPAIR_CONT
+               ,iogsdr.BADN_GOD_AFF_COM_CNFIRM_DT
+               ,iogsdr.BADN_GOD_CNFIRM_ADMIN_ID
+               ,t.RTGOD_SHOP_INV_MVMT_YN
+               ,t.RTGOD_SHOP_INV_MVMT_DT
+               ,t.P_STO_NO
+               ,t.S_STO_NO
+               ,t.S_DOC_NO
+               ,t.CP_ERR_YN
+               ,t.CP_ERR_DT
+               ,t.CP_ERR_CONT
+               ,t.ST_ERR_YN
+               ,t.ST_ERR_DT
+               ,t.ST_ERR_CONT
+               ,t.DOCNO_A
+               ,t.DOCNO_B
+               ,t.DOCNO_C
+               ,t.DOCNO_D
+               ,t.DOCNO_E
+               ,t.DOCNO_F
+               ,t.DOCNO_G
+               ,t.DOCNO_H
+               ,t.DOCNO_J
+               ,t.DOCNO_K
+               ,t.ERP_GOD_SN
+               ,t.ERP_GOD_SN_MOD_YN
+               ,t.ERP_GOD_SN_MOD_DT
+               ,t.DLIVY_ACPT_YN
+               ,t.WRHS_ACPT_YN
+        FROM    INF_ORD_GOD_ERP_DSTB t
+        		LEFT OUTER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR iogsdr
+                ON t.ord_no = iogsdr.ord_no and t.ord_god_turn = iogsdr.ord_god_turn and t.qty_turn = iogsdr.qty_turn
+        WHERE   1 = 1
+        AND     t.ORD_NO = #{ordNo,jdbcType=VARCHAR}
+        AND     t.CLM_NO = #{clmNo,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

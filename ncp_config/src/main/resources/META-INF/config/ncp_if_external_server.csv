@@ -1,0 +1,39 @@
+Key,Description,common,local,dev,stg_common,stg,stg2,prod
+ncp_if_external_server.env,,,local,dev,,stg,,prod
+ncp_if_external_server.config.test2,,BB,,,,,,
+ncp_if_external_server.oracle.driver,,oracle.jdbc.driver.OracleDriver,,,,,,
+ncp_if_external_server.mybatis.mapper.location,,classpath:META-INF/mybatis/base.common.xml,,,,,,
+ncp_if_external_server.spring.mvc.upload.size,,100000000,,,,,,
+ncp_base.cxf.server.enable,cxf server 사용 여부,true,,,,,,
+####################################,,,,,,,,
+# Amazon Simple Email Service Config,,,,,,,,
+####################################,,,,,,,,
+ncp_if_external_server.aws.ses.configset,,OnlineSesConfigSet,,,,,,PrdOnlineSesConifgSet
+ncp_if_external_server.olapic.ftp,ftp infomation,"[{mall : ""MBM"", lang : ""KOR"", ftpID : ""mlbkorea"", ftpPW : ""ohma9vooY5dee9ie"", ftpHost : ""ftp.photorank.me"", ftpPort : 21, path : ""/feeds/KR/""},{mall : ""MBM"", lang : ""ENG"", ftpID : ""mlbkorea"", ftpPW : ""ohma9vooY5dee9ie"", ftpHost : ""ftp.photorank.me"", ftpPort : 21, path : ""/feeds/MASTER/""},{mall : ""MBM"", lang : ""CHI"", ftpID : ""mlbkorea"", ftpPW : ""ohma9vooY5dee9ie"", ftpHost : ""ftp.photorank.me"", ftpPort : 21, path : ""/feeds/CN/""},{mall : ""SAM"", lang : ""ENG"", ftpID : ""stretchangels"", ftpPW : ""zwj7KRTj7RZT6k8T"", ftpHost : ""ftp.photorank.me"", ftpPort : 21, path : ""/feeds/MASTER/""},{mall : ""SAM"", lang : ""KOR"", ftpID : ""stretchangels"", ftpPW : ""zwj7KRTj7RZT6k8T"", ftpHost : ""ftp.photorank.me"", ftpPort : 21, path : ""/feeds/KR/""},{mall : ""SAM"", lang : ""CHI"", ftpID : ""stretchangels"", ftpPW : ""zwj7KRTj7RZT6k8T"", ftpHost : ""ftp.photorank.me"", ftpPort : 21, path : ""/feeds/CN/""}]",,,,,,
+ncp_if_external_server.olapic.s3path,,/pec/temp/olapic/,,,,,,
+####################################,,,,,,,,
+# 회원가입 sms,,,,,,,,
+####################################,,,,,,,,
+ncp_if_external_server.sitecode,,G7375,,,,,,
+ncp_if_external_server.cert.sitepassword,,JBPICLTHG8YH,,,,,,
+####################################,,,,,,,,
+# Front URL,,,,,,,,
+####################################,,,,,,,,
+ncp_if_external_server.pc.MBM.url,mlb url,,http://${ncp.base.domain.mlb}:8032,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.mlb},http://${ncp_base.domain.pc.pre}.${ncp.base.domain.mlb},,,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.mlb}
+ncp_if_external_server.pc.SAM.url,discovery expediton url,,http://${ncp.base.domain.sa}:8032,http://${ncp_base.domain.pc.pre}.${ncp.base.domain.sa},http://${ncp_base.domain.pc.pre}.${ncp.base.domain.sa},,,http://prd-${ncp_base.domain.pc.pre}.${ncp.base.domain.sa}
+
+####################################,,,,,,,,
+# AWS,,,,,,,,
+####################################,,,,,,,,
+ncp_if_external_server.cdn.DXM.url,discovery expediton CDN url,http://dev-static.discovery-expedition.com,,http://dev-static.discovery-expedition.com,http://stg-static.discovery-expedition.com,,,http://static.discovery-expedition.com
+ncp_if_external_server.cdn.DXM.url.secure,discovery expediton CDN url,https://dev-static.discovery-expedition.com,,https://dev-static.discovery-expedition.com,https://stg-static.discovery-expedition.com,,,https://static.discovery-expedition.com
+ncp_if_external_server.cdn.DXM.image.url,discovery expediton CDN image url,${ncp_if_external_server.cdn.DXM.url}/images,,,,,,
+ncp_if_external_server.web.content.DXM.path,cloudfront,/webresource/discovery-expedition/content,,,,,,
+ncp_if_external_server.cdn.MBM.url,mlb-korea CDN url,http://dev-static.mlb-korea.com,,http://dev-static.mlb-korea.com,http://stg-static.mlb-korea.com,,,http://static.mlb-korea.com
+ncp_if_external_server.cdn.MBM.url.secure,mlb-korea CDN url,https://dev-static.mlb-korea.com,,https://dev-static.mlb-korea.com,https://stg-static.mlb-korea.com,,,https://static.mlb-korea.com
+ncp_if_external_server.cdn.MBM.image.url,mlb-korea CDN image url,${ncp_if_external_server.cdn.MBM.url}/images,,,,,,
+ncp_if_external_server.web.content.MBM.path,cloudfront,/webresource/mlb-korea/content,,,,,,
+ncp_if_external_server.cdn.SAM.url,stretch-angel CDN url,http://dev-static.stretch-angels.com,,http://dev-static.stretch-angels.com,http://stg-static.stretch-angels.com,,,http://static.stretch-angels.com
+ncp_if_external_server.cdn.SAM.url.secure,stretch-angel CDN url,https://dev-static.stretch-angels.com,,https://dev-static.stretch-angels.com,https://stg-static.stretch-angels.com,,,https://static.stretch-angels.com
+ncp_if_external_server.cdn.SAM.image.url,stretch-angel CDN image url,${ncp_if_external_server.cdn.SAM.url}/images,,,,,,
+ncp_if_external_server.web.content.SAM.path,cloudfront,/webresource/stretch-angels/content,,,,,,

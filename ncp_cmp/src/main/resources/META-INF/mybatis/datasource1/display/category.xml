@@ -1,0 +1,1575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+
+	<resultMap id="dspCtgryResult" type="com.plgrim.ncp.biz.display.result.DspCtgryBoResult">
+	   <result property="rowNumber" column="NO" />
+	   <result property="dspCtgry.dspCtgryNo" column="DSP_CTGRY_NO" />                  <!-- 전시 카테고리 번호 -->
+	   <result property="dspCtgry.upperDspCtgryNo" column="UPPER_DSP_CTGRY_NO" />       <!-- 상위 전시 카테고리 번호 -->
+	   <result property="dspCtgry.dspCtgryNm" column="DSP_CTGRY_NM" />                  <!-- 전시 카테고리 명 -->
+	   <result property="dspCtgryPath" column="DSP_CTGRY_PATH" />                  		<!-- 전시 카테고리 경로 -->
+	   <result property="dspCtgry.chiDspCtgryNm" column="CHI_DSP_CTGRY_NM" />                  <!-- 전시 카테고리 명(CHI) -->
+	   <result property="chiDspCtgryPath" column="CHI_DSP_CTGRY_PATH" />                  		<!-- 전시 카테고리 경로(CHI) -->
+	   <result property="dspCtgry.ctgryTpCd" column="CTGRY_TP_CD" />                    <!-- 카테고리 유형 코드 -->
+	   <result property="dspCtgry.godDspUnitCd" column="GOD_DSP_UNIT_CD" />             <!-- 상품 전시 단위 코드 -->
+	   <result property="dspCtgry.ctgryDpthCd" column="CTGRY_DPTH_CD" />                <!-- 카테고리 깊이 코드 -->
+	   <result property="dspCtgry.dspGodSortStdrCd" column="DSP_GOD_SORT_STDR_CD" />   	<!-- 전시 상품 정렬 순서 코드 -->
+	   <result property="dspCtgry.leafCtgryYn" column="LEAF_CTGRY_YN" />                <!-- 리프 카테고리 여부 -->
+	   <result property="dspCtgry.dspYn" column="DSP_YN" />                             <!-- 전시 여부 -->
+	   <result property="dspCtgry.spcifyUrlDspYn" column="SPCIFY_URL_DSP_YN" />         <!-- 특정 URL 전시 여부 -->
+	   <result property="dspCtgry.ctgryDivLneYn" column="CTGRY_DIV_LNE_YN" /> 		<!-- 카테고리 구분선 여부 -->
+	   <result property="dspCtgry.ctgryDivLneCssCd" column="CTGRY_DIV_LNE_CSS_CD" />   <!-- 카테고리 구분선 CSS 코드 -->
+	   <result property="dspCtgry.ctgryOutptTpCd" column="CTGRY_OUTPT_TP_CD" />                    <!-- 출력 유형 코드 -->
+	   <result property="dspCtgry.outptSectCd" column="OUTPT_SECT_CD" />                <!-- 출력 구분 코드 -->
+	   <result property="dspCtgry.outptLinkUrl" column="OUTPT_LINK_URL" />              <!-- 출력 링크 URL -->
+	   <result property="dspCtgry.sortSeq" column="SORT_SEQ" />                         <!-- 정렬 순서 -->
+	   <result property="dspCtgry.aplMallId" column="APL_MALL_ID" />                    <!-- 적용 몰 ID -->
+	   <result property="dspCtgry.dspBrndId" column="DSP_BRND_ID" />                    <!-- 전시 브랜드 ID -->
+	   <result property="dspCtgry.expsrLvlCd" column="EXPSR_LVL_CD" />                  <!-- 노출수준코드 -->
+	   <result property="dspCtgry.rprstImgFileNm" column="RPRST_IMG_FILE_NM" />         <!-- 대표 이미지 파일 명 -->
+	   <result property="dspCtgry.rprstImgFileUrl" column="RPRST_IMG_FILE_URL" />       <!-- 대표 이미지 파일 URL -->
+	   <result property="dspCtgry.rprstImgAltrtvCont" column="RPRST_IMG_ALTRTV_CONT" /> <!-- 대표 이미지 대체 내용 -->
+	   <result property="newIcon" column="new_icon" /> 
+	   <result property="abYn" column="ab_yn" />
+	   <result property="dspRevCpst.pcMobileTmplatIndUseYn" column="PC_MOBILE_TMPLAT_IND_USE_YN" />
+	   <result property="dspRevCpst.pcTmplatSn" column="PC_TMPLAT_SN" />
+	   <result property="dspRevCpst.mobileTmplatSn" column="MOBILE_TMPLAT_SN" />
+	   <result property="dspRevCpst.revSn" column="REV_SN" />
+	   <result property="dspRevCpst.revCpstTurn" column="REV_CPST_TURN" />
+	   <result property="dspCtgry.ctgrySectCd" column="CTGRY_SECT_CD" />
+       <result property="dspCtgry.strtgyCtgryAtrbCd" column="STRTGY_CTGRY_ATRB_CD" />
+	   <result property="dspCtgry.regtrId" column="REGTR_ID" />                         <!-- 등록자 ID -->
+	   <result property="dspCtgry.regDt" column="REG_DT" />                             <!-- 등록 일시 -->
+	   <result property="dspCtgry.udterId" column="UDTER_ID" />                         <!-- 수정자 ID -->
+	   <result property="dspCtgry.udtDt" column="UDT_DT" />                             <!-- 수정 일시 -->
+	   
+	   <result property="dspBrndCtgry.dspCtgryNo" column="BR_DSP_CTGRY_NO" />                         		
+       <result property="dspBrndCtgry.dspBrndId" column="BR_DSP_BRND_ID" />                         		
+       <result property="dspBrndCtgry.dspCtgryNm" column="BR_DSP_CTGRY_NM" />                         		
+       <result property="dspBrndCtgry.godDspUnitCd" column="BR_GOD_DSP_UNIT_CD" />                         		
+       <result property="dspBrndCtgry.dspGodSortStdrCd" column="BR_DSP_GOD_SORT_STDR_CD" />                         		
+       <result property="dspBrndCtgry.dspYn" column="BR_DSP_YN" />                         		
+       <result property="dspBrndCtgry.spcifyUrlDspYn" column="BR_SPCIFY_URL_DSP_YN" />                         		
+       <result property="dspBrndCtgry.ctgryOutptTpCd" column="BR_CTGRY_OUTPT_TP_CD" />                         		
+       <result property="dspBrndCtgry.outptSectCd" column="BR_OUTPT_SECT_CD" />                         		
+       <result property="dspBrndCtgry.outptLinkUrl" column="BR_OUTPT_LINK_URL" />                         		
+       <result property="dspBrndCtgry.expsrLvlCd" column="BR_EXPSR_LVL_CD" />                         		
+       <result property="dspBrndCtgry.rprstImgFileNm" column="BR_RPRST_IMG_FILE_NM" />                         		
+       <result property="dspBrndCtgry.rprstImgFileUrl" column="BR_RPRST_IMG_FILE_URL" />                         		
+       <result property="dspBrndCtgry.rprstImgAltrtvCont" column="BR_RPRST_IMG_ALTRTV_CONT" />                         		
+       <result property="dspBrndCtgry.bcrnStyleClassId" column="BR_BCRN_STYLE_CLASS_ID" />
+       <result property="dspBrndCtgry.sortSeq" column="BR_SORT_SEQ" />                             		
+       <result property="dspRevCpstBrnd.pcMobileTmplatIndUseYn" column="BR_PC_MOBILE_TMPLAT_IND_USE_YN" />
+       <result property="dspRevCpstBrnd.pcTmplatSn" column="BR_PC_TMPLAT_SN" />
+       <result property="dspRevCpstBrnd.mobileTmplatSn" column="BR_MOBILE_TMPLAT_SN" />
+       <result property="dspRevCpstBrnd.revSn" column="BR_REV_SN" />
+	   <result property="dspRevCpstBrnd.revCpstTurn" column="BR_REV_CPST_TURN" />
+       <result property="dspBrndCtgry.regtrId" column="BR_REGTR_ID" />                         		
+       <result property="dspBrndCtgry.regDt" column="BR_REG_DT" />                         		
+       <result property="dspBrndCtgry.udterId" column="BR_UDTER_ID" />                         		
+       <result property="dspBrndCtgry.udtDt" column="BR_UDT_DT" />                           
+	   
+	</resultMap>
+	
+	
+	<select id="selectCategoryTree" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO" resultMap="dspCtgryResult">
+		SELECT /* [category.xml][selectCategoryTree][카테고리 트리 조회][Dian] */
+		      ctg.DSP_CTGRY_NO
+		     ,ctg.UPPER_DSP_CTGRY_NO
+		     ,ctg.DSP_CTGRY_NM
+		     ,SUBSTR(SYS_CONNECT_BY_PATH(ctg.DSP_CTGRY_NM, '> '), 2) as DSP_CTGRY_PATH
+		     ,DCL.DSP_CTGRY_NM AS CHI_DSP_CTGRY_NM
+		     ,SUBSTR(SYS_CONNECT_BY_PATH(DCL.DSP_CTGRY_NM, '> '), 2) as CHI_DSP_CTGRY_PATH
+		     ,ctg.CTGRY_TP_CD
+		     ,ctg.GOD_DSP_UNIT_CD
+		     ,ctg.CTGRY_DPTH_CD
+		     ,ctg.DSP_GOD_SORT_STDR_CD
+		     ,ctg.LEAF_CTGRY_YN
+		     ,ctg.DSP_YN
+		     ,ctg.SPCIFY_URL_DSP_YN
+		     ,ctg.CTGRY_DIV_LNE_YN
+		     ,ctg.CTGRY_DIV_LNE_CSS_CD
+		     ,ctg.DELETE_YN
+		     ,ctg.CTGRY_OUTPT_TP_CD
+		     ,ctg.OUTPT_SECT_CD
+		     ,ctg.OUTPT_LINK_URL
+		     ,ctg.SORT_SEQ
+		     ,ctg.APL_MALL_ID
+		     ,ctg.DSP_BRND_ID
+		     ,ctg.EXPSR_LVL_CD
+		     ,ctg.RPRST_IMG_FILE_NM
+		     ,ctg.RPRST_IMG_FILE_URL
+		     ,ctg.RPRST_IMG_ALTRTV_CONT
+		     ,(case when ctg.reg_dt >= (sysdate-14) then 'N' else '' end) as new_icon
+		     ,DRC.PC_MOBILE_TMPLAT_IND_USE_YN
+             ,DRC.PC_TMPLAT_SN
+             ,DRC.MOBILE_TMPLAT_SN
+             ,DRC.REV_SN
+             ,DRC.REV_CPST_TURN
+		     ,ctg.CTGRY_SECT_CD
+             ,ctg.STRTGY_CTGRY_ATRB_CD
+		     ,ctg.REGTR_ID
+		     ,ctg.REG_DT
+		     ,ctg.UDTER_ID
+		     ,ctg.UDT_DT
+		     ,(
+		     	SELECT
+				     (case when count(1) > 0 then 'Y' else 'N' end) as abTestSelectYn
+				FROM DSP_REV_CPST DRC
+				JOIN DSP_AB_TEST_REV DATR ON (DRC.REV_SN = DATR.REV_SN AND DRC.REV_CPST_TURN = DATR.REV_CPST_TURN)
+				JOIN DSP_AB_TEST DAT ON (DATR.AB_TEST_SN = DAT.AB_TEST_SN)
+				WHERE 1=1
+				AND   DRC.DSP_CTGRY_NO = ctg.DSP_CTGRY_NO
+		        AND   DAT.PROGRS_PSB_YN <![CDATA[<>]]> 'N'
+		     ) AS AB_YN
+		FROM    DSP_CTGRY ctg
+		LEFT OUTER JOIN dsp_rev_cpst drc
+        ON  (ctg.dsp_ctgry_no = drc.dsp_ctgry_no AND drc.rev_sn = #{scRevSn, jdbcType=NUMERIC})
+		LEFT OUTER JOIN DSP_CTGRY_LANG DCL ON (CTG.DSP_CTGRY_NO = DCL.DSP_CTGRY_NO AND DCL.LANG_CD = 'CHI')
+		WHERE   1 = 1
+		CONNECT BY PRIOR ctg.DSP_CTGRY_NO = ctg.UPPER_DSP_CTGRY_NO
+		AND		ctg.DELETE_YN = 'N'	
+		AND		ctg.CTGRY_TP_CD = #{dspCtgry.ctgryTpCd, jdbcType=VARCHAR}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scCtgryDivLneYn)">
+		AND		ctg.CTGRY_DIV_LNE_YN = #{scCtgryDivLneYn, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspYn)">
+		AND		ctg.DSP_YN = #{scDspYn, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scSpcifyUrlDspYn)">
+		AND		ctg.SPCIFY_URL_DSP_YN = #{scSpcifyUrlDspYn, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAplMallId)">
+		AND		ctg.APL_MALL_ID = #{scAplMallId, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPoYn) and scPoYn == 'Y'.toString()">
+		AND     ctg.CTGRY_SECT_CD NOT IN ('NEW_GOD_CTGRY','BST_CTGRY','ON_SALE_CTGRY')
+		</if>
+		START WITH ctg.DSP_CTGRY_NO = #{scDspCtgryNo, jdbcType=VARCHAR}
+		ORDER SIBLINGS BY CASE WHEN ctg.DSP_CTGRY_NO LIKE 'BDMA09%' OR ctg.DSP_CTGRY_NO = 'BDMA08' THEN upper(ctg.DSP_CTGRY_NM) ELSE LPAD(ctg.sort_seq||'',4,'0')  END       
+	</select>
+	
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspCtgryFoResult" id="dspCtgryInfoResult">
+		<result property="dspCtgry.dspCtgryNo" column="t1.DSP_CTGRY_NO"/>  
+		<result property="dspCtgry.upperDspCtgryNo" column="t1.UPPER_DSP_CTGRY_NO"/>      
+        <result property="dspCtgry.dspCtgryNm" column="t1.DSP_CTGRY_NM"/>
+        <result property="dspCtgry.ctgryTpCd" column="t1.CTGRY_TP_CD"/>
+        <result property="dspCtgry.ctgryDpthCd" column="t1.CTGRY_DPTH_CD"/>
+        <result property="dspCtgry.leafCtgryYn" column="t1.LEAF_CTGRY_YN"/>
+        <result property="dspCtgry.storYn" column="t1.STOR_YN"/>
+        <result property="dspCtgry.outptTpCd" column="t1.OUTPT_TP_CD"/>
+        <result property="dspCtgry.outptSectCd" column="t1.OUTPT_SECT_CD"/>
+        <result property="dspCtgry.outptLinkUrl" column="t1.OUTPT_LINK_URL"/>
+        <result property="dspCtgry.aplMallId" column="t1.APL_MALL_ID"/>
+        <result property="dspCtgry.dspBrndId" column="t1.DSP_BRND_ID"/>
+        <result property="dspCtgry.rprstImgFileNm" column="t1.RPRST_IMG_FILE_NM"/>
+        <result property="dspCtgry.rprstImgFileUrl" column="t1.RPRST_IMG_FILE_URL"/>
+        <result property="dspCtgry.rprstImgAltrtvCont" column="t1.RPRST_IMG_ALTRTV_CONT"/>
+        <result property="dspCtgryLang.langCd" column="t3.LANG_CD" />
+        <result property="dspCtgryLang.dspCtgryNm" column="t3.DSP_CTGRY_NM "/>
+        <result property="dspCtgryLang.rprstImgFileUrl" column="t3.RPRST_IMG_FILE_URL"/>
+        <result property="dspCtgryLang.rprstImgAltrtvCont" column="t3.RPRST_IMG_ALTRTV_CONT"/>
+        <result property="dspCtgryLang.rprstImgFileNm" column="t3.RPRST_IMG_FILE_NM"/>
+	</resultMap>
+
+	<!-- 전시카테고리 기본정보 쿼리 -->
+	<select id="selectDisplayCategoryInfo" parameterType="com.plgrim.ncp.biz.display.data.DspCtgrySearchFoDTO" resultMap="dspCtgryInfoResult">
+        SELECT /* com.plgrim.ncp.biz.display.repository.selectDisplayCategroyInfo jumunuk 20150407 */
+                t1.DSP_CTGRY_NO
+               ,t1.UPPER_DSP_CTGRY_NO
+               ,t1.DSP_CTGRY_NM
+               ,t1.CTGRY_TP_CD
+               ,t1.CTGRY_DPTH_CD
+               ,t1.LEAF_CTGRY_YN
+               ,t1.STOR_YN
+               ,t1.OUTPT_TP_CD
+               ,t1.OUTPT_SECT_CD
+               ,t1.OUTPT_LINK_URL
+               ,t1.APL_MALL_ID
+               ,t1.DSP_BRND_ID
+               ,t1.RPRST_IMG_FILE_NM
+               ,t1.RPRST_IMG_FILE_URL
+               ,t1.RPRST_IMG_ALTRTV_CONT
+               ,t3.LANG_CD
+               ,t3.DSP_CTGRY_NM
+               ,t3.RPRST_IMG_FILE_URL
+               ,t3.RPRST_IMG_ALTRTV_CONT
+               ,t3.RPRST_IMG_FILE_NM
+        FROM    DSP_CTGRY t1
+                INNER JOIN DSP_CTGRY_APL_TMPLAT t2 ON t1.DSP_CTGRY_NO = t2.DSP_CTGRY_NO AND t2.DVC_SECT_CD = #{device}
+                LEFT OUTER JOIN DSP_CTGRY_LANG t3 ON t1.DSP_CTGRY_NO = t3.DSP_CTGRY_NO AND T3.LANG_CD = #{lang}
+        WHERE   1 = 1
+        	AND t1.DSP_CTGRY_NO = #{categoryNo}
+        	AND t1.APL_MALL_ID = #{mallId}
+        	AND t1.DSP_YN = 'Y'
+	</select>
+
+	<select id="selectDisplayCategory1DpthList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgrySearchFoDTO" resultMap="dspCtgryInfoResult">
+        SELECT /* com.plgrim.ncp.biz.display.repository.selectDisplayCategroy1DpthList jumunuk 20150407 */
+                t1.DSP_CTGRY_NO
+               ,t1.UPPER_DSP_CTGRY_NO
+               ,t1.DSP_CTGRY_NM
+               ,t1.CTGRY_TP_CD
+               ,t1.CTGRY_DPTH_CD
+               ,t1.LEAF_CTGRY_YN
+               ,t1.STOR_YN
+               ,t1.OUTPT_TP_CD
+               ,t1.OUTPT_SECT_CD
+               ,t1.OUTPT_LINK_URL
+               ,t1.APL_MALL_ID
+               ,t1.DSP_BRND_ID
+               ,t1.RPRST_IMG_FILE_NM
+               ,t1.RPRST_IMG_FILE_URL
+               ,t1.RPRST_IMG_ALTRTV_CONT
+               ,t3.LANG_CD
+               ,t3.DSP_CTGRY_NM
+               ,t3.RPRST_IMG_FILE_URL
+               ,t3.RPRST_IMG_ALTRTV_CONT
+               ,t3.RPRST_IMG_FILE_NM
+        FROM    DSP_CTGRY t1
+                INNER JOIN DSP_CTGRY_APL_TMPLAT t2 ON t1.DSP_CTGRY_NO = t2.DSP_CTGRY_NO AND t2.DVC_SECT_CD = #{device}
+                LEFT OUTER JOIN DSP_CTGRY_LANG t3 ON t1.DSP_CTGRY_NO = t3.DSP_CTGRY_NO AND T3.LANG_CD = #{lang}
+        WHERE   1 = 1
+        	AND t1.APL_MALL_ID = #{mallId}
+        	AND t1.CTGRY_DPTH_CD = '1'
+        	AND t1.DSP_YN = 'Y'
+        	
+	</select>
+	
+	<select id="selectSubDisplayCategoryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgrySearchFoDTO" resultMap="dspCtgryInfoResult">
+        SELECT /* com.plgrim.ncp.biz.display.repository.selectSubDisplayCategroyList jumunuk 20150407 */
+                t1.DSP_CTGRY_NO
+               ,t1.UPPER_DSP_CTGRY_NO
+               ,t1.CTGRY_TP_CD
+               ,t1.CTGRY_DPTH_CD
+               ,t1.LEAF_CTGRY_YN
+               ,t1.STOR_YN
+               ,t1.OUTPT_TP_CD
+               ,t1.OUTPT_SECT_CD
+               ,t1.OUTPT_LINK_URL
+               ,t1.APL_MALL_ID
+               ,t1.DSP_BRND_ID
+               ,t1.RPRST_IMG_FILE_NM
+               ,t1.RPRST_IMG_FILE_URL
+               ,t1.RPRST_IMG_ALTRTV_CONT
+               ,t3.LANG_CD
+               ,t3.DSP_CTGRY_NM
+               ,t3.RPRST_IMG_FILE_URL
+               ,t3.RPRST_IMG_ALTRTV_CONT
+               ,t3.RPRST_IMG_FILE_NM
+        FROM    DSP_CTGRY t1
+                INNER JOIN DSP_CTGRY_APL_TMPLAT t2 ON t1.DSP_CTGRY_NO = t2.DSP_CTGRY_NO AND t2.DVC_SECT_CD = #{device}
+                LEFT OUTER JOIN DSP_CTGRY_LANG t3 ON t1.DSP_CTGRY_NO = t3.DSP_CTGRY_NO AND T3.LANG_CD = #{lang}
+        WHERE   1 = 1
+        	AND t1.APL_MALL_ID = #{mallId}
+        	AND t1.UPPER_DSP_CTGRY_NO = #{categoryNo}
+        	AND t1.DSP_YN = 'Y'
+	</select>
+	
+	<select id="selectSubDspCtgryCnncGodList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgrySearchFoDTO">
+	</select>
+	
+	
+	<!-- 카테고리 번호 생성 -->
+	<select id="selectDspCtgryNo" parameterType="String" resultType="String">
+   		SELECT  /* [category.xml][selectDspCtgryNo][카테고리 번호 생성][Dian] */  
+       		NVL(MAX(dsp_ctgry_no), #{upperDspCtgryNo,jdbcType=VARCHAR} ||decode(1, 100, chr(ascii('A') + 1)||'00', 'A'||lpad(1,2,'0'))  ) AS dsp_ctgry_no
+      	FROM(
+       		SELECT 
+        		#{upperDspCtgryNo,jdbcType=VARCHAR}||decode((maxn+1),100, chr(ascii(prefix) +1)||'00', prefix||lpad((maxn+1),2,'0')) as dsp_ctgry_no  
+         	FROM ( 
+                SELECT MAX(maxn) AS maxn , MAX(prefix) AS prefix 
+                FROM (
+                     SELECT 
+                          SUBSTR(dsp_ctgry_no,length(#{upperDspCtgryNo,jdbcType=VARCHAR} )+2,2) AS maxn
+                         ,CHR(ascii(substr(dsp_ctgry_no,length(#{upperDspCtgryNo,jdbcType=VARCHAR})+1,1))) AS prefix
+                     FROM dsp_ctgry
+                     WHERE upper_dsp_ctgry_no = #{upperDspCtgryNo,jdbcType=VARCHAR}   
+                )         
+                GROUP BY prefix
+                ORDER BY prefix 
+            )
+        <if test="_parameter == 'BDMA09'">    
+        WHERE maxn <![CDATA[<]]> 99
+        AND ROWNUM = 1
+        </if>	
+       )
+	</select>
+	
+	
+	<update id="updateDspCtgryInfo" parameterType="dspCtgry">
+        UPDATE /* [category.xml][updateDspCtgryInfo][카테고리 수정][Dian] */ 
+        DSP_CTGRY SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(upperDspCtgryNo)">
+            ,UPPER_DSP_CTGRY_NO = #{upperDspCtgryNo,jdbcType=VARCHAR}                
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspCtgryNm)">
+            ,DSP_CTGRY_NM = #{dspCtgryNm,jdbcType=VARCHAR}               
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ctgryTpCd)">
+            ,CTGRY_TP_CD = #{ctgryTpCd,jdbcType=VARCHAR}
+            </if>    
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspGodSortStdrCd)">
+            ,DSP_GOD_SORT_STDR_CD = #{dspGodSortStdrCd,jdbcType=VARCHAR}
+            </if>    
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godDspUnitCd)">
+            ,GOD_DSP_UNIT_CD = #{godDspUnitCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ctgryDpthCd)">
+            ,CTGRY_DPTH_CD = #{ctgryDpthCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(leafCtgryYn)">
+            ,LEAF_CTGRY_YN = #{leafCtgryYn,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspYn)">
+            ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(spcifyUrlDspYn)">
+            ,SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ctgryDivLneYn)">
+            ,CTGRY_DIV_LNE_YN  = #{ctgryDivLneYn,jdbcType=VARCHAR}
+		    </if>    
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ctgryDivLneCssCd)">
+            ,CTGRY_DIV_LNE_CSS_CD = #{ctgryDivLneCssCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ctgryOutptTpCd)">
+            ,CTGRY_OUTPT_TP_CD = #{ctgryOutptTpCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(outptSectCd)">
+            ,OUTPT_SECT_CD = #{outptSectCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(outptLinkUrl)">
+            ,OUTPT_LINK_URL = #{outptLinkUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(outptLinkUrl)">
+            ,OUTPT_LINK_URL = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(sortSeq)">
+            ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(aplMallId)">
+            ,APL_MALL_ID = #{aplMallId,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspBrndId)">
+            ,DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(expsrLvlCd)">
+            ,EXPSR_LVL_CD = #{expsrLvlCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(expsrTgtCd)">
+            ,EXPSR_TGT_CD = #{expsrTgtCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+            ,RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+            ,RPRST_IMG_FILE_NM = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+            ,RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+            ,RPRST_IMG_FILE_URL = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+            ,RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+            ,RPRST_IMG_ALTRTV_CONT = null
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pcListExpsrCntCd)">
+                ,PC_LIST_EXPSR_CNT_CD = #{pcListExpsrCntCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobileListExpsrCntCd)">
+                ,MOBILE_LIST_EXPSR_CNT_CD = #{mobileListExpsrCntCd,jdbcType=VARCHAR}
+            </if>
+            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(listExpsrImgTurn)">
+                ,LIST_EXPSR_IMG_TURN = #{listExpsrImgTurn,jdbcType=VARCHAR}
+            </if>
+            ,BCRN_STYLE_CLASS_ID = #{bcrnStyleClassId,jdbcType=VARCHAR}
+            ,CTGRY_SECT_CD = #{ctgrySectCd,jdbcType=VARCHAR}
+            ,STRTGY_CTGRY_ATRB_CD = #{strtgyCtgryAtrbCd,jdbcType=VARCHAR}
+            ,META_SJ_NM = #{metaSjNm,jdbcType=VARCHAR}
+		    ,META_DSCR_CONT = #{metaDscrCont,jdbcType=VARCHAR}
+		    ,META_KWD = #{metaKwd,jdbcType=VARCHAR}
+		    ,STT_CTGRY_NM = #{sttCtgryNm,jdbcType=VARCHAR}  
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </update>
+    
+    
+    <update id="updateDspCtgryForGrid" parameterType="dspCtgry">
+        UPDATE /* [category.xml][updateDspCtgryForGrid][카테고리 수정][Dian] */ 
+        DSP_CTGRY SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+            ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+            ,SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+            ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateDeleteYn" parameterType="dspCtgry">
+        UPDATE /* [category.xml][updateDeleteYn][카테고리 삭제-삭제여부 update][Dian] */
+        DSP_CTGRY SET
+             DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+        	,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 카테고리 언어 저장 -->
+    <update id="saveDspCtgryLang" parameterType="dspCtgryLang" >
+    	MERGE INTO dsp_ctgry_lang dcl
+		USING (
+		        SELECT
+		             #{dspCtgryNo,jdbcType=VARCHAR} as dsp_ctgry_no
+		            ,#{langCd,jdbcType=VARCHAR} as lang_cd
+		        FROM DUAL    			
+		) fch ON (dcl.dsp_ctgry_no = fch.dsp_ctgry_no and dcl.lang_cd = fch.lang_cd)
+		WHEN MATCHED THEN 
+		    UPDATE SET
+		    	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		        ,UDT_DT = SYSDATE
+		    	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspCtgryNm)">
+	            ,DSP_CTGRY_NM = #{dspCtgryNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(dspCtgryNm)">
+	            ,DSP_CTGRY_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+	            ,RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileNm)">
+	            ,RPRST_IMG_FILE_NM = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+	            ,RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgFileUrl)">
+	            ,RPRST_IMG_FILE_URL = null
+	            </if>
+	            <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+	            ,RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+	            </if>
+	            <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(rprstImgAltrtvCont)">
+	            ,RPRST_IMG_ALTRTV_CONT = null
+	            </if>
+
+		WHEN NOT MATCHED THEN
+		    INSERT   (
+		        DSP_CTGRY_NO
+		       ,LANG_CD
+		       ,DSP_CTGRY_NM
+		       ,RPRST_IMG_FILE_URL
+		       ,RPRST_IMG_ALTRTV_CONT
+		       ,RPRST_IMG_FILE_NM
+		       ,REGTR_ID
+		       ,UDTER_ID
+		       ,REG_DT
+		       ,UDT_DT
+		    )
+		    VALUES
+		    (
+		        #{dspCtgryNo,jdbcType=VARCHAR}
+		       ,#{langCd,jdbcType=VARCHAR}
+		       ,#{dspCtgryNm,jdbcType=VARCHAR}
+		       ,#{rprstImgFileUrl,jdbcType=VARCHAR}
+		       ,#{rprstImgAltrtvCont,jdbcType=VARCHAR}
+		       ,#{rprstImgFileNm,jdbcType=VARCHAR}
+		       ,#{regtrId,jdbcType=VARCHAR}
+		       ,#{udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+		    ) 
+    </update>
+    
+    <!-- 카테고리 연결 템플릿 삭제 -->
+    <delete id="deleteAplTmplatByDspCtgryNo" parameterType="String">
+    	DELETE /*[category.xml][deleteAplTmplatByDspCtgryNo][카테고리 연결 템플릿 삭제][Dian]*/
+        FROM DSP_CTGRY_APL_TMPLAT 
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </delete>
+	
+	<!-- 카테고리 연결 상품 수정 -->
+	<update id="updateCtgryCnncGodInfo" parameterType="dspCtgryCnncGod">
+        UPDATE  /*[category.xml][updateCtgryCnncGodInfo][카테고리 연결 상품 수정][Dian]*/
+        DSP_CTGRY_CNNC_GOD g SET
+        		 g.UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,g.UDT_DT = SYSDATE
+        		<if test="dspYn != null and dspYn != ''"> 
+                ,g.DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="sortSeq != null and sortSeq != ''"> 
+                ,g.SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                </if>
+                <if test="brndCtgryDspYn != null and brndCtgryDspYn != ''"> 
+                ,g.BRND_CTGRY_DSP_YN = #{brndCtgryDspYn,jdbcType=VARCHAR}
+                </if>
+                <if test="brndCtgrySortSeq != null and brndCtgrySortSeq != ''"> 
+                ,g.BRND_CTGRY_SORT_SEQ = #{brndCtgrySortSeq,jdbcType=NUMERIC}
+                </if>
+        WHERE   1 = 1
+        AND     g.DSP_CTGRY_NO like #{dspCtgryNo,jdbcType=VARCHAR}||'%'
+        AND 	g.GOD_NO = #{godNo,jdbcType=VARCHAR}
+        <if test="dspCtgryNo != null and (dspCtgryNo == 'DXMA41' or dspCtgryNo == 'DXMA42' or dspCtgryNo == 'DXMA43')">
+		AND EXISTS (
+            SELECT 1 
+            FROM DSP_CTGRY c
+            WHERE c.DSP_CTGRY_NO = g.DSP_CTGRY_NO
+            AND c.CTGRY_SECT_CD  not in ('NEW_GOD_CTGRY','BST_CTGRY','ON_SALE_CTGRY')
+        )
+		</if>
+    </update>
+    
+    <!-- 카테고리내 max 전시순서 조회 -->    
+    <select id="selectCtgryCnncGodMaxSortSeq" parameterType="String" resultType="Integer">
+		select /* [category.xml][selectCtgryCnncGodMaxSortSeq][카테고리내 max 전시순서 조회][Dian] */ 
+		    nvl(max(sort_seq),0) as sort_seq
+		from dsp_ctgry_cnnc_god
+		WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<!-- 카테고리 연결 상품 삭제 -->
+	<update id="deleteCtgryCnncGodInfo" parameterType="String">
+        DELETE  /*[category.xml][deleteCtgryCnncGodInfo][카테고리 연결 상품 삭제][Dian]*/
+        FROM DSP_CTGRY_CNNC_GOD 
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 카테고리 연결 상품 복사 -->
+    <insert id="copyCtgryCnncGod" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO">
+    	insert /* [category.xml][copyCtgryCnncGod][카테고리 연결 상품 복사][Dian]*/
+    	into dsp_ctgry_cnnc_god (
+    		 DSP_CTGRY_NO
+			,GOD_NO
+			,RPRST_GOD_YN
+			,DSP_YN
+			,SORT_SEQ
+			,BRND_CTGRY_DSP_YN
+			,BRND_CTGRY_SORT_SEQ 
+			,REGTR_ID
+			,REG_DT
+			,UDTER_ID
+			,UDT_DT
+		)
+		select 
+			 #{dspCtgryCnncGod.dspCtgryNo,jdbcType=VARCHAR} as dsp_ctgry_no
+		    ,god.god_no
+		    ,'N' rprst_god_yn
+		    ,god.dsp_yn
+		    , 999 AS SORT_SEQ
+		    ,'N' brnd_ctgry_dsp_yn
+		    , 999 AS brnd_ctgry_sort_seq
+		    ,#{dspCtgryCnncGod.regtrId,jdbcType=VARCHAR} as regtr_id
+		    ,sysdate
+		    ,#{dspCtgryCnncGod.udterId,jdbcType=VARCHAR} as udter_id
+		    ,sysdate
+		from (  
+		    select g.god_no,max(g.dsp_yn) as dsp_yn
+		    from dsp_ctgry_cnnc_god g
+		    inner join dsp_ctgry c
+		    on g.dsp_ctgry_no = c.dsp_ctgry_no
+		    where 1=1
+		    <if test='cpDspCtgryNo != null'> 
+       			<foreach collection="cpDspCtgryNo" item="item" open="AND g.dsp_ctgry_no IN (" close=")" separator=",">#{item}</foreach>
+            </if>
+		    and c.leaf_ctgry_yn = 'Y'
+		    group by g.god_no
+		) god
+		WHERE 1=1
+		AND NOT EXISTS (
+		    select 1 
+		    from dsp_ctgry_cnnc_god
+		    where dsp_ctgry_no =  #{dspCtgryCnncGod.dspCtgryNo,jdbcType=VARCHAR}
+		    and god_no = god.god_no
+		)
+    </insert>
+    
+    
+    <sql id="selectCtgryWhere"> 
+		WHERE   1 = 1
+		AND		c.DELETE_YN = 'N'	
+		AND		c.CTGRY_TP_CD =  #{dspCtgry.ctgryTpCd, jdbcType=VARCHAR}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scCtgryDivLneYn)">
+		AND		c.CTGRY_DIV_LNE_YN = #{scCtgryDivLneYn, jdbcType=VARCHAR}	
+		</if>
+		<choose>
+		<when test="arDspCtgryNo != null">
+		<foreach collection="arDspCtgryNo" item="item" open="AND c.dsp_ctgry_no IN (" close=")" separator=",">#{item}</foreach>
+		</when>
+		<otherwise>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspYn)">
+		AND		c.DSP_YN = #{scDspYn, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scLeafYn)">
+		AND		c.LEAF_CTGRY_YN = #{scLeafYn, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scSpcifyUrlDspYn)">
+		AND		c.SPCIFY_URL_DSP_YN = #{scSpcifyUrlDspYn, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNm)">
+		AND		c.DSP_CTGRY_NM like '%'||#{scDspCtgryNm, jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAplMallId)">
+		AND		c.APL_MALL_ID = #{scAplMallId, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scPoYn) and scPoYn == 'Y'.toString()">
+		AND     c.CTGRY_SECT_CD NOT IN ('NEW_GOD_CTGRY','BST_CTGRY','ON_SALE_CTGRY')
+		</if>
+		</otherwise>
+		</choose>
+	</sql>
+    
+    <!-- 카테고리 검색 목록 -->
+	<select id="selectCtgryList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO" resultMap="dspCtgryResult">
+	<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [category.xml][selectCtgryList][카테고리 검색 목록][Dian] */
+			 c.DSP_CTGRY_NO
+		    ,c.UPPER_DSP_CTGRY_NO
+		    ,c.DSP_CTGRY_NM
+		    ,c.DSP_CTGRY_PATH
+		    ,c.CTGRY_TP_CD
+		    ,c.GOD_DSP_UNIT_CD
+		    ,c.CTGRY_DPTH_CD
+		    ,c.DSP_GOD_SORT_STDR_CD
+		    ,c.LEAF_CTGRY_YN
+		    ,c.DSP_YN
+		    ,c.SPCIFY_URL_DSP_YN
+		    ,c.CTGRY_DIV_LNE_YN
+		    ,c.CTGRY_DIV_LNE_CSS_CD
+		    ,c.DELETE_YN
+		    ,c.CTGRY_OUTPT_TP_CD
+		    ,c.OUTPT_SECT_CD
+		    ,cd.cd_nm as outpt_sect_cd_nm
+		    ,c.OUTPT_LINK_URL
+		    ,c.SORT_SEQ
+		    ,c.APL_MALL_ID
+		    ,c.DSP_BRND_ID
+		    ,c.EXPSR_LVL_CD
+		    ,c.RPRST_IMG_FILE_NM
+		    ,c.RPRST_IMG_FILE_URL
+		    ,c.RPRST_IMG_ALTRTV_CONT
+		    ,c.CTGRY_SECT_CD
+		    ,c.REGTR_ID
+		    ,c.REG_DT
+		    ,c.UDTER_ID
+		    ,c.UDT_DT
+		FROM (
+			SELECT 
+			      ctg.DSP_CTGRY_NO
+			     ,ctg.UPPER_DSP_CTGRY_NO
+			     ,ctg.DSP_CTGRY_NM
+			     ,SUBSTR(SYS_CONNECT_BY_PATH(ctg.DSP_CTGRY_NM, '>'), 2) as DSP_CTGRY_PATH
+	             ,ctg.CTGRY_TP_CD
+			     ,ctg.GOD_DSP_UNIT_CD
+			     ,ctg.CTGRY_DPTH_CD
+			     ,ctg.DSP_GOD_SORT_STDR_CD
+			     ,ctg.LEAF_CTGRY_YN
+			     ,ctg.DSP_YN
+			     ,ctg.SPCIFY_URL_DSP_YN
+			     ,ctg.CTGRY_DIV_LNE_YN
+			     ,ctg.CTGRY_DIV_LNE_CSS_CD
+			     ,ctg.DELETE_YN
+			     ,ctg.CTGRY_OUTPT_TP_CD
+			     ,ctg.OUTPT_SECT_CD
+			     ,ctg.OUTPT_LINK_URL
+			     ,ctg.SORT_SEQ
+			     ,ctg.APL_MALL_ID
+			     ,ctg.DSP_BRND_ID
+			     ,ctg.EXPSR_LVL_CD
+			     ,ctg.RPRST_IMG_FILE_NM
+			     ,ctg.RPRST_IMG_FILE_URL
+			     ,ctg.RPRST_IMG_ALTRTV_CONT
+			     ,ctg.CTGRY_SECT_CD
+			     ,ctg.REGTR_ID
+			     ,ctg.REG_DT
+			     ,ctg.UDTER_ID
+			     ,ctg.UDT_DT
+			FROM    DSP_CTGRY ctg
+			CONNECT BY PRIOR ctg.DSP_CTGRY_NO = ctg.UPPER_DSP_CTGRY_NO
+			START WITH ctg.UPPER_DSP_CTGRY_NO =  #{scDspCtgryNo, jdbcType=VARCHAR}
+			order siblings by ctg.sort_seq
+	    ) c 
+	    LEFT OUTER JOIN (SELECT cd, cd_nm from MV_SYS_CD WHERE upper_cd = 'OUTPT_SECT' and lang_cd = #{lang, jdbcType=VARCHAR}) cd
+		ON c.OUTPT_SECT_CD = cd.cd
+		<include refid="selectCtgryWhere"/>
+	<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 카테고리 검색 목록 총 Count -->
+	<select id="selectCtgryListTotalCount" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO"  resultType="Integer">
+        SELECT  /* [category.xml][selectCtgryListTotalCount][카테고리 검색 목록 총 Count][Dian] */
+			 count(c.DSP_CTGRY_NO) as ctgryCount
+		FROM (
+			SELECT 
+			      ctg.DSP_CTGRY_NO
+			     ,ctg.DSP_CTGRY_NM
+			     ,ctg.CTGRY_TP_CD
+			     ,ctg.LEAF_CTGRY_YN
+			     ,ctg.DSP_YN
+			     ,ctg.SPCIFY_URL_DSP_YN
+			     ,ctg.DELETE_YN
+			     ,ctg.OUTPT_SECT_CD
+			     ,ctg.CTGRY_DIV_LNE_YN
+			     ,ctg.APL_MALL_ID
+			     ,ctg.CTGRY_SECT_CD
+			FROM    DSP_CTGRY ctg
+			CONNECT BY PRIOR ctg.DSP_CTGRY_NO = ctg.UPPER_DSP_CTGRY_NO
+			START WITH ctg.UPPER_DSP_CTGRY_NO =  #{scDspCtgryNo, jdbcType=VARCHAR}
+	    ) c 
+	    <include refid="selectCtgryWhere"/>
+	</select>
+	
+	<!-- 카테고리 연결 상품번호 목록 -->
+	<select id="selectCnncGodList" parameterType="String"  resultType="String">
+        SELECT /* [category.xml][selectCnncGodList][카테고리 연결 상품번호 목록][Dian] */
+			  god_no 
+		FROM    DSP_CTGRY_CNNC_GOD g
+		WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+	</select>
+	
+    <!-- 카테고리 연결 상품 전시 순서 업로드 -->
+	<update id="updateSortSeqGod" parameterType="dspCtgryCnncGod">
+        UPDATE  /*[category.xml][updateSortSeqGod][카테고리 연결 상품 전시 순서 업로드][Dian]*/
+        DSP_CTGRY_CNNC_GOD SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO like #{dspCtgryNo,jdbcType=VARCHAR}||'%'
+        AND 	GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+    	
+	<!-- 카테고리의 전시여부 조회 -->
+	<select id="selectDspYnCtgry" parameterType="String" resultType="String">
+		SELECT /*[category.xml][selectDspYnCtgry][카테고리의 전시여부 조회][Dian]*/ 
+			dsp_yn
+		FROM    DSP_CTGRY
+		WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 하위카테고리 전시여부 수정 -->
+	<update id="updateDspYnCtgry" parameterType="dspCtgry">
+		update /*[category.xml][updateDspYnCtgry][하위카테고리 전시여부 수정][Dian]*/ 
+		    dsp_ctgry 
+		set 
+			UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		   ,UDT_DT = SYSDATE
+		   ,dsp_yn = #{dspYn,jdbcType=VARCHAR}
+		where dsp_ctgry_no in (
+		    select ctg.dsp_ctgry_no
+		    from dsp_ctgry ctg
+		    CONNECT BY PRIOR ctg.DSP_CTGRY_NO = ctg.UPPER_DSP_CTGRY_NO
+		    START WITH ctg.UPPER_DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		)
+	</update>
+	
+	
+	<!-- 카테고리 검색 목록 -->
+	<select id="selectCtgryListByCtgryNo" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO" resultMap="dspCtgryResult">
+	<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [category.xml][selectCtgryList][카테고리 검색 목록][Dian] */
+			 c.DSP_CTGRY_NO
+		    ,c.UPPER_DSP_CTGRY_NO
+		    ,c.DSP_CTGRY_NM
+		    ,(  select SUBSTR(SYS_CONNECT_BY_PATH(ctg.DSP_CTGRY_NM, '>'), 2)
+				from dsp_ctgry ctg
+				where ctg.DSP_CTGRY_NO = c.DSP_CTGRY_NO
+				CONNECT BY PRIOR ctg.DSP_CTGRY_NO = ctg.UPPER_DSP_CTGRY_NO
+				START WITH ctg.UPPER_DSP_CTGRY_NO = SUBSTR(c.DSP_CTGRY_NO,1,3)) AS DSP_CTGRY_PATH
+		    ,c.CTGRY_TP_CD
+		    ,c.GOD_DSP_UNIT_CD
+		    ,c.CTGRY_DPTH_CD
+		    ,c.DSP_GOD_SORT_STDR_CD
+		    ,c.LEAF_CTGRY_YN
+		    ,c.DSP_YN
+		    ,c.SPCIFY_URL_DSP_YN
+		    ,c.CTGRY_DIV_LNE_YN
+		    ,c.CTGRY_DIV_LNE_CSS_CD
+		    ,c.DELETE_YN
+		    ,c.CTGRY_OUTPT_TP_CD
+		    ,c.OUTPT_SECT_CD
+		    ,cd.cd_nm as outpt_sect_cd_nm
+		    ,c.OUTPT_LINK_URL
+		    ,c.SORT_SEQ
+		    ,c.APL_MALL_ID
+		    ,c.DSP_BRND_ID
+		    ,c.EXPSR_LVL_CD
+		    ,c.RPRST_IMG_FILE_NM
+		    ,c.RPRST_IMG_FILE_URL
+		    ,c.RPRST_IMG_ALTRTV_CONT
+		    ,c.CTGRY_SECT_CD
+		    ,c.REGTR_ID
+		    ,c.REG_DT
+		    ,c.UDTER_ID
+		    ,c.UDT_DT
+		FROM    DSP_CTGRY c
+	    LEFT OUTER JOIN (SELECT cd, cd_nm from MV_SYS_CD WHERE upper_cd = 'OUTPT_SECT' and lang_cd = #{lang, jdbcType=VARCHAR}) cd
+		ON c.OUTPT_SECT_CD = cd.cd
+		<include refid="selectCtgryWhere"/>
+	<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 카테고리 검색 목록 총 Count -->
+	<select id="selectCtgryListByCtgryNoTotalCount" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO"  resultType="Integer">
+        SELECT  /* [category.xml][selectCtgryListTotalCount][카테고리 검색 목록 총 Count][Dian] */
+			 count(c.DSP_CTGRY_NO) as ctgryCount
+		FROM DSP_CTGRY c 
+	    <include refid="selectCtgryWhere"/>
+	</select>
+
+    <resultMap type="com.plgrim.ncp.biz.display.result.DspCtgryBoResult" id="subDspCtgryBoResultMap">
+        <result property="dspCtgry.dspCtgryNo" column="DSP_CTGRY_NO" />
+
+        <result property="saleGodCnt" column="saleGodCnt"/>
+        <result property="totalGodCnt" column="totalGodCnt"/>
+
+
+        <result property="dspCtgry.upperDspCtgryNo" column="UPPER_DSP_CTGRY_NO" />
+        <result property="dspCtgry.dspCtgryNm" column="DSP_CTGRY_NM" />
+        <result property="dspCtgry.ctgryTpCd" column="CTGRY_TP_CD" />
+        <result property="dspCtgry.godDspUnitCd" column="GOD_DSP_UNIT_CD" />
+        <result property="dspCtgry.ctgryDpthCd" column="CTGRY_DPTH_CD" />
+        <result property="dspCtgry.dspGodSortStdrCd" column="DSP_GOD_SORT_STDR_CD"/>
+        <result property="dspCtgry.leafCtgryYn" column="LEAF_CTGRY_YN" />
+        <result property="dspCtgry.dspYn" column="DSP_YN" />
+        <result property="dspCtgry.spcifyUrlDspYn" column="SPCIFY_URL_DSP_YN" />
+        <result property="dspCtgry.ctgryDivLneYn" column="CTGRY_DIV_LNE_YN"/>
+        <result property="dspCtgry.ctgryDivLneCssCd" column="CTGRY_DIV_LNE_CSS_CD"/>
+        <result property="dspCtgry.deleteYn" column="DELETE_YN"/>
+        <result property="dspCtgry.ctgryOutptTpCd" column="CTGRY_OUTPT_TP_CD" />
+        <result property="dspCtgry.outptSectCd" column="OUTPT_SECT_CD" />
+        <result property="dspCtgry.outptLinkUrl" column="OUTPT_LINK_URL" />
+        <result property="dspCtgry.sortSeq" column="SORT_SEQ" />
+        <result property="dspCtgry.aplMallId" column="APL_MALL_ID" />
+        <result property="dspCtgry.dspBrndId" column="DSP_BRND_ID" />
+        <result property="dspCtgry.expsrLvlCd" column="EXPSR_LVL_CD"/>
+        <result property="dspCtgry.rprstImgFileNm" column="RPRST_IMG_FILE_NM" />
+        <result property="dspCtgry.rprstImgFileUrl" column="RPRST_IMG_FILE_URL" />
+        <result property="dspCtgry.rprstImgAltrtvCont" column="RPRST_IMG_ALTRTV_CONT" />
+        <result property="dspCtgry.bcrnStyleClassId" column="BCRN_STYLE_CLASS_ID" />
+        <result property="dspRevCpst.pcMobileTmplatIndUseYn" column="PC_MOBILE_TMPLAT_IND_USE_YN" />
+        <result property="dspRevCpst.pcTmplatSn" column="PC_TMPLAT_SN"/>
+        <result property="dspRevCpst.mobileTmplatSn" column="MOBILE_TMPLAT_SN"/>
+        <result property="dspCtgry.regtrId" column="REGTR_ID" />
+        <result property="dspCtgry.regDt" column="REG_DT" />
+        <result property="dspCtgry.udterId" column="UDTER_ID" />
+        <result property="dspCtgry.udtDt" column="UDT_DT" />
+    </resultMap>
+
+    <!-- 상품이 존재하는 카테고리 조회 -->
+    <select id="selectGodExistDspCtgryBoList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO" resultMap="subDspCtgryBoResultMap">
+        SELECT 	/* [category.xml][selectGodExistDspCtgryFoList][selectGodExistDspCtgryBoList][주문욱] */
+        t1.dsp_ctgry_no,
+        m.saleGodCnt,
+        m.totalGodCnt
+
+        FROM 	dsp_ctgry t1
+
+        JOIN 	(
+        SELECT 	t2.dsp_ctgry_no,
+        SUM(CASE WHEN t3.god_aprv_sect_cd = 'APRV_COMPT'
+        AND t3.god_sale_sect_cd IN ('SALE_PROGRS', 'SLDOUT', 'SALE_PROGRS_PKUP')
+        AND 	t3.dsp_yn = 'Y'
+        AND 	t3.spcify_url_dsp_yn = 'N'
+        AND 	t2.dsp_yn = 'Y'
+        THEN 1
+        ELSE 0
+        END )  AS saleGodCnt,
+        COUNT(t3.god_no) AS totalGodCnt
+        FROM 	dsp_ctgry_cnnc_god t2
+        JOIN 	god t3
+        ON 	t3.god_no = t2.god_no
+        <if test="scLangCd != 'KOR' ">
+            /* 해외판매여부 체크 */
+            AND t3.OVSEA_DLV_PSB_YN = 'Y'
+            JOIN	GOD_LANGBY_GOD_NM glgn
+            ON 	glgn.GOD_NO = t3.GOD_NO
+            AND glgn.LANG_CD = #{scLangCd}
+            AND glgn.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+        </if>
+        JOIN 	DSP_GOD_PRC t6
+        ON 	(T2.GOD_NO = t6.GOD_NO
+        AND t6.MALL_ID = 'DXM'
+        AND t6.LANG_CD = #{scLangCd, jdbcType=VARCHAR}
+        AND t6.PRC_SECT_CD = 'GNRL')
+        WHERE 	1 = 1
+        GROUP BY t2.dsp_ctgry_no
+        ) m
+        ON 		t1.dsp_ctgry_no = m.dsp_ctgry_no
+        WHERE 	t1.spcify_url_dsp_yn = 'N'
+        AND 	t1.apl_mall_id = 'DXM'
+        AND 	t1.delete_yn = 'N'
+        AND 	t1.dsp_yn = 'Y'
+
+    </select>
+
+	<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- 2016/07 (UX/UI) -->
+	<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<select id="selectBrndCtgryTree" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO" resultMap="dspCtgryResult">
+	 	SELECT  /* [category.xml][selectBrndCtgryTree][전시 브랜드 카테고리 트리 조회][Dian] */  
+		    BB.*
+		    ,(
+		     	SELECT
+				     (case when count(1) > 0 then 'Y' else 'N' end) as abTestSelectYn
+				FROM DSP_REV_CPST DRC
+				JOIN DSP_AB_TEST_REV DATR ON (DRC.REV_SN = DATR.REV_SN AND DRC.REV_CPST_TURN = DATR.REV_CPST_TURN)
+				JOIN DSP_AB_TEST DAT ON (DATR.AB_TEST_SN = DAT.AB_TEST_SN)
+				WHERE 1=1
+				AND   DRC.DSP_BRND_CTGRY_NO = BB.DSP_CTGRY_NO
+				AND   DRC.DSP_BRND_ID = #{scDspBrndId, jdbcType=VARCHAR}
+		        AND   DAT.PROGRS_PSB_YN <![CDATA[<>]]> 'N'
+		     ) AS AB_YN
+		FROM (
+		    select 
+		         a.dsp_ctgry_no
+		        ,a.UPPER_DSP_CTGRY_NO
+		        ,a.DSP_CTGRY_NM
+		        ,a.CTGRY_TP_CD
+		        ,a.GOD_DSP_UNIT_CD
+		        ,a.CTGRY_DPTH_CD
+		        ,a.DSP_GOD_SORT_STDR_CD
+		        ,a.LEAF_CTGRY_YN
+		        ,a.DSP_YN
+		        ,a.SPCIFY_URL_DSP_YN
+		        ,a.CTGRY_DIV_LNE_YN
+		        ,a.CTGRY_DIV_LNE_CSS_CD
+		        ,a.DELETE_YN
+		        ,a.CTGRY_OUTPT_TP_CD
+		        ,a.OUTPT_SECT_CD
+		        ,a.OUTPT_LINK_URL
+		        ,a.SORT_SEQ
+		        ,a.APL_MALL_ID
+		        ,a.DSP_BRND_ID
+		        ,a.EXPSR_LVL_CD
+		        ,a.RPRST_IMG_FILE_NM
+		        ,a.RPRST_IMG_FILE_URL
+		        ,a.RPRST_IMG_ALTRTV_CONT
+		        ,a.BCRN_STYLE_CLASS_ID
+		        ,drc.PC_MOBILE_TMPLAT_IND_USE_YN
+		        ,drc.PC_TMPLAT_SN
+		        ,drc.MOBILE_TMPLAT_SN
+		        ,drc.REV_SN
+		        ,drc.REV_CPST_TURN
+		        ,a.CTGRY_SECT_CD
+		        ,a.REGTR_ID
+		        ,a.REG_DT
+		        ,a.UDTER_ID
+		        ,a.UDT_DT
+		        ,bctg.DSP_CTGRY_NO  AS  BR_DSP_CTGRY_NO
+	            ,bctg.DSP_BRND_ID  AS  BR_DSP_BRND_ID
+	            ,bctg.DSP_CTGRY_NM  AS  BR_DSP_CTGRY_NM
+	            ,bctg.GOD_DSP_UNIT_CD  AS  BR_GOD_DSP_UNIT_CD
+	            ,bctg.DSP_GOD_SORT_STDR_CD  AS  BR_DSP_GOD_SORT_STDR_CD
+	            ,bctg.DSP_YN  AS  BR_DSP_YN
+	            ,bctg.SPCIFY_URL_DSP_YN  AS  BR_SPCIFY_URL_DSP_YN
+	            ,bctg.CTGRY_OUTPT_TP_CD  AS  BR_CTGRY_OUTPT_TP_CD
+	            ,bctg.OUTPT_SECT_CD  AS  BR_OUTPT_SECT_CD
+	            ,bctg.OUTPT_LINK_URL  AS  BR_OUTPT_LINK_URL
+	            ,bctg.EXPSR_LVL_CD  AS  BR_EXPSR_LVL_CD
+	            ,bctg.RPRST_IMG_FILE_NM  AS  BR_RPRST_IMG_FILE_NM
+	            ,bctg.RPRST_IMG_FILE_URL  AS  BR_RPRST_IMG_FILE_URL
+	            ,bctg.RPRST_IMG_ALTRTV_CONT  AS  BR_RPRST_IMG_ALTRTV_CONT
+	            ,bctg.BCRN_STYLE_CLASS_ID  AS  BR_BCRN_STYLE_CLASS_ID
+	            ,bctg.SORT_SEQ  AS  BR_SORT_SEQ
+	            ,bdrc.PC_MOBILE_TMPLAT_IND_USE_YN  AS  BR_PC_MOBILE_TMPLAT_IND_USE_YN
+	            ,bdrc.PC_TMPLAT_SN  AS  BR_PC_TMPLAT_SN
+	            ,bdrc.MOBILE_TMPLAT_SN  AS  BR_MOBILE_TMPLAT_SN
+	            ,bdrc.REV_SN  AS  BR_REV_SN
+		        ,bdrc.REV_CPST_TURN  AS  BR_REV_CPST_TURN
+	            ,bctg.REGTR_ID  AS  BR_REGTR_ID
+	            ,bctg.REG_DT  AS  BR_REG_DT
+	            ,bctg.UDTER_ID  AS  BR_UDTER_ID
+	            ,bctg.UDT_DT  AS  BR_UDT_DT
+		    from dsp_ctgry a
+		    LEFT OUTER JOIN dsp_brnd_ctgry bctg
+        	ON  (a.dsp_ctgry_no = bctg.dsp_ctgry_no and bctg.dsp_brnd_id = #{scDspBrndId, jdbcType=VARCHAR})
+		    LEFT OUTER JOIN dsp_rev_cpst drc
+            ON  (a.dsp_ctgry_no = drc.dsp_ctgry_no AND drc.rev_sn = #{scRevSn, jdbcType=NUMERIC} )
+		    LEFT OUTER JOIN dsp_rev_cpst bdrc
+            ON  (bctg.dsp_ctgry_no = bdrc.dsp_brnd_ctgry_no and bdrc.dsp_brnd_id = #{scDspBrndId, jdbcType=VARCHAR} AND bdrc.rev_sn = #{scRevSn, jdbcType=NUMERIC})
+		    where 1=1
+		    AND a.APL_MALL_ID = 'DXM'
+		    AND a.DELETE_YN = 'N'	
+		    AND a.CTGRY_SECT_CD IN ('NEW_GOD_CTGRY','BST_CTGRY','ON_SALE_CTGRY')
+		    UNION ALL
+		    select 
+		         a.dsp_ctgry_no
+		        ,a.UPPER_DSP_CTGRY_NO
+		        ,a.DSP_CTGRY_NM
+		        ,a.CTGRY_TP_CD
+		        ,a.GOD_DSP_UNIT_CD
+		        ,a.CTGRY_DPTH_CD
+		        ,a.DSP_GOD_SORT_STDR_CD
+		        ,a.LEAF_CTGRY_YN
+		        ,a.DSP_YN
+		        ,a.SPCIFY_URL_DSP_YN
+		        ,a.CTGRY_DIV_LNE_YN
+		        ,a.CTGRY_DIV_LNE_CSS_CD
+		        ,a.DELETE_YN
+		        ,a.CTGRY_OUTPT_TP_CD
+		        ,a.OUTPT_SECT_CD
+		        ,a.OUTPT_LINK_URL
+		        ,a.SORT_SEQ
+		        ,a.APL_MALL_ID
+		        ,a.DSP_BRND_ID
+		        ,a.EXPSR_LVL_CD
+		        ,a.RPRST_IMG_FILE_NM
+		        ,a.RPRST_IMG_FILE_URL
+		        ,a.RPRST_IMG_ALTRTV_CONT
+		        ,a.BCRN_STYLE_CLASS_ID
+		        ,drc.PC_MOBILE_TMPLAT_IND_USE_YN
+		        ,drc.PC_TMPLAT_SN
+		        ,drc.MOBILE_TMPLAT_SN
+		        ,drc.REV_SN
+		        ,drc.REV_CPST_TURN
+		        ,a.CTGRY_SECT_CD
+		        ,a.REGTR_ID
+		        ,a.REG_DT
+		        ,a.UDTER_ID
+		        ,a.UDT_DT
+		        ,bctg.DSP_CTGRY_NO  AS  BR_DSP_CTGRY_NO
+	            ,bctg.DSP_BRND_ID  AS  BR_DSP_BRND_ID
+	            ,bctg.DSP_CTGRY_NM  AS  BR_DSP_CTGRY_NM
+	            ,bctg.GOD_DSP_UNIT_CD  AS  BR_GOD_DSP_UNIT_CD
+	            ,bctg.DSP_GOD_SORT_STDR_CD  AS  BR_DSP_GOD_SORT_STDR_CD
+	            ,bctg.DSP_YN  AS  BR_DSP_YN
+	            ,bctg.SPCIFY_URL_DSP_YN  AS  BR_SPCIFY_URL_DSP_YN
+	            ,bctg.CTGRY_OUTPT_TP_CD  AS  BR_CTGRY_OUTPT_TP_CD
+	            ,bctg.OUTPT_SECT_CD  AS  BR_OUTPT_SECT_CD
+	            ,bctg.OUTPT_LINK_URL  AS  BR_OUTPT_LINK_URL
+	            ,bctg.EXPSR_LVL_CD  AS  BR_EXPSR_LVL_CD
+	            ,bctg.RPRST_IMG_FILE_NM  AS  BR_RPRST_IMG_FILE_NM
+	            ,bctg.RPRST_IMG_FILE_URL  AS  BR_RPRST_IMG_FILE_URL
+	            ,bctg.RPRST_IMG_ALTRTV_CONT  AS  BR_RPRST_IMG_ALTRTV_CONT
+	            ,bctg.BCRN_STYLE_CLASS_ID  AS  BR_BCRN_STYLE_CLASS_ID
+	            ,bctg.SORT_SEQ  AS  BR_SORT_SEQ
+	            ,bdrc.PC_MOBILE_TMPLAT_IND_USE_YN  AS  BR_PC_MOBILE_TMPLAT_IND_USE_YN
+	            ,bdrc.PC_TMPLAT_SN  AS  BR_PC_TMPLAT_SN
+	            ,bdrc.MOBILE_TMPLAT_SN  AS  BR_MOBILE_TMPLAT_SN
+	            ,bdrc.REV_SN  AS  BR_REV_SN
+		        ,bdrc.REV_CPST_TURN  AS  BR_REV_CPST_TURN
+	            ,bctg.REGTR_ID  AS  BR_REGTR_ID
+	            ,bctg.REG_DT  AS  BR_REG_DT
+	            ,bctg.UDTER_ID  AS  BR_UDTER_ID
+	            ,bctg.UDT_DT  AS  BR_UDT_DT
+		    from dsp_ctgry a
+		    LEFT OUTER JOIN dsp_brnd_ctgry bctg
+        	ON  (a.dsp_ctgry_no = bctg.dsp_ctgry_no and bctg.dsp_brnd_id = #{scDspBrndId, jdbcType=VARCHAR})
+		    LEFT OUTER JOIN dsp_rev_cpst drc
+            ON  (a.dsp_ctgry_no = drc.dsp_ctgry_no AND drc.rev_sn = #{scRevSn, jdbcType=NUMERIC} )
+		    LEFT OUTER JOIN dsp_rev_cpst bdrc
+            ON  (bctg.dsp_ctgry_no = bdrc.dsp_brnd_ctgry_no and bdrc.dsp_brnd_id = #{scDspBrndId, jdbcType=VARCHAR} AND bdrc.rev_sn = #{scRevSn, jdbcType=NUMERIC})
+		    where 1=1
+		    AND a.dsp_ctgry_no in (
+		        select ctg.dsp_ctgry_no
+		        from dsp_ctgry ctg
+		        connect by prior ctg.upper_dsp_ctgry_no = ctg.dsp_ctgry_no
+                start with ctg.dsp_ctgry_no in (
+		        	SELECT t2.dsp_ctgry_no 
+	                FROM dsp_ctgry_cnnc_god t2
+                    JOIN GOD  t3 ON t3.god_no = t2.god_no 
+                    WHERE 1 = 1 
+					<choose>
+		        		<when test="scDspBrndId == 'MCBR' or scDspBrndId == 'BPBR'">
+		        		and t3.BRND_GRP_ID in (
+		                    SELECT BRND_ID
+							FROM (
+								SELECT sb.BRND_ID,
+								sb.UPPER_BRND_ID
+								FROM SYS_BRND sb
+								CONNECT BY PRIOR sb.BRND_ID = sb.UPPER_BRND_ID
+								AND sb.USE_YN = 'Y'
+								AND sb.BRND_GRP_YN = 'Y'
+								START WITH sb.BRND_ID = #{scDspBrndId, jdbcType=VARCHAR}
+							)
+		 				)
+		        		</when>
+		        		<otherwise>
+		        		and t3.BRND_GRP_ID = #{scDspBrndId, jdbcType=VARCHAR}
+		        		</otherwise>
+		        	</choose>
+		        )
+		    )
+			AND a.CTGRY_SECT_CD NOT IN ('NEW_GOD_CTGRY','BST_CTGRY','ON_SALE_CTGRY')
+			AND a.APL_MALL_ID = 'DXM'
+		    AND a.DELETE_YN = 'N'
+		) BB    
+		CONNECT BY PRIOR BB.DSP_CTGRY_NO = BB.UPPER_DSP_CTGRY_NO
+		START WITH BB.DSP_CTGRY_NO = #{scDspCtgryNo, jdbcType=VARCHAR}
+		ORDER SIBLINGS BY CASE WHEN BB.BR_SORT_SEQ IS NOT NULL THEN BB.BR_SORT_SEQ ELSE  BB.SORT_SEQ  END   
+	</select>
+
+
+	<select id="selectDspBrndCtgryCount" parameterType="dspBrndCtgry"  resultType="Integer">
+        SELECT  /* [category.xml][selectCtgryListTotalCount][전시 브랜드카테고리 Count][Dian] */
+			 count(1) as ctgryCount
+		FROM DSP_BRND_CTGRY ctg
+		WHERE 1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+        AND		DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR} 
+	</select>
+	
+	<update id="updateDspBrndCtgryInfo" parameterType="dspBrndCtgry">
+        UPDATE /* [category.xml][updateDspBrndCtgryInfo][전시 브랜드 카테고리 수정][Dian] */ 
+        DSP_BRND_CTGRY SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+            ,DSP_CTGRY_NM = #{dspCtgryNm,jdbcType=VARCHAR}               
+            ,DSP_GOD_SORT_STDR_CD = #{dspGodSortStdrCd,jdbcType=VARCHAR}
+            ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+            ,SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+            ,CTGRY_OUTPT_TP_CD = #{ctgryOutptTpCd,jdbcType=VARCHAR}
+            ,OUTPT_SECT_CD = #{outptSectCd,jdbcType=VARCHAR}
+            ,OUTPT_LINK_URL = #{outptLinkUrl,jdbcType=VARCHAR}
+            ,PC_LIST_EXPSR_CNT_CD = #{pcListExpsrCntCd, jdbcType=VARCHAR}
+            ,MOBILE_LIST_EXPSR_CNT_CD = #{mobileListExpsrCntCd, jdbcType=VARCHAR}
+            ,LIST_EXPSR_IMG_TURN = #{listExpsrImgTurn, jdbcType=VARCHAR}
+            ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+        AND		DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR} 
+    </update>
+    
+    <!-- 카테고리의 전시여부 조회 -->
+	<select id="selectDspYnBrndCtgry" parameterType="dspBrndCtgry" resultType="String">
+		SELECT /*[category.xml][selectDspYnBrndCtgry][전시 브랜드 카테고리의 전시여부 조회][Dian]*/ 
+			dsp_yn
+		FROM    DSP_BRND_CTGRY
+		WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+        AND		DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR} 
+	</select>
+	
+    <update id="updateDspYnBrndCtgry" parameterType="dspBrndCtgry">
+        UPDATE /* [category.xml][updateDspYnBrndCtgry][전시 브랜드 카테고리 전시여부 수정][Dian] */ 
+        DSP_BRND_CTGRY SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+            ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+        AND		DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR} 
+    </update>
+    
+    <update id="updateDspBrndCtgryForGrid" parameterType="dspBrndCtgry">
+        UPDATE /* [category.xml][updateDspBrndCtgryForGrid][전시 브랜드 카테고리 수정][Dian] */ 
+        DSP_BRND_CTGRY SET
+        	 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+            ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+            ,SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+            ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+        AND		DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR} 
+    </update>
+    
+    <!-- 카테고리 연결 상품 전시 순서 업로드 - 브랜드카테고리 -->
+	<update id="updateBrndCtgrySortSeqGod" parameterType="dspCtgryCnncGod">
+        UPDATE  /*[category.xml][updateSortSeqGod][브랜드카테고리 연결 상품 전시 순서 업로드][Dian]*/
+        DSP_CTGRY_CNNC_GOD SET
+        		 UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        		,BRND_CTGRY_SORT_SEQ = #{brndCtgrySortSeq,jdbcType=NUMERIC}
+        WHERE   1 = 1
+        AND     DSP_CTGRY_NO like #{dspCtgryNo,jdbcType=VARCHAR}||'%'
+        AND 	GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="selectBrndGrpIdCnncGod" parameterType="String" resultType="String">
+		SELECT /*[category.xml][selectBrndGrpIdCnncGod][브랜드카테고리 연결상품 전시브랜드ID 확인][Dian]*/ 
+			BRND_GRP_ID
+		FROM    GOD
+		WHERE   1 = 1
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectDupCnncGodList" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO"  resultType="String">
+        SELECT /* [category.xml][selectDupCnncGodList][상품이동시 중복상품 조회][Dian] */
+			  god_no 
+		FROM    DSP_CTGRY_CNNC_GOD g
+		WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{desCtgryNo,jdbcType=VARCHAR}
+        <if test='moveGodNo != null'> 
+       		<foreach collection="moveGodNo" item="item" open="AND god_no IN (" close=")" separator=",">#{item}</foreach>
+        </if>
+	</select>
+	
+	<!-- 카테고리 연결 상품 이동후 삭제 -->
+	<update id="deleteMoveCtgryCnncGod" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO">
+        DELETE  /*[category.xml][deleteMoveCtgryCnncGod][카테고리 연결 상품 이동후 삭제][Dian]*/
+        FROM DSP_CTGRY_CNNC_GOD g
+        WHERE   1 = 1
+        <if test='moveGodNo != null'> 
+       		<foreach collection="moveGodNo" item="item" open="AND g.god_no IN (" close=")" separator=",">#{item}</foreach>
+        </if>
+        AND g.dsp_ctgry_no != #{desCtgryNo,jdbcType=VARCHAR}
+        <if test='dupGodNo != null'> 
+       		<foreach collection="dupGodNo" item="dupitem" open="AND g.god_no NOT IN (" close=")" separator=",">#{dupitem}</foreach>
+        </if>
+    </update>
+    
+    <select id="selectCtgrySectCd" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO"  resultType="String">
+        SELECT /* [category.xml][selectDupCnncGodList][카테고리 유형 조회][Dian] */
+			  ctgry_sect_cd
+		FROM    DSP_CTGRY c
+		WHERE   1 = 1
+        AND     DSP_CTGRY_NO = #{desCtgryNo,jdbcType=VARCHAR}
+	</select>
+	
+    <update id="updateGodFreeRepairPsbYn" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO">
+        UPDATE  /*[category.xml][updateGodFreeRepairPsbYn][아웃렛 카테고리로 상품 이동 시 해당 상품의 무료수선여부를 'N'로 update][Dian]*/
+        GOD g SET 
+        	 UDTER_ID = #{dspCtgryCnncGod.udterId,jdbcType=VARCHAR}
+            ,UDT_DT = SYSDATE
+            ,FREE_REPAIR_PSB_YN = 'N'
+            ,SVC_OFFER_YN = CASE WHEN G.BRND_GRP_ID = 'WMBKF' THEN G.SVC_OFFER_YN ELSE 'N' END
+            ,SHOP_PKUP_PSB_YN = 'N'
+        WHERE   1 = 1
+        <if test='moveGodNo != null'> 
+       		<foreach collection="moveGodNo" item="item" open="AND g.god_no IN (" close=")" separator=",">#{item}</foreach>
+        </if>
+        <if test='dupGodNo != null'> 
+       		<foreach collection="dupGodNo" item="dupitem" open="AND g.god_no NOT IN (" close=")" separator=",">#{dupitem}</foreach>
+        </if>
+    </update>
+    
+    <update id="updateGodPntAccml" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO">
+	   /* [goods.xml]["updateGodPntAccml"][아울렛 일반카테고리 이동 상품 브랜드 기본 멤버쉽 정보 업데이트 ][Carter] */
+	   UPDATE 
+	   	   (
+	   	   SELECT G.PNT_ACCML_YN AS TARGET_YN,
+                  G.PNT_ACCML_RT AS TARGET_RT,
+                  SB.PNT_ACCML_YN AS SRC_YN,
+                  SB.PNT_ACCML_RT AS SRC_RT
+           FROM GOD G INNER JOIN SYS_BRND SB
+           ON G.BRND_ID = SB.BRND_ID
+           WHERE 1=1 AND
+		    <if test='moveGodNo != null'> 
+	       		<foreach collection="moveGodNo" item="item" open="G.god_no IN (" close=")" separator=",">#{item}</foreach>
+	        </if>
+	        <if test='dupGodNo != null'> 
+	       		<foreach collection="dupGodNo" item="dupitem" open="AND g.god_no NOT IN (" close=")" separator=",">#{dupitem}</foreach>
+	        </if>
+           )
+		  SET 
+		     TARGET_YN = SRC_YN
+            ,TARGET_RT = SRC_RT
+	</update>
+	
+    <update id="updateGodCtgryCopy" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO">
+        MERGE INTO GOD G
+        /*[category.xml][updateGodCtgryCopy][아울렛 카테고리로 상품 복사 시 무료수선 무료배송 멤버쉽적용여부][Carter]*/
+        USING 
+                (  
+                SELECT  GOD_NO
+                FROM DSP_CTGRY_CNNC_GOD CD INNER JOIN 
+                          DSP_CTGRY DC  ON CD.DSP_CTGRY_NO = DC.DSP_CTGRY_NO
+                WHERE 1=1 AND
+                	<if test='cpDspCtgryNo != null'> 
+		       			<foreach collection="cpDspCtgryNo" item="item" open="  CD.DSP_CTGRY_NO IN (" close=")" separator=",">#{item}</foreach>
+		            </if>
+                    AND DC.LEAF_CTGRY_YN = 'Y'
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM DSP_CTGRY_CNNC_GOD
+                        WHERE DSP_CTGRY_NO = #{dspCtgryCnncGod.dspCtgryNo,jdbcType=VARCHAR}
+                            AND GOD_NO = CD.GOD_NO
+                    )
+                GROUP BY GOD_NO
+                ) CTG ON (G.GOD_NO = CTG.GOD_NO)
+         WHEN MATCHED THEN  
+             UPDATE SET
+                 UDTER_ID = #{dspCtgryCnncGod.udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                ,FREE_REPAIR_PSB_YN = 'N'
+                ,SVC_OFFER_YN = CASE WHEN G.BRND_GRP_ID = 'WMBKF' THEN G.SVC_OFFER_YN ELSE 'N' END
+                ,SHOP_PKUP_PSB_YN = 'N'
+                ,PNT_ACCML_YN = 'N'
+                ,PNT_ACCML_RT = '0'                
+    </update>
+        
+    <!-- 카테고리 연결 상품 이동 -->
+    <insert id="moveCtgryCnncGod" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO">
+    	insert /* [category.xml][moveCtgryCnncGod][카테고리 연결 상품 이동][Dian]*/
+    	into dsp_ctgry_cnnc_god (
+    		 DSP_CTGRY_NO
+			,GOD_NO
+			,RPRST_GOD_YN
+			,DSP_YN
+			,SORT_SEQ
+			,BRND_CTGRY_DSP_YN
+			,BRND_CTGRY_SORT_SEQ 
+			,REGTR_ID
+			,REG_DT
+			,UDTER_ID
+			,UDT_DT
+		)
+		select 
+			 #{desCtgryNo,jdbcType=VARCHAR} as dsp_ctgry_no
+		    , g.god_no
+		    ,'N' rprst_god_yn
+		    ,g.dsp_yn
+		    , 999 AS SORT_SEQ
+		    ,'N' brnd_ctgry_dsp_yn
+		    , 999 AS brnd_ctgry_sort_seq
+		    ,#{dspCtgryCnncGod.regtrId,jdbcType=VARCHAR} as regtr_id
+		    ,sysdate
+		    ,#{dspCtgryCnncGod.udterId,jdbcType=VARCHAR} as udter_id
+		    ,sysdate
+		from dsp_ctgry_cnnc_god g
+		WHERE 1=1
+		AND g.dsp_ctgry_no = #{srcCtgryNo,jdbcType=VARCHAR}
+		<if test='moveGodNo != null'> 
+       		<foreach collection="moveGodNo" item="item" open="AND g.god_no IN (" close=")" separator=",">#{item}</foreach>
+        </if>
+		AND NOT EXISTS (
+		    select 1 
+		    from dsp_ctgry_cnnc_god
+		    where dsp_ctgry_no =  #{desCtgryNo,jdbcType=VARCHAR}
+		    and god_no = g.god_no
+		)
+    </insert>
+    
+    <select id="selectOutletCtgGod" parameterType="String" resultType="Integer">
+		SELECT /*[category.xml][selectOutletCtgGod][OUTLET카테고리 상품인지 확인 - 상품등록 시 사용][Dian]*/ 
+			count(god_no)
+		FROM    DSP_CTGRY_CNNC_GOD cnnc
+		WHERE   1 = 1
+        AND     cnnc.DSP_CTGRY_NO like 
+        		( select dsp_ctgry_no 
+        		  from dsp_ctgry 
+        		  where CTGRY_DPTH_CD = 1 
+        		  and CTGRY_SECT_CD = 'OTLT_CTGRY' 
+        		  and dsp_yn = 'Y' 
+        		  and delete_yn = 'N' 
+        		and rownum = 1)||'%'
+        AND     cnnc.GOD_NO = #{godNo,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectOutletCtgForCopy" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryCnncGodBoDTO" resultType="Integer">
+		SELECT /*[category.xml][selectOutletCtgGod][OUTLET카테고리인지 확인 - 상품복사 시 사용][Dian]*/ 
+			count(1) 
+		from dsp_ctgry
+		where dsp_ctgry_no
+		in (
+			select distinct substr(dsp_ctgry_no,1,6)
+			from dsp_ctgry
+			where 1=1 
+			<if test='cpDspCtgryNo != null'> 
+	   			<foreach collection="cpDspCtgryNo" item="item" open="AND dsp_ctgry_no IN (" close=")" separator=",">#{item}</foreach>
+	        </if> 
+		)
+		and CTGRY_DPTH_CD = 1 
+		and CTGRY_SECT_CD = 'OTLT_CTGRY' 
+		and dsp_yn = 'Y' 
+		and delete_yn = 'N'
+	</select>
+	
+	<update id="updateCtgSortSeq" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO">
+		UPDATE /*[category.xml][updateCtgSortSeq][카테고리 전시순서 변경][Dian]*/
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		DSP_CTGRY 
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">
+		DSP_BRND_CTGRY
+		</if>
+		SET 
+			 SORT_SEQ = #{dspCtgry.sortSeq,jdbcType=NUMERIC}
+			,UDTER_ID = #{loginId,jdbcType=VARCHAR}
+			,UDT_DT = sysdate
+		WHERE 1=1
+			AND DSP_CTGRY_NO = #{dspCtgry.dspCtgryNo,jdbcType=VARCHAR}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspBrndId)">	
+			AND DSP_BRND_ID = #{scDspBrndId,jdbcType=VARCHAR}
+		</if>
+	</update>
+	
+
+    <select id="selectBrandParam" parameterType="String" resultType="String">
+        SELECT
+        ctg.DSP_CTGRY_NO
+        FROM DSP_CTGRY ctg
+        WHERE   1 = 1
+        AND     ctg.DSP_BRND_ID =  #{scDspBrndId, jdbcType=VARCHAR}
+        AND		ctg.DELETE_YN = 'N'
+        AND     ctg.DSP_YN = 'Y'
+    </select>
+
+    <select id="selectBrandId" parameterType="String" resultType="String">
+        SELECT
+               ctg.DSP_BRND_ID
+          FROM DSP_CTGRY ctg
+         WHERE 1 = 1
+           AND ctg.DSP_CTGRY_NO = #{scDspCtgryNo, jdbcType=VARCHAR}
+           AND ctg.DELETE_YN = 'N'
+           AND ctg.DSP_YN = 'Y'
+    </select>
+    
+    <select id="selectBrndCtgryTreePopup" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO" resultMap="dspCtgryResult">
+    	/* [category.xml][selectBrndCtgryTreePopup][전시 브랜드 하위 카테고리 트리 조회][Dian] */  
+    	<include refid="selectBrndCtgry" />
+    </select>
+    
+    <sql id="selectBrndCtgry" >
+		SELECT  
+		    BB.*
+		    ,SUBSTR(SYS_CONNECT_BY_PATH(BB.DSP_CTGRY_NM, '> '), 2) as DSP_CTGRY_PATH
+		FROM (
+		    select 
+		         a.dsp_ctgry_no
+		        ,a.UPPER_DSP_CTGRY_NO
+		        ,NVL(bctg.DSP_CTGRY_NM, a.DSP_CTGRY_NM) as DSP_CTGRY_NM
+		        ,a.CTGRY_TP_CD
+		        ,a.GOD_DSP_UNIT_CD
+		        ,a.CTGRY_DPTH_CD
+		        ,a.DSP_GOD_SORT_STDR_CD
+		        ,a.LEAF_CTGRY_YN
+		        ,NVL(bctg.DSP_YN, a.DSP_YN) AS DSP_YN
+		        ,NVL(bctg.SPCIFY_URL_DSP_YN, a.SPCIFY_URL_DSP_YN) AS SPCIFY_URL_DSP_YN
+		        ,a.CTGRY_DIV_LNE_YN
+		        ,a.CTGRY_DIV_LNE_CSS_CD
+		        ,a.DELETE_YN
+		        ,a.CTGRY_OUTPT_TP_CD
+		        ,a.OUTPT_SECT_CD
+		        ,a.OUTPT_LINK_URL
+		        ,NVL(bctg.SORT_SEQ, a.SORT_SEQ) AS SORT_SEQ
+		        ,a.APL_MALL_ID
+		        ,a.DSP_BRND_ID
+		        ,a.EXPSR_LVL_CD
+		        ,a.RPRST_IMG_FILE_NM
+		        ,a.RPRST_IMG_FILE_URL
+		        ,a.RPRST_IMG_ALTRTV_CONT
+		        ,a.BCRN_STYLE_CLASS_ID
+		        ,a.CTGRY_SECT_CD
+		        ,a.REGTR_ID
+		        ,a.REG_DT
+		        ,a.UDTER_ID
+		        ,a.UDT_DT
+		        ,bctg.DSP_CTGRY_NO  AS  BR_DSP_CTGRY_NO
+	            ,bctg.DSP_BRND_ID  AS  BR_DSP_BRND_ID
+	            ,bctg.DSP_CTGRY_NM  AS  BR_DSP_CTGRY_NM
+	            ,bctg.DSP_YN  AS  BR_DSP_YN
+	            ,bctg.SPCIFY_URL_DSP_YN  AS  BR_SPCIFY_URL_DSP_YN
+	            ,bctg.SORT_SEQ  AS  BR_SORT_SEQ
+		    from dsp_ctgry a
+		    LEFT OUTER JOIN 
+        	(
+                SELECT 
+					 DSP_CTGRY_NO
+		            ,DSP_BRND_ID
+		            ,DSP_CTGRY_NM
+		            ,DSP_YN
+		            ,SPCIFY_URL_DSP_YN
+		            ,SORT_SEQ
+                FROM DSP_BRND_CTGRY
+                WHERE 1=1
+                <if test="endpBrndId != 'BEK'">and dsp_brnd_id = (SELECT BRND_ID FROM SYS_BRND WHERE ENDP_BRND_ID = #{endpBrndId, jdbcType=VARCHAR} AND USE_YN = 'Y' AND BRND_GRP_YN = 'Y' and rownum = 1)</if>
+        		<if test="endpBrndId == 'BEK'">and dsp_brnd_id = 'MCBR'</if> 
+            ) bctg
+            ON  (a.dsp_ctgry_no = bctg.dsp_ctgry_no)
+		    where 1=1
+		    AND a.APL_MALL_ID = #{scAplMallId, jdbcType=VARCHAR}	
+		    AND a.DELETE_YN = 'N'	
+		    AND a.dsp_ctgry_no in (
+		        select ctg.dsp_ctgry_no
+		        from dsp_ctgry ctg
+		        connect by prior ctg.upper_dsp_ctgry_no = ctg.dsp_ctgry_no
+                start with ctg.dsp_ctgry_no in (
+                	
+                	SELECT DC.DSP_CTGRY_NO
+	                FROM DSP_CTGRY DC
+	                JOIN DSP_CTGRY_CNNC_GOD DCCG
+	                  ON DC.DSP_CTGRY_NO = DCCG.DSP_CTGRY_NO
+	                JOIN DSP_GOD_PRC DGP
+	                  ON DCCG.GOD_NO = DGP.GOD_NO AND DGP.MALL_ID = #{scAplMallId, jdbcType=VARCHAR}
+	               WHERE 1=1
+	                 AND DC.DSP_CTGRY_NO LIKE #{scDspCtgryNo, jdbcType=VARCHAR}||'%'
+	                 AND DCCG.BRND_CTGRY_DSP_YN = 'Y'
+	                 AND DC.APL_MALL_ID = #{scAplMallId, jdbcType=VARCHAR}
+	                 AND DC.DELETE_YN = 'N' 
+	                 AND DC.LEAF_CTGRY_YN = 'Y'
+	                 AND EXISTS (SELECT /* + index(g pk_god)*/ 1 
+	                              FROM GOD G 
+	                             WHERE G.GOD_NO = DCCG.GOD_NO 
+	                               AND G.GOD_NO = DGP.GOD_NO 
+	                               AND G.GOD_SALE_SECT_CD IN ('SALE_PROGRS', 'SLDOUT', 'SALE_PROGRS_PKUP')
+	                               AND G.GOD_APRV_SECT_CD = 'APRV_COMPT'
+	                               AND G.ENDP_BRND_ID = #{endpBrndId, jdbcType=VARCHAR}
+	                               AND G.DSP_YN = 'Y')
+		        )
+		    )
+		) BB    
+		CONNECT BY PRIOR BB.DSP_CTGRY_NO = BB.UPPER_DSP_CTGRY_NO
+		START WITH BB.DSP_CTGRY_NO = #{scDspCtgryNo, jdbcType=VARCHAR}
+		ORDER SIBLINGS BY CASE WHEN BB.BR_SORT_SEQ IS NOT NULL THEN BB.BR_SORT_SEQ ELSE  BB.SORT_SEQ  END         
+	</sql>
+	
+	<sql id="selectBrndCtgryWhere"> 
+		WHERE   1 = 1
+		AND		c.DELETE_YN = 'N'	
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scCtgryDivLneYn)">
+		AND		c.CTGRY_DIV_LNE_YN = #{scCtgryDivLneYn, jdbcType=VARCHAR}	
+		</if>
+		<choose>
+		<when test="arDspCtgryNo != null">
+		<foreach collection="arDspCtgryNo" item="item" open="AND c.dsp_ctgry_no IN (" close=")" separator=",">#{item}</foreach>
+		</when>
+		<otherwise>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspYn)">
+		AND		c.DSP_YN = #{scDspYn, jdbcType=VARCHAR}	
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scSpcifyUrlDspYn)">
+		AND		c.SPCIFY_URL_DSP_YN = #{scSpcifyUrlDspYn, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scDspCtgryNm)">
+		AND		c.DSP_CTGRY_NM like '%'||#{scDspCtgryNm, jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(scAplMallId)">
+		AND		c.APL_MALL_ID = #{scAplMallId, jdbcType=VARCHAR}	
+		</if>
+		</otherwise>
+		</choose>
+	</sql>
+	
+	<select id="selectBrndCtgryKwdPopup" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO" resultMap="dspCtgryResult">
+	/* [category.xml][selectBrndCtgryKwdPopup][브랜드카테고리 검색 목록][Dian] */
+	<include refid="com.plgrim.ncp.base.beginPage"/>
+	SELECT c.*,
+		cd.cd_nm AS outpt_sect_cd_nm
+	FROM (
+	<include refid="selectBrndCtgry" />
+	) c
+	LEFT OUTER JOIN (SELECT cd, cd_nm from MV_SYS_CD WHERE upper_cd = 'OUTPT_SECT' and lang_cd = #{lang, jdbcType=VARCHAR}) cd
+		ON c.OUTPT_SECT_CD = cd.cd
+	<include refid="selectBrndCtgryWhere"/>
+	<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 카테고리 검색 목록 총 Count -->
+	<select id="selectBrndCtgryKwdPopupTotalCount" parameterType="com.plgrim.ncp.biz.display.data.DspCtgryBoDTO"  resultType="Integer">
+        SELECT  /* [category.xml][selectBrndCtgryKwdPopupTotalCount][브랜드카테고리 검색 목록 총 Count][Dian] */
+        	count(1) as CNT 
+		FROM (
+		<include refid="selectBrndCtgry" />
+		) c
+		<include refid="selectBrndCtgryWhere" />
+	</select>
+</mapper>

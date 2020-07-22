@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodShopItmInv" parameterType="godShopItmInv" resultType="godShopItmInv">
+		SELECT /* com.plgrim.ncp.base.selectGodShopItmInv		Generator(Generator)	2018-05-23 */
+			   ITM_NO
+			 , SHOP_ID
+			 , GOD_NO
+			 , INV_QTY
+			 , SALE_PREARNGE_QTY
+			 , SAFE_INV_RT_USE_YN
+			 , SAFE_INV_QTY
+			 , WEB_SALE_PSB_YN
+			 , LC1_INV_QTY
+			 , LC2_INV_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_SHOP_ITM_INV
+		 WHERE 1 = 1
+	   	   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodShopItmInv" parameterType="godShopItmInv">
+		UPDATE /* com.plgrim.ncp.base.updateGodShopItmInv		Generator(Generator)	2018-05-23 */
+		GOD_SHOP_ITM_INV SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , INV_QTY = #{invQty,jdbcType=NUMERIC}
+			 , SALE_PREARNGE_QTY = #{salePrearngeQty,jdbcType=NUMERIC}
+			 , SAFE_INV_RT_USE_YN = #{safeInvRtUseYn,jdbcType=VARCHAR}
+			 , SAFE_INV_QTY = #{safeInvQty,jdbcType=NUMERIC}
+			 , WEB_SALE_PSB_YN = #{webSalePsbYn,jdbcType=VARCHAR}
+			 , LC1_INV_QTY = #{lc1InvQty,jdbcType=NUMERIC}
+			 , LC2_INV_QTY = #{lc2InvQty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodShopItmInv" parameterType="godShopItmInv">
+		INSERT /* com.plgrim.ncp.base.insertGodShopItmInv		Generator(Generator)	2018-05-23 */
+		INTO   GOD_SHOP_ITM_INV (
+			   ITM_NO
+			 , SHOP_ID
+			 , GOD_NO
+			 , INV_QTY
+			 , SALE_PREARNGE_QTY
+			 , SAFE_INV_RT_USE_YN
+			 , SAFE_INV_QTY
+			 , WEB_SALE_PSB_YN
+			 , LC1_INV_QTY
+			 , LC2_INV_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{itmNo,jdbcType=VARCHAR}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{invQty,jdbcType=NUMERIC}
+			 , #{salePrearngeQty,jdbcType=NUMERIC}
+			 , #{safeInvRtUseYn,jdbcType=VARCHAR}
+			 , #{safeInvQty,jdbcType=NUMERIC}
+			 , #{webSalePsbYn,jdbcType=VARCHAR}
+			 , #{lc1InvQty,jdbcType=NUMERIC}
+			 , #{lc2InvQty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodShopItmInv" parameterType="godShopItmInv">
+		DELETE /* com.plgrim.ncp.base.deleteGodShopItmInv		Generator(Generator)	2018-05-23 */
+		  FROM GOD_SHOP_ITM_INV
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

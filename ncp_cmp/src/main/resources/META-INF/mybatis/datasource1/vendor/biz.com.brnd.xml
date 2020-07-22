@@ -1,0 +1,1747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.vendor.brnd">
+
+	<!-- 브랜드 매장목록 조회를 위한 조건 쿼리 -->
+	<sql id="whereVendorBrnd">
+		<if test='searchGubunTxt != null and searchGubunTxt != ""'>
+			<choose>
+				<when test="searchGubun eq 'gbName'">
+			    	AND UPPER(SS.SHOP_NM) LIKE '%'||UPPER(#{searchGubunTxt})||'%' /*매장명*/
+			    </when>
+			    <when test="searchGubun eq 'gbCode'">
+			    	AND UPPER(SS.SHOP_ID) LIKE '%'||UPPER(#{searchGubunTxt})||'%' /*매장코드*/
+			    </when>
+			</choose>
+		</if>
+		<if test="(!@com.plgrim.ncp.framework.commons.StringService@isEmpty(brndIds) and brndIds.length > 0)">
+			AND SB.BRND_ID IN (<foreach collection="brndIds" item="brndIds" separator=",">#{brndIds, jdbcType=VARCHAR}</foreach>)
+		</if>		
+		<if test='sysBrnd.brndId != null and sysBrnd.brndId != ""'>
+			AND SB.BRND_ID = #{sysBrnd.brndId} /*브랜드*/
+		</if>
+		<if test='searchBrndShopType != null and searchBrndShopType != ""'>
+			AND SS.SHOP_TP_CD IN (<foreach collection="searchBrndShopType" item="shopType" separator=",">#{shopType}</foreach>)  /*브랜드매장타입*/
+		</if>
+		<if test='sysShopBrnd.dlvShopYn != null and sysShopBrnd.dlvShopYn != ""'>
+			AND SSB.DLV_SHOP_YN = #{sysShopBrnd.dlvShopYn} /*배송매장여부*/
+		</if>
+		<if test='sysShopBrnd.pkupShopYn != null and sysShopBrnd.pkupShopYn != ""'>
+			AND SSB.PKUP_SHOP_YN = #{sysShopBrnd.pkupShopYn} /*픽업매장여부*/
+		</if>
+		<if test='sysShopBrnd.qdlvShopYn != null and sysShopBrnd.qdlvShopYn != ""'>
+			AND SSB.QDLV_SHOP_YN = #{sysShopBrnd.qdlvShopYn} /*퀵배송매장여부*/
+		</if>
+		<if test='sysShopBrnd.repairShopYn != null and sysShopBrnd.repairShopYn != ""'>
+			AND SSB.REPAIR_SHOP_YN = #{sysShopBrnd.repairShopYn} /*수선매장여부*/
+		</if>
+		<if test='sysShopBrnd.exchgShopYn != null and sysShopBrnd.exChgShopYn != ""'>
+			AND SSB.EXCHG_SHOP_YN = #{sysShopBrnd.exchgShopYn} /*매장교환가능여부*/
+		</if>
+		<if test='sysShopBrnd.rtgodShopYn != null and sysShopBrnd.rtgodShopYn != ""'>
+			AND SSB.RTGOD_SHOP_YN = #{sysShopBrnd.rtgodShopYn} /*매장반품가능여부*/
+		</if>
+		<if test='sysShopBrnd.useYn != null and sysShopBrnd.useYn != ""'>
+			AND SSB.USE_YN = #{sysShopBrnd.useYn} /*사용여부*/
+		</if>
+	</sql>
+
+	<resultMap id="vendorBrndResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndListResult">
+		<result property="sysShop.shopId"	         column="SHOP_ID"	       /><!-- 매장코드 -->
+		<result property="sysShop.shopNm"	         column="SHOP_NM"	       /><!-- 매장명 -->
+		<result property="sysShop.spotNm"	         column="SPOT_NM"	       /><!-- 지점명 -->
+		<result property="sysBrnd.erpBrndId"	     column="ERP_BRND_ID"	   /><!-- ERP 브랜드코드 -->
+		<result property="sysBrnd.brndNm"	         column="BRND_NM"	       /><!-- 브랜드명 -->
+		<result property="sysShopBrnd.dlvShopYn"	 column="DLV_SHOP_YN"	   /><!-- 배송매장여부 -->
+		<result property="sysShopBrnd.pkupShopYn"	 column="PKUP_SHOP_YN"	   /><!-- 픽업매장여부 -->
+		<result property="sysShopBrnd.qdlvShopYn"	 column="QDLV_SHOP_YN"	   /><!-- 퀵배송매장여부 -->
+		<!-- 2017년 9월 14일 추가 신재용 #51298 [개발] 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 - BO 브랜드 매장관리 -->
+		<result property="sysShopBrnd.exchgShopYn"	 column="EXCHG_SHOP_YN"	   /><!-- 매장교환여부  -->
+		<result property="sysShopBrnd.rtgodShopYn"	 column="RTGOD_SHOP_YN"	   /><!-- 매장반품여부  -->
+
+		<!-- <result property="sysShopBrnd.pkupShopLgsYn" column="PKUP_SHOP_LGS_YN" /> --><!-- 픽업매장물류여부 --> <!-- 2018.07.30 삭제, muba -->
+		<result property="sysShopBrnd.useYn"	     column="USE_YN"	       /><!-- 사용여부 -->
+		<result property="sysShopBrnd.repairShopYn"	 column="REPAIR_SHOP_YN"   /><!-- 무료수선여부 -->
+		<result property="sysShop.shopTpCd"  	     column="SHOP_TP_CD"       /><!-- 판매유형 -->
+		<result property="sysShopBrnd.dlvShopFeeRt"	 column="DLV_SHOP_FEE_RT"  /><!-- 배송 매장 수수료 율 -->
+		<result property="sysShopBrnd.pkupShopFeeRt" column="PKUP_SHOP_FEE_RT" /><!-- 픽업 매장 수수료 율 -->
+		<result property="sysShopBrnd.regtrId"	     column="REGTR_ID"	       /><!-- 등록자아이디 -->
+		<result property="sysShopBrnd.udterId"	     column="UDTER_ID"	       /><!-- 수정자아이디 -->
+		<result property="regterNm"	                 column="REGTR_NM"	       /><!-- 등록자명 -->
+		<result property="udterNm"	                 column="UDTER_NM"	       /><!-- 수정자명 -->
+		<result property="sysShopBrnd.regDt"	     column="REG_DT"	       /><!-- 등록일 -->
+		<result property="sysShopBrnd.udtDt"	     column="UDT_DT"	       /><!-- 수정일 -->
+		<result property="viewRegDt"	             column="VIEW_REG_DT"	   /><!-- 등록일 -->
+		<result property="viewUdtDt"	             column="VIEW_UDT_DT"	   /><!-- 수정일 -->
+    </resultMap>
+
+	<!-- 브랜드 매장목록 조회 -->
+	<select id="selectBrndShop" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultMap="vendorBrndResultMap">
+		SELECT /* [biz.com.brnd.xml][selectBrndShop][브랜드 매장내역 조회][Mark] */
+			   BRND.SHOP_ID            /*매장코드*/
+		       , BRND.SHOP_NM          /*매장명*/
+		       , BRND.SPOT_NM          /*지점명*/
+		       , BRND.ERP_BRND_ID      /*ERP 브랜드코드*/
+		       , BRND.BRND_NM          /*브랜드명*/
+		       , BRND.DLV_SHOP_YN      /*배송매장여부*/
+		       , BRND.PKUP_SHOP_YN     /*픽업매장여부*/
+		       , BRND.QDLV_SHOP_YN     /*퀵배송매장여부*/
+		       , BRND.EXCHG_SHOP_YN       /*매장 교환 여부 */
+			   , BRND.RTGOD_SHOP_YN      /*매장 반품 여부 */
+		       , BRND.PKUP_SHOP_LGS_YN /*픽업 매장 물류여부*/
+		       , BRND.USE_YN           /*사용여부*/
+		       , BRND.REPAIR_SHOP_YN   /*무료수선여부*/
+		       , (SELECT CD_NM FROM MV_SYS_CD WHERE LANG_CD='KOR' AND UPPER_CD = 'SHOP_TP' AND CD = BRND.SHOP_TP_CD) AS SHOP_TP_CD   /*판매유형*/
+		       , BRND.DLV_SHOP_FEE_RT  /*배송 매장 수수료 율*/
+		       , BRND.PKUP_SHOP_FEE_RT /*픽업 매장 수수료 율*/
+		       , BRND.REGTR_ID         /*등록자아이디*/
+		       , BRND.UDTER_ID         /*수정자아이디*/
+		       , BRND.REG_DT           /*등록일*/
+		       , BRND.UDT_DT           /*수정일*/
+		       , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = BRND.REGTR_ID) || CASE WHEN BRND.REGTR_ID IS NOT NULL THEN '(' || BRND.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		       , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = BRND.UDTER_ID) || CASE WHEN BRND.UDTER_ID IS NOT NULL THEN '(' || BRND.UDTER_ID || ')' END AS UDTER_NM /*수정자명*/
+		       , TO_CHAR(BRND.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		       , TO_CHAR(BRND.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+		 FROM(
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+			SELECT SS.SHOP_ID              /*매장코드*/
+			       , SS.SHOP_NM            /*매장명*/
+			       , SS.SPOT_NM            /*지점명*/
+			       , SB.ERP_BRND_ID        /*ERP 브랜드코드*/
+			       , SB.BRND_NM            /*브랜드명*/
+			       , SSB.DLV_SHOP_YN       /*배송매장여부*/
+			       , SSB.PKUP_SHOP_YN      /*픽업매장여부*/
+			       , SSB.QDLV_SHOP_YN	   /*퀵배송매장여부*/
+			       , SSB.EXCHG_SHOP_YN       /*매장 교환 여부 */
+			       , SSB.RTGOD_SHOP_YN      /*매장 반품 여부 */
+			       , DECODE(SSB.PKUP_SHOP_LGS_FEE_SECT_CD, NULL, 'N', 'Y') AS PKUP_SHOP_LGS_YN /*픽업 매장 물류여부*/
+			       , SSB.USE_YN            /*사용여부*/
+			       , SSB.REPAIR_SHOP_YN    /*무료수선여부*/
+			       , SS.SHOP_TP_CD         /*판매유형*/
+			       , SSB.DLV_SHOP_FEE_RT   /*배송 매장 수수료 율*/
+			       , SSB.PKUP_SHOP_FEE_RT  /*픽업 매장 수수료 율*/
+			       , SSB.REGTR_ID          /*등록자아이디*/
+			       , SSB.REG_DT            /*등록일*/
+			       , SSB.UDTER_ID          /*수정자아이디*/
+			       , SSB.UDT_DT	           /*수정일*/
+			  FROM SYS_SHOP SS
+			       , SYS_BRND SB
+			       , SYS_SHOP_BRND SSB
+			  WHERE SS.SHOP_ID = SSB.SHOP_ID
+			    AND SB.ERP_BRND_ID = SSB.ERP_BRND_ID			    
+			    <include refid="com.plgrim.ncp.biz.vendor.brnd.whereVendorBrnd"/>
+			  ORDER BY SS.SHOP_ID, SB.BRND_ID
+		  <include refid="com.plgrim.ncp.base.endPage"/>
+		  )BRND
+	</select>
+
+	<select id="selectBrndShopCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="long">
+		SELECT /* [biz.com.brnd.xml][selectBrndShopCount][브랜드 매장내역 조회 건수][Mark] */
+			   count(*)
+		  FROM SYS_SHOP SS
+		       , SYS_BRND SB
+		       , SYS_SHOP_BRND SSB
+		  WHERE SS.SHOP_ID = SSB.SHOP_ID
+		    AND SB.ERP_BRND_ID = SSB.ERP_BRND_ID
+		    <include refid="com.plgrim.ncp.biz.vendor.brnd.whereVendorBrnd"/>
+	</select>
+
+	<!-- 브랜드 목록 조회 -->
+	<resultMap id="sysBrndComboResultMap" type="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		<result property="erpBrndId"	     column="ERP_BRND_ID"	   /><!-- ERP 브랜드 ID -->
+		<result property="brndId"	         column="BRND_ID"	       /><!-- 브랜드 ID -->
+		<result property="brndNm"	         column="BRND_NM"	       /><!-- 브랜드 명 -->
+		<result property="upperBrndId"       column="UPPER_BRND_ID"	   /><!-- 상위 브랜드 ID -->
+	</resultMap>
+
+	<!-- 브랜드 목록 조회 -->
+	<resultMap id="sysBrndComboResultMap2" type="com.plgrim.ncp.biz.brand.data.BrandResultDTO">
+		<result property="brndId"				column="BRND_ID"	       /><!-- 브랜드 ID -->
+		<result property="brndNm"				column="BRND_NM"	       /><!-- 브랜드 명 -->
+		<result property="brndGrpCnt"			column="BRND_GRP_CNT"	   /><!-- 브랜드 알파벳 별 카운트 -->
+		<result property="ownBrndYN"			column="OWN_BRND_YN"	   /><!-- 자사 브랜드 여부 -->
+		<result property="firstBrndChar"		column="FIRST_BRND_CHAR"   /><!-- 알파벳 첫 문자 -->
+		<result property="ownBrndCnt"			column="OWN_BRND_CNT"	   /><!-- 자사 브랜드 카운트 -->
+		<result property="totCnt"				column="TOT_CNT"	       /><!-- 총 카운트 -->
+	</resultMap>
+
+	<!-- 브랜드 목록 조회(콤보박스) -->
+	<select id="selectSysBrndCombo" resultMap="sysBrndComboResultMap">
+	    SELECT ERP_BRND_ID, BRND_ID, BRND_NM, UPPER_BRND_ID
+	      FROM SYS_BRND
+	     WHERE LEVEL = 3
+	       AND LENGTH(BRND_ID) = 2
+	       AND BRND_NM IS NOT NULL
+	CONNECT BY PRIOR BRND_ID = UPPER_BRND_ID
+	START WITH UPPER_BRND_ID IS NULL
+	  ORDER BY BRND_NM
+	</select>
+
+
+	<!-- 브랜드 매장목록 엑셀 -->
+	<select id="selectBrndShopExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.com.brnd.xml][selectBrndShopExcel][브랜드 매장내역 엑셀]][Mark] */
+			   SS.SHOP_ID              /*매장코드*/
+		       , SS.SHOP_NM            /*매장명*/
+		       , SS.SPOT_NM            /*지점명*/
+		       , SB.ERP_BRND_ID        /*ERP 브랜드코드*/
+		       , SB.BRND_NM            /*브랜드명*/
+		       , DECODE(SSB.DLV_SHOP_YN  ,'Y','사용','미사용') AS DLV_SHOP_YN    /*배송매장여부*/
+		       , DECODE(SSB.PKUP_SHOP_YN ,'Y','사용','미사용') AS PKUP_SHOP_YN   /*픽업매장여부*/
+		       , DECODE(SSB.QDLV_SHOP_YN ,'Y','사용','미사용') AS QDLV_SHOP_YN   /*퀵배송매장여부*/
+
+		       , DECODE(SSB.EXCHG_SHOP_YN  ,'Y','사용','미사용') AS EXCHG_SHOP_YN    /*매장교환여부*/
+		       , DECODE(SSB.RTGOD_SHOP_YN ,'Y','사용','미사용') AS RTGOD_SHOP_YN   /*매장반품여부*/
+
+		       , DECODE(SSB.USE_YN       ,'Y','사용','미사용') AS USE_YN         /*사용여부*/
+		       , DECODE(SSB.REPAIR_SHOP_YN  ,'Y','사용','미사용') AS REPAIR_SHOP_YN   /*수선여부*/
+		       , (SELECT CD_NM FROM MV_SYS_CD WHERE LANG_CD='KOR' AND UPPER_CD = 'SHOP_TP' AND CD = SS.SHOP_TP_CD) AS SHOP_TP_CD   /*판매유형*/
+		       , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSB.REGTR_ID) || CASE WHEN SSB.REGTR_ID IS NOT NULL THEN '(' || SSB.REGTR_ID || ')' END AS REGTR_ID /*등록자명*/
+		       , TO_CHAR(SSB.REG_DT,'YYYY-MM-DD HH24:MI')            /*등록일*/ AS REG_DT
+		       , (SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSB.UDTER_ID) || CASE WHEN SSB.UDTER_ID IS NOT NULL THEN '(' || SSB.UDTER_ID || ')' END AS UDTER_ID /*수정자명*/
+		       , TO_CHAR(SSB.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT	           /*수정일*/
+		  FROM SYS_SHOP SS
+		       , SYS_BRND SB
+		       , SYS_SHOP_BRND SSB
+		  WHERE SS.SHOP_ID = SSB.SHOP_ID
+		    AND SB.ERP_BRND_ID = SSB.ERP_BRND_ID
+		    <include refid="com.plgrim.ncp.biz.vendor.brnd.whereVendorBrnd"/>
+		  ORDER BY SS.SHOP_ID, SB.BRND_ID
+	</select>
+
+    <!-- 브랜드 매장내역 리스트 수정 -->
+    <update id="updateSysShopBrndList" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrnd">
+        UPDATE  /* [biz.com.brnd.xml][updateSysShopBrndList][브랜드 매장내역 리스트 수정]][Mark] */
+ SYS_SHOP_BRND SET
+ 			   UDT_DT = SYSDATE
+ 			   ,UDTER_ID = #{udterId}
+ 			   <if test='dlvShopYn != null and dlvShopYn != ""'>
+               ,DLV_SHOP_YN = #{dlvShopYn}          /* 배송매장여부 */
+               </if>
+               <if test='pkupShopYn != null and pkupShopYn != ""'>
+               ,PKUP_SHOP_YN = #{pkupShopYn}        /* 픽업매장여부 */
+               </if>
+               <if test='qdlvShopYn != null and qdlvShopYn != ""'>
+			   ,QDLV_SHOP_YN = nvl(#{qdlvShopYn},'N')        /* 퀵배송매장여부 */
+			   </if>
+               <if test='exchgShopYn != null and exchgShopYn != ""'>
+               ,EXCHG_SHOP_YN = #{exchgShopYn}        /* 매장교환여부 */
+               </if>
+               <if test='rtgodShopYn != null and rtgodShopYn != ""'>
+               ,RTGOD_SHOP_YN = #{rtgodShopYn}        /* 매장반품여부 */
+               </if>
+               <if test='useYn != null and useYn != ""'>
+               ,USE_YN = #{useYn}                   /* 사용여부*/
+               </if>
+               <if test='repairShopYn != null and repairShopYn != ""'>
+               ,REPAIR_SHOP_YN = #{repairShopYn}    /* 무료수선여부*/
+               </if>
+       WHERE   SHOP_ID = #{shopId}
+       AND     ERP_BRND_ID = #{erpBrndId}
+    </update>
+
+    <resultMap id="sysShopBrandResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndListResult">
+		<result property="sysShopBrnd.shopId" column="SHOP_ID"/><!-- 매장 ID -->
+		<result property="sysShopBrnd.erpBrndId" column="ERP_BRND_ID"/><!-- 브랜드 ID -->
+		<result property="sysShopBrnd.dlvShopYn" column="DLV_SHOP_YN"/><!-- 배송 매장 여부 -->
+		<result property="sysShopBrnd.pkupShopYn" column="PKUP_SHOP_YN"/><!-- 픽업 매장 여부 -->
+		<result property="sysShopBrnd.qdlvShopYn" column="QDLV_SHOP_YN"/><!-- 퀵배송 매장 여부 -->
+
+		<!-- 2017년 9월 14일 추가 신재용 #51298 [개발] 매장찾기/상품상세 셀링 포인트 노출 기준 추가 변경 - BO 브랜드 매장관리 -->
+		<result property="sysShopBrnd.exchgShopYn" column="EXCHG_SHOP_YN"/><!-- 매장 교환 여부 -->
+		<result property="sysShopBrnd.rtgodShopYn" column="RTGOD_SHOP_YN"/><!-- 매장 반품 여부 -->
+		<!-- <result property="sysShopBrnd.pkupShopLgsYn" column="PKUP_SHOP_LGS_YN" /> --><!-- 픽업매장물류여부 --><!-- 2018.07.30 삭제, muba -->
+		<result property="sysShopBrnd.safeInvUseYn" column="SAFE_INV_USE_YN"/><!-- 안전 재고 사용 여부 -->
+		<result property="sysShopBrnd.safeInvRt" column="SAFE_INV_RT"/><!-- 안전 재고 율 -->
+		<result property="sysShopBrnd.useYn" column="USE_YN"/><!-- 사용 여부 -->
+		<result property="sysShopBrnd.repairShopYn" column="REPAIR_SHOP_YN"/><!-- 무료수선여부 -->
+		<result property="sysShopBrnd.regtrId" column="REGTR_ID"/><!-- 등록자 -->
+		<result property="sysShopBrnd.regDt" column="REG_DT"/><!-- 등록일 -->
+		<result property="sysShopBrnd.udterId" column="UDTER_ID"/><!-- 수정자 -->
+		<result property="sysShopBrnd.udtDt" column="UDT_DT"/><!-- 수정일 -->
+		<result property="regterNm"	column="REGTR_NM"/><!-- 등록자명 -->
+		<result property="udterNm" column="UDTER_NM"/><!-- 수정자명 -->
+		<result property="viewRegDt" column="VIEW_REG_DT"/><!-- 등록일 -->
+		<result property="viewUdtDt" column="VIEW_UDT_DT"/><!-- 수정일 -->
+    </resultMap>
+    <!-- 브랜드 매장 상세조회 -->
+    <select id="selectSysShopBrand" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrnd" resultMap="sysShopBrandResultMap">
+    	SELECT /* [biz.com.brnd.xml][selectSysShopBrand][브랜드 매장 상세조회]][Mark] */
+	    		SSB.SHOP_ID /* 매장 ID */
+		       ,SSB.ERP_BRND_ID /* ERP 브랜드 ID */
+		       ,SSB.DLV_SHOP_YN /* 배송 매장 여부 */
+		       ,SSB.PKUP_SHOP_YN /* 픽업 매장 여부 */
+		       ,SSB.QDLV_SHOP_YN /* 퀵배송 매장 여부 */
+		       ,SSB.EXCHG_SHOP_YN /* 매장 교환 여부  */
+		       ,SSB.RTGOD_SHOP_YN /* 매장 반품 여부  */
+		       ,DECODE(SSB.PKUP_SHOP_LGS_FEE_SECT_CD, NULL, 'N', 'Y') AS PKUP_SHOP_LGS_YN /*픽업 매장 물류여부*/
+		       ,SSB.SAFE_INV_USE_YN /* 안전 재고 사용 여부 */
+		       ,SSB.SAFE_INV_RT /* 안전 재고 율 */
+		       ,SSB.USE_YN /* 사용 여부 */
+		       ,SSB.REPAIR_SHOP_YN /* 무료수선여부 */
+		       ,SSB.REGTR_ID /* 등록자 */
+		       ,SSB.REG_DT /* 등록일 */
+		       ,SSB.UDTER_ID /* 수정자 */
+		       ,SSB.UDT_DT /* 수정일 */
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSB.REGTR_ID) AS REGTR_NM /*등록자명*/
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSB.UDTER_ID) AS UDTER_NM /*수정자명*/
+		       ,TO_CHAR(SSB.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		       ,TO_CHAR(SSB.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+		       ,SSB.REPAIR_SHOP_YN /* 수선여부 */
+		  FROM SYS_SHOP SS
+		       , SYS_BRND SB
+		       , SYS_SHOP_BRND SSB
+		 WHERE SS.SHOP_ID = SSB.SHOP_ID
+		   AND SB.ERP_BRND_ID = SSB.ERP_BRND_ID
+		   AND SSB.SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND SSB.ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 브랜드 매장 등록 -->
+    <insert id="insertSysShopBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrnd">
+		INSERT /* [biz.com.brnd.xml][insertSysShopBrnd][브랜드 매장 등록]][Mark] */
+	      INTO SYS_SHOP_BRND
+	         (
+	           SHOP_ID /* 매장 ID */
+		       ,ERP_BRND_ID /* 브랜드 ID */
+		       ,DLV_SHOP_YN /* 배송 매장 여부 */
+		       ,PKUP_SHOP_YN /* 픽업 매장 여부 */
+			   ,QDLV_SHOP_YN /* 퀵배송 매장 여부 */
+
+		       ,EXCHG_SHOP_YN /* 매장 교환 여부 */
+               ,RTGOD_SHOP_YN /* 매장 반품 여부 */
+
+		       ,SAFE_INV_USE_YN /* 안전 재고 사용 여부 */
+		       <if test='safeInvRt != null and safeInvUseYn eq "Y"'>
+		       ,SAFE_INV_RT /* 안전 재고 율 */
+		       </if>
+		       ,USE_YN /* 사용 여부 */
+		       ,REPAIR_SHOP_YN /* 수선 여부 */
+		       ,REGTR_ID /* 등록자 */
+		       ,REG_DT /* 등록일 */
+		       ,UDT_DT /* 수정일 */
+		     )
+		       VALUES
+		     (
+		       #{shopId,jdbcType=VARCHAR} /* 매장 ID */
+		       ,#{erpBrndId,jdbcType=VARCHAR} /* 브랜드 id */
+		       ,#{dlvShopYn,jdbcType=VARCHAR} /* 배송 매장 여부 */
+		       ,#{pkupShopYn,jdbcType=VARCHAR} /* 픽업 매장 여부 */
+			   ,nvl(#{qdlvShopYn,jdbcType=VARCHAR},'N') /* 퀵배송 매장 여부 */
+
+		       ,#{exchgShopYn,jdbcType=VARCHAR} /* 매장 교환 여부 */
+		       ,#{rtgodShopYn,jdbcType=VARCHAR} /* 매장 반품 여부 */
+
+		       ,#{safeInvUseYn,jdbcType=VARCHAR} /* 안전 재고 사용 여부 */
+		       <if test='safeInvRt != null and safeInvUseYn eq "Y"'>
+		       ,#{safeInvRt,jdbcType=NUMERIC} /* 안전 재고 율 */
+		       </if>
+		       ,#{useYn,jdbcType=VARCHAR} /* 사용 여부 */
+		       ,#{repairShopYn,jdbcType=VARCHAR} /* 수선 여부 */
+		       ,#{regtrId,jdbcType=VARCHAR} /* 등록자 */
+		       ,SYSDATE /* 등록일 */
+		       ,SYSDATE /* 수정일 */
+		     )
+    </insert>
+
+	 <!-- 브랜드 매장 수정 -->
+    <update id="updateSysShopBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrnd">
+        UPDATE /* [biz.com.brnd.xml][updateSysShopBrnd][브랜드 매장 수정]][Mark] */
+        SYS_SHOP_BRND SET
+                 DLV_SHOP_YN = #{dlvShopYn,jdbcType=VARCHAR}
+                ,PKUP_SHOP_YN = #{pkupShopYn,jdbcType=VARCHAR}
+                ,QDLV_SHOP_YN = nvl(#{qdlvShopYn,jdbcType=VARCHAR},'N')
+                ,EXCHG_SHOP_YN = #{exchgShopYn,jdbcType=VARCHAR}
+                ,RTGOD_SHOP_YN = #{rtgodShopYn,jdbcType=VARCHAR}
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,REPAIR_SHOP_YN = #{repairShopYn,jdbcType=VARCHAR}
+                ,SAFE_INV_USE_YN = #{safeInvUseYn,jdbcType=VARCHAR}
+                ,SAFE_INV_RT = #{safeInvRt,jdbcType=NUMERIC}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+          WHERE SHOP_ID = #{shopId,jdbcType=VARCHAR}
+            AND ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 브랜드 매장 이력 수정 -->
+    <update id="updateSysShopBrndFeeHist" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrndFeeHist">
+        UPDATE /* [biz.com.brnd.xml][updateSysShopBrndFeeHist][브랜드 매장 이력 수정]][Mark]*/
+        SYS_SHOP_BRND_FEE_HIST SET
+        <if test='feeHistSectCd != null and feeHistSectCd != ""'>
+        <if test='feeHistSectCd =="ALL"'>
+        		 HIST_END_DT = SYSDATE
+        </if>
+        <if test='feeHistSectCd != "ALL"'>
+                 HIST_END_DT = ( SELECT UDT_DT
+                 				   FROM SYS_SHOP_BRND
+						          WHERE SHOP_ID = #{shopId,jdbcType=VARCHAR}
+						            AND ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+                 				   )
+        </if>
+        </if>
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     SHOP_ID = #{shopId,jdbcType=VARCHAR}
+        AND     ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+        <if test='feeHistSectCd != null and feeHistSectCd != ""'>
+        <if test='feeHistSectCd != "ALL"'>
+        AND     FEE_HIST_SECT_CD = #{feeHistSectCd,jdbcType=VARCHAR}
+        </if>
+        </if>
+        AND     TO_CHAR(HIST_END_DT,'YYYYMM') = '999912'
+    </update>
+
+    <!-- 브랜드 매장 이력 등록 -->
+    <insert id="insertSysShopBrndFeeHist" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrndFeeHist">
+    	INSERT /* [biz.com.brnd.xml][updateSysShopBrndFeeHist][브랜드 매장 이력 등록]][Mark]*/
+    	 INTO SYS_SHOP_BRND_FEE_HIST
+		(
+	        SHOP_ID
+	       ,ERP_BRND_ID
+	       ,FEE_HIST_SECT_CD
+	       ,HIST_BEG_DT
+	       ,HIST_END_DT
+	       ,MOD_BF_SHOP_FEE_SECT_CD
+	       ,MOD_BF_SHOP_FEE_AMT
+	       ,MOD_BF_SHOP_FEE_RT
+	       ,MOD_AF_SHOP_FEE_SECT_CD
+	       ,MOD_AF_SHOP_FEE_AMT
+	       ,MOD_AF_SHOP_FEE_RT
+	       ,REGTR_ID
+	       ,REG_DT
+	       ,UDTER_ID
+           ,UDT_DT
+		)
+		select SHOP_ID                  ,
+			  ERP_BRND_ID              ,
+			  #{feeHistSectCd,jdbcType=VARCHAR} FEE_HIST_SECT_CD         ,
+			  UDT_DT+1/24/60/60 HIST_BEG_DT              ,
+			  to_date('99991231 23:59:59','yyyymmdd hh24:mi:ss') HIST_END_DT              ,
+			  #{modBfShopFeeSectCd,jdbcType=VARCHAR}  MOD_BF_SHOP_FEE_SECT_CD  ,
+			  #{modBfShopFeeAmt,jdbcType=NUMERIC} MOD_BF_SHOP_FEE_AMT      ,
+			  #{modBfShopFeeRt,jdbcType=NUMERIC} MOD_BF_SHOP_FEE_RT       ,
+			  CASE WHEN #{feeHistSectCd,jdbcType=VARCHAR}='DLV_SHOP_FEE' THEN DLV_SHOP_FEE_SECT_CD
+			  	   WHEN #{feeHistSectCd,jdbcType=VARCHAR}='QDLV_SHOP_FEE' THEN DLV_SHOP_FEE_SECT_CD /* 퀵배송 수수료는 배송매장 수수료를 씀 */
+			  	   ELSE PKUP_SHOP_FEE_SECT_CD
+			   END MOD_AF_SHOP_FEE_SECT_CD  ,
+			  CASE WHEN #{feeHistSectCd,jdbcType=VARCHAR}='DLV_SHOP_FEE' THEN DLV_SHOP_FEE_AMT
+			       WHEN #{feeHistSectCd,jdbcType=VARCHAR}='QDLV_SHOP_FEE' THEN DLV_SHOP_FEE_AMT /* 퀵배송 수수료는 배송매장 수수료를 씀 */
+			       ELSE PKUP_SHOP_FEE_AMT
+			   END MOD_AF_SHOP_FEE_AMT      ,
+			  CASE WHEN #{feeHistSectCd,jdbcType=VARCHAR}='DLV_SHOP_FEE' THEN DLV_SHOP_FEE_RT
+			       WHEN #{feeHistSectCd,jdbcType=VARCHAR}='QDLV_SHOP_FEE' THEN DLV_SHOP_FEE_RT /* 퀵배송 수수료는 배송매장 수수료를 씀 */
+			       ELSE PKUP_SHOP_FEE_RT
+			   END MOD_AF_SHOP_FEE_RT       ,
+			  #{udterId,jdbcType=VARCHAR} REGTR_ID                 ,
+			  sysdate REG_DT                   ,
+			  #{udterId,jdbcType=VARCHAR} UDTER_ID                 ,
+			  sysdate UDT_DT
+		  from sys_shop_brnd
+        WHERE   1 = 1
+        AND     SHOP_ID = #{shopId,jdbcType=VARCHAR}
+        AND     ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+    </insert>
+
+    <!-- 브랜드 매장 이미지 등록 -->
+    <insert id="insertSysShopPhoto" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto">
+	    INSERT /* [biz.com.brnd.xml][insertSysShopPhoto][브랜드 매장 이미지 등록]][Mark] */
+	    INTO SYS_SHOP_PHOTO
+		(
+	        PHOTO_SN
+	       ,SHOP_ID
+	       ,BRND_ID
+	       ,SHOP_IMG_SECT_CD
+	       ,USE_YN
+	       ,SJ
+	       ,SHOP_IMG_URL
+	       ,REGTR_ID
+           ,REG_DT
+		)
+		VALUES
+		(
+	        SQ_SYS_SHOP_PHOTO.NEXTVAL
+	       ,#{shopId}
+	       ,#{brndId}
+	       ,#{shopImgSectCd}
+	       ,#{useYn}
+	       ,#{sj}
+	       ,#{shopImgUrl}
+	       ,#{regtrId}
+	       ,SYSDATE
+		)
+    </insert>
+
+    <resultMap id="sysShopPhotoResultMap" type="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto">
+		<result property="photoSn" column="PHOTO_SN"/><!-- 매장 ID -->
+		<result property="shopId" column="SHOP_ID"/><!-- 매장 ID -->
+		<result property="brndId" column="BRND_ID"/><!-- 매장 ID -->
+		<result property="shopImgSectCd" column="SHOP_IMG_SECT_CD"/><!-- 매장 ID -->
+		<result property="useYn" column="USE_YN"/><!-- 매장 ID -->
+		<result property="sj" column="SJ"/><!-- 매장 ID -->
+		<result property="shopImgUrl" column="SHOP_IMG_URL"/><!-- 매장 ID -->
+		<result property="regtrId" column="REGTR_ID"/><!-- 매장 ID -->
+		<result property="regDt" column="REG_DT"/><!-- 매장 ID -->
+    </resultMap>
+    <!-- 브랜드 매장 이미지 목록 -->
+    <select id="selectSysShopPhoto" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto" resultMap="sysShopPhotoResultMap">
+    	SELECT /* [biz.com.brnd.xml][selectSysShopPhoto][브랜드 매장 이미지 조회]][Mark] */
+   			   PHOTO_SN
+	       	   ,SHOP_ID
+		       ,BRND_ID
+		       ,SHOP_IMG_SECT_CD
+		       ,USE_YN
+		       ,SJ
+		       ,SHOP_IMG_URL
+		       ,REGTR_ID
+	           ,REG_DT
+	      FROM SYS_SHOP_PHOTO
+	     WHERE SHOP_ID = #{shopId,jdbcType=VARCHAR}
+	       AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+	       AND USE_YN = 'Y'
+	       <if test="shopImgSectCd != null and shopImgSectCd != ''">
+	       AND SHOP_IMG_SECT_CD = #{shopImgSectCd,jdbcType=VARCHAR}
+	       </if>
+	     ORDER BY PHOTO_SN ASC
+    </select>
+
+    <!-- 브랜드 매장 이미지 수정 -->
+    <update id="updateSysShopPhoto" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto">
+        UPDATE /* [biz.com.brnd.xml][updateSysShopPhoto][브랜드 매장 이미지 수정]][Mark] */
+        SYS_SHOP_PHOTO SET
+                USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+       			<if test='shopId != null and shopId != ""'>
+                ,SHOP_ID = #{shopId,jdbcType=VARCHAR}
+                </if>
+                <if test='brndId != null and brndId != ""'>
+                ,BRND_ID = #{brndId,jdbcType=VARCHAR}
+                </if>
+                <if test='shopImgSectCd != null and shopImgSectCd != ""'>
+                ,SHOP_IMG_SECT_CD = #{shopImgSectCd,jdbcType=VARCHAR}
+                </if>
+                <if test='sj != null and sj != ""'>
+                ,SJ = #{sj,jdbcType=VARCHAR}
+                </if>
+                <if test='shopImgUrl != null and shopImgUrl != ""'>
+                ,SHOP_IMG_URL = #{shopImgUrl,jdbcType=VARCHAR}
+                </if>
+                <if test='linkUrl != null and linkUrl != ""'>
+                ,LINK_URL = #{linkUrl,jdbcType=VARCHAR}
+                </if>
+          WHERE PHOTO_SN = #{photoSn,jdbcType=NUMERIC}
+    </update>
+
+    <resultMap id="vendorBrndEventResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndEvtResult">
+		<result property="sysShopEvt.shopEvtSn"	    column="SHOP_EVT_SN"  /><!-- 매장 이벤트 일련번호 -->
+		<result property="sysShopEvt.shopId"	    column="SHOP_ID"	  /><!-- 매장 ID  -->
+		<result property="sysShopEvt.evtNm"	        column="EVT_NM"	      /><!-- 이벤트 명 -->
+		<result property="sysShopEvt.evtBegDate"	column="EVT_BEG_DATE" /><!-- 이벤트 시작 일자 -->
+		<result property="sysShopEvt.evtEndDate"	column="EVT_END_DATE" /><!-- 이벤트 종료 일자 -->
+		<result property="sysShopEvt.evtCont"	    column="EVT_CONT"	  /><!-- 이벤트 내용  -->
+		<result property="sysShopEvt.useYn"	        column="USE_YN"	      /><!-- 사용 여부 -->
+		<result property="sysShopEvt.regtrId"	    column="REGTR_ID"	  /><!-- 등록자 ID -->
+		<result property="sysShopEvt.regDt"	        column="REG_DT"	      /><!-- 등록 일시 -->
+		<result property="sysShopEvt.udterId"	    column="UDTER_ID"	  /><!-- 수정자 ID -->
+		<result property="sysShopEvt.udtDt"	        column="UDT_DT"	      /><!-- 수정 일시 -->
+		<result property="regterNm"	                column="REGTR_NM"     /><!-- 등록자명 -->
+		<result property="udterNm"                  column="UDTER_NM"     /><!-- 수정자명 -->
+		<result property="viewRegDt"                column="VIEW_REG_DT"  /><!-- 등록일 -->
+		<result property="viewUdtDt"                column="VIEW_UDT_DT"  /><!-- 수정일 -->
+		<result property="evtStatus"                column="EVT_STATUS"  /><!-- 상태 -->
+    </resultMap>
+
+    <!-- 브랜드 매장 이벤트 상세조회 -->
+    <select id="selectSysShopEvt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt" resultMap="vendorBrndEventResultMap">
+        SELECT /* [biz.com.brnd.xml][selectSysShopEvt][브랜드 매장 이벤트 상세조회]][Mark] */
+                SSE.SHOP_EVT_SN
+               ,SSE.SHOP_ID
+               ,SSE.EVT_NM
+               ,SSE.EVT_BEG_DATE
+               ,SSE.EVT_END_DATE
+               ,SSE.EVT_CONT
+               ,SSE.USE_YN
+               ,SSE.REGTR_ID
+               ,SSE.REG_DT
+               ,SSE.UDTER_ID
+               ,SSE.UDT_DT
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSE.REGTR_ID) AS REGTR_NM /*등록자명*/
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSE.UDTER_ID) AS UDTER_NM /*수정자명*/
+		       ,TO_CHAR(SSE.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		       ,TO_CHAR(SSE.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+		       ,CASE WHEN SSE.USE_YN = 'Y'
+                     THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+                               WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+                               ELSE '30' /* 종료 */
+                           END
+                     ELSE '10' /* 대기 */
+                 END AS EVT_STATUS
+        FROM    SYS_SHOP_EVT SSE
+        WHERE SSE.SHOP_EVT_SN = #{shopEvtSn,jdbcType=NUMERIC}
+    </select>
+
+    <!-- 브랜드 매장 이벤트 체크 -->
+    <select id="selectSysShopEvtCheck" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt" resultType="int">
+		SELECT /* [biz.com.brnd.xml][selectSysShopEvtCheck][브랜드 매장 이벤트 체크][Mark] */
+			   COUNT(*)
+		  FROM SYS_SHOP_EVT
+        WHERE USE_YN = 'Y'
+          AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+          AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+          AND (
+               #{evtBegDate,jdbcType=NUMERIC} BETWEEN EVT_BEG_DATE AND EVT_END_DATE
+               OR #{evtEndDate,jdbcType=NUMERIC} BETWEEN EVT_BEG_DATE AND EVT_END_DATE
+               OR (EVT_BEG_DATE BETWEEN #{evtBegDate,jdbcType=NUMERIC} AND #{evtEndDate,jdbcType=NUMERIC}
+                   AND EVT_END_DATE BETWEEN #{evtBegDate,jdbcType=NUMERIC} AND #{evtEndDate,jdbcType=NUMERIC}
+                  )
+              )
+          <if test='shopEvtSn != null and shopEvtSn != ""'>
+          AND SHOP_EVT_SN != #{shopEvtSn,jdbcType=NUMERIC}
+          </if>
+	</select>
+
+    <!-- 브랜드 매장 이벤트 수정 -->
+    <update id="updateSysShopEvt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt">
+        UPDATE /* [biz.com.brnd.xml][updateSysShopEvt][브랜드 매장 이벤트 수정]][Mark] */
+        SYS_SHOP_EVT SET
+                 EVT_NM = #{evtNm,jdbcType=VARCHAR}
+                 ,EVT_BEG_DATE = #{evtBegDate,jdbcType=VARCHAR}
+                 ,EVT_END_DATE = #{evtEndDate,jdbcType=VARCHAR}
+                 ,EVT_CONT = #{evtCont,jdbcType=CLOB}
+                 ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                 ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                 ,UDT_DT = SYSDATE
+        WHERE    SHOP_EVT_SN = #{shopEvtSn,jdbcType=NUMERIC}
+    </update>
+
+    <!-- 브랜드 매장 이벤트 등록 -->
+	<insert id="insertSysShopEvt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt">
+		<selectKey keyProperty="shopEvtSn" resultType="long" order="BEFORE">
+            SELECT SQ_SYS_SHOP_EVT.NEXTVAL FROM DUAL
+        </selectKey>
+	    INSERT /* [biz.com.brnd.xml][insertSysShopEvt][브랜드 매장 이벤트 등록]][Mark] */
+	    INTO SYS_SHOP_EVT
+		(
+	        SHOP_EVT_SN
+	       ,SHOP_ID
+	       ,BRND_ID
+	       ,EVT_NM
+	       ,EVT_BEG_DATE
+	       ,EVT_END_DATE
+	       ,EVT_CONT
+	       ,USE_YN
+	       ,REGTR_ID
+           ,REG_DT
+		)
+		VALUES
+		(
+	       #{shopEvtSn,jdbcType=NUMERIC}
+	       ,#{shopId,jdbcType=VARCHAR}
+	       ,#{brndId,jdbcType=VARCHAR}
+	       ,#{evtNm,jdbcType=VARCHAR}
+	       ,#{evtBegDate,jdbcType=VARCHAR}
+	       ,#{evtEndDate,jdbcType=VARCHAR}
+	       ,#{evtCont,jdbcType=VARCHAR}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)
+    </insert>
+
+    <!-- 브랜드 매장 이벤트 목록 조회를 위한 조건 쿼리 -->
+	<sql id="whereSysShopEvt">
+	    AND SSE.SHOP_ID = #{sysShopEvt.shopId,jdbcType=VARCHAR}
+        AND SSE.BRND_ID = #{sysShopEvt.brndId,jdbcType=VARCHAR}
+		<if test="sysShopEvt != null">
+			<if test='sysShopEvt.evtNm != null and sysShopEvt.evtNm != ""'>
+	        	AND SSE.EVT_NM LIKE '%'||#{sysShopEvt.evtNm,jdbcType=VARCHAR}||'%'
+	        </if>
+	        <if test="searchGubun == 'PROG'">
+		        <if test='sysShopEvt.evtBegDate != null and sysShopEvt.evtBegDate != "" and sysShopEvt.evtEndDate != null and sysShopEvt.evtEndDate != ""'>
+			        AND (
+		                #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE
+		               OR #{sysShopEvt.evtEndDate,jdbcType=NUMERIC} BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE
+		               OR (SSE.EVT_BEG_DATE BETWEEN #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} AND #{sysShopEvt.evtEndDate,jdbcType=NUMERIC}
+		                   AND SSE.EVT_END_DATE BETWEEN #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} AND #{sysShopEvt.evtEndDate,jdbcType=NUMERIC}
+		                  )
+		              )
+	            </if>
+	    	</if>
+	    	<if test="searchGubun == 'REG'">
+	    		AND TO_CHAR(SSE.REG_DT, 'YYYYMMDD') BETWEEN  #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} AND #{sysShopEvt.evtEndDate,jdbcType=NUMERIC}
+	    	</if>
+	    </if>
+	    <if test='evtUseYnList != null and evtUseYnList != ""'>
+			AND SSE.USE_YN IN (<foreach collection="evtUseYnList" item="useYn" separator=",">#{useYn}</foreach>)  /*사용여부*/
+		</if>
+
+
+        <if test='evtStatusList != null and evtStatusList != ""'>
+        	AND (CASE WHEN SSE.USE_YN = 'Y'
+                      THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+                                WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+                                ELSE '30' /* 종료 */
+                            END
+                      ELSE '10' /* 대기 */
+                  END) IN (<foreach collection="evtStatusList" item="evtStatus" separator=",">#{evtStatus}</foreach>)
+        </if>
+	</sql>
+
+	<resultMap id="vendorBrndEventListResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndEvtResult">
+		<result property="sysShopEvt.shopEvtSn"	    column="SHOP_EVT_SN"  /><!-- 매장 이벤트 일련번호 -->
+		<result property="sysShopEvt.shopId"	    column="SHOP_ID"	  /><!-- 매장 ID  -->
+		<result property="sysShopEvt.brndId"	    column="BRND_ID"	  /><!-- 브랜드 ID -->
+		<result property="sysShopEvt.evtNm"	        column="EVT_NM"	      /><!-- 이벤트 명 -->
+		<result property="sysShopEvt.evtBegDate"	column="EVT_BEG_DATE" /><!-- 이벤트 시작 일자 -->
+		<result property="sysShopEvt.evtEndDate"	column="EVT_END_DATE" /><!-- 이벤트 종료 일자 -->
+		<result property="sysShopEvt.evtCont"	    column="EVT_CONT"	  /><!-- 이벤트 내용  -->
+		<result property="sysShopEvt.useYn"	        column="USE_YN"	      /><!-- 사용 여부 -->
+		<result property="sysShopEvt.regtrId"	    column="REGTR_ID"	  /><!-- 등록자 ID -->
+		<result property="sysShopEvt.regDt"	        column="REG_DT"	      /><!-- 등록 일시 -->
+		<result property="sysShopEvt.udterId"	    column="UDTER_ID"	  /><!-- 수정자 ID -->
+		<result property="sysShopEvt.udtDt"	        column="UDT_DT"	      /><!-- 수정 일시 -->
+		<result property="evtStatus"                column="EVT_STATUS"   /><!-- 상태 -->
+		<result property="evtStatusNm"              column="EVT_STATUS_NM"/><!-- 상태명 -->
+		<result property="termDate"                 column="TERM_DATE"    /><!-- 진행기간 -->
+		<result property="useYnNm"                  column="USE_YN_NM"    /><!-- 사용여부명 -->
+		<result property="regterNm"                 column="REGTR_NM"     /><!-- 등록자 -->
+		<result property="viewRegDt"                column="VIEW_REG_DT"  /><!-- 등록일시 -->
+    </resultMap>
+
+    <!-- 브랜드 매장 이벤트 목록 -->
+    <select id="selectSysShopEvtList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultMap="vendorBrndEventListResultMap">
+        SELECT /* [biz.com.brnd.xml][selectSysShopEvtList][브랜드 매장 이벤트 목록][Mark] */
+                EVT.SHOP_EVT_SN
+               ,EVT.SHOP_ID
+               ,EVT.BRND_ID
+               ,EVT.EVT_NM
+               ,EVT.EVT_BEG_DATE
+               ,EVT.EVT_END_DATE
+               ,EVT.EVT_CONT
+               ,EVT.USE_YN
+               ,EVT.REGTR_ID
+               ,EVT.REG_DT
+               ,EVT.UDTER_ID
+               ,EVT.UDT_DT
+               ,EVT.EVT_STATUS
+		       ,CASE WHEN EVT.EVT_STATUS = '10' THEN '대기'
+		       		 WHEN EVT.EVT_STATUS = '20' THEN '진행중'
+		       		 ELSE '종료'
+		         END AS EVT_STATUS_NM
+		       ,TO_CHAR(TO_DATE(EVT.EVT_BEG_DATE,'YYYYMMDD'),'YYYY-MM-DD')||' ~ '||TO_CHAR(TO_DATE(EVT.EVT_END_DATE,'YYYYMMDD'),'YYYY-MM-DD') AS TERM_DATE
+		       ,CASE WHEN USE_YN = 'Y' THEN '사용'
+		             ELSE '미사용'
+		         END AS USE_YN_NM
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = EVT.REGTR_ID) || CASE WHEN EVT.REGTR_ID IS NOT NULL THEN '(' || EVT.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		       ,TO_CHAR(EVT.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+         FROM(
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+				SELECT SSE.SHOP_EVT_SN
+		               ,SSE.SHOP_ID
+		               ,SSE.BRND_ID
+		               ,SSE.EVT_NM
+		               ,SSE.EVT_BEG_DATE
+		               ,SSE.EVT_END_DATE
+		               ,SSE.EVT_CONT
+		               ,SSE.USE_YN
+		               ,SSE.REGTR_ID
+		               ,SSE.REG_DT
+		               ,SSE.UDTER_ID
+		               ,SSE.UDT_DT
+				       ,CASE WHEN SSE.USE_YN = 'Y'
+		                     THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+		                               WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+		                               ELSE '30' /* 종료 */
+		                           END
+		                     ELSE '10' /* 대기 */
+		                 END AS EVT_STATUS
+			      FROM SYS_SHOP_EVT SSE
+			     WHERE 1=1
+			     <include refid="com.plgrim.ncp.biz.vendor.brnd.whereSysShopEvt"/>
+			     ORDER BY EVT_STATUS ASC, SSE.REG_DT DESC
+	             <include refid="com.plgrim.ncp.base.endPage"/>
+		  )EVT
+    </select>
+
+    <!-- 브랜드 매장 이벤트 목록 건수 -->
+    <select id="selectSysShopEvtListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="long">
+  		SELECT /* [biz.com.brnd.xml][selectSysShopEvtListCount][브랜드 매장 이벤트 목록 건수][Mark] */
+  		       COUNT(*)
+	      FROM SYS_SHOP_EVT SSE
+	     WHERE 1=1
+	     <include refid="com.plgrim.ncp.biz.vendor.brnd.whereSysShopEvt"/>
+    </select>
+
+    <!-- 브랜드 매장 이벤트 목록 엑셀 -->
+    <select id="selectSysShopEvtListExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.com.brnd.xml][selectSysShopEvtListExcel][브랜드 매장 이벤트 목록 엑셀][Mark] */
+		       EVT.EVT_NM
+		       ,CASE WHEN EVT.EVT_STATUS = '10' THEN '대기'
+		             WHEN EVT.EVT_STATUS = '10' THEN '진행중'
+		             ELSE '종료'
+		         END AS EVT_STATUS_NM
+		       ,TO_CHAR(TO_DATE(EVT.EVT_BEG_DATE,'YYYYMMDD'),'YYYY-MM-DD')||' ~ '||TO_CHAR(TO_DATE(EVT.EVT_END_DATE,'YYYYMMDD'),'YYYY-MM-DD') AS TERM_DATE
+		       ,CASE WHEN EVT.USE_YN = 'Y' THEN '사용'
+				     ELSE '미사용'
+				END AS USE_YN_NM
+			   ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = EVT.REGTR_ID) || CASE WHEN EVT.REGTR_ID IS NOT NULL THEN '(' || EVT.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		       ,TO_CHAR(EVT.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		  FROM(
+				SELECT SSE.EVT_NM
+				       ,SSE.EVT_BEG_DATE
+				       ,SSE.EVT_END_DATE
+		               ,SSE.USE_YN
+				       ,CASE WHEN SSE.USE_YN = 'Y'
+		                     THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+		                               WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+		                               ELSE '30' /* 종료 */
+		                           END
+		                     ELSE '10' /* 대기 */
+		                 END AS EVT_STATUS
+		                ,SSE.REGTR_ID
+		                ,SSE.REG_DT
+			      FROM SYS_SHOP_EVT SSE
+			     WHERE 1=1
+			     <include refid="com.plgrim.ncp.biz.vendor.brnd.whereSysShopEvt"/>
+			     ORDER BY EVT_STATUS ASC, SSE.REG_DT DESC
+			    )EVT
+    </select>
+
+    <resultMap id="vendorBrndHoldyListResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndHoldyResult">
+		<result property="sysDate"	    column="SYS_DATE"   /><!-- 시스템일자 -->
+		<result property="shopId"	    column="SHOP_ID"    /><!-- 매장 아이디 -->
+		<result property="brndId"	    column="BRND_ID"    /><!-- 브렌드 아이디 -->
+		<result property="useYn"	    column="USE_YN"     /><!-- 사용여부 -->
+		<result property="dscr"	        column="DSCR"       /><!-- 설명 -->
+		<result property="regtrId"	    column="REGTR_ID"   /><!-- 등록자 아이디 -->
+		<result property="regDt"	    column="REG_DT"     /><!-- 등록일 -->
+		<result property="udterId"	    column="UDTER_ID"   /><!-- 수정자 아이디 -->
+		<result property="udtDt"	    column="UDT_DT"     /><!-- 수정일 -->
+		<result property="regtrNm"	    column="REGTR_NM"   /><!-- 등록자명 -->
+		<result property="udterNm"	    column="UDTER_NM"   /><!-- 수정자명 -->
+		<result property="viewRegDt"	column="VIEW_REG_DT"/><!-- 등록일(YYYY-MM-DD HH24:MI) -->
+		<result property="viewUdtDt"	column="VIEW_UDT_DT"/><!-- 수정일(YYYY-MM-DD HH24:MI) -->
+		<result property="gubun"    	column="GUBUN"      /><!-- 일별:DAY, 요일별:WEEK -->
+    </resultMap>
+
+    <!-- 브랜드 매장 휴일 조회 목록 -->
+    <select id="selectSysShopHoldyList" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultMap="vendorBrndHoldyListResultMap">
+		SELECT /* [biz.com.brnd.xml][selectSysShopHoldyList][브랜드 매장 휴일 조회 목록][Mark] */
+		       T1.*
+		 FROM(
+			 <include refid="com.plgrim.ncp.base.beginPage"/>
+			 SELECT TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+			       ,HOLDY.SHOP_ID
+			       ,HOLDY.BRND_ID
+			       ,HOLDY.USE_YN
+			       ,HOLDY.DSCR
+			       ,HOLDY.REGTR_ID
+			       ,HOLDY.REG_DT
+			       ,HOLDY.UDTER_ID
+			       ,HOLDY.UDT_DT
+			       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID) || CASE WHEN HOLDY.REGTR_ID IS NOT NULL THEN '(' || HOLDY.REGTR_ID || ')' END AS REGTR_NM
+			       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID) || CASE WHEN HOLDY.UDTER_ID IS NOT NULL THEN '(' || HOLDY.UDTER_ID || ')' END AS UDTER_NM
+			       ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT
+			       ,TO_CHAR(HOLDY.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT
+			       ,HOLDY.GUBUN
+			  FROM(
+			        SELECT SYS_DATE
+			               ,SHOP_ID
+			               ,BRND_ID
+			               ,USE_YN
+			               ,DSCR
+			               ,REGTR_ID
+			               ,REG_DT
+			               ,UDTER_ID
+			               ,UDT_DT
+			               ,'DAY' AS GUBUN
+			          FROM SYS_SHOP_HOLDY
+			         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+			           AND BRND_ID = #{sysShopHoldy.brndId,jdbcType=VARCHAR}
+			           AND USE_YN = 'Y'
+			           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+			        UNION ALL
+			        SELECT SC.SYS_DATE
+			               ,SSHD.SHOP_ID
+			               ,SSHD.BRND_ID
+			               ,'Y' AS USE_YN
+			               ,'정기휴일' AS DSCR
+			               ,SSHD.REGTR_ID
+			               ,SSHD.REG_DT
+			               ,SSHD.UDTER_ID
+			               ,SSHD.UDT_DT
+			               ,'WEEK' AS GUBUN
+			          FROM SYS_SHOP_HOLDY_DOW SSHD
+			               ,SYS_CLDR SC
+			         WHERE SSHD.SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+			           AND SSHD.BRND_ID = #{sysShopHoldy.brndId,jdbcType=VARCHAR}
+			           AND SSHD.DOW_CD = SC.DOW_CD
+			           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+			      )HOLDY
+			 ORDER BY HOLDY.SYS_DATE
+			 <include refid="com.plgrim.ncp.base.endPage"/>
+		    )T1
+    </select>
+
+    <!-- 브랜드 매장 휴일 조회 건수 -->
+    <select id="selectSysShopHoldyListCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="long">
+		 SELECT /* [biz.com.brnd.xml][selectSysShopHoldyListCount][브랜드 매장 휴일 조회 건수][Mark] */
+		 	    COUNT(*)
+		  FROM(
+		        SELECT SYS_DATE
+		          FROM SYS_SHOP_HOLDY
+		         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND BRND_ID = #{sysShopHoldy.brndId,jdbcType=VARCHAR}
+		           AND USE_YN = 'Y'
+		           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		        UNION ALL
+		        SELECT SC.SYS_DATE
+		          FROM SYS_SHOP_HOLDY_DOW SSHD
+		               ,SYS_CLDR SC
+		         WHERE SSHD.SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND SSHD.BRND_ID = #{sysShopHoldy.brndId,jdbcType=VARCHAR}
+		           AND SSHD.DOW_CD = SC.DOW_CD
+		           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		      )
+    </select>
+
+    <!-- 브랜드 매장 휴일 조회 엑셀 -->
+    <select id="selectSysShopHoldyListExcel" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="java.util.LinkedHashMap">
+		 SELECT /* [biz.com.brnd.xml][selectSysShopHoldyListExcel][브랜드 매장 휴일 조회 엑셀][Mark] */
+		        TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+		       ,HOLDY.DSCR
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID)||'('||HOLDY.REGTR_ID||')' AS REGTR_NM
+		       ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT
+<!-- 		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID)||'('||HOLDY.REGTR_ID||')' AS UDTER_NM -->
+<!-- 		       ,TO_CHAR(HOLDY.UDT_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT -->
+		  FROM(
+		        SELECT SYS_DATE
+		               ,SHOP_ID
+		               ,BRND_ID
+		               ,USE_YN
+		               ,DSCR
+		               ,REGTR_ID
+		               ,REG_DT
+		               ,UDTER_ID
+		               ,UDT_DT
+		               ,'DAY' AS GUBUN
+		          FROM SYS_SHOP_HOLDY
+		         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND BRND_ID = #{sysShopHoldy.brndId,jdbcType=VARCHAR}
+		           AND USE_YN = 'Y'
+		           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		        UNION ALL
+		        SELECT SC.SYS_DATE
+		               ,SSHD.SHOP_ID
+		               ,SSHD.BRND_ID
+		               ,'Y' AS USE_YN
+		               ,'정기휴일' AS DSCR
+		               ,SSHD.REGTR_ID
+		               ,SSHD.REG_DT
+		               ,SSHD.UDTER_ID
+		               ,SSHD.UDT_DT
+		               ,'WEEK' AS GUBUN
+		          FROM SYS_SHOP_HOLDY_DOW SSHD
+		               ,SYS_CLDR SC
+		         WHERE SSHD.SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND SSHD.BRND_ID = #{sysShopHoldy.brndId,jdbcType=VARCHAR}
+		           AND SSHD.DOW_CD = SC.DOW_CD
+		           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		      )HOLDY
+		 ORDER BY HOLDY.SYS_DATE
+    </select>
+
+    <!-- 브랜드 매장 휴일 일자별 체크 -->
+    <select id="selectSysShopHoldyDayCheck" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy" resultType="int">
+		SELECT /* [biz.com.brnd.xml][selectSysShopHoldyDayCheck][브랜드 매장 휴일 일자별 체크][Mark] */
+               COUNT(*)
+          FROM SYS_SHOP_HOLDY
+         WHERE SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+           AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+           AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <resultMap id="vendorBrndHoldyDayResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndHoldyResult">
+		<result property="sysDate"	    column="SYS_DATE"   /><!-- 시스템일자 -->
+		<result property="shopId"	    column="SHOP_ID"    /><!-- 매장 아이디 -->
+		<result property="brndId"	    column="BRND_ID"    /><!-- 브렌드 아이디 -->
+		<result property="useYn"	    column="USE_YN"     /><!-- 사용여부 -->
+		<result property="dscr"	        column="DSCR"       /><!-- 설명 -->
+		<result property="regtrId"	    column="REGTR_ID"   /><!-- 등록자 아이디 -->
+		<result property="regDt"	    column="REG_DT"     /><!-- 등록일 -->
+		<result property="udterId"	    column="UDTER_ID"   /><!-- 수정자 아이디 -->
+		<result property="udtDt"	    column="UDT_DT"     /><!-- 수정일 -->
+		<result property="regtrNm"	    column="REGTR_NM"   /><!-- 등록자명 -->
+		<result property="udterNm"	    column="UDTER_NM"   /><!-- 수정자명 -->
+		<result property="viewRegDt"	column="VIEW_REG_DT"/><!-- 등록일(YYYY-MM-DD HH24:MI) -->
+		<result property="viewUdtDt"	column="VIEW_UDT_DT"/><!-- 수정일(YYYY-MM-DD HH24:MI) -->
+    </resultMap>
+
+    <!-- 브랜드 매장 휴일 일자별 상세조회 -->
+    <select id="selectSysShopHoldyDay" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy" resultMap="vendorBrndHoldyDayResultMap">
+        SELECT /* [biz.com.brnd.xml][selectSysShopHoldyDay][브랜드 매장 휴일 일자별 상세조회][Mark] */
+                TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+			    ,HOLDY.SHOP_ID
+			    ,HOLDY.BRND_ID
+			    ,HOLDY.USE_YN
+			    ,HOLDY.DSCR
+			    ,HOLDY.REGTR_ID
+			    ,HOLDY.REG_DT
+			    ,HOLDY.UDTER_ID
+			    ,HOLDY.UDT_DT
+			    ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID) AS REGTR_NM
+			    ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID) AS UDTER_NM
+			    ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT
+			    ,TO_CHAR(HOLDY.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT
+          FROM SYS_SHOP_HOLDY HOLDY
+         WHERE SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+           AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+           AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 브랜드 매장 휴일 일자별 등록 -->
+    <insert id="insertSysShopHoldyDay" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy">
+    	INSERT /* [biz.com.brnd.xml][insertSysShopHoldyDay][브랜드 매장 휴일 일자별 등록][Mark] */
+	    INTO SYS_SHOP_HOLDY
+		(
+	        SYS_DATE
+	       ,SHOP_ID
+	       ,BRND_ID
+	       ,USE_YN
+	       ,DSCR
+	       ,REGTR_ID
+           ,REG_DT
+		)
+		VALUES
+		(
+	        #{sysDate,jdbcType=VARCHAR}
+	       ,#{shopId,jdbcType=VARCHAR}
+	       ,#{brndId,jdbcType=VARCHAR}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{dscr,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)
+    </insert>
+
+    <!-- 브랜드 매장 휴일 일자별 수정 -->
+    <update id="updateSysShopHoldyDay" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndHoldyDTO">
+		UPDATE /* [biz.com.brnd.xml][deleteSysShopHoldyDay][브랜드 매장 휴일 일자별 수정][Mark] */
+SYS_SHOP_HOLDY SET
+               SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+               ,DSCR = #{dscr,jdbcType=VARCHAR}
+               ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+               ,UDT_DT = SYSDATE
+         WHERE SYS_DATE = #{sysDateKey,jdbcType=VARCHAR}
+           AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+           AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 브랜드 매장 휴일 일자별 삭제 -->
+    <delete id="deleteSysShopHoldyDay" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy">
+		DELETE /* [biz.com.brnd.xml][deleteSysShopHoldyDay][브랜드 매장 휴일 일자별 삭제][Mark] */
+	      FROM SYS_SHOP_HOLDY
+		 WHERE SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+    <resultMap id="vendorBrndHoldyWeekResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndHoldyResult">
+		<result property="shopId"	    column="SHOP_ID"    /><!-- 매장 아이디 -->
+		<result property="brndId"	    column="BRND_ID"    /><!-- 브랜드 아이디 -->
+		<result property="dowCd"	    column="DOW_CD"     /><!-- 요일코드 -->
+		<result property="regtrId"	    column="REGTR_ID"   /><!-- 등록자 아이디 -->
+		<result property="regDt"	    column="REG_DT"     /><!-- 등록일 -->
+		<result property="udterId"	    column="UDTER_ID"   /><!-- 수정자 아이디 -->
+		<result property="udtDt"	    column="UDT_DT"     /><!-- 수정일 -->
+		<result property="regtrNm"	    column="REGTR_NM"   /><!-- 등록자명 -->
+		<result property="udterNm"	    column="UDTER_NM"   /><!-- 수정자명 -->
+		<result property="viewRegDt"	column="VIEW_REG_DT"/><!-- 등록일(YYYY-MM-DD HH24:MI) -->
+		<result property="viewUdtDt"	column="VIEW_UDT_DT"/><!-- 수정일(YYYY-MM-DD HH24:MI) -->
+    </resultMap>
+
+    <!-- 브랜드 매장 휴일 요일별 상세조회 -->
+    <select id="selectSysShopHoldyWeek" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldyDow" resultMap="vendorBrndHoldyWeekResultMap">
+        SELECT /* [biz.com.brnd.xml][selectSysShopHoldyWeek][브랜드 매장 휴일 요일별 상세조회][Mark] */
+                SSHD.SHOP_ID
+               ,SSHD.BRND_ID
+               ,SSHD.DOW_CD
+               ,SSHD.REGTR_ID
+               ,SSHD.REG_DT
+               ,SSHD.UDTER_ID
+               ,SSHD.UDT_DT
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSHD.REGTR_ID) AS REGTR_NM
+			   ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSHD.UDTER_ID) AS UDTER_NM
+			   ,TO_CHAR(SSHD.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT
+			   ,TO_CHAR(SSHD.UDT_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT
+          FROM SYS_SHOP_HOLDY_DOW SSHD
+         WHERE SSHD.SHOP_ID = #{shopId,jdbcType=VARCHAR}
+           AND SSHD.BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 브랜드 매장 휴일 요일별 등록 -->
+    <insert id="insertSysShopHoldyWeek" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldyDow">
+    	INSERT /* [biz.com.brnd.xml][insertSysShopHoldyWeek][브랜드 매장 휴일 요일별 등록][Mark] */
+	    INTO SYS_SHOP_HOLDY_DOW
+		(
+	        SHOP_ID
+	       ,BRND_ID
+	       ,DOW_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{shopId,jdbcType=VARCHAR}
+	       ,#{brndId,jdbcType=VARCHAR}
+	       ,#{dowCd,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+    </insert>
+
+    <!-- 브랜드 매장 휴일 요일별 삭제 -->
+    <delete id="deleteSysShopHoldyWeek" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldyDow">
+		DELETE /* [biz.com.brnd.xml][deleteSysShopHoldyWeek][브랜드 매장 휴일 요일별 삭제][Mark] */
+		  FROM SYS_SHOP_HOLDY_DOW
+		 WHERE SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+    <!-- 브랜드 매장 이벤트 단건 조회 -->
+    <select id="selectOneSysShopEvt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt" resultMap="vendorBrndEventResultMap">
+
+        SELECT /* [biz.com.brnd.xml][selectOneSysShopEvt][브랜드 매장 이벤트 조회][Allen] */
+        		 sse.SHOP_EVT_SN
+               , sse.SHOP_ID
+               , sse.EVT_NM
+               , sse.EVT_BEG_DATE
+               , sse.EVT_END_DATE
+               , sse.EVT_CONT
+               , sse.USE_YN
+               , sse.REGTR_ID
+               , sse.REG_DT
+               , sse.UDTER_ID
+               , sse.UDT_DT
+          FROM (
+		        SELECT
+		        		 ROWNUM rnum
+		               , SHOP_EVT_SN
+		               , SHOP_ID
+		               , EVT_NM
+		               , EVT_BEG_DATE
+		               , EVT_END_DATE
+		               , EVT_CONT
+		               , USE_YN
+		               , REGTR_ID
+		               , REG_DT
+		               , UDTER_ID
+		               , UDT_DT
+		         FROM SYS_SHOP_EVT
+				 WHERE USE_YN = 'Y'
+				   AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN EVT_BEG_DATE AND EVT_END_DATE
+				   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+				  ORDER BY UDT_DT
+				) sse
+			WHERE sse.rnum &lt;= 1
+    </select>
+
+    <!-- 이벤트 중인 매장 리스트 조회 -->
+    <select id="selectBrndShopEvtList" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt" resultMap="vendorBrndEventResultMap">
+
+        SELECT /* [biz.com.brnd.xml][selectBrndShopEvtList][브랜드 매장 이벤트 리스트 조회][Allen] */
+        		 sse.SHOP_EVT_SN
+               , sse.SHOP_ID
+               , sse.EVT_NM
+               , sse.EVT_BEG_DATE
+               , sse.EVT_END_DATE
+               , sse.EVT_CONT
+               , sse.USE_YN
+               , sse.REGTR_ID
+               , sse.REG_DT
+               , sse.UDTER_ID
+               , sse.UDT_DT
+          FROM (
+		        SELECT
+		                 SHOP_EVT_SN
+		               , SHOP_ID
+		               , EVT_NM
+		               , EVT_BEG_DATE
+		               , EVT_END_DATE
+		               , EVT_CONT
+		               , USE_YN
+		               , REGTR_ID
+		               , REG_DT
+		               , UDTER_ID
+		               , UDT_DT
+		         FROM SYS_SHOP_EVT
+				 WHERE USE_YN = 'Y'
+				   AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN EVT_BEG_DATE AND EVT_END_DATE
+				  <if test="shopIds != null">
+				       AND SHOP_ID IN
+				       <foreach item="shopId" collection="shopIds" open="(" separator="," close=")">
+					  	 #{shopId}
+					   </foreach>
+			       </if>
+				  ORDER BY UDT_DT
+				) sse
+
+    </select>
+
+    <select id="selectSysBrndNm" resultMap="sysBrndComboResultMap2" parameterType="java.util.HashMap">
+		SELECT
+			main.brnd_id
+			, main.brnd_nm
+			, main.brnd_grp_cnt
+			, main.own_brnd_yn
+			, main.first_brnd_char
+  			, COUNT(main.own_brnd_id) over(partition BY main.own_brnd_yn) AS own_brnd_cnt
+  			, COUNT(main.brnd_nm) OVER(PARTITION BY SUBSTR(LOWER(main.brnd_nm), 0, 1)) - COUNT(main.own_brnd_id) OVER(PARTITION BY SUBSTR(LOWER(main.brnd_nm), 0, 1)) AS tot_cnt
+		FROM (
+			SELECT
+				own.own_brnd_id
+				, otr.brnd_id
+				, otr.brnd_nm
+				, otr.brnd_grp_cnt
+				, (CASE WHEN own.own_brnd_id IS NULL THEN 'N' ELSE 'Y' END) AS own_brnd_yn
+				, otr.first_brnd_char
+			FROM (
+				SELECT
+					regexp_substr(d.param, '[^,]+', 1, level) as own_brnd_id
+				FROM (
+					SELECT #{ownBrndIds:VARCHAR} AS param FROM dual
+				) d
+				CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+')
+			) own RIGHT OUTER JOIN (
+				<include refid="com.plgrim.ncp.biz.vendor.brnd.orgSelectSysBrndNm"/>
+			) otr
+			ON own.own_brnd_id = otr.brnd_id
+		) main
+		ORDER BY main.first_brnd_char
+	</select>
+
+    <sql id="orgSelectSysBrndNm">
+    	SELECT
+			brnd_id
+			, brnd_nm
+			, COUNT(brnd_nm) OVER(PARTITION BY SUBSTR(LOWER(brnd_nm), 0, 1)) AS brnd_grp_cnt
+			, SUBSTR(UPPER(brnd_nm), 0, 1) AS first_brnd_char
+		FROM (
+		    SELECT
+				DECODE(brnd_grp_yn, 'N', (SELECT brnd_id FROM SYS_BRND WHERE brnd_id = sbrnd.upper_brnd_id), brnd_id) AS brnd_id
+				, DECODE(brnd_grp_yn, 'N', (SELECT brnd_nm FROM SYS_BRND WHERE brnd_id = sbrnd.upper_brnd_id), BRND_NM) AS brnd_NM
+		      FROM SYS_BRND sbrnd
+		     WHERE 1 = 1
+				<!-- USE_YN 조건 삭제 전시브랜드 사용하지 않더라도 하위 상품은 노출 -->
+				<if test="brndIds != null">
+					AND BRND_ID IN
+					<foreach item="brndId" collection="brndIds" open="(" separator="," close=")">
+						#{brndId}
+					</foreach>
+				</if>
+		)
+		GROUP BY brnd_id, brnd_nm
+    </sql>
+
+	    <resultMap id="vendorBrndPrdListResultMap" type="com.plgrim.ncp.biz.vendor.result.VendorBrndListResult">
+		<result property="sysBrnd.brndId"	                  column="BRND_ID"	               /><!-- 브랜드ID -->
+		<result property="sysBrnd.brndNm"	                  column="BRND_NM"	               /><!-- 브랜드명 -->
+		<result property="sysPrdlstCd.prdlstCd"	              column="PRDLST_CD"	           /><!-- 품목코드 -->
+		<result property="sysPrdlstCd.prdlstNm"	              column="PRDLST_NM"	           /><!-- 품목명 -->
+		<result property="sysPrdlstCd.useYn"	              column="USE_YN"	               /><!-- 품목사용여부 -->
+		<result property="sysPrdlstCd.prdlstSectCd"	 		  column="PRDLST_SECT_CD"	       /><!-- 품목구분코드 -->
+		<result property="sysPrdlstCd.prdlstDscr"	 		  column="PRDLST_DSCR"	           /><!-- 품목설명 -->
+		<result property="sysBrndPrdlst.repairPsbYn" 		  column="REPAIR_PSB_YN"           /><!-- 수선 가능 여부 -->
+		<result property="sysBrndPrdlst.shopRepairFeeSectCd"  column="SHOP_REPAIR_FEE_SECT_CD" /><!-- 수선수수료 구분코드 -->
+		<result property="sysBrndPrdlst.shopRepairFeeAmt"	  column="SHOP_REPAIR_FEE_AMT"     /><!-- 수선수수료 할인금액 -->
+		<result property="sysBrndPrdlst.shopRepairFeeRt"  	  column="SHOP_REPAIR_FEE_RT"      /><!-- 수선수수료 할인율 -->
+		<result property="shopRepairFee"  	                  column="SHOP_REPAIR_FEE"         /><!-- 수선수수료 구분코드로 구분된 수수료 -->
+		<result property="sysBrndPrdlst.regtrId"	          column="REGTR_ID"                /><!-- 등록자아이디 -->
+		<result property="sysBrndPrdlst.regDt"                column="REG_DT"                  /><!-- 등록일자 -->
+		<result property="sysBrndPrdlst.udtDt"	              column="UDT_DT"	               /><!-- 수정일자 -->
+		<result property="sysBrndPrdlst.udterId"	          column="UDTER_ID"	               /><!-- 수정자아이디 -->
+    </resultMap>
+
+    <!-- 브랜드별 품목별 수선정보 등록 및 수정 -->
+    <update id="insertSysBrndPrdlst" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndPrdlst">
+    	MERGE /* [biz.com.brnd.xml][updateSysBrndPrdlst][브랜드별 품목별 수선정보 등록 및 수정][jewellig.lee] */
+    	INTO  SYS_BRND_PRDLST A
+    	USING (SELECT COUNT(1) AS CNT
+    			 FROM SYS_BRND_PRDLST
+    		    WHERE BRND_ID = #{brndId}
+    		      AND PRDLST_CD = #{prdlstCd} ) B
+
+    	ON (B.CNT > 0 AND A.BRND_ID = #{brndId} AND A.PRDLST_CD = #{prdlstCd} )
+
+    	WHEN MATCHED THEN
+
+    		UPDATE
+    		SET 	 REPAIR_PSB_YN = #{repairPsbYn}
+		    		,SHOP_REPAIR_FEE_SECT_CD = #{shopRepairFeeSectCd}
+		    		,SHOP_REPAIR_FEE_AMT = #{shopRepairFeeAmt}
+		    		,SHOP_REPAIR_FEE_RT = #{shopRepairFeeRt}
+		    		,UDTER_ID = #{udterId}
+    				,UDT_DT = SYSDATE
+
+    	WHEN NOT MATCHED THEN
+
+    	    INSERT (
+    	    		 BRND_ID
+    	    		,PRDLST_CD
+    	    		,REPAIR_PSB_YN
+    	    		,SHOP_REPAIR_FEE_SECT_CD
+    	    		,SHOP_REPAIR_FEE_AMT
+    	    		,SHOP_REPAIR_FEE_RT
+    	    		,REGTR_ID
+    	    		,REG_DT
+    	    		,UDTER_ID
+    	    		,UDT_DT
+    	   ) VALUES (
+    	    		 #{brndId}
+    	    		,#{prdlstCd}
+    	    		,#{repairPsbYn}
+    	    		,#{shopRepairFeeSectCd}
+    	    		,#{shopRepairFeeAmt}
+    	    		,#{shopRepairFeeRt}
+    	    		,#{regtrId}
+    	    		,SYSDATE
+    	    		,#{udterId}
+    	    		,SYSDATE
+    	   )
+
+	</update>
+
+	<!-- 브랜드별 품목별 수선정보 등록를 위한 품목코드 및 브랜드ID 유효성 조회 -->
+	<select id="selectBrndPrdKeyValid" parameterType="com.plgrim.ncp.biz.goods.data.GoodsValidDTO" resultType="java.util.HashMap">
+	  SELECT /* [biz.com.brnd.xml][selectBrndPrdKeyValid][브랜드별 품목별 수선정보 등록를 위한 품목코드 및 브랜드ID 유효성 조회][jewellig.lee] */
+	 	    (SELECT COUNT(1) FROM SYS_BRND WHERE BRND_ID=#{brndId}) AS BRND_CNT
+           ,(SELECT COUNT(1) FROM SYS_PRDLST_CD WHERE PRDLST_CD=#{prdlstCd}) AS PRD_CNT
+      FROM DUAL
+	</select>
+
+	<!-- 브랜드별 품목별 수선정보 등록를 위한 품목코드+브랜드ID 조합 존재 여부 유효성 조회 -->
+    <select id="selectBrndPrdExistCount" parameterType="com.plgrim.ncp.biz.goods.data.GoodsValidDTO" resultType="long">
+		SELECT 	/* [biz.com.brnd.xml][selectBrndPrdExistCount][브랜드별 품목별 수선정보 등록를 위한 품목코드+브랜드ID 조합 존재 건수 조회][jewellig.lee] */
+				 COUNT(1)
+		FROM 	 SYS_BRND_PRDLST
+		WHERE    BRND_ID=#{brndId}
+		AND      PRDLST_CD=#{prdlstCd}
+	</select>
+
+    <!-- 브랜드별 품목별 수선정보 조회를 위한 조건 쿼리 -->
+	<sql id="whereBrndPrdlst">
+        <choose>
+			<when test='sysBrnd.brndId != null and sysBrnd.brndId != ""'>
+				<choose>
+					<when test='sysBrnd.brndId == "MCBR" and searchBrndIds != null and searchBrndIds !=""'>
+						AND <foreach collection="searchBrndIdsArr" item="searchBrndId" index="index" separator="or" open=" (" close=")">
+		      					SB.BRND_ID = #{searchBrndId}
+		  					</foreach>
+					</when>
+					<otherwise>
+						AND SBP.BRND_ID = #{sysBrnd.brndId} /*브랜드ID*/
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+			 	<if test='sysBrndBrndIdEmptyValue != null and sysBrndBrndIdEmptyValue !=""' >
+			 			AND <foreach collection="sysBrndBrndIdEmptyValueArr" item="sysBrndBrndIdEmptyValue" index="index" separator="or" open=" (" close=" or SBP.BRND_ID IN (
+			 																																									SELECT BRND_ID
+			 																																									FROM (SELECT  LEVEL AS LV
+			 																																									             ,a.BRND_ID
+																																				      						          FROM   SYS_BRND a
+																																				                                      WHERE 1=1
+																														                                                              AND USE_YN='Y'
+																																				                                      CONNECT BY PRIOR a.BRND_ID = a.UPPER_BRND_ID
+																																				                                      START WITH a.UPPER_BRND_ID = 'MCBR')
+																																				                                WHERE LV>1 )
+																																				                              )">
+		      					SBP.BRND_ID = #{sysBrndBrndIdEmptyValue}
+		  					</foreach>
+				</if>
+			</otherwise>
+	    </choose>
+		<if test='sysPrdlstCd.useYn != null and sysPrdlstCd.useYn != ""'>
+			AND SPC.USE_YN = #{sysPrdlstCd.useYn} /*품목사용여부*/
+		</if>
+		<if test='sysBrndPrdlst.repairPsbYn != null and sysBrndPrdlst.repairPsbYn != ""'>
+			AND SBP.REPAIR_PSB_YN = #{sysBrndPrdlst.repairPsbYn} /*수선사용여부*/
+		</if>
+		<if test='sysPrdlstCd.prdlstCd != null and sysPrdlstCd.prdlstCd != ""'>
+			AND UPPER(SPC.PRDLST_CD) = UPPER(#{sysPrdlstCd.prdlstCd}) /*품목코드*/
+		</if>
+		<if test='sysPrdlstCd.prdlstNm != null and sysPrdlstCd.prdlstNm != ""'>
+			AND UPPER(SPC.PRDLST_NM) LIKE '%'||UPPER(#{sysPrdlstCd.prdlstNm})||'%' /*품목명*/
+		</if>
+
+	</sql>
+
+    <!-- 브랜드별 품목별 수선정보 건수 조회 -->
+    <select id="selectBrndPrdCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="long">
+		SELECT 	/* [biz.com.brnd.xml][selectBrndShopCount][브랜드별 품목별 수선정보 건수 조회][jewellig.lee] */
+			    COUNT(*)
+	 	 FROM 	SYS_BRND_PRDLST SBP
+				,SYS_BRND SB
+				,SYS_PRDLST_CD SPC
+
+		WHERE   SBP.BRND_ID = SB.BRND_ID
+		AND     SBP.PRDLST_CD = SPC.PRDLST_CD
+		AND     SB.USE_YN = 'Y'
+		<include refid="com.plgrim.ncp.biz.vendor.brnd.whereBrndPrdlst"/>
+
+	</select>
+
+    <!-- 브랜드별 품목별 수선정보 조회 -->
+    <select id="selectSysBrndPrdlst" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultMap="vendorBrndPrdListResultMap">
+		SELECT /* [biz.com.brnd.xml][selectSysBrndPrdlst][브랜드별 품목별 수선정보 조회][jewellig.lee] */
+
+		        *
+		FROM (
+				SELECT
+				        ROWNUM AS RNUM
+				       ,A.*
+				FROM
+						(SELECT
+
+							      SBP.BRND_ID
+							    , SB.BRND_NM
+							    , SPC.PRDLST_CD
+							    , SPC.PRDLST_NM
+							    , SPC.USE_YN
+							    , (SELECT CD_NM FROM SYS_CD WHERE CD = SPC.PRDLST_SECT_CD) AS PRDLST_SECT_CD
+							    , SPC.PRDLST_DSCR
+							    , SBP.REPAIR_PSB_YN
+							    , SBP.SHOP_REPAIR_FEE_SECT_CD
+							    , SBP.SHOP_REPAIR_FEE_AMT
+							    , SBP.SHOP_REPAIR_FEE_RT
+							    , NVL(DECODE(SHOP_REPAIR_FEE_SECT_CD,'FIXRT',SHOP_REPAIR_FEE_RT,'FIXAMT',SHOP_REPAIR_FEE_AMT),0) AS SHOP_REPAIR_FEE
+							    , SBP.REGTR_ID
+							    , SBP.REG_DT
+							    , SBP.UDTER_ID
+							    , SBP.UDT_DT
+
+						FROM 	  SYS_BRND_PRDLST SBP
+							     ,SYS_BRND SB
+							     ,SYS_PRDLST_CD SPC
+
+						WHERE    SBP.BRND_ID = SB.BRND_ID
+						AND      SBP.PRDLST_CD = SPC.PRDLST_CD
+						AND      SB.USE_YN = 'Y'
+						<include refid="com.plgrim.ncp.biz.vendor.brnd.whereBrndPrdlst"/>
+						ORDER BY SBP.BRND_ID, SB.SORT_SEQ, SPC.SORT_SEQ ) A
+			 )
+		WHERE 1 = 1
+		<if test='brndPldsExcelYn != null and brndPldsExcelYn == "N"'>
+				AND   RNUM BETWEEN #{beginIndex} AND #{endIndex}
+		</if>
+    </select>
+
+    <!-- 브랜드별 품목별 수선정보 수정 -->
+    <update id="updateSysBrndPrdlst" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndPrdlst">
+        UPDATE  /* [biz.com.brnd.xml][updateSysBrndPrdlst][브랜드별 품목별 수선정보 수정]][jewellig.lee] */
+ 			   SYS_BRND_PRDLST
+ 		SET
+ 			    UDT_DT = SYSDATE
+ 			   ,UDTER_ID = #{udterId}
+ 			   <if test='repairPsbYn != null and repairPsbYn != ""'>
+               ,REPAIR_PSB_YN = #{repairPsbYn}             /*수선사용여부*/
+               </if>
+               <if test='shopRepairFeeSectCd != null and shopRepairFeeSectCd != ""'>
+               ,SHOP_REPAIR_FEE_SECT_CD = #{shopRepairFeeSectCd}  /*수선수수료 구분코드*/
+               </if>
+               <if test='shopRepairFeeAmt != null'>
+               ,SHOP_REPAIR_FEE_AMT = #{shopRepairFeeAmt}           /*수선수수료 할인금액*/
+               </if>
+               <if test='shopRepairFeeRt != null'>
+               ,SHOP_REPAIR_FEE_RT = #{shopRepairFeeRt}    /*수선수수료 할인율*/
+               </if>
+       WHERE   1=1
+       AND     PRDLST_CD = #{prdlstCd}
+       AND     (BRND_ID = #{brndId} OR BRND_ID IN (SELECT BRND_ID
+				      								 FROM SYS_BRND SB
+				                                    WHERE 1=1
+				                                   CONNECT BY PRIOR BRND_ID = UPPER_BRND_ID
+				                                   START WITH UPPER_BRND_ID = #{brndId})
+	           )
+    </update>
+
+    <!-- 브랜드별 품목별 수선정보 내역 등록을 위한 조회 -->
+    <select id="selectSysBrndPrdUpdateLst" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndPrdlst" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndPrdlst">
+		SELECT /* [biz.com.brnd.xml][selectSysBrndPrdUpdateLst][브랜드별 품목별 수선정보 내역을 등록을 위한 조회][jewellig.lee] */
+				*
+		FROM 	SYS_BRND_PRDLST
+		WHERE   PRDLST_CD = #{prdlstCd}
+		AND     (BRND_ID = #{brndId} OR BRND_ID IN (SELECT BRND_ID
+					      						     FROM SYS_BRND SB
+					                                WHERE 1=1
+					                               CONNECT BY PRIOR BRND_ID = UPPER_BRND_ID
+					                               START WITH UPPER_BRND_ID = #{brndId})
+	           )
+
+    </select>
+
+    <!-- 브랜드별 품목별 수선정보 내역 등록 및 수정 -->
+    <update id="updateSysBrndPrdlstHistOLD" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndPrdlstHist">
+    	MERGE /* [biz.com.brnd.xml][updateSysBrndPrdlstHist][브랜드별 품목별 수선정보 내역 등록 및 수정][jewellig.lee] */
+    	INTO  SYS_BRND_PRDLST_HIST A
+    	USING (SELECT COUNT(1) AS CNT
+    			 FROM SYS_BRND_PRDLST_HIST
+    		    WHERE BRND_ID = #{brndId}
+    		      AND PRDLST_CD = #{prdlstCd} ) B
+
+    	ON (B.CNT > 0 AND A.BRND_ID = #{brndId} AND A.PRDLST_CD = #{prdlstCd} )
+
+    	WHEN MATCHED THEN
+
+    		UPDATE
+    		SET 	HIST_DT = SYSDATE
+		    		,REPAIR_PSB_YN = #{repairPsbYn}
+		    		,SHOP_REPAIR_FEE_SECT_CD = #{shopRepairFeeSectCd}
+		    		,SHOP_REPAIR_FEE_AMT = #{shopRepairFeeAmt}
+		    		,SHOP_REPAIR_FEE_RT = #{shopRepairFeeRt}
+		    		,UDTER_ID = #{udterId}
+    				,UDT_DT = SYSDATE
+
+    	WHEN NOT MATCHED THEN
+
+    	    INSERT (
+    	    		 BRND_ID
+    	    		,PRDLST_CD
+    	    		,HIST_DT
+    	    		,REPAIR_PSB_YN
+    	    		,SHOP_REPAIR_FEE_SECT_CD
+    	    		,SHOP_REPAIR_FEE_AMT
+    	    		,SHOP_REPAIR_FEE_RT
+    	    		,REGTR_ID
+    	    		,REG_DT
+    	    		,UDTER_ID
+    	    		,UDT_DT
+    	   ) VALUES (
+    	    		 #{brndId}
+    	    		,#{prdlstCd}
+    	    		,SYSDATE
+    	    		,#{repairPsbYn}
+    	    		,#{shopRepairFeeSectCd}
+    	    		,#{shopRepairFeeAmt}
+    	    		,#{shopRepairFeeRt}
+    	    		,#{regtrId}
+    	    		,SYSDATE
+    	    		,#{udterId}
+    	    		,SYSDATE
+    	   )
+
+	</update>
+
+	<!-- 브랜드별 품목별 수선정보 내역 등록 및 수정 -->
+    <update id="updateSysBrndPrdlstHist" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndPrdlstHist">
+
+    	    INSERT  /* [biz.com.brnd.xml][updateSysBrndPrdlstHist][브랜드별 품목별 수선정보 내역 등록 및 수정][jewellig.lee] */
+
+    	    INTO     SYS_BRND_PRDLST_HIST
+
+    	   (
+    	    		 BRND_ID
+    	    		,PRDLST_CD
+    	    		,HIST_DT
+    	    		,REPAIR_PSB_YN
+    	    		,SHOP_REPAIR_FEE_SECT_CD
+    	    		,SHOP_REPAIR_FEE_AMT
+    	    		,SHOP_REPAIR_FEE_RT
+    	    		,REGTR_ID
+    	    		,REG_DT
+    	    		,UDTER_ID
+    	    		,UDT_DT
+    	   ) VALUES (
+    	    		 #{brndId}
+    	    		,#{prdlstCd}
+    	    		,SYSDATE
+    	    		,#{repairPsbYn}
+    	    		,#{shopRepairFeeSectCd}
+    	    		,#{shopRepairFeeAmt}
+    	    		,#{shopRepairFeeRt}
+    	    		,#{regtrId}
+    	    		,SYSDATE
+    	    		,#{udterId}
+    	    		,SYSDATE
+    	   )
+
+	</update>
+
+	<!-- 브랜드별 품목별 수선정보 내역 건수 조회 -->
+    <select id="selectBrndPrdHistCount" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultType="long">
+		SELECT 	/* [biz.com.brnd.xml][selectBrndPrdHistCount][브랜드별 품목별 수선정보 내역 건수 조회][jewellig.lee] */
+				 COUNT(1)
+
+		FROM 	  SYS_BRND_PRDLST_HIST SBPH
+			     ,SYS_BRND SB
+			     ,SYS_PRDLST_CD SPC
+
+		WHERE    SBPH.BRND_ID = SB.BRND_ID
+		AND      SBPH.PRDLST_CD = SPC.PRDLST_CD
+		AND      SB.USE_YN = 'Y'
+		AND      SBPH.PRDLST_CD = #{sysBrndPrdlstHist.prdlstCd}
+		AND      SBPH.BRND_ID = #{sysBrndPrdlstHist.brndId}
+		<!-- AND      (SBPH.BRND_ID = #{sysBrndPrdlstHist.brndId} OR SBPH.BRND_ID IN (SELECT BRND_ID
+						      						             FROM SYS_BRND SB
+						                                        WHERE 1=1
+						                                       CONNECT BY PRIOR BRND_ID = UPPER_BRND_ID
+						                                       START WITH UPPER_BRND_ID = #{sysBrndPrdlstHist.brndId})
+         			 ) -->
+
+	</select>
+
+	<resultMap id="vendorBrndPrdListResultMap2" type="com.plgrim.ncp.biz.vendor.result.VendorBrndListResult">
+		<result property="sysBrnd.brndId"	                  column="BRND_ID"	               /><!-- 브랜드ID -->
+		<result property="sysBrnd.brndNm"	                  column="BRND_NM"	               /><!-- 브랜드명 -->
+		<result property="sysPrdlstCd.prdlstCd"	              column="PRDLST_CD"	           /><!-- 품목코드 -->
+		<result property="sysPrdlstCd.prdlstNm"	              column="PRDLST_NM"	           /><!-- 품목명 -->
+		<result property="sysPrdlstCd.useYn"	              column="USE_YN"	               /><!-- 품목사용여부 -->
+		<result property="sysPrdlstCd.prdlstSectCd"	 		  column="PRDLST_SECT_CD"	       /><!-- 품목구분코드 -->
+		<result property="sysPrdlstCd.prdlstDscr"	 		  column="PRDLST_DSCR"	           /><!-- 품목설명 -->
+		<result property="sysBrndPrdlstHist.repairPsbYn" 		  column="REPAIR_PSB_YN"           /><!-- 수선 가능 여부 -->
+		<result property="sysBrndPrdlstHist.shopRepairFeeSectCd"  column="SHOP_REPAIR_FEE_SECT_CD" /><!-- 수선수수료 구분코드 -->
+		<result property="sysBrndPrdlstHist.shopRepairFeeAmt"	  column="SHOP_REPAIR_FEE_AMT"     /><!-- 수선수수료 할인금액 -->
+		<result property="sysBrndPrdlstHist.shopRepairFeeRt"  	  column="SHOP_REPAIR_FEE_RT"      /><!-- 수선수수료 할인율 -->
+		<result property="shopRepairFee"  	                  column="SHOP_REPAIR_FEE"         /><!-- 수선수수료 구분코드로 구분된 수수료 -->
+		<result property="sysBrndPrdlstHist.regtrId"	          column="REGTR_ID"                /><!-- 등록자아이디 -->
+		<result property="sysBrndPrdlstHist.regDt"                column="REG_DT"                  /><!-- 등록일자 -->
+		<result property="sysBrndPrdlstHist.udtDt"	              column="UDT_DT"	               /><!-- 수정일자 -->
+		<result property="sysBrndPrdlstHist.udterId"	          column="UDTER_ID"	               /><!-- 수정자아이디 -->
+    </resultMap>
+
+	<!-- 브랜드별 품목별 수선정보 내역 조회 -->
+    <select id="selectSysBrndPrdlstHist" parameterType="com.plgrim.ncp.biz.vendor.data.VendorBrndSearchDTO" resultMap="vendorBrndPrdListResultMap2">
+    	SELECT /* [biz.com.brnd.xml][selectSysBrndPrdlstHist][브랜드별 품목별 수선정보 내역 조회][jewellig.lee] */
+
+    			*
+    	FROM
+				(SELECT
+				       ROWNUM AS RNUM
+				       ,A.*
+				 FROM
+						(SELECT
+
+							      SBPH.BRND_ID
+							    , SB.BRND_NM
+							    , SPC.PRDLST_CD
+							    , SPC.PRDLST_NM
+							    , SPC.USE_YN
+							    , (SELECT CD_NM FROM SYS_CD WHERE CD = SPC.PRDLST_SECT_CD) AS PRDLST_SECT_CD
+							    , SPC.PRDLST_DSCR
+							    , SBPH.REPAIR_PSB_YN
+							    , SBPH.SHOP_REPAIR_FEE_SECT_CD
+							    , SBPH.SHOP_REPAIR_FEE_AMT
+							    , SBPH.SHOP_REPAIR_FEE_RT
+							    , DECODE(SHOP_REPAIR_FEE_SECT_CD,'FIXRT',SHOP_REPAIR_FEE_RT,'FIXAMT',SHOP_REPAIR_FEE_AMT,0) AS SHOP_REPAIR_FEE
+							    , SBPH.REGTR_ID
+							    , SBPH.REG_DT
+							    , SBPH.UDTER_ID
+							    , SBPH.UDT_DT
+
+						FROM 	  SYS_BRND_PRDLST_HIST SBPH
+							     ,SYS_BRND SB
+							     ,SYS_PRDLST_CD SPC
+
+						WHERE    SBPH.BRND_ID = SB.BRND_ID
+						AND      SBPH.PRDLST_CD = SPC.PRDLST_CD
+						AND      SB.USE_YN = 'Y'
+						AND      SBPH.PRDLST_CD = #{sysBrndPrdlstHist.prdlstCd}
+						AND      SBPH.BRND_ID = #{sysBrndPrdlstHist.brndId}
+						<!-- AND      (SBPH.BRND_ID = #{sysBrndPrdlstHist.brndId} OR SBPH.BRND_ID IN (SELECT BRND_ID
+										      						             FROM SYS_BRND SB
+										                                        WHERE 1=1
+										                                       CONNECT BY PRIOR BRND_ID = UPPER_BRND_ID
+										                                       START WITH UPPER_BRND_ID = #{sysBrndPrdlstHist.brndId})
+			          			 ) -->
+						ORDER BY SB.BRND_ID, SB.SORT_SEQ, SPC.SORT_SEQ, SBPH.HIST_DT DESC ) A )
+		WHERE RNUM BETWEEN #{beginIndex} AND #{endIndex}
+
+    </select>
+
+    <update id="mergeSysShopBrndModifyFlag" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopBrnd">
+		/* [biz.com.brnd.xml][mergeSysShopBrndModifyFlag][시스템 매장 브랜드 수정 시 재고연동대상 체크를 위해 정보 삽입][Owen] */
+		MERGE INTO inf_inv_hub_hist A
+		USING (
+			SELECT
+				g.god_no
+				, gi.itm_no
+				, gi.sku_no
+				, ssb.shop_id
+				, sb.brnd_id
+				, sb.erp_brnd_id
+				, sb.use_yn as brnd_use_yn
+				, ss.use_yn as shop_use_yn
+			FROM god g
+			INNER JOIN god_itm gi
+			ON g.god_no = gi.god_no
+			INNER JOIN sys_brnd sb
+			ON g.brnd_id = sb.brnd_id
+			INNER JOIN sys_shop_brnd ssb
+			ON sb.erp_brnd_id = ssb.erp_brnd_id
+			INNER JOIN sys_shop ss
+			ON ssb.shop_id = ss.shop_id
+			WHERE 1 = 1
+			AND g.erp_god_no IS NOT NULL
+			AND g.partmal_sect_cd = 'MCOM'				/* 입점구분 : 자사 */
+			AND g.god_aprv_sect_cd = 'APRV_COMPT'		/* 상품승인구분 : 승인완료 */
+			AND g.god_tp_cd = 'GNRL_GOD'				/* 상품유형 : 일반상품 */
+			AND g.lmtt_inv_yn = 'N'						/* 한정재고여부 */
+			AND g.erp_inv_intrlck_yn = 'Y'				/* ERP재고연동여부 */
+			AND gi.itm_stat_cd in ('SALE_PROGRS', 'SLDOUT', 'TMPR_SALE_STPGE')		/* 단품판매상태 : 판매중, 품절, 임시판매중지 */
+			AND gi.opt_val_cd_1 IS NOT NULL
+			AND sb.use_yn = 'Y'
+			AND sb.erp_brnd_id = #{erpBrndId}
+			AND ss.use_yn = 'Y'
+			AND ss.shop_id = #{shopId}
+			AND ss.shop_tp_cd IS NOT NULL
+		) B
+		ON (
+			A.god_no = B.god_no
+			and A.itm_no = B.itm_no
+			and A.sku_no = B.sku_no
+			and A.shop_id = B.shop_id
+		)
+		WHEN MATCHED THEN
+		UPDATE
+		SET
+			A.brnd_shop_use_yn = #{useYn}
+			, A.dlv_shop_yn = #{dlvShopYn}
+			, A.pkup_shop_yn = #{pkupShopYn}
+			, A.brnd_use_yn = b.brnd_use_yn
+			, A.shop_use_yn = b.shop_use_yn
+			, A.udt_dt = SYSDATE
+		WHEN NOT MATCHED THEN
+		INSERT (
+			god_no
+			, itm_no
+			, sku_no
+			, shop_id
+			, brnd_id
+			, erp_brnd_id
+			, brnd_use_yn
+			, shop_use_yn
+			, brnd_shop_use_yn
+			, dlv_shop_yn
+			, pkup_shop_yn
+			, udt_dt
+		) VALUES (
+			B.god_no
+			, B.itm_no
+			, B.sku_no
+			, B.shop_id
+			, B.brnd_id
+			, B.erp_brnd_id
+			, B.brnd_use_yn
+			, B.shop_use_yn
+			, #{useYn}
+			, #{dlvShopYn}
+			, #{pkupShopYn}
+			, SYSDATE
+		)
+    </update>
+</mapper>

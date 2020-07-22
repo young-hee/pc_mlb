@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrTodayGod" parameterType="mbrTodayGod" resultType="mbrTodayGod">
+		SELECT /* com.plgrim.ncp.base.selectMbrTodayGod		Generator(Generator)	2018-05-23 */
+			   TODAY_GOD_SN
+			 , INQIRE_DT
+			 , MBR_SECT_CD
+			 , MBR_NO
+			 , SESION_ID
+			 , MALL_ID
+			 , LANG_CD
+			 , TODAY_GOD_SECT_CD
+			 , GOD_NO
+			 , EVT_NO
+			 , EVT_NM
+			 , PROMT_SN
+			 , DSP_PROMT_NM
+			 , DELETE_YN
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_TODAY_GOD
+		 WHERE 1 = 1
+	   	   AND TODAY_GOD_SN = #{todayGodSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrTodayGod" parameterType="mbrTodayGod">
+		UPDATE /* com.plgrim.ncp.base.updateMbrTodayGod		Generator(Generator)	2018-05-23 */
+		MBR_TODAY_GOD SET
+			   INQIRE_DT = #{inqireDt,jdbcType=TIMESTAMP}
+			 , MBR_SECT_CD = #{mbrSectCd,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , SESION_ID = #{sesionId,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , TODAY_GOD_SECT_CD = #{todayGodSectCd,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			 , EVT_NM = #{evtNm,jdbcType=VARCHAR}
+			 , PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+			 , DSP_PROMT_NM = #{dspPromtNm,jdbcType=VARCHAR}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND TODAY_GOD_SN = #{todayGodSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrTodayGod" parameterType="mbrTodayGod">
+		INSERT /* com.plgrim.ncp.base.insertMbrTodayGod		Generator(Generator)	2018-05-23 */
+		INTO   MBR_TODAY_GOD (
+			   TODAY_GOD_SN
+			 , INQIRE_DT
+			 , MBR_SECT_CD
+			 , MBR_NO
+			 , SESION_ID
+			 , MALL_ID
+			 , LANG_CD
+			 , TODAY_GOD_SECT_CD
+			 , GOD_NO
+			 , EVT_NO
+			 , EVT_NM
+			 , PROMT_SN
+			 , DSP_PROMT_NM
+			 , DELETE_YN
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{todayGodSn,jdbcType=NUMERIC}
+			 , #{inqireDt,jdbcType=TIMESTAMP}
+			 , #{mbrSectCd,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{sesionId,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{todayGodSectCd,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{evtNo,jdbcType=VARCHAR}
+			 , #{evtNm,jdbcType=VARCHAR}
+			 , #{promtSn,jdbcType=NUMERIC}
+			 , #{dspPromtNm,jdbcType=VARCHAR}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrTodayGod" parameterType="mbrTodayGod">
+		DELETE /* com.plgrim.ncp.base.deleteMbrTodayGod		Generator(Generator)	2018-05-23 */
+		  FROM MBR_TODAY_GOD
+		 WHERE 1 = 1
+		   AND TODAY_GOD_SN = #{todayGodSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

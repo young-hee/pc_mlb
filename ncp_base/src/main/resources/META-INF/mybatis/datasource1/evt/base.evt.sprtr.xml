@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtSprtr" parameterType="evtSprtr" resultType="evtSprtr">
+		SELECT /* com.plgrim.ncp.base.selectEvtSprtr		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , SPRTR_TURN
+			 , SPRTR_NM
+			 , SPRTR_IMG_FILE_NM
+			 , SPRTR_IMG_FILE_URL
+			 , SPRTR_IMG_ALTRTV_CONT
+			 , SORT_SEQ
+			 , DSP_YN
+			 , RPRST_SPRTR_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_SPRTR
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEvtSprtr" parameterType="evtSprtr">
+		UPDATE /* com.plgrim.ncp.base.updateEvtSprtr		Generator(Generator)	2018-05-23 */
+		EVT_SPRTR SET
+			   SPRTR_NM = #{sprtrNm,jdbcType=VARCHAR}
+			 , SPRTR_IMG_FILE_NM = #{sprtrImgFileNm,jdbcType=VARCHAR}
+			 , SPRTR_IMG_FILE_URL = #{sprtrImgFileUrl,jdbcType=VARCHAR}
+			 , SPRTR_IMG_ALTRTV_CONT = #{sprtrImgAltrtvCont,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , RPRST_SPRTR_YN = #{rprstSprtrYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEvtSprtr" parameterType="evtSprtr">
+		INSERT /* com.plgrim.ncp.base.insertEvtSprtr		Generator(Generator)	2018-05-23 */
+		INTO   EVT_SPRTR (
+			   EVT_NO
+			 , SPRTR_TURN
+			 , SPRTR_NM
+			 , SPRTR_IMG_FILE_NM
+			 , SPRTR_IMG_FILE_URL
+			 , SPRTR_IMG_ALTRTV_CONT
+			 , SORT_SEQ
+			 , DSP_YN
+			 , RPRST_SPRTR_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{sprtrTurn,jdbcType=NUMERIC}
+			 , #{sprtrNm,jdbcType=VARCHAR}
+			 , #{sprtrImgFileNm,jdbcType=VARCHAR}
+			 , #{sprtrImgFileUrl,jdbcType=VARCHAR}
+			 , #{sprtrImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{rprstSprtrYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtSprtr" parameterType="evtSprtr">
+		DELETE /* com.plgrim.ncp.base.deleteEvtSprtr		Generator(Generator)	2018-05-23 */
+		  FROM EVT_SPRTR
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

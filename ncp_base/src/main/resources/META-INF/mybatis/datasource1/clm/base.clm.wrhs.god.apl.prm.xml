@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectClmWrhsGodAplPrm" parameterType="clmWrhsGodAplPrm" resultType="clmWrhsGodAplPrm">
+		SELECT /* com.plgrim.ncp.base.selectClmWrhsGodAplPrm		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , CLM_NO
+			 , APL_PRM_TURN
+			 , PRM_NO
+			 , MBR_CPN_NO
+			 , APL_TP_CD
+			 , APL_UNIT_CD
+			 , PRM_TP_CD
+			 , PRM_DTL_TP_CD
+			 , APL_AMT
+			 , CLM_WRHS_GOD_TURN
+			 , APL_QTY
+			 , CLM_WRHS_GOD_GFT_TURN
+			 , CLM_WRHS_GOD_GFT_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CLM_WRHS_GOD_APL_PRM
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		   AND APL_PRM_TURN = #{aplPrmTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateClmWrhsGodAplPrm" parameterType="clmWrhsGodAplPrm">
+		UPDATE /* com.plgrim.ncp.base.updateClmWrhsGodAplPrm		Generator(Generator)	2018-05-23 */
+		CLM_WRHS_GOD_APL_PRM SET
+			   PRM_NO = #{prmNo,jdbcType=VARCHAR}
+			 , MBR_CPN_NO = #{mbrCpnNo,jdbcType=VARCHAR}
+			 , APL_TP_CD = #{aplTpCd,jdbcType=VARCHAR}
+			 , APL_UNIT_CD = #{aplUnitCd,jdbcType=VARCHAR}
+			 , PRM_TP_CD = #{prmTpCd,jdbcType=VARCHAR}
+			 , PRM_DTL_TP_CD = #{prmDtlTpCd,jdbcType=VARCHAR}
+			 , APL_AMT = #{aplAmt,jdbcType=NUMERIC}
+			 , CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , APL_QTY = #{aplQty,jdbcType=NUMERIC}
+			 , CLM_WRHS_GOD_GFT_TURN = #{clmWrhsGodGftTurn,jdbcType=NUMERIC}
+			 , CLM_WRHS_GOD_GFT_NM = #{clmWrhsGodGftNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		   AND APL_PRM_TURN = #{aplPrmTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertClmWrhsGodAplPrm" parameterType="clmWrhsGodAplPrm">
+		INSERT /* com.plgrim.ncp.base.insertClmWrhsGodAplPrm		Generator(Generator)	2018-05-23 */
+		INTO   CLM_WRHS_GOD_APL_PRM (
+			   ORD_NO
+			 , CLM_NO
+			 , APL_PRM_TURN
+			 , PRM_NO
+			 , MBR_CPN_NO
+			 , APL_TP_CD
+			 , APL_UNIT_CD
+			 , PRM_TP_CD
+			 , PRM_DTL_TP_CD
+			 , APL_AMT
+			 , CLM_WRHS_GOD_TURN
+			 , APL_QTY
+			 , CLM_WRHS_GOD_GFT_TURN
+			 , CLM_WRHS_GOD_GFT_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{aplPrmTurn,jdbcType=NUMERIC}
+			 , #{prmNo,jdbcType=VARCHAR}
+			 , #{mbrCpnNo,jdbcType=VARCHAR}
+			 , #{aplTpCd,jdbcType=VARCHAR}
+			 , #{aplUnitCd,jdbcType=VARCHAR}
+			 , #{prmTpCd,jdbcType=VARCHAR}
+			 , #{prmDtlTpCd,jdbcType=VARCHAR}
+			 , #{aplAmt,jdbcType=NUMERIC}
+			 , #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , #{aplQty,jdbcType=NUMERIC}
+			 , #{clmWrhsGodGftTurn,jdbcType=NUMERIC}
+			 , #{clmWrhsGodGftNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteClmWrhsGodAplPrm" parameterType="clmWrhsGodAplPrm">
+		DELETE /* com.plgrim.ncp.base.deleteClmWrhsGodAplPrm		Generator(Generator)	2018-05-23 */
+		  FROM CLM_WRHS_GOD_APL_PRM
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		   AND APL_PRM_TURN = #{aplPrmTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

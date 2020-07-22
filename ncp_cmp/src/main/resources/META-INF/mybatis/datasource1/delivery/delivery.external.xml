@@ -1,0 +1,1846 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.delivery.external">
+
+
+	
+	<update id="updateClmDlvspCancelPay" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO">
+		UPDATE LGS_DLVSP LD /* com.plgrim.ncp.biz.delivery.external.updateClmDlvspCancelPay Aether 20150421 */
+			SET CLM_NO = #{clmNo} 
+			   ,UDT_DT = SYSDATE
+		WHERE 
+			ORD_NO = #{ordNo}	
+			<if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+				AND DLV_PCUPSP_TURN = #{dlvPcupspTurn}
+			</if>
+	</update>
+	
+	<insert id="insertClmDlvspHistCancelPay" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO">
+		INSERT INTO LGS_DLVSP_HIST (	/* com.plgrim.ncp.biz.delivery.external.insertClmDlvspHistCancelPay Aether 20150421 */
+		   ORD_NO, DLV_PCUPSP_TURN, HIST_DT, 
+		   CLM_NO, DLV_PCUPSP_SECT_CD, ADDRSE_NM, 
+		   PKUP_SHOP_ID, PKUP_SHOP_VISIT_DATE,
+		   ADDR_SECT_CD, ADDRSE_NATION_CD, ADDRSE_POST_NO, 
+		   ADDRSE_BASE_ADDR, ADDRSE_DETAIL_ADDR, ADDRSE_MOBIL_NATION_NO, 
+		   ADDRSE_MOBIL_AREA_NO, ADDRSE_MOBIL_TLOF_NO, ADDRSE_MOBIL_TLOF_WTHN_NO, 
+		   ADDRSE_TEL_NATION_NO, ADDRSE_TEL_AREA_NO, ADDRSE_TEL_TLOF_NO, 
+		   ADDRSE_TEL_TLOF_WTHN_NO, DLV_MEMO, DLV_HOPE_DATE, 
+		   REGTR_ID, REG_DT, UDTER_ID, 
+		   UDT_DT) 
+		SELECT 
+		    ORD_NO, DLV_PCUPSP_TURN, SYSDATE
+		    ,CLM_NO,DLV_PCUPSP_SECT_CD, ADDRSE_NM
+		    , PKUP_SHOP_ID, PKUP_SHOP_VISIT_DATE
+		    ,ADDR_SECT_CD,ADDRSE_NATION_CD, ADDRSE_POST_NO
+		    ,ADDRSE_BASE_ADDR,ADDRSE_DETAIL_ADDR, ADDRSE_MOBIL_NATION_NO
+		    ,ADDRSE_MOBIL_AREA_NO,ADDRSE_MOBIL_TLOF_NO, ADDRSE_MOBIL_TLOF_WTHN_NO
+		    ,ADDRSE_TEL_NATION_NO,ADDRSE_TEL_AREA_NO, ADDRSE_TEL_TLOF_NO
+		    ,ADDRSE_TEL_TLOF_WTHN_NO,DLV_MEMO, DLV_HOPE_DATE
+		   ,#{adminId}, SYSDATE, #{adminId}, SYSDATE
+		FROM LGS_DLVSP LD
+		WHERE ld.clm_no = #{clmNo}
+			<if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+				and ld.dlv_pcupsp_turn = #{dlvPcupspTurn}
+			</if>		
+	</insert>
+	
+	
+	<update id="updateClmDlvCancelPay" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO">
+		UPDATE LGS_DLV LD 	/* com.plgrim.ncp.biz.delivery.external.updateClmDlvCancelPay Aether 20150421 */
+		    SET 
+				CNCL_DLV_CST=REALITY_DLV_CST
+		        ,CLM_NO = #{clmNo}
+		        ,UDT_DT = SYSDATE
+		WHERE ORD_NO = #{ordNo}	
+			<if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+				AND DLV_PCUPSP_TURN = #{dlvPcupspTurn}
+			</if>
+	</update>
+	
+	<update id="insertClmDlvCancelPayForGlobal" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO">
+				/* [claim.manage.xml][com.plgrim.ncp.biz.claim.manage.insertClmDlvCancelPayForGlobal] */
+			INSERT INTO LGS_DLV (
+				ord_no
+				, dlv_pcupsp_turn
+				, dlv_turn
+				, clm_no
+				, ovsea_dlv_cst_plc_sn
+				, zone_turn
+				, god_min_wt
+				, dlv_cst_bnd_mbd_cd
+				, dlv_mn_cd
+				, dlv_com_cd
+				, dlv_com_nm
+				, gdgp_stat_cd
+				, hbl_no
+				, hbl_no_reg_dt
+				, ovsea_waybil_no
+				, ovsea_waybil_no_reg_dt
+				, cvnstor_hdry_aprv_no
+				, crncy_cd
+				, exchg_rt_apl_beg_dt
+				, stdr_crncy_amt
+				, pay_exchg_rt_crncy_amt
+				, reality_dlv_cst
+				, plc_dlv_cst
+				, cncl_dlv_cst
+				, dlv_cst_cpn_dc_amt
+				, dlv_cst_cpn_no
+				, waybil_no_erp_trnsmis_cd
+				, waybil_no_erp_trnsmis_err_cont
+				, waybil_no_erp_trnsmis_dt
+				, dlv_com_trnsmis_tgt_yn
+				, dlv_com_trnsmis_yn
+				, dlv_com_trnsmis_dt
+				, mail_snd_yn
+				, cal_dt
+				, regtr_id
+				, reg_dt
+				, udter_id
+				, udt_dt
+			)
+			SELECT
+					ord_no
+					, dlv_pcupsp_turn
+					, (SELECT MAX(dlv_turn) + 1 FROM lgs_dlv WHERE ord_no = l.ord_no AND dlv_pcupsp_turn = l.dlv_pcupsp_turn) AS dlv_turn
+					, #{clmNo} AS clm_no
+					, ovsea_dlv_cst_plc_sn
+					, zone_turn
+					, 0 AS god_min_wt
+					, dlv_cst_bnd_mbd_cd
+					, dlv_mn_cd
+					, dlv_com_cd
+					, dlv_com_nm
+					, gdgp_stat_cd
+					, hbl_no
+					, hbl_no_reg_dt
+					, ovsea_waybil_no
+					, ovsea_waybil_no_reg_dt
+					, cvnstor_hdry_aprv_no
+					, crncy_cd
+					, exchg_rt_apl_beg_dt
+					, stdr_crncy_amt
+					, pay_exchg_rt_crncy_amt
+					, 0 AS reality_dlv_cst
+					, 0 AS plc_dlv_cst
+					, stdr_crncy_amt AS cncl_dlv_cst
+					, dlv_cst_cpn_dc_amt
+					, dlv_cst_cpn_no
+					, waybil_no_erp_trnsmis_cd
+					, waybil_no_erp_trnsmis_err_cont
+					, waybil_no_erp_trnsmis_dt
+					, dlv_com_trnsmis_tgt_yn
+					, dlv_com_trnsmis_yn
+					, dlv_com_trnsmis_dt
+					, mail_snd_yn
+					, cal_dt
+					, #{adminId} AS regtr_id
+					, SYSDATE AS reg_dt
+					, #{adminId} AS udter_id
+					, SYSDATE AS udt_dt
+				FROM lgs_dlv l
+				WHERE ord_no = #{ordNo}
+					<if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+						AND DLV_PCUPSP_TURN = #{dlvPcupspTurn}
+					</if>
+					AND ovsea_dlv_cst_plc_sn IS NOT NULL	/* 해외배송비만 */
+	</update>
+	
+	<insert id="insertClmDlvHistCancelPay" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO">
+		INSERT INTO LGS_DLV_HIST (	/* com.plgrim.ncp.biz.delivery.external.insertClmDlvHistCancelPay Aether 20150421 */
+		   ORD_NO, DLV_PCUPSP_TURN, DLV_TURN, 
+		   HIST_DT, CLM_NO, DMSTC_DLV_CST_PLC_SN, 
+		   OVSEA_DLV_DMSTC_DLV_CST_PLC_SN, OVSEA_DLV_CST_PLC_SN, DLV_CST_BND_MBD_CD, 
+		   DLV_COM_CD, DMSTC_WAYBIL_NO, DMSTC_WAYBIL_NO_REG_DT, 
+		   OVSEA_WAYBIL_NO, OVSEA_WAYBIL_NO_REG_DT, CRNCY_CD, 
+		   STDR_CRNCY_AMT, PAY_EXCHG_RT_CRNCY_AMT, REALITY_DLV_CST, 
+		   PLC_DLV_CST, DLV_CST_CPN_DC_AMT, WAYBIL_NO_ERP_TRNSMIS_CD,
+		   WAYBIL_NO_ERP_TRNSMIS_ERR_CONT, WAYBIL_NO_ERP_TRNSMIS_DT, DLV_COM_TRNSMIS_TGT_YN,
+		   DLV_COM_TRNSMIS_YN, DLV_COM_TRNSMIS_DT, MAIL_SND_YN, 
+		   REGTR_ID, REG_DT, UDTER_ID, 
+		   UDT_DT) 
+		SELECT 
+		   ORD_NO, DLV_PCUPSP_TURN, DLV_TURN
+		   , SYSDATE, CLM_NO, DMSTC_DLV_CST_PLC_SN
+		   , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN, OVSEA_DLV_CST_PLC_SN, DLV_CST_BND_MBD_CD
+		   , DLV_COM_CD, DMSTC_WAYBIL_NO, DMSTC_WAYBIL_NO_REG_DT
+		   , OVSEA_WAYBIL_NO, OVSEA_WAYBIL_NO_REG_DT, CRNCY_CD
+		   , STDR_CRNCY_AMT, PAY_EXCHG_RT_CRNCY_AMT, REALITY_DLV_CST
+		   , PLC_DLV_CST, DLV_CST_CPN_DC_AMT, WAYBIL_NO_ERP_TRNSMIS_CD
+		   , WAYBIL_NO_ERP_TRNSMIS_ERR_CONT, WAYBIL_NO_ERP_TRNSMIS_DT, DLV_COM_TRNSMIS_TGT_YN
+		   , DLV_COM_TRNSMIS_YN, DLV_COM_TRNSMIS_DT, MAIL_SND_YN
+		   , #{adminId}, SYSDATE, #{adminId}, SYSDATE
+		FROM LGS_DLV ld
+		WHERE ORD_NO = #{ordNo}
+			<if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+				and ld.dlv_pcupsp_turn = #{dlvPcupspTurn}
+			</if>			
+	</insert>
+	
+		
+	<update id="updateClmDlvDrctGodCancel" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO">
+		UPDATE LGS_DLIVY_DRCT_GOD LDDG	/* com.plgrim.ncp.biz.delivery.external.updateClmDlvDrctGodCancel Aether 20150421 */
+		   SET (DLV_STAT_CD, DLIVY_DRCT_CNCL_QTY, DLIVY_DRCT_CNCL_DT,UDT_DT) =
+		          (SELECT 'DLIVY_DRCT_CNCL' AS DLV_STAT_CD,
+		                  DLIVY_DRCT_QTY AS DLIVY_DRCT_CNCL_QTY,
+		                  SYSDATE,
+		                  SYSDATE
+		             FROM LGS_DLIVY_DRCT_GOD LDDGIN
+		            WHERE     LDDGIN.ORD_NO = #{ordNo}
+		                  AND LDDGIN.DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo}
+					<if test='dlivyDrctTpCd != null and dlivyDrctTpCd !=""'>
+   	                      AND lddg.dlivy_drct_tp_cd <![CDATA[<>]]> 'ORD'
+					</if>
+		           )
+		 WHERE 1 = 1
+		       AND LDDG.ORD_NO = #{ordNo}
+		       AND LDDG.DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo}		
+		<if test='dlivyDrctTpCd != null and dlivyDrctTpCd !=""'>
+               AND lddg.dlivy_drct_tp_cd <![CDATA[<>]]> 'ORD'
+		</if>				
+
+	</update>
+	
+	<insert id="insertClmDlvDrctGodHistCancel" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO">
+	INSERT INTO lgs_dlivy_drct_god_hist ( /* com.plgrim.ncp.biz.delivery.external.insertClmDlvDrctGodHistCancel Aether 20150421 */
+                                             dlivy_drct_god_no
+                                           , hist_turn
+                                           , ord_no
+                                           , ord_god_turn
+                                           , pckage_god_turn
+                                           , gft_yn
+                                           , dlv_pcupsp_turn
+                                           , dlv_turn
+                                           , dlv_shop_id
+                                           , dlivy_shop_id
+                                           , acmtl_god_vol
+                                           , acmtl_god_wt
+                                           , lgs_itm_yn
+                                           , dlivy_drct_tgt_yn
+                                           , dlivy_drct_yn
+                                           , dlivy_drct_grp_dgre
+                                           , dlivy_drct_user_grp_dgre
+                                           , dlivy_drct_count
+                                           , dlivy_drct_tp_cd
+                                           , dlivy_drct_dt
+                                           , dlivy_drct_qty
+                                           , dlivy_drct_cncl_qty
+                                           , dlivy_drct_cncl_dt
+                                           , dlv_stat_cd
+                                           , shtg_qty
+                                           , shtg_dt
+                                           , shtg_dcsn_yn
+                                           , shtg_dcsn_dt
+                                           , dlivy_compt_qty
+                                           , dlivy_compt_dt
+                                           , dlv_compt_dt
+                                           , dlivy_drct_god_memo_cont
+                                           , rcptfr_no
+                                           , resve_rcptfr_creat_yn
+                                           , resve_rcptfr_creat_dt
+                                           , resve_rcptfr_dlivy_yn
+                                           , resve_rcptfr_dlivy_dt
+                                           , resve_rcptfr_dcsn_yn
+                                           , resve_rcptfr_dcsn_dt
+                                           , erp_resve_rcptfr_creat_cnt
+                                           , erp_resve_rcptfr_creat_yn
+                                           , erp_resve_rcptfr_creat_dt
+                                           , erp_resve_rcptfr_recreat_yn
+                                           , erp_resve_rcptfr_recreat_dt
+                                           , erp_resve_rcptfr_cncl_yn
+                                           , erp_resve_rcptfr_cncl_dt
+                                           , inv_apl_yn
+                                           , cntr_dlivy_cnfirm_yn
+                                           , cntr_dlivy_cnfirm_dt
+                                           , p_sto_no
+                                           , s_sto_no
+                                           , s_doc_no
+                                           , regtr_id
+                                           , reg_dt
+                                           , udter_id
+                                           , udt_dt)
+    SELECT dlivy_drct_god_no
+         ,   (SELECT NVL (MAX (hist_turn), 0)
+                FROM lgs_dlivy_drct_god_hist lddgh
+               WHERE lddg.dlivy_drct_god_no = lddgh.dlivy_drct_god_no)
+           + ROWNUM
+               AS hist_turn
+         , ord_no
+         , ord_god_turn
+         , pckage_god_turn
+         , gft_yn
+         , dlv_pcupsp_turn
+         , dlv_turn
+         , dlv_shop_id
+         , dlivy_shop_id
+         , acmtl_god_vol
+         , acmtl_god_wt
+         , lgs_itm_yn
+         , dlivy_drct_tgt_yn
+         , dlivy_drct_yn
+         , dlivy_drct_grp_dgre
+         , dlivy_drct_user_grp_dgre
+         , dlivy_drct_count
+         , dlivy_drct_tp_cd
+         , dlivy_drct_dt
+         , dlivy_drct_qty
+         , dlivy_drct_cncl_qty
+         , dlivy_drct_cncl_dt
+         , dlv_stat_cd
+         , shtg_qty
+         , shtg_dt
+         , shtg_dcsn_yn
+         , shtg_dcsn_dt
+         , dlivy_compt_qty
+         , dlivy_compt_dt
+         , dlv_compt_dt
+         , dlivy_drct_god_memo_cont
+         , rcptfr_no
+         , resve_rcptfr_creat_yn
+         , resve_rcptfr_creat_dt
+         , resve_rcptfr_dlivy_yn
+         , resve_rcptfr_dlivy_dt
+         , resve_rcptfr_dcsn_yn
+         , resve_rcptfr_dcsn_dt
+         , erp_resve_rcptfr_creat_cnt
+         , erp_resve_rcptfr_creat_yn
+         , erp_resve_rcptfr_creat_dt
+         , erp_resve_rcptfr_recreat_yn
+         , erp_resve_rcptfr_recreat_dt
+         , erp_resve_rcptfr_cncl_yn
+         , erp_resve_rcptfr_cncl_dt
+         , inv_apl_yn
+         , cntr_dlivy_cnfirm_yn
+         , cntr_dlivy_cnfirm_dt
+         , p_sto_no
+         , s_sto_no
+         , s_doc_no
+         , #{adminId}
+         , SYSDATE
+         , #{adminId}
+         , SYSDATE
+      FROM lgs_dlivy_drct_god lddg
+     WHERE ord_no = #{ordNo}   				
+	</insert>
+	
+	
+	
+	
+	<!-- ddd -->
+	<update id="updateClmDlvDrctGodUnitCancel" parameterType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO">
+		UPDATE lgs_dlivy_drct_god lddg /* com.plgrim.ncp.biz.delivery.external.updateClmDlvDrctGodUnitCancel Aether 20150421 */
+		   SET (dlv_stat_cd, dlivy_drct_cncl_qty, dlivy_drct_cncl_dt,udt_dt) =
+		           (SELECT CASE
+		                       WHEN 0 = (nvl(lddgin.dlivy_drct_qty,0) - nvl(lddgin.dlivy_drct_cncl_qty,0) - #{qty})
+		                       THEN
+		                           'DLIVY_DRCT_CNCL'
+		                       ELSE
+		                           lddgin.dlv_stat_cd
+		                   END
+		                       dlv_stat_cd
+		                 , NVL(lddgin.dlivy_drct_cncl_qty,0)+#{qty} AS dlivy_drct_cncl_qty
+		                 , SYSDATE AS dlivy_drct_cncl_dt
+		                 , SYSDATE AS udt_dt
+		              FROM lgs_dlivy_drct_god lddgin
+		             WHERE     lddgin.ord_no = #{ordNo}		                   
+		                   AND lddgin.ord_god_turn = #{ordGodTurn}
+		                   <choose>
+		                   	<when test='dlivyDrctGodNo != null and dlivyDrctGodNo !="" '>
+		                   		AND lddgin.dlivy_drct_god_no = #{dlivyDrctGodNo}
+		                   	</when>
+		                   	<otherwise>
+		                   		AND lddgin.dlv_pcupsp_turn = #{dlvPcupspTurn}
+		                   		AND lddgin.dlv_turn = #{dlvTurn}		                   		
+		                   	</otherwise>
+		                   </choose>		                   
+		                   AND lddgin.dlivy_drct_god_no = lddg.dlivy_drct_god_no)
+		 WHERE     1 = 1
+		       AND lddg.ord_no = #{ordNo}
+		       AND lddg.ord_god_turn = #{ordGodTurn}
+		       AND lddg.dlv_pcupsp_turn = #{dlvPcupspTurn}
+		       AND lddg.dlv_turn = #{dlvTurn}
+		       AND EXISTS
+		           (SELECT 1
+		              FROM lgs_dlivy_drct_god lddgin
+		             WHERE     lddgin.ord_no = #{ordNo}		                   
+		                   AND lddgin.ord_god_turn = #{ordGodTurn}		                   
+		                   <choose>
+		                   	<when test='dlivyDrctGodNo != null and dlivyDrctGodNo !="" '>
+		                   		AND lddgin.dlivy_drct_god_no = #{dlivyDrctGodNo}
+		                   	</when>
+		                   	<otherwise>
+		                   		AND lddgin.dlv_pcupsp_turn = #{dlvPcupspTurn}
+		                   		AND lddgin.dlv_turn = #{dlvTurn}              		
+		                   	</otherwise>
+		                   </choose>		                   
+		                   AND lddgin.dlivy_drct_god_no = lddg.dlivy_drct_god_no)
+	</update>
+	
+	<insert id="updateClmDlvDrctGodhHistUnitCancel" parameterType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO">
+		
+		INSERT INTO lgs_dlivy_drct_god_hist (	/* com.plgrim.ncp.biz.delivery.external.updateClmDlvDrctGodhHistUnitCancel Aether 20150421 */
+											acmtl_god_vol
+		                                   , acmtl_god_wt
+		                                   , cntr_dlivy_cnfirm_dt
+		                                   , cntr_dlivy_cnfirm_yn
+		                                   , dlivy_compt_dt
+		                                   , dlivy_compt_qty
+		                                   , dlivy_drct_cncl_dt
+		                                   , dlivy_drct_cncl_qty
+		                                   , dlivy_drct_count
+		                                   , dlivy_drct_dt
+		                                   , dlivy_drct_god_memo_cont
+		                                   , dlivy_drct_god_no
+		                                   , dlivy_drct_grp_dgre
+		                                   , dlivy_drct_qty
+		                                   , dlivy_drct_tgt_yn
+		                                   , dlivy_drct_tp_cd
+		                                   , dlivy_drct_user_grp_dgre
+		                                   , dlivy_drct_yn
+		                                   , dlivy_shop_id
+		                                   , dlv_compt_dt
+		                                   , dlv_pcupsp_turn
+		                                   , dlv_shop_id
+		                                   , dlv_stat_cd
+		                                   , dlv_turn
+		                                   , gft_yn
+		                                   , hist_turn
+		                                   , inv_apl_yn
+		                                   , lgs_itm_yn
+		                                   , ord_god_turn
+		                                   , ord_no
+		                                   , pckage_god_turn
+		                                   , p_sto_no
+		                                   , rcptfr_no
+		                                   , regtr_id
+		                                   , reg_dt
+		                                   , resve_rcptfr_creat_dt
+		                                   , resve_rcptfr_creat_yn
+		                                   , resve_rcptfr_dcsn_dt
+		                                   , resve_rcptfr_dcsn_yn
+		                                   , resve_rcptfr_dlivy_dt
+		                                   , resve_rcptfr_dlivy_yn
+		                                   , erp_resve_rcptfr_cncl_dt
+		                                   , erp_resve_rcptfr_cncl_yn
+		                                   , erp_resve_rcptfr_creat_cnt
+		                                   , erp_resve_rcptfr_creat_dt
+		                                   , erp_resve_rcptfr_creat_yn
+		                                   , erp_resve_rcptfr_recreat_dt
+		                                   , erp_resve_rcptfr_recreat_yn
+		                                   , shtg_dcsn_dt
+		                                   , shtg_dcsn_yn
+		                                   , shtg_dt
+		                                   , shtg_qty
+		                                   , s_doc_no
+		                                   , s_sto_no
+		                                   , udter_id
+		                                   , udt_dt)
+		    SELECT acmtl_god_vol
+		         , acmtl_god_wt
+		         , cntr_dlivy_cnfirm_dt
+		         , cntr_dlivy_cnfirm_yn
+		         , dlivy_compt_dt
+		         , dlivy_compt_qty
+		         , dlivy_drct_cncl_dt
+		         , dlivy_drct_cncl_qty
+		         , dlivy_drct_count
+		         , dlivy_drct_dt
+		         , dlivy_drct_god_memo_cont
+		         , dlivy_drct_god_no
+		         , dlivy_drct_grp_dgre
+		         , dlivy_drct_qty
+		         , dlivy_drct_tgt_yn
+		         , dlivy_drct_tp_cd
+		         , dlivy_drct_user_grp_dgre
+		         , dlivy_drct_yn
+		         , dlivy_shop_id
+		         , dlv_compt_dt
+		         , dlv_pcupsp_turn
+		         , dlv_shop_id
+		         , dlv_stat_cd
+		         , dlv_turn
+		         , gft_yn
+		         ,   (SELECT NVL (MAX (hist_turn), 0)
+		                FROM lgs_dlivy_drct_god_hist lddgh
+		               WHERE lddg.dlivy_drct_god_no = lddgh.dlivy_drct_god_no)
+		           + ROWNUM
+		               AS hist_turn
+		         , inv_apl_yn
+		         , lgs_itm_yn
+		         , ord_god_turn
+		         , ord_no
+		         , pckage_god_turn
+		         , p_sto_no
+		         , rcptfr_no
+		         , #{adminId}
+		         , sysdate
+		         , resve_rcptfr_creat_dt
+		         , resve_rcptfr_creat_yn
+		         , resve_rcptfr_dcsn_dt
+		         , resve_rcptfr_dcsn_yn
+		         , resve_rcptfr_dlivy_dt
+		         , resve_rcptfr_dlivy_yn
+		         , erp_resve_rcptfr_cncl_dt
+		         , erp_resve_rcptfr_cncl_yn
+		         , erp_resve_rcptfr_creat_cnt
+		         , erp_resve_rcptfr_creat_dt
+		         , erp_resve_rcptfr_creat_yn
+		         , erp_resve_rcptfr_recreat_dt
+		         , erp_resve_rcptfr_recreat_yn
+		         , shtg_dcsn_dt
+		         , shtg_dcsn_yn
+		         , shtg_dt
+		         , shtg_qty
+		         , s_doc_no
+		         , s_sto_no
+		         , #{adminId}
+		         , sysdate
+		FROM LGS_DLIVY_DRCT_GOD LDDG
+			WHERE 
+				LDDG.ORD_NO = #{ordNo}
+            AND LDDG.dlv_pcupsp_turn = #{dlvPcupspTurn}
+            AND LDDG.dlv_turn = #{dlvTurn}
+            AND LDDG.ord_god_turn = #{ordGodTurn}				
+	</insert>
+	
+	<!-- ddd -->
+	
+	
+	
+	
+	
+	
+		
+	<select id="selectOrdGodShopItmQty" parameterType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO"
+		resultType="com.plgrim.ncp.base.entities.datasource1.god.GodShopItmInvExtend">
+			SELECT  /* com.plgrim.ncp.biz.delivery.external.selectOrdGodShopItmQty aether 20150422 */ 
+			lddg.dlv_shop_id AS shopid 
+			     , og.itm_no AS itmno     
+			     <choose>
+			     	<when test='ordGodTurn != null and ordGodTurn !=""'>
+			     		, #{qty} AS saleprearngeqtyint
+			     	</when>
+			     	<otherwise>
+			     		, og.ord_qty AS saleprearngeqtyint
+			     	</otherwise>
+			     </choose>			     
+			     , og.ord_god_turn 
+			     , og.god_tp_cd
+			     , og.partmal_sect_cd 	/* 입점 구분 추가 [20151109 : AshA] >. 자사 : MCOM >. 입점 : PARTMAL */
+			     , og.god_no
+			     , CASE
+                   WHEN TO_DATE (NVL (og.resve_ord_dlivy_prearnge_date, '29990101')
+                               , 'YYYYMMDD') > SYSDATE
+                   THEN
+                       1
+                   ELSE
+                       0
+                   END
+                   resultcnt 
+			  FROM ord_god og
+			       INNER JOIN lgs_dlivy_drct_god lddg
+			           ON lddg.ord_no = og.ord_no AND lddg.ord_god_turn = og.ord_god_turn
+			 WHERE 1 = 1 
+			 AND og.ord_no = #{ordNo}
+			<if test='ordGodTurn != null and ordGodTurn !=""'>
+			 AND og.ord_god_turn = #{ordGodTurn}
+			</if>				
+			 AND lddg.dlv_stat_cd != 'SHTG_RCEPT' 
+	</select>
+	
+	<select id="selectDlivyDrctInfoListByClm" parameterType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO" resultType="com.plgrim.ncp.biz.delivery.data.DeliveryInfErpDTO">
+		SELECT /* [delivery.external.xml][selectDlivyDrctInfoListByClm][출고지시건 정보 조회 클레임 용] */
+				lgsddg.ord_no AS ordno
+				, lgsddg.dlivy_drct_god_no
+				, lgsddg.dlv_shop_id
+				, lgsddg.ord_god_turn
+				, lgsddg.dlivy_shop_id as dlivyShopId
+				, lgsddg.dlv_stat_cd
+				, lgsddg.dlivy_drct_cncl_stat_cd
+				, lgsddg.dlv_pcupsp_turn
+				, lgsddg.dlv_turn
+			FROM lgs_dlivy_drct_god lgsddg
+				<if test='clmStatCd == "WTHDRAW"'> /* 철회할땐 연결테이블을 join 한다 */
+					JOIN ord_clm_god_cnnc ocgc 
+						ON ocgc.clm_no = #{clmNo}
+							AND ocgc.god_cnnc_tp_cd = 'DLIVY_GOD_CNNC'
+							AND ocgc.ord_no = lgsddg.ord_no
+							AND ocgc.ord_god_turn = lgsddg.ord_god_turn
+				</if>        
+			WHERE lgsddg.ord_no = #{ordNo}	
+				<if test='dlivyDrctGodNo != null and dlivyDrctGodNo != ""'>
+					AND lgsddg.dlivy_drct_god_no = #{dlivyDrctGodNo}
+				</if>
+				<if test='ordGodTurn != null and ordGodTurn != ""'>
+					AND lgsddg.ord_god_turn = #{ordGodTurn}
+				</if>
+				<if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+					AND lgsddg.dlv_pcupsp_turn = #{dlvPcupspTurn}
+				</if>
+		 		<choose>
+					<when test='clmStatCd == "WTHDRAW"'>
+				       	AND ocgc.clm_no = #{clmNo} /* 철회할땐 연결테이블로 clmNo를 조회한다 */
+					</when>
+				</choose>		       		       
+					AND lgsddg.dlv_stat_cd IN ('DLIVY_DRCT')
+					<!-- AND lgsddg.dlv_shop_id IN ('X30004') -->
+					AND lgsddg.dlv_shop_id IN ('X30004', 'M510', 'I50002', 'A30003')
+					AND lgsddg.dlivy_drct_cncl_stat_cd IS NULL
+	</select>
+	
+	<select id="selectDlivyDrctInfoListByPkup" parameterType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO" resultType="com.plgrim.ncp.biz.delivery.data.DeliveryInfErpDTO">
+		SELECT /* [delivery.external.xml][selectDlivyDrctInfoListByPkup][CDC출고지시건 정보 조회 클레임 용][Aether] */
+		      lgsddg.ord_no AS ordno
+		     , lgsddg.dlivy_drct_god_no AS dlivydrctgodno
+		     , lgsddg.dlv_shop_id   AS werks
+		     , infogsd.ord_god_turn AS ordgodturn
+		     , infogsd.qty_turn AS qtyturn
+		     , infogsd.clm_no AS clmno
+		     , nvl(infogsd.s_doc_no , '0000000000') AS vbeln
+		     , infogsd.ord_no AS fpiaor
+		     , infogsd.qty_turn AS seqno
+		     , to_char(SYSDATE, 'YYYYMMDD')     AS wadatIst
+		     , (SELECT sku_no
+		          FROM god_itm
+		         WHERE itm_no =
+		                   (SELECT itm_no
+		                      FROM ord_god ordgod
+		                     WHERE     ordgod.ord_no = #{ordNo}
+		                           AND ordgod.ord_god_turn = infogsd.ord_god_turn))
+		           AS matnr
+		     , '1' AS menge
+		     , 'PC' AS meins
+		     , infogsd.p_sto_no AS sto
+		     , nvl(infogsd.unity_pnt_use_unt_prc,0) + nvl(infogsd.imdtl_dc_unt_prc,0) AS cbamt
+		     , nvl(infogsd.webpnt_use_unt_prc,0) AS namt
+		     , lgsddg.dlivy_shop_id as dlivyShopId
+		     , (SELECT LPAD(mbr_empl_no,18,'0')
+                          FROM ORD
+                         WHERE ord_no = infogsd.ord_no) AS empNo
+		     , infogsd.clm_no AS clmno
+		     , infogsd.dlivy_drct_yn AS dlivyDrctYn	/*출고지시 여부*/
+		     , infogsd.erp_resve_rcptfr_creat_yn AS resveRcptfrCreatYn	/*예약영수증 생성여부*/
+		     , infogsd.webpnt_use_unt_prc AS nAmt
+		  FROM lgs_dlivy_drct_god lgsddg
+		       JOIN
+		       inf_ord_god_erp_dstb infogsd
+		           ON (    lgsddg.ord_no = infogsd.ord_no
+		               AND lgsddg.ord_god_turn = infogsd.ord_god_turn
+		               AND lgsddg.dlivy_drct_god_no = infogsd.dlivy_drct_god_no
+		               AND lgsddg.ord_no = #{ordNo}		               		               
+		               <if test='dlivyDrctGodNo != null and dlivyDrctGodNo != ""'>
+		               	AND lgsddg.dlivy_drct_god_no = #{dlivyDrctGodNo}
+		               </if>
+		               <if test='ordGodTurn != null and ordGodTurn != ""'>
+		               	AND lgsddg.ord_god_turn = #{ordGodTurn}
+		               </if>
+		               <if test='dlvPcupspTurn != null and dlvPcupspTurn != ""'>
+		               	AND lgsddg.dlv_pcupsp_turn = #{dlvPcupspTurn}
+		               </if>
+		               )
+		               
+		 WHERE     1 = 1		       
+		        AND lgsddg.dlv_stat_cd IN ('SHOP_PRPARE_COMPT','DLIVY_DRCT', 'SHTG_RCEPT', 'DLV_WAIT')
+				<if test='qty != null and qty != ""'>
+					AND ROWNUM <![CDATA[<=]]> #{qty}
+				</if>		       
+	</select>
+	
+		<!-- 예약영수증생성건 정보 조회 -->
+	<select id="selectErpResveRcptfrInfoListByClm" parameterType="com.plgrim.ncp.biz.delivery.data.DeliverySearchDTO" resultType="com.plgrim.ncp.biz.delivery.data.DeliveryInfErpDTO">
+		SELECT /* [delivery.external.xml][selectErpResveRcptfrInfoList][예약영수증생성건 정보 조회][aether] */
+		       lgsddg.ord_no        AS ordNo
+		     , lgsddg.dlivy_drct_god_no AS dlivyDrctGodNo  
+		     , infogsd.ord_god_turn AS ordGodTurn
+		     , infogsd.qty_turn     AS qtyTurn
+		     , infogsd.clm_no		AS clmNo
+		     , infogsd.s_doc_no     AS vbeln
+		     , infogsd.ord_no       AS fpiaOr
+		     , infogsd.qty_turn     AS seqNo
+		     , to_char(infogsd.dlivy_drct_dt+1, 'YYYYMMDD') AS wadatIst
+		     , (SELECT sku_no
+		          FROM GOD_ITM
+		         WHERE itm_no = (SELECT itm_no
+		                           FROM ORD_GOD ordgod
+		                          WHERE ordgod.ord_no = #{ordNo,jdbcType=VARCHAR}
+		                            AND ordgod.ord_god_turn = infogsd.ord_god_turn))    AS matnr 
+		     , '1'                              AS menge
+		     , 'PC'                             AS meins
+		     , infogsd.P_STO_NO                 AS sto
+		     , NVL(infogsd.unity_pnt_use_unt_prc, 0) + NVL(infogsd.imdtl_dc_unt_prc, 0)  AS cbAmt
+		     , nvl(infogsd.unity_pnt_use_unt_prc ,0) AS namt
+		     , (SELECT mbr_empl_no
+		          FROM ORD
+		         WHERE ord_no = infogsd.ord_no) AS empNo                                                  
+		  FROM LGS_DLIVY_DRCT_GOD lgsddg
+		       JOIN INF_ORD_GOD_ERP_DSTB infogsd
+		         ON (lgsddg.ord_no = infogsd.ord_no
+		         AND lgsddg.ord_god_turn = infogsd.ord_god_turn
+		         AND lgsddg.dlivy_drct_god_no = infogsd.dlivy_drct_god_no
+		         AND lgsddg.ord_no = #{ordNo,jdbcType=VARCHAR}
+		         )
+		 WHERE 1=1
+		   AND infogsd.erp_resve_rcptfr_creat_yn = 'Y'
+		   AND infogsd.clm_no IS NULL
+		   AND lgsddg.dlv_stat_cd IN ('DLIVY_DRCT', 'SHTG_RCEPT', 'DLV_WAIT') /* 배송상태:출고지시/결품접수/배송대기 */
+	</select>
+	
+	
+	<select id="selectPickupErpResveRcptfrInfoList" parameterType="com.plgrim.ncp.biz.delivery.data.DeliverySearchDTO" resultType="infOrdGodErpDstbExtends">
+		SELECT /* [delivery.external.xml][selectErpResveRcptfrInfoList][예약영수증생성건 정보 조회][aether] */
+		       lgsddg.ord_no        AS ordNo
+		     , lgsddg.dlivy_drct_god_no AS dlivyDrctGodNo  
+		     , infogsd.ord_god_turn AS ordGodTurn
+		     , infogsd.qty_turn     AS qtyTurn
+		     , infogsd.clm_no		AS clmNo
+		     , infogsd.s_doc_no     AS vbeln
+		     , infogsd.ord_no       AS fpiaOr
+		     , infogsd.qty_turn     AS seqNo
+		     , to_char(infogsd.dlivy_drct_dt+1, 'YYYYMMDD') AS wadatIst
+		     , (SELECT sku_no
+		          FROM GOD_ITM
+		         WHERE itm_no = (SELECT itm_no
+		                           FROM ORD_GOD ordgod
+		                          WHERE ordgod.ord_no = #{ordNo,jdbcType=VARCHAR}
+		                            AND ordgod.ord_god_turn = infogsd.ord_god_turn))    AS matnr 
+		     , '1'                              AS menge
+		     , 'PC'                             AS meins
+		     , infogsd.P_STO_NO                 AS sto
+		     , NVL(infogsd.unity_pnt_use_unt_prc, 0) + NVL(infogsd.imdtl_dc_unt_prc, 0)    AS cbAmt
+		     , nvl(infogsd.webpnt_use_unt_prc   ,0)  AS namt
+		     , (SELECT mbr_empl_no
+		          FROM ORD
+		         WHERE ord_no = infogsd.ord_no) AS empNo                                                  
+		  FROM LGS_DLIVY_DRCT_GOD lgsddg
+		       JOIN INF_ORD_GOD_ERP_DSTB infogsd
+		         ON (lgsddg.ord_no = infogsd.ord_no
+		         AND lgsddg.ord_god_turn = infogsd.ord_god_turn
+		         AND lgsddg.dlivy_drct_god_no = infogsd.dlivy_drct_god_no
+		         AND lgsddg.ord_no = #{ordNo,jdbcType=VARCHAR}
+		         )
+		 WHERE 1=1
+		   AND infogsd.clm_no IS NULL
+		   AND lgsddg.dlv_stat_cd IN ('DLIVY_DRCT', 'SHTG_RCEPT', 'DLV_WAIT') /* 배송상태:출고지시/결품접수/배송대기 */
+	</select>
+	
+	
+	<!-- FO 수취확인 대상건 조회 -->
+	<select id="selectDlivycomptTarget" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryFinishFoDTO" resultType="com.plgrim.ncp.biz.delivery.data.DeliveryFinishFoDTO">
+		SELECT /* [delivery.external.xml][selectDlivycomptTarget][FO 수취확인 대상건 조회][hongsub.lim] */
+		       dlivy_drct_god_no
+		  FROM LGS_DLIVY_DRCT_GOD lddg
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+		   AND dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=VARCHAR}
+		   AND dlv_stat_cd = 'DLIVY_COMPT'
+	</select>
+	
+	<!-- FO 픽업주문 일반배송 전환 -->
+	<update id="updateFoLgsDlivyDrctGod" parameterType="lgsDlivyDrctGod">
+		UPDATE	/* [delivery.external.xml][updateFoLgsDlivyDrctGod][FO 픽업주문 일반배송 전환][hongsub.lim] */
+			  lgs_dlivy_drct_god
+		   SET
+			   dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 <if test='dlvStatCd != null and dlvStatCd != ""'>
+			 , dlv_stat_cd = #{dlvStatCd,jdbcType=VARCHAR}	
+			 </if>
+             <if test='dlvShopId != null and dlvShopId != ""'>
+             , dlv_shop_id = #{dlvShopId,jdbcType=VARCHAR}  
+             </if>
+             <if test='dlivyDrctYn != null and dlivyDrctYn != ""'>
+             , dlivy_drct_yn = #{dlivyDrctYn,jdbcType=VARCHAR}  
+             </if>
+             , dlivy_shop_id = NULL
+             , dlivy_drct_tp_cd = 'ORD'
+             , udter_id = #{regtrId,jdbcType=VARCHAR}
+             , udt_dt = #{regDt,jdbcType=DATE} 
+		 WHERE ord_no = #{ordNo, jdbcType=VARCHAR}	
+           AND dlv_stat_cd != 'DLIVY_DRCT_CNCL'
+	</update>	
+	
+	<!-- FO 물류 출고지시 상품 이력 등록 -->
+	<insert id="insertFoLgsDlivyDrctGodHist" parameterType="lgsDlivyDrctGodHist">
+		INSERT /* [delivery.external.xml][insertLgsDlivyDrctGodHist][ FO 물류 출고지시 상품 이력 등록][hongsub.lim] */
+			INTO LGS_DLIVY_DRCT_GOD_HIST
+		     ( DLIVY_DRCT_GOD_NO
+			, HIST_TURN
+			, ORD_NO
+			, ORD_GOD_TURN
+			, PCKAGE_GOD_TURN
+			, GFT_YN
+			, DLV_PCUPSP_TURN
+			, DLV_TURN
+			, DLV_SHOP_ID
+			, DLIVY_SHOP_ID
+			, ACMTL_GOD_VOL
+			, ACMTL_GOD_WT
+			, LGS_ITM_YN
+			, DLIVY_DRCT_TGT_YN
+			, DLIVY_DRCT_YN
+			, DLIVY_DRCT_GRP_DGRE
+			, DLIVY_DRCT_USER_GRP_DGRE
+			, DLIVY_DRCT_COUNT
+			, DLIVY_DRCT_TP_CD
+			, DLIVY_DRCT_DT
+			, DLIVY_DRCT_QTY
+			, DLIVY_DRCT_CNCL_QTY
+			, DLIVY_DRCT_CNCL_DT
+			, DLV_STAT_CD
+			, SHTG_QTY
+			, SHTG_DT
+			, SHTG_DCSN_YN
+			, SHTG_DCSN_DT
+			, DLIVY_COMPT_QTY
+			, DLIVY_COMPT_DT
+			, DLV_COMPT_DT
+			, DLIVY_DRCT_GOD_MEMO_CONT
+			, RCPTFR_NO
+			, RESVE_RCPTFR_CREAT_YN
+			, RESVE_RCPTFR_CREAT_DT
+			, RESVE_RCPTFR_DLIVY_YN
+			, RESVE_RCPTFR_DLIVY_DT
+			, RESVE_RCPTFR_DCSN_YN
+			, RESVE_RCPTFR_DCSN_DT
+			, ERP_RESVE_RCPTFR_CREAT_CNT
+			, ERP_RESVE_RCPTFR_CREAT_YN
+			, ERP_RESVE_RCPTFR_CREAT_DT
+			, ERP_RESVE_RCPTFR_RECREAT_YN
+			, ERP_RESVE_RCPTFR_RECREAT_DT
+			, ERP_RESVE_RCPTFR_CNCL_YN
+			, ERP_RESVE_RCPTFR_CNCL_DT
+			, INV_APL_YN
+			, CNTR_DLIVY_CNFIRM_YN
+			, CNTR_DLIVY_CNFIRM_DT
+			, P_STO_NO
+			, S_STO_NO
+			, S_DOC_NO
+			, REGTR_ID
+			, REG_DT
+			, UDTER_ID
+			, UDT_DT)
+		SELECT  DLIVY_DRCT_GOD_NO
+	        ,   (SELECT NVL (MAX (hist_turn), 0)
+	                FROM lgs_dlivy_drct_god_hist lddgh
+	               WHERE lddg.dlivy_drct_god_no = lddgh.dlivy_drct_god_no)
+	           + ROWNUM
+	               AS hist_turn
+			, ORD_NO
+			, ORD_GOD_TURN
+			, PCKAGE_GOD_TURN
+			, GFT_YN
+			, DLV_PCUPSP_TURN
+			, DLV_TURN
+			, DLV_SHOP_ID
+			, DLIVY_SHOP_ID
+			, ACMTL_GOD_VOL
+			, ACMTL_GOD_WT
+			, LGS_ITM_YN
+			, DLIVY_DRCT_TGT_YN
+			, DLIVY_DRCT_YN
+			, DLIVY_DRCT_GRP_DGRE
+			, DLIVY_DRCT_USER_GRP_DGRE
+			, DLIVY_DRCT_COUNT
+			, DLIVY_DRCT_TP_CD
+			, DLIVY_DRCT_DT
+			, DLIVY_DRCT_QTY
+			, DLIVY_DRCT_CNCL_QTY
+			, DLIVY_DRCT_CNCL_DT
+			, DLV_STAT_CD
+			, SHTG_QTY
+			, SHTG_DT
+			, SHTG_DCSN_YN
+			, SHTG_DCSN_DT
+			, DLIVY_COMPT_QTY
+			, DLIVY_COMPT_DT
+			, DLV_COMPT_DT
+			, DLIVY_DRCT_GOD_MEMO_CONT
+			, RCPTFR_NO
+			, RESVE_RCPTFR_CREAT_YN
+			, RESVE_RCPTFR_CREAT_DT
+			, RESVE_RCPTFR_DLIVY_YN
+			, RESVE_RCPTFR_DLIVY_DT
+			, RESVE_RCPTFR_DCSN_YN
+			, RESVE_RCPTFR_DCSN_DT
+			, ERP_RESVE_RCPTFR_CREAT_CNT
+			, ERP_RESVE_RCPTFR_CREAT_YN
+			, ERP_RESVE_RCPTFR_CREAT_DT
+			, ERP_RESVE_RCPTFR_RECREAT_YN
+			, ERP_RESVE_RCPTFR_RECREAT_DT
+			, ERP_RESVE_RCPTFR_CNCL_YN
+			, ERP_RESVE_RCPTFR_CNCL_DT
+			, INV_APL_YN
+			, CNTR_DLIVY_CNFIRM_YN
+			, CNTR_DLIVY_CNFIRM_DT
+			, P_STO_NO
+			, S_STO_NO
+			, S_DOC_NO
+			, REGTR_ID
+			, REG_DT
+			, UDTER_ID
+			, UDT_DT
+		  FROM LGS_DLIVY_DRCT_GOD lddg
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+	</insert>
+	
+	<!-- FO 물류배송 이력 등록 -->
+	<insert id="insertFoLgsDlvHist" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvHist">
+		INSERT INTO /* [delivery.external.xml][insertFoLgsDlvHist][Fo 물류배송 이력 등록][hongsub.lim] */
+		       LGS_DLV_HIST
+		     ( ord_no
+			 , dlv_pcupsp_turn
+			 , dlv_turn
+			 , hist_dt
+			 , clm_no
+			 , dmstc_dlv_cst_plc_sn
+			 , ovsea_dlv_dmstc_dlv_cst_plc_sn
+			 , ovsea_dlv_cst_plc_sn
+			 , dlv_cst_bnd_mbd_cd
+			 , dlv_com_cd
+			 , dmstc_waybil_no
+			 , dmstc_waybil_no_reg_dt
+			 , ovsea_waybil_no
+			 , ovsea_waybil_no_reg_dt
+			 , cvnstor_hdry_aprv_no
+			 , crncy_cd
+			 , stdr_crncy_amt
+			 , pay_exchg_rt_crncy_amt
+			 , reality_dlv_cst
+			 , plc_dlv_cst
+			 , cncl_dlv_cst
+			 , rtgod_dlv_cst
+			 , exchg_dlv_cst
+			 , dlv_cst_cpn_dc_amt
+			 , waybil_no_erp_trnsmis_cd
+			 , waybil_no_erp_trnsmis_err_cont
+			 , waybil_no_erp_trnsmis_dt
+			 , dlv_com_trnsmis_tgt_yn
+			 , dlv_com_trnsmis_yn
+			 , dlv_com_trnsmis_dt
+			 , mail_snd_yn
+			 , regtr_id
+			 , reg_dt
+			 , udter_id
+		     , udt_dt )
+		SELECT ord_no
+		     , dlv_pcupsp_turn
+		     , dlv_turn
+		     , SYSDATE
+			 , clm_no
+			 , dmstc_dlv_cst_plc_sn
+			 , ovsea_dlv_dmstc_dlv_cst_plc_sn
+			 , ovsea_dlv_cst_plc_sn
+			 , dlv_cst_bnd_mbd_cd
+			 , dlv_com_cd
+			 , dmstc_waybil_no
+			 , dmstc_waybil_no_reg_dt
+			 , ovsea_waybil_no
+			 , ovsea_waybil_no_reg_dt
+			 , cvnstor_hdry_aprv_no
+			 , crncy_cd
+			 , stdr_crncy_amt
+			 , pay_exchg_rt_crncy_amt
+			 , reality_dlv_cst
+			 , plc_dlv_cst
+			 , cncl_dlv_cst
+			 , rtgod_dlv_cst
+			 , exchg_dlv_cst
+			 , dlv_cst_cpn_dc_amt
+			 , waybil_no_erp_trnsmis_cd
+			 , waybil_no_erp_trnsmis_err_cont
+			 , waybil_no_erp_trnsmis_dt
+			 , dlv_com_trnsmis_tgt_yn
+			 , dlv_com_trnsmis_yn
+			 , dlv_com_trnsmis_dt
+			 , mail_snd_yn
+		     , regtr_id
+		     , reg_dt
+		     , udter_id
+		     , udt_dt
+		  FROM LGS_DLV
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+	</insert>	
+	
+	<!-- Fo 물류배송지 이력 등록 -->
+	<insert id="insertFoLgsDlvspHist" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspHist">
+	    INSERT INTO /* [delivery.external.xml][insertFoLgsDlvspHist][Fo물류배송지 이력 등록][hongsub.lim] */  
+	           LGS_DLVSP_HIST
+			 ( ord_no
+			 , dlv_pcupsp_turn
+			 , hist_dt
+			 , clm_no
+			 , dlv_pcupsp_sect_cd
+			 , addrse_nm
+			 , dlv_sect_cd
+			 , pkup_shop_id
+			 , pkup_shop_brnd_id
+			 , pkup_shop_visit_date
+			 , addr_sect_cd
+			 , addrse_nation_cd
+			 , addrse_post_no
+			 , addrse_base_addr
+			 , addrse_detail_addr
+			 , addrse_mobil_nation_no
+			 , addrse_mobil_area_no
+			 , addrse_mobil_tlof_no
+			 , addrse_mobil_tlof_wthn_no
+			 , addrse_tel_nation_no
+			 , addrse_tel_area_no
+			 , addrse_tel_tlof_no
+			 , addrse_tel_tlof_wthn_no
+			 , dlv_memo
+			 , dlv_hope_date
+			 , regtr_id
+			 , reg_dt
+			 , udter_id
+			 , udt_dt )
+		SELECT ord_no
+			 , dlv_pcupsp_turn
+			 , SYSDATE
+			 , clm_no
+			 , dlv_pcupsp_sect_cd
+			 , addrse_nm
+			 , dlv_sect_cd
+			 , pkup_shop_id
+			 , pkup_shop_brnd_id
+			 , pkup_shop_visit_date
+			 , addr_sect_cd
+			 , addrse_nation_cd
+			 , addrse_post_no
+			 , addrse_base_addr
+			 , addrse_detail_addr
+			 , addrse_mobil_nation_no
+			 , addrse_mobil_area_no
+			 , addrse_mobil_tlof_no
+			 , addrse_mobil_tlof_wthn_no
+			 , addrse_tel_nation_no
+			 , addrse_tel_area_no
+			 , addrse_tel_tlof_no
+			 , addrse_tel_tlof_wthn_no
+			 , dlv_memo
+			 , dlv_hope_date
+		     , regtr_id
+		     , reg_dt
+		     , udter_id
+		     , udt_dt
+		  FROM LGS_DLVSP
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+		   AND dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=NUMERIC}
+    </insert>	
+	
+	<update id="updateFolgsDlivyDrctGod" parameterType="lgsDlivyDrctGod">
+		UPDATE	/* [delivery.external.xml][updateFolgsDlivyDrctGod][ 픽업주문 일반 배송 처리 ][hongsub.lim] */
+			ord
+		SET
+			 dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=NUMERIC}
+           , udter_id = #{regtrId,jdbcType=VARCHAR}
+           , udt_dt = #{regDt,jdbcType=DATE} 
+		WHERE
+			ord_no = #{ordNo, jdbcType=VARCHAR}	
+	</update>
+	
+	<update id="updateDeliveryLocationChange" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspFoExtend">
+		UPDATE	/* [delivery.external.xml][updateDeliveryLocationChange][ 주문 배송지 변경처리 ][hongsub.lim] */
+			LGS_DLVSP 
+		SET 
+		    addrse_nm =  #{addrseNm, jdbcType=VARCHAR}
+		  , addr_sect_cd = #{addrSectCd, jdbcType=VARCHAR}
+		  , addrse_nation_cd = #{addrseNationCd, jdbcType=VARCHAR}
+		  , addrse_post_no = #{addrsePostNo, jdbcType=VARCHAR}
+		  , addrse_base_addr = #{addrseBaseAddr, jdbcType=VARCHAR}
+		  , addrse_detail_addr = #{addrseDetailAddr, jdbcType=VARCHAR}
+		  , addrse_mobil_nation_no = #{addrseMobilNationNo, jdbcType=VARCHAR}
+		  , addrse_mobil_area_no = #{addrseMobilAreaNo, jdbcType=VARCHAR}
+		  , addrse_mobil_tlof_no = #{addrseMobilTlofNo, jdbcType=VARCHAR}
+		  , addrse_mobil_tlof_wthn_no = #{addrseMobilTlofWthnNo, jdbcType=VARCHAR}
+		  , addrse_tel_nation_no = #{addrseTelNationNo, jdbcType=VARCHAR}
+		  , addrse_tel_area_no = #{addrseTelAreaNo, jdbcType=VARCHAR}
+		  , addrse_tel_tlof_no = #{addrseTelTlofNo, jdbcType=VARCHAR}
+		  , addrse_tel_tlof_wthn_no	= #{addrseTelTlofWthnNo, jdbcType=VARCHAR}
+		  , dlv_memo 	= #{dlvMemo, jdbcType=VARCHAR}
+		  <if test='udterId != null and udterId != ""'>
+            , udter_id =  #{udterId, jdbcType=VARCHAR}
+            , udt_dt = SYSDATE                 	  
+		  </if>
+
+		<!-- ncp 3 -->
+		  <if test='addrseCtyNm != null and addrseCtyNm != ""'>
+            , addrse_cty_nm =  #{addrseCtyNm, jdbcType=VARCHAR}
+		  </if>
+		  <if test='addrseLcltyNm != null and addrseLcltyNm != ""'>
+            , addrse_lclty_nm =  #{addrseLcltyNm, jdbcType=VARCHAR}
+		  </if>
+		<!-- ncp 3 -->
+
+		WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+		 AND  dlv_pcupsp_turn = #{dlvPcupspTurn, jdbcType=VARCHAR}
+	</update>			
+		
+		
+		
+
+	<select id="selectLgsDlvspPkup" parameterType="lgsDlvspExtend" resultType="com.plgrim.ncp.biz.delivery.data.LgsDlvspPkupDTO">
+		SELECT LD.ORD_NO    AS ordNo	/* [delivery.external.xml][selectLgsDlvspPkup][배송지, 배송매장 정보조회][aether] */
+			,ld.dlv_pcupsp_turn AS dlvPcupspTurn
+			,ld.dlv_sect_cd     AS dlvSectCd
+			,ld.pkup_shop_id    AS pkupShopId
+			,ld.addrse_base_addr || ' ' || ld.addrse_detail_addr   AS addr
+			,ss.shop_nm AS shopNm
+			,ld.dlv_memo                                     as dlvMemo                  /* 배송메모 */
+            ,ld.addrse_nm                                    as addrseNm                 /* 수취인 명 */
+            ,ld.addrse_base_addr                             as addrseBaseAddr           /* 수취인 기본주소 */
+            ,ld.addrse_detail_addr                           as addrseDetailAddr         /* 수취인 상세주소 */
+            ,ld.addrse_mobil_area_no                         as addrseMobilAreaNo        /*수취인 휴대번호*/
+            ,ld.addrse_mobil_tlof_no                         as addrseMobilTlofNo
+            ,ld.addrse_mobil_tlof_wthn_no                    as addrseMobilTlofWthnNo
+            ,ld.addrse_tel_area_no                           as addrseTelAreaNo          /* 수취인  전화 지역번호 */
+            ,ld.addrse_tel_tlof_no                           as addrseTelTlofNo
+            ,ld.addrse_tel_tlof_wthn_no                      as addrseTelTlofWthnNo  
+            ,ss.base_addr || ' ' || ss.detail_addr                  as addrShop     /* 픽업매장 주소 */
+			, ld.addrse_post_no     		AS addrsePostNo                	/* 수취인 우편번호  */
+		FROM lgs_dlvsp ld
+		INNER JOIN ord od ON ld.ord_no = od.ord_no
+		LEFT OUTER JOIN sys_shop ss 
+			ON ld.pkup_shop_id = ss.shop_id
+			AND ss.shop_id is not NULL 
+		WHERE 1=1
+		AND ld.ord_no = #{ordNo,jdbcType=VARCHAR}
+		AND 1 = 
+			CASE 
+				WHEN od.ord_tp_cd = 'SHOP_PKUP_ORD' THEN
+					CASE 
+						WHEN ld.dlv_pcupsp_turn = (SELECT MAX(dlv_pcupsp_turn) FROM LGS_DLVSP WHERE ord_no = #{ordNo,jdbcType=VARCHAR}) THEN 1
+						ELSE 0 END
+				ELSE
+					CASE
+						WHEN ld.dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=VARCHAR} THEN 1
+						ELSE 0 END
+				END
+	</select>		
+	
+	<select id="selectDrctGodRemainQty" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO" resultType="com.plgrim.ncp.biz.delivery.data.DeliveryOrderGoodDTO">
+		SELECT /* [delivery.external.xml][selectDrctGodRemainQty][배송지, 배송매장 정보조회][aether] */
+		lddg.dlv_pcupsp_turn	as dlvPcupspTurn 
+		, SUM(NVL(lddg.dlivy_drct_qty,0)) - SUM(NVL(lddg.dlivy_drct_cncl_qty,0)) as count 
+		FROM lgs_dlivy_drct_god lddg
+		 WHERE  1=1 
+		    AND lddg.ord_no = #{ordNo}		     
+		GROUP BY lddg.dlv_pcupsp_turn
+	</select>		
+	
+    <!-- 물류회수지시상품 등록 -->
+    <insert id="insertLgsRtrvlDrctGodForClm" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsRtrvlDrctGodExtend">
+		INSERT INTO lgs_rtrvl_drct_god
+            (                             
+              rtrvl_drct_god_no            /* 회수지시 상품 번호        */
+            , ord_no                       /* 주문 번호                 */
+            , clm_no                       /* 클레임 번호               */
+            , gft_yn                       /* 사은품 여부               */
+            , clm_wrhs_god_turn            /* 클레임 입고 상품 순번     */
+            , dlivy_drct_god_no            /* 출고지시 상품 번호        */
+            , dlv_pcupsp_turn              /* 배송 수거지 순번          */
+            , dlv_turn                     /* 배송 순번                 */
+            , rtrvl_shop_id                /* 회수 매장 ID              */
+            , acmtl_god_wt                 /* 누적 상품 무게            */
+            , acmtl_god_vol                /* 누적 상품 부피            */
+            , lgs_itm_yn                   /* 물류 단품 여부            */
+            , rtrvl_drct_tgt_yn            /* 회수지시 대상 여부        */
+            , rtrvl_drct_yn                /* 회수지시 여부             */
+            , rtrvl_drct_grp_dgre          /* 회수지시 그룹 차수        */
+         /*   , rtrvl_drct_user_grp_dgre    회수지시 사용자 그룹 차수 */
+            , rtrvl_drct_count             /* 회수지시 횟수             */
+            , rtrvl_drct_tp_cd             /* 회수지시 유형 코드        */
+            , rtrvl_drct_dt                /* 회수지시 일시             */
+            , rtrvl_drct_qty               /* 회수지시 수량             */
+            , rtrvl_drct_wthdraw_qty       /* 회수지시 철회 수량        */
+            , rtrvl_drct_wthdraw_dt        /* 회수지시 철회 일시        */
+            , rtrvl_stat_cd                /* 회수 상태 코드            */
+            , wrhs_compt_dt                /* 입고 완료 일시            */
+            , rtrvl_compt_dt               /* 회수 완료 일시            */
+            , rtrvl_god_stat_cd            /* 회수 상품 상태 코드       */
+            , rtrvl_god_prcs_compt_yn      /* 회수 상품 처리 완료 여부  */
+            , badn_reqest_cont             /* 불량 의뢰 내용            */
+            , hdry_com_trnsmis_tgt_yn      /* 택배사 전송 대상 여부     */
+            , hdry_com_trnsmis_yn          /* 택배사 전송 여부          */
+            , hdry_com_trnsmis_dt          /* 택배사 전송 일시          */
+            , hdry_com_key                 /* 택배사 키                 */
+			, hdry_com_wrhs_yn			   /* 택배사 입고 여부			*/
+            , erp_trnsmis_yn               /* ERP 전송 여부             */
+            , erp_trnsmis_dt               /* ERP 전송 일시             */
+            , erp_cnfirm_yn                /* ERP 확인 여부             */
+            , erp_cnfirm_dt                /* ERP 확인 일시             */
+            , erp_inv_trnsmis_sect_cd      /* ERP 재고 전송 구분 코드   */
+            , erp_inv_trnsmis_dt           /* ERP 재고 전송 일시        */
+            , rtgodcst_cal_sect_cd         /* 반품비 정산 구분 코드     */
+            , rtgodcst_cal_amt             /* 반품비 정산 금액          */
+            , regtr_id                     /* 등록자 ID                 */
+            , reg_dt                       /* 등록 일시                 */
+            , udter_id
+            , udt_dt
+            )
+       SELECT
+              #{rtrvlDrctGodNo,jdbcType=VARCHAR}			/* 회수지시 상품 번호        */     
+            , #{ordNo,jdbcType=VARCHAR}                     /* 주문 번호                 */ 
+            , #{clmNo,jdbcType=VARCHAR}                     /* 클레임 번호               */  
+            , lddg.gft_yn                                   /* 사은품 여부               */  
+            , #{clmWrhsGodTurn,jdbcType=NUMERIC}            /* 클레임 입고 상품 순번     */      
+            , lddg.dlivy_drct_god_no                        /* 출고지시 상품 번호        */     
+            , #{dlvPcupspTurn,jdbcType=NUMERIC}             /* 배송 수거지 순번          */    
+            ,(SELECT dlv_turn 
+                FROM lgs_dlv 
+               WHERE ord_no = #{ordNo,jdbcType=VARCHAR} 
+                 AND dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=NUMERIC}
+
+			<!-- ncp 3차 배송정책번호 조회 -->
+			<choose>
+				<when test='lang == "KOR"'>
+
+					AND dmstc_dlv_cst_plc_sn = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+
+				</when>
+				<otherwise>
+
+					AND ovsea_dlv_dmstc_dlv_cst_plc_sn = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+
+				</otherwise>
+			</choose>
+			<!-- ncp 3차 배송정책번호 조회 -->
+
+                 AND clm_no = #{clmNo,jdbcType=VARCHAR})    /* 배송 순번                 */ 
+
+            , #{rtrvlShopId,jdbcType=VARCHAR}               /* 회수 매장 ID              */ 
+<!-- 
+            , lddg.dlv_shop_id                              /* 회수 매장 ID              */
+ -->             
+            , lddg.acmtl_god_wt                             /* 누적 상품 무게            */   
+            , lddg.acmtl_god_vol                            /* 누적 상품 부피            */   
+            , lddg.lgs_itm_yn                               /* 물류 단품 여부            */   
+            , #{rtrvlDrctTgtYn,jdbcType=VARCHAR}            /* 회수지시 대상 여부        */     
+            , #{rtrvlDrctYn,jdbcType=VARCHAR}               /* 회수지시 여부             */   
+            , #{rtrvlDrctGrpDgre,jdbcType=VARCHAR}       	/* 회수지시 그룹 차수        */     
+          /*  , null                                           회수지시 사용자 그룹 차수 */        
+            , null                                          /* 회수지시 횟수             */   
+            , #{rtrvlDrctTpCd,jdbcType=VARCHAR}             /* 회수지시 유형 코드        */     
+            , null                                          /* 회수지시 일시             */   
+            , #{rtrvlDrctQty,jdbcType=NUMERIC}              /* 회수지시 수량             */   
+            , null                                          /* 회수지시 철회 수량        */     
+            , null                                          /* 회수지시 철회 일시        */     
+            , #{rtrvlStatCd,jdbcType=VARCHAR}               /* 회수 상태 코드            */   
+            , #{wrhsComptDt,jdbcType=VARCHAR}               /* 입고 완료 일시            */   
+            , #{rtrvlComptDt,jdbcType=VARCHAR}              /* 회수 완료 일시            */   
+            , #{rtrvlGodStatCd,jdbcType=VARCHAR}        	/* 회수 상품 상태 코드       */     
+            , #{rtrvlGodPrcsComptYn,jdbcType=VARCHAR}       /* 회수 상품 처리 완료 여부  */       
+            , #{badnReqestCont,jdbcType=VARCHAR}       		/* 불량 의뢰 내용            */   
+            , #{hdryComTrnsmisTgtYn,jdbcType=VARCHAR}     	/* 택배사 전송 대상 여부     */      
+            , #{hdryComTrnsmisYn,jdbcType=VARCHAR}        	/* 택배사 전송 여부          */    
+            , null                                          /* 택배사 전송 일시          */    
+            , null                                          /* 택배사 키                 */
+			, 'N'	 								  	    /* 택배사 입고 여부			*/
+			, #{erpTrnsmisYn,jdbcType=VARCHAR}              /* ERP 전송 여부             */
+            , null                                          /* ERP 전송 일시             */
+            , #{erpCnfirmYn,jdbcType=VARCHAR}               /* ERP 확인 여부             */
+            , null                                          /* ERP 확인 일시             */
+            , #{erpInvTrnsmisSectCd,jdbcType=NUMERIC}       /* ERP 재고 전송 구분 코드   */
+            , null                                          /* ERP 재고 전송 일시        */
+            , null                                          /* 반품비 정산 구분 코드     */      
+            , #{rtgodcstCalAmt,jdbcType=NUMERIC}            /* 반품비 정산 금액          */    
+            , #{regtrId,jdbcType=VARCHAR}                   /* 등록자 ID                 */
+            , SYSDATE                                       /* 등록 일시                 */ 
+            , #{regtrId,jdbcType=VARCHAR}                   /* 수정자 ID                 */
+            , SYSDATE                                       /* 수정 일시                 */ 
+         FROM lgs_dlivy_drct_god lddg
+        WHERE lddg.dlivy_drct_god_no = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+    </insert>     
+    
+    
+    <!-- 물류회수지시상품 등록 티몰 전용-->
+    <insert id="insertLgsRtrvlDrctGodForClmTmall" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsRtrvlDrctGod">
+		INSERT INTO lgs_rtrvl_drct_god
+            (                             
+              rtrvl_drct_god_no            /* 회수지시 상품 번호        */
+            , ord_no                       /* 주문 번호                 */
+            , clm_no                       /* 클레임 번호               */
+            , gft_yn                       /* 사은품 여부               */
+            , clm_wrhs_god_turn            /* 클레임 입고 상품 순번     */
+            , dlivy_drct_god_no            /* 출고지시 상품 번호        */
+            , dlv_pcupsp_turn              /* 배송 수거지 순번          */
+            , dlv_turn                     /* 배송 순번                 */
+            , rtrvl_shop_id                /* 회수 매장 ID              */
+            , acmtl_god_wt                 /* 누적 상품 무게            */
+            , acmtl_god_vol                /* 누적 상품 부피            */
+            , lgs_itm_yn                   /* 물류 단품 여부            */
+            , rtrvl_drct_tgt_yn            /* 회수지시 대상 여부        */
+            , rtrvl_drct_yn                /* 회수지시 여부             */
+            , rtrvl_drct_grp_dgre          /* 회수지시 그룹 차수        */
+         /*   , rtrvl_drct_user_grp_dgre    회수지시 사용자 그룹 차수 */
+            , rtrvl_drct_count             /* 회수지시 횟수             */
+            , rtrvl_drct_tp_cd             /* 회수지시 유형 코드        */
+            , rtrvl_drct_dt                /* 회수지시 일시             */
+            , rtrvl_drct_qty               /* 회수지시 수량             */
+            , rtrvl_drct_wthdraw_qty       /* 회수지시 철회 수량        */
+            , rtrvl_drct_wthdraw_dt        /* 회수지시 철회 일시        */
+            , rtrvl_stat_cd                /* 회수 상태 코드            */
+            , wrhs_compt_dt                /* 입고 완료 일시            */
+            , rtrvl_compt_dt               /* 회수 완료 일시            */
+            , rtrvl_god_stat_cd            /* 회수 상품 상태 코드       */
+            , rtrvl_god_prcs_compt_yn      /* 회수 상품 처리 완료 여부  */
+            , badn_reqest_cont             /* 불량 의뢰 내용            */
+            , hdry_com_trnsmis_tgt_yn      /* 택배사 전송 대상 여부     */
+            , hdry_com_trnsmis_yn          /* 택배사 전송 여부          */
+            , hdry_com_trnsmis_dt          /* 택배사 전송 일시          */
+            , hdry_com_key                 /* 택배사 키                 */
+			, hdry_com_wrhs_yn			   /* 택배사 입고 여부			*/
+            , erp_trnsmis_yn               /* ERP 전송 여부             */
+            , erp_trnsmis_dt               /* ERP 전송 일시             */
+            , erp_cnfirm_yn                /* ERP 확인 여부             */
+            , erp_cnfirm_dt                /* ERP 확인 일시             */
+            , erp_inv_trnsmis_sect_cd      /* ERP 재고 전송 구분 코드   */
+            , erp_inv_trnsmis_dt           /* ERP 재고 전송 일시        */
+            , rtgodcst_cal_sect_cd         /* 반품비 정산 구분 코드     */
+            , rtgodcst_cal_amt             /* 반품비 정산 금액          */
+            , regtr_id                     /* 등록자 ID                 */
+            , reg_dt                       /* 등록 일시                 */
+            , udter_id
+            , udt_dt
+            )
+       SELECT
+              #{rtrvlDrctGodNo,jdbcType=VARCHAR}			/* 회수지시 상품 번호        */     
+            , #{ordNo,jdbcType=VARCHAR}                     /* 주문 번호                 */ 
+            , #{clmNo,jdbcType=VARCHAR}                     /* 클레임 번호               */  
+            , lddg.gft_yn                                   /* 사은품 여부               */  
+            , #{clmWrhsGodTurn,jdbcType=NUMERIC}            /* 클레임 입고 상품 순번     */      
+            , lddg.dlivy_drct_god_no                        /* 출고지시 상품 번호        */     
+            , #{dlvPcupspTurn,jdbcType=NUMERIC}             /* 배송 수거지 순번          */    
+            , #{dlvTurn}									/* 배송 순번                 */ 
+            , #{rtrvlShopId,jdbcType=VARCHAR}               /* 회수 매장 ID              */ 
+<!-- 
+            , lddg.dlv_shop_id                              /* 회수 매장 ID              */
+ -->             
+            , lddg.acmtl_god_wt                             /* 누적 상품 무게            */   
+            , lddg.acmtl_god_vol                            /* 누적 상품 부피            */   
+            , lddg.lgs_itm_yn                               /* 물류 단품 여부            */   
+            , #{rtrvlDrctTgtYn,jdbcType=VARCHAR}            /* 회수지시 대상 여부        */     
+            , #{rtrvlDrctYn,jdbcType=VARCHAR}               /* 회수지시 여부             */   
+            , #{rtrvlDrctGrpDgre,jdbcType=VARCHAR}       	/* 회수지시 그룹 차수        */     
+          /*  , null                                           회수지시 사용자 그룹 차수 */        
+            , null                                          /* 회수지시 횟수             */   
+            , #{rtrvlDrctTpCd,jdbcType=VARCHAR}             /* 회수지시 유형 코드        */     
+            , null                                          /* 회수지시 일시             */   
+            , #{rtrvlDrctQty,jdbcType=NUMERIC}              /* 회수지시 수량             */   
+            , null                                          /* 회수지시 철회 수량        */     
+            , null                                          /* 회수지시 철회 일시        */     
+            , #{rtrvlStatCd,jdbcType=VARCHAR}               /* 회수 상태 코드            */   
+            , #{wrhsComptDt,jdbcType=VARCHAR}               /* 입고 완료 일시            */   
+            , #{rtrvlComptDt,jdbcType=VARCHAR}              /* 회수 완료 일시            */   
+            , #{rtrvlGodStatCd,jdbcType=VARCHAR}        	/* 회수 상품 상태 코드       */     
+            , #{rtrvlGodPrcsComptYn,jdbcType=VARCHAR}       /* 회수 상품 처리 완료 여부  */       
+            , #{badnReqestCont,jdbcType=VARCHAR}       		/* 불량 의뢰 내용            */   
+            , #{hdryComTrnsmisTgtYn,jdbcType=VARCHAR}     	/* 택배사 전송 대상 여부     */      
+            , #{hdryComTrnsmisYn,jdbcType=VARCHAR}        	/* 택배사 전송 여부          */    
+            , null                                          /* 택배사 전송 일시          */    
+            , null                                          /* 택배사 키                 */
+			, 'N'	 								  	    /* 택배사 입고 여부			*/
+			, #{erpTrnsmisYn,jdbcType=VARCHAR}              /* ERP 전송 여부             */
+            , null                                          /* ERP 전송 일시             */
+            , #{erpCnfirmYn,jdbcType=VARCHAR}               /* ERP 확인 여부             */
+            , null                                          /* ERP 확인 일시             */
+            , #{erpInvTrnsmisSectCd,jdbcType=NUMERIC}       /* ERP 재고 전송 구분 코드   */
+            , null                                          /* ERP 재고 전송 일시        */
+            , null                                          /* 반품비 정산 구분 코드     */      
+            , #{rtgodcstCalAmt,jdbcType=NUMERIC}            /* 반품비 정산 금액          */    
+            , #{regtrId,jdbcType=VARCHAR}                   /* 등록자 ID                 */
+            , SYSDATE                                       /* 등록 일시                 */ 
+            , #{regtrId,jdbcType=VARCHAR}                   /* 수정자 ID                 */
+            , SYSDATE                                       /* 수정 일시                 */ 
+         FROM lgs_dlivy_drct_god lddg
+        WHERE lddg.dlivy_drct_god_no = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+    </insert>
+    
+    
+     	
+	<select id="selectLgsDlvByClmNo" parameterType="String" resultType="lgsDlv">
+        SELECT /* [delivery.external.xml][selectLgsDlvByClmNo][물류배송 클레임번호로 조회][aether] */
+                ORD_NO
+               ,DLV_PCUPSP_TURN
+               ,DLV_TURN
+               ,CLM_NO
+               ,DMSTC_DLV_CST_PLC_SN
+               ,OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+               ,OVSEA_DLV_CST_PLC_SN
+               ,DLV_CST_BND_MBD_CD
+               ,DLV_COM_CD
+               ,DMSTC_WAYBIL_NO
+               ,DMSTC_WAYBIL_NO_REG_DT
+               ,OVSEA_WAYBIL_NO
+               ,OVSEA_WAYBIL_NO_REG_DT
+               ,CVNSTOR_HDRY_APRV_NO
+               ,CRNCY_CD
+               ,STDR_CRNCY_AMT
+               ,PAY_EXCHG_RT_CRNCY_AMT
+               ,REALITY_DLV_CST
+               ,PLC_DLV_CST
+               ,nvl(CNCL_DLV_CST,0) as CNCL_DLV_CST
+               ,nvl(RTGOD_DLV_CST,0) as RTGOD_DLV_CST
+               ,EXCHG_DLV_CST
+               ,DLV_CST_CPN_DC_AMT
+               ,DLV_CST_CPN_NO
+               ,WAYBIL_NO_ERP_TRNSMIS_CD
+               ,WAYBIL_NO_ERP_TRNSMIS_ERR_CONT
+               ,WAYBIL_NO_ERP_TRNSMIS_DT
+               ,DLV_COM_TRNSMIS_TGT_YN
+               ,DLV_COM_TRNSMIS_YN
+               ,DLV_COM_TRNSMIS_DT
+               ,MAIL_SND_YN
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    LGS_DLV t
+        WHERE   1 = 1
+        AND     CLM_NO = #{clmNo,jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="selectLgsDlvByOrdNo" parameterType="String" resultType="lgsDlv">
+		SELECT /* [delivery.external.xml][selectLgsDlvByOrdNo][물류배송 주문번호로 조회][aether] */
+				ORD_NO
+				,DLV_PCUPSP_TURN
+				,DLV_TURN
+				,CLM_NO
+				,DMSTC_DLV_CST_PLC_SN
+				,OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+				,OVSEA_DLV_CST_PLC_SN
+				,DLV_CST_BND_MBD_CD
+				,DLV_COM_CD
+				,DMSTC_WAYBIL_NO
+				,DMSTC_WAYBIL_NO_REG_DT
+				,OVSEA_WAYBIL_NO
+				,OVSEA_WAYBIL_NO_REG_DT
+				,CVNSTOR_HDRY_APRV_NO
+				,CRNCY_CD
+				,nvl(STDR_CRNCY_AMT,0) as STDR_CRNCY_AMT
+				,nvl(PAY_EXCHG_RT_CRNCY_AMT,0) as PAY_EXCHG_RT_CRNCY_AMT
+				,nvl(REALITY_DLV_CST,0) as REALITY_DLV_CST
+				,nvl(PLC_DLV_CST,0) as PLC_DLV_CST
+				,nvl(CNCL_DLV_CST,0) as CNCL_DLV_CST
+				,nvl(RTGOD_DLV_CST,0) as RTGOD_DLV_CST
+				,nvl(EXCHG_DLV_CST,0) as EXCHG_DLV_CST
+				,nvl(DLV_CST_CPN_DC_AMT,0) as DLV_CST_CPN_DC_AMT
+				,DLV_CST_CPN_NO
+				,WAYBIL_NO_ERP_TRNSMIS_CD
+				,WAYBIL_NO_ERP_TRNSMIS_ERR_CONT
+				,WAYBIL_NO_ERP_TRNSMIS_DT
+				,DLV_COM_TRNSMIS_TGT_YN
+				,DLV_COM_TRNSMIS_YN
+				,DLV_COM_TRNSMIS_DT
+				,MAIL_SND_YN
+				,REGTR_ID
+				,REG_DT
+				,UDTER_ID
+				,UDT_DT
+		FROM    LGS_DLV t
+		WHERE   1 = 1
+		AND     t.ord_no = #{ordNo,jdbcType=VARCHAR}
+		AND 	t.dlv_pcupsp_turn = '1'
+        AND (
+             (T.OVSEA_DLV_CST_PLC_SN IS NOT NULL AND T.CLM_NO IS NULL)
+          OR (T.OVSEA_DLV_CST_PLC_SN IS NULL)
+             )
+	</select>
+
+
+	<!-- 클레임 반품 주문배송지정보조회 -->
+    <select id="selectDlvspListForOrd" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend" resultType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend">
+        SELECT
+               fn_masking('FLNM', ld.addrse_nm , '', #{maskingYn})   			AS addrseNm                 /* 수취인 명                */
+             , ld.addrse_nation_cd             									AS addrseNationCd           /* 수취인 국가 코드         */
+             , ld.addr_sect_cd             							  		    AS addrSectCd               /* 수취인 주소 구분         */
+             , ld.addrse_post_no               									AS addrsePostNo             /* 수취인 우편번호          */
+             , fn_masking('ADDR', ld.addrse_base_addr, '', #{maskingYn})    	AS addrseBaseAddr           /* 수취인 기본주소          */
+             , fn_masking('ADDRDTL', ld.addrse_detail_addr, '', #{maskingYn})	AS addrseDetailAddr         /* 수취인 상세주소          */
+             , ld.addrse_mobil_nation_no       									AS addrseMobilNationNo      /* 수취인 휴대전화 국가번호 */
+             , ld.addrse_mobil_area_no         									AS addrseMobilAreaNo        /* 수취인 휴대전화 지역번호 */
+             , ld.addrse_mobil_tlof_no         									AS addrseMobilTlofNo        /* 수취인 휴대전화 국번호   */
+             , ld.addrse_mobil_tlof_wthn_no    									AS addrseMobilTlofWthnNo    /* 수취인 휴대전화 국내번호 */
+             , fn_masking('PHON' , CASE WHEN ld.addrse_mobil_nation_no IS NULL THEN '' ELSE ld.addrse_mobil_nation_no ||'-' END || ld.addrse_mobil_area_no||'-'||ld.addrse_mobil_tlof_no ||'-'||ld.addrse_mobil_tlof_wthn_no,'',#{maskingYn}  ) AS mobilNo
+             , ld.addrse_tel_nation_no         									AS addrseTelNationNo        /* 수취인 전화 국가번호     */
+             , ld.addrse_tel_area_no           									AS addrseTelAreaNo          /* 수취인 전화 지역번호     */
+             , ld.addrse_tel_tlof_no           									AS addrseTelTlofNo          /* 수취인 전화 국번호       */
+             , ld.addrse_tel_tlof_wthn_no      									AS addrseTelTlofWthnNo      /* 수취인 전화 국내번호     */
+             , ld.pkup_shop_id                 									AS pkupShopId               /* 픽업 매장 ID             */
+             , ld.pkup_shop_brnd_id            									AS pkupShopBrndId           /* 픽업 매장 브랜드 ID      */
+             , ld.pkup_shop_visit_date         									AS pkupShopVisitDate        /* 픽업 매장 방문 일자      */
+<!-- 
+             , ld.ord_no                       									AS ordNo                    /* 주문 번호                */
+             , ld.dlv_pcupsp_turn              									AS dlvPcupspTurn            /* 배송 수거지 순번         */
+             , ld.clm_no                       									AS clmNo                    /* 클레임 번호              */
+             , ld.dlv_pcupsp_sect_cd           									AS dlvPcupspSectCd          /* 배송 수거지 구분 코드    */
+             , ld.dlv_sect_cd                  									AS dlvSectCd                /* 배송 구분 코드           */
+             , ld.dlv_mn_cd                    									AS dlvMnCd                  /* 배송 수단 코드           */
+             , ld.addr_sect_cd                 									AS addrSectCd               /* 주소 구분 코드           */
+ -->
+<!-- 
+             , ld.dlv_mn_cd
+             , ld.pkup_shop_id
+             , ld.pkup_shop_visit_date
+             
+             , ld.dlv_memo                     AS dlvMemo                  /* 배송 메모                */
+             , ld.dlv_hope_date                AS dlvHopeDate              /* 배송 희망 일자           */
+             , ld.regtr_id                     AS regtrId                  /* 등록자 ID                */
+             , ld.reg_dt                       AS regDt                    /* 등록 일시                */
+             , ld.udter_id                     AS udterId                  /* 수정자 ID                */
+             , ld.udt_dt                       AS udtDt                    /* 수정 일시                */
+ -->             
+          FROM lgs_dlvsp ld
+		 where 1=1
+		   and ld.ord_no = #{ordNo, jdbcType=VARCHAR}
+		   <!-- AND ld.dlv_pcupsp_sect_cd = 'ORD_DLVSP' -->
+         <if test='dlvPcupspTurn != "" and dlvPcupspTurn != null'>
+		   AND ld.dlv_pcupsp_turn = #{dlvPcupspTurn ,jdbcType=NUMERIC}
+		 </if>
+    </select>
+	
+	<!-- 상품명 조회 -->
+	<select id="getGoodsNm" parameterType="String" resultType="String">
+		SELECT  /* [delivery.select.xml][getGoodsNm][편의점 택배 상품명][] */ 
+				GOD_NM
+		 FROM GOD 
+		WHERE GOD_NO = #{godNo,jdbcType=VARCHAR}
+	</select>		
+	
+	
+	<select id="selectDlvDrctGodByOrdNo" parameterType="com.plgrim.ncp.biz.delivery.data.DeliveryPayClaimDTO" resultType="lgsDlivyDrctGod">
+        SELECT /* com.plgrim.ncp.base.repository.lgs.selectLgsDlivyDrctGod jackie 20150601 */
+                t.DLIVY_DRCT_GOD_NO
+               ,t.ORD_NO
+               ,t.ORD_GOD_TURN
+               ,t.PCKAGE_GOD_TURN
+               ,t.GFT_YN
+               ,t.DLV_PCUPSP_TURN
+               ,t.DLV_TURN
+               ,t.DLV_SHOP_ID
+               ,t.DLIVY_SHOP_ID
+               ,t.ACMTL_GOD_VOL
+               ,t.ACMTL_GOD_WT
+               ,t.LGS_ITM_YN
+               ,t.DLIVY_DRCT_TGT_YN
+               ,t.DLIVY_DRCT_YN
+               ,t.DLIVY_DRCT_GRP_DGRE
+               ,t.DLIVY_DRCT_USER_GRP_DGRE
+               ,t.DLIVY_DRCT_COUNT
+               ,t.DLIVY_DRCT_TP_CD
+               ,t.DLIVY_DRCT_DT
+               ,t.DLIVY_DRCT_QTY
+               ,t.DLIVY_DRCT_CNCL_QTY
+               ,t.DLIVY_DRCT_CNCL_DT
+               ,t.DLV_STAT_CD
+               ,t.SHTG_QTY
+               ,t.SHTG_DT
+               ,t.SHTG_DCSN_YN
+               ,t.SHTG_DCSN_DT
+               ,t.DLIVY_COMPT_QTY
+               ,t.DLIVY_COMPT_DT
+               ,t.DLV_COMPT_DT
+               ,t.DLIVY_DRCT_GOD_MEMO_CONT
+               ,t.RCPTFR_NO
+               ,t.RESVE_RCPTFR_CREAT_YN
+               ,t.RESVE_RCPTFR_CREAT_DT
+               ,t.RESVE_RCPTFR_DLIVY_YN
+               ,t.RESVE_RCPTFR_DLIVY_DT
+               ,t.RESVE_RCPTFR_DCSN_YN
+               ,t.RESVE_RCPTFR_DCSN_DT
+               ,t.ERP_RESVE_RCPTFR_CREAT_CNT
+               ,t.ERP_RESVE_RCPTFR_CREAT_YN
+               ,t.ERP_RESVE_RCPTFR_CREAT_DT
+               ,t.ERP_RESVE_RCPTFR_RECREAT_YN
+               ,t.ERP_RESVE_RCPTFR_RECREAT_DT
+               ,t.ERP_RESVE_RCPTFR_CNCL_YN
+               ,t.ERP_RESVE_RCPTFR_CNCL_DT
+               ,t.INV_APL_YN
+               ,t.CNTR_DLIVY_CNFIRM_YN
+               ,t.CNTR_DLIVY_CNFIRM_DT
+               ,t.P_STO_NO
+               ,t.S_STO_NO
+               ,t.S_DOC_NO
+               ,t.REGTR_ID
+               ,t.REG_DT
+               ,t.UDTER_ID
+               ,t.UDT_DT
+<choose>
+	<when test='dlivyDrctTpCd != null and dlivyDrctTpCd != ""'>
+		   FROM lgs_dlivy_drct_god t
+	       JOIN ord_clm_god_cnnc ocgc
+			 ON ocgc.ord_no = t.ord_no
+			AND ocgc.ord_god_turn = t.ord_god_turn
+	        AND ocgc.clm_no = #{clmNo,jdbcType=VARCHAR}
+          WHERE 1 = 1
+	        AND t.ord_no = #{ordNo, jdbcType=VARCHAR}
+	        AND t.dlivy_drct_tp_cd <![CDATA[<>]]> 'ORD'
+   	</when>
+	<otherwise>
+        FROM    LGS_DLIVY_DRCT_GOD t
+        WHERE   1 = 1
+        <choose>
+        	<when test='ordNo != null and ordNo != ""'>
+        		AND     ORD_NO = #{ordNo,jdbcType=VARCHAR}		
+        	</when>
+        	<otherwise>
+        		AND 1=2
+        	</otherwise>
+        </choose>
+	</otherwise>
+</choose>
+        
+	</select>			
+	
+	
+	
+	
+	<select id="checkMinusDlvCnt" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend" resultType="int">
+		SELECT count(1)
+		  FROM lgs_dlv l
+		 WHERE     l.ord_no = #{ordNo}
+		       AND l.dlv_pcupsp_turn = #{dlvPcupspTurn}
+		       AND l.clm_no IS NOT NULL
+		       AND l.cncl_dlv_cst <![CDATA[<]]> 0
+	</select>		
+	
+	            
+	            
+	<select id="checkItmDlvCnt" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend" resultType="int">	            
+		SELECT COUNT (1)
+		  FROM inf_ord_god_erp_dstb i
+		 WHERE     i.ord_no = #{ordNo}
+		       AND i.ord_god_turn IN
+		               (SELECT og.ord_god_turn
+		                  FROM ord_god og
+		                 WHERE     og.ord_no = #{ordNo}
+		                       AND og.dlv_pcupsp_turn = #{dlvPcupspTurn})
+		       AND i.clm_no IS NULL	            
+	</select>	
+	
+	
+	
+	
+	<insert id="insertLgsDlvForCnclClm" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlv">
+		INSERT INTO lgs_dlv (dlv_pcupsp_turn
+		                   , dlv_turn
+		                   , dmstc_dlv_cst_plc_sn
+		                   , dlv_com_cd
+		                   , dlv_mn_cd
+		                   , gdgp_stat_cd
+		                   , dlv_com_trnsmis_tgt_yn
+		                   , dlv_com_trnsmis_yn
+		                   , mail_snd_yn
+		                   , ord_no
+		                   , dmstc_waybil_no
+		                   , regtr_id
+		                   , reg_dt
+		                   , udter_id
+		                   , udt_dt
+		                   , clm_no
+		                   , ovsea_dlv_dmstc_dlv_cst_plc_sn
+		                   , ovsea_dlv_cst_plc_sn
+		                   , dlv_cst_bnd_mbd_cd
+		                   , dmstc_waybil_no_reg_dt
+		                   , ovsea_waybil_no
+		                   , ovsea_waybil_no_reg_dt
+		                   , cvnstor_hdry_aprv_no
+		                   , crncy_cd
+		                   , stdr_crncy_amt
+		                   , pay_exchg_rt_crncy_amt
+		                   , reality_dlv_cst
+		                   , plc_dlv_cst
+		                   , cncl_dlv_cst
+		                   , rtgod_dlv_cst
+		                   , exchg_dlv_cst
+		                   , dlv_cst_cpn_dc_amt
+		                   , dlv_cst_cpn_no
+		                   , waybil_no_erp_trnsmis_cd
+		                   , waybil_no_erp_trnsmis_err_cont
+		                   , waybil_no_erp_trnsmis_dt
+		                   , dlv_com_trnsmis_dt
+		                   , cal_dt)
+		    SELECT dlv_pcupsp_turn
+		         , #{dlvTurn} as dlv_turn
+		         , dmstc_dlv_cst_plc_sn
+		         , dlv_com_cd
+		         , dlv_mn_cd
+		         , gdgp_stat_cd
+		         , dlv_com_trnsmis_tgt_yn
+		         , 'N' as dlv_com_trnsmis_yn
+		         , mail_snd_yn
+		         , ord_no
+		         , dmstc_waybil_no
+		         , #{regtrId} as regtr_id
+		         , sysdate as reg_dt
+		         , #{regtrId} asudter_id
+		         , sysdate as udt_dt
+		         , #{clmNo} as clm_no
+		         , ovsea_dlv_dmstc_dlv_cst_plc_sn
+		         , ovsea_dlv_cst_plc_sn
+		         , #{dlvCstBndMbdCd} as dlv_cst_bnd_mbd_cd
+		         , dmstc_waybil_no_reg_dt
+		         , ovsea_waybil_no
+		         , ovsea_waybil_no_reg_dt
+		         , cvnstor_hdry_aprv_no
+		         , crncy_cd
+		         , stdr_crncy_amt
+		         , pay_exchg_rt_crncy_amt
+		         , #{cnclDlvCst}*-1 as reality_dlv_cst
+		         , plc_dlv_cst
+		         , #{cnclDlvCst} as cncl_dlv_cst
+		         , rtgod_dlv_cst
+		         , exchg_dlv_cst
+		         , dlv_cst_cpn_dc_amt
+		         , dlv_cst_cpn_no
+		         , waybil_no_erp_trnsmis_cd
+		         , waybil_no_erp_trnsmis_err_cont
+		         , waybil_no_erp_trnsmis_dt
+		         , dlv_com_trnsmis_dt
+		         , cal_dt
+		      FROM lgs_dlv ld
+		      WHERE ld.ord_no = #{ordNo}
+		      AND ld.dlv_pcupsp_turn = #{dlvPcupspTurn}
+		      AND ld.dlv_turn = '1' /*주문시 생성된 row 를 가져온다.*/
+		      AND rownum = 1
+	</insert>
+	
+	
+	<insert id="insertLgsDlvForCnclClmHist" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlv">
+        INSERT INTO
+               LGS_DLV_HIST
+             ( ord_no
+             , dlv_pcupsp_turn
+             , dlv_turn
+             , hist_dt
+             , clm_no
+             , dmstc_dlv_cst_plc_sn
+             , ovsea_dlv_dmstc_dlv_cst_plc_sn
+             , ovsea_dlv_cst_plc_sn
+             , dlv_cst_bnd_mbd_cd
+             , dlv_com_cd
+             , dmstc_waybil_no
+             , dmstc_waybil_no_reg_dt
+             , ovsea_waybil_no
+             , ovsea_waybil_no_reg_dt
+             , cvnstor_hdry_aprv_no
+             , crncy_cd
+             , stdr_crncy_amt
+             , pay_exchg_rt_crncy_amt
+             , reality_dlv_cst
+             , plc_dlv_cst
+             , cncl_dlv_cst
+             , rtgod_dlv_cst
+             , exchg_dlv_cst
+             , dlv_cst_cpn_dc_amt
+             , waybil_no_erp_trnsmis_cd
+             , waybil_no_erp_trnsmis_err_cont
+             , waybil_no_erp_trnsmis_dt
+             , dlv_com_trnsmis_tgt_yn
+             , dlv_com_trnsmis_yn
+             , dlv_com_trnsmis_dt
+             , mail_snd_yn
+             , regtr_id
+             , reg_dt
+             , udter_id
+             , udt_dt )
+        SELECT ord_no
+             , dlv_pcupsp_turn
+             , dlv_turn
+             , SYSDATE as hist_dt
+             , clm_no
+             , dmstc_dlv_cst_plc_sn
+             , ovsea_dlv_dmstc_dlv_cst_plc_sn
+             , ovsea_dlv_cst_plc_sn
+             , dlv_cst_bnd_mbd_cd
+             , dlv_com_cd
+             , dmstc_waybil_no
+             , dmstc_waybil_no_reg_dt
+             , ovsea_waybil_no
+             , ovsea_waybil_no_reg_dt
+             , cvnstor_hdry_aprv_no
+             , crncy_cd
+             , stdr_crncy_amt
+             , pay_exchg_rt_crncy_amt
+             , reality_dlv_cst
+             , plc_dlv_cst
+             , cncl_dlv_cst
+             , rtgod_dlv_cst
+             , exchg_dlv_cst
+             , dlv_cst_cpn_dc_amt
+             , waybil_no_erp_trnsmis_cd
+             , waybil_no_erp_trnsmis_err_cont
+             , waybil_no_erp_trnsmis_dt
+             , dlv_com_trnsmis_tgt_yn
+             , dlv_com_trnsmis_yn
+             , dlv_com_trnsmis_dt
+             , mail_snd_yn
+             , regtr_id
+             , reg_dt
+             , udter_id
+             , udt_dt
+          FROM LGS_DLV ld          
+         WHERE ld.ord_no = #{ordNo}
+              AND ld.dlv_pcupsp_turn = #{dlvPcupspTurn}
+              AND ld.dlv_turn = #{dlvTurn}
+              AND rownum = 1
+	</insert>
+	
+	
+	<!-- ncp2 해당 국내배송비정책번호가 등록되어 있는지 확인 -->
+	<select id="checkDlvTurnCnt" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend" resultType="int">
+		SELECT COUNT (1)
+          FROM lgs_dlv
+         WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+           AND dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=NUMERIC}
+           AND dmstc_dlv_cst_plc_sn = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+           AND clm_no = #{clmNo,jdbcType=VARCHAR}
+	</select>
+
+	<!-- ncp2 해당 국내배송비정책번호가 등록되어 있는지 확인 -->
+	<select id="selectDlvTurn" parameterType="com.plgrim.ncp.biz.delivery.data.DlvOrdGodInfoDTO" resultType="int">
+		SELECT lddg.dlv_turn AS dlv_turn
+		  FROM ord_clm_god_cnnc ocgc
+			   JOIN lgs_dlivy_drct_god lddg
+					ON ocgc.ord_no = lddg.ord_no
+				   AND ocgc.ord_god_turn = lddg.ord_god_turn
+		 WHERE ocgc.clm_no = #{clmNo,jdbcType=VARCHAR}
+		   AND ocgc.god_cnnc_tp_cd = 'DLIVY_GOD_CNNC'
+		   AND ocgc.clm_wrhs_god_turn = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+<!--
+		SELECT lddg.dlv_turn AS dlv_turn
+		  FROM lgs_dlivy_drct_god lddg
+		 WHERE 1 = 1
+		   AND lddg.ord_no = #{ordNo,jdbcType=VARCHAR}
+		   AND lddg.dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=NUMERIC}
+		   AND lddg.dlivy_drct_god_no = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+-->
+	</select>
+
+	<!-- 제휴사 주문 자사 회수 가능 여부 조회 -->
+	<select id="selectAffOrdMcomRtrvlPsbYn" parameterType="String" resultType="String">
+		SELECT NVL(mcom_rtrvl_psb_yn, 'N') AS mcom_rtrvl_psb_yn
+			FROM ord a
+				LEFT OUTER JOIN COM_AFF_VRSC_COM_CNNC b
+					ON a.aff_com_id = b.aff_com_id AND a.aff_vrsc_com_id = b.aff_vrsc_com_id
+			WHERE a.ord_no = #{ordNo,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectReDlvDrctTargetList" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvsp" resultType="com.plgrim.ncp.biz.delivery.data.DeliverySearchDTO">
+		SELECT	/* [delivery.external.xml][selectReDlvDrctTargetList][재 출고지시 대상 리스트 조회] */
+				'N' AS cancel_yn
+				, ord_no
+				, dlv_pcupsp_turn
+				, dlv_turn
+				, dlivy_drct_god_no
+			FROM lgs_dlivy_drct_god
+			WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+				AND dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=VARCHAR}
+				<!-- AND dlv_shop_id IN ('X30004') -->
+				AND dlv_shop_id IN ('X30004', 'M510', 'I50002', 'A30003')
+                AND dlv_stat_cd = 'DLIVY_DRCT'
+                AND dlivy_drct_qty - NVL(dlivy_drct_cncl_qty, 0) > 0
+                AND dlivy_drct_cncl_stat_cd IS NULL
+	</select>
+</mapper>

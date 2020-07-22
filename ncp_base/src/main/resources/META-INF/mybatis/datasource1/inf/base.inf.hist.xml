@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfHist" parameterType="infHist" resultType="infHist">
+		SELECT /* com.plgrim.ncp.base.selectInfHist		Generator(Generator)	2018-05-23 */
+			   REQUST_ID
+			 , CALL_CLASS_ID
+			 , INF_CLASS_ID
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , ORD_NO
+			 , CLM_NO
+			 , INPUT_CONT
+			 , OUTPT_CONT
+			 , INF_ERR_CD_CONT
+			 , EXECUT_BEG_DT
+			 , EXECUT_END_DT
+			 , ELAPSE_TIME
+			 , INF_HIST_STAT_CD
+			 , MSG_CONT
+		  FROM INF_HIST
+		 WHERE 1 = 1
+	   	   AND REQUST_ID = #{requstId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateInfHist" parameterType="infHist">
+		UPDATE /* com.plgrim.ncp.base.updateInfHist		Generator(Generator)	2018-05-23 */
+		INF_HIST SET
+			   CALL_CLASS_ID = #{callClassId,jdbcType=VARCHAR}
+			 , INF_CLASS_ID = #{infClassId,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , INPUT_CONT = #{inputCont,jdbcType=CLOB}
+			 , OUTPT_CONT = #{outptCont,jdbcType=CLOB}
+			 , INF_ERR_CD_CONT = #{infErrCdCont,jdbcType=CLOB}
+			 , EXECUT_BEG_DT = #{executBegDt,jdbcType=TIMESTAMP}
+			 , EXECUT_END_DT = #{executEndDt,jdbcType=TIMESTAMP}
+			 , ELAPSE_TIME = #{elapseTime,jdbcType=NUMERIC}
+			 , INF_HIST_STAT_CD = #{infHistStatCd,jdbcType=VARCHAR}
+			 , MSG_CONT = #{msgCont,jdbcType=CLOB}
+		 WHERE 1 = 1
+		   AND REQUST_ID = #{requstId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertInfHist" parameterType="infHist">
+		INSERT /* com.plgrim.ncp.base.insertInfHist		Generator(Generator)	2018-05-23 */
+		INTO   INF_HIST (
+			   REQUST_ID
+			 , CALL_CLASS_ID
+			 , INF_CLASS_ID
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , ORD_NO
+			 , CLM_NO
+			 , INPUT_CONT
+			 , OUTPT_CONT
+			 , INF_ERR_CD_CONT
+			 , EXECUT_BEG_DT
+			 , EXECUT_END_DT
+			 , ELAPSE_TIME
+			 , INF_HIST_STAT_CD
+			 , MSG_CONT
+		)
+		VALUES (
+			   #{requstId,jdbcType=VARCHAR}
+			 , #{callClassId,jdbcType=VARCHAR}
+			 , #{infClassId,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{inputCont,jdbcType=CLOB}
+			 , #{outptCont,jdbcType=CLOB}
+			 , #{infErrCdCont,jdbcType=CLOB}
+			 , #{executBegDt,jdbcType=TIMESTAMP}
+			 , #{executEndDt,jdbcType=TIMESTAMP}
+			 , #{elapseTime,jdbcType=NUMERIC}
+			 , #{infHistStatCd,jdbcType=VARCHAR}
+			 , #{msgCont,jdbcType=CLOB}
+        )
+    </insert>
+
+    <delete id="deleteInfHist" parameterType="infHist">
+		DELETE /* com.plgrim.ncp.base.deleteInfHist		Generator(Generator)	2018-05-23 */
+		  FROM INF_HIST
+		 WHERE 1 = 1
+		   AND REQUST_ID = #{requstId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

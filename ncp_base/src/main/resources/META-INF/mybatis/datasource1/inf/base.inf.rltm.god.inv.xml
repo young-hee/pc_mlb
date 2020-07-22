@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfRltmGodInv" parameterType="infRltmGodInv" resultType="infRltmGodInv">
+		SELECT /* com.plgrim.ncp.base.selectInfRltmGodInv		Generator(Generator)	2018-05-31 */
+			   BRND_ID
+			 , SHOP_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , COLOR_CD
+			 , OPT_VAL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_RLTM_GOD_INV
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfRltmGodInv" parameterType="infRltmGodInv">
+		UPDATE /* com.plgrim.ncp.base.updateInfRltmGodInv		Generator(Generator)	2018-05-31 */
+		INF_RLTM_GOD_INV SET
+			   BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , SHOP_ID = #{shopId,jdbcType=VARCHAR}
+			 , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			 , DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+			 , OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfRltmGodInv" parameterType="infRltmGodInv">
+		INSERT /* com.plgrim.ncp.base.insertInfRltmGodInv		Generator(Generator)	2018-05-31 */
+		INTO   INF_RLTM_GOD_INV (
+			   BRND_ID
+			 , SHOP_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , COLOR_CD
+			 , OPT_VAL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{sesonCd,jdbcType=VARCHAR}
+			 , #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{colorCd,jdbcType=VARCHAR}
+			 , #{optValCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfRltmGodInv" parameterType="infRltmGodInv">
+		DELETE /* com.plgrim.ncp.base.deleteInfRltmGodInv		Generator(Generator)	2018-05-31 */
+		  FROM INF_RLTM_GOD_INV
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

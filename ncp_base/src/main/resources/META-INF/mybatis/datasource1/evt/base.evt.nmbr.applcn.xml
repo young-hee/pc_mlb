@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtNmbrApplcn" parameterType="evtNmbrApplcn" resultType="evtNmbrApplcn">
+		SELECT /* com.plgrim.ncp.base.selectEvtNmbrApplcn		Generator(Generator)	2018-05-23 */
+			   EVT_PARTCPTN_SN
+			 , NMBR_NM
+			 , NMBR_MOBIL_NO
+			 , DEVICE_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_NMBR_APPLCN
+		 WHERE 1 = 1
+	   	   AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEvtNmbrApplcn" parameterType="evtNmbrApplcn">
+		UPDATE /* com.plgrim.ncp.base.updateEvtNmbrApplcn		Generator(Generator)	2018-05-23 */
+		EVT_NMBR_APPLCN SET
+			   NMBR_NM = #{nmbrNm,jdbcType=VARCHAR}
+			 , NMBR_MOBIL_NO = #{nmbrMobilNo,jdbcType=VARCHAR}
+			 , DEVICE_ID = #{deviceId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEvtNmbrApplcn" parameterType="evtNmbrApplcn">
+		INSERT /* com.plgrim.ncp.base.insertEvtNmbrApplcn		Generator(Generator)	2018-05-23 */
+		INTO   EVT_NMBR_APPLCN (
+			   EVT_PARTCPTN_SN
+			 , NMBR_NM
+			 , NMBR_MOBIL_NO
+			 , DEVICE_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , #{nmbrNm,jdbcType=VARCHAR}
+			 , #{nmbrMobilNo,jdbcType=VARCHAR}
+			 , #{deviceId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtNmbrApplcn" parameterType="evtNmbrApplcn">
+		DELETE /* com.plgrim.ncp.base.deleteEvtNmbrApplcn		Generator(Generator)	2018-05-23 */
+		  FROM EVT_NMBR_APPLCN
+		 WHERE 1 = 1
+		   AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

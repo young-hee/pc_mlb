@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodRelate" parameterType="godRelate" resultType="godRelate">
+		SELECT /* com.plgrim.ncp.base.selectGodRelate		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , RELATE_GOD_NO
+			 , RELATE_SECT_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_RELATE
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND RELATE_GOD_NO = #{relateGodNo,jdbcType=VARCHAR}
+		   AND RELATE_SECT_CD = #{relateSectCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodRelate" parameterType="godRelate">
+		UPDATE /* com.plgrim.ncp.base.updateGodRelate		Generator(Generator)	2018-05-23 */
+		GOD_RELATE SET
+			   SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND RELATE_GOD_NO = #{relateGodNo,jdbcType=VARCHAR}
+		   AND RELATE_SECT_CD = #{relateSectCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodRelate" parameterType="godRelate">
+		INSERT /* com.plgrim.ncp.base.insertGodRelate		Generator(Generator)	2018-05-23 */
+		INTO   GOD_RELATE (
+			   GOD_NO
+			 , RELATE_GOD_NO
+			 , RELATE_SECT_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{relateGodNo,jdbcType=VARCHAR}
+			 , #{relateSectCd,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodRelate" parameterType="godRelate">
+		DELETE /* com.plgrim.ncp.base.deleteGodRelate		Generator(Generator)	2018-05-23 */
+		  FROM GOD_RELATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND RELATE_GOD_NO = #{relateGodNo,jdbcType=VARCHAR}
+		   AND RELATE_SECT_CD = #{relateSectCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

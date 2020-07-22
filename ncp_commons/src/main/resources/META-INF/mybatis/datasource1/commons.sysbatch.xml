@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.sysbatch">
+	
+	<resultMap id="resultSysBatch" type="com.plgrim.ncp.commons.result.SysBatchResult">
+		<result property="batchClassId" column="BATCH_CLASS_ID" />
+		<result property="batchNm" column="BATCH_NM" />
+		<result property="batchGrpNm" column="BATCH_GRP_NM" />
+		<result property="batchExecutCyclCont" column="BATCH_EXECUT_CYCL_CONT" />
+		<result property="batchBegUrl" column="BATCH_BEG_URL" />
+		<result property="batchEndUrl" column="BATCH_END_URL" />
+		<result property="batchRebegUrl" column="BATCH_REBEG_URL" />
+		<result property="indExecutUrl" column="IND_EXECUT_URL" />
+		<result property="batchDscr" column="BATCH_DSCR" />
+		<result property="batchPrmtrCont" column="BATCH_PRMTR_CONT" />
+		<result property="indExecutPrmtrCont" column="IND_EXECUT_PRMTR_CONT" />
+		<result property="batchBegDt" column="BATCH_BEG_DT" />
+		<result property="batchEndDt" column="BATCH_END_DT" />
+		<result property="batchStatCd" column="BATCH_STAT_CD" />
+		<result property="batchExecutStatCd" column="BATCH_EXECUT_STAT_CD" />
+		<result property="batchExecutExpectTime" column="BATCH_EXECUT_EXPECT_TIME" />
+		<result property="batchExecutTimeTerm" column="BATCH_EXECUT_TIME_TERM" />
+	</resultMap>
+
+	<select id="selectListSysBatch" parameterType="com.plgrim.ncp.commons.result.SysBatchResult" resultMap="resultSysBatch"> 
+		SELECT /* [commons.sysbatch.xml][selectListSysBatch][배치 리스트 조회] */
+		    BATCH_CLASS_ID, 
+		    NVL(BATCH_NM, '') AS BATCH_NM, 
+		    NVL(BATCH_GRP_NM, '') AS BATCH_GRP_NM, 
+		    NVL(BATCH_EXECUT_CYCL_CONT, '') AS BATCH_EXECUT_CYCL_CONT, 
+		    NVL(BATCH_BEG_URL, '') AS BATCH_BEG_URL, 
+		    NVL(BATCH_END_URL, '') AS BATCH_END_URL, 
+		    NVL(BATCH_REBEG_URL, '') AS BATCH_REBEG_URL, 
+		    NVL(IND_EXECUT_URL, '') AS IND_EXECUT_URL, 
+		    NVL(BATCH_DSCR, '') AS BATCH_DSCR, 
+		    NVL(BATCH_PRMTR_CONT, '') AS BATCH_PRMTR_CONT, 
+		    NVL(IND_EXECUT_PRMTR_CONT, '') AS IND_EXECUT_PRMTR_CONT, 
+		    BATCH_BEG_DT, 
+		    BATCH_END_DT, 
+		    NVL(BATCH_EXECUT_STAT_CD, '') AS BATCH_EXECUT_STAT_CD, 
+		    NVL(BATCH_STAT_CD, '') AS BATCH_STAT_CD, 
+		    NVL(BATCH_EXECUT_EXPECT_TIME, 0) AS BATCH_EXECUT_EXPECT_TIME, 
+		    ROUND((sysdate - BATCH_BEG_DT)*24*60*60) as BATCH_EXECUT_TIME_TERM,    /* 현재시간 기준 몇초 차이 */
+		    NVL(REGTR_ID, '') AS REGTR_ID, 
+		    REG_DT, 
+		    NVL(UDTER_ID, '') AS UDTER_ID, 
+		    UDT_DT
+		FROM SYS_BATCH
+		WHERE 1 = 1
+		    <if test="batchStatCd != null">
+		        AND BATCH_STAT_CD = #{batchStatCd}
+		    </if>
+		ORDER BY BATCH_GRP_NM, BATCH_CLASS_ID
+	</select>
+	
+	<select id="selectListSysChckHist" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysChckHist" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysChckHist"> 
+		SELECT /* [commons.sysbatch.xml][selectListSysChckHist][시스템 점검 이력 리스트 조회] */
+		    CHCK_DT
+		    , nvl((select CD_NM from mv_sys_cd where UPPER_CD = 'CHCK_JOB_SECT' and LANG_CD = 'KOR' and rownum = 1 and CD = CHCK_JOB_SECT_CD), CHCK_JOB_SECT_CD) as CHCK_JOB_SECT_CD
+		    , nvl((select CD_NM from mv_sys_cd where UPPER_CD = 'CHCK_TGT_SECT' and LANG_CD = 'KOR' and rownum = 1 and CD = CHCK_TGT_SECT_CD), CHCK_TGT_SECT_CD) as CHCK_TGT_SECT_CD
+		    , CHCK_CONT
+		    , nvl((select CD_NM from mv_sys_cd where UPPER_CD = 'CHCK_RESULT' and LANG_CD = 'KOR' and rownum = 1 and CD = CHCK_RESULT_CD), CHCK_RESULT_CD) as CHCK_RESULT_CD
+		    , RM_CONT 
+		FROM SYS_CHCK_HIST
+		WHERE 1 = 1
+		    <if test='dayType != null and dayType == "TODAY_HOUR" '>
+		    	AND to_char(CHCK_DT, 'YYYYMMDDHH24') = to_char(SYSDATE, 'YYYYMMDDHH24')
+		    </if>
+		    <if test='dayType != null and dayType == "TODAY_ALL" '>
+		    	AND to_char(CHCK_DT, 'YYYYMMDD') = to_char(SYSDATE, 'YYYYMMDD')
+		    </if>
+		ORDER BY CHCK_DT, CHCK_JOB_SECT_CD, CHCK_TGT_SECT_CD, CHCK_RESULT_CD
+	</select>
+	
+	<update id="mergeElasticsearchSpeed" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBatchSpeed">
+	    MERGE INTO SYS_BATCH_SPEED /* [commons.sysbatch.xml][mergeElasticsearchSpeed][merge 사이트 속도 측정] */
+	    USING DUAL ON (REQUESTID = #{requestid} AND SID = #{sid})
+	    WHEN MATCHED THEN
+	        UPDATE SET  
+	            BATCH_DT = SYSDATE
+	            ,ELS_TIMESTAMP = #{elsTimestamp}
+	            ,APP = #{app}
+	            ,SYSNO = #{sysno}
+	            ,USERAGENT = #{useragent}
+	            ,REMOTEADDR = #{remoteaddr}
+	            ,REFERER = #{referer}
+	            ,PREADYTIME = #{preadytime}
+	            ,PLOADTIME = #{ploadtime}
+	    WHEN NOT MATCHED THEN
+	        INSERT  (
+	            BATCH_DT
+	           ,ELS_TIMESTAMP
+	           ,REQUESTID
+	           ,SID
+	           ,APP
+	           ,SYSNO
+	           ,USERAGENT
+	           ,REMOTEADDR
+	           ,REFERER
+	           ,PREADYTIME
+	           ,PLOADTIME
+	        ) VALUES (
+	            SYSDATE
+		       ,#{elsTimestamp,jdbcType=VARCHAR}
+		       ,#{requestid,jdbcType=VARCHAR}
+		       ,#{sid,jdbcType=VARCHAR}
+		       ,#{app,jdbcType=VARCHAR}
+		       ,#{sysno,jdbcType=VARCHAR}
+		       ,#{useragent,jdbcType=VARCHAR}
+		       ,#{remoteaddr,jdbcType=VARCHAR}
+		       ,#{referer,jdbcType=VARCHAR}
+		       ,#{preadytime,jdbcType=NUMERIC}
+		       ,#{ploadtime,jdbcType=NUMERIC}
+	       )
+	</update>
+</mapper>

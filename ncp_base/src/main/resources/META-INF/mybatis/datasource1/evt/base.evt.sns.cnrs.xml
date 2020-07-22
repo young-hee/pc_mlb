@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtSnsCnrs" parameterType="evtSnsCnrs" resultType="evtSnsCnrs">
+		SELECT /* com.plgrim.ncp.base.selectEvtSnsCnrs		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , FREE_GIFT_TURN
+			 , MBR_NO
+			 , SNS_CNRS_DT
+			 , EVT_PARTCPTN_SN
+			 , APL_TURN
+			 , SNS_SECT_CD
+			 , SNS_ID
+			 , CNRS_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_SNS_CNRS
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND SNS_CNRS_DT = #{snsCnrsDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateEvtSnsCnrs" parameterType="evtSnsCnrs">
+		UPDATE /* com.plgrim.ncp.base.updateEvtSnsCnrs		Generator(Generator)	2018-05-23 */
+		EVT_SNS_CNRS SET
+			   EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+			 , SNS_SECT_CD = #{snsSectCd,jdbcType=VARCHAR}
+			 , SNS_ID = #{snsId,jdbcType=VARCHAR}
+			 , CNRS_CONT = #{cnrsCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND SNS_CNRS_DT = #{snsCnrsDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertEvtSnsCnrs" parameterType="evtSnsCnrs">
+		INSERT /* com.plgrim.ncp.base.insertEvtSnsCnrs		Generator(Generator)	2018-05-23 */
+		INTO   EVT_SNS_CNRS (
+			   EVT_NO
+			 , FREE_GIFT_TURN
+			 , MBR_NO
+			 , SNS_CNRS_DT
+			 , EVT_PARTCPTN_SN
+			 , APL_TURN
+			 , SNS_SECT_CD
+			 , SNS_ID
+			 , CNRS_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{freeGiftTurn,jdbcType=NUMERIC}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{snsCnrsDt,jdbcType=TIMESTAMP}
+			 , #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , #{aplTurn,jdbcType=NUMERIC}
+			 , #{snsSectCd,jdbcType=VARCHAR}
+			 , #{snsId,jdbcType=VARCHAR}
+			 , #{cnrsCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtSnsCnrs" parameterType="evtSnsCnrs">
+		DELETE /* com.plgrim.ncp.base.deleteEvtSnsCnrs		Generator(Generator)	2018-05-23 */
+		  FROM EVT_SNS_CNRS
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND SNS_CNRS_DT = #{snsCnrsDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

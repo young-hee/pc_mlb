@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoJobRequstAns" parameterType="csoJobRequstAns" resultType="csoJobRequstAns">
+		SELECT /* com.plgrim.ncp.base.selectCsoJobRequstAns		Generator(Generator)	2018-05-23 */
+			   REQUST_SN
+			 , JOB_REQUST_ANS_TURN
+			 , ANS_SJ
+			 , ANS_CONT
+			 , ANS_DT
+			 , ANS_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_JOB_REQUST_ANS
+		 WHERE 1 = 1
+	   	   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND JOB_REQUST_ANS_TURN = #{jobRequstAnsTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoJobRequstAns" parameterType="csoJobRequstAns">
+		UPDATE /* com.plgrim.ncp.base.updateCsoJobRequstAns		Generator(Generator)	2018-05-23 */
+		CSO_JOB_REQUST_ANS SET
+			   ANS_SJ = #{ansSj,jdbcType=VARCHAR}
+			 , ANS_CONT = #{ansCont,jdbcType=CLOB}
+			 , ANS_DT = #{ansDt,jdbcType=TIMESTAMP}
+			 , ANS_ADMIN_ID = #{ansAdminId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND JOB_REQUST_ANS_TURN = #{jobRequstAnsTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoJobRequstAns" parameterType="csoJobRequstAns">
+		INSERT /* com.plgrim.ncp.base.insertCsoJobRequstAns		Generator(Generator)	2018-05-23 */
+		INTO   CSO_JOB_REQUST_ANS (
+			   REQUST_SN
+			 , JOB_REQUST_ANS_TURN
+			 , ANS_SJ
+			 , ANS_CONT
+			 , ANS_DT
+			 , ANS_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{requstSn,jdbcType=NUMERIC}
+			 , #{jobRequstAnsTurn,jdbcType=NUMERIC}
+			 , #{ansSj,jdbcType=VARCHAR}
+			 , #{ansCont,jdbcType=CLOB}
+			 , #{ansDt,jdbcType=TIMESTAMP}
+			 , #{ansAdminId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoJobRequstAns" parameterType="csoJobRequstAns">
+		DELETE /* com.plgrim.ncp.base.deleteCsoJobRequstAns		Generator(Generator)	2018-05-23 */
+		  FROM CSO_JOB_REQUST_ANS
+		 WHERE 1 = 1
+		   AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		   AND JOB_REQUST_ANS_TURN = #{jobRequstAnsTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

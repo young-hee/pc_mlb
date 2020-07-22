@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoCnslt" parameterType="csoCnslt" resultType="csoCnslt">
+		SELECT /* com.plgrim.ncp.base.selectCsoCnslt		Generator(Generator)	2018-05-23 */
+			   CNSLT_SN
+			 , CSTMR_CLM_CD
+			 , CNSLT_REQST_MBR_NO
+			 , CSTMRNM
+			 , CNSLT_KND_CD
+			 , INQ_TP_CD
+			 , CNSLT_STAT_CD
+			 , CNSLT_PRCS_COMPT_DT
+			 , CSTMR_EMAIL
+			 , CSTMRTEL_NATION_NO
+			 , CSTMRTEL_AREA_NO
+			 , CSTMRTEL_TLOF_NO
+			 , CSTMRTEL_TLOF_WTHN_NO
+			 , CSTMRMOBIL_NATION_NO
+			 , CSTMRMOBIL_AREA_NO
+			 , CSTMRMOBIL_TLOF_NO
+			 , CSTMRMOBIL_TLOF_WTHN_NO
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , MTM_INQ_SN
+			 , GOD_INQ_SN
+			 , CHAT_INQ_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CNSLT
+		 WHERE 1 = 1
+	   	   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoCnslt" parameterType="csoCnslt">
+		UPDATE /* com.plgrim.ncp.base.updateCsoCnslt		Generator(Generator)	2018-05-23 */
+		CSO_CNSLT SET
+			   CSTMR_CLM_CD = #{cstmrClmCd,jdbcType=VARCHAR}
+			 , CNSLT_REQST_MBR_NO = #{cnsltReqstMbrNo,jdbcType=VARCHAR}
+			 , CSTMRNM = #{cstmrnm,jdbcType=VARCHAR}
+			 , CNSLT_KND_CD = #{cnsltKndCd,jdbcType=VARCHAR}
+			 , INQ_TP_CD = #{inqTpCd,jdbcType=VARCHAR}
+			 , CNSLT_STAT_CD = #{cnsltStatCd,jdbcType=VARCHAR}
+			 , CNSLT_PRCS_COMPT_DT = #{cnsltPrcsComptDt,jdbcType=TIMESTAMP}
+			 , CSTMR_EMAIL = #{cstmrEmail,jdbcType=VARCHAR}
+			 , CSTMRTEL_NATION_NO = #{cstmrtelNationNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_AREA_NO = #{cstmrtelAreaNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_TLOF_NO = #{cstmrtelTlofNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_TLOF_WTHN_NO = #{cstmrtelTlofWthnNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_NATION_NO = #{cstmrmobilNationNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_AREA_NO = #{cstmrmobilAreaNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_TLOF_NO = #{cstmrmobilTlofNo,jdbcType=VARCHAR}
+			 , CSTMRMOBIL_TLOF_WTHN_NO = #{cstmrmobilTlofWthnNo,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+			 , GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+			 , CHAT_INQ_SN = #{chatInqSn,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoCnslt" parameterType="csoCnslt">
+		INSERT /* com.plgrim.ncp.base.insertCsoCnslt		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CNSLT (
+			   CNSLT_SN
+			 , CSTMR_CLM_CD
+			 , CNSLT_REQST_MBR_NO
+			 , CSTMRNM
+			 , CNSLT_KND_CD
+			 , INQ_TP_CD
+			 , CNSLT_STAT_CD
+			 , CNSLT_PRCS_COMPT_DT
+			 , CSTMR_EMAIL
+			 , CSTMRTEL_NATION_NO
+			 , CSTMRTEL_AREA_NO
+			 , CSTMRTEL_TLOF_NO
+			 , CSTMRTEL_TLOF_WTHN_NO
+			 , CSTMRMOBIL_NATION_NO
+			 , CSTMRMOBIL_AREA_NO
+			 , CSTMRMOBIL_TLOF_NO
+			 , CSTMRMOBIL_TLOF_WTHN_NO
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , MTM_INQ_SN
+			 , GOD_INQ_SN
+			 , CHAT_INQ_SN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{cnsltSn,jdbcType=NUMERIC}
+			 , #{cstmrClmCd,jdbcType=VARCHAR}
+			 , #{cnsltReqstMbrNo,jdbcType=VARCHAR}
+			 , #{cstmrnm,jdbcType=VARCHAR}
+			 , #{cnsltKndCd,jdbcType=VARCHAR}
+			 , #{inqTpCd,jdbcType=VARCHAR}
+			 , #{cnsltStatCd,jdbcType=VARCHAR}
+			 , #{cnsltPrcsComptDt,jdbcType=TIMESTAMP}
+			 , #{cstmrEmail,jdbcType=VARCHAR}
+			 , #{cstmrtelNationNo,jdbcType=VARCHAR}
+			 , #{cstmrtelAreaNo,jdbcType=VARCHAR}
+			 , #{cstmrtelTlofNo,jdbcType=VARCHAR}
+			 , #{cstmrtelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilNationNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilAreaNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilTlofNo,jdbcType=VARCHAR}
+			 , #{cstmrmobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{mtmInqSn,jdbcType=NUMERIC}
+			 , #{godInqSn,jdbcType=NUMERIC}
+			 , #{chatInqSn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoCnslt" parameterType="csoCnslt">
+		DELETE /* com.plgrim.ncp.base.deleteCsoCnslt		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CNSLT
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

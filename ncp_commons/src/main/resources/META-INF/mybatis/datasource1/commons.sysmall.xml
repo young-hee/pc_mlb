@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.siter">
+	<resultMap id="resultMallSite" type="com.plgrim.ncp.commons.result.MallSiteResult">
+		<result property="sysMallCnvrsUrl.mallId" column="MALL_ID" />
+		<result property="userMallId" column="USER_MALL_ID" />
+		<result property="sysMallCnvrsUrl.mallCnvrsUrlTurn" column="MALL_CNVRS_URL_TURN" />
+		<result property="sysMallCnvrsUrl.shrtUrl" column="SHRT_URL" />
+		<result property="sysMallCnvrsUrl.webUrl" column="WEB_URL" />
+		<result property="sysMallCnvrsUrl.mobileUrl" column="MOBILE_URL" />
+		<result property="sysMallCnvrsUrl.etcDscr" column="ETC_DSCR" />
+		<result property="sysMallCnvrsUrl.useYn" column="USE_YN" />
+		<result property="sysMallCnvrsUrl.regtrId" column="REGTR_ID" />
+		<result property="sysMallCnvrsUrl.regDt" column="REG_DT" />
+		<result property="sysMallCnvrsUrl.udterId" column="UDTER_ID" />
+		<result property="sysMallCnvrsUrl.udtDt" column="UDT_DT" />
+	</resultMap>
+	
+	<!-- Site Redirct 목록 -->
+	<select id="selectSysMallList" parameterType="com.plgrim.ncp.commons.data.FormSysMallDTO" resultMap="resultMallSite">
+		<include refid="com.plgrim.ncp.base.beginPage"/> 
+		SELECT   /* [commons.sysmall.xml][selectSysMallList][Site Redirct 목록][ed] */
+		    SM.MALL_ID /* 몰 ID */
+		    ,SM.MALL_ID AS USER_MALL_ID /* 몰 ID */
+       		,SMCU.MALL_CNVRS_URL_TURN /* 몰 전환URL 순번 */
+       		,SMCU.SHRT_URL /* SHORT URL */
+       		,SMCU.WEB_URL /* 웹 URL */
+       		,SMCU.MOBILE_URL /* 모바일 URL */
+       		,SMCU.ETC_DSCR /* 기타 설명 */
+       		,SMCU.USE_YN /* 사용여부 */
+       		,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SMCU.REGTR_ID) AS REGTR_ID /*등록자명*/
+       		,SMCU.REG_DT /* 등록일 */
+       		,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SMCU.UDTER_ID) AS UDTER_ID /*수정자명*/
+       		,SMCU.UDT_DT UDT_DT /* 수정일 */
+		FROM SYS_MALL SM, SYS_MALL_CNVRS_URL SMCU
+		WHERE 	1 = 1
+		AND		SM.USE_YN = 'Y'
+		AND		SM.MALL_ID = SMCU.MALL_ID
+		<include refid="selectSysMallListWhere"/>
+		ORDER BY SMCU.REG_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- Site Redirct 목록 조건문 -->
+	<sql id="selectSysMallListWhere"> 
+		<if test='searchUseYns != null and searchUseYns != ""'>
+			AND SMCU.USE_YN IN
+			<foreach item ="item" index="index" collection="searchUseYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 사용여부 */
+		</if>
+		<if test='searchMalls != null and searchMalls != ""'>
+			AND SMCU.MALL_ID IN
+			<foreach item ="item" index="index" collection="searchMalls" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 몰구분 */
+		</if>
+	</sql>
+	
+	<!-- Site Redirct 목록 개수 -->
+	<select id="selectSysMallListCount" resultType="long">
+		SELECT   /* [commons.sysmall.xml][selectSysMallListCount][Site Redirct 목록 개수][ed] */
+		    COUNT(*)
+		FROM SYS_MALL SM, SYS_MALL_CNVRS_URL SMCU
+		WHERE 	1 = 1
+		AND		SM.USE_YN = 'Y'
+		AND		SM.MALL_ID = SMCU.MALL_ID
+		<include refid="selectSysMallListWhere"/>
+		ORDER BY SMCU.REG_DT DESC
+	</select>
+	
+	<!-- Site Redirct 목록 엑셀 -->
+	<select id="selectSysMallListExcel" parameterType="com.plgrim.ncp.commons.data.FormSysMallDTO" resultType="java.util.LinkedHashMap">
+		SELECT   /* [commons.sysmall.xml][selectSysMallListExcel][Site Redirct 목록 엑셀][ed] */
+		    SM.MALL_NM /* 몰 명 */
+		    ,#{shortUrl}||SMCU.SHRT_URL AS SHORT_URL /* SHORT_URL */ 
+       		,SMCU.WEB_URL /* 웹 URL */
+       		,SMCU.MOBILE_URL /* 모바일 URL */
+       		,SMCU.ETC_DSCR /* 기타 설명 */
+       		,DECODE(SMCU.USE_YN, 'Y', '사용', 'N', '미사용') AS USE_YN /* 사용여부 */
+       		,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SMCU.REGTR_ID) AS REGTR_ID /*등록자명*/
+       		,TO_CHAR(SMCU.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 등록일 */
+       		,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SMCU.UDTER_ID) AS UDTER_ID /*수정자명*/
+       		,TO_CHAR(SMCU.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+		FROM SYS_MALL SM, SYS_MALL_CNVRS_URL SMCU
+		WHERE 	1 = 1
+		AND		SM.USE_YN = 'Y'
+		AND		SM.MALL_ID = SMCU.MALL_ID
+		<include refid="selectSysMallListWhere"/>
+		ORDER BY SMCU.REG_DT DESC
+	</select>
+	
+	<update id="mergeSiter" parameterType="com.plgrim.ncp.commons.data.SysMallDTO">
+		merge into SYS_MALL_CNVRS_URL smcu  /* [commons.sysmall.xml][mergeSiter][SysMall URL Update  통합몰(I), 유통몰(C), Beaker(B)][Dennis] */
+		using ( select 0 as SYS_MALL from dual) sm
+			on ( smcu.mall_id = #{userMallId, 	jdbcType=VARCHAR}
+				 and  smcu.mall_cnvrs_url_turn = #{sysMallCnvrsUrl.mallCnvrsUrlTurn,  jdbcType=VARCHAR} )
+		when matched then
+			update set
+				shrt_url = #{sysMallCnvrsUrl.shrtUrl,  jdbcType=VARCHAR},
+				web_url = #{sysMallCnvrsUrl.webUrl,  jdbcType=VARCHAR},
+				mobile_url = #{sysMallCnvrsUrl.mobileUrl,  jdbcType=VARCHAR}, 
+				etc_dscr = #{sysMallCnvrsUrl.etcDscr,  jdbcType=VARCHAR},
+				use_yn = #{sysMallCnvrsUrl.useYn,  jdbcType=VARCHAR},
+				udter_id = #{sysMallCnvrsUrl.udterId,  jdbcType=VARCHAR},
+				udt_dt = SYSDATE
+		when not matched then
+			insert (
+				mall_id,
+				MALL_CNVRS_URL_TURN,
+				shrt_url,
+				web_url,
+				mobile_url,
+				etc_dscr,
+				use_yn,
+				regtr_id,
+				reg_dt,
+				udter_id,
+				udt_dt
+				) values (
+					#{sysMallCnvrsUrl.mallId, jdbcType=VARCHAR},
+					(SELECT NVL(MAX(MALL_CNVRS_URL_TURN), 0) +1 FROM SYS_MALL_CNVRS_URL),
+					#{sysMallCnvrsUrl.shrtUrl,  jdbcType=VARCHAR},
+					#{sysMallCnvrsUrl.webUrl,  jdbcType=VARCHAR},
+					#{sysMallCnvrsUrl.mobileUrl,  jdbcType=VARCHAR},
+					#{sysMallCnvrsUrl.etcDscr,  jdbcType=VARCHAR},
+					#{sysMallCnvrsUrl.useYn,  jdbcType=VARCHAR},
+					#{sysMallCnvrsUrl.regtrId,  jdbcType=VARCHAR},
+					SYSDATE,
+					#{sysMallCnvrsUrl.udterId,  jdbcType=VARCHAR},
+					SYSDATE
+				)
+	</update>
+	
+	<select id="selectSysMallCnvrsUrl" parameterType="sysMallCnvrsUrl" resultType="sysMallCnvrsUrl">
+        SELECT /* [commons.sysmall.xml][selectSysMallCnvrsUrl][jason] */
+                MALL_ID
+               ,MALL_CNVRS_URL_TURN
+               ,SHRT_URL
+               ,WEB_URL
+               ,MOBILE_URL
+               ,ETC_DSCR
+               ,USE_YN
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    SYS_MALL_CNVRS_URL t
+        WHERE   1 = 1
+        AND     SHRT_URL = #{shrtUrl, jdbcType=VARCHAR}
+        AND		USE_YN = 'Y'
+        AND		ROWNUM = 1
+    </select>
+</mapper>

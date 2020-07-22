@@ -1,0 +1,958 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.help">
+	<!-- faq  -->
+
+	<resultMap id="faqMap" type="com.plgrim.ncp.biz.helpdesk.result.HelpdeskFaqFoResult">
+	   <result property="rowNo"              			      column="NO" />              <!--  -->
+	   <result property="faqSchwdNm"              			  column="FAQ_SCHWD_NM" />
+	   <result property="csoFaq.faqSectCd"            	  column="FAQ_SECT_CD" />             <!-- Faq 구분 코드 -->
+	   <result property="csoFaq.faqDetailSectCd"         column="FAQ_DETAIL_SECT_CD" />          <!-- Faq 상세 구분 코드 -->
+	   <result property="faqSn"          	      		column="FAQ_SN" />        <!--Faq 순번 -->
+	   <result property="csoFaq.faqSj"                   column="FAQ_SJ" />            <!-- Faq 제목	  -->
+	   <result property="csoFaq.faqCont"                 column="FAQ_CONT" />           <!-- Faq 내용	 -->
+	   <result property="csoFaq.sortSeq"   			  column="SORT_SEQ" />			  <!--정렬 순서	 -->
+	   <result property="csoFaq.mallId"             	  column="MALL_ID" />              <!-- 몰 ID -->
+	   <result property="csoFaq.inqireCount"             column="INQIRE_COUNT" />              <!-- 조회 횟수-->
+	   <result property="csoFaq.regtrId"        		  column="REGTR_ID" />            <!-- 등록자 ID-->
+	   <result property="csoFaq.regDt"                   column="REG_DT" />              <!-- 등록 일시	 -->
+	   <result property="csoFaq.udterId"                 column="UDTER_ID" />            <!-- 수정자 ID	  -->
+	   <result property="csoFaq.udtDt"          		  column="UDT_DT" />              <!-- 수정 일시-->
+	    <collection property="csoFaqAtchmnfls" ofType="csoFaqAtchmnfl" >
+		   <result property="faqAtchFileUrl"                  column="FAQ_ATCH_FILE_URL"   />           <!-- 이미지 URL -->
+		   <result property="faqAtchFileNm"                  column="FAQ_ATCH_FILE_NM"   />           <!-- 이미지 URL -->
+	   </collection>
+	</resultMap>
+
+
+
+
+    <!-- Faq 리스트 조회-->
+	<select id="selectFaqList" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskFaqFoDTO" resultMap="faqMap">
+	<include refid="com.plgrim.ncp.base.beginPage"/>
+        	SELECT /* [biz.help.xml][selectFaqList][Faq 리스트 조회][Brandon] */
+                fa.MALL_ID			          	 /*몰 ID*/
+               ,fa.LANG_CD						 /*언어코드*/
+               ,fa.FAQ_SECT_CD                  /*Faq 구분 코드*/
+               ,fa.FAQ_DETAIL_SECT_CD           /*Faq 상세 구분 코드*/
+               ,fa.FAQ_SN			         /*Faq 순번*/
+               ,fa.FAQ_SJ				         /*Faq 제목*/
+               ,fa.FAQ_CONT				     /*Faq 내용*/
+               ,fa.SORT_SEQ			         /*정렬 순서*/
+               ,fa.INQIRE_COUNT                 /*조회 횟수*/
+               ,fa.DSP_YN                       /*전시 여부*/
+               ,fa.MAIN_EXPSR_YN                /**/
+               ,fa.REGTR_ID			         /*등록자 ID*/
+               ,fa.REG_DT			         	 /*등록 일시*/
+               ,fa.UDTER_ID			         /*수정자 ID*/
+               ,fa.UDT_DT			         	 /*수정 일시*/
+        FROM    CSO_FAQ	fa
+        WHERE   1 = 1
+          AND DSP_YN = 'Y'
+		  AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+          AND fa.FAQ_SECT_CD IN(
+          		SELECT cf.FAQ_SECT_CD
+  				FROM cso_faq cf
+     					 , mv_sys_cd msc
+ 			    WHERE cf.FAQ_SECT_CD = msc.CD
+   					/*AND MSC.ASSTN_CD_1 = 'FO'*/
+          )
+
+         <if test='searchFaq != null and searchFaq !=""'>
+		   AND FAQ_SJ LIKE '%' || #{searchFaq,jdbcType=VARCHAR} || '%'
+		 </if>
+		 <if test='searchAllCd != null and searchAllCd !=""'>
+		   AND FAQ_SECT_CD = #{searchAllCd,jdbcType=VARCHAR}
+		 </if>
+		 <if test='searchCd != null and searchCd !=""'>
+		   AND FAQ_DETAIL_SECT_CD = #{searchCd,jdbcType=VARCHAR}
+		 </if>
+		 <if test='mallId != null and mallId != ""'>
+		   AND MALL_ID = #{mallId, jdbcType=VARCHAR}
+		 </if>
+		/*ORDER BY fa.SORT_SEQ		 */
+		ORDER BY fa.SORT_SEQ ASC ,fa.REG_DT DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    <!-- Faq 리스트 카운트 -->
+
+    <select id="selectCountFaq" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskFaqFoDTO" resultType="long">
+        SELECT /* [biz.help.xml][selectCountFaq][Faq 리스트 카운트][Brandon] */
+                COUNT(*)
+        FROM    CSO_FAQ
+        WHERE   1 = 1
+		 AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+         AND DSP_YN = 'Y'
+         AND FAQ_SECT_CD IN(
+          		SELECT cf.FAQ_SECT_CD
+  				FROM cso_faq cf
+     					 , mv_sys_cd msc
+ 			    WHERE cf.FAQ_SECT_CD = msc.CD
+   				/*AND MSC.ASSTN_CD_1 = 'FO'*/
+          )
+          AND MALL_ID = #{mallId, jdbcType=VARCHAR}
+         <if test='searchFaq != null and searchFaq !=""'>
+		   AND FAQ_SJ LIKE '%' || #{searchFaq,jdbcType=VARCHAR} || '%'
+		 </if>
+		 <if test='searchAllCd != null and searchAllCd !=""'>
+		   AND FAQ_SECT_CD = #{searchAllCd,jdbcType=VARCHAR}
+		 </if>
+		 <if test='searchCd != null and searchCd !=""'>
+		   AND FAQ_DETAIL_SECT_CD = #{searchCd,jdbcType=VARCHAR}
+		 </if>
+		 <if test='mallId != null and mallId != ""'>
+		   AND MALL_ID = #{mallId, jdbcType=VARCHAR}
+		 </if>
+    </select>
+
+    <!-- 조회수 증가 -->
+    <update id="updateFaqInqireCount" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskFaqFoDTO">
+    	UPDATE /*[biz.help.xml][updateFaqInqireCount][Faq 조회수 증가][김대영]*/
+    		   CSO_FAQ	a
+          SET a.INQIRE_COUNT = NVL(INQIRE_COUNT , 0)+1
+         WHERE  FAQ_SN = #{faqSn,jdbcType=NUMERIC}
+    </update>
+
+     <!--공지사항 상세 조회수 증가 -->
+    <update id="updateSysNotiInqireCount" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO">
+    	UPDATE /*[biz.help.xml][updateFaqInqireCount][공지사항 상세 조회수 증가][Brandon]*/
+    		   SYS_NOTI
+         SET INQIRE_NUM	 	=	INQIRE_NUM + 1
+         WHERE 1=1
+         AND NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC}
+    </update>
+
+    <!-- 자주하는 질문 10 리스트 -->
+    <select id="selectFaqTop10List" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskFaqFoDTO" resultMap="faqMap">
+	<![CDATA[
+		SELECT  /*[biz.help.xml][selectFaqTop10List][Faq Top 10][Brandon]*/
+				   ROWNUM AS RNUM,
+				   FAQ_SN,
+				   FAQ_SECT_CD,
+                   FAQ_DETAIL_SECT_CD,
+                   FAQ_SJ,
+                   FAQ_CONT,
+                   INQIRE_COUNT
+         FROM ( SELECT A.*, ROWNUM FROM (
+		 		SELECT   ROWNUM,
+		 				 FAQ_SN,
+		 				 FAQ_SECT_CD,
+                         FAQ_DETAIL_SECT_CD,
+                         FAQ_SJ,
+                         FAQ_CONT,
+                         INQIRE_COUNT
+                 FROM  CSO_FAQ
+                 WHERE 1=1
+                  AND DSP_YN ='Y'
+                  AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+                  AND FAQ_SECT_CD IN(
+          				SELECT cf.FAQ_SECT_CD
+   						   FROM cso_faq cf
+     					  			, mv_sys_cd msc
+ 			    		WHERE cf.FAQ_SECT_CD = msc.CD
+   							/*AND msc.ASSTN_CD_1 = 'FO'*/
+         				 ) ]]>
+       		<choose>
+       			<when test='langCd != null and langCd !=""'>
+       			  AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+       			</when>
+       			<otherwise>
+       			  AND LANG_CD = 'KOR'
+       			</otherwise>
+       		</choose>
+       		<choose>
+       			<when test="{ 'MBM', 'SAM' }.contains(mallId)"><!-- 고객센터 메인의 정렬 순서 변경 2019.01.20 (MLB,SA) -->
+		 			<![CDATA[
+		                 ORDER BY SORT_SEQ ASC, REG_DT DESC
+		                 ) A
+		                 where ROWNUM <= 10)
+			        ]]>
+       			</when>
+       			<otherwise>
+		 			<![CDATA[
+		                 ORDER BY INQIRE_COUNT DESC nulls last
+		                 ) A )
+			        	where ROWNUM <= 10
+			        ]]>
+       			</otherwise>
+       		</choose>
+	        <if test='searchFaq != null and searchFaq !=""'>
+			  AND FAQ_SJ LIKE '%' || #{searchFaq,jdbcType=VARCHAR} || '%'
+			</if>
+    </select>
+
+     <!-- 자주하는 질문 5 리스트 -->
+    <select id="selectFaqTop5List" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskFaqFoDTO" resultMap="faqMap">
+	<![CDATA[
+		SELECT  /*[biz.help.xml][selectFaqTop5List][Faq Top 5][Brandon]*/
+
+				   FAQ_SN,
+				   FAQ_SECT_CD,
+                   FAQ_DETAIL_SECT_CD,
+                   FAQ_SJ,
+                   FAQ_CONT,
+                   INQIRE_COUNT
+         FROM ( SELECT A.*, ROWNUM FROM (
+		 		SELECT   ROWNUM,
+		 				 FAQ_SN,
+		 				 FAQ_SECT_CD,
+                         FAQ_DETAIL_SECT_CD,
+                         FAQ_SJ,
+                         FAQ_CONT,
+                         INQIRE_COUNT
+                 FROM  CSO_FAQ
+                 WHERE 1=1
+                  AND DSP_YN ='Y'
+                  AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+                  AND FAQ_SECT_CD IN(
+          				SELECT cf.FAQ_SECT_CD
+   						   FROM cso_faq cf
+     					  			, mv_sys_cd msc
+ 			    		WHERE cf.FAQ_SECT_CD = msc.CD
+   							/*AND msc.ASSTN_CD_1 = 'FO'*/
+         				 ) ]]>
+       		<choose>
+       			<when test='langCd != null and langCd !=""'>
+       			  AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+       			</when>
+       			<otherwise>
+       			  AND LANG_CD = 'KOR'
+       			</otherwise>
+       		</choose>
+ 		<![CDATA[
+                 ORDER BY INQIRE_COUNT DESC nulls last
+                 ) A )
+
+        where ROWNUM <= 5
+        ]]>
+        <if test='searchFaq != null and searchFaq !=""'>
+		  AND FAQ_SJ LIKE '%' || #{searchFaq,jdbcType=VARCHAR} || '%'
+		</if>
+
+    </select>
+
+
+
+    <resultMap id="noticeMap" type="com.plgrim.ncp.biz.helpdesk.result.HelpdeskNoticeFoResult">
+	   <result property="rowNo"              			  column="NO" />              <!-- 회원 번호 -->
+	   <result property="rnum"            	 			  column="RNUM" />             <!-- 공지 일련번호 -->
+	   <result property="sysNoti.notiSn"            	  column="NOTI_SN" />             <!-- 공지 일련번호 -->
+	   <result property="sysNoti.notiTpCd"            	  column="NOTI_TP_CD" />          <!-- 공지 유형 코드 -->
+	   <result property="sysNoti.notiSectCd"          	  column="NOTI_SECT_CD" />        <!-- 공지 구분 코드 -->
+	   <result property="sysNoti.regAdminId"              column="REG_ADMIN_ID" />            <!-- 등록 관리자 ID	  -->
+	   <result property="sysNoti.notiRegDt"               column="NOTI_REG_DT" />           <!-- 공지 등록 일시	 -->
+	   <result property="noticeRegDt"               	  column="noticeRegDt" />
+	   <result property="sysNoti.upendFixYn"              column="UPEND_FIX_YN" />              <!-- 상단 고정 여부 -->
+	   <result property="sysNoti.notiSj"                  column="NOTI_SJ" />              <!-- 공지 제목 -->
+	   <result property="sysNoti.imgUrl"                  column="IMG_URL" />              <!-- 이미지 URL	 -->
+	   <result property="sysNoti.linkUrl"                 column="LINK_URL" />            <!-- 링크 URL	  -->
+	   <result property="sysNoti.linkOutptTgtCd"          column="LINK_OUPPT_TGT_CD" />              <!-- 링크 출력 대상 코드-->
+	   <result property="sysNoti.notiContUseSectCd"       column="NOTI_CONT_USE_SECT_CD" />            <!-- 공지내용사용코드	  -->
+	   <result property="sysNoti.pcNotiCont"              column="PC_NOTI_CONT" />            <!-- PC 공지 내용	  -->
+	   <result property="sysNoti.mobileNotiCont"          column="MOBILE_NOTI_CONT" />            <!-- MOBILE 공지 내용	  -->
+	   <result property="sysNoti.inqireNum"               column="INQIRE_NUM" />            <!--  조회 수 -->
+	   <result property="sysNoti.popupUpendLc"          column="POPUP_UPEND_LC" />            <!--  조회 수 -->
+	   <result property="sysNoti.popupLeftLc"           column="POPUP_LEFT_LC" />            <!--  조회 수 -->
+	   <result property="sysNoti.regtrId"                 column="REGTR_ID" />            <!-- 등록자 ID -->
+	   <result property="sysNoti.regDt"                   column="REG_DT" />            <!-- 등록 일시	 -->
+	   <result property="sysNoti.udterId"                 column="UDTER_ID" />            <!-- 수정자 ID -->
+	   <result property="sysNoti.udtDt"                   column="UDT_DT" />            <!-- 수정 일시 -->
+	   <result property="evtNm"                 		  column="EVT_NM" />            <!-- 이벤트 명 -->
+	   <result property="eventPrizeRank"                  column="event_prize_rank" />            <!-- 순위 -->
+	   <result property="evtApplcnYn"                     column="EVT_APPLCN_YN" />            <!-- 응모여부 -->
+	   <result property="eventPrizeYn"                    column="event_prize_yn" />            <!-- 당첨여부 -->
+	    <collection property="sysNotiAtchFiles" ofType="sysNotiAtchFile" >
+		   <result property="notiAtchFileUrl"                  column="NOTI_ATCH_FILE_URL"   />           <!-- 이미지 URL -->
+		   <result property="notiAtchFileNm"                  column="NOTI_ATCH_FILE_NM"   />           <!-- 이미지 URL -->
+	   </collection>
+	</resultMap>
+
+
+    <!--  공지사항 -->
+    <!-- 공지사항 리스트 -->
+   <select id ="selectNoticeList" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+    	<include refid="com.plgrim.ncp.base.beginPage"/>
+    	SELECT ROWNUM AS RNUM
+    		, aa.*
+    		FROM
+    		(
+    		SELECT /*[biz.help.xml][selectNoticeList][공지사항 리스트][Brandon]*/
+		           sn.NOTI_SN             				/*공지 일련번호*/
+		          ,sn.NOTI_TP_CD          				/*공지 유형 코드*/
+		          ,sn.NOTI_SECT_CD        				/*공지 구분 코드*/
+		          ,sn.REG_ADMIN_ID        				/*등록관리자 ID*/
+		          ,TO_CHAR(sn.NOTI_REG_DT,'YYYY-MM-DD')   AS noticeRegDt    				/*공지 등록 일시*/
+		          ,sn.NOTI_REG_DT
+		          ,sn.UPEND_FIX_YN        				/*상단 고정 여부*/
+		          ,sn.NOTI_SJ             				/*공지 제목*/
+		          ,sn.NOTI_CONT_USE_SECT_CD			/*공지내용사용코드*/
+		          ,sn.PC_NOTI_CONT         			/*pc 공지내용*/
+		          ,sn.MOBILE_NOTI_CONT       			/*모바일 공지내용*/
+		          ,sn.INQIRE_NUM          				/*조회 수*/
+		          ,sn.POPUP_YN            				/*팝업 여부*/
+		          ,sn.POPUP_BEG_DT        				/*팝업 시작 일시*/
+		          ,sn.POPUP_END_DT        				/*팝업 종료 일시*/
+		          ,sn.REGTR_ID            				/*등록자 ID*/
+		          ,sn.REG_DT  						    /*등록 일시*/
+		          ,sn.UDTER_ID            				/*수정자 ID*/
+		          ,sn.UDT_DT							/*수정 일시*/
+		  FROM SYS_NOTI sn
+		  INNER JOIN SYS_FO_NOTI_MALL sfm ON SN.NOTI_SN = sfm.NOTI_SN AND sfm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+		  WHERE 1=1
+		  <if test='searchNotice != null and searchNotice !=""'>
+		   AND sn.NOTI_SJ LIKE '%' || #{searchNotice,jdbcType=VARCHAR} || '%'
+		  </if>
+		  <if test='searchNotiSn != null and searchNotiSn !=""'>
+		   AND sn.NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC}
+		  </if>
+		  <if test='searchNoticeCd != null and searchNoticeCd  !=""'>
+		   AND sn.NOTI_TP_CD = #{searchNoticeCd,jdbcType=VARCHAR}
+		 </if>
+		  <if test='lang != null and lang !=""'>
+		  AND sn.LANG_CD = #{lang,jdbcType=NUMERIC}
+		  </if>
+		  AND sn.UPEND_FIX_YN ='N'
+		   <![CDATA[
+		   AND sn.POPUP_BEG_DT <= SYSDATE
+           AND sn.POPUP_END_DT >= SYSDATE
+		   ]]>
+		  AND sn.DSP_YN ='Y'
+		  AND sn.NOTI_SECT_CD = 'FO_NOTI'
+		  AND sn.NOTI_TP_CD IN (select CD from MV_SYS_CD where UPPER_CD ='NOTI_TP' )
+		  ORDER BY sn.NOTI_REG_DT ASC
+		  ) aa
+		  ORDER BY aa.NOTI_REG_DT DESC
+
+		  <include refid="com.plgrim.ncp.base.endPage"/>
+
+    </select>
+
+     <!-- 공지사항 리스트 For MobilePhone -->
+    <select id ="selectMpNoticeList" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+   <include refid="com.plgrim.ncp.base.beginPage"/>
+    	SELECT ROWNUM AS RNUM
+    		, aa.*
+    		FROM
+    		(
+    		SELECT /*[biz.help.xml][selectNoticeList][공지사항 리스트][Brandon]*/
+		           sn.NOTI_SN             				/*공지 일련번호*/
+		          ,sn.NOTI_TP_CD          				/*공지 유형 코드*/
+		          ,sn.NOTI_SECT_CD        				/*공지 구분 코드*/
+		          ,sn.REG_ADMIN_ID        				/*등록관리자 ID*/
+		          ,TO_CHAR(sn.NOTI_REG_DT,'YYYY-MM-DD')   AS noticeRegDt    				/*공지 등록 일시*/
+		          ,sn.NOTI_REG_DT
+		          ,sn.UPEND_FIX_YN        				/*상단 고정 여부*/
+		          ,sn.NOTI_SJ             				/*공지 제목*/
+		          ,sn.NOTI_CONT_USE_SECT_CD			/*공지내용사용코드*/
+		           <if test='device != null and device !=""'>
+					  <choose>
+						  <when test='device != "PC"'>
+							  	<choose>
+							  		<when test='sysNoti.notiContUseSectCd == "PC_MOBILE_IND_USE"'>
+							  		,sn.MOBILE_NOTI_CONT as  PC_NOTI_CONT    /*모바일 공지내용*/
+							  		</when>
+							  		<otherwise>
+							  		 ,sn.PC_NOTI_CONT         			/*pc 공지내용*/
+							  		</otherwise>
+							  	</choose>
+					      	</when>
+					      	<otherwise>
+					      	,sn.PC_NOTI_CONT         			/*pc 공지내용*/
+					      	</otherwise>
+				      	</choose>
+				  </if>
+		          ,sn.INQIRE_NUM          				/*조회 수*/
+		          ,sn.POPUP_YN            				/*팝업 여부*/
+		          ,sn.POPUP_BEG_DT        				/*팝업 시작 일시*/
+		          ,sn.POPUP_END_DT        				/*팝업 종료 일시*/
+		          ,sn.REGTR_ID            				/*등록자 ID*/
+		          ,sn.REG_DT  						    /*등록 일시*/
+		          ,sn.UDTER_ID            				/*수정자 ID*/
+		          ,sn.UDT_DT							/*수정 일시*/
+		  FROM SYS_NOTI sn
+		  INNER JOIN SYS_FO_NOTI_MALL sfm ON SN.NOTI_SN = sfm.NOTI_SN AND sfm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+		  WHERE 1=1
+		  <if test='searchNotice != null and searchNotice !=""'>
+		   AND sn.NOTI_SJ LIKE '%' || #{searchNotice,jdbcType=VARCHAR} || '%'
+		  </if>
+		  <if test='searchNotiSn != null and searchNotiSn !=""'>
+		   AND sn.NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC}
+		  </if>
+		  <if test='searchNoticeCd != null and searchNoticeCd  !=""'>
+		   AND sn.NOTI_TP_CD = #{searchNoticeCd,jdbcType=VARCHAR}
+		 </if>
+		  <if test='lang != null and lang !=""'>
+		  AND sn.LANG_CD = #{lang,jdbcType=NUMERIC}
+		  </if>
+		  AND sn.UPEND_FIX_YN ='N'
+		  AND sn.DSP_YN ='Y'
+		  <![CDATA[
+		   AND sn.POPUP_BEG_DT <= SYSDATE
+           AND sn.POPUP_END_DT >= SYSDATE
+		   ]]>
+		  AND sn.NOTI_SECT_CD = 'FO_NOTI'
+		  AND sn.NOTI_TP_CD IN (select CD from MV_SYS_CD where UPPER_CD ='NOTI_TP' )
+		  ORDER BY sn.NOTI_REG_DT ASC
+		  ) aa
+		  ORDER BY aa.NOTI_REG_DT DESC
+
+		  <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+
+    <select id="selectPopupNoticeList" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+    	SELECT /*[biz.help.xml][selectPopupNoticeList][공지사항 리스트 POPUP][Brandon]*/
+	           sn.NOTI_SN             				/*공지 일련번호*/
+	          ,sn.NOTI_TP_CD          				/*공지 유형 코드*/
+	          ,sn.NOTI_SECT_CD        				/*공지 구분 코드*/
+	          ,sn.REG_ADMIN_ID        				/*등록관리자 ID*/
+	          ,TO_CHAR(sn.NOTI_REG_DT,'YYYY-MM-DD')   AS noticeRegDt    				/*공지 등록 일시*/
+	          ,sn.NOTI_REG_DT
+	          ,sn.UPEND_FIX_YN        				/*상단 고정 여부*/
+	          ,sn.NOTI_SJ             				/*공지 제목*/
+	          ,sn.NOTI_CONT_USE_SECT_CD			/*공지내용사용코드*/
+	          ,sn.PC_NOTI_CONT						/*공지내용 MOBILE*/
+	          ,sn.MOBILE_NOTI_CONT					/*공지내용 PC*/
+	          ,sn.INQIRE_NUM          				/*조회 수*/
+	          ,sn.POPUP_YN            				/*팝업 여부*/
+	          ,sn.POPUP_BEG_DT        				/*팝업 시작 일시*/
+	          ,sn.POPUP_END_DT        				/*팝업 종료 일시*/
+	          ,sn.POPUP_UPEND_LC					/*팝업 상단 위치*/
+	          ,sn.POPUP_LEFT_LC						/*팝업 좌측 위치*/
+	          ,sn.REGTR_ID            				/*등록자 ID*/
+	          ,sn.REG_DT  						    /*등록 일시*/
+	          ,sn.UDTER_ID            				/*수정자 ID*/
+	          ,sn.UDT_DT							/*수정 일시*/
+		FROM SYS_NOTI sn
+		INNER JOIN SYS_FO_NOTI_MALL sfm ON SN.NOTI_SN = sfm.NOTI_SN AND sfm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+		WHERE 1=1
+			<if test='searchNoticeCd != null and searchNoticeCd  !=""'>
+				AND sn.NOTI_TP_CD = #{searchNoticeCd,jdbcType=VARCHAR}
+			</if>
+			<if test='lang != null and lang !=""'>
+				AND sn.LANG_CD = #{lang,jdbcType=NUMERIC}
+			</if>
+			AND sn.UPEND_FIX_YN ='N'
+			AND sn.DSP_YN ='Y'
+			AND sn.POPUP_YN = 'Y'
+			<![CDATA[
+				AND sn.POPUP_BEG_DT <= SYSDATE
+				AND sn.POPUP_END_DT >= SYSDATE
+			]]>
+			AND sn.NOTI_SECT_CD = 'FO_NOTI'
+			<if test='searchExpsrScrinSectCd != null and searchExpsrScrinSectCd != ""'>
+				AND sn.EXPSR_SCRIN_SECT_CD = #{searchExpsrScrinSectCd,jdbcType=VARCHAR}
+			</if>
+    </select>
+
+
+    <select id="selectNotiTitleList" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+		SELECT /* [biz.help.xml][selectNotiTitleList][공지사항 타이틀 조회][Brandon] */
+	  		cd.CD as cd , cd.CD_NM as cdNm
+		FROM
+			MV_SYS_CD cd
+		WHERE 1=1
+		AND cd.UPPER_CD = 'NOTI_TP'
+		AND cd.LANG_CD = #{lang, jdbcType=VARCHAR}
+		ORDER BY cd desc
+	</select>
+
+
+    <!-- 공지사항 상세 -->
+    <select id ="selectNoticeDetail" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+    	SELECT /*[biz.help.xml][selectNoticeDetail][공지사항 상세][김대영]*/
+		           ROWNUM as RNUM
+		          ,n.NOTI_SN             				/*공지 일련번호*/
+		          ,n.NOTI_TP_CD          				/*공지 유형 코드*/
+		          ,n.NOTI_SECT_CD        				/*공지 구분 코드*/
+		          ,n.REG_ADMIN_ID        				/*등록관리자 ID*/
+		          ,TO_CHAR(n.NOTI_REG_DT,'YYYY-MM-DD')   AS noticeRegDt    				/*공지 등록 일시*/
+		          ,n.NOTI_REG_DT
+		          ,n.UPEND_FIX_YN        				/*상단 고정 여부*/
+		          ,n.NOTI_SJ             				/*공지 제목*/
+		          ,n.NOTI_CONT_USE_SECT_CD			/*공지내용사용코드*/
+		          ,n.PC_NOTI_CONT         			/*pc 공지내용*/
+		          ,n.MOBILE_NOTI_CONT      			/*모바일 공지내용*/
+		          ,n.INQIRE_NUM          				/*조회 수*/
+		          ,n.POPUP_YN            				/*팝업 여부*/
+		          ,n.POPUP_BEG_DT        				/*팝업 시작 일시*/
+		          ,n.POPUP_END_DT        				/*팝업 종료 일시*/
+		          ,n.REGTR_ID            				/*등록자 ID*/
+		          ,n.REG_DT  						    /*등록 일시*/
+		          ,n.UDTER_ID            				/*수정자 ID*/
+		          ,n.UDT_DT							/*수정 일시*/
+		          ,REPLACE(f.noti_atch_file_url,'/cont/web/ncp_web_img','') AS noti_atch_file_url
+		          ,f.noti_atch_file_nm
+		  FROM SYS_NOTI n
+		  		LEFT OUTER JOIN sys_noti_atch_file f ON n.noti_sn = f.noti_sn
+		  WHERE 1=1
+		   AND n.NOTI_SECT_CD = 'FO_NOTI'
+		  <if test='searchNotiSn != null and searchNotiSn !=""'>
+		   AND n.NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC}
+		  </if>
+
+		  ORDER BY n.NOTI_REG_DT DESC
+
+    </select>
+
+     <!-- 공지사항 최신 5개 리스트 -->
+    <select id ="selectNoticeNew5List" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+
+    	SELECT /*[biz.help.xml][selectNoticeNew5List][최신 공지사항 5][Brandon]*/
+    	  		ROW_NUMBER() OVER(ORDER BY NOTI_REG_DT) AS RNUM,
+    	  		NOTI_SN,
+    	  		NOTI_TP_CD,
+    	  		NOTI_SJ,
+	            NOTI_CONT_USE_SECT_CD,
+	            PC_NOTI_CONT,
+	            INQIRE_NUM,
+	            MOBILE_NOTI_CONT,
+    	  		TO_CHAR(NOTI_REG_DT,'YYYY-MM-DD') as noticeRegDt
+    	  FROM (SELECT
+    	  			   sn.NOTI_SN,
+    	  			   sn.NOTI_TP_CD,
+    	  			   sn.NOTI_SJ,
+    	  			   sn.NOTI_CONT_USE_SECT_CD,
+			           sn.PC_NOTI_CONT,
+			           sn.MOBILE_NOTI_CONT,
+    	  			   sn.NOTI_REG_DT,
+    	  			   sn.INQIRE_NUM
+    	  		FROM SYS_NOTI sn
+    	  		JOIN SYS_FO_NOTI_MALL sfnm
+    	  		  ON sfnm.NOTI_SN = sn.NOTI_SN
+    	  		 AND sfnm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+    	  		WHERE DSP_YN = 'Y'
+    	  		 AND sn.NOTI_TP_CD IN (select CD from MV_SYS_CD where UPPER_CD ='NOTI_TP' )
+    	  		 AND  NOTI_SECT_CD ='FO_NOTI'
+    	  		 <![CDATA[
+				   AND sn.POPUP_BEG_DT <= SYSDATE
+		           AND sn.POPUP_END_DT >= SYSDATE
+				   ]]>
+    	  		  <if test='lang != null and lang !=""'>
+				  AND sn.LANG_CD = #{lang,jdbcType=VARCHAR}
+				  </if>
+    	  		ORDER BY NOTI_REG_DT DESC)
+    	  WHERE ROWNUM <![CDATA[<=]]> 5
+
+    	  ORDER BY NOTI_REG_DT DESC
+
+    </select>
+
+     <!-- 공지사항 최신 3개 리스트 -->
+    <select id ="selectNoticeNew3List" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+
+    	SELECT /*[biz.help.xml][selectNoticeNew5List][최신 공지사항 3][Brandon]*/
+    	  		ROW_NUMBER() OVER(ORDER BY NOTI_REG_DT) AS RNUM,
+    	  		NOTI_SN,
+    	  		NOTI_TP_CD,
+    	  		NOTI_SJ,
+	            NOTI_CONT_USE_SECT_CD,
+	            PC_NOTI_CONT,
+	            INQIRE_NUM,
+	            MOBILE_NOTI_CONT,
+    	  		TO_CHAR(NOTI_REG_DT,'YYYY-MM-DD') as noticeRegDt
+    	  FROM (SELECT
+    	  			   sn.NOTI_SN,
+    	  			   sn.NOTI_TP_CD,
+    	  			   sn.NOTI_SJ,
+    	  			   sn.NOTI_CONT_USE_SECT_CD,
+			           sn.PC_NOTI_CONT,
+			           sn.MOBILE_NOTI_CONT,
+    	  			   sn.NOTI_REG_DT,
+    	  			   sn.INQIRE_NUM
+    	  		FROM SYS_NOTI sn
+    	  		JOIN SYS_FO_NOTI_MALL sfnm
+    	  		  ON sfnm.NOTI_SN = sn.NOTI_SN
+    	  		 AND sfnm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+    	  		WHERE DSP_YN = 'Y'
+    	  		 AND sn.NOTI_TP_CD IN (select CD from MV_SYS_CD where UPPER_CD ='NOTI_TP' )
+    	  		 AND  NOTI_SECT_CD ='FO_NOTI'
+    	  		 <![CDATA[
+				   AND sn.POPUP_BEG_DT <= SYSDATE
+		           AND sn.POPUP_END_DT >= SYSDATE
+				   ]]>
+    	  		  <if test='lang != null and lang !=""'>
+				  AND sn.LANG_CD = #{lang,jdbcType=VARCHAR}
+				  </if>
+    	  		ORDER BY NOTI_REG_DT DESC)
+    	  WHERE ROWNUM <![CDATA[<=]]> 3
+
+    	  ORDER BY NOTI_REG_DT DESC
+
+    </select>
+
+    <!-- 이전글 찾기 -->
+    <select id ="selectPreNotiSn" parameterType ="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap ="noticeMap">
+    	SELECT  /*[biz.help.xml][selectPreNotiSn][이전 글 찾기][Brandon]*/
+    			NOTI_SN, NOTI_SJ
+	     FROM
+	    	(SELECT sn.NOTI_SN ,sn.NOTI_SJ
+	         FROM  SYS_NOTI sn
+    	  	 INNER JOIN SYS_FO_NOTI_MALL sfm ON SN.NOTI_SN = sfm.NOTI_SN AND sfm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	        WHERE  1=1
+	         AND sn.DSP_YN ='Y'
+	         AND sn.NOTI_SECT_CD = 'FO_NOTI'
+	         AND sn.NOTI_TP_CD IN (select CD from MV_SYS_CD where UPPER_CD ='NOTI_TP' )
+		    <![CDATA[
+			 AND sn.POPUP_BEG_DT <= SYSDATE
+	         AND sn.POPUP_END_DT >= SYSDATE
+			 ]]>
+	         AND sn.NOTI_SN IN(SELECT MAX(s.NOTI_SN) FROM SYS_NOTI s
+	         		INNER JOIN SYS_FO_NOTI_MALL sf ON s.NOTI_SN = sf.NOTI_SN AND sf.MALL_ID = 'DXM'
+<!-- 	   		 WHERE s.NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC} -->
+	         WHERE s.NOTI_SN <![CDATA[<]]> #{searchNotiSn,jdbcType=NUMERIC}
+	         AND s.DSP_YN ='Y'
+	         AND s.NOTI_SECT_CD ='FO_NOTI'
+	          <if test='searchNoticeCd != null and searchNoticeCd  !=""'>
+	         AND s.NOTI_TP_CD = #{searchNoticeCd,jdbcType=VARCHAR}
+	         </if>
+	          <if test='searchNotice != null and searchNotice !=""'>
+	         AND s.NOTI_SJ  LIKE '%' || #{searchNotice,jdbcType=VARCHAR} || '%'
+	         </if>
+	         AND s.UPEND_FIX_YN = 'N'
+		  <if test='lang != null and lang !=""'>
+		  AND s.LANG_CD = #{lang,jdbcType=VARCHAR}
+		  </if>
+	         )
+
+	         )
+    </select>
+
+    <!-- 다음글 찾기 -->
+    <select id ="selectNextNotiSn" parameterType ="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap ="noticeMap">
+    	SELECT /*[biz.help.xml][selectNextNotiSn][다음 글 찾기][Brandon]*/
+    			NOTI_SN, NOTI_SJ
+	     FROM
+	     	(SELECT sn.NOTI_SN ,sn.NOTI_SJ
+	         FROM  SYS_NOTI sn
+    	  	 INNER JOIN SYS_FO_NOTI_MALL sfm ON SN.NOTI_SN = sfm.NOTI_SN AND sfm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	        WHERE  1=1
+	         AND sn.DSP_YN ='Y'
+	         AND sn.NOTI_SECT_CD = 'FO_NOTI'
+	          AND sn.NOTI_TP_CD IN (select CD from MV_SYS_CD where UPPER_CD ='NOTI_TP' )
+	         <![CDATA[
+			 AND sn.POPUP_BEG_DT <= SYSDATE
+	         AND sn.POPUP_END_DT >= SYSDATE
+			 ]]>
+	         AND sn.NOTI_SN IN(SELECT MIN(s.NOTI_SN) FROM SYS_NOTI s
+	         		INNER JOIN SYS_FO_NOTI_MALL sf ON s.NOTI_SN = sf.NOTI_SN AND sf.MALL_ID = 'DXM'
+	         WHERE s.NOTI_SN <![CDATA[>]]> #{searchNotiSn,jdbcType=NUMERIC}
+	         AND s.DSP_YN ='Y'
+	         AND s.NOTI_SECT_CD = 'FO_NOTI'
+	         AND s.UPEND_FIX_YN = 'N'
+	         <if test='searchNoticeCd != null and searchNoticeCd  !=""'>
+	         AND s.NOTI_TP_CD = #{searchNoticeCd,jdbcType=VARCHAR}
+	         </if>
+	          <if test='searchNotice != null and searchNotice !=""'>
+	         AND s.NOTI_SJ  LIKE '%' || #{searchNotice,jdbcType=VARCHAR} || '%'
+	         </if>
+		  <if test='lang != null and lang !=""'>
+		  AND s.LANG_CD = #{lang,jdbcType=VARCHAR}
+		  </if>
+	         )
+
+	         )
+    </select>
+
+    <resultMap id="evtNoticeMap" type="com.plgrim.ncp.biz.helpdesk.result.HelpdeskEvtNoticeResult">
+       <result property="mbr.mbrNo"              		  column="MBR_NO" />              <!-- 회원 번호 -->
+	   <result property="mbr.mbrNm"            	  		  column="MBR_NM" />              <!-- 회원 이름 -->
+	   <result property="mbr.mbrId"            	  		  column="MBR_ID" />          	  <!-- 회원 ID -->
+	   <result property="mbr.mobilAreaNo"          	      column="MOBIL_AREA_NO" />       <!-- 연락처 -->
+	   <result property="mbr.mobilTlofNo"          	      column="MOBIL_TLOF_NO" />       <!-- 연락처 -->
+	   <result property="mbr.mobilTlofWthnNo"          	  column="MOBIL_TLOF_WTHN_NO" />  <!-- 연락처 -->
+	   <result property="mobilNo"          	  			  column="mobilNo" />  		  <!-- 연락처 -->
+	   <result property="evt.evtNm"            	  		  column="EVT_NM" />		  	  <!-- 이벤트 시작일시 -->
+	   <result property="evtPrize.prizeSectCd"            column="PRIZE_SECT_CD" />		  <!-- 이벤트 코드 -->
+	   <result property="evt.evtDspBegdt"            	  column="EVT_DSP_BEGDT" />		  <!-- 이벤트 시작일시 -->
+	   <result property="evt.evtDspEnddt"            	  column="EVT_DSP_ENDDT" />		  <!-- 이벤트 종료일시 -->
+	   <result property="sysNoti.notiRegDt"               column="NOTI_REG_DT"   />       <!-- 공지 등록일 -->
+	   <result property="sysNoti.notiSn"               	  column="NOTI_SN"   />       	  <!-- 공지 순서 -->
+	   <result property="sysNoti.notiSj"                  column="NOTI_SJ"   />       	  <!-- 공지 제목 -->
+	   <result property="sysNoti.notiTpCd"                column="NOTI_TP_CD"   />        <!-- 공지 유형코드 -->
+	   <!-- <result property="sysNoti.notiCont"                column="NOTI_CONT"   />         공지 내용 -->
+ 	   <result property="sysNoti.notiContUseSectCd"       column="NOTI_CONT_USE_SECT_CD" />   <!-- 공지내용사용코드	  -->
+	   <result property="sysNoti.pcNotiCont"              column="PC_NOTI_CONT" />            <!-- PC 공지 내용	  -->
+	   <result property="sysNoti.mobileNotiCont"          column="MOBILE_NOTI_CONT" />        <!-- MOBILE 공지 내용	  -->
+	   <result property="sysNoti.imgUrl"                  column="IMG_URL"   />           <!-- 이미지 URL -->
+    </resultMap>
+
+    <!-- 공지 이벤트당첨 상세  -->
+    <!-- <select id ="selectNoticeEvtDetail" parameterType = "com.plgrim.ncp.biz.helpdesk.data.HelpdeskEvtNoticeDTO" resultMap ="evtNoticeMap">
+	    	SELECT  fn_masking('FLNM',t3.MBR_NM,'','Y') as MBR_NM,
+			    	fn_masking('ID',t3.MBR_ID,'','Y') as MBR_ID,
+			    	t3.MOBIL_AREA_NO,
+			    	fn_masking('PHON', t3.MOBIL_TLOF_NO,'','Y')as MOBIL_TLOF_NO,
+			    	fn_masking('PHON', t3.MOBIL_AREA_NO||'-'||t3.MOBIL_TLOF_NO||'-'||t3.MOBIL_TLOF_WTHN_NO,'','Y')as mobilNo,
+			    	t3.MOBIL_TLOF_WTHN_NO,
+			    	t4.PRIZE_TURN,
+			    	t5.EVT_NM,
+			    	t5.EVT_BEG_DT,
+			    	t5.EVT_END_DT,
+			    	t1.NOTI_REG_DT,
+			    	t1.NOTI_SN,
+			    	t1.NOTI_TP_CD,
+			    	t1.NOTI_SJ,
+			    	t1.IMG_URL
+			FROM SYS_NOTI t1,EVT_APPLCN t2, MBR t3, EVT_PRIZE t4, EVT t5
+			WHERE t1.EVT_NO = t2.EVT_NO
+			 AND  t1.EVT_NO = t4.EVT_NO
+			 AND  t1.EVT_NO = t5.EVT_NO
+			 AND  t2.MBR_NO = t3.MBR_NO
+		  <if test='searchNotiSn != null and searchNotiSn !=""'>
+		     AND t1.NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC}
+		  </if>
+    </select> -->
+
+    <!-- 공지사항 대표공지 리스트  -->
+    <select id ="selectNoticeRprstList" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+    	SELECT /*[biz.help.xml][selectNoticeRprstList][공지사항 대표공지 리스트][김대영]*/
+		           sn.NOTI_SN
+		          ,sn.NOTI_TP_CD
+		          ,sn.NOTI_SECT_CD
+		          ,sn.REG_ADMIN_ID
+		          ,TO_CHAR(sn.NOTI_REG_DT,'YYYY.MM.DD')   AS noticeRegDt
+		          ,sn.UPEND_FIX_YN
+		          ,sn.NOTI_SJ
+		          ,sn.NOTI_CONT_USE_SECT_CD			/*공지내용사용코드*/
+		          ,sn.PC_NOTI_CONT         			/*pc 공지내용*/
+		          ,sn.MOBILE_NOTI_CONT      			/*모바일 공지내용*/
+		          ,sn.INQIRE_NUM
+		          ,sn.POPUP_YN
+		          ,sn.POPUP_BEG_DT
+		          ,sn.POPUP_END_DT
+		          ,sn.REGTR_ID
+		          ,sn.REG_DT
+		          ,sn.UDTER_ID
+		          ,sn.UDT_DT
+		  FROM SYS_NOTI sn
+		  INNER JOIN SYS_FO_NOTI_MALL sfm ON SN.NOTI_SN = sfm.NOTI_SN AND sfm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+		  WHERE 1=1
+		   AND  sn.DSP_YN ='Y'
+		   AND  sn.NOTI_SECT_CD = 'FO_NOTI'
+		   <![CDATA[
+		   AND sn.POPUP_BEG_DT <= SYSDATE
+           AND sn.POPUP_END_DT >= SYSDATE
+		   AND ROWNUM <= 3
+		   ]]>
+		   <if test='searchNotiSn != null and searchNotiSn !=""'>
+		   AND sn.NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC}
+		  </if>
+		  <if test='lang != null and lang !=""'>
+		  AND sn.LANG_CD = #{lang,jdbcType=NUMERIC}
+		  </if>
+		   AND sn.UPEND_FIX_YN ='Y'
+		  ORDER BY sn.SORT_SEQ, sn.NOTI_REG_DT DESC
+    </select>
+
+
+
+    <!-- 공지사항 카운트 -->
+    <select id ="selectCountNotice" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultType="long">
+    	SELECT /*[biz.help.xml][selectCountNotice][공지사항 카운트][김대영]*/
+    	       COUNT(*)
+    	  FROM SYS_NOTI sn
+    	  INNER JOIN SYS_FO_NOTI_MALL sfm ON SN.NOTI_SN = sfm.NOTI_SN AND sfm.MALL_ID = #{mallId, jdbcType=VARCHAR}
+    	  WHERE 1=1
+    	  <if test='searchNotice != null and searchNotice !=""'>
+		   AND sn.NOTI_SJ LIKE '%' || #{searchNotice,jdbcType=VARCHAR} || '%'
+		  </if>
+		  <if test='searchNotiSn != null and searchNotiSn !=""'>
+		   AND sn.NOTI_SN = #{searchNotiSn,jdbcType=NUMERIC}
+		  </if>
+		  <if test='searchNoticeCd != null and searchNoticeCd  !=""'>
+		   AND sn.NOTI_TP_CD = #{searchNoticeCd,jdbcType=VARCHAR}
+		 </if>
+		  AND sn.UPEND_FIX_YN ='N'
+		   <![CDATA[
+		   AND sn.POPUP_BEG_DT <= SYSDATE
+	       AND sn.POPUP_END_DT >= SYSDATE
+			 ]]>
+    	  AND sn.DSP_YN ='Y'
+    	  AND sn.NOTI_SECT_CD = 'FO_NOTI'
+		  <if test='lang != null and lang !=""'>
+		  AND sn.LANG_CD = #{lang,jdbcType=NUMERIC}
+		  </if>
+    </select>
+
+    <!-- 공지사항 end -->
+
+	<!-- 단체 주문/제휴 문의 등록-->
+	<insert id="insertBundleOrder" parameterType="com.plgrim.ncp.biz.member.data.BundleOrderFoDTO">
+	    INSERT /* [biz.help.xml][insertBundleOrder][ 단체 주문/제휴 문의 등록 ][brandon] */
+	    INTO CSO_ORGZT_ORD_AFF_INQ
+		(
+	        ORGZT_ORD_AFF_INQ_SN
+	       ,ORGZT_ORD_AFF_INQ_TP_CD
+	       ,ORGZT_ORD_AFF_INQ_DETAIL_TP_CD
+	       ,ANS_STAT_CD
+	       ,PRCS_COMPT_DT
+	       ,INQER_NM
+	       ,INQ_ORGZT_NM
+	       ,INQER_EMAIL
+	       ,INQ_CONT
+	       ,INQER_MOBIL_AREA_NO
+	       ,INQER_MOBIL_TLOF_NO
+	       ,INQER_MOBIL_TLOF_WTHN_NO
+	       ,INQER_MOBIL_NATION_NO
+	       ,INQER_EMAIL_RECPTN_YN
+	       ,INQER_SMS_RECPTN_YN
+	       ,MALL_ID
+	       ,LANG_CD
+	       ,DVC_CD
+	       ,REGTR_ID
+	       ,REG_DT
+	       ,UDTER_ID
+	       ,UDT_DT
+		)
+		VALUES
+		(
+	        #{csoOrgztOrdAffInq.orgztOrdAffInqSn,jdbcType=NUMERIC}
+	       ,#{csoOrgztOrdAffInq.orgztOrdAffInqTpCd,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.orgztOrdAffInqDetailTpCd,jdbcType=VARCHAR}
+	       ,'ANS_BF'
+	       ,#{csoOrgztOrdAffInq.prcsComptDt,jdbcType=TIMESTAMP}
+	       ,#{csoOrgztOrdAffInq.inqerNm,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.inqOrgztNm,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.inqerEmail,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.inqCont,jdbcType=CLOB}
+	       ,#{csoOrgztOrdAffInq.inqerMobilAreaNo,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.inqerMobilTlofNo,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.inqerMobilTlofWthnNo,jdbcType=VARCHAR}
+	       ,#{mobilNationNo,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.inqerEmailRecptnYn,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.inqerSmsRecptnYn,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.mallId,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.langCd,jdbcType=VARCHAR}
+	       ,#{csoOrgztOrdAffInq.dvcCd,jdbcType=VARCHAR}
+	       ,#{mbrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{mbrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)
+    </insert>
+
+	<insert id="insertOrgztOrdAffInqAtchmnfl" parameterType="com.plgrim.ncp.biz.member.data.BundleOrderFoDTO">
+		INSERT /* [biz.help.xml][insertOrgztOrdAffInqAtchmnfl][ 단체 주문/제휴 문의 첨부파일 등록 ][brandon] */
+		INTO   CSO_ORGZT_ORD_AFF_INQ_ATCHMNFL (
+			   ORGZT_ORD_AFF_INQ_SN
+			 , ORGZT_ORD_AFF_INQ_ATCHMNFL_TUR
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_NM
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_UR
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_CP
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{csoOrgztOrdAffInq.orgztOrdAffInqSn,jdbcType=NUMERIC}
+			 , #{csoOrgztOrdAffInqAtchmnfl.orgztOrdAffInqAtchmnflTur,jdbcType=NUMERIC}
+			 , #{csoOrgztOrdAffInqAtchmnfl.orgztOrdAffInqAtchFileNm,jdbcType=VARCHAR}
+			 , #{csoOrgztOrdAffInqAtchmnfl.orgztOrdAffInqAtchFileUr,jdbcType=VARCHAR}
+			 , #{csoOrgztOrdAffInqAtchmnfl.orgztOrdAffInqAtchFileCp,jdbcType=NUMERIC}
+			 , #{mbr.mbrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{mbr.mbrId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+
+	<resultMap id ="RepairRceptMap" type ="com.plgrim.ncp.biz.helpdesk.result.HelpdeskRepairResult">
+		<result property="erpCstmrNo" column="ERP_CSTMR_NO" />
+        <result property="mobilNo" column="mobilNo" />
+	</resultMap>
+
+	<!-- A/S 수선조회 수선번호  -->
+	<select id ="selectRepairMbrRceptNo" parameterType ="com.plgrim.ncp.biz.helpdesk.data.HelpdeskRepairDTO" resultMap ="RepairRceptMap">
+		SELECT  /*[biz.help.xml][selectRepairMbrRceptNo][ A/S 수선조회 수선번호][김대영]*/
+				ERP_CSTMR_NO
+		 FROM  MBR
+		 WHERE (MOBIL_AREA_NO||MOBIL_TLOF_NO||MOBIL_TLOF_WTHN_NO) = #{mobilNo,jdbcType=VARCHAR}
+		  AND MBR_NM = #{mbrNm,jdbcType=VARCHAR}
+		  AND ERP_CSTMR_NO is not Null
+	</select>
+
+	<select id="selectUserAgr" parameterType="sysStplat" resultType="sysStplat">
+		SELECT /* [biz.help.xml][selectUserAgr][ 동의 약관 ][김대영] */
+				 STPLAT_CD
+				,STPLAT_DSCR
+				,STPLAT_CONT
+		 FROM  SYS_STPLAT
+		WHERE  STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+	</select>
+
+	<select id ="selectEventCheck" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskNoticeFoDTO" resultMap="noticeMap">
+	<![CDATA[
+		SELECT DECODE((SELECT 1 FROM EVT A
+                            INNER JOIN EVT_PRIZE B
+                            ON A.EVT_NO = B.EVT_NO
+                            WHERE A.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+                            AND  EXISTS
+                                      (SELECT 1
+                                         FROM EVT_APPLCN C
+                                        WHERE C.EVT_PARTCPTN_SN = B.EVT_PARTCPTN_SN AND C.MBR_NO = #{mbrNo,jdbcType=VARCHAR})
+                             AND ROWNUM < 2 ),1,'Y', 'N') AS event_prize_yn
+              , NVL((SELECT B.PRIZE_RANK FROM EVT A
+                            INNER JOIN EVT_PRIZE B
+                            ON A.EVT_NO = B.EVT_NO
+                            WHERE A.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+                            AND  EXISTS
+                                      (SELECT 1
+                                         FROM EVT_APPLCN C
+                                        WHERE C.EVT_PARTCPTN_SN = B.EVT_PARTCPTN_SN AND C.MBR_NO = #{mbrNo,jdbcType=VARCHAR})
+                             AND ROWNUM < 2 ), 0) AS event_prize_rank
+               ,  DECODE((SELECT 1 FROM EVT A
+                        INNER JOIN EVT_APPLCN B
+                         ON A.evt_no = B.evt_no and B.MBR_NO = #{mbrNo,jdbcType=VARCHAR} and B.EVT_NO = #{evtNo,jdbcType=VARCHAR} and rownum < 2), 1, 'Y', 'N') as EVT_APPLCN_YN
+               , (SELECT EVT_NM FROM EVT WHERE evt_NO = #{evtNo,jdbcType=VARCHAR}) as EVT_NM
+                from dual
+                ]]>
+	</select>
+
+	<select id="selectFaqTitleList" parameterType="com.plgrim.ncp.biz.helpdesk.data.HelpdeskFaqFoDTO" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+		SELECT /* [biz.help.xml][selectFaqTitleList][faq 타이틀 조회][Brandon] */
+	  		distinct cd.CD_NM AS cd_nm, cd.CD AS cd
+		FROM
+			MV_SYS_CD cd
+		LEFT OUTER JOIN
+			CSO_FAQ faq
+		ON
+			cd.CD = faq.FAQ_SECT_CD
+		WHERE 1=1
+		AND
+			cd.UPPER_CD= 'FAQ_SECT'
+		AND
+			cd.lang_cd = #{langCd, jdbcType=VARCHAR}
+		AND
+			faq.MALL_ID = #{mallId, jdbcType=VARCHAR}
+	</select>
+
+	<insert id="insertNmbrStplatAgr" parameterType="map">
+		INSERT /* [biz.help.xml][insertNmbrStplatAgr][비회원 동의 약관 등록][Brandon] */
+		INTO   CSO_NMBR_STPLAT_AGR (
+			   NMBR_STPLAT_AGR_SN
+			 , STPLAT_CD
+			 , STPLAT_IEM_AGR_YN
+			 , MTM_INQ_SN
+			 , ORGZT_ORD_AFF_INQ_SN
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , REGTR_ID
+		)
+		VALUES (
+			   #{nmbrStplatAgrSn,jdbcType=NUMERIC}
+			 , #{stplatCd,jdbcType=VARCHAR}
+			 , #{stplatIemAgrYn,jdbcType=VARCHAR}
+			 , #{mtmInqSn,jdbcType=NUMERIC}
+			 , #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{regtrId,jdbcType=VARCHAR}
+        )
+    </insert>
+
+</mapper>

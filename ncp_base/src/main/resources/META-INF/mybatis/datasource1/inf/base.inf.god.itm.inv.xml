@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfGodItmInv" parameterType="infGodItmInv" resultType="infGodItmInv">
+		SELECT /* com.plgrim.ncp.base.selectInfGodItmInv		Generator(Generator)	2018-05-31 */
+			   SEQ
+			 , BRND_ID
+			 , SHOP_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , ERP_GOD_NO
+			 , COLOR_CD
+			 , OPT_VAL_CD
+			 , INV_QTY
+			 , HOFF_LGS_INV_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_GOD_ITM_INV
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfGodItmInv" parameterType="infGodItmInv">
+		UPDATE /* com.plgrim.ncp.base.updateInfGodItmInv		Generator(Generator)	2018-05-31 */
+		INF_GOD_ITM_INV SET
+			   SEQ = #{seq,jdbcType=NUMERIC}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , SHOP_ID = #{shopId,jdbcType=VARCHAR}
+			 , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			 , DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+			 , OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+			 , INV_QTY = #{invQty,jdbcType=NUMERIC}
+			 , HOFF_LGS_INV_QTY = #{hoffLgsInvQty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfGodItmInv" parameterType="infGodItmInv">
+		INSERT /* com.plgrim.ncp.base.insertInfGodItmInv		Generator(Generator)	2018-05-31 */
+		INTO   INF_GOD_ITM_INV (
+			   SEQ
+			 , BRND_ID
+			 , SHOP_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , ERP_GOD_NO
+			 , COLOR_CD
+			 , OPT_VAL_CD
+			 , INV_QTY
+			 , HOFF_LGS_INV_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{seq,jdbcType=NUMERIC}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{sesonCd,jdbcType=VARCHAR}
+			 , #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{colorCd,jdbcType=VARCHAR}
+			 , #{optValCd,jdbcType=VARCHAR}
+			 , #{invQty,jdbcType=NUMERIC}
+			 , #{hoffLgsInvQty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfGodItmInv" parameterType="infGodItmInv">
+		DELETE /* com.plgrim.ncp.base.deleteInfGodItmInv		Generator(Generator)	2018-05-31 */
+		  FROM INF_GOD_ITM_INV
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

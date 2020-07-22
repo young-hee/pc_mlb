@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.sysexcpcd">
+
+	<select id="selectAllSysExcpGrpCd"  resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysExcpCdExtend">
+		SELECT /* [commons.code.xml][selectAllSysExcpGrpCd][시스템예외그룹코드 List 조회][YOON] */
+				secg.GRP_CD
+			   ,secg.GRP_CD_NM
+			   ,sec.CD
+			   ,sec.CD_NM
+			   ,sec.SORT_SEQ
+			   ,sec.ASSTN_CD_1
+			   ,sec.ASSTN_CD_2
+			   ,sec.CD_DSCR
+			   ,sec.REGTR_ID
+			   ,sec.REG_DT
+			   ,sec.UDTER_ID
+			   ,sec.UDT_DT
+		 FROM SYS_EXCP_CD sec
+		 JOIN SYS_EXCP_CD_GRP secg ON secg.GRP_CD = sec.GRP_CD
+		WHERE sec.GRP_CD = #{grpCd,jdbcType=VARCHAR}
+	 ORDER BY sec.SORT_SEQ
+	</select>
+
+
+	<select id="selectSysExcpCdForOrd"  resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysExcpCd">
+		SELECT /* [commons.code.xml]["selectSysExcpCdForOrd"][응답코드 표준화 시스템예외코드 조회][aether] */
+				sec.GRP_CD
+			   ,sec.CD
+			   ,sec.CD_NM
+			   ,sec.SORT_SEQ
+			   ,sec.ASSTN_CD_1
+			   ,sec.ASSTN_CD_2
+			   ,sec.CD_DSCR
+			   ,sec.REGTR_ID
+			   ,sec.REG_DT
+			   ,sec.UDTER_ID
+			   ,sec.UDT_DT
+		 FROM SYS_EXCP_CD sec		 
+		WHERE sec.GRP_CD = #{grpCd,jdbcType=VARCHAR}
+		and sec.cd = #{cd,jdbcType=VARCHAR}	 
+	</select>
+
+</mapper>

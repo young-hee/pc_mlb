@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.policy">
+	
+	<resultMap id="resultSysPlc" type="com.plgrim.ncp.commons.result.SysPolicyResult">
+		<result property="sysPlc.mallId" column="mall_id" />
+		<result property="sysPlc.mallNm" column="mall_nm" />
+		<result property="sysPlc.plcCd" column="plc_cd" />
+		<result property="sysPlc.plcNm" column="plcNm" />
+		<result property="sysPlc.aplBegDt" column="apl_beg_dt" />
+		<result property="sysPlc.aplEndDt" column="apl_end_dt" />
+		<result property="sysPlc.useYn" column="use_yn" />
+		<result property="sysPlc.cmpndValPsbYn" column="cmpnd_val_psb_yn" />
+		<result property="sysPlc.udterId" column="udter_id" />
+		<result property="sysPlc.udterNm" column="udterNm" />
+		<result property="sysPlc.udtDt" column="udt_dt" />
+	</resultMap>
+	
+	<resultMap id="resultSysPlcVal" type="com.plgrim.ncp.commons.result.SysPolicyResult">
+		<result property="sysPlc.mallId" column="mall_id" />
+		<result property="sysPlc.mallNm" column="mall_nm" />
+		<result property="sysPlc.plcCd" column="plc_cd" />
+		<result property="sysPlc.plcNm" column="plcNm" />
+		<result property="sysPlc.aplBegDt" column="apl_beg_dt" />
+		<result property="sysPlcVal.plcValTurn" column="plc_val_turn" />
+		<result property="sysPlcVal.plcValBegDt" column="plc_val_beg_dt" />
+		<result property="sysPlcVal.plcValEndDt" column="plc_val_end_dt" />
+		<result property="sysPlcVal.plcVal" column="plc_val" />
+		<result property="sysPlcVal.useYn" column="use_yn" />
+		<result property="sysPlcVal.plcValTpCd" column="plc_val_tp_cd" />
+		<result property="sysPlcVal.plcValUnitCd" column="plc_val_unit_cd" />
+		<result property="sysPlcVal.udterId" column="udter_id" />
+		<result property="sysPlcVal.udterNm" column="udterNm" />
+		<result property="sysPlcVal.udtDt" column="udt_dt" />
+		<result property="sysPlc.cmpndValPsbYn" column="cmpnd_val_psb_yn" />
+	</resultMap>
+	
+	<!-- 정책 목록 조회 -->
+	<select id="selectListPlc" parameterType="com.plgrim.ncp.commons.data.FormSysPolicyDTO" resultMap="resultSysPlc">
+		SELECT  /* [commons.policy.xml][SysPolicyRepository.selectListPlc][정책 목록조회][sh629.kim] */
+		        sp.mall_id, sm.mall_nm, sp.plc_cd, cd.cd_nm as plcNm, sp.apl_beg_dt, sp.apl_end_dt
+		        , sp.use_yn, sp.cmpnd_val_psb_yn, sp.regtr_id
+		        , sp.reg_dt, sp.udter_id, sa.admin_nm as udterNm, sp.udt_dt
+		FROM    sys_plc sp
+		INNER JOIN sys_mall sm
+		    ON	sp.mall_id = sm.mall_id
+		LEFT OUTER JOIN mv_sys_cd cd
+		    ON  sp.plc_cd = cd.cd
+		    AND cd.lang_cd = 'KOR'
+		    AND cd.UPPER_CD = 'PLC'
+		    AND cd.use_yn = 'Y'
+		LEFT OUTER JOIN	sys_admin sa
+		    ON	sa.admin_id = sp.udter_id
+		WHERE   1 = 1 
+		<if test="selMallId != null">
+			AND sp.mall_id = #{selMallId, jdbcType=VARCHAR}
+		</if>
+		<if test="selPlcCd != null">
+			AND     sp.plc_cd = #{selPlcCd, jdbcType=VARCHAR}
+		</if>
+		<if test="selAplBegDt != null">
+			AND     sp.apl_beg_dt = TO_DATE(#{selAplBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		</if>	
+		<if test="searchField != null">
+			<choose>
+				<when test="searchField eq '1'.toString()">
+					AND sp.mall_id like '%'||#{searchText, jdbcType=VARCHAR}||'%'
+				</when>
+				<when test="searchField eq '2'.toString()">
+					AND sm.mall_nm like '%'||#{searchText, jdbcType=VARCHAR}||'%'
+				</when>
+				<when test="searchField eq '3'.toString()">
+					AND	sp.plc_cd like '%'||#{searchText, jdbcType=VARCHAR}||'%'
+				</when>
+				<when test="searchField eq '4'.toString()">
+					AND	cd.cd_nm like '%'||#{searchText, jdbcType=VARCHAR}||'%'
+				</when>
+			</choose>
+		</if>
+		<if test="searchListUseYn != null">
+			AND sp.use_yn in
+			<foreach item ="item" index="index" collection="searchListUseYn" open="(" separator="," close=")">
+         		#{item}
+   			</foreach> 
+		</if>
+		ORDER BY sp.mall_id, sp.plc_cd, sp.apl_beg_dt
+	</select>
+	
+	<!-- 정책 값 목록 조회 -->
+	<select id="selectListPlcVal" parameterType="com.plgrim.ncp.commons.data.FormSysPolicyDTO" resultMap="resultSysPlcVal">
+		SELECT /* [commons.policy.xml][SysPolicyRepository.selectListPlcVal][정책 값 목록조회][sh629.kim] */ 
+		        spv.mall_id, sm.mall_nm, spv.plc_cd, cd.cd_nm as plcNm, spv.apl_beg_dt, spv.plc_val_turn, spv.plc_val_beg_dt
+		        , spv.plc_val_end_dt, spv.plc_val, spv.use_yn, spv.plc_val_tp_cd, spv.plc_val_unit_cd
+		        , spv.udter_id, sa.admin_nm as udterNm, spv.udt_dt
+		        , sp.cmpnd_val_psb_yn
+		FROM    sys_plc sp
+		INNER JOIN  sys_plc_val spv
+			ON      sp.mall_id = spv.mall_id
+			AND     sp.plc_cd = spv.plc_cd
+			AND     sp.apl_beg_dt = spv.apl_beg_dt
+		<if test="selPlcValTurn != null and selPlcValTurn != 0">
+			AND		spv.plc_val_turn = #{selPlcValTurn, jdbcType=NUMERIC}
+		</if>
+		INNER JOIN sys_mall sm
+		    ON	sp.mall_id = sm.mall_id
+		LEFT OUTER JOIN	sys_admin sa
+			ON	spv.udter_id = sa.admin_id
+		LEFT OUTER JOIN mv_sys_cd cd
+		    ON  sp.plc_cd = cd.cd
+		    AND cd.lang_cd = 'KOR'
+		    AND cd.UPPER_CD = 'PLC'
+		    AND cd.use_yn = 'Y'
+		WHERE   sp.mall_id = #{selMallId, jdbcType=VARCHAR}
+		AND     sp.plc_cd = #{selPlcCd, jdbcType=VARCHAR}
+		AND     sp.apl_beg_dt = TO_DATE(#{selAplBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		ORDER BY spv.plc_val_turn
+	</select>
+	
+	<insert id="insertSysPlcVal" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPlcValExtend">
+		<selectKey keyProperty="maxPlcValTurn" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(plc_val_turn)+1, 1) as maxPlcValTurn
+			FROM SYS_PLC_VAL
+			WHERE mall_id = #{mallId}
+			AND plc_cd = #{plcCd}
+			AND apl_beg_dt = TO_DATE(#{aplBegDtStr, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		</selectKey>
+		INSERT /* [commons.policy.xml][SysPolicyRepository."insertSysPlcVal"][정책 값 등록][sh629.kim] */
+		INTO SYS_PLC_VAL(
+		    mall_id, plc_cd, apl_beg_dt, plc_val_turn
+		    , plc_val_beg_dt, plc_val_end_dt, plc_val
+		    , use_yn, plc_val_tp_cd, plc_val_unit_cd
+		    , regtr_id, reg_dt, udter_id, udt_dt
+		) VALUES (
+		    #{mallId}, #{plcCd}, TO_DATE(#{aplBegDtStr, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS'), #{maxPlcValTurn}
+		    , TO_DATE(#{plcValBegDtStr, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS'), TO_DATE(#{plcValEndDtStr, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS'), #{plcVal}
+		    , #{useYn}, #{plcValTpCd}, #{plcValUnitCd}
+		    , #{regtrId}, SYSDATE, #{regtrId}, SYSDATE
+		)
+	</insert>
+	
+	<update id="updateSysPlcVal" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPlcValExtend"> 
+		UPDATE /* [commons.policy.xml][SysPolicyRepository."updateSysPlcVal"][정책 값 수정][sh629.kim] */
+		    SYS_PLC_VAL
+		SET
+		    plc_val_beg_dt = TO_DATE(#{plcValBegDtStr, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS'),
+		    plc_val_end_dt = TO_DATE(#{plcValEndDtStr, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS'),
+		    plc_val = #{plcVal},
+		    use_yn = #{useYn},
+		    plc_val_tp_cd = #{plcValTpCd},
+		    plc_val_unit_cd = #{plcValUnitCd},
+		    udter_id = #{regtrId},
+		    udt_dt = SYSDATE
+		WHERE   1 = 1
+		    AND mall_id = #{mallId}
+		    AND plc_cd = #{plcCd}
+		    AND apl_beg_dt = TO_DATE(#{aplBegDtStr, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		    AND plc_val_turn = #{plcValTurn}
+	</update>
+	
+	<update id="refreshMviewPolicy" parameterType="java.util.Map">
+		<![CDATA[
+			/* [commons.policy.xml]["refreshMviewPolicy"]["MV 갱신"][sh629.kim] */
+			call DBMS_MVIEW.refresh('MV_SYS_PLC')
+		]]>
+	</update>
+	
+	<select id="checkPlcValBegDt" parameterType="com.plgrim.ncp.commons.data.FormSysPolicyDTO" resultType="java.lang.String">
+		SELECT	/* [commons.policy.xml][SysPolicyRepository."checkPlcValBegDt"][시작일시 유효성 체크][sh629.kim] */	
+			DECODE( SIGN(count(*)), 1, 'Y', 'N') as valid_yn
+		FROM	sys_plc sp
+		WHERE	1 = 1
+		  AND	sp.mall_id = #{selMallId, jdbcType=VARCHAR}
+		  AND	sp.plc_cd = #{selPlcCd, jdbcType=VARCHAR}
+		  AND	sp.apl_beg_dt = TO_DATE(#{selAplBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		  AND TO_DATE(#{selPlcValBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') BETWEEN sp.apl_beg_dt AND sp.apl_end_dt
+	</select>
+	
+	<select id="checkPlcValEndDt" parameterType="com.plgrim.ncp.commons.data.FormSysPolicyDTO" resultType="java.lang.String">
+		SELECT	/* [commons.policy.xml][SysPolicyRepository."checkPlcValEndDt"][종료일시 유효성 체크][sh629.kim] */	
+			DECODE( SIGN(count(*)), 1, 'Y', 'N') as valid_yn
+		FROM	sys_plc sp
+		WHERE	1 = 1
+		  AND	sp.mall_id = #{selMallId, jdbcType=VARCHAR}
+		  AND	sp.plc_cd = #{selPlcCd, jdbcType=VARCHAR}
+		  AND	sp.apl_beg_dt = TO_DATE(#{selAplBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		  AND TO_DATE(#{selPlcValEndDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') BETWEEN sp.apl_beg_dt AND sp.apl_end_dt
+	</select>
+	
+	<select id="checkDuplicatePeriod" parameterType="com.plgrim.ncp.commons.data.FormSysPolicyDTO" resultType="java.lang.String">
+		SELECT	/* [commons.policy.xml][SysPolicyRepository."checkDuplicatePeriod"][기간 중복여부 체크][sh629.kim] */	
+		    DECODE( SIGN(count(*)), 1, 'Y', 'N') as dupl_yn
+		FROM	sys_plc_val spv
+		WHERE	1 = 1
+		  AND	spv.mall_id = #{selMallId, jdbcType=VARCHAR}
+		  AND	spv.plc_cd = #{selPlcCd, jdbcType=VARCHAR}
+		  AND	spv.apl_beg_dt = TO_DATE(#{selAplBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		  <if test='selCmpndValPsbYn eq "Y"'>
+		  AND	spv.plc_val = #{selPlcVal, jdbcType=VARCHAR}
+		  </if>
+		  AND	spv.plc_val_turn != #{selPlcValTurn, jdbcType=NUMERIC}
+		  AND	spv.use_yn = 'Y'
+		  AND (
+		        spv.plc_val_beg_dt <![CDATA[<]]> TO_DATE(#{selPlcValBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{selPlcValBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<]]> spv.plc_val_end_dt
+		        OR 
+		        spv.plc_val_beg_dt <![CDATA[<]]> TO_DATE(#{selPlcValEndDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{selPlcValEndDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<]]> spv.plc_val_end_dt
+		        OR 
+		        spv.plc_val_beg_dt <![CDATA[>]]>= TO_DATE(#{selPlcValBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(#{selPlcValEndDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>]]>= spv.plc_val_end_dt
+		       )
+	</select>
+	
+	<select id="checkPastPlcVal" parameterType="com.plgrim.ncp.commons.data.FormSysPolicyDTO" resultType="java.lang.String">
+		SELECT  /* [commons.policy.xml][SysPolicyRepository."checkPastPlcVal"][정책 값 종료여부 체크][sh629.kim] */	
+		    DECODE( SIGN(count(*)), 1, 'Y', 'N') as past_yn
+		FROM    SYS_PLC_VAL
+		WHERE   1 = 1
+		  AND   mall_id = #{selMallId, jdbcType=VARCHAR}
+		  AND   plc_cd = #{selPlcCd, jdbcType=VARCHAR}
+		  AND   apl_beg_dt = TO_DATE(#{selAplBegDt, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+		  AND   plc_val_turn = #{selPlcValTurn, jdbcType=NUMERIC}
+		  AND   plc_val_end_dt <![CDATA[<]]> sysdate
+	</select>
+	
+    <select id="selectMvSysPlcVal" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPlcValExtend" resultType="java.lang.String">
+    	/* [commons.policy.xml][selectMvSysPlcVal][정책 값 조회 MV_SYS_PLC] */
+    	SELECT 
+    		PLC_VAL
+		FROM MV_SYS_PLC
+		WHERE MALL_ID = #{mallId, jdbcType=VARCHAR}
+			AND PLC_CD = #{plcCd, jdbcType=VARCHAR}
+			<if test="plcValTpCd != null and plcValTpCd != ''">
+				AND PLC_VAL_TP_CD = #{plcValTpCd, jdbcType=VARCHAR}
+			</if>
+			<if test="plcValUnitCd != null and plcValUnitCd != ''">
+				AND PLC_VAL_UNIT_CD = #{plcValUnitCd, jdbcType=VARCHAR}
+			</if>
+    </select>
+	
+</mapper>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.csoordaff">
+	
+	<resultMap id="resultCsoOrdAff" type="com.plgrim.ncp.commons.result.CsoOrdAffResult">
+		<result property="csoOrgztOrdAffInq.orgztOrdAffInqSn" column="ORGZT_ORD_AFF_INQ_SN" />
+		<result property="csoOrgztOrdAffInq.inqOrgztNm" column="INQ_ORGZT_NM" />
+		<result property="csoOrgztOrdAffInq.orgztOrdAffInqTpCd" column="ORGZT_ORD_AFF_INQ_TP_CD" />
+		<result property="csoOrgztOrdAffInq.inqerNm" column="INQER_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="csoOrgztOrdAffInqAns.pceodnlOrdAffInqAnsTurn" column="PCEODNL_ORD_AFF_INQ_ANS_TURN" />
+		<result property="csoOrgztOrdAffInqAns.ansAdminId" column="ANS_ADMIN_ID" />
+		<result property="ansDtNm" column="ANS_DT_NM" />
+		<result property="csoOrgztOrdAffInq.ansStatCd" column="ANS_STAT_CD" />
+	</resultMap>
+	
+	<!-- 단체주문 / 제휴문의 목록 -->
+	<select id="selectCsoOrdAffList" parameterType="com.plgrim.ncp.commons.data.CsoOrdAffDTO" resultMap="resultCsoOrdAff">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [commons.csoordaff.xml]["selectCsoOrdAffList"][단체주문 / 제휴문의 목록 조회][Brandon] */
+			COOAI.ORGZT_ORD_AFF_INQ_SN /* 일련번호 */
+			,COOAI.INQ_ORGZT_NM /*단체명*/
+			,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ORGZT_ORD_AFF_INQ_TP' AND LANG_CD= 'KOR' AND CD = COOAI.ORGZT_ORD_AFF_INQ_TP_CD) AS ORGZT_ORD_AFF_INQ_TP_CD /* 문의유형코드 */
+			,FN_MASKING('FLNM',COOAI.INQER_NM,'','Y') AS INQER_NM /* 문의자명 */
+			,TO_CHAR(COOAI.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 문의일시 */
+			,COOAIA.PCEODNL_ORD_AFF_INQ_ANS_TURN /* 답변순번 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = COOAIA.ANS_ADMIN_ID) AS ANS_ADMIN_ID /* 답변자 */
+			,TO_CHAR(COOAIA.ANS_DT,'YYYY-MM-DD HH24:MI') AS ANS_DT_NM /* 답변일시 */
+			,COOAI.ANS_STAT_CD /* 답변상태 */
+	    FROM	CSO_ORGZT_ORD_AFF_INQ COOAI
+	    		, CSO_ORGZT_ORD_AFF_INQ_ANS COOAIA
+		WHERE 	1 = 1
+		AND		COOAI.ORGZT_ORD_AFF_INQ_SN = COOAIA.ORGZT_ORD_AFF_INQ_SN(+)
+		AND		COOAI.MALL_ID = #{mallId}
+		<include refid="selectCsoOrdAffListWhere"/>
+		ORDER BY COOAI.REG_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 단체주문 / 제휴문의 목록 개수 -->
+	<select id="selectCsoOrdAffListCount" resultType="long"> 
+		SELECT /* [commons.csoordaff.xml]["selectCsoOrdAffList"][단체주문 / 제휴문의 목록 조회][Ed] */
+			COUNT(*)
+	    FROM	CSO_ORGZT_ORD_AFF_INQ COOAI
+	    		, CSO_ORGZT_ORD_AFF_INQ_ANS COOAIA
+		WHERE 	1 = 1
+		AND		COOAI.ORGZT_ORD_AFF_INQ_SN = COOAIA.ORGZT_ORD_AFF_INQ_SN(+)
+		AND		COOAI.MALL_ID = #{mallId}
+		<include refid="selectCsoOrdAffListWhere"/>
+	</select>
+	
+	<!-- 단체주문 / 제휴문의 목록 엑셀-->
+	<select id="selectCsoOrdAffListExcel" parameterType="com.plgrim.ncp.commons.data.CsoOrdAffDTO" resultType="java.util.LinkedHashMap">
+		SELECT 
+			T.ORGZT_ORD_AFF_INQ_TP_CD
+			,T.INQER_NM
+			,T.REG_DT_NM /* 문의일시 */
+			,T.ANS_ADMIN_ID
+			,T.ANS_DT_NM /* 답변일시 */
+			,T.ANS_STAT_CD_NM
+		FROM (
+			SELECT /* [commons.csoordaff.xml]["selectCsoOrdAffListExcel"][단체주문 / 제휴문의 목록 엑셀][Ed] */
+				(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ORGZT_ORD_AFF_INQ_TP' AND LANG_CD= 'KOR' AND CD = COOAI.ORGZT_ORD_AFF_INQ_TP_CD) AS ORGZT_ORD_AFF_INQ_TP_CD /* 문의유형코드 */
+				,FN_MASKING('FLNM',COOAI.INQER_NM,'','Y') AS INQER_NM /* 문의자명 */
+				,TO_CHAR(COOAI.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 문의일시 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = COOAIA.ANS_ADMIN_ID) AS ANS_ADMIN_ID /* 답변자 */
+				,TO_CHAR(COOAIA.ANS_DT,'YYYY-MM-DD HH24:MI') AS ANS_DT_NM /* 답변일시 */
+				,COOAI.ANS_STAT_CD /* 답변상태 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ANS_STAT' AND LANG_CD= 'KOR' AND CD = COOAI.ANS_STAT_CD) AS ANS_STAT_CD_NM /* 답변상태 */
+		    FROM	CSO_ORGZT_ORD_AFF_INQ COOAI
+		    		, CSO_ORGZT_ORD_AFF_INQ_ANS COOAIA
+			WHERE 	1 = 1
+			AND		COOAI.ORGZT_ORD_AFF_INQ_SN = COOAIA.ORGZT_ORD_AFF_INQ_SN(+)
+			AND		COOAI.MALL_ID = #{mallId}
+			<include refid="selectCsoOrdAffListWhere"/>
+			ORDER BY DECODE(ANS_STAT_CD, 'ANS_BF', 1, 'ANS_WAIT', 2, 'ANS_COMPT', 3), COOAI.REG_DT DESC
+		) T
+	</select>
+	
+	<!-- 단체주문 / 제휴문의 목록 조건문 -->
+	<sql id="selectCsoOrdAffListWhere"> 
+		<if test='search.orgztOrdAffInqTpCds != null and search.orgztOrdAffInqTpCds != ""'>
+			AND COOAI.ORGZT_ORD_AFF_INQ_TP_CD IN
+			<foreach item ="item" index="index" collection="search.orgztOrdAffInqTpCds" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 문의유형 */
+		</if>
+		<if test='search.ansStatCds != null and search.ansStatCds != ""'>
+			AND COOAI.ANS_STAT_CD IN
+			<foreach item ="item" index="index" collection="search.ansStatCds" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 답변상태 */
+		</if>
+		<if test='search.regBegDt != null and search.regBegDt != "" and search.regEndDt != null and search.regEndDt != ""'>
+			AND COOAI.REG_DT >= TO_DATE(#{search.regBegDt}, 'YYYY-MM-DD') AND COOAI.REG_DT &lt;= TO_DATE(#{search.regEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 공지기간 */
+		</if>
+	</sql>
+	
+	<resultMap id="resultCsoOrdAffDetail" type="com.plgrim.ncp.commons.result.CsoOrdAffResult">
+		<result property="csoOrgztOrdAffInq.orgztOrdAffInqSn" column="ORGZT_ORD_AFF_INQ_SN" />
+		<result property="csoOrgztOrdAffInq.orgztOrdAffInqTpCd" column="ORGZT_ORD_AFF_INQ_TP_CD" />
+		<result property="csoOrgztOrdAffInq.orgztOrdAffInqDetailTpCd" column="ORGZT_ORD_AFF_INQ_DETAIL_TP_CD" />
+		<result property="orgztOrdAffInqTpCdEng" column="ORGZT_ORD_AFF_INQ_TP_CD_ENG" />
+		<result property="csoOrgztOrdAffInq.inqerNm" column="INQER_NM" />
+		<result property="csoOrgztOrdAffInq.inqCont" column="INQ_CONT" />
+		<result property="csoOrgztOrdAffInq.regDt" column="REG_DT" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="csoOrgztOrdAffInq.inqerEmailRecptnYn" column="INQER_EMAIL_RECPTN_YN" />
+		<result property="csoOrgztOrdAffInq.inqerSmsRecptnYn" column="INQER_SMS_RECPTN_YN" />
+		<result property="csoOrgztOrdAffInq.ansStatCd" column="ANS_STAT_CD" />
+		<result property="csoOrgztOrdAffInqAns.pceodnlOrdAffInqAnsTurn" column="PCEODNL_ORD_AFF_INQ_ANS_TURN" />
+		<result property="csoOrgztOrdAffInqAns.ansAdminId" column="ANS_ADMIN_ID" />
+		<result property="ansDtNm" column="ANS_DT_NM" />
+		<result property="csoOrgztOrdAffInqAns.ansCont" column="ANS_CONT" />
+		<result property="csoOrgztOrdAffInq.inqerEmail" column="INQER_EMAIL" />
+		<result property="csoOrgztOrdAffInq.inqerMobilNationNo" column="INQER_MOBIL_NATION_NO" />
+		<result property="csoOrgztOrdAffInq.inqerMobilAreaNo" column="INQER_MOBIL_AREA_NO" />
+		<result property="csoOrgztOrdAffInq.inqerMobilTlofNo" column="INQER_MOBIL_TLOF_NO" />
+		<result property="csoOrgztOrdAffInq.inqerMobilTlofWthnNo" column="INQER_MOBIL_TLOF_WTHN_NO" />
+		<result property="csoOrgztOrdAffInqAtchmnfl.mallId" column="MALL_ID" />
+		<result property="csoOrgztOrdAffInqAtchmnfl.orgztOrdAffInqAtchFileNm" column="FILE_NM" />
+		<result property="csoOrgztOrdAffInqAtchmnfl.orgztOrdAffInqAtchFileUr" column="FILE_URL" />
+	</resultMap>
+	
+	<!-- 단체주문 / 제휴문의 상세 -->
+	<select id="selectCsoOrdAffDetail" parameterType="com.plgrim.ncp.commons.data.CsoOrdAffDTO" resultMap="resultCsoOrdAffDetail">
+		SELECT /* [commons.csoordaff.xml]["selectCsoOrdAffDetail"][단체주문 / 제휴문의 상세][Ed] */
+			COOAI.ORGZT_ORD_AFF_INQ_SN /* 일련번호 */
+			,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ORGZT_ORD_AFF_INQ_TP' AND LANG_CD= 'KOR' AND CD = COOAI.ORGZT_ORD_AFF_INQ_TP_CD) AS ORGZT_ORD_AFF_INQ_TP_CD /* 문의유형코드 */
+			/* ,FN_MASKING('FLNM',COOAI.INQER_NM,'','Y') AS INQER_NM */ /* 문의자명 */ 
+            ,ORGZT_ORD_AFF_INQ_TP_CD AS ORGZT_ORD_AFF_INQ_TP_CD_ENG
+            ,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'AFF_INQ' AND LANG_CD= 'KOR' AND CD = COOAI.ORGZT_ORD_AFF_INQ_DETAIL_TP_CD) AS ORGZT_ORD_AFF_INQ_DETAIL_TP_CD
+            ,COOAI.INQER_NM AS INQER_NM
+			,COOAI.INQ_CONT /* 문의내용 */
+			,COOAI.REG_DT /* 문의일시 */
+			,TO_CHAR(COOAI.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 문의일시 */
+			,COOAI.INQER_EMAIL_RECPTN_YN /* 이메일수신여부 */
+			,COOAI.INQER_SMS_RECPTN_YN /* SMS수신여부 */
+			,COOAI.ANS_STAT_CD /* 답변상태 */
+			,COOAIA.PCEODNL_ORD_AFF_INQ_ANS_TURN /* 답변순번 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = COOAIA.ANS_ADMIN_ID) AS ANS_ADMIN_ID /* 답변자 */
+			,TO_CHAR(COOAIA.ANS_DT,'YYYY-MM-DD HH24:MI') AS ANS_DT_NM /* 답변일시 */
+			,COOAIA.ANS_CONT /* 답변내용 */
+			,COOAI.INQER_EMAIL /* 이메일 */
+			,COOAI.INQER_MOBIL_NATION_NO /* 국가번호 */
+			,COOAI.INQER_MOBIL_AREA_NO /* 지역번호 */
+			,COOAI.INQER_MOBIL_TLOF_NO /* 국번호 */
+			,COOAI.INQER_MOBIL_TLOF_WTHN_NO /* 국내번호 */
+			,COOAI.MALL_ID
+			,COOAIAM.ORGZT_ORD_AFF_INQ_ATCH_FILE_NM AS FILE_NM
+            ,COOAIAM.ORGZT_ORD_AFF_INQ_ATCH_FILE_UR AS FILE_URL
+	    FROM	CSO_ORGZT_ORD_AFF_INQ COOAI left outer join CSO_ORGZT_ORD_AFF_INQ_ANS COOAIA on COOAI.ORGZT_ORD_AFF_INQ_SN = COOAIA.ORGZT_ORD_AFF_INQ_SN
+	    		left outer join CSO_ORGZT_ORD_AFF_INQ_ATCHMNFL COOAIAM on COOAI.ORGZT_ORD_AFF_INQ_SN = COOAIAM.ORGZT_ORD_AFF_INQ_SN
+		WHERE 	1 = 1
+		AND		COOAI.ORGZT_ORD_AFF_INQ_SN = #{search.orgztOrdAffInqSn,jdbcType=NUMERIC}
+	/*	
+		AND		COOAI.ORGZT_ORD_AFF_INQ_SN = COOAIA.ORGZT_ORD_AFF_INQ_SN(+)
+		AND     COOAI.ORGZT_ORD_AFF_INQ_SN = COOAIAM.ORGZT_ORD_AFF_INQ_SN
+	*/	
+		<if test='search.pceodnlOrdAffInqAnsTurn != null and search.pceodnlOrdAffInqAnsTurn != ""'>
+			AND		COOAIA.PCEODNL_ORD_AFF_INQ_ANS_TURN = #{search.pceodnlOrdAffInqAnsTurn,jdbcType=NUMERIC}
+		</if>
+	</select>
+	
+	<!-- 단체주문 / 제휴문의 답변 상태 수정 -->
+    <update id="updateCsoOrdAffStat" parameterType="com.plgrim.ncp.base.entities.datasource1.cso.CsoOrgztOrdAffInq">
+    	UPDATE /* [commons.csoordaff.xml]["updateCsoOrdAffStat"][단체주문 / 제휴문의 답변 상태 수정][Ed] */  
+        CSO_ORGZT_ORD_AFF_INQ SET
+                ANS_STAT_CD = #{ansStatCd,jdbcType=VARCHAR} 
+                <!-- 답변완료일 경우 완료일시 설정 -->
+                <if test='ansStatCd != null and ansStatCd != "" and ansStatCd == "ANS_COMPT"'>
+                	,PRCS_COMPT_DT = SYSDATE
+                </if>
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 단체주문 / 제휴문의 답변 등록 -->
+    <insert id="insertCsoOrdAffAns" parameterType="com.plgrim.ncp.base.entities.datasource1.cso.CsoOrgztOrdAffInqAns">
+    	<selectKey keyProperty="pceodnlOrdAffInqAnsTurn" resultType="Integer" order="BEFORE">
+            SELECT 
+            	NVL(MAX(PCEODNL_ORD_AFF_INQ_ANS_TURN)+1,1) 
+            FROM CSO_ORGZT_ORD_AFF_INQ_ANS 
+            WHERE ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+        </selectKey>
+	    INSERT /* [commons.csoordaff.xml]["insertCsoOrdAffAns"][단체주문 / 제휴문의 답변 등록][Ed] */  
+	    INTO CSO_ORGZT_ORD_AFF_INQ_ANS
+		(
+	        ORGZT_ORD_AFF_INQ_SN
+	       ,PCEODNL_ORD_AFF_INQ_ANS_TURN
+	       ,ANS_SJ
+	       ,ANS_CONT
+	       ,DETAIL_ANS_STAT_CD
+	       ,ANS_DT
+	       ,ANS_ADMIN_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+	       ,#{pceodnlOrdAffInqAnsTurn,jdbcType=NUMERIC}
+	       ,#{ansSj,jdbcType=VARCHAR}
+	       ,#{ansCont,jdbcType=CLOB}
+	       ,#{detailAnsStatCd,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{ansAdminId,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+</mapper>

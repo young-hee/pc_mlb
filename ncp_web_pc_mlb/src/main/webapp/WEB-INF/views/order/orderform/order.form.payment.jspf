@@ -1,0 +1,128 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<button type="button" class="btn-open d_toggle_select"><span>Open</span></button>
+<div class="order-detail-content d_toggle_cont orderPayOptTab">
+	<div class="orderPayOpt">
+		<ul>
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="card_payment" name="paymentBtn" value="100000000000">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="card_payment"><spring:message code="order.payment.card" /></label>
+			</li>
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="naver_payment" name="paymentBtn" value="naver">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="naver_payment"><spring:message code="order.payment.naver" /></label>
+			</li>
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="virtual_payment" name="paymentBtn" value="001000000000">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="virtual_payment"><spring:message code="order.payment.virtual" /></label>
+			</li>
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="transfer_payment" name="paymentBtn" value="010000000000">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="transfer_payment"><spring:message code="order.payment.transfer" /></label>
+			</li>
+			<li>
+				<span class="rdo-skin">
+					<input type="radio" id="mobile_payment" name="paymentBtn" value="000010000000">
+					<span><spring:message code="order.js.txt.select" /></span>
+				</span>
+				<label for="mobile_payment"><spring:message code="order.payment.mobile" /></label>
+			</li>
+		</ul>
+	</div>
+
+	<!-- 결제수단 - 신용/체크카드 : str -->
+	<div class="orderPaytCont orderPayMethod" style="display:block" id="order-payment-content_100000000000">
+		<h4><spring:message code="order.payment.info1" /></h4>
+		<div class="mbBox payGuide">
+			<a href="#lypopCardPayCf" class="btn sm d_layer_open" id="btnCard1"><spring:message code="order.payment.info2" /></a>
+			<a href="#lypopCardPaysf" class="btn sm d_layer_open" id="btnCard2"><spring:message code="order.payment.info3" /></a>
+			<a href="#lypopCardPayClick" class="btn sm d_layer_open" id="btnCard3"><spring:message code="order.payment.html.info5" /></a>
+		</div>
+		
+		<ul class="text-list01">
+      		<li><spring:message code="order.payment.info4" /></li>  
+      	</ul>       
+      	<p class="orderMgBox"><spring:message code="order.payment.info5" /></p>
+	</div>
+	<!-- //결제수단 - 신용/체크카드 : end -->
+
+	<!-- 결제수단 - 네이버페이 : str -->
+	<div class="orderPaytCont orderPayMethod" id="order-payment-content_naver">
+		<spring:message code="order.payment.html.info4.1" />
+		<p class="orderMgBox"><spring:message code="order.payment.info5" /></p>
+	</div>
+	<!-- //결제수단 - 네이버페이 : end -->
+	
+	<!-- 결제수단 - 무통장입금(가상계좌) : str -->
+	<div class="orderPaytCont orderPayMethod" id="order-payment-content_001000000000">
+		<h4><spring:message code="order.payment.escrow.msg1" /></h4>
+		<div class="rdOptBox mbBox info_not_pickup">
+			<span class="rdo-skin">
+				<input type="radio" id="rdo2Escrow01" name="escrPayYn" value="Y">
+				<span><spring:message code="order.js.txt.select" /></span>
+			</span>
+			<label for="rdEscroOpt01Y" class="d_tab02_select"><spring:message code="order.payment.escrow.msg2" /></label>
+			<span class="rdo-skin">
+				<input type="radio" id="rdo2Escrow02" name="escrPayYn" value="N" checked="checked">
+				<span><spring:message code="order.js.txt.select" /></span>
+			</span>
+			<label for="rdEscroOpt01N" class="d_tab02_select"><spring:message code="order.payment.escrow.msg3" /></label>
+		</div>
+		<ul class="text-list01">
+			<spring:message code="order.payment.html.info6.1" />
+		</ul>
+		<p class="orderMgBox"><spring:message code="order.payment.info5" /></p> 
+	</div>
+	<!-- //결제수단 - 무통장입금(가상계좌) : end -->
+
+	<!-- 결제수단 - 실시간 계좌이체 : str -->
+	<div class="orderPaytCont orderPayMethod" id="order-payment-content_010000000000">
+		<h4 class="info_not_pickup"><spring:message code="order.payment.escrow.msg1" /></h4>
+		<div class="rdOptBox mbBox info_not_pickup">
+			<span class="rdo-skin">
+				<input type="radio" id="rdoEscrow01" name="escrPayYn" value="Y">
+				<span><spring:message code="order.js.txt.select" /></span>
+			</span>
+			<label for="rdEscroOpt02Y" class="d_tab02_select"><spring:message code="order.payment.escrow.msg2" /></label>
+
+			<span class="rdo-skin">
+				<input type="radio" id="rdoEscrow02" name="escrPayYn" value="N" checked="checked">
+				<span><spring:message code="order.js.txt.select" /></span>
+			</span>
+			<label for="rdEscroOpt02N" class="d_tab02_select"><spring:message code="order.payment.escrow.msg3" /></label>
+		</div>
+		<spring:message code="order.payment.html.info5.3" />
+		<p class="orderMgBox"><spring:message code="order.payment.info5" /></p> 
+	</div>
+	<!-- //결제수단 - 실시간 계좌이체 : end -->
+
+
+	<!-- 결제수단 - 휴대폰결제 : str -->
+	<div class="orderPaytCont orderPayMethod" id="order-payment-content_000010000000">
+		<ul class="text-list01">
+			<spring:message code="order.payment.html.info7.1" />
+		</ul>
+		<p class="orderMgBox"><spring:message code="order.payment.info5" /></p> 
+	</div>
+	<!-- //결제수단 - 휴대폰결제 : end -->
+
+	<p class="payOptSave" id="paymentSaveRegion">
+		<span class="check-skin">
+			<input type="checkbox" id="preferPayemntMethod">
+			<span><spring:message code="order.js.txt.select" /></span>
+		</span>
+		<label for="chkPayOptSame"><spring:message code="order.txt.payment.caption1" /></label>
+	</p>
+</div>
+<button type="button" class="btn-close d_toggle_select"><span>Close</span></button>

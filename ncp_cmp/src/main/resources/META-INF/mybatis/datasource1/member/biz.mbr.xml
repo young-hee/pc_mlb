@@ -1,0 +1,3819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr">
+
+    <!-- /// BackOffice Start //////////////////////////////////////////////////-->
+    <resultMap id="mbrResultMap" type="com.plgrim.ncp.biz.member.result.MemberBoResult">
+        <result property="mbr.mbrNo"                    column="MBR_NO" />                   <!-- 회원 번호 -->
+        <result property="mbr.mbrStatCd"                column="MBR_STAT_CD" />              <!-- 회원 상태 코드 -->
+        <result property="mbr.mbrTpCd"                  column="MBR_TP_CD" />                <!-- 회원 유형 코드 -->
+        <result property="mbr.mbrAtrbCd"                column="MBR_ATRB_CD" />              <!-- 회원 속성 코드 -->
+        <result property="mbr.unityMbrCrtfcSectCd"      column="UNITY_MBR_CRTFC_SECT_CD" />  <!-- 통합 회원 인증 구분 코드 -->
+        <result property="mbr.mbrNm"                    column="MBR_NM" />                   <!-- 회원 명 -->
+        <result property="mbr.mbrBrthdySlrcldYn"        column="MBR_BRTHDY_SLRCLD_YN" />     <!-- 회원 생년월일 양력 여부 -->
+        <result property="mbr.mbrBrthdy"                column="MBR_BRTHDY" />               <!-- 회원 생년월일 -->
+        <result property="mbr.mbrSexSectCd"             column="MBR_SEX_SECT_CD" />          <!-- 회원 성별 구분 코드 -->
+        <result property="mbr.frgnrYn"                  column="FRGNR_YN" />                 <!-- 외국인 여부 -->
+        <result property="mbr.psitnGrpcoId"             column="PSITN_GRPCO_ID" />           <!-- 소속 그룹사 ID -->
+        <result property="mbr.mbrEmplNo"                column="MBR_EMPL_NO" />              <!-- 회원 사원 번호 -->
+        <result property="mbr.mbrId"                    column="MBR_ID" />                   <!-- 회원 ID -->
+        <result property="mbr.joinMbrIp"                column="JOIN_MBR_IP" />              <!-- 가입 회원 IP -->
+        <result property="mbr.mbrPw"                    column="MBR_PW" />                   <!-- 회원 비밀번호 -->
+        <result property="mbr.mbrLoginLastFailrCount"   column="MBR_LOGIN_LAST_FAILR_COUNT" /><!-- 회원 로그인 최종 실패 횟수 -->
+        <result property="mbr.mbrPwLastUdtDt"           column="MBR_PW_LAST_UDT_DT" />       <!-- 회원 비밀번호 최종 수정 일시 -->
+        <result property="mbr.mbrEmail"                 column="MBR_EMAIL" />                <!-- 회원 이메일 -->
+        <result property="mbr.mobilNationCd"            column="MOBIL_NATION_CD" />          <!-- 휴대전화 국가 코드 -->
+        <result property="mbr.mobilNationNo"            column="MOBIL_NATION_NO" />          <!-- 휴대전화 국가번호 -->
+        <result property="mbr.mobilAreaNo"              column="MOBIL_AREA_NO" />            <!-- 휴대전화 지역번호 -->
+        <result property="mbr.mobilTlofNo"              column="MOBIL_TLOF_NO" />            <!-- 휴대전화 국번호 -->
+        <result property="mbr.mobilTlofWthnNo"          column="MOBIL_TLOF_WTHN_NO" />       <!-- 휴대전화 국내번호 -->
+        <result property="mbr.otelNationNo"             column="OTEL_NATION_NO" />           <!-- 회사전화 국가번호 -->
+        <result property="mbr.otelAreaNo"               column="OTEL_AREA_NO" />             <!-- 회사전화 지역번호 -->
+        <result property="mbr.otelTlofNo"               column="OTEL_TLOF_NO" />             <!-- 회사전화 국번호 -->
+        <result property="mbr.otelTlofWthnNo"           column="OTEL_TLOF_WTHN_NO" />        <!-- 회사전화 국내번호 -->
+        <result property="mbr.telNationNo"              column="TEL_NATION_NO" />            <!-- 전화 국가번호 -->
+        <result property="mbr.telAreaNo"                column="TEL_AREA_NO" />              <!-- 전화 지역번호 -->
+        <result property="mbr.telTlofNo"                column="TEL_TLOF_NO" />              <!-- 전화 국번호 -->
+        <result property="mbr.telTlofWthnNo"            column="TEL_TLOF_WTHN_NO" />         <!-- 전화 국내번호 -->
+        <result property="mbr.joinNationCd"             column="JOIN_NATION_CD" />           <!-- 가입 국가 코드 -->
+        <result property="mbr.joinDt"                   column="JOIN_DT" />                  <!-- 가입 일시 -->
+        <result property="mbr.joinMallId"               column="JOIN_MALL_ID" />             <!-- 가입 몰 ID -->
+        <result property="mbr.joinLangCd"               column="JOIN_LANG_CD" />             <!-- 가입 언어 코드 -->
+        <result property="mbr.joinDvcCd"                column="JOIN_DVC_CD" />              <!-- 가입 디바이스 코드 -->
+        <result property="mbr.inflowSn"                 column="INFLOW_SN" />                <!-- 유입 일련번호 -->
+        <result property="mbr.drmcResnCont"				column="DRMC_RESN_CONT" />			 <!-- 휴면 사유 내용 -->
+        <result property="mbr.drmcDt"					column="DRMC_DT" />					 <!-- 휴면 일시 -->
+        <result property="mbr.secsnSectCd"              column="SECSN_SECT_CD" />            <!-- 탈퇴 구분 코드 -->
+        <result property="mbr.secsnResnCd"              column="SECSN_RESN_CD" />            <!-- 탈퇴 사유 코드 -->
+        <result property="mbr.secsnResnDetailCont"      column="SECSN_RESN_DETAIL_CONT" />   <!-- 탈퇴 사유 상세 내용 -->
+        <result property="mbr.secsnDate"                column="SECSN_DATE" />               <!-- 탈퇴 일자 -->
+        <result property="mbr.enfrcsecsnDspsId"         column="ENFRCSECSN_DSPS_ID" />       <!-- 강제탈퇴 처리자 ID -->
+        <result property="mbr.mbrAddrNationCd"          column="MBR_ADDR_NATION_CD" />       <!-- 회원 주소 국가 코드 -->
+        <result property="mbr.nationNm"                 column="NATION_NM" />                <!-- 회원 주소 국가 명 -->
+        <result property="mbr.mbrAddrSectCd"            column="MBR_ADDR_SECT_CD" />         <!-- 회원 주소 구분 코드 -->
+        <result property="mbr.mbrPostNo"                column="MBR_POST_NO" />              <!-- 회원 우편번호 -->
+        <result property="mbr.mbrBaseAddr"              column="MBR_BASE_ADDR" />            <!-- 회원 기본주소 -->
+        <result property="mbr.mbrDetailAddr"            column="MBR_DETAIL_ADDR" />          <!-- 회원 상세주소 -->
+        <result property="mbr.mbrCtyNm"                 column="MBR_CTY_NM" />               <!-- 회원 도시 명(해외) -->
+        <result property="mbr.mbrLcltyNm"               column="MBR_LCLTY_NM" />             <!-- 회원 지방 명(해외) -->
+        <result property="mbr.cprNm"                    column="CPR_NM" />                   <!-- 법인 명 -->
+        <result property="mbr.cprRprstivNm"             column="CPR_RPRSTIV_NM" />           <!-- 법인 대표자명 -->
+        <result property="mbr.bmanRegNo"                column="BMAN_REG_NO" />              <!-- 사업자등록번호 -->
+        <result property="mbr.cprtelNationNo"           column="CPRTEL_NATION_NO" />         <!-- 법인전화 국가번호 -->
+        <result property="mbr.cprtelAreaNo"             column="CPRTEL_AREA_NO" />           <!-- 법인전화 지역번호 -->
+        <result property="mbr.cprtelTlofNo"             column="CPRTEL_TLOF_NO" />           <!-- 법인전화 국번호 -->
+        <result property="mbr.cprtelTlofWthnNo"         column="CPRTEL_TLOF_WTHN_NO" />      <!-- 법인전화 국내번호 -->
+        <result property="mbr.cprTaxBillChrgerEmail"    column="CPR_TAX_BILL_CHRGER_EMAIL" /><!-- 법인 세금계산서 담당자 이메일 -->
+        <result property="mbr.cprRegNo"                 column="CPR_REG_NO" />               <!-- 법인등록번호 -->
+        <result property="mbr.emailRecptnAgrYn"         column="EMAIL_RECPTN_AGR_YN" />      <!-- 이메일 수신 동의 여부 -->
+        <result property="mbr.lastEmailRecptnAgrDt"     column="LAST_EMAIL_RECPTN_AGR_DT" /> <!-- 최종 이메일 수신 동의 일시 -->
+        <result property="mbr.smsRecptnAgrYn"           column="SMS_RECPTN_AGR_YN" />        <!-- SMS 수신 동의 여부 -->
+        <result property="mbr.lastSmsRecptnAgrDt"       column="LAST_SMS_RECPTN_AGR_DT" />   <!-- 최종 SMS 수신 동의 일시 -->
+        <result property="mbr.dmRecptnAgrYn"            column="DM_RECPTN_AGR_YN" />         <!-- DM 수신 동의 여부 -->
+        <result property="mbr.lastDmRecptnAgrDt"        column="LAST_DM_RECPTN_AGR_DT" />    <!-- 최종 DM 수신 동의 일시 -->
+        <result property="mbr.erpCstmrNo"               column="ERP_CSTMR_NO" />             <!-- ERP 고객번호 -->
+        <result property="mbr.regtrId"                  column="REGTR_ID" />                 <!-- 등록자 ID -->
+        <result property="mbr.regDt"                    column="REG_DT" />                   <!-- 등록 일시 -->
+        <result property="mbr.udterId"                  column="UDTER_ID" />                 <!-- 수정자 ID -->
+        <result property="mbr.udtDt"                    column="UDT_DT" />                   <!-- 수정 일시 -->
+        <result property="mbr.ssoGrpCd"                 column="SSO_GRP_CD" />                <!-- 등록자 ID -->
+        <result property="mbr.inforNtcnRecptnTpCd"      column="INFOR_NTCN_RECPTN_TP_CD" />    <!-- 정보성 알림 수신 유형 코드 -->
+
+        <result property="mbrStatNm"                   column="MBR_STAT_NM" />                 <!-- 회원 상태 코드명 -->
+        <result property="mbrTpNm"                     column="MBR_TP_NM" />                   <!-- 회원 유형 코드명 -->
+        <result property="mbrAtrbNm"                   column="MBR_ATRB_NM" />                 <!-- 회원 속성 코드명 -->
+        <result property="joinLangNm"                  column="JOIN_LANG_NM" />                <!-- 가입 언어 코드명 -->
+        <result property="joinDvcNm"                   column="JOIN_DVC_NM" />                 <!-- 가입 디바이스 코드명 -->
+        <result property="secsnSectNm"                 column="SECSN_SECT_NM" />               <!-- 탈퇴 구분 코드명 -->
+        <result property="secsnResnNm"                 column="SECSN_RESN_NM" />               <!-- 탈퇴 사유 코드명 -->
+
+        <result property="mobilNo"                     column="MOBILE_NO" />                   <!-- 휴대전화 번호 -->
+        <result property="otelNo"                      column="OTEL_NO" />                     <!-- 회사전화 번호 -->
+        <result property="telNo"                       column="TEL_NO" />                      <!-- 전화 번호 -->
+        <result property="cprtelNo"                    column="CPRTEL_NO" />                   <!-- 법인전화 번호 -->
+        <result property="logOccurDate"                column="LOG_OCCUR_DT" />                <!-- 최종방문일 -->
+        <result property="enfrcsecsnDspsNm"            column="ENFRCSECSN_DSPS_NM" />          <!-- 강제탈퇴 처리자 명 -->
+        <result property="memoCont"                    column="MEMO_CONT" />                   <!-- 회원 메모 -->
+        <result property="adminNm"                     column="ADMIN_NM" />                    <!-- 관리자 명 -->
+        <result property="joinMallNm"                  column="JOIN_MALL_NM" />                <!-- 가입몰 이름 -->
+        <result property="pchCount"                    column="PCH_COUNT" />                   <!-- 온라인구매건수 -->
+        <result property="pchAmt"                      column="PCH_AMT" />                     <!-- 구매금액 -->
+        <result property="loginCnt"                    column="LOGIN_CNT" />                   <!-- 로그인 횟수 -->
+        <result property="godEvlCnt"                   column="GOD_EVL_CNT" />                 <!-- 상품평 작성 횟수 -->
+        <result property="snsCnt"                      column="SNS_CNT" />                     <!-- SNS포스트 횟수 -->
+
+        <result property="mbrPsnlInfoModHist.psnlInfoModDt"       column="PSNL_INFO_MOD_DT" />            <!-- 개인정보 변경 일자 -->
+        <result property="mbrPsnlInfoModHist.psnlInfoUdtSectCd"   column="PSNL_INFO_UDT_SECT_CD" />       <!-- 개인정보 수정 구분 코드 -->
+        <result property="mbrPsnlInfoModHist.modBfVal"            column="MOD_BF_VAL" />                  <!-- 변경 이전 값 -->
+        <result property="mbrPsnlInfoModHist.modAfVal"            column="MOD_AF_VAL" />                  <!-- 변경 이후 값 -->
+        <result property="mbrPsnlInfoModHist.modMbrNo"            column="MOD_MBR_NO" />                  <!-- 변경 회원 번호 -->
+        <result property="mbrPsnlInfoModHist.modAdminId"          column="MOD_ADMIN_ID" />                <!-- 변경 관리자 ID -->
+        <result property="mbrPsnlInfoModHist.modResnDscr"         column="MOD_RESN_DSCR" />               <!-- 변경 사유 설명 -->
+
+        <result property="mbrPntIntrlckHist.pntAmt"       		 column="PNT_AMT" />             		 <!-- 적립금 금액 -->
+        <result property="mbrPntIntrlckHist.regDt"                column="PNT_REG_DT" />                  <!-- 적립 일시 -->
+        <result property="mbrPntIntrlckHist.preDelDt"             column="PNT_PRE_DEL_DT" />
+        <result property="onlneGrdNm"                             column="ONLNE_GRD_NM" />                <!-- 온라인 등급 -->
+    </resultMap>
+
+    <!-- BO : 회원 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereMember">
+        <choose>
+            <when test="(mbr.mbrNo == '' or mbr.mbrNo == null) and (mbr.mbrNm == null or mbr.mbrNm == '') and (mbr.mbrId == null or mbr.mbrId == '') and (mbr.mbrEmail == null or mbr.mbrEmail == '') and (mbr.erpCstmrNo =='' or mbr.erpCstmrNo == null) and (telNo =='' or telNo == null)">
+                <if test='searchDateType != null and searchDateType == "online"'>
+                    AND mbr.join_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999             /* 온라인 가입 일자 */
+                </if>
+                <if test='searchDateType != null and searchDateType == "total"'>
+                    AND mc.mbr_crtfc_date BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999       /* 통합 가입 일자 */
+                </if>
+                <if test='mbr.joinDvcCd != null and mbr.joinDvcCd != ""'>
+                    AND mbr.join_dvc_cd = NVL(#{mbr.joinDvcCd,jdbcType=VARCHAR}, mbr.join_dvc_cd)         /* 가입경로1:가입 채널 코드 */
+                </if>
+                <if test='mbr.joinLangCd != null and mbr.joinLangCd != ""'>
+                    AND mbr.join_lang_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                    FROM (SELECT #{mbr.joinLangCd, jdbcType=VARCHAR} AS param FROM dual) d
+                    CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))      /* 가입경로2:가입 언어 코드 */
+                </if>
+                <if test='mbr.joinMallId != null and mbr.joinMallId != ""'>
+                    <if test=' mbr.joinMallId != "CSS" '>
+                        AND mbr.join_mall_id IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                        FROM (SELECT #{mbr.joinMallId, jdbcType=VARCHAR} AS param FROM dual) d
+                        CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+')) /* 가입 몰 ID */
+                    </if>
+                </if>
+                <!-- [#31806]  2016.12.29 eunsik10.kim  멤버십 제도 개선관련 -->
+                <if test='mbr.mbrTpCd != null and mbr.mbrTpCd != ""'>
+	                AND mbr.mbr_tp_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+	                FROM (SELECT #{mbr.mbrTpCd, jdbcType=VARCHAR} AS param FROM dual) d
+	                CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 회원 유형 코드 */
+                </if>
+
+                <if test='mbr.mbrAtrbCd != null and mbr.mbrAtrbCd != ""'>
+                    AND mbr.mbr_atrb_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                    FROM (SELECT #{mbr.mbrAtrbCd, jdbcType=VARCHAR} AS param FROM dual) d
+                    CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 회원 속성 코드 */
+                </if>
+                <if test='mbr.mbrStatCd != null and mbr.mbrStatCd != ""'>
+                    AND mbr.mbr_stat_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                    FROM (SELECT #{mbr.mbrStatCd, jdbcType=VARCHAR} AS param FROM dual) d
+                    CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 회원 상태 코드 */
+                </if>
+                <if test='colctAgr != null and colctAgr == "Y"'>
+                	AND (mbr.EMAIL_RECPTN_AGR_YN = 'Y' OR mbr.SMS_RECPTN_AGR_YN = 'Y')
+                </if>
+                <if test='colctAgr != null and colctAgr == "N"'>
+                	AND (mbr.EMAIL_RECPTN_AGR_YN = 'N' AND mbr.SMS_RECPTN_AGR_YN = 'N')
+                </if>
+            </when>
+            <otherwise>
+                AND 1 = 0
+                <if test="mbr.mbrNo != null and mbr.mbrNo != ''">
+                    OR  mbr.mbr_no = UPPER(#{mbr.mbrNo,jdbcType=VARCHAR})
+                </if>
+                <if test="mbr.mbrNm != null and mbr.mbrNm != ''">
+                    OR  mbr.mbr_nm = #{mbr.mbrNm, jdbcType=VARCHAR}
+                </if>
+                <if test="mbr.mbrId != null and mbr.mbrId != ''">
+                    OR  mbr.mbr_id = #{mbr.mbrId,jdbcType=VARCHAR}
+                </if>
+                <if test="mbr.erpCstmrNo != null and mbr.erpCstmrNo != ''">
+                    OR  mbr.erp_cstmr_no = #{mbr.erpCstmrNo,jdbcType=VARCHAR}                             /* ERP 고객번호 */
+                </if>
+                <if test="mbr.mbrEmail != null and mbr.mbrEmail != ''">
+                    OR mbr.mbr_email = #{mbr.mbrEmail,jdbcType=VARCHAR}                                  /* 회원 이메일 */
+                </if>
+                <if test="telNo != null and telNo != ''">
+                    OR (
+                    mbr.tel_nation_no || mbr.tel_area_no || mbr.tel_tlof_no || NVL(mbr.tel_tlof_wthn_no, '0') LIKE '%'||REPLACE(#{telNo, jdbcType=VARCHAR}, '-')||'%'             /* 전화번호: */
+                    OR mbr.mobil_nation_no || mbr.mobil_area_no || mbr.mobil_tlof_no || NVL(mbr.mobil_tlof_wthn_no, '') LIKE '%'||REPLACE(#{telNo, jdbcType=VARCHAR}, '-')||'%'   /* 휴대전화번호: */
+                    )
+                </if>
+                <if test='mbr.joinMallId != null and mbr.joinMallId != ""'>
+                    <if test=' mbr.joinMallId != "CSS" '>
+                        AND mbr.join_mall_id IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                        FROM (SELECT #{mbr.joinMallId, jdbcType=VARCHAR} AS param FROM dual) d
+                        CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+')) /* 가입 몰 ID */
+                    </if>
+                </if>
+            </otherwise>
+        </choose>
+    </sql>
+
+    <!-- BO : 회원 목록 조회를 위한 카운트 쿼리 (order by, 불핑요한 컬럼 삭제) -->
+    <select id="selectMemberListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="long">
+		SELECT /* [biz.mbr.xml][selectMemberListCount][조회 : 회원 목록 건수 ][Jessi] */
+		COUNT(*)
+		FROM mbr
+		LEFT OUTER JOIN mbr_crtfc mc
+		ON mbr.mbr_no = mc.mbr_no  and mc.rlnm_crtfc_result_cd = 'Y'
+		AND mbr.unity_mbr_crtfc_sect_cd = mc.mbr_crtfc_tp_cd
+		AND mc.mbr_crtfc_yn='Y'
+		LEFT OUTER JOIN mbr_grd mbrGrd
+		ON mbr.mbr_no = mbrGrd.mbr_no
+		AND mbrGrd.mall_id = #{mallId, jdbcType=VARCHAR}
+		AND SYSDATE BETWEEN mbrGrd.GRD_APL_BEG_DT AND mbrGrd.GRD_APL_END_DT
+		WHERE 0 = 0
+        <include refid="com.plgrim.ncp.biz.mbr.whereMember"/>
+        <if test='onlneGrdCd != null and onlneGrdCd != ""'>
+            AND mbrGrd.onlne_grd_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+            FROM (SELECT #{onlneGrdCd, jdbcType=VARCHAR} AS param FROM dual) d
+            CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 온라인 등급 코드 */
+        </if>
+    </select>
+
+    <!-- BO : 회원 목록 조회 -->
+    <select id="selectMemberList" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="mbrResultMap">
+        SELECT /* [biz.mbr.xml][selectMemberList][회원 목록 조회][Jessi] */
+          fl.mbr_no
+        , fn_masking('ID'   , fl.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 ID */
+        , fn_masking('FLNM' , fl.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+        , fl.erp_cstmr_no
+        , scMbrNatioin.cd_nm AS mbr_nation_nm
+        , fn_masking('PHON' , fl.mobil_nation_no||NVL2(fl.mobil_nation_no, '-', '')||fl.mobil_area_no||NVL2(fl.mobil_area_no, '-', '')|| fl.mobil_tlof_no||NVL2(fl.mobil_tlof_no, '-', '')||fl.mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+        , fn_masking('PHON' , fl.tel_nation_no||NVL2(fl.tel_nation_no, '-', '')||fl.tel_area_no||NVL2(fl.tel_area_no, '-', '')||fl.tel_tlof_no||NVL2(fl.tel_tlof_no, '-', '')||fl.tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+        , fn_masking('EMAIL', fl.mbr_email, '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_email  /* 회원 이메일 */
+        , fl.mbr_stat_cd, scMbrStat.cd_nm AS mbr_stat_nm
+        , fl.mbr_tp_cd, scMbrTp.cd_nm AS mbr_tp_nm
+        , fl.mbr_atrb_cd, scMbrAtrb.cd_nm|| NVL2(sg.grpco_nm, '('||sg.grpco_nm||')', '') AS mbr_atrb_nm
+        , fl.join_dvc_cd, scDvc.cd_nm AS join_dvc_nm
+        , fl.join_lang_cd, scLang.cd_nm AS join_lang_nm
+        , (SELECT MAX(mll.log_occur_dt)           /* 로그 발생 일자(최종방문일) */
+           FROM mbr_login_log mll
+           WHERE mbr_no = fl.mbr_no
+          ) AS log_occur_dt
+        , fl.join_dt
+        , fl.mbr_crtfc_date
+        , fl.JOIN_MALL_NM
+        , scOnlneMbrGrd.cd_nm AS onlne_grd_nm
+        , fl.EMAIL_RECPTN_AGR_YN
+        , fl.SMS_RECPTN_AGR_YN
+        FROM (
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT
+          mbr.mbr_no                   /* 회원 번호 */
+        , mbr.mbr_id                   /* 회원 ID */
+        , mbr.mbr_nm                   /* 회원 명 */
+        , mbr.erp_cstmr_no             /* ERP 고객번호 */
+        , mbr.mobil_nation_cd          /* 휴대전화 국가코드 */
+        , mbr.mobil_nation_no          /* 휴대전화 국가번호 */
+        , mbr.mobil_area_no            /* 휴대전화 지역번호 */
+        , mbr.mobil_tlof_no            /* 휴대전화 국번호 */
+        , mbr.mobil_tlof_wthn_no       /* 휴대전화 국내번호 */
+        , mbr.tel_nation_no            /* 전화 국가번호 */
+        , mbr.tel_area_no              /* 전화 지역번호 */
+        , mbr.tel_tlof_no              /* 전화 국번호 */
+        , mbr.tel_tlof_wthn_no         /* 전화 국내번호 */
+        , mbr.mbr_email                /* 회원 이메일 */
+        , mbr.mbr_stat_cd              /* 회원 상태 코드 */
+        , mbr.mbr_tp_cd                /* 회원 유형 코드 */
+        , mbr.mbr_atrb_cd              /* 회원 속성 코드 */
+        , mbr.join_dvc_cd              /* 가입 채널 코드 */
+        , mbr.join_lang_cd             /* 가입 언어 코드 */
+        , mbr.join_dt                  /* 가입 일시 */
+        , mbr.psitn_grpco_id
+        , mc.mbr_crtfc_date            /* 회원 인증 일자 */
+        , (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) as JOIN_MALL_NM
+        , mbrGrd.onlne_grd_cd          /* 온라인 회원 등급 */
+        , mbr.EMAIL_RECPTN_AGR_YN      /* 이메일 수신 동의 여부 */
+        , mbr.SMS_RECPTN_AGR_YN        /* SMS 수신 동의 여부 */
+		FROM mbr mbr
+		LEFT OUTER JOIN mbr_crtfc mc
+		ON mbr.mbr_no = mc.mbr_no     and mc.rlnm_crtfc_result_cd = 'Y'
+		AND mbr.unity_mbr_crtfc_sect_cd = mc.mbr_crtfc_tp_cd
+		AND mc.mbr_crtfc_yn='Y'                                  /* 회원 인증 여부 */
+		LEFT OUTER JOIN mbr_grd mbrGrd
+		ON mbr.mbr_no = mbrGrd.mbr_no
+		AND SYSDATE BETWEEN mbrGrd.GRD_APL_BEG_DT AND mbrGrd.GRD_APL_END_DT
+		AND mbrGrd.mall_id = #{mallId, jdbcType=VARCHAR}
+        WHERE 1 = 1
+        <include refid="com.plgrim.ncp.biz.mbr.whereMember"/>
+        <if test='onlneGrdCd != null and onlneGrdCd != ""'>
+            AND mbrGrd.onlne_grd_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+            FROM (SELECT #{onlneGrdCd, jdbcType=VARCHAR} AS param FROM dual) d
+            CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 온라인 등급 코드 */
+        </if>
+        ORDER BY mbr.join_dt DESC
+
+        <include refid="com.plgrim.ncp.base.endPage"/>
+        ) fl
+        LEFT OUTER JOIN mv_sys_cd scMbrStat
+        ON (fl.mbr_stat_cd = scMbrStat.cd AND scMbrStat.upper_cd='MBR_STAT' AND scMbrStat.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 상태 */
+        LEFT OUTER JOIN mv_sys_cd scMbrTp
+        ON (fl.mbr_tp_cd = scMbrTp.cd     AND scMbrTp.upper_cd='MBR_TP'     AND scMbrTp.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 유형 */
+        LEFT OUTER JOIN mv_sys_cd scMbrAtrb
+        ON (fl.mbr_atrb_cd = scMbrAtrb.cd AND scMbrAtrb.upper_cd='MBR_ATRB' AND scMbrAtrb.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 속성 */
+        LEFT OUTER JOIN mv_sys_cd scDvc
+        ON (fl.join_dvc_cd = scDvc.cd     AND scDvc.upper_cd='DVC'          AND scDvc.lang_cd = #{lang, jdbcType=VARCHAR})               /* 가입 디바이스 */
+        LEFT OUTER JOIN mv_sys_cd scLang
+        ON (fl.join_lang_cd = scLang.cd   AND scLang.upper_cd='LANG'        AND scLang.lang_cd = #{lang, jdbcType=VARCHAR})               /* 언어채널 */
+        LEFT OUTER JOIN mv_sys_cd scMbrNatioin
+        ON (fl.mobil_nation_cd = scMbrNatioin.cd AND scMbrNatioin.upper_cd='NATION' AND scMbrNatioin.lang_cd = #{lang, jdbcType=VARCHAR} AND scMbrNatioin.use_yn = 'Y') /* 고객국가 */
+        LEFT OUTER JOIN mv_sys_cd scOnlneMbrGrd
+        ON (fl.onlne_grd_cd = scOnlneMbrGrd.cd AND scOnlneMbrGrd.upper_cd='ONLNE_GRD' 	AND scOnlneMbrGrd.lang_cd = 'KOR')           /* 온라인 등급 상태 */
+        LEFT OUTER JOIN sys_grpco sg
+        ON sg.grpco_id = fl.psitn_grpco_id
+    </select>
+
+    <!-- BO : 회원 엑셀 다운로드 목록 조회 -->
+    <select id="selectMemberListExcel" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="java.util.LinkedHashMap">
+        SELECT /* [biz.mbr.xml][selectMemberListExcel][회원 엑셀 다운로드 목록 조회 ][Jessi] */
+                  fl.mbr_no
+                , fl.JOIN_MALL_NM
+                , fn_masking('ID'   , fl.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 ID */
+                , fn_masking('FLNM' , fl.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+                , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /*온라인 등급*/
+                , fl.erp_cstmr_no
+                , scMbrNatioin.cd_nm
+                , fn_masking('PHON' , fl.mobil_nation_no||NVL2(fl.mobil_nation_no, '-', '')||fl.mobil_area_no||NVL2(fl.mobil_area_no, '-', '')|| fl.mobil_tlof_no||NVL2(fl.mobil_tlof_no, '-', '')||fl.mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+                , fn_masking('PHON' , fl.tel_nation_no||NVL2(fl.tel_nation_no, '-', '')||fl.tel_area_no||NVL2(fl.tel_area_no, '-', '')||fl.tel_tlof_no||NVL2(fl.tel_tlof_no, '-', '')||fl.tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+                , fn_masking('EMAIL', fl.mbr_email, '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_email  /* 회원 이메일 */
+                , scMbrStat.cd_nm AS mbr_stat_nm
+                , scMbrTp.cd_nm AS mbr_tp_nm
+                , scMbrAtrb.cd_nm|| NVL2(sg.grpco_nm, '('||sg.grpco_nm||')', '') AS mbr_atrb_nm
+                , scDvc.cd_nm AS join_dvc_nm
+                , scLang.cd_nm AS join_lang_nm
+                , (
+                    SELECT MAX(mll.log_occur_dt)           /* 로그 발생 일자(최종방문일) */
+                    FROM mbr_login_log mll
+                    WHERE mbr_no = fl.mbr_no
+                ) AS log_occur_date
+                , TO_CHAR(fl.join_dt, 'YYYY-MM-DD HH:MI:SS') AS join_dt
+                , TO_CHAR(fl.mbr_crtfc_date, 'YYYY-MM-DD HH:MI:SS') AS mbr_crtfc_date
+                ,(SELECT min(ORD_DT)
+                    FROM ord o
+                   WHERE o.mbr_no = fl.mbr_no) AS minOrdDt
+                ,(SELECT max(ORD_DT)
+                    FROM ord o
+                   WHERE o.mbr_no = fl.mbr_no) AS maxOrdDt
+                , fl.EMAIL_RECPTN_AGR_YN      /* 이메일 수신 동의 여부 */
+                , fl.SMS_RECPTN_AGR_YN        /* SMS 수신 동의 여부 */
+        FROM (
+                SELECT mbr.mbr_no                   /* 회원 번호 */
+                     , mbr.mbr_id                   /* 회원 ID */
+                     , mbr.mbr_nm                   /* 회원 명 */
+                     , mbr.erp_cstmr_no             /* ERP 고객번호 */
+                     , mbr.mobil_nation_cd          /* 휴대전화 국가코드 */
+                     , mbr.mobil_nation_no          /* 휴대전화 국가번호 */
+                     , mbr.mobil_area_no            /* 휴대전화 지역번호 */
+                     , mbr.mobil_tlof_no            /* 휴대전화 국번호 */
+                     , mbr.mobil_tlof_wthn_no       /* 휴대전화 국내번호 */
+                     , mbr.tel_nation_no            /* 전화 국가번호 */
+                     , mbr.tel_area_no              /* 전화 지역번호 */
+                     , mbr.tel_tlof_no              /* 전화 국번호 */
+                     , mbr.tel_tlof_wthn_no         /* 전화 국내번호 */
+                     , mbr.mbr_email                /* 회원 이메일 */
+                     , mbr.mbr_stat_cd              /* 회원 상태 코드 */
+                     , mbr.mbr_tp_cd                /* 회원 유형 코드 */
+                     , mbr.mbr_atrb_cd              /* 회원 속성 코드 */
+                     , mbr.join_dvc_cd              /* 가입 채널 코드 */
+                     , mbr.join_lang_cd             /* 가입 언어 코드 */
+                     , mbr.join_dt                  /* 가입 일시 */
+                     , mbr.psitn_grpco_id
+                     , mc.mbr_crtfc_date            /* 회원 인증 일자 */
+                     , (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) as JOIN_MALL_NM
+                     , mbrGrd.onlne_grd_cd
+                     , mbr.EMAIL_RECPTN_AGR_YN      /* 이메일 수신 동의 여부 */
+                     , mbr.SMS_RECPTN_AGR_YN        /* SMS 수신 동의 여부 */
+                FROM mbr mbr
+                LEFT OUTER JOIN mbr_crtfc mc
+                ON mbr.mbr_no = mc.mbr_no and mc.rlnm_crtfc_result_cd = 'Y'
+                AND mbr.unity_mbr_crtfc_sect_cd = mc.mbr_crtfc_tp_cd
+                AND mc.mbr_crtfc_yn='Y'                                  /* 회원 인증 여부 */
+                LEFT OUTER JOIN mbr_grd mbrGrd
+                ON mbr.mbr_no = mbrGrd.mbr_no
+                AND SYSDATE BETWEEN mbrGrd.GRD_APL_BEG_DT AND mbrGrd.GRD_APL_END_DT
+                WHERE 1 = 1
+                <include refid="com.plgrim.ncp.biz.mbr.whereMember"/>
+                <if test='onlneGrdCd != null and onlneGrdCd != ""'>
+                    AND mbrGrd.onlne_grd_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                    FROM (SELECT #{onlneGrdCd, jdbcType=VARCHAR} AS param FROM dual) d
+                    CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 온라인 등급 코드 */
+                </if>
+                ORDER BY mbr.join_dt DESC
+        ) fl
+        LEFT OUTER JOIN mv_sys_cd scMbrStat
+        ON (fl.mbr_stat_cd = scMbrStat.cd AND scMbrStat.upper_cd='MBR_STAT' AND scMbrStat.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 상태 */
+        LEFT OUTER JOIN mv_sys_cd scMbrTp
+        ON (fl.mbr_tp_cd = scMbrTp.cd     AND scMbrTp.upper_cd='MBR_TP'     AND scMbrTp.lang_cd = #{lang, jdbcType=VARCHAR})             /* 회원 유형 */
+        LEFT OUTER JOIN mv_sys_cd scMbrAtrb
+        ON (fl.mbr_atrb_cd = scMbrAtrb.cd AND scMbrAtrb.upper_cd='MBR_ATRB' AND scMbrAtrb.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 속성 */
+        LEFT OUTER JOIN mv_sys_cd scDvc
+        ON (fl.join_dvc_cd = scDvc.cd     AND scDvc.upper_cd='DVC'          AND scDvc.lang_cd = #{lang, jdbcType=VARCHAR})               /* 가입 디바이스 */
+        LEFT OUTER JOIN mv_sys_cd scLang
+        ON (fl.join_lang_cd = scLang.cd   AND scLang.upper_cd='LANG'        AND scLang.lang_cd = #{lang, jdbcType=VARCHAR})              /* 언어채널 */
+        LEFT OUTER JOIN sys_grpco sg
+        ON sg.grpco_id = fl.psitn_grpco_id
+        LEFT OUTER JOIN mv_sys_cd scMbrNatioin
+        ON (fl.mobil_nation_cd = scMbrNatioin.cd AND scMbrNatioin.upper_cd='NATION' AND scMbrNatioin.lang_cd = #{lang, jdbcType=VARCHAR} AND scMbrNatioin.use_yn = 'Y') /* 고객국가 */
+        LEFT OUTER JOIN mv_sys_cd scOnlneMbrGrd
+        ON (scOnlneMbrGrd.cd = fl.onlne_grd_cd AND scOnlneMbrGrd.upper_cd='ONLNE_GRD' 	AND scOnlneMbrGrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+        ORDER BY join_dt DESC
+    </select>
+
+    <!-- BO : 회원 간략 조회 -->
+    <select id="selectMemberSimple" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="mbrResultMap">
+        SELECT /* [biz.mbr.xml][selectMemberSimple][조회 : 회원 간략 정보 ][Jessi] */
+          mbr.join_mall_id                                                                   /* 가입 몰 ID */
+        , mbr.mbr_no                                                                         /* 회원 번호 */
+        , mbr.mbr_tp_cd                                                                      /* 회원 유형 코드 */
+        , mbr.mbr_atrb_cd                                                                    /* 회원 속성 코드 */
+        , mbr.mbr_stat_cd                                                                /* 회원 상태 코드 */
+        , mbr.erp_cstmr_no                                                                   /* ERP 고객번호 */
+        , mbr.email_recptn_agr_yn                                                            /* 이메일 수신 동의 여부 */
+        , mbr.last_email_recptn_agr_dt                                                       /* 최종 이메일 수신 동의 일시 */
+        , mbr.sms_recptn_agr_yn                                                              /* SMS 수신 동의 여부 */
+        , mbr.last_sms_recptn_agr_dt                                                         /* 최종 SMS 수신 동의 일시 */
+        , fn_masking('ID'   , mbr.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 ID */
+        , fn_masking('FLNM' , mbr.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+        , fn_masking('EMAIL', mbr.mbr_email, '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_email  /* 회원 이메일 */
+        , mbr.mobil_nation_no
+        , fn_masking('PHON' , mbr.mobil_area_no||NVL2(mbr.mobil_area_no, '-', '')||mbr.mobil_tlof_no||NVL2(mbr.mobil_tlof_no, '-', '')||mbr.mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+        , mbr.tel_nation_no
+        , fn_masking('PHON' , mbr.tel_area_no||NVL2(mbr.tel_area_no, '-', '')||mbr.tel_tlof_no||NVL2(mbr.tel_tlof_no, '-', '')||mbr.tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+        , (SELECT mall_nm FROM sys_mall WHERE mall_id = mbr.join_mall_id) AS join_mall_nm     /* 가입 몰 명 */
+        , mbr.join_lang_cd
+        , mbr.sso_grp_cd
+        , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 */
+        FROM mbr
+        LEFT OUTER JOIN mbr_grd mbrGrd ON mbr.mbr_no = mbrGrd.mbr_no AND SYSDATE BETWEEN mbrGrd.GRD_APL_BEG_DT AND mbrGrd.GRD_APL_END_DT AND mbrGrd.mall_id = #{mallId, jdbcType=VARCHAR}
+        LEFT OUTER JOIN mv_sys_cd sconlnembrgrd
+          ON (sconlnembrgrd.cd = mbrGrd.onlne_grd_cd AND sconlnembrgrd.upper_cd='ONLNE_GRD' AND sconlnembrgrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+        WHERE mbr.mbr_no = UPPER(#{mbr.mbrNo,jdbcType=VARCHAR})
+        AND ROWNUM = 1
+    </select>
+
+    <!-- 회원 조회 CS -->
+    <select id="selectMemberForCS" parameterType="com.plgrim.ncp.biz.member.data.MbrExtendDTO" resultType="com.plgrim.ncp.biz.member.result.MbrExtendResult">
+        SELECT /* [biz.mbr.xml][selectMemberForCS][회원 조회 CS][Jessi] */
+        mbr.mbr_no AS mbrNo                                                                  /* 회원 번호 */
+        , mbr.mbr_tp_cd AS mbrTpCd                                                             /* 회원 유형 코드 */
+        , (select sc.cd_nm from sys_cd sc where cd = mbr.mbr_tp_cd) as mbrTpNm
+        , mbr.mbr_atrb_cd AS mbrAtrbCd                                                         /* 회원 속성 코드 */
+        , (select sc.cd_nm from sys_cd sc where cd = mbr.mbr_atrb_cd) as mbrAtrbNm
+        , mbr.mbr_stat_cd AS mbrStatCd                                                         /* 회원 상태 코드 */
+        , (select sc.cd_nm from sys_cd sc where cd = mbr.mbr_stat_cd) as mbrStatNm
+        , mbr.mbr_sex_sect_cd AS mbrSexSectCd
+        , (select sc.cd_nm from sys_cd sc where cd = mbr.mbr_sex_sect_cd) as mbrSexSectNm   /* 성별 */
+        , mbr.join_dt AS joinDt                                                                /* 가입일 */
+        , fn_masking('ID'   , mbr.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbrId      /* 회원 ID */
+        , fn_masking('FLNM' , mbr.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbrNm      /* 회원 명 */
+        , fn_masking('PHON' , mbr.mobil_nation_no||NVL2(mbr.mobil_nation_no, '-', '')||mbr.mobil_area_no||NVL2(mbr.mobil_area_no, '-', '')||mbr.mobil_tlof_no||NVL2(mbr.mobil_tlof_no, '-', '')||mbr.mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobilNo
+        , fn_masking('PHON' , mbr.tel_nation_no||NVL2(mbr.tel_nation_no, '-', '')||mbr.tel_area_no||NVL2(mbr.tel_area_no, '-', '')||mbr.tel_tlof_no||NVL2(mbr.tel_tlof_no, '-', '')||mbr.tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS telNo
+        , mbr.mobil_nation_no||mbr.mobil_area_no||mbr.mobil_tlof_no||mbr.mobil_tlof_wthn_no AS hiddenMobilNo
+        , mbr.mbr_id AS hiddenMbrId
+        , mbr.erp_cstmr_no AS erpCstmrNo
+        , (
+        SELECT COUNT(*)
+        FROM mbr_issu_cpn mic
+        WHERE mic.mbr_no = mbr.mbr_no
+        and mic.cpn_stat_cd = 'USE'
+        ) cpnCnt                                                                          /* 사용한쿠폰*/
+        , (
+        SELECT COUNT(*)
+        FROM mbr_issu_cpn mic2, prm pm
+        WHERE mic2.mbr_no = mbr.mbr_no
+        AND mic2.cpn_stat_cd = 'NO_USE'
+        AND mic2.valid_end_date >= TO_CHAR(SYSDATE, 'YYYYMMDD')
+        AND pm.prm_stat_cd = 'APRV'
+        AND mic2.prm_no = pm.prm_no
+        ) usableCpnCnt                                                                   /* 사용가능한 쿠폰 발급 갯수*/
+        , mbrmemo.cstmr_tp_nm
+        , mbrmemo.memo_cont
+        , mbr.mbr_email as mbrEmail  /* 이메일 */
+        , (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) as join_mall_id
+        , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 */
+        FROM mbr mbr
+        left outer JOIN mbr_rfd_bnk_acct mrba ON (mbr.mbr_no = mrba.mbr_no AND mrba.rprst_rfd_bnk_acct_yn =' Y')
+        left outer JOIN (SELECT   ccm.mbr_no
+        , subcd.cd_nm AS cstmr_tp_nm
+        , ccm.memo_cont
+        , ROW_NUMBER() OVER (PARTITION BY ccm.mbr_no ORDER BY ccm.udt_dt DESC) AS r_num
+        FROM cso_cnslt_memo ccm
+        LEFT OUTER JOIN sys_cd subcd ON (subcd.cd = ccm.cstmr_tp_cd)
+        WHERE ccm.memo_tp_cd='CSTMR_INCLN') mbrmemo ON (mbrmemo.mbr_no = mbr.mbr_no AND mbrmemo.r_num=1)
+        LEFT OUTER JOIN mbr_grd mbrGrd ON mbr.mbr_no = mbrGrd.mbr_no AND SYSDATE BETWEEN mbrGrd.GRD_APL_BEG_DT AND mbrGrd.GRD_APL_END_DT
+        LEFT OUTER JOIN mv_sys_cd sconlnembrgrd
+			ON (sconlnembrgrd.cd = mbrGrd.onlne_grd_cd AND sconlnembrgrd.upper_cd='ONLNE_GRD' AND sconlnembrgrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+        WHERE ROWNUM = 1
+        AND mbr.mbr_no = NVL(UPPER(#{mbrNo, jdbcType=VARCHAR}), mbr.mbr_no)                       /* 회원 번호 */
+        AND mbr.mbr_id = NVL(#{mbrId, jdbcType=VARCHAR}, mbr.mbr_id)                               /* 회원 ID */
+        AND mbr.tel_nation_no || mbr.tel_area_no || mbr.tel_tlof_no || NVL(mbr.tel_tlof_wthn_no, '0') LIKE '%'||#{telNo, jdbcType=VARCHAR}||'%'
+    </select>
+
+    <!-- BO : 회원 ERP 번호 조회 -->
+    <select id="selectMemberErpNo" parameterType="String" resultType="String">
+        SELECT /* [biz.mbr.xml][selectMemberSimple][회원 ERP 번호 조회 ][Jessi] */
+        mbr.erp_cstmr_no                /* ERP 고객번호 */
+        FROM mbr
+        WHERE mbr_no = UPPER(#{mbrNo,jdbcType=VARCHAR})
+    </select>
+
+    <!-- BO : 회원 상세 조회 -->
+    <select id="selectMember" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO"  resultMap="mbrResultMap">
+        SELECT /* [biz.mbr.xml][selectMember][회원 상세 정보 조회][Jessi] */
+        mbr.mbr_no                      /* 회원 번호 */
+        , mbr.mbr_stat_cd                 /* 회원 상태 코드 */
+        , mbr.mbr_tp_cd                   /* 회원 유형 코드 */
+        , mbr.mbr_atrb_cd                 /* 회원 속성 코드 */
+        , mbr.unity_mbr_crtfc_sect_cd     /* 통합 회원 인증 구분 코드 */
+        , mbr.mbr_empl_no                 /* 회원 사원 번호 */
+        , mbr.mbr_brthdy_slrcld_yn        /* 회원 생년월일 양력 여부 */
+        , mbr.mbr_sex_sect_cd             /* 회원 성별 구분 코드 */
+        , mbr.frgnr_yn					/* 외국인 여부 */
+        , mbr.psitn_grpco_id              /* 소속 그룹사 ID */
+        , (SELECT grpco_nm FROM sys_grpco WHERE grpco_id = mbr.psitn_grpco_id) AS psitn_grpco_nm             /* 소속 그룹사 명 */
+        , mbr.mbr_pw                      /* 회원 비밀번호 */
+        , mbr.mbr_login_last_failr_count  /* 회원 로그인 최종 실패 횟수 */
+        , mbr.mbr_pw_last_udt_dt          /* 회원 비밀번호 최종 수정 일시 */
+        , mbr.join_nation_cd              /* 가입 국가 코드 */
+        , mbr.join_dt                     /* 가입 일시 */
+        , mbr.join_mall_id                /* 가입 몰 ID */
+        , mbr.join_lang_cd                /* 가입 언어 코드 */
+        , mbr.join_dvc_cd                 /* 가입 디바이스 코드 */
+        , (SELECT excut_rem_nm FROM sys_inflow WHERE inflow_sn = mbr.inflow_sn) AS inflow_nm 	/* 유입명 */
+        , mbr.drmc_resn_cont			/* 휴면 사유 내용 */
+        , mbr.drmc_dt						/* 휴면 일시 */
+        , mbr.secsn_date                  /* 탈퇴 일자 */
+        , mbr.secsn_sect_cd               /* 탈퇴 구분 코드 */
+        , mbr.secsn_resn_cd               /* 탈퇴 사유 코드 */
+        , mbr.secsn_resn_detail_cont      /* 탈퇴 사유 상세 내용 */
+        , mbr.enfrcsecsn_dsps_id          /* 강제탈퇴 처리자 ID */
+        , REPLACE(mbr.mbr_post_no,'-','') AS mbr_post_no /* 회원 우편번호 */
+        , mbr.mbr_addr_sect_cd            /* 회원 주소 구분 코드 */
+        , mbr.mbr_addr_nation_cd          /* 회원 국가 코드 */
+        , msc.cd_nm AS nation_nm          /* 배송 국가 명 */
+        , mbr.cpr_nm                      /* 법인 명 */
+        , mbr.cpr_rprstiv_nm              /* 법인 대표자명 */
+        , mbr.bman_reg_no                 /* 사업자등록번호 */
+        , mbr.cpr_tax_bill_chrger_email   /* 법인 세금계산서 담당자 이메일 */
+        , mbr.cpr_reg_no                  /* 법인등록번호 */
+        , mbr.email_recptn_agr_yn         /* 이메일 수신 동의 여부 */
+        , mbr.last_email_recptn_agr_dt    /* 최종 이메일 수신 동의 일시 */
+        , mbr.sms_recptn_agr_yn           /* SMS 수신 동의 여부 */
+        , mbr.last_sms_recptn_agr_dt      /* 최종 SMS 수신 동의 일시 */
+        , mbr.erp_cstmr_no                /* ERP 고객번호 */
+        , mbr.regtr_id                    /* 등록자 ID */
+        , mbr.reg_dt                      /* 등록 일시 */
+        , mbr.udter_id                    /* 수정자 ID */
+        , mbr.udt_dt                      /* 수정 일시 */
+        , mbr.cprtel_nation_no
+        , mbr.cprtel_area_no||NVL2(mbr.cprtel_area_no, '-', '')||mbr.cprtel_tlof_no||NVL2(mbr.cprtel_tlof_no, '-', '')||mbr.cprtel_tlof_wthn_no AS cprtel_no  /* 법인전화 번호 */
+        , fn_masking('ID'     , mbr.mbr_id         , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id        /* 회원 ID */
+        , fn_masking('FLNM'   , mbr.mbr_nm         , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm        /* 회원 명 */
+        , fn_masking('BRTHDY' , REGEXP_REPLACE (mbr.mbr_brthdy, '([0-9]{4})([0-9]{2})([0-9]{2})', '\1-\2-\3' ), '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_brthdy    /* 회원 생년월일 */
+        , fn_masking('EMAIL'  , mbr.mbr_email      , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_email     /* 회원 이메일 */
+        , fn_masking('IPV4'   , mbr.join_mbr_ip    , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_email     /* 가입 회원 IP */
+        , fn_masking('ADDR'   , mbr.mbr_base_addr   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_base_addr    /* 회원 우편 주소 */
+        , fn_masking('ADDRDTL', mbr.mbr_detail_addr, '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_detail_addr    /* 회원 상세 주소 */
+        , fn_masking('ADDRDTL', mbr.mbr_cty_nm, '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_cty_nm            /* 회원 도시 명(해외) */
+        , fn_masking('ADDRDTL', mbr.mbr_lclty_nm, '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_lclty_nm            /* 회원 지방 명(해외) */
+        , mbr.mobil_nation_no
+        , fn_masking('PHON'   , mbr.mobil_area_no||NVL2(mbr.mobil_area_no, '-', '')||mbr.mobil_tlof_no||NVL2(mbr.mobil_tlof_no, '-', '')||mbr.mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+        , mbr.otel_nation_no
+        , fn_masking('PHON'   , mbr.otel_area_no||NVL2(mbr.otel_area_no, '-', '')||mbr.otel_tlof_no||NVL2(mbr.otel_tlof_no, '-', '')||mbr.otel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS otel_no  /* 회사전화 번호 */
+        , mbr.tel_nation_no
+        , fn_masking('PHON'   , mbr.tel_area_no||NVL2(mbr.tel_area_no, '-', '')||mbr.tel_tlof_no||NVL2(mbr.tel_tlof_no, '-', '')||mbr.tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+        , (SELECT memo_cont
+        FROM (
+        SELECT memo_cont
+        FROM cso_cnslt_memo ccm
+        WHERE ccm.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+        ORDER BY ccm.memo_sn DESC
+        )
+        WHERE rownum = 1) memo_cont                                                         /* 최종 회원 메모 */
+        , (SELECT admin_nm FROM sys_admin WHERE admin_id = mbr.udter_id) AS admin_nm            /* 변경 관리자 명 */
+        , mbr.infor_ntcn_recptn_tp_cd
+        FROM mbr mbr
+        LEFT OUTER JOIN mv_sys_cd msc ON mbr.mbr_addr_nation_cd = msc.cd AND msc.lang_cd = 'KOR'
+        WHERE mbr.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 회원 비밀번호 변경 -->
+    <update id="updateMemberPassword" parameterType="mbr">
+        UPDATE /* [biz.mbr.xml][updateMemberPassword][회원 비밀번호 변경][Id] */
+        mbr
+        SET
+          udter_id = #{udterId,jdbcType=VARCHAR}					/* 수정자 ID */
+        , udt_dt = SYSDATE														/* 수정 일시 */
+        <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(mbrPw)'>
+        , mbr_pw = #{mbrPw,jdbcType=VARCHAR}                   /* 회원 비밀번호 */
+        </if>
+        <if test='@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(mbrErpPw)'>
+        , mbr_erp_pw = #{mbrErpPw,jdbcType=VARCHAR}     /* 회원 ERP 비밀번호 */
+        </if>
+        , mbr_login_last_failr_count = 0                       /* 회원 로그인 최종 실패 횟수 */
+        , mbr_pw_last_udt_dt = SYSDATE                         /* 회원 비밀번호 최종 수정 일시 */
+        , tmpr_pw_yn = #{tmprPwYn,jdbcType=VARCHAR}
+        WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}                    /* 회원 번호 */
+    </update>
+
+    <!-- BO : 회원 상태 변경 -->
+    <update id="updateMemberStatus" parameterType="mbr">
+        <![CDATA[ 
+        UPDATE /* [mbr.xml][updateMemberStatus][회원 상태 변경][Jessi] */
+                mbr
+           SET 
+                mbr_stat_cd = #{mbrStatCd,jdbcType=VARCHAR}          /* 회원 상태 코드 */
+              , udter_id = #{udterId,jdbcType=VARCHAR}               /* 수정자 ID */
+              , udt_dt = SYSDATE                                     /* 수정 일시 */
+          WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+        ]]>
+    </update>
+
+    <!-- BO : 회원 정보 변경 -->
+    <update id="updateMember" parameterType="mbr">
+        UPDATE /* [mbr.xml][updateMember][회원 정보 변경][Jessi] */
+        mbr
+        SET
+        mbr_nm = #{mbrNm,jdbcType=VARCHAR}                                  /* 회원 명 */
+        , mbr_brthdy_slrcld_yn = #{mbrBrthdySlrcldYn,jdbcType=VARCHAR}        /* 회원 생년월일 양력 여부 */
+        , mbr_brthdy = REPLACE(#{mbrBrthdy,jdbcType=VARCHAR}, '-', '')        /* 회원 생년월일 */
+        , mbr_sex_sect_cd = #{mbrSexSectCd,jdbcType=VARCHAR}                  /* 회원 성별 구분 코드 */
+        <if test='mbrEmail != null and mbrEmail != ""'>
+            , mbr_email = #{mbrEmail,jdbcType=VARCHAR}                            /* 회원 이메일 (해외 회원 일 경우 disabled 처리되어 값이 넘어 오지 않는다.)*/
+        </if>
+        , mobil_nation_no = #{mobilNationNo,jdbcType=VARCHAR}                 /* 휴대전화 국가번호 */
+        , mobil_area_no = #{mobilAreaNo,jdbcType=VARCHAR}                     /* 휴대전화 지역번호 */
+        , mobil_tlof_no = #{mobilTlofNo,jdbcType=VARCHAR}                     /* 휴대전화 국번호 */
+        , mobil_tlof_wthn_no = #{mobilTlofWthnNo,jdbcType=VARCHAR}            /* 휴대전화 국내번호 */
+        , tel_nation_no = #{telNationNo,jdbcType=VARCHAR}                     /* 전화 국가번호 */
+        , tel_area_no = #{telAreaNo,jdbcType=VARCHAR}                         /* 전화 지역번호 */
+        , tel_tlof_no = #{telTlofNo,jdbcType=VARCHAR}                         /* 전화 국번호 */
+        , tel_tlof_wthn_no = #{telTlofWthnNo,jdbcType=VARCHAR}                /* 전화 국내번호 */
+        , mbr_post_no = #{mbrPostNo,jdbcType=VARCHAR}                         /* 회원 우편번호 */
+        , mbr_addr_nation_cd = #{mbrAddrNationCd,jdbcType=VARCHAR}            /* 회원 주소 구분 코드 */
+        , mbr_addr_sect_cd = #{mbrAddrSectCd,jdbcType=VARCHAR}                /* 회원 주소 구분 코드 */
+        , mbr_base_addr = #{mbrBaseAddr,jdbcType=VARCHAR}                     /* 회원 우편주소 */
+        , mbr_detail_addr = #{mbrDetailAddr,jdbcType=VARCHAR}                 /* 회원 상세주소 */
+        , mbr_cty_nm = #{mbrCtyNm,jdbcType=VARCHAR}                           /* 회원 도시명(해외) */
+        , mbr_lclty_nm = #{mbrLcltyNm,jdbcType=VARCHAR}                       /* 회원 지방명(해외) */
+        , aud_cd = #{audCd,jdbcType=VARCHAR}                       /* 행정동코드 */
+        , cpr_nm = #{cprNm,jdbcType=VARCHAR}                                  /* 법인 명 */
+        , cpr_rprstiv_nm = #{cprRprstivNm,jdbcType=VARCHAR}                   /* 법인 대표자명 */
+        , bman_reg_no = #{bmanRegNo,jdbcType=VARCHAR}                         /* 사업자등록번호 */
+        , cprtel_nation_no = #{cprtelNationNo,jdbcType=VARCHAR}               /* 법인전화 국가번호 */
+        , cprtel_area_no = #{cprtelAreaNo,jdbcType=VARCHAR}                   /* 법인전화 지역번호 */
+        , cprtel_tlof_no = #{cprtelTlofNo,jdbcType=VARCHAR}                   /* 법인전화 국번호 */
+        , cprtel_tlof_wthn_no = #{cprtelTlofWthnNo,jdbcType=VARCHAR}          /* 법인전화 국내번호 */
+        , cpr_tax_bill_chrger_email = #{cprTaxBillChrgerEmail,jdbcType=VARCHAR}/* 법인 세금계산서 담당자 이메일 */
+        , cpr_reg_no = #{cprRegNo,jdbcType=VARCHAR}                           /* 법인등록번호 */
+        , email_recptn_agr_yn = #{emailRecptnAgrYn,jdbcType=VARCHAR}          /* 이메일 수신 동의 여부 */
+        <choose>
+	        <when test='emailRecptnAgrYn != null and emailRecptnAgrYn == "Y"'>
+	            , last_email_recptn_agr_dt = DECODE(email_recptn_agr_yn, 'N', SYSDATE, last_email_recptn_agr_dt)
+	        </when>
+	        <otherwise>
+	        	, last_email_recptn_agr_dt = DECODE(email_recptn_agr_yn, 'Y', SYSDATE, last_email_recptn_agr_dt)
+	        </otherwise>
+        </choose>
+        , sms_recptn_agr_yn = #{smsRecptnAgrYn,jdbcType=VARCHAR}              /* SMS 수신 동의 여부 */
+        <choose>
+	        <when test='smsRecptnAgrYn != null and smsRecptnAgrYn == "Y"'>
+	            , last_sms_recptn_agr_dt = DECODE(sms_recptn_agr_yn, 'N', SYSDATE, last_sms_recptn_agr_dt)
+	        </when>
+	        <otherwise>
+	        	, last_sms_recptn_agr_dt = DECODE(sms_recptn_agr_yn, 'Y', SYSDATE, last_sms_recptn_agr_dt)
+	        </otherwise>
+        </choose>
+        <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(inforNtcnRecptnTpCd)'>
+            , infor_ntcn_recptn_tp_cd = #{inforNtcnRecptnTpCd,jdbcType=VARCHAR}
+        </if>
+        , udter_id = #{udterId,jdbcType=VARCHAR}                              /* 수정자 ID */
+        , udt_dt = SYSDATE                                                    /* 수정 일시 */
+        WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+    <!-- BO : 휴면 회원 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereSuspendMember">
+			AND mbr.mbr_stat_cd = 'DRMNCY'
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">
+            AND mbr.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}               /* 회원 번호 */
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrId)">
+            AND mbr.mbr_id = #{mbr.mbrId, jdbcType=VARCHAR}             /* 회원 ID */
+        </if>
+        <if test='searchStartDate != "" and searchStartDate != null and (mbr.mbrNo == null or mbr.mbrNo == "")'>
+            AND mbr.drmc_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999    /* 탈퇴 일자 */
+        </if>
+    </sql>
+
+	<!-- BO : 휴면 회원 목록 건수 조회 -->
+	<select id="selectSuspendMemberListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="Long">
+		SELECT /* [biz.mbr.xml][selectSuspendMemberListCount][휴면 회원 목록 건수 조회 ][Jessi] */
+			   COUNT(*)
+		FROM (
+			SELECT mbr.mbr_no
+			FROM mbr mbr
+		WHERE 1=1
+		<include refid="com.plgrim.ncp.biz.mbr.whereSuspendMember"/>
+		)
+	</select>
+
+    <!-- BO : 휴면 회원 목록 조회 -->
+    <select id="selectSuspendMemberList" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="mbrResultMap">
+        SELECT /* [biz.mbr.xml][selectSuspendMemberList][휴면 회원 목록 조회][Jessi] */
+        fl.mbr_no, fl.mbr_tp_cd, fl.erp_cstmr_no
+        , fl.JOIN_MALL_NM
+        , fl.join_dvc_cd
+        , fl.join_lang_cd
+        , fl.mbr_stat_cd
+        , fl.mbr_tp_cd, scMbrTp.cd_nm    AS mbr_tp_nm
+        , fl.mbr_atrb_cd, scMbrAtrb.cd_nm    AS mbr_atrb_nm
+        , fl.join_dt
+        , mc.mbr_crtfc_date            /* 회원 인증 일자 */
+        , fn_masking('ID'   , fl.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 ID */
+        , fn_masking('FLNM' , fl.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+        , fn_masking('EMAIL', fl.mbr_email, '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_email  /* 회원 이메일 */
+        , fn_masking('PHON' , fl.mobil_nation_no||NVL2(fl.mobil_nation_no, '-', '')||fl.mobil_area_no||NVL2(fl.mobil_area_no, '-', '')||fl.mobil_tlof_no||NVL2(fl.mobil_tlof_no, '-', '')||fl.mobil_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS mobile_no
+        , fn_masking('PHON' , fl.tel_nation_no||NVL2(fl.tel_nation_no, '-', '')||fl.tel_area_no||NVL2(fl.tel_area_no, '-', '')||fl.tel_tlof_no||NVL2(fl.tel_tlof_no, '-', '')||fl.tel_tlof_wthn_no, '', #{maskingYn, jdbcType=VARCHAR}) AS tel_no
+        , fl.drmc_resn_cont
+        , fl.drmc_dt
+        FROM (
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT
+        *
+        FROM (
+        SELECT
+        mbr.mbr_no                   /* 회원 번호 */
+        , mbr.mbr_id                   /* 회원 ID */
+        , mbr.mbr_nm                   /* 회원 명 */
+        , mbr.erp_cstmr_no             /* ERP 고객번호 */
+        , mbr.mobil_nation_no          /* 휴대전화 국가번호 */
+        , mbr.mobil_area_no            /* 휴대전화 지역번호 */
+        , mbr.mobil_tlof_no            /* 휴대전화 국번호 */
+        , mbr.mobil_tlof_wthn_no       /* 휴대전화 국내번호 */
+        , mbr.tel_nation_no            /* 전화 국가번호 */
+        , mbr.tel_area_no              /* 전화 지역번호 */
+        , mbr.tel_tlof_no              /* 전화 국번호 */
+        , mbr.tel_tlof_wthn_no         /* 전화 국내번호 */
+        , mbr.mbr_email                /* 회원 이메일 */
+        , mbr.mbr_stat_cd              /* 회원 상태 코드 */
+        , mbr.mbr_tp_cd                /* 회원 유형 코드 */
+        , mbr.mbr_atrb_cd              /* 회원 속성 코드 */
+        , mbr.join_dvc_cd              /* 가입 채널 코드 */
+        , mbr.join_lang_cd             /* 가입 언어 코드 */
+        , mbr.join_dt                  /* 가입 일시 */
+        , mbr.unity_mbr_crtfc_sect_cd  /* 통합 회원 인증 유형 코드 */
+        , (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) as JOIN_MALL_NM
+        , mbr.drmc_resn_cont
+        , mbr.drmc_dt
+        FROM mbr mbr
+        WHERE 1=1
+        <include refid="com.plgrim.ncp.biz.mbr.whereSuspendMember"/>
+        ORDER BY mbr.drmc_dt DESC
+        )
+        <include refid="com.plgrim.ncp.base.endPage"/>
+        ) fl
+        LEFT OUTER JOIN mbr_crtfc mc
+        ON fl.mbr_no = mc.mbr_no
+        AND fl.unity_mbr_crtfc_sect_cd = mc.mbr_crtfc_tp_cd
+        AND mc.mbr_crtfc_yn='Y'                                  /* 회원 인증 여부 */
+        LEFT OUTER JOIN mv_sys_cd scMbrTp
+        ON (fl.mbr_tp_cd = scMbrTp.cd     AND scMbrTp.upper_cd='MBR_TP'     AND scMbrTp.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 유형 */
+        LEFT OUTER JOIN mv_sys_cd scMbrAtrb
+        ON (fl.mbr_atrb_cd = scMbrAtrb.cd AND scMbrAtrb.upper_cd='MBR_ATRB' AND scMbrAtrb.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 속성 */
+    </select>
+
+    <!-- BO : 휴면 회원 엑셀 조회 -->
+    <select id="selectSuspendMemberListExcel" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="java.util.LinkedHashMap">
+        SELECT /* [biz.mbr.xml][selectSuspendMemberListExcel][휴면 회원 엑셀 조회][Jessi] */
+        fl.mbr_no
+        , fl.JOIN_MALL_NM
+        , fn_masking('ID'   , fl.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 ID */
+        , TO_CHAR(fl.drmc_dt, 'YYYY-MM-DD HH:MI:SS') AS drmc_dt
+        , fl.drmc_resn_cont
+        , scMbrTp.cd_nm AS mbr_tp_nm
+        , scMbrAtrb.cd_nm    AS mbr_atrb_nm
+        , TO_CHAR(fl.join_dt, 'YYYY-MM-DD HH:MI:SS') AS join_dt
+        , TO_CHAR(mc.mbr_crtfc_date, 'YYYY-MM-DD HH:MI:SS') AS mbr_crtfc_date            /* 회원 인증 일자 */
+        FROM (
+        SELECT
+        *
+        FROM (
+        SELECT
+        mbr.mbr_no                   /* 회원 번호 */
+        , mbr.mbr_id                   /* 회원 ID */
+        , mbr.mbr_nm                   /* 회원 명 */
+        , mbr.erp_cstmr_no             /* ERP 고객번호 */
+        , mbr.mobil_nation_no          /* 휴대전화 국가번호 */
+        , mbr.mobil_area_no            /* 휴대전화 지역번호 */
+        , mbr.mobil_tlof_no            /* 휴대전화 국번호 */
+        , mbr.mobil_tlof_wthn_no       /* 휴대전화 국내번호 */
+        , mbr.tel_nation_no            /* 전화 국가번호 */
+        , mbr.tel_area_no              /* 전화 지역번호 */
+        , mbr.tel_tlof_no              /* 전화 국번호 */
+        , mbr.tel_tlof_wthn_no         /* 전화 국내번호 */
+        , mbr.mbr_email                /* 회원 이메일 */
+        , mbr.mbr_stat_cd              /* 회원 상태 코드 */
+        , mbr.mbr_tp_cd                /* 회원 유형 코드 */
+        , mbr.mbr_atrb_cd              /* 회원 속성 코드 */
+        , mbr.join_dvc_cd              /* 가입 채널 코드 */
+        , mbr.join_lang_cd             /* 가입 언어 코드 */
+        , mbr.join_dt                  /* 가입 일시 */
+        , mbr.unity_mbr_crtfc_sect_cd  /* 통합 회원 인증 유형 코드 */
+        , (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) as JOIN_MALL_NM
+        , mbr.drmc_resn_cont
+        , mbr.drmc_dt
+        FROM mbr mbr
+        WHERE 1=1
+        <include refid="com.plgrim.ncp.biz.mbr.whereSuspendMember"/>
+        ORDER BY mbr.drmc_dt DESC
+        )
+        ) fl
+        LEFT OUTER JOIN mbr_crtfc mc
+        ON fl.mbr_no = mc.mbr_no
+        AND fl.unity_mbr_crtfc_sect_cd = mc.mbr_crtfc_tp_cd
+        AND mc.mbr_crtfc_yn='Y'                                  /* 회원 인증 여부 */
+        LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'MBR_TP' AND lang_cd = #{lang, jdbcType=VARCHAR}) scMbrTp
+        ON fl.mbr_tp_cd = scMbrTp.cd                            /* 회원 유형 */
+        LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'MBR_ATRB' AND lang_cd = #{lang, jdbcType=VARCHAR}) scMbrAtrb
+        ON fl.mbr_atrb_cd = scMbrAtrb.cd                        /* 회원 속성 */
+    </select>
+
+    <!-- BO : 탈퇴 회원 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereSecessionMember">
+        AND mbr.mbr_no = NVL(UPPER(#{mbr.mbrNo,jdbcType=VARCHAR}), mbr.mbr_no)                                    /* 회원 번호 */
+        <if test="mbr.secsnSectCd != null and mbr.secsnSectCd != ''">
+            AND mbr.secsn_sect_cd IN ( SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+            FROM (SELECT #{mbr.secsnSectCd, jdbcType=VARCHAR} AS param FROM dual) d
+            CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))             /* 탈퇴 구분 코드 */
+        </if>
+        <if test='searchStartDate != "" and searchStartDate != null and (mbr.mbrNo == null or mbr.mbrNo == "")'>
+            AND mbr.secsn_date BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999    /* 탈퇴 일자 */
+        </if>
+    </sql>
+
+    <!-- BO : 탈퇴 회원 목록 건수 조회 -->
+    <select id="selectSecessionMemberListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="Long">
+        SELECT /* [biz.member.xml][selectSecessionMemberListCount][탈퇴 회원 목록 건수 조회 ][Jessi] */
+        COUNT(*)
+        FROM mbr mbr
+        WHERE mbr.mbr_stat_cd = 'SECSN'
+        <include refid="com.plgrim.ncp.biz.mbr.whereSecessionMember"/>
+    </select>
+
+    <!-- BO : 탈퇴 회원 목록 조회 -->
+    <select id="selectSecessionMemberList" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="mbrResultMap">
+        SELECT /* [biz.member.xml][selectSecessionMemberList][탈퇴 회원 목록 조회][Jessi] */
+        fl.*
+        , mc.mbr_crtfc_date                      /* 회원 인증 일자 */
+        , DECODE(sa.admin_nm, null, fl.enfrcsecsn_dsps_id, sa.admin_nm ||'('||fl.enfrcsecsn_dsps_id||')') AS enfrcsecsn_dsps_nm      /* 강제탈퇴 처리자 명 */
+        , scSecsnSect.cd_nm AS secsn_sect_nm
+        , scSecsnRsn.cd_nm AS secsn_resn_nm
+        FROM (
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT
+        mbr.mbr_no                      /* 회원 번호 */
+        , mbr.secsn_date                  /* 탈퇴 일자 */
+        , mbr.secsn_sect_cd               /* 탈퇴 구분 코드 */
+        , mbr.enfrcsecsn_dsps_id          /* 강제탈퇴 처리자 ID */
+        , mbr.secsn_resn_cd               /* 탈퇴 사유 코드 */
+        , mbr.secsn_resn_detail_cont      /* 탈퇴 사유 상세 내용 */
+        , mbr.join_dt                     /* 가입 일시 */
+        , mbr.unity_mbr_crtfc_sect_cd
+        ,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) as JOIN_MALL_NM
+        FROM mbr mbr
+        WHERE mbr.mbr_stat_cd = 'SECSN'
+        <include refid="com.plgrim.ncp.biz.mbr.whereSecessionMember"/>
+        ORDER BY mbr.secsn_date DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+        ) fl
+        LEFT OUTER JOIN mbr_crtfc mc
+        ON fl.mbr_no = mc.mbr_no
+        AND fl.unity_mbr_crtfc_sect_cd = mc.mbr_crtfc_tp_cd
+        AND mc.mbr_crtfc_yn='Y'                                  /* 회원 인증 여부 */
+        LEFT OUTER JOIN sys_admin sa
+        ON fl.enfrcsecsn_dsps_id = sa.admin_id
+        LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'SECSN_SECT' AND lang_cd = #{lang, jdbcType=VARCHAR}) scSecsnSect
+        ON fl.secsn_sect_cd = scSecsnSect.cd                    /* 탈퇴 구분 */
+        LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'SECSN_RSN' AND lang_cd = #{lang, jdbcType=VARCHAR}) scSecsnRsn
+        ON fl.secsn_resn_cd = scSecsnRsn.cd                        /* 탈퇴 사유 */
+    </select>
+
+    <!-- BO : 탈퇴 회원 엑셀 조회 -->
+    <select id="selectSecessionMemberListExcel" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="java.util.LinkedHashMap">
+        SELECT /* [biz.member.xml][selectSecessionMemberListExcel][탈퇴 회원 엑셀 조회][Jessi] */
+        mbr.mbr_no                                                   /* 회원 번호 */
+        , (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) as JOIN_MALL_NM
+        , TO_CHAR(mbr.secsn_date, 'YYYY-MM-DD HH:MI:SS') AS secsn_date /* 탈퇴 일자 */
+        , scSecsnSect.cd_nm AS secsn_sect_nm
+        , DECODE(sa.admin_nm, null, mbr.enfrcsecsn_dsps_id, sa.admin_nm ||'('||mbr.enfrcsecsn_dsps_id||')') AS enfrcsecsn_dsps_nm      /* 강제탈퇴 처리자 명 */
+        , scSecsnRsn.cd_nm AS secsn_resn_nm
+        , mbr.secsn_resn_detail_cont                                    /* 탈퇴 사유 상세 내용 */
+        FROM mbr mbr
+        LEFT OUTER JOIN sys_admin sa
+        ON mbr.enfrcsecsn_dsps_id = sa.admin_id
+        LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'SECSN_SECT' AND lang_cd = #{lang, jdbcType=VARCHAR}) scSecsnSect
+        ON mbr.secsn_sect_cd = scSecsnSect.cd                        /* 탈퇴 구분 */
+        LEFT OUTER JOIN (SELECT cd, cd_nm FROM mv_sys_cd WHERE upper_cd = 'SECSN_RSN' AND lang_cd = #{lang, jdbcType=VARCHAR}) scSecsnRsn
+        ON mbr.secsn_resn_cd = scSecsnRsn.cd                     /* 탈퇴 사유 */
+        WHERE mbr.mbr_stat_cd = 'SECSN'
+        <include refid="com.plgrim.ncp.biz.mbr.whereSecessionMember"/>
+        ORDER BY mbr.secsn_date DESC
+    </select>
+
+    <!-- BO : 온라인클럽 활동 내역 조회를 위한 조건 쿼리 -->
+    <sql id="whereOnlineClubMember">
+        AND m.mbr_stat_cd != 'SECSN'
+        AND m.mbr_no = NVL(#{mbr.mbrNo,jdbcType=VARCHAR}, m.mbr_no)   /* 회원 번호 */
+        AND m.mbr_nm = NVL(#{mbr.mbrNm, jdbcType=VARCHAR}, m.mbr_nm)  /* 회원 명 */
+        AND m.mbr_id = NVL(#{mbr.mbrId,jdbcType=VARCHAR}, m.mbr_id)   /* 회원 ID */
+    </sql>
+
+    <!-- BO : 온라인클럽 활동 미충족 회원 조회를 위한 조건 쿼리 -->
+    <sql id="whereOnlineClubMemberActiveLack">
+        <if test='searchType != null and searchType == "LACK"'>
+            WHERE chk.login_cnt <![CDATA[<]]> #{onlineClubLoginCnt,jdbcType=NUMERIC}
+            OR chk.god_evl_cnt <![CDATA[<]]> #{onlineClubGodEvlCnt,jdbcType=NUMERIC}
+            OR chk.sns_cnt <![CDATA[<]]> #{onlineClubSnsCnt,jdbcType=NUMERIC}
+        </if>
+    </sql>
+
+    <!-- BO : 온라인클럽 활동 기간 조건 쿼리 -->
+    <sql id="whereOnlineClubMemberActivePeriod">
+        <if test='searchType != null and searchType == "LACK" and searchQuarter != null and searchQuarter != ""'>
+            BETWEEN trunc(add_months(SYSDATE, (${searchQuarter}*3)), 'Q') AND trunc(add_months(SYSDATE, ((${searchQuarter}+1)*3)), 'Q') - 0.00001
+        </if>
+        <if test='searchType != null and searchType == "ALL" and searchStartDate != null and searchStartDate !=""'>
+            BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+        </if>
+    </sql>
+
+    <!-- BO : 온라인 클럽 활동내역 조회 -->
+    <select id="selectOnlineClubMemberListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="long">
+        /* SELECT /* [biz.member.xml][selectOnlineClubMemberListCount][온라인 클럽 활동내역 건수 조회][Jessi] */
+        COUNT(*)
+        FROM (
+        SELECT
+        m.mbr_no
+        , (SELECT COUNT(*)
+        FROM mbr_login_log mll
+        WHERE mll.mbr_no = m.mbr_no
+        AND mll.mbr_login_cd = 'LOGIN'
+        AND mll.log_occur_date <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+        ) AS login_cnt
+        , (SELECT COUNT(*)
+        FROM god_god_evl gge
+        WHERE gge.mbr_no = m.mbr_no
+        AND gge.god_evl_writng_dt <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+        ) AS god_evl_cnt
+        , (SELECT COUNT(*)
+        FROM MBR_SNS_CNRS_HIST ms
+        WHERE ms.mbr_no = m.mbr_no
+        AND ms.sns_cnrs_date <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+        ) AS sns_cnt
+        FROM mbr m
+        WHERE m.onlne_club_join_yn = 'Y'
+        <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMember"/>
+        ) chk
+        <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActiveLack"/>
+        */
+    </select>
+
+    <!-- BO : 온라인 클럽 활동내역 조회 -->
+    <!--  <select id="selectOnlineClubMemberList" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="mbrResultMap">
+         SELECT /* [biz.member.xml][selectOnlineClubMemberList][온라인 클럽 활동내역 조회][Jessi] */
+                   fl.*
+           FROM (
+             <include refid="com.plgrim.ncp.base.beginPage"/>
+                 SELECT *
+                   FROM (
+                         SELECT
+                                   m.mbr_id
+                                 , m.mbr_no
+                                 , m.mbr_nm
+                                 , m.onlne_club_join_dt
+                                 , (SELECT COUNT(*)
+                                      FROM mbr_login_log mll
+                                     WHERE mll.mbr_no = m.mbr_no
+                                       AND mll.mbr_login_cd = 'LOGIN'
+                                       AND mll.log_occur_date <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+                                   ) AS login_cnt
+                                 , (SELECT COUNT(*)
+                                      FROM god_god_evl gge
+                                     WHERE gge.mbr_no = m.mbr_no
+                                       AND gge.god_evl_writng_dt <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+                                   ) AS god_evl_cnt
+                                 , (SELECT COUNT(*)
+                                      FROM MBR_SNS_CNRS_HIST ms
+                                     WHERE ms.mbr_no = m.mbr_no
+                                       AND ms.sns_cnrs_date <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+                                   ) AS sns_cnt
+                           FROM mbr m
+                          WHERE m.onlne_club_join_yn = 'Y'
+                          <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMember"/>
+                        ) chk
+                    <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActiveLack"/>
+                    ORDER BY chk.onlne_club_join_dt DESC
+             <include refid="com.plgrim.ncp.base.endPage"/>
+                ) fl
+     </select> -->
+
+
+    <!-- BO : 온라인 클럽 활동내역 조회 -->
+    <!-- <select id="selectOnlineClubMemberExcel" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO"  resultType="java.util.LinkedHashMap">
+        SELECT /* [biz.member.xml][selectOnlineClubMemberExcel][온라인 클럽 활동내역 엑셀 조회][Jessi] */ 
+				mbr_no, mbr_id, mbr_nm, onlne_club_join_dt, login_cnt, god_evl_cnt, sns_cnt 
+          FROM (
+            	SELECT *
+            	  FROM (
+						SELECT 
+								  m.mbr_id
+								, m.mbr_no
+								, m.mbr_nm
+								, m.onlne_club_join_dt 
+								, (SELECT COUNT(*)
+								     FROM mbr_login_log mll
+								    WHERE mll.mbr_no = m.mbr_no
+								      AND mll.mbr_login_cd = 'LOGIN'
+								      AND mll.log_occur_date <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+								  ) AS login_cnt
+								, (SELECT COUNT(*)
+								     FROM god_god_evl gge
+								    WHERE gge.mbr_no = m.mbr_no
+								      AND gge.god_evl_writng_dt <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+								  ) AS god_evl_cnt
+								, (SELECT COUNT(*)
+								     FROM MBR_SNS_CNRS_HIST ms
+								    WHERE ms.mbr_no = m.mbr_no
+								      AND ms.sns_cnrs_date <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActivePeriod"/>
+								  ) AS sns_cnt	
+						  FROM mbr m		  					
+						 WHERE m.onlne_club_join_yn = 'Y'
+						 <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMember"/>
+            	       ) chk
+            	   <include refid="com.plgrim.ncp.biz.mbr.whereOnlineClubMemberActiveLack"/>
+            	   ORDER BY chk.onlne_club_join_dt DESC
+               ) fl           
+    </select> -->
+    <!-- /// BackOffice End /////////////////////////////////////////////////-->
+
+
+    <select id="login" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="mbr">
+        /* [biz.mbr.xml][login][조회 : 로그인][Id] */
+        SELECT
+	         a.mbr_no
+	        ,a.mbr_stat_cd
+	        ,a.mbr_tp_cd
+	        ,a.mbr_atrb_cd
+	        ,a.unity_mbr_crtfc_sect_cd
+	        ,a.mbr_nm
+	        ,a.mbr_empl_no
+	        ,a.mbr_brthdy_slrcld_yn
+	        ,a.mbr_brthdy
+	        ,a.mbr_sex_sect_cd
+	        ,a.mbr_id
+	        ,a.join_mbr_ip
+	        ,a.mbr_pw
+	        ,a.mbr_erp_pw
+	        ,a.mbr_login_last_failr_count
+	        ,a.mbr_pw_last_udt_dt
+	        ,a.tmpr_pw_yn
+	        ,a.mbr_email
+	        ,a.mobil_nation_cd
+	        ,a.mobil_nation_no
+	        ,a.mobil_area_no
+	        ,a.mobil_tlof_no
+	        ,a.mobil_tlof_wthn_no
+	        ,a.otel_nation_no
+	        ,a.otel_area_no
+	        ,a.otel_tlof_no
+	        ,a.otel_tlof_wthn_no
+	        ,a.tel_nation_no
+	        ,a.tel_area_no
+	        ,a.tel_tlof_no
+	        ,a.tel_tlof_wthn_no
+	        ,a.join_nation_cd
+	        ,a.join_dt
+	        ,a.sso_grp_cd
+	        ,a.join_lang_cd
+	        ,a.join_mall_id
+	        ,a.join_dvc_cd
+	        ,a.secsn_date
+	        ,a.secsn_sect_cd
+	        ,a.secsn_resn_cd
+	        ,a.secsn_resn_detail_cont
+	        ,a.enfrcsecsn_dsps_id
+	        ,a.mbr_post_no
+	        ,a.mbr_addr_nation_cd
+	        ,a.mbr_addr_sect_cd
+	        ,a.mbr_base_addr
+	        ,a.mbr_detail_addr
+	        ,a.mbr_cty_nm
+	        ,a.mbr_lclty_nm
+	        ,a.aud_cd
+	        ,a.cpr_nm
+	        ,a.cpr_rprstiv_nm
+	        ,a.bman_reg_no
+	        ,a.cprtel_nation_no
+	        ,a.cprtel_area_no
+	        ,a.cprtel_tlof_no
+	        ,a.cprtel_tlof_wthn_no
+	        ,a.cpr_tax_bill_chrger_email
+	        ,a.cpr_reg_no
+	        ,a.email_recptn_agr_yn
+	        ,a.last_email_recptn_agr_dt
+	        ,a.email_recptn_reject_tokn_id
+	        ,a.sms_recptn_agr_yn
+	        ,a.last_sms_recptn_agr_dt
+	        ,a.dm_recptn_agr_yn
+	        ,a.last_dm_recptn_agr_dt
+	        ,a.erp_cstmr_no
+	        ,a.regtr_id
+	        ,a.reg_dt
+	        ,a.udter_id
+	        ,a.udt_dt
+	        ,a.psitn_grpco_id
+	        ,a.tm_recptn_agr_yn
+	        ,a.last_tm_recptn_agr_dt
+	        ,a.linkprc_sesion_id
+	        ,a.infor_ntcn_recptn_tp_cd
+        FROM mbr a
+        WHERE 1 = 1
+          AND a.mbr_id = #{mbr.mbrId,jdbcType=VARCHAR}
+        <if test="mallId != null">
+          AND a.sso_grp_cd IN (SELECT sso_grp_cd FROM sys_mall WHERE mall_id = #{mallId, jdbcType=VARCHAR})
+        </if>
+        <if test="mbr.mbrStatCd != null">
+          AND mbr_stat_cd = #{mbr.mbrStatCd,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <!-- 회원 정보 변경 로그인 실패 횟수 업데이트 -->
+    <update id="updateLoginFailCount" parameterType="mbr">
+        /* [biz.mbr.xml][updateLoginFailCount][로그인 실패 횟수 업데이트][LimJinSeok] */
+        UPDATE mbr
+        SET
+        mbr_login_last_failr_count = #{mbrLoginLastFailrCount} /*로그인 실패 횟수*/
+        ,UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+        ,UDT_DT = SYSDATE
+        WHERE mbr_no = #{mbrNo} /* 회원 번호 */
+    </update>
+
+    <resultMap id="memberResult" type="com.plgrim.ncp.biz.member.result.MemberFoResult">
+        <!-- <result property="mbr.mbrNo" column="MBR_NO" />                             회원 번호
+        <result property="mbr.mbrId" column="MBR_ID" />                    회원 ID
+        <result property="mbr.mbrPw" column="MBR_PW" />                    회원 PW
+        <result property="mbr.mbrTpCd" column="MBR_TP_CD" />                    회원 속성 코드
+        <result property="mbr.mbrAtrbCd" column="MBR_ATRB_CD" />                    회원 유형 코드 -->
+
+        <result property="mbr.mbrNo"                    column="MBR_NO" />                      <!-- 회원 번호 -->
+        <result property="mbr.mbrStatCd"                column="MBR_STAT_CD" />                 <!-- 회원 상태 코드 -->
+        <result property="mbr.mbrTpCd"                  column="MBR_TP_CD" />                   <!-- 회원 유형 코드 -->
+        <result property="mbr.mbrAtrbCd"                column="MBR_ATRB_CD" />                 <!-- 회원 속성 코드 -->
+        <result property="mbr.unityMbrCrtfcSectCd"      column="UNITY_MBR_CRTFC_SECT_CD" />     <!-- 통합 회원 인증 구분 코드 -->
+        <result property="mbr.mbrNm"                    column="MBR_NM" />                      <!-- 회원 명 -->
+        <result property="mbr.mbrEmplNo"                column="MBR_EMPL_NO" />                 <!-- 회원 사원 번호 -->
+        <result property="mbr.mbrBrthdySlrcldYn"        column="MBR_BRTHDY_SLRCLD_YN" />        <!-- 회원 생년월일 양력 여부 -->
+        <result property="mbr.mbrBrthdy"                column="MBR_BRTHDY" />                  <!-- 회원 생년월일 -->
+        <result property="mbr.mbrSexSectCd"             column="MBR_SEX_SECT_CD" />             <!-- 회원 성별 구분 코드 -->
+        <result property="mbr.mbrId"                    column="MBR_ID" />                      <!-- 회원 ID -->
+        <result property="mbr.joinMbrIp"                column="JOIN_MBR_IP" />                 <!-- 가입 회원 IP -->
+        <result property="mbr.mbrPw"                    column="MBR_PW" />                      <!-- 회원 비밀번호 -->
+        <result property="mbr.mbrLoginLastFailrCount"   column="MBR_LOGIN_LAST_FAILR_COUNT" />  <!-- 회원 로그인 최종 실패 횟수 -->
+        <result property="mbr.mbrPwLastUdtDt"           column="MBR_PW_LAST_UDT_DT" />          <!-- 회원 비밀번호 최종 수정 일시 -->
+        <result property="mbr.mbrEmail"                 column="MBR_EMAIL" />                   <!-- 회원 이메일 -->
+        <result property="mbr.mobilNationNo"            column="MOBIL_NATION_NO" />             <!-- 휴대전화 국가번호 -->
+        <result property="mbr.mobilAreaNo"              column="MOBIL_AREA_NO" />               <!-- 휴대전화 지역번호 -->
+        <result property="mbr.mobilTlofNo"              column="MOBIL_TLOF_NO" />               <!-- 휴대전화 국번호 -->
+        <result property="mbr.mobilTlofWthnNo"          column="MOBIL_TLOF_WTHN_NO" />          <!-- 휴대전화 국내번호 -->
+        <result property="mbr.otelNationNo"             column="OTEL_NATION_NO" />              <!-- 회사전화 국가번호 -->
+        <result property="mbr.otelAreaNo"               column="OTEL_AREA_NO" />                <!-- 회사전화 지역번호 -->
+        <result property="mbr.otelTlofNo"               column="OTEL_TLOF_NO" />                <!-- 회사전화 국번호 -->
+        <result property="mbr.otelTlofWthnNo"           column="OTEL_TLOF_WTHN_NO" />           <!-- 회사전화 국내번호 -->
+        <result property="mbr.telNationNo"              column="TEL_NATION_NO" />               <!-- 전화 국가번호 -->
+        <result property="mbr.telAreaNo"                column="TEL_AREA_NO" />                 <!-- 전화 지역번호 -->
+        <result property="mbr.telTlofNo"                column="TEL_TLOF_NO" />                 <!-- 전화 국번호 -->
+        <result property="mbr.telTlofWthnNo"            column="TEL_TLOF_WTHN_NO" />            <!-- 전화 국내번호 -->
+        <result property="mbr.joinNationCd"             column="JOIN_NATION_CD" />              <!-- 가입 국가 코드 -->
+        <result property="mbr.joinDt"                   column="JOIN_DT" />                     <!-- 가입 일시 -->
+        <result property="mbr.joinMallId"               column="JOIN_MALL_ID" />                <!-- 가입 몰 ID -->
+        <result property="mbr.joinLangCd"               column="JOIN_LANG_CD" />                <!-- 가입 언어 코드 -->
+        <result property="mbr.joinDvcCd"                column="JOIN_DVC_CD" />                 <!-- 가입 디바이스 코드 -->
+        <result property="mbr.secsnDate"                column="SECSN_DATE" />                  <!-- 탈퇴 일자 -->
+        <result property="mbr.secsnSectCd"              column="SECSN_SECT_CD" />               <!-- 탈퇴 구분 코드 -->
+        <result property="mbr.secsnResnCd"              column="SECSN_RESN_CD" />               <!-- 탈퇴 사유 코드 -->
+        <result property="mbr.secsnResnDetailCont"      column="SECSN_RESN_DETAIL_CONT" />      <!-- 탈퇴 사유 상세 내용 -->
+        <result property="mbr.enfrcsecsnDspsId"         column="ENFRCSECSN_DSPS_ID" />          <!-- 강제탈퇴 처리자 ID -->
+        <result property="mbr.mbrPostNo"                column="MBR_POST_NO" />                 <!-- 회원 우편번호 -->
+        <result property="mbr.mbrAddrSectCd"            column="MBR_ADDR_SECT_CD" />            <!-- 회원 주소 구분 코드 -->
+        <result property="mbr.mbrBaseAddr"              column="MBR_BASE_ADDR" />                <!-- 회원 우편주소 -->
+        <result property="mbr.mbrDetailAddr"            column="MBR_DETAIL_ADDR" />             <!-- 회원 상세주소 -->
+        <result property="mbr.cprNm"                    column="CPR_NM" />                      <!-- 법인 명 -->
+        <result property="mbr.cprRprstivNm"             column="CPR_RPRSTIV_NM" />              <!-- 법인 대표자명 -->
+        <result property="mbr.bmanRegNo"                column="BMAN_REG_NO" />                 <!-- 사업자등록번호 -->
+        <result property="mbr.cprtelNationNo"           column="CPRTEL_NATION_NO" />            <!-- 법인전화 국가번호 -->
+        <result property="mbr.cprtelAreaNo"             column="CPRTEL_AREA_NO" />              <!-- 법인전화 지역번호 -->
+        <result property="mbr.cprtelTlofNo"             column="CPRTEL_TLOF_NO" />              <!-- 법인전화 국번호 -->
+        <result property="mbr.cprtelTlofWthnNo"         column="CPRTEL_TLOF_WTHN_NO" />         <!-- 법인전화 국내번호 -->
+        <result property="mbr.cprTaxBillChrgerEmail"    column="CPR_TAX_BILL_CHRGER_EMAIL" />   <!-- 법인 세금계산서 담당자 이메일 -->
+        <result property="mbr.cprRegNo"                 column="CPR_REG_NO" />                  <!-- 법인등록번호 -->
+        <result property="mbr.emailRecptnAgrYn"         column="EMAIL_RECPTN_AGR_YN" />         <!-- 이메일 수신 동의 여부 -->
+        <result property="mbr.lastEmailRecptnAgrDt"     column="LAST_EMAIL_RECPTN_AGR_DT" />    <!-- 최종 이메일 수신 동의 일시 -->
+        <result property="mbr.smsRecptnAgrYn"           column="SMS_RECPTN_AGR_YN" />           <!-- SMS 수신 동의 여부 -->
+        <result property="mbr.lastSmsRecptnAgrDt"       column="LAST_SMS_RECPTN_AGR_DT" />      <!-- 최종 SMS 수신 동의 일시 -->
+        <result property="mbr.erpCstmrNo"               column="ERP_CSTMR_NO" />                <!-- ERP 고객번호 -->
+        <result property="mbr.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+        <result property="mbr.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+        <result property="mbr.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+        <result property="mbr.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+        <result property="mbr.frgnrYn"                    column="FRGNR_YN" />                      <!--내 외국인 구분 -->
+
+        <result property="mbrCrtfcCnt"                    column="MBR_CRTFC_CNT" />                      <!-- email 인증 확인 -->
+
+        <result property="mbrStatNm"                   column="MBR_STAT_NM" />                 <!-- 회원 상태 코드명 -->
+        <result property="mbrTpNm"                     column="MBR_TP_NM" />                   <!-- 회원 유형 코드명 -->
+        <result property="mbrAtrbNm"                   column="MBR_ATRB_NM" />                 <!-- 회원 속성 코드명 -->
+        <result property="joinLangNm"                  column="JOIN_LANG_NM" />                <!-- 가입 언어 코드명 -->
+        <result property="joinDvcNm"                   column="JOIN_DVC_NM" />                 <!-- 가입 디바이스 코드명 -->
+
+        <result property="ordCnt"                   column="ORD_CNT" />                 <!-- 주문 갯수 -->
+        <result property="ordCntKor"                column="ORD_CNT_KOR" />             <!-- 국문몰_주문 갯수 -->
+        <result property="ordCntEng"                column="ORD_CNT_ENG" />             <!-- 영문몰_주문 갯수 -->
+        <result property="ordCntChi"                column="ORD_CNT_CHI" />             <!-- 중문몰_주문 갯수 -->
+        <result property="cpnCnt"                   column="CPN_CNT" />                 <!-- 쿠폰 갯수 -->
+        <result property="wishCnt"                   column="WISH_CNT" />                 <!-- wish 갯수 -->
+        <result property="claimCnt"                   column="CLAIM_CNT" />                 <!-- 클레임 갯수 -->
+        <result property="claimCntCancel"         column="CLAIM_CNT_CANCEL" />               <!-- 클레임 취소 갯수 -->
+        <result property="claimCntExchange"    column="CLAIM_CNT_EXCHANGE" />          <!-- 클레임 교환 갯수 -->
+        <result property="claimCntReturn"         column="CLAIM_CNT_RETURN" />              <!-- 클레임 반품 갯수 -->
+
+        <result property="mobilNo"                     column="MOBILE_NO" />                   <!-- 휴대전화 번호 -->
+        <result property="otelNo"                      column="OTEL_NO" />                     <!-- 회사전화 번호 -->
+        <result property="telNo"                       column="TEL_NO" />                      <!-- 전화 번호 -->
+
+		<result property="secsnDtStr"             column="SECSN_DT_STR" />                      <!-- 탈퇴 일자(YYYY-MM-DD) -->
+
+    </resultMap>
+
+    <select id="isCheckId" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="Integer" >
+        /* [biz.mbr.xml][isCheckId][조회 : 아이디 중복체크][Id] */
+        SELECT
+        COUNT(*)
+        FROM mbr A
+        JOIN SYS_MALL B ON A.JOIN_MALL_ID = B.MALL_ID
+        WHERE A.mbr_id = #{mbr.mbrId, jdbcType=VARCHAR}
+        <if test="mallId != null and mallId != ''">
+        AND A.SSO_GRP_CD IN (SELECT SSO_GRP_CD FROM SYS_MALL WHERE MALL_ID = #{mallId, jdbcType=VARCHAR})
+        </if>
+    </select>
+
+    <select id="checkMobilNoAsId" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="Integer" >
+        /* [biz.mbr.xml][isCheckId][조회 : 휴대폰 번호로 아이디 체크][Id] */
+        SELECT COUNT(*)
+        FROM mbr A
+        JOIN SYS_MALL B ON A.JOIN_MALL_ID = B.MALL_ID
+        WHERE A.MOBIL_AREA_NO || A.MOBIL_TLOF_NO || A.MOBIL_TLOF_WTHN_NO = #{mobileNumber}
+        <if test="mallId != null and mallId != ''">
+        AND A.SSO_GRP_CD IN (SELECT SSO_GRP_CD FROM SYS_MALL WHERE MALL_ID = #{mallId, jdbcType=VARCHAR})
+        </if>
+    </select>
+
+    <select id="selectRecommandMbrNo" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="String">
+        /* [biz.mbr.xml][selectRecommandMbrNo][조회 : 추천인 아이디 회원번호 조회] */
+        SELECT
+                MBR_NO
+          FROM  MBR
+         WHERE  1 = 1
+           AND  MBR_ID = #{recommandId, jdbcType=VARCHAR}
+           AND  SSO_GRP_CD = 'FNF_GRP'
+    </select>
+
+    <select id="selectRecommandMbrId" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="String">
+        SELECT
+                fn_masking('ID'   , mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS MBR_ID
+          FROM  MBR
+         WHERE  MBR_NO = (
+                            SELECT
+                                    RECOMENDE_MBR_NO
+                              FROM  MBR_BNEF_PYMNT_HIST
+                             WHERE  1 = 1
+                               AND  MBR_NO = #{mbr.mbrNo, jdbcType=VARCHAR}
+                               AND  RECOMENDE_MBR_NO IS NOT NULL
+       						   AND  ROWNUM = 1
+                          )
+    </select>
+ 
+    <select id="isCheckEmail" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="Integer" >
+        /* [biz.mbr.xml][isCheckEmail][조회 : 이메일 중복체크][Id] */
+        SELECT
+        COUNT(*)
+        FROM mbr
+        WHERE mbr_email = #{mbr.mbrEmail}
+    </select>
+
+    <select id="isCheckEmailOthers" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="Integer" >
+        /* [biz.mbr.xml][isCheckEmailOthers][조회 : 이메일 중복체크][Id] */
+        SELECT
+        COUNT(*)
+        FROM mbr
+        WHERE mbr_email = #{mbr.mbrEmail}
+        AND MBR_NO != #{mbr.mbrNo}
+    </select>
+
+    <select id="getMbrId" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultMap="memberResult" >
+        /* [biz.mbr.xml][getMbrId][조회 : 아이디 찾기 ][Id] */
+        SELECT
+        fn_masking('ID', mbr_id, 'RTR', 'Y') AS mbr_id
+        , mbr_nm
+        , mbr_email
+        , join_dt
+        , mbr_no
+        FROM mbr
+        WHERE 1=1
+        <if test="mbr.mbrNm != null and mbr.mbrNm != ''">
+            AND mbr_nm = #{mbr.mbrNm}
+        </if>
+        <if test="mbr.mbrNm == null or mbr.mbrNm == ''">
+        <if test="mbr.mbrEmail != null and mbr.mbrEmail != ''">
+            AND mbr_email = #{mbr.mbrEmail}
+        </if>  
+        </if>      
+        <if test="mbr.mbrBrthdy != null and mbr.mbrBrthdy != ''">
+            AND mbr_brthdy = #{mbr.mbrBrthdy}
+        </if>
+        AND (
+        (
+        mobil_area_no
+        || mobil_tlof_no
+        || mobil_tlof_wthn_no = #{mobileNumber}
+        )
+        OR mbr_email = #{mobileNumber}
+        )
+        AND mbr_stat_cd = 'ACT'
+        AND SSO_GRP_CD='FNF_GRP'
+    </select>
+
+    <select id="getMbrPassword" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultMap="memberResult" >
+        /* [biz.mbr.xml][getMbrId][조회 : 패스워드 찾기 ][Id] */
+        SELECT
+        A.mbr_id
+        , A.mbr_no
+        , fn_masking('EMAIL', A.mbr_email, '', 'Y') AS mbr_email  /* 회원 이메일 */
+        , fn_masking('PHON' , A.mobil_area_no||'-'||A.mobil_tlof_no||'-'||A.mobil_tlof_wthn_no, '', 'Y') AS mobile_no
+        , fn_masking('PHON' , A.tel_area_no||'-'||A.tel_tlof_no||'-'||A.tel_tlof_wthn_no, '', 'Y') AS tel_no
+        FROM mbr A
+        JOIN SYS_MALL B ON A.JOIN_MALL_ID = B.MALL_ID
+        WHERE A.mbr_nm = #{mbr.mbrNm}
+        <if test="mbr.mbrBrthdy != null and mbr.mbrBrthdy != ''">
+            AND A.mbr_brthdy = #{mbr.mbrBrthdy}
+        </if>
+        AND A.SSO_GRP_CD IN (SELECT SSO_GRP_CD FROM SYS_MALL WHERE MALL_ID = #{mallId, jdbcType=VARCHAR})
+        AND (
+        (
+        A.mobil_area_no
+        || A.mobil_tlof_no
+        || A.mobil_tlof_wthn_no = #{mobileNumber}
+        )
+        OR A.mbr_email = #{mobileNumber}
+        )
+        AND A.mbr_id = #{mbr.mbrId}
+        AND A.mbr_stat_cd = 'ACT'
+    </select>
+
+    <select id="selectPassword" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="String" >
+        /* [biz.mbr.xml][selectPassword][조회 : 패스워드 조회 ][LimJinSeok] */
+        SELECT
+        mbr_pw
+        FROM mbr
+        WHERE mbr_no = #{mbr.mbrNo}
+    </select>
+
+    <insert id="insertMember" parameterType="mbr">
+        /* [biz.mbr.xml][insertMember][회원 가입][LimJinSeok] */
+        INSERT
+        INTO MBR
+        (
+        mbr_no
+        ,mbr_stat_cd
+        ,mbr_tp_cd
+        ,mbr_atrb_cd
+        ,unity_mbr_crtfc_sect_cd
+        <if test="unityMbrCrtfcDt != null">
+        ,unity_mbr_crtfc_dt
+        </if>
+        ,mbr_nm
+        ,mbr_empl_no
+        ,mbr_brthdy_slrcld_yn
+        ,mbr_brthdy
+        ,mbr_sex_sect_cd
+        ,frgnr_yn
+        ,mbr_id
+        ,join_mbr_ip
+        ,mbr_pw
+        ,mbr_erp_pw
+        ,mbr_login_last_failr_count
+        ,mbr_pw_last_udt_dt
+        ,mbr_email
+        ,mobil_nation_cd
+        ,mobil_nation_no
+        ,mobil_area_no
+        ,mobil_tlof_no
+        ,mobil_tlof_wthn_no
+        ,otel_nation_no
+        ,otel_area_no
+        ,otel_tlof_no
+        ,otel_tlof_wthn_no
+        ,tel_nation_no
+        ,tel_area_no
+        ,tel_tlof_no
+        ,tel_tlof_wthn_no
+        ,join_nation_cd
+        ,join_dt
+        ,join_lang_cd
+        ,join_mall_id
+        ,join_dvc_cd
+        ,inflow_sn
+        ,drmc_resn_cont
+        ,drmc_dt
+        ,secsn_date
+        ,secsn_sect_cd
+        ,secsn_resn_cd
+        ,secsn_resn_detail_cont
+        ,enfrcsecsn_dsps_id
+        ,mbr_addr_nation_cd
+        ,mbr_addr_tp_cd
+        ,mbr_addr_sect_cd
+        ,mbr_post_no
+        ,mbr_base_addr
+        ,mbr_detail_addr
+        ,cpr_nm
+        ,cpr_rprstiv_nm
+        ,bman_reg_no
+        ,cprtel_nation_no
+        ,cprtel_area_no
+        ,cprtel_tlof_no
+        ,cprtel_tlof_wthn_no
+        ,cpr_tax_bill_chrger_email
+        ,cpr_reg_no
+        ,email_recptn_agr_yn
+        <if test="lastEmailRecptnAgrDt != null">
+            ,last_email_recptn_agr_dt
+        </if>
+        ,email_recptn_reject_tokn_id
+        ,sms_recptn_agr_yn
+        <if test="lastSmsRecptnAgrDt != null">
+            ,last_sms_recptn_agr_dt
+        </if>
+        ,dm_recptn_agr_yn
+        <if test="lastDmRecptnAgrDt != null">
+            ,last_dm_recptn_agr_dt
+        </if>
+        ,erp_cstmr_no
+        ,sso_grp_cd
+        ,regtr_id
+        ,udter_id
+        ,reg_dt
+        ,udt_dt
+        ,linkprc_sesion_id
+        ,tm_recptn_agr_yn
+        <if test="lastTmRecptnAgrDt != null">
+            ,last_tm_recptn_agr_dt
+        </if>
+        ,os_cd
+        ,mobile_app_sect_cd
+        ,infor_ntcn_recptn_tp_cd
+        )
+        VALUES
+        (
+        #{mbrNo,jdbcType=VARCHAR}
+        ,#{mbrStatCd,jdbcType=VARCHAR}
+        ,#{mbrTpCd,jdbcType=VARCHAR}
+        ,#{mbrAtrbCd,jdbcType=VARCHAR}
+        ,#{unityMbrCrtfcSectCd,jdbcType=VARCHAR}
+        <if test="unityMbrCrtfcDt != null">
+        ,#{unityMbrCrtfcDt}
+        </if>
+        ,#{mbrNm,jdbcType=VARCHAR}
+        ,#{mbrEmplNo,jdbcType=VARCHAR}
+        ,#{mbrBrthdySlrcldYn,jdbcType=VARCHAR}
+        ,#{mbrBrthdy,jdbcType=VARCHAR}
+        ,#{mbrSexSectCd,jdbcType=VARCHAR}
+        ,#{frgnrYn, jdbcType=VARCHAR}
+        ,#{mbrId,jdbcType=VARCHAR}
+        ,#{joinMbrIp,jdbcType=VARCHAR}
+        ,#{mbrPw,jdbcType=VARCHAR}
+        ,#{mbrErpPw,jdbcType=VARCHAR}
+        ,0
+        ,SYSDATE
+        ,#{mbrEmail,jdbcType=VARCHAR}
+        ,#{mobilNationCd,jdbcType=VARCHAR}
+        ,#{mobilNationNo,jdbcType=VARCHAR}
+        ,#{mobilAreaNo,jdbcType=VARCHAR}
+        ,#{mobilTlofNo,jdbcType=VARCHAR}
+        ,#{mobilTlofWthnNo,jdbcType=VARCHAR}
+        ,#{otelNationNo,jdbcType=VARCHAR}
+        ,#{otelAreaNo,jdbcType=VARCHAR}
+        ,#{otelTlofNo,jdbcType=VARCHAR}
+        ,#{otelTlofWthnNo,jdbcType=VARCHAR}
+        ,#{telNationNo,jdbcType=VARCHAR}
+        ,#{telAreaNo,jdbcType=VARCHAR}
+        ,#{telTlofNo,jdbcType=VARCHAR}
+        ,#{telTlofWthnNo,jdbcType=VARCHAR}
+        ,#{joinNationCd,jdbcType=VARCHAR}
+        <choose>
+        <when test="joinDt != null">
+        ,#{joinDt,jdbcType=VARCHAR}
+        </when>
+        <otherwise>
+        ,SYSDATE        
+        </otherwise>
+        </choose>
+        ,#{joinLangCd,jdbcType=VARCHAR}
+        ,#{joinMallId,jdbcType=VARCHAR}
+        ,#{joinDvcCd,jdbcType=VARCHAR}
+        ,#{inflowSn}
+        ,#{drmcResnCont}
+        ,#{drmcDt}
+        ,#{secsnDate,jdbcType=DATE}
+        ,#{secsnSectCd,jdbcType=VARCHAR}
+        ,#{secsnResnCd,jdbcType=VARCHAR}
+        ,#{secsnResnDetailCont,jdbcType=VARCHAR}
+        ,#{enfrcsecsnDspsId,jdbcType=VARCHAR}
+        ,#{mbrAddrNationCd,jdbcType=VARCHAR}
+        ,#{mbrAddrTpCd,jdbcType=VARCHAR}
+        ,#{mbrAddrSectCd,jdbcType=VARCHAR}
+        ,#{mbrPostNo,jdbcType=VARCHAR}
+        ,#{mbrBaseAddr,jdbcType=VARCHAR}
+        ,#{mbrDetailAddr,jdbcType=VARCHAR}
+        ,#{cprNm,jdbcType=VARCHAR}
+        ,#{cprRprstivNm,jdbcType=VARCHAR}
+        ,#{bmanRegNo,jdbcType=VARCHAR}
+        ,#{cprtelNationNo,jdbcType=VARCHAR}
+        ,#{cprtelAreaNo,jdbcType=VARCHAR}
+        ,#{cprtelTlofNo,jdbcType=VARCHAR}
+        ,#{cprtelTlofWthnNo,jdbcType=VARCHAR}
+        ,#{cprTaxBillChrgerEmail,jdbcType=VARCHAR}
+        ,#{cprRegNo,jdbcType=VARCHAR}
+        ,#{emailRecptnAgrYn,jdbcType=VARCHAR}
+        <if test="lastEmailRecptnAgrDt != null">
+            ,SYSDATE
+        </if>
+        ,#{emailRecptnRejectToknId, jdbcType=VARCHAR}
+        ,#{smsRecptnAgrYn,jdbcType=VARCHAR}
+        <if test="lastSmsRecptnAgrDt != null">
+            ,SYSDATE
+        </if>
+        ,#{dmRecptnAgrYn,jdbcType=VARCHAR}
+        <if test="lastDmRecptnAgrDt != null">
+            ,SYSDATE
+        </if>
+        ,#{erpCstmrNo,jdbcType=VARCHAR}
+        ,#{ssoGrpCd,jdbcType=VARCHAR}
+        ,#{mbrNo,jdbcType=VARCHAR}
+        ,#{mbrNo,jdbcType=VARCHAR}
+        ,SYSDATE
+        ,SYSDATE
+        ,#{linkprcSesionId,jdbcType=VARCHAR}
+        ,#{tmRecptnAgrYn,jdbcType=VARCHAR}
+        <if test="lastTmRecptnAgrDt != null">
+            ,SYSDATE
+        </if>
+        ,#{osCd:VARCHAR}
+        ,#{mobileAppSectCd:VARCHAR}
+        ,#{inforNtcnRecptnTpCd:VARCHAR}
+        )
+    </insert>
+
+    <select id="selectSecessionCheck" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultMap="memberResult" >
+        SELECT m.mbr_no
+        ,m.mbr_nm
+        ,m.erp_cstmr_no
+        ,m.mbr_tp_cd
+        ,(				/*주문 건수*/
+        SELECT COUNT (*)
+        FROM ord o
+        WHERE m.mbr_no = o.mbr_no
+        AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+        AND o.ord_stat_cd NOT IN ('DLV_COMPT', 'ALL_CNCL') /*배송완료가 안된것들만*/
+        <if test='mallId != null and mallId != "" '>
+        AND o.mall_id = #{mallId}
+        </if>
+        ) AS ord_cnt
+<!--         ,(				/* 국문몰_주문 건수*/ -->
+<!--         SELECT COUNT (*) -->
+<!--         FROM ord o -->
+<!--         WHERE m.mbr_no = o.mbr_no -->
+<!--         AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR} -->
+<!--         AND o.ord_stat_cd NOT IN ('DLV_COMPT', 'ALL_CNCL') /*배송완료가 안된것들만*/ -->
+<!--         AND o.lang_cd = 'KOR' -->
+<!--         ) AS ord_cnt_KOR -->
+<!--         ,(				/* 영문몰_주문 건수*/ -->
+<!--         SELECT COUNT (*) -->
+<!--         FROM ord o -->
+<!--         WHERE m.mbr_no = o.mbr_no -->
+<!--         AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR} -->
+<!--         AND o.ord_stat_cd NOT IN ('DLV_COMPT', 'ALL_CNCL') /*배송완료가 안된것들만*/ -->
+<!--         AND o.lang_cd = 'ENG' -->
+<!--         ) AS ord_cnt_ENG -->
+<!--         ,(				/* 중문몰_주문 건수*/ -->
+<!--         SELECT COUNT (*) -->
+<!--         FROM ord o -->
+<!--         WHERE m.mbr_no = o.mbr_no -->
+<!--         AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR} -->
+<!--         AND o.ord_stat_cd NOT IN ('DLV_COMPT', 'ALL_CNCL') /*배송완료가 안된것들만*/ -->
+<!--         AND o.lang_cd = 'CHI' -->
+<!--         ) AS ord_cnt_CHI -->
+        ,(				/*클레임 건수*/
+        SELECT count(*)
+        FROM CLM c
+        JOIN ORD o ON c.ord_no = o.ord_no
+	        <if test='mallId != null and mallId != "" '>
+	        AND o.mall_id = #{mallId}
+	        </if>
+        WHERE 1=1           
+        AND c.clm_stat_cd not in ('COMPT' ,'WTHDRAW') /* 완료,철회*/
+        AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+        )  AS claim_cnt
+        ,(				/*클레임_취소 건수*/
+        SELECT count(*)
+        FROM CLM c
+        JOIN ORD o ON c.ord_no = o.ord_no
+        <if test='mallId != null and mallId != "" '>
+        AND o.mall_id = #{mallId}
+        </if>
+        WHERE 1=1
+        <choose>
+        	<when test='offSecesion == null'>
+	        AND c.clm_stat_cd not in ('COMPT' ,'WTHDRAW') /* 완료,철회*/
+	        AND c.CLM_TP_CD in ('PART_CNCL', 'ALL_CNCL') /* 부분취소, 취소 */
+	        </when>
+	        <otherwise>
+	        AND c.CLM_TP_CD in ('PART_CNCL', 'ALL_CNCL') /* 부분취소, 취소 */
+	        </otherwise>
+        </choose>       
+        AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+        )  AS claim_cnt_cancel
+        ,(				/*클레임_교환 건수*/
+        SELECT count(*)
+        FROM CLM c
+        JOIN ORD o ON c.ord_no = o.ord_no
+        <if test='mallId != null and mallId != "" '>
+        AND o.mall_id = #{mallId}
+        </if>
+        WHERE 1=1 
+        <choose>
+        	<when test='offSecesion == null'>
+	        AND c.clm_stat_cd not in ('COMPT' ,'WTHDRAW') /* 완료,철회*/
+        	AND c.CLM_TP_CD in ('GNRL_EXCHG') /* 일반교환 */
+	        </when>
+	        <otherwise>
+	        AND c.CLM_TP_CD in ('GNRL_EXCHG') /* 일반교환 */
+	        </otherwise>
+        </choose>   
+        AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+        )  AS claim_cnt_exchange
+        ,(				/*클레임_반품 건수*/
+        SELECT count(*)
+        FROM CLM c
+        JOIN ORD o ON c.ord_no = o.ord_no
+        <if test='mallId != null and mallId != "" '>
+        AND o.mall_id = #{mallId}
+        </if>
+        WHERE 1=1
+        <choose>
+        	<when test='offSecesion == null'>
+	       	AND c.clm_stat_cd not in ('COMPT' ,'WTHDRAW') /* 완료,철회*/
+       		AND c.CLM_TP_CD in ('RTGOD') /* 반품 */
+	        </when>
+	        <otherwise>
+	        AND c.CLM_TP_CD in ('RTGOD') /* 반품 */
+	        </otherwise>
+        </choose>           
+        AND o.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+        )  AS claim_cnt_return
+        ,
+        (SELECT /*쿠폰 보유수 */
+            CASE WHEN m.mbr_tp_cd = 'ONLINE_MBR'
+                 THEN                
+                    (SELECT COUNT (*) 
+                    FROM mbr_issu_cpn cpn
+                        INNER JOIN prm p
+                        ON cpn.prm_no = p.prm_no
+                            AND p.prm_stat_cd = 'APRV' 
+                        INNER JOIN prm_apl_tgt pat
+                        ON pat.prm_no = cpn.prm_no
+                        	<if test='mallId != null and mallId != "" '>
+	                        AND pat.PRM_TGT_TP_CD = 'MALL_ID'
+	                        AND pat.mall_id=#{mallId}
+	                        </if>
+	                        <if test='secessMallId != null and secessMallId != "" '>
+	                        AND pat.PRM_TGT_TP_CD = 'MALL_ID'
+	                        AND pat.mall_id=#{secessMallId}
+	                        </if>
+                        WHERE 1=1 
+                            AND cpn.mbr_no = m.mbr_no
+                            AND cpn.cpn_stat_cd = 'NO_USE'
+                            AND cpn.valid_end_date <![CDATA[>=]]> to_char(sysdate,'YYYYMMDD'))
+                 ELSE 
+                    (
+                    SELECT COUNT(*)
+                    FROM
+                        (   SELECT mic.mbr_cpn_no
+                            FROM mbr m2  
+                                INNER JOIN mbr_issu_cpn mic
+                                    ON m2.mbr_no = mic.mbr_no
+                                INNER JOIN PRM_APL_TGT pat
+			                        ON pat.prm_no = mic.prm_no
+			                        <if test='mallId != null and mallId != "" '>
+			                        AND pat.PRM_TGT_TP_CD = 'MALL_ID'
+			                        AND pat.mall_id=#{mallId}
+			                        </if>
+			                        <if test='secessMallId != null and secessMallId != "" '>
+			                        AND pat.PRM_TGT_TP_CD = 'MALL_ID'
+			                        AND pat.mall_id=#{secessMallId}
+			                        </if>
+                            WHERE m2.erp_cstmr_no = (SELECT erp_cstmr_no from mbr
+                                    WHERE mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}) 
+                                AND m2.mbr_stat_cd = 'ACT'
+                                AND m2.mbr_tp_cd = 'UNITY_MBR'
+                                AND mic.cpn_stat_cd = 'NO_USE'
+                                AND mic.valid_end_date <![CDATA[>=]]> to_char(sysdate,'YYYYMMDD')
+                            MINUS
+                            SELECT mic2.mbr_cpn_no
+                            FROM mbr m3  
+                                INNER JOIN mbr_issu_cpn mic2
+                                    ON m3.mbr_no = mic2.mbr_no
+                            WHERE m3.erp_cstmr_no = (SELECT erp_cstmr_no from mbr
+                                    WHERE mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR}) 
+                                AND m3.mbr_stat_cd = 'ACT'
+                                AND m3.mbr_tp_cd = 'UNITY_MBR'
+                                AND mic2.cpn_stat_cd = 'NO_USE'
+                                AND mic2.valid_end_date <![CDATA[>=]]> to_char(sysdate,'YYYYMMDD')
+                                AND m3.mbr_no != #{mbr.mbrNo, jdbcType=VARCHAR}
+                                AND NOT EXISTS (
+                                    SELECT 1
+                                    FROM prm_cpn
+                                    WHERE prm_no = mic2.prm_no
+                                        AND cpn_knd_cd = 'ONOFLNE_CPN')
+                        )
+                    )   
+            END cnt
+        FROM dual
+        ) AS cpn_cnt
+<!--         ,(				/*wish list 수*/ -->
+<!--         SELECT COUNT (*) -->
+<!--           FROM bsk_wishlst wish -->
+<!--           	INNER JOIN bsk_wishlst_god bwg ON     wish.wishlst_sn = bwg.wishlst_sn -->
+<!--         WHERE wish.mbr_no = #{mbr.mbrNo, jdbcType=VARCHAR} -->
+<!--         ) AS wish_cnt -->
+        FROM mbr m
+        WHERE m.mbr_no = #{mbr.mbrNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateFoMember" parameterType="mbr"  >
+        UPDATE /* [biz.mbr.xml][updateFoMember][회원정보 수정]  */
+        MBR SET
+        UDT_DT = SYSDATE
+        ,UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNm)">
+            ,MBR_NM = #{mbrNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrStatCd)">
+            ,MBR_STAT_CD = #{mbrStatCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrTpCd)">
+            ,MBR_TP_CD = #{mbrTpCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAtrbCd)">
+            ,MBR_ATRB_CD = #{mbrAtrbCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(unityMbrCrtfcSectCd)">
+            ,UNITY_MBR_CRTFC_SECT_CD = #{unityMbrCrtfcSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(unityMbrCrtfcDt)">
+            ,UNITY_MBR_CRTFC_DT = #{unityMbrCrtfcDt}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmplNo)">
+            ,MBR_EMPL_NO = #{mbrEmplNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrId)">
+            ,MBR_ID = #{mbrId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBrthdySlrcldYn)">
+            ,MBR_BRTHDY_SLRCLD_YN = #{mbrBrthdySlrcldYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBrthdy)">
+            ,MBR_BRTHDY = #{mbrBrthdy,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrSexSectCd)">
+            ,MBR_SEX_SECT_CD = #{mbrSexSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(frgnrYn)">
+            ,FRGNR_YN = #{frgnrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrPw)">
+            ,MBR_PW = #{mbrPw,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrErpPw)">
+            ,MBR_ERP_PW = #{mbrErpPw,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrLoginLastFailrCount)">
+            ,MBR_LOGIN_LAST_FAILR_COUNT = #{mbrLoginLastFailrCount,jdbcType=NUMERIC}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrPwLastUdtDt)">
+            ,MBR_PW_LAST_UDT_DT = #{mbrPwLastUdtDt,jdbcType=DATE}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmprPwYn)">
+            ,TMPR_PW_YN = #{tmprPwYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmail)">
+            ,MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilNationCd)">
+            ,MOBIL_NATION_CD = #{mobilNationCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilNationNo)">
+            ,MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilAreaNo)">
+            ,MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilTlofNo)">
+            ,MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilTlofWthnNo)">
+            ,MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelNationNo)">
+            ,OTEL_NATION_NO = #{otelNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelAreaNo)">
+            ,OTEL_AREA_NO = #{otelAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelTlofNo)">
+            ,OTEL_TLOF_NO = #{otelTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelTlofWthnNo)">
+            ,OTEL_TLOF_WTHN_NO = #{otelTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telNationNo != null">
+            ,TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telAreaNo != null">
+            ,TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telTlofNo != null">
+            ,TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telTlofWthnNo != null">
+            ,TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(joinNationCd)">
+            ,JOIN_NATION_CD = #{joinNationCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ssoGrpCd)">
+            ,SSO_GRP_CD = #{ssoGrpCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(inflowSn)">
+            ,INFLOW_SN = #{inflowSn,jdbcType=NUMERIC}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnDate)">
+            ,SECSN_DATE = #{secsnDate,jdbcType=DATE}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnSectCd)">
+            ,SECSN_SECT_CD = #{secsnSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnResnCd)">
+            ,SECSN_RESN_CD = #{secsnResnCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnResnDetailCont)">
+            ,SECSN_RESN_DETAIL_CONT = #{secsnResnDetailCont,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(enfrcsecsnDspsId)">
+            ,ENFRCSECSN_DSPS_ID = #{enfrcsecsnDspsId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAddrNationCd)">
+            ,MBR_ADDR_NATION_CD = #{mbrAddrNationCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAddrSectCd)">
+            ,MBR_ADDR_SECT_CD = #{mbrAddrSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="mbrPostNo != null">
+            ,MBR_POST_NO = #{mbrPostNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBaseAddr)">
+            ,MBR_BASE_ADDR = #{mbrBaseAddr,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrDetailAddr)">
+            ,MBR_DETAIL_ADDR = #{mbrDetailAddr,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCtyNm)">
+            ,MBR_CTY_NM = #{mbrCtyNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrLcltyNm)">
+            ,MBR_LCLTY_NM = #{mbrLcltyNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(audCd)">
+            ,AUD_CD = #{audCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprNm)">
+            ,CPR_NM = #{cprNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprRprstivNm)">
+            ,CPR_RPRSTIV_NM = #{cprRprstivNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(bmanRegNo)">
+            ,BMAN_REG_NO = #{bmanRegNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelNationNo)">
+            ,CPRTEL_NATION_NO = #{cprtelNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelAreaNo)">
+            ,CPRTEL_AREA_NO = #{cprtelAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelTlofNo)">
+            ,CPRTEL_TLOF_NO = #{cprtelTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelTlofWthnNo)">
+            ,CPRTEL_TLOF_WTHN_NO = #{cprtelTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprTaxBillChrgerEmail)">
+            ,CPR_TAX_BILL_CHRGER_EMAIL = #{cprTaxBillChrgerEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprRegNo)">
+            ,CPR_REG_NO = #{cprRegNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnAgrYn)">
+            ,EMAIL_RECPTN_AGR_YN = #{emailRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnRejectToknId)">
+            ,EMAIL_RECPTN_REJECT_TOKN_ID = #{emailRecptnRejectToknId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastEmailRecptnAgrDt)">
+            ,LAST_EMAIL_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(smsRecptnAgrYn)">
+            ,SMS_RECPTN_AGR_YN = #{smsRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastSmsRecptnAgrDt)">
+            ,LAST_SMS_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dmRecptnAgrYn)">
+            ,DM_RECPTN_AGR_YN = #{dmRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastDmRecptnAgrDt)">
+            ,LAST_DM_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpCstmrNo)">
+            ,ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(psitnGrpcoId)">
+            ,PSITN_GRPCO_ID = #{psitnGrpcoId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmRecptnAgrYn)">
+            ,TM_RECPTN_AGR_YN = #{tmRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastTmRecptnAgrDt)">
+            ,LAST_TM_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(linkprcSesionId)">
+            ,LINKPRC_SESION_ID = #{linkprcSesionId:VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(inforNtcnRecptnTpCd)">
+            ,INFOR_NTCN_RECPTN_TP_CD = #{inforNtcnRecptnTpCd,jdbcType=VARCHAR}
+        </if>
+
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateFoMemberAddr" parameterType="mbr"  >
+        UPDATE /* [updateFoMemberAddr][회원정보 수정 선택항목-주소수정] */
+        MBR SET
+        UDT_DT = SYSDATE
+        ,UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNm)">
+            ,MBR_NM = #{mbrNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrStatCd)">
+            ,MBR_STAT_CD = #{mbrStatCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrTpCd)">
+            ,MBR_TP_CD = #{mbrTpCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAtrbCd)">
+            ,MBR_ATRB_CD = #{mbrAtrbCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(unityMbrCrtfcSectCd)">
+            ,UNITY_MBR_CRTFC_SECT_CD = #{unityMbrCrtfcSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(unityMbrCrtfcDt)">
+            ,UNITY_MBR_CRTFC_DT = #{unityMbrCrtfcDt}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmplNo)">
+            ,MBR_EMPL_NO = #{mbrEmplNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBrthdySlrcldYn)">
+            ,MBR_BRTHDY_SLRCLD_YN = #{mbrBrthdySlrcldYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBrthdy)">
+            ,MBR_BRTHDY = #{mbrBrthdy,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrSexSectCd)">
+            ,MBR_SEX_SECT_CD = #{mbrSexSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(frgnrYn)">
+            ,FRGNR_YN = #{frgnrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrPw)">
+            ,MBR_PW = #{mbrPw,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrLoginLastFailrCount)">
+            ,MBR_LOGIN_LAST_FAILR_COUNT = #{mbrLoginLastFailrCount,jdbcType=NUMERIC}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrPwLastUdtDt)">
+            ,MBR_PW_LAST_UDT_DT = #{mbrPwLastUdtDt,jdbcType=DATE}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmprPwYn)">
+            ,TMPR_PW_YN = #{tmprPwYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmail)">
+            ,MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilNationCd)">
+            ,MOBIL_NATION_CD = #{mobilNationCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilNationNo)">
+            ,MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilAreaNo)">
+            ,MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilTlofNo)">
+            ,MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilTlofWthnNo)">
+            ,MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelNationNo)">
+            ,OTEL_NATION_NO = #{otelNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelAreaNo)">
+            ,OTEL_AREA_NO = #{otelAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelTlofNo)">
+            ,OTEL_TLOF_NO = #{otelTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelTlofWthnNo)">
+            ,OTEL_TLOF_WTHN_NO = #{otelTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telNationNo != null">
+            ,TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telAreaNo != null">
+            ,TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telTlofNo != null">
+            ,TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="telTlofWthnNo != null">
+            ,TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(joinNationCd)">
+            ,JOIN_NATION_CD = #{joinNationCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(inflowSn)">
+            ,INFLOW_SN = #{inflowSn,jdbcType=NUMERIC}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnDate)">
+            ,SECSN_DATE = #{secsnDate,jdbcType=DATE}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnSectCd)">
+            ,SECSN_SECT_CD = #{secsnSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnResnCd)">
+            ,SECSN_RESN_CD = #{secsnResnCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnResnDetailCont)">
+            ,SECSN_RESN_DETAIL_CONT = #{secsnResnDetailCont,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(enfrcsecsnDspsId)">
+            ,ENFRCSECSN_DSPS_ID = #{enfrcsecsnDspsId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAddrNationCd)">
+            ,MBR_ADDR_NATION_CD = #{mbrAddrNationCd,jdbcType=VARCHAR}
+        </if>
+        ,MBR_ADDR_SECT_CD = #{mbrAddrSectCd,jdbcType=VARCHAR}
+        ,MBR_POST_NO = #{mbrPostNo,jdbcType=VARCHAR}
+        ,MBR_BASE_ADDR = #{mbrBaseAddr,jdbcType=VARCHAR}
+        ,MBR_DETAIL_ADDR = #{mbrDetailAddr,jdbcType=VARCHAR}
+        ,MBR_CTY_NM = #{mbrCtyNm,jdbcType=VARCHAR}
+        ,MBR_LCLTY_NM = #{mbrLcltyNm,jdbcType=VARCHAR}
+        ,AUD_CD = #{audCd,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprNm)">
+            ,CPR_NM = #{cprNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprRprstivNm)">
+            ,CPR_RPRSTIV_NM = #{cprRprstivNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(bmanRegNo)">
+            ,BMAN_REG_NO = #{bmanRegNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelNationNo)">
+            ,CPRTEL_NATION_NO = #{cprtelNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelAreaNo)">
+            ,CPRTEL_AREA_NO = #{cprtelAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelTlofNo)">
+            ,CPRTEL_TLOF_NO = #{cprtelTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelTlofWthnNo)">
+            ,CPRTEL_TLOF_WTHN_NO = #{cprtelTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprTaxBillChrgerEmail)">
+            ,CPR_TAX_BILL_CHRGER_EMAIL = #{cprTaxBillChrgerEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprRegNo)">
+            ,CPR_REG_NO = #{cprRegNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnAgrYn)">
+            ,EMAIL_RECPTN_AGR_YN = #{emailRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnRejectToknId)">
+            ,EMAIL_RECPTN_REJECT_TOKN_ID = #{emailRecptnRejectToknId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastEmailRecptnAgrDt)">
+            ,LAST_EMAIL_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(smsRecptnAgrYn)">
+            ,SMS_RECPTN_AGR_YN = #{smsRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastSmsRecptnAgrDt)">
+            ,LAST_SMS_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dmRecptnAgrYn)">
+            ,DM_RECPTN_AGR_YN = #{dmRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastDmRecptnAgrDt)">
+            ,LAST_DM_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpCstmrNo)">
+            ,ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(psitnGrpcoId)">
+            ,PSITN_GRPCO_ID = #{psitnGrpcoId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmRecptnAgrYn)">
+            ,TM_RECPTN_AGR_YN = #{tmRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastTmRecptnAgrDt)">
+            ,LAST_TM_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(linkprcSesionId)">
+            ,LINKPRC_SESION_ID = #{linkprcSesionId:VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(inforNtcnRecptnTpCd)">
+            ,INFOR_NTCN_RECPTN_TP_CD = #{inforNtcnRecptnTpCd,jdbcType=VARCHAR}
+        </if>
+
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMemberChoiceInfo" parameterType="mbr"  >
+        UPDATE /* [updateMemberChoiceInfo][회원정보 수정 선택항목-주소, 전화번호 수정] */
+        MBR SET
+        UDT_DT = SYSDATE
+        ,UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNm)">
+            ,MBR_NM = #{mbrNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrStatCd)">
+            ,MBR_STAT_CD = #{mbrStatCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrTpCd)">
+            ,MBR_TP_CD = #{mbrTpCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAtrbCd)">
+            ,MBR_ATRB_CD = #{mbrAtrbCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(unityMbrCrtfcSectCd)">
+            ,UNITY_MBR_CRTFC_SECT_CD = #{unityMbrCrtfcSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(unityMbrCrtfcDt)">
+            ,UNITY_MBR_CRTFC_DT = #{unityMbrCrtfcDt}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmplNo)">
+            ,MBR_EMPL_NO = #{mbrEmplNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAtrbCd) and mbrAtrbCd == 'GNRL_MBR' and @com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmplNo)">
+            ,MBR_EMPL_NO = NULL
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBrthdySlrcldYn)">
+            ,MBR_BRTHDY_SLRCLD_YN = #{mbrBrthdySlrcldYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBrthdy)">
+            ,MBR_BRTHDY = #{mbrBrthdy,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrSexSectCd)">
+            ,MBR_SEX_SECT_CD = #{mbrSexSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(frgnrYn)">
+            ,FRGNR_YN = #{frgnrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(joinMbrIp)">
+            ,JOIN_MBR_IP = #{joinMbrIp,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrPw)">
+            ,MBR_PW = #{mbrPw,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrErpPw)">
+            ,MBR_ERP_PW = #{mbrErpPw,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrLoginLastFailrCount)">
+            ,MBR_LOGIN_LAST_FAILR_COUNT = #{mbrLoginLastFailrCount,jdbcType=NUMERIC}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrPwLastUdtDt)">
+            ,MBR_PW_LAST_UDT_DT = #{mbrPwLastUdtDt,jdbcType=DATE}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmprPwYn)">
+            ,TMPR_PW_YN = #{tmprPwYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmail)">
+            ,MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilNationCd)">
+            ,MOBIL_NATION_CD = #{mobilNationCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilNationNo)">
+            ,MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilAreaNo)">
+            ,MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilTlofNo)">
+            ,MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mobilTlofWthnNo)">
+            ,MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelNationNo)">
+            ,OTEL_NATION_NO = #{otelNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelAreaNo)">
+            ,OTEL_AREA_NO = #{otelAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelTlofNo)">
+            ,OTEL_TLOF_NO = #{otelTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(otelTlofWthnNo)">
+            ,OTEL_TLOF_WTHN_NO = #{otelTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(telNationNo)">
+        	,TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+        </if>
+        
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(telAreaNo)">
+        	,TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(telTlofNo)">
+        	,TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(telTlofWthnNo)">
+        	,TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(joinNationCd)">
+            ,JOIN_NATION_CD = #{joinNationCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(inflowSn)">
+            ,INFLOW_SN = #{inflowSn,jdbcType=NUMERIC}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(mbrStatCd, 'DRMNCY') and !@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(mbrStatCd, 'SECSN')">
+        	,DRMC_RESN_CONT = ''
+        	,DRMC_DT = ''
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnDate)">
+            ,SECSN_DATE = #{secsnDate,jdbcType=DATE}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnSectCd)">
+            ,SECSN_SECT_CD = #{secsnSectCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnResnCd)">
+            ,SECSN_RESN_CD = #{secsnResnCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(secsnResnDetailCont)">
+            ,SECSN_RESN_DETAIL_CONT = #{secsnResnDetailCont,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(enfrcsecsnDspsId)">
+            ,ENFRCSECSN_DSPS_ID = #{enfrcsecsnDspsId,jdbcType=VARCHAR}
+        </if>
+        
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAddrNationCd)">
+			,MBR_ADDR_NATION_CD = #{mbrAddrNationCd,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAddrTpCd)">
+			,MBR_ADDR_TP_CD = #{mbrAddrTpCd,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAddrSectCd)">
+			,MBR_ADDR_SECT_CD = #{mbrAddrSectCd,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrPostNo)">
+			,MBR_POST_NO = #{mbrPostNo,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrBaseAddr)">
+			,MBR_BASE_ADDR = #{mbrBaseAddr,jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrDetailAddr)">
+			,MBR_DETAIL_ADDR = #{mbrDetailAddr,jdbcType=VARCHAR}
+		</if>
+		
+		
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrCtyNm)">
+            ,MBR_CTY_NM = #{mbrCtyNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrLcltyNm)">
+            ,MBR_LCLTY_NM = #{mbrLcltyNm,jdbcType=VARCHAR}
+        </if>
+        ,AUD_CD = #{audCd,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprNm)">
+            ,CPR_NM = #{cprNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprRprstivNm)">
+            ,CPR_RPRSTIV_NM = #{cprRprstivNm,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(bmanRegNo)">
+            ,BMAN_REG_NO = #{bmanRegNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelNationNo)">
+            ,CPRTEL_NATION_NO = #{cprtelNationNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelAreaNo)">
+            ,CPRTEL_AREA_NO = #{cprtelAreaNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelTlofNo)">
+            ,CPRTEL_TLOF_NO = #{cprtelTlofNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprtelTlofWthnNo)">
+            ,CPRTEL_TLOF_WTHN_NO = #{cprtelTlofWthnNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprTaxBillChrgerEmail)">
+            ,CPR_TAX_BILL_CHRGER_EMAIL = #{cprTaxBillChrgerEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cprRegNo)">
+            ,CPR_REG_NO = #{cprRegNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnAgrYn)">
+            ,EMAIL_RECPTN_AGR_YN = #{emailRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnRejectToknId)">
+            ,EMAIL_RECPTN_REJECT_TOKN_ID = #{emailRecptnRejectToknId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastEmailRecptnAgrDt)">
+            ,LAST_EMAIL_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(smsRecptnAgrYn)">
+            ,SMS_RECPTN_AGR_YN = #{smsRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastSmsRecptnAgrDt)">
+            ,LAST_SMS_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dmRecptnAgrYn)">
+            ,DM_RECPTN_AGR_YN = #{dmRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastDmRecptnAgrDt)">
+            ,LAST_DM_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpCstmrNo)">
+            ,ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(psitnGrpcoId)">
+            ,PSITN_GRPCO_ID = #{psitnGrpcoId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmRecptnAgrYn)">
+            ,TM_RECPTN_AGR_YN = #{tmRecptnAgrYn,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(lastTmRecptnAgrDt)">
+            ,LAST_TM_RECPTN_AGR_DT = SYSDATE
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(linkprcSesionId)">
+            ,LINKPRC_SESION_ID = #{linkprcSesionId:VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(inforNtcnRecptnTpCd)">
+            ,INFOR_NTCN_RECPTN_TP_CD = #{inforNtcnRecptnTpCd,jdbcType=VARCHAR}
+        </if>
+
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deleteFoMember" parameterType="mbr"  >
+        UPDATE /* [biz.mbr.xml][deleteFoMember][회원 삭제][Id]  */
+        MBR SET
+        UDT_DT = SYSDATE
+        ,UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrStatCd)">
+            ,MBR_STAT_CD = #{mbrStatCd,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrTpCd)">
+            ,MBR_TP_CD = ''
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrAtrbCd)">
+            ,MBR_ATRB_CD = ''
+        </if>
+        ,UNITY_MBR_CRTFC_SECT_CD = ''
+        ,MBR_EMPL_NO = ''
+        ,MBR_BRTHDY_SLRCLD_YN = ''
+        ,MBR_BRTHDY = ''
+        ,MBR_SEX_SECT_CD = ''
+        ,MBR_PW = ''
+        ,MBR_ERP_PW = ''
+        ,MBR_EMAIL = ''
+        ,MOBIL_NATION_NO = ''
+        ,MOBIL_AREA_NO = ''
+        ,MOBIL_TLOF_NO = ''
+        ,MOBIL_TLOF_WTHN_NO = ''
+        ,OTEL_NATION_NO = ''
+        ,OTEL_AREA_NO = ''
+        ,OTEL_TLOF_NO =''
+        ,OTEL_TLOF_WTHN_NO = ''
+        ,TEL_NATION_NO = ''
+        ,TEL_AREA_NO = ''
+        ,TEL_TLOF_NO = ''
+        ,TEL_TLOF_WTHN_NO = ''
+        ,INFLOW_SN = ''
+        ,SECSN_DATE = SYSDATE
+        ,SECSN_SECT_CD = #{secsnSectCd,jdbcType=VARCHAR}
+        ,SECSN_RESN_CD = #{secsnResnCd,jdbcType=VARCHAR}
+        ,SECSN_RESN_DETAIL_CONT = #{secsnResnDetailCont,jdbcType=VARCHAR}
+        ,MBR_ADDR_SECT_CD = ''
+        ,MBR_POST_NO = ''
+        ,MBR_BASE_ADDR = ''
+        ,MBR_DETAIL_ADDR = ''
+        ,AUD_CD=''
+        ,CPR_NM = ''
+        ,CPR_RPRSTIV_NM = ''
+        ,BMAN_REG_NO = ''
+        ,CPRTEL_NATION_NO =''
+        ,CPRTEL_AREA_NO = ''
+        ,CPRTEL_TLOF_NO = ''
+        ,CPRTEL_TLOF_WTHN_NO = ''
+        ,CPR_TAX_BILL_CHRGER_EMAIL = ''
+        ,CPR_REG_NO = ''
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpCstmrNo)">
+            ,ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+        </if>
+        ,mbr_nm = ''
+        WHERE   1 = 1
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="checkAddMember" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="Integer" >
+        /* [biz.mbr.xml][checkAddMember][조회 : 이름 이메일 핸드폰 번호 생년월일이 같은 멤버가 있는지 확인][LimJinSeok] */
+        SELECT
+        COUNT(*)
+        FROM mbr A
+        WHERE
+        mbr_nm = #{mbr.mbrNm}
+        <if test="mallId != null">
+            AND A.SSO_GRP_CD IN (SELECT SSO_GRP_CD FROM SYS_MALL WHERE MALL_ID = #{mallId, jdbcType=VARCHAR})
+        </if>
+        AND mbr_email = #{mbr.mbrEmail}
+        AND mobil_area_no || mobil_tlof_no || mobil_tlof_wthn_no = #{mobileNumber, jdbcType=VARCHAR}  /* 휴대전화번호: */
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrNo)">
+            AND mbr_no != #{mbr.mbrNo}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbr.mbrBrthdy)">
+            AND mbr_brthdy = #{mbr.mbrBrthdy}
+        </if>
+    </select>
+
+    <select id="checkFirstLogin" parameterType="mbr" resultType="Long" >
+        /* [biz.mbr.xml][checkFirstLogin][조회 : 기회원 감사 쿠폰][LimJinSeok] */
+        SELECT COUNT (*)
+        FROM    mbr m
+        INNER JOIN
+        mbr_login_log lo
+        ON  lo.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+        AND lo.mbr_no = m.mbr_no
+        AND lo.log_occur_dt <![CDATA[>=]]> TO_DATE ('20150820000000', 'YYYYMMDDHH24MISS')
+        WHERE m.mbr_no= #{mbrNo,jdbcType=VARCHAR}
+        AND m.join_dt <![CDATA[<]]> TO_DATE ('20150820000000', 'YYYYMMDDHH24MISS')
+    </select>
+
+    <select id="checkFirstAppDownload" parameterType="mbr" resultType="Long" >
+        /* [biz.mbr.xml][checkFirstAppDownload][조회 : 첫 앱 다운로드 후 첫 로그인 프로모션][LimJinSeok] */
+        SELECT COUNT (*)
+        FROM    mbr m
+        INNER JOIN
+        mbr_login_log lo
+        ON     lo.mbr_no = m.mbr_no
+        AND lo.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+        AND lo.log_occur_dt <![CDATA[>=]]> TO_DATE ('20150820000000', 'YYYYMMDDHH24MISS')
+        AND (lo.log_occur_dt <![CDATA[>=]]> m.unity_mbr_crtfc_dt OR m.unity_mbr_crtfc_dt IS null)
+        AND lo.dvc_cd = 'MOBILE_APP'
+        WHERE     M.MBR_TP_CD = 'UNITY_MBR'
+    </select>
+
+    <!-- BO :  앱다운로드 포인트 적립 목록 조회를 위한 조건 쿼리 -->
+    <sql id="whereAppDownloadPnt">
+        <choose>
+            <when test="mbrNos != null">
+                AND ( mbr.mbr_no IN (
+                <foreach collection="mbrNos" item="mbrNo" separator=",">#{mbrNo}</foreach>
+                )
+                )
+            </when>
+            <otherwise>
+                <if test="mbr.mbrNm != null and mbr.mbrNm != ''">
+                    AND  mbr.mbr_nm = #{mbr.mbrNm, jdbcType=VARCHAR}
+                </if>
+                AND mpih.reg_dt BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999       /* 앱다운 포인트 적립내역 목록 */
+            </otherwise>
+        </choose>
+        AND mpih.pnt_tp_cd = 'MBSH_PNT'
+        AND mpih.pnt_resn_dscr =  '모바일 앱 다운로드 혜택'
+        ORDER BY mpih.reg_dt DESC
+    </sql>
+
+    <!--  BO : 앱다운로드 포인트 적립 목록 카운트 -->
+    <select id="selectAppDownloadPntListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="Long">
+        SELECT /* [biz.mbr.xml][selectAppDownloadPntListCount][앱 다운로드 포인트 적립 목록 건수 ][peter] */
+        COUNT(*)
+        FROM  mbr
+        JOIN MBR_PNT_INTRLCK_HIST mpih
+        ON  mbr.mbr_no = mpih.mbr_no
+        WHERE 0 = 0
+        <include refid="com.plgrim.ncp.biz.mbr.whereAppDownloadPnt"/>
+    </select>
+
+    <!--  BO : 앱다운로드 포인트 적립 목록 리스트-->
+    <select id="selectAppDownloadPntList" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultMap="mbrResultMap">
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT /* [biz.mbr.xml][selectAppDownloadPntList][조회 : 앱 다운로드 포인트 적립 목록 조회 ][Peter] */
+        mbr.mbr_no
+        , mbr.erp_cstmr_no as erp_cstmr_no
+        , fn_masking('ID'   , mbr.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 ID */
+        , fn_masking('FLNM' , mbr.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+        , mpih.pnt_amt AS PNT_AMT
+        , TO_CHAR(mpih.reg_dt, 'YYYY-MM-DD HH24:MI:ss') AS PNT_REG_DT
+        , TO_CHAR(ADD_MONTHS(LAST_DAY(mpih.reg_dt)+1,1), 'YYYY-MM-DD') AS PNT_PRE_DEL_DT
+        FROM MBR mbr
+        JOIN MBR_PNT_INTRLCK_HIST mpih
+        ON  mbr.mbr_no = mpih.mbr_no
+        WHERE 0 = 0
+        <include refid="com.plgrim.ncp.biz.mbr.whereAppDownloadPnt"/>
+        <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+
+    <!--  BO : 액셀 앱다운로드  포인트 적립  리스트-->
+    <select id="selectAppDownloadPntListExcel" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="java.util.LinkedHashMap">
+        SELECT /* [biz.mbr.xml][selectAppDownloadPntListExcel][조회 : 액셀 앱 다운로드포인트 적립 목록 조회 ][Peter] */
+        mbr.mbr_no
+        , fn_masking('ID'   , mbr.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 ID */
+        , fn_masking('FLNM' , mbr.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+        , mbr.erp_cstmr_no	as erp_cstmr_no
+        , mpih.pnt_amt AS PNT_AMT
+        , TO_CHAR(mpih.reg_dt, 'YYYY-MM-DD HH24:MI:ss') AS PNT_REG_DT
+        , TO_CHAR(ADD_MONTHS(LAST_DAY(mpih.reg_dt)+1,1), 'YYYY-MM-DD') AS PNT_PRE_DEL_DT
+        FROM MBR mbr
+        JOIN MBR_PNT_INTRLCK_HIST mpih
+        ON  mbr.mbr_no = mpih.mbr_no
+        WHERE 0 = 0
+        <include refid="com.plgrim.ncp.biz.mbr.whereAppDownloadPnt"/>
+    </select>
+
+    <select id="selectAdminAuthorGrp" parameterType="String" resultType="SysAuthorGrp">
+        /* [biz.mbr.xml][selectAdminAuthorGrp][권한 그룹 정보 가져오기][Leo] */
+        select sag.author_grp_sn
+        ,sag.author_grp_nm
+        from sys_author_grp sag
+        inner join sys_admin_author_grp_mapng sagm
+        on (sag.author_grp_sn = sagm.author_grp_sn)
+        where sagm.admin_id = #{loginId, jdbcType=VARCHAR}
+        and sagm.use_yn = 'Y'
+    </select>
+
+    <select id="getSsoGrpCd" resultType="String">
+        SELECT /* [biz.mbr.xml][getSsoGrpCd][sso group cd 조회] */
+        SSO_GRP_CD
+        FROM SYS_MALL
+        WHERE MALL_ID = #{mallId}
+    </select>
+
+    <select id="selectMemberByErpCstmrNo" parameterType="String" resultType="mbr" >
+		SELECT /* [biz.mbr.xml][selectMemberByErpCstmrNo][ERP번호로 회원목록조회] */
+			  MBR_NO
+			, MBR_STAT_CD
+			, MBR_TP_CD
+			, MBR_ATRB_CD
+			, UNITY_MBR_CRTFC_SECT_CD
+			, UNITY_MBR_CRTFC_DT
+			, MBR_NM
+			, MBR_BRTHDY_SLRCLD_YN
+			, MBR_BRTHDY
+			, MBR_SEX_SECT_CD
+			, FRGNR_YN
+			, PSITN_GRPCO_ID
+			, MBR_EMPL_NO
+			, MBR_ID
+			, JOIN_MBR_IP
+			, MBR_PW
+			, MBR_ERP_PW
+			, MBR_LOGIN_LAST_FAILR_COUNT
+			, MBR_PW_LAST_UDT_DT
+			, TMPR_PW_YN
+			, MBR_EMAIL
+			, MOBIL_NATION_CD
+			, MOBIL_NATION_NO
+			, MOBIL_AREA_NO
+			, MOBIL_TLOF_NO
+			, MOBIL_TLOF_WTHN_NO
+			, OTEL_NATION_NO
+			, OTEL_AREA_NO
+			, OTEL_TLOF_NO
+			, OTEL_TLOF_WTHN_NO
+			, TEL_NATION_NO
+			, TEL_AREA_NO
+			, TEL_TLOF_NO
+			, TEL_TLOF_WTHN_NO
+			, JOIN_NATION_CD
+			, JOIN_DT
+			, SSO_GRP_CD
+			, JOIN_MALL_ID
+			, JOIN_LANG_CD
+			, JOIN_DVC_CD
+			, OS_CD
+			, MOBILE_APP_SECT_CD
+			, INFLOW_SN
+			, LINKPRC_SESION_ID
+			, DRMC_RESN_CONT
+			, DRMC_DT
+			, SECSN_SECT_CD
+			, SECSN_RESN_CD
+			, SECSN_RESN_DETAIL_CONT
+			, SECSN_DATE
+			, ENFRCSECSN_DSPS_ID
+			, MBR_ADDR_NATION_CD
+			, MBR_ADDR_TP_CD
+			, MBR_ADDR_SECT_CD
+			, MBR_POST_NO
+			, MBR_BASE_ADDR
+			, MBR_DETAIL_ADDR
+			, AUD_CD
+			, MBR_CTY_NM
+			, MBR_LCLTY_NM
+			, CPR_NM
+			, CPR_RPRSTIV_NM
+			, BMAN_REG_NO
+			, CPRTEL_NATION_NO
+			, CPRTEL_AREA_NO
+			, CPRTEL_TLOF_NO
+			, CPRTEL_TLOF_WTHN_NO
+			, CPR_TAX_BILL_CHRGER_EMAIL
+			, CPR_REG_NO
+			, INFOR_NTCN_RECPTN_TP_CD
+			, EMAIL_RECPTN_AGR_YN
+			, LAST_EMAIL_RECPTN_AGR_DT
+			, EMAIL_RECPTN_REJECT_TOKN_ID
+			, SMS_RECPTN_AGR_YN
+			, LAST_SMS_RECPTN_AGR_DT
+			, DM_RECPTN_AGR_YN
+			, LAST_DM_RECPTN_AGR_DT
+			, TM_RECPTN_AGR_YN
+			, LAST_TM_RECPTN_AGR_DT
+			, ERP_CSTMR_NO
+		FROM MBR
+		WHERE ERP_CSTMR_NO = #{erpCstmrNo, jdbcType=VARCHAR}
+		ORDER BY UDT_DT DESC
+    </select>
+
+    <select id="selectMbr" parameterType="String" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.Mbr">
+        SELECT /* [biz.mbr.xml][selectMbr][조회 : 회원 조회(이메일 토큰)][Yoon] */
+        MBR_NO
+        ,MBR_STAT_CD
+        ,MBR_TP_CD
+        ,MBR_ATRB_CD
+        ,UNITY_MBR_CRTFC_SECT_CD
+        ,MBR_NM
+        ,MBR_BRTHDY_SLRCLD_YN
+        ,MBR_BRTHDY
+        ,MBR_SEX_SECT_CD
+        ,FRGNR_YN
+        ,PSITN_GRPCO_ID
+        ,MBR_EMPL_NO
+        ,MBR_ID
+        ,JOIN_MBR_IP
+        ,MBR_PW
+        ,MBR_LOGIN_LAST_FAILR_COUNT
+        ,MBR_PW_LAST_UDT_DT
+        ,TMPR_PW_YN
+        ,MBR_EMAIL
+        ,MOBIL_NATION_NO
+        ,MOBIL_AREA_NO
+        ,MOBIL_TLOF_NO
+        ,MOBIL_TLOF_WTHN_NO
+        ,OTEL_NATION_NO
+        ,OTEL_AREA_NO
+        ,OTEL_TLOF_NO
+        ,OTEL_TLOF_WTHN_NO
+        ,TEL_NATION_NO
+        ,TEL_AREA_NO
+        ,TEL_TLOF_NO
+        ,TEL_TLOF_WTHN_NO
+        ,JOIN_NATION_CD
+        ,JOIN_DT
+        ,JOIN_MALL_ID
+        ,JOIN_LANG_CD
+        ,JOIN_DVC_CD
+        ,INFLOW_SN
+        ,DRMC_RESN_CONT
+        ,DRMC_DT
+        ,SECSN_SECT_CD
+        ,SECSN_RESN_CD
+        ,SECSN_RESN_DETAIL_CONT
+        ,SECSN_DATE
+        ,ENFRCSECSN_DSPS_ID
+        ,MBR_ADDR_SECT_CD
+        ,MBR_POST_NO
+        ,MBR_BASE_ADDR
+        ,MBR_DETAIL_ADDR
+        ,AUD_CD
+        ,CPR_NM
+        ,CPR_RPRSTIV_NM
+        ,BMAN_REG_NO
+        ,CPRTEL_NATION_NO
+        ,CPRTEL_AREA_NO
+        ,CPRTEL_TLOF_NO
+        ,CPRTEL_TLOF_WTHN_NO
+        ,CPR_TAX_BILL_CHRGER_EMAIL
+        ,CPR_REG_NO
+        ,EMAIL_RECPTN_AGR_YN
+        ,LAST_EMAIL_RECPTN_AGR_DT
+        ,EMAIL_RECPTN_REJECT_TOKN_ID
+        ,SMS_RECPTN_AGR_YN
+        ,LAST_SMS_RECPTN_AGR_DT
+        ,DM_RECPTN_AGR_YN
+        ,LAST_DM_RECPTN_AGR_DT
+        ,ERP_CSTMR_NO
+        ,ERP_CSTMR_CRTFC_CD
+        ,REGTR_ID
+        ,REG_DT
+        ,UDTER_ID
+        ,UDT_DT
+        FROM    MBR
+        WHERE   1 = 1
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNo)">
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(emailRecptnRejectToknId)">
+        AND     EMAIL_RECPTN_REJECT_TOKN_ID = #{emailRecptnRejectToknId,jdbcType=VARCHAR}
+        </if>
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrEmail)">
+        AND     MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+        </if>
+        AND     SSO_GRP_CD='FNF_GRP'
+    </select>
+
+    <!-- P포인트회원 관리  2016-02-26 -->
+    <resultMap id="purpleCoinMbrResultMap" type="com.plgrim.ncp.biz.member.result.PurpleCoinMemberBoResult">
+        <result property="mbr.mbrNo"                    column="MBR_NO" />                   <!-- 회원 번호 -->
+        <result property="mbr.mbrStatCd"                column="MBR_STAT_CD" />              <!-- 회원 상태 코드 -->
+        <result property="mbr.mbrTpCd"                  column="MBR_TP_CD" />                <!-- 회원 유형 코드 -->
+        <result property="mbr.mbrAtrbCd"                column="MBR_ATRB_CD" />              <!-- 회원 속성 코드 -->
+        <result property="mbr.mbrNm"                    column="MBR_NM" />                   <!-- 회원 명 -->
+        <result property="mbr.mbrId"                    column="MBR_ID" />                   <!-- 회원 ID -->
+
+        <result property="mbr.joinMbrIp"                column="JOIN_MBR_IP" />              <!-- 가입 회원 IP -->
+        <result property="mbr.mbrPw"                    column="MBR_PW" />                   <!-- 회원 비밀번호 -->
+        <result property="mbr.mbrLoginLastFailrCount"   column="MBR_LOGIN_LAST_FAILR_COUNT" /><!-- 회원 로그인 최종 실패 횟수 -->
+        <result property="mbr.mbrPwLastUdtDt"           column="MBR_PW_LAST_UDT_DT" />       <!-- 회원 비밀번호 최종 수정 일시 -->
+        <result property="mbr.mbrEmail"                 column="MBR_EMAIL" />                <!-- 회원 이메일 -->
+        <result property="mbr.mobilNationNo"            column="MOBIL_NATION_NO" />          <!-- 휴대전화 국가번호 -->
+        <result property="mbr.mobilAreaNo"              column="MOBIL_AREA_NO" />            <!-- 휴대전화 지역번호 -->
+        <result property="mbr.mobilTlofNo"              column="MOBIL_TLOF_NO" />            <!-- 휴대전화 국번호 -->
+        <result property="mbr.mobilTlofWthnNo"          column="MOBIL_TLOF_WTHN_NO" />       <!-- 휴대전화 국내번호 -->
+        <result property="mbr.otelNationNo"             column="OTEL_NATION_NO" />           <!-- 회사전화 국가번호 -->
+        <result property="mbr.otelAreaNo"               column="OTEL_AREA_NO" />             <!-- 회사전화 지역번호 -->
+        <result property="mbr.otelTlofNo"               column="OTEL_TLOF_NO" />             <!-- 회사전화 국번호 -->
+        <result property="mbr.otelTlofWthnNo"           column="OTEL_TLOF_WTHN_NO" />        <!-- 회사전화 국내번호 -->
+        <result property="mbr.telNationNo"              column="TEL_NATION_NO" />            <!-- 전화 국가번호 -->
+        <result property="mbr.telAreaNo"                column="TEL_AREA_NO" />              <!-- 전화 지역번호 -->
+        <result property="mbr.telTlofNo"                column="TEL_TLOF_NO" />              <!-- 전화 국번호 -->
+        <result property="mbr.telTlofWthnNo"            column="TEL_TLOF_WTHN_NO" />         <!-- 전화 국내번호 -->
+        <result property="mbr.joinNationCd"             column="JOIN_NATION_CD" />           <!-- 가입 국가 코드 -->
+
+        <result property="mbr.joinDt"                   column="JOIN_DT" />                  <!-- 가입 일시 -->
+        <result property="mbr.joinLangCd"               column="JOIN_LANG_CD" />             <!-- 가입 언어 코드 -->
+
+        <result property="mbrCrtfcDate"               column="MBR_CRTFC_DATE" />             <!-- 통합회원가입일 -->
+
+        <result property="mbrStatNm"                   column="MBR_STAT_NM" />                 <!-- 회원 상태 코드명 -->
+        <result property="mbrTpNm"                     column="MBR_TP_NM" />                   <!-- 회원 유형 코드명 -->
+        <result property="mbrAtrbNm"                   column="MBR_ATRB_NM" />                 <!-- 회원 속성 코드명 -->
+        <result property="joinLangNm"                  column="JOIN_LANG_NM" />                <!-- 가입 언어 코드명 -->
+        <result property="logOccurDate"                column="LOG_OCCUR_DT" />                <!-- 최종방문일 -->
+
+        <!-- P포인트 현황 -->
+        <result property="totalAccmlAmt"        column="TOTAL_ACCML_AMT" />     <!--전체적립코인 -->
+        <result property="totalAccmlAmtStr"     column="TOTAL_ACCML_AMT_STR" />     <!--전체적립코인 -->
+        <result property="totalUseAmt"          column="TOTAL_USE_AMT" />       <!--전체사용코인 -->
+        <result property="totalExtshAmt"        column="TOTAL_EXTSH_AMT" />     <!--전체소멸코인 -->
+        <result property="totalExtshAmtStr"     column="TOTAL_EXTSH_AMT_STR" />     <!--전체소멸코인 -->
+        <result property="curMonthAccmlAmt"     column="CUR_MONTH_ACCML_AMT" /> <!--당월적립코인 -->
+        <result property="curMonthExtshAmt"     column="CUR_MONTH_EXTSH_AMT" /> <!--당월소멸코인 -->
+        <result property="firstAccmlDt"         column="FIRST_ACCML_DT" />      <!--최초적립일* -->
+        <result property="usefulAmt"            column="USEFUL_AMT" />      <!--가용코인 -->
+        <result property="totalUseAmtStr"            column="TOTAL_USE_AMT_STR" />      <!--가용코인 -->
+
+    </resultMap>
+
+    <!-- BO : P포인트 회원 목록 조회를 위한 카운트 쿼리 (order by, 불핑요한 컬럼 삭제) -->
+    <select id="selectPurpleCoinMemberListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultType="long">
+        SELECT /* [biz.mbr.xml][selectPurpleCoinMemberListCount][조회 : P포인트회원 목록 건수 ][Nana] */
+        COUNT(*)
+        FROM mbr
+        LEFT OUTER JOIN mbr_crtfc mc
+        ON mbr.mbr_no = mc.mbr_no  and mc.rlnm_crtfc_result_cd = 'Y'
+        AND mbr.unity_mbr_crtfc_sect_cd = mc.mbr_crtfc_tp_cd
+        AND mc.mbr_crtfc_yn='Y'
+        WHERE 0 = 0
+        AND EXISTS (SELECT 1 FROM MBR_WEBPNT_HIST MWH WHERE MWH.MBR_NO = MBR.MBR_NO AND NVL(MWH.MALL_ID, 'DXM')=#{mallId, jdbcType=VARCHAR}
+        <include refid="com.plgrim.ncp.biz.mbr.wherePurpleCoinMemberForCnt"/>
+        )
+        <include refid="com.plgrim.ncp.biz.mbr.whereMember"/>
+    </select>
+
+    <!-- BO : P포인트 회원 목록 조회 -->
+    <select id="selectPurpleCoinMemberList" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="purpleCoinMbrResultMap">
+        SELECT  /* [biz.mbr.xml][selectPurpleCoinMemberList][P포인트회원 목록 조회][Nana] */
+        fl.MBR_NO
+        , fn_masking('ID'   , fl.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 id */
+        , fn_masking('FLNM' , fl.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+        /*, fl.erp_cstmr_no*/
+
+        , fl.mbr_stat_cd, scmbrstat.cd_nm as mbr_stat_nm
+        , fl.mbr_tp_cd, scmbrtp.cd_nm as mbr_tp_nm
+        , fl.mbr_atrb_cd, scmbratrb.cd_nm|| nvl2(sg.grpco_nm, '('||sg.grpco_nm||')', '') as mbr_atrb_nm
+        , fl.join_dvc_cd, scdvc.cd_nm as join_dvc_nm
+        , fl.join_lang_cd, sclang.cd_nm as join_lang_nm
+        , (select max(mll.log_occur_dt) from mbr_login_log mll where mbr_no = fl.mbr_no) as log_occur_dt  /* 로그 발생 일자(최종방문일) */
+        , fl.join_dt
+        , fl.mbr_crtfc_date
+
+        , fl.TOTAL_ACCML_AMT     /*전체적립코인*/
+        /*, fl.TOTAL_USE_AMT       *//*전체사용코인*/
+        , fl.TOTAL_EXTSH_AMT     /*전체소멸코인*/
+        , fl.CUR_MONTH_ACCML_AMT /*당월적립코인*/
+        , fl.CUR_MONTH_EXTSH_AMT /*당월소멸코인*/
+        , fl.FIRST_ACCML_DT      /*최초적립일*/
+        , fl.TOTAL_ACCML_AMT_STR
+        , fl.TOTAL_EXTSH_AMT_STR
+        , fl.USEFUL_AMT
+        , fl.TOTAL_USE_AMT_STR
+
+        FROM (
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT
+        MBR.MBR_NO                   /* 회원 번호 */
+        , MBR.MBR_ID                   /* 회원 ID */
+        , MBR.MBR_NM                   /* 회원 명 */
+        <!--
+        , MBR.ERP_CSTMR_NO             /* ERP 고객번호 */
+        , MBR.MOBIL_NATION_NO          /* 휴대전화 국가번호 */
+        , MBR.MOBIL_AREA_NO            /* 휴대전화 지역번호 */
+        , MBR.MOBIL_TLOF_NO            /* 휴대전화 국번호 */
+        , MBR.MOBIL_TLOF_WTHN_NO       /* 휴대전화 국내번호 */
+        , MBR.TEL_NATION_NO            /* 전화 국가번호 */
+        , MBR.TEL_AREA_NO              /* 전화 지역번호 */
+        , MBR.TEL_TLOF_NO              /* 전화 국번호 */
+        , MBR.TEL_TLOF_WTHN_NO         /* 전화 국내번호 */
+        , MBR.MBR_EMAIL                /* 회원 이메일 */
+        -->
+        , MBR.MBR_STAT_CD              /* 회원 상태 코드 */
+        , MBR.MBR_TP_CD                /* 회원 유형 코드 */
+        , MBR.MBR_ATRB_CD              /* 회원 속성 코드 */
+        , MBR.JOIN_DVC_CD              /* 가입 채널 코드 */
+        , MBR.JOIN_LANG_CD             /* 가입 언어 코드 */
+        , MBR.JOIN_DT                  /* 가입 일시 */
+        , MBR.PSITN_GRPCO_ID
+        , MC.MBR_CRTFC_DATE            /* 회원 인증 일자 */
+
+        , P.TOTAL_ACCML_AMT
+        /*, P.TOTAL_USE_AMT*/
+        , P.TOTAL_EXTSH_AMT
+        , P.CUR_MONTH_ACCML_AMT
+        , P.CUR_MONTH_EXTSH_AMT
+        , P.FIRST_ACCML_DT
+        , P.TOTAL_ACCML_AMT_STR
+        , P.TOTAL_EXTSH_AMT_STR
+        , P.USEFUL_AMT
+        , P.TOTAL_USE_AMT_STR
+
+        FROM    MBR MBR
+        LEFT OUTER JOIN MBR_CRTFC MC
+        ON MBR.MBR_NO = MC.MBR_NO     AND MC.RLNM_CRTFC_RESULT_CD = 'Y'
+        AND MBR.UNITY_MBR_CRTFC_SECT_CD = MC.MBR_CRTFC_TP_CD
+        AND MC.MBR_CRTFC_YN='Y'                                  /* 회원 인증 여부 */
+        JOIN (
+        SELECT  A.MBR_NO,
+        SUM(A.ACCML_AMT)  AS TOTAL_ACCML_AMT,
+        TO_CHAR(SUM(A.ACCML_AMT), '999,999,999,999,999')||'<![CDATA[<br/>]]>('||TO_CHAR(SUM(A.ADMIN_ACCML_AMT), '999,999,999,999,999')||' )' AS TOTAL_ACCML_AMT_STR,
+        TO_CHAR(SUM(A.REAL_USE_AMT), '999,999,999,999,999')||'<![CDATA[<br/>]]>('||TO_CHAR(SUM(A.USE_AMT), '999,999,999,999,999')||' )'  AS TOTAL_USE_AMT_STR,
+        SUM(A.EXTSH_AMT)  AS TOTAL_EXTSH_AMT,
+        TO_CHAR(SUM(A.EXTSH_AMT), '999,999,999,999,999')||'<![CDATA[<br/>]]>('||TO_CHAR(SUM(A.ADMIN_DDCT_AMT), '999,999,999,999,999')||' )' AS TOTAL_EXTSH_AMT_STR,
+        SUM(A.CUR_MONTH_ACCML_AMT) AS CUR_MONTH_ACCML_AMT,
+        SUM(A.CUR_MONTH_EXTSH_AMT) AS CUR_MONTH_EXTSH_AMT,
+        MIN(A.ACCML_DT)   AS FIRST_ACCML_DT,
+        NVL(SUM(a.usefulAmt), 0) + NVL(SUM(a.ddctAmt), 0) 		AS USEFUL_AMT			/*가용포인트*/
+        FROM    (
+        SELECT  MWH.MBR_NO,
+        DECODE(MWH.WEBPNT_STAT_CD, 'ACCML_DCSN', MWH.WEBPNT_AMT, 0) AS ACCML_AMT,
+        (CASE WHEN MWH.WEBPNT_RESN_CD = 'ADMIN_MDAT' AND MWH.WEBPNT_DETAIL_RESN_CD = 'ADMIN_ADIT' THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS ADMIN_ACCML_AMT,
+        DECODE(MWH.WEBPNT_STAT_CD, 'USE', MWH.WEBPNT_AMT, 0)        AS USE_AMT,
+
+        (CASE WHEN MWH.WEBPNT_STAT_CD = 'USE' AND NOT EXISTS (SELECT 1 FROM MBR_WEBPNT_HIST WHERE WEBPNT_STAT_CD = 'USE_CNCL' AND UPPER_WEBPNT_SN = MWH.WEBPNT_SN) THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS REAL_USE_AMT,
+
+        DECODE(MWH.WEBPNT_STAT_CD, 'EXTSH', MWH.WEBPNT_AMT, 0)      AS EXTSH_AMT,
+
+        (CASE WHEN MWH.WEBPNT_RESN_CD = 'ADMIN_MDAT' AND MWH.WEBPNT_DETAIL_RESN_CD = 'ADMIN_DDCT' THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS ADMIN_DDCT_AMT,
+
+        (CASE WHEN MWH.WEBPNT_STAT_CD = 'ACCML_DCSN' AND TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') = TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS CUR_MONTH_ACCML_AMT,
+
+        (CASE WHEN MWH.WEBPNT_STAT_CD = 'EXTSH' AND TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') = TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS CUR_MONTH_EXTSH_AMT,
+
+        DECODE(MWH.WEBPNT_STAT_CD, 'ACCML_DCSN', MWH.OCCUR_DT, '')  AS ACCML_DT,
+
+        CASE WHEN mwh.webpnt_stat_cd = 'ACCML_DCSN' AND mwh.remndr_webpnt_amt <![CDATA[ > ]]>  0 AND TO_CHAR(SYSDATE, 'yyyyMMdd') BETWEEN TO_CHAR(mwh.use_beg_dt,'yyyyMMdd') AND TO_CHAR(mwh.use_end_dt, 'yyyyMMdd')
+        THEN mwh.remndr_webpnt_amt
+        ELSE 0
+        END  usefulAmt,
+
+        CASE WHEN mwh.remndr_webpnt_amt <![CDATA[ < ]]> 0
+        THEN mwh.remndr_webpnt_amt
+        ELSE 0
+        END  ddctAmt	/*차감해야하는 코인*/
+
+        FROM    MBR_WEBPNT_HIST MWH
+        <include refid="com.plgrim.ncp.biz.mbr.wherePurpleCoinMember"/>
+        ORDER BY MWH.MBR_NO ) A
+        GROUP BY A.MBR_NO
+        ORDER BY A.MBR_NO ) P ON P.MBR_NO = MBR.MBR_NO
+
+        WHERE 1 = 1
+        <include refid="com.plgrim.ncp.biz.mbr.whereMember"/>
+        ORDER BY mbr.join_dt DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+        ) fl
+        LEFT OUTER JOIN mv_sys_cd scMbrStat
+        ON (fl.mbr_stat_cd = scMbrStat.cd AND scMbrStat.upper_cd='MBR_STAT' AND scMbrStat.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 상태 */
+        LEFT OUTER JOIN mv_sys_cd scMbrTp
+        ON (fl.mbr_tp_cd = scMbrTp.cd     AND scMbrTp.upper_cd='MBR_TP'     AND scMbrTp.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 유형 */
+        LEFT OUTER JOIN mv_sys_cd scMbrAtrb
+        ON (fl.mbr_atrb_cd = scMbrAtrb.cd AND scMbrAtrb.upper_cd='MBR_ATRB' AND scMbrAtrb.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 속성 */
+        LEFT OUTER JOIN mv_sys_cd scDvc
+        ON (fl.join_dvc_cd = scDvc.cd     AND scDvc.upper_cd='DVC'          AND scDvc.lang_cd = #{lang, jdbcType=VARCHAR})               /* 가입 디바이스 */
+        LEFT OUTER JOIN mv_sys_cd scLang
+        ON (fl.join_lang_cd = scLang.cd   AND scLang.upper_cd='LANG'        AND scLang.lang_cd = #{lang, jdbcType=VARCHAR})               /* 언어채널 */
+        LEFT OUTER JOIN sys_grpco sg
+        ON sg.grpco_id = fl.psitn_grpco_id
+    </select>
+
+
+    <!-- BO : P포인트 회원 목록 엑셀 조회 -->
+    <select id="selectPurpleCoinMemberListExcel" parameterType="com.plgrim.ncp.biz.member.data.MemberBoDTO" resultMap="purpleCoinMbrResultMap">
+        SELECT  /* [biz.mbr.xml][selectPurpleCoinMemberList][P포인트회원 목록 엑셀 조회][Nana] */
+        fl.MBR_NO
+        , fn_masking('ID'   , fl.mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_id     /* 회원 id */
+        , fn_masking('FLNM' , fl.mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbr_nm     /* 회원 명 */
+        , fl.mbr_stat_cd, scmbrstat.cd_nm as mbr_stat_nm
+        , fl.mbr_tp_cd, scmbrtp.cd_nm as mbr_tp_nm
+        , fl.mbr_atrb_cd, scmbratrb.cd_nm|| nvl2(sg.grpco_nm, '('||sg.grpco_nm||')', '') as mbr_atrb_nm
+        , fl.join_dvc_cd, scdvc.cd_nm as join_dvc_nm
+        , fl.join_lang_cd, sclang.cd_nm as join_lang_nm
+        , (select max(mll.log_occur_dt) from mbr_login_log mll where mbr_no = fl.mbr_no) as log_occur_dt  /* 로그 발생 일자(최종방문일) */
+        , fl.join_dt
+        , fl.mbr_crtfc_date
+        , fl.TOTAL_ACCML_AMT     /*전체적립코인*/
+        , fl.TOTAL_USE_AMT       /*전체사용코인*/
+        , fl.TOTAL_REAL_USE_AMT  /*전체실사용코인*/
+        , fl.TOTAL_EXTSH_AMT     /*전체소멸코인*/
+        , fl.CUR_MONTH_ACCML_AMT /*당월적립코인*/
+        , fl.CUR_MONTH_EXTSH_AMT /*당월소멸코인*/
+        , fl.FIRST_ACCML_DT      /*최초적립일*/
+
+        FROM (
+        SELECT
+        MBR.MBR_NO                   /* 회원 번호 */
+        , MBR.MBR_ID                   /* 회원 ID */
+        , MBR.MBR_NM                   /* 회원 명 */
+        , MBR.MBR_STAT_CD              /* 회원 상태 코드 */
+        , MBR.MBR_TP_CD                /* 회원 유형 코드 */
+        , MBR.MBR_ATRB_CD              /* 회원 속성 코드 */
+        , MBR.JOIN_DVC_CD              /* 가입 채널 코드 */
+        , MBR.JOIN_LANG_CD             /* 가입 언어 코드 */
+        , MBR.JOIN_DT                  /* 가입 일시 */
+        , MBR.PSITN_GRPCO_ID
+        , MC.MBR_CRTFC_DATE            /* 회원 인증 일자 */
+
+        , P.TOTAL_ACCML_AMT
+        , P.TOTAL_USE_AMT
+        , P.TOTAL_REAL_USE_AMT
+        , P.TOTAL_EXTSH_AMT
+        , P.CUR_MONTH_ACCML_AMT
+        , P.CUR_MONTH_EXTSH_AMT
+        , P.FIRST_ACCML_DT
+
+        FROM    MBR MBR
+        LEFT OUTER JOIN MBR_CRTFC MC
+        ON MBR.MBR_NO = MC.MBR_NO     AND MC.RLNM_CRTFC_RESULT_CD = 'Y'
+        AND MBR.UNITY_MBR_CRTFC_SECT_CD = MC.MBR_CRTFC_TP_CD
+        AND MC.MBR_CRTFC_YN='Y'                                  /* 회원 인증 여부 */
+        JOIN (
+        SELECT  A.MBR_NO,
+        SUM(A.ACCML_AMT)  AS TOTAL_ACCML_AMT,
+        SUM(A.USE_AMT)    AS TOTAL_USE_AMT,
+
+        SUM(A.EXTSH_AMT)  AS TOTAL_EXTSH_AMT,
+        SUM(A.CUR_MONTH_ACCML_AMT) AS CUR_MONTH_ACCML_AMT,
+        SUM(A.CUR_MONTH_EXTSH_AMT) AS CUR_MONTH_EXTSH_AMT,
+        MIN(A.ACCML_DT)   AS FIRST_ACCML_DT
+        FROM  (
+        SELECT  MWH.MBR_NO,
+        DECODE(MWH.WEBPNT_STAT_CD, 'ACCML_DCSN', MWH.WEBPNT_AMT, 0) AS ACCML_AMT,
+        DECODE(MWH.WEBPNT_STAT_CD, 'USE', MWH.WEBPNT_AMT, 0)        AS USE_AMT,
+
+        (CASE WHEN MWH.WEBPNT_STAT_CD = 'USE' AND NOT EXISTS (SELECT 1 FROM MBR_WEBPNT_HIST WHERE WEBPNT_STAT_CD = 'USE_CNCL' AND UPPER_WEBPNT_SN = MWH.WEBPNT_SN) THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS REAL_USE_AMT,
+
+        DECODE(MWH.WEBPNT_STAT_CD, 'EXTSH', MWH.WEBPNT_AMT, 0)      AS EXTSH_AMT,
+        (CASE WHEN MWH.WEBPNT_STAT_CD = 'ACCML_DCSN' AND TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') = TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS CUR_MONTH_ACCML_AMT,
+        (CASE WHEN MWH.WEBPNT_STAT_CD = 'EXTSH' AND TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') = TO_CHAR(MWH.OCCUR_DT, 'YYYYMM') THEN MWH.WEBPNT_AMT
+        ELSE 0
+        END) AS CUR_MONTH_EXTSH_AMT,
+        DECODE(MWH.WEBPNT_STAT_CD, 'ACCML_DCSN', MWH.OCCUR_DT, '')  AS ACCML_DT
+        FROM    MBR_WEBPNT_HIST MWH
+        <include refid="com.plgrim.ncp.biz.mbr.wherePurpleCoinMember"/>
+        ORDER BY MWH.MBR_NO ) A
+        GROUP BY A.MBR_NO
+        ORDER BY A.MBR_NO ) P ON P.MBR_NO = MBR.MBR_NO
+        WHERE 1 = 1
+        <include refid="com.plgrim.ncp.biz.mbr.whereMember"/>
+        ORDER BY mbr.join_dt DESC ) fl
+        LEFT OUTER JOIN mv_sys_cd scMbrStat
+        ON (fl.mbr_stat_cd = scMbrStat.cd AND scMbrStat.upper_cd='MBR_STAT' AND scMbrStat.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 상태 */
+        LEFT OUTER JOIN mv_sys_cd scMbrTp
+        ON (fl.mbr_tp_cd = scMbrTp.cd     AND scMbrTp.upper_cd='MBR_TP'     AND scMbrTp.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 유형 */
+        LEFT OUTER JOIN mv_sys_cd scMbrAtrb
+        ON (fl.mbr_atrb_cd = scMbrAtrb.cd AND scMbrAtrb.upper_cd='MBR_ATRB' AND scMbrAtrb.lang_cd = #{lang, jdbcType=VARCHAR})           /* 회원 속성 */
+        LEFT OUTER JOIN mv_sys_cd scDvc
+        ON (fl.join_dvc_cd = scDvc.cd     AND scDvc.upper_cd='DVC'          AND scDvc.lang_cd = #{lang, jdbcType=VARCHAR})               /* 가입 디바이스 */
+        LEFT OUTER JOIN mv_sys_cd scLang
+        ON (fl.join_lang_cd = scLang.cd   AND scLang.upper_cd='LANG'        AND scLang.lang_cd = #{lang, jdbcType=VARCHAR})               /* 언어채널 */
+        LEFT OUTER JOIN sys_grpco sg
+        ON sg.grpco_id = fl.psitn_grpco_id
+    </select>
+
+    <sql id="wherePurpleCoinMember">
+        WHERE 1=1
+        <if test="(mbr.mbrNo == '' or mbr.mbrNo == null) and (mbr.mbrNm == null or mbr.mbrNm == '') and (mbr.mbrId == null or mbr.mbrId == '') and (mbr.mbrEmail == null or mbr.mbrEmail == '') and (mbr.erpCstmrNo =='' or mbr.erpCstmrNo == null) and (telNo =='' or telNo == null)">
+            <if test='searchDateType != null and searchDateType == "coinAccml"'>
+                AND EXISTS (SELECT  1 FROM MBR_WEBPNT_HIST A
+                WHERE   MWH.WEBPNT_SN = A.WEBPNT_SN
+                AND     (A.WEBPNT_RESN_CD = 'EVT' OR A.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_ACCML','USE_CANCL_ACCML','ADMIN_ADIT'))
+                AND     A.OCCUR_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999 )  /* P포인트 적립일자 */
+            </if>
+            <if test='searchDateType != null and searchDateType == "coinUse"'>
+                AND EXISTS (SELECT  1 FROM MBR_WEBPNT_HIST A
+                WHERE   MWH.WEBPNT_SN = A.WEBPNT_SN
+                AND     A.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_USE','USE_CANCL_DDCT','ADMIN_DDCT')
+                AND     A.OCCUR_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999 )  /* P포인트 사용일자 */
+            </if>
+        </if>
+        AND NVL(MWH.MALL_ID, 'DXM')=#{mallId}
+    </sql>
+
+    <sql id="wherePurpleCoinMemberForCnt">
+        <if test="(mbr.mbrNo == '' or mbr.mbrNo == null) and (mbr.mbrNm == null or mbr.mbrNm == '') and (mbr.mbrId == null or mbr.mbrId == '') and (mbr.mbrEmail == null or mbr.mbrEmail == '') and (mbr.erpCstmrNo =='' or mbr.erpCstmrNo == null) and (telNo =='' or telNo == null)">
+            <if test='searchDateType != null and searchDateType == "coinAccml"'>
+                AND     (MWH.WEBPNT_RESN_CD = 'EVT' OR MWH.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_ACCML','USE_CANCL_ACCML','ADMIN_ADIT'))
+                AND     MWH.OCCUR_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999  /* P포인트 적립일자 */
+            </if>
+            <if test='searchDateType != null and searchDateType == "coinUse"'>
+                AND     MWH.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_USE','USE_CANCL_DDCT','ADMIN_DDCT')
+                AND     MWH.OCCUR_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999  /* P포인트 사용일자 */
+            </if>
+        </if>
+    </sql>
+
+    <select id="findPlgrimshopLoginIdByFacebookUserId" parameterType="java.util.HashMap" resultType="String">
+    	SELECT /* [biz.mbr.xml][findPlgrimshopLoginIdByFacebookUserId][페이스북연계회원아이디조회][Seed] */
+		 <if test='maskingYn == "Y"'>
+    	 DECODE(INSTR(a.mbr_id, '@'), 0, FN_MASKING('ID', a.mbr_id , '', 'Y'), FN_MASKING('EMAIL', a.mbr_id , '', 'Y')) AS mbr_id
+		 </if>
+		 <if test='maskingYn == "N"'>
+    		a.mbr_id
+		 </if>
+    	 FROM mbr a
+			INNER JOIN mbr_id_cntc b ON a.mbr_no = b.mbr_no
+		WHERE b.tokn_id = #{facebookUserId, jdbcType=VARCHAR}
+			AND a.mbr_stat_cd = 'ACT'
+    		AND b.id_cntc_tp_cd = 'FACEBUK'
+            AND b.delete_yn = 'N' /* 연동 해제 제외 */
+    		<if test="mallId != null">
+            AND a.sso_grp_cd IN (SELECT sso_grp_cd FROM sys_mall WHERE mall_id = #{mallId, jdbcType=VARCHAR})
+        	</if>
+    </select>
+
+    <select id="findPlgrimshopLoginIdByNaverUserId" parameterType="java.util.HashMap" resultType="String">
+    	SELECT /* [biz.mbr.xml][findPlgrimshopLoginIdByNaverUserId][네이버연계회원아이디조회][daelim.im] */
+		 <if test='maskingYn == "Y"'>
+    	 DECODE(INSTR(a.mbr_id, '@'), 0, FN_MASKING('ID', a.mbr_id , '', 'Y'), FN_MASKING('EMAIL', a.mbr_id , '', 'Y')) AS mbr_id
+		 </if>
+		 <if test='maskingYn == "N"'>
+    		a.mbr_id
+		 </if>
+    	 FROM mbr a
+			INNER JOIN mbr_id_cntc b ON a.mbr_no = b.mbr_no
+		WHERE b.tokn_id = #{toknId, jdbcType=VARCHAR}
+			AND a.mbr_stat_cd = 'ACT'
+    		AND b.id_cntc_tp_cd = #{idCntcTpCd, jdbcType=VARCHAR}
+    		<if test="mallId != null">
+            AND a.sso_grp_cd IN (SELECT sso_grp_cd FROM sys_mall WHERE mall_id = #{mallId, jdbcType=VARCHAR})
+        	</if>
+    </select>
+    
+    <select id="findPlgrimshopLoginIdByNaverUserToknId" parameterType="java.util.HashMap" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+    	SELECT /* [biz.mbr.xml][findPlgrimshopLoginIdByNaverUserToknId][네이버연계회원조회 tokn_id list][daelim.im] */
+			b.mbr_no
+			, b.id_cntc_tp_cd
+			, b.tokn_id
+			, b.regtr_id
+			, b.reg_dt
+			, b.udter_id
+			, b.udt_dt
+			, b.login_id
+			, b.delete_yn
+			, b.pw_reconfig_yn
+    	 FROM mbr a
+			INNER JOIN mbr_id_cntc b ON a.mbr_no = b.mbr_no
+		WHERE b.tokn_id = #{toknId, jdbcType=VARCHAR}
+			AND a.mbr_stat_cd = 'ACT'
+    		AND b.id_cntc_tp_cd = #{idCntcTpCd, jdbcType=VARCHAR}
+    		<if test="mallId != null">
+            AND a.sso_grp_cd IN (SELECT sso_grp_cd FROM sys_mall WHERE mall_id = #{mallId, jdbcType=VARCHAR})
+        	</if>
+    </select>    
+
+	<update id="updateMbrIdCntc" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+		/* [biz.mbr.xml][updateMbrIdCntc][회원ID연계정보수정][Seed] */
+		MERGE INTO mbr_id_cntc
+		USING DUAL
+			ON ( mbr_no = #{mbrNo,jdbcType=VARCHAR}
+				AND id_cntc_tp_cd = #{idCntcTpCd,jdbcType=VARCHAR})
+
+		WHEN MATCHED THEN
+		UPDATE
+			SET tokn_id = #{toknId,jdbcType=VARCHAR}
+			    , udter_id = #{mbrNo,jdbcType=VARCHAR}	                	/* 수정자 */
+				, udt_dt = SYSDATE											/* 수정일자 */
+				<if test="toknId == null or toknId == '' ">
+				, delete_yn = 'Y'
+				</if>
+				<if test="toknId != null and toknId != '' ">
+				, delete_yn = 'N'
+				</if>
+				<if test="loginId != null and loginId != '' ">
+				, login_id = #{loginId,jdbcType=VARCHAR}
+				</if>
+				<if test="toknId != null and toknId != '' and idCntcTpCd == 'NAVER' ">
+				, reg_dt = SYSDATE					/* toknId 가 update 될때 등록일자를 업데이트 하여 수정일자와 같게 함. 그래야 로그인시 연동 되었습니다. 를 화면에 출력 함.  */
+				</if>				
+		WHEN NOT MATCHED
+		THEN
+		INSERT (
+			mbr_no
+			, id_cntc_tp_cd
+			, tokn_id
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+			, login_id
+			, delete_yn
+		)
+		VALUES (
+			#{mbrNo,jdbcType=VARCHAR}
+			, #{idCntcTpCd,jdbcType=VARCHAR}
+			, #{toknId,jdbcType=VARCHAR}
+			, #{mbrNo,jdbcType=VARCHAR}
+			, SYSDATE
+		<choose>
+			<when test="udterId != null and udterId != '' ">
+			, #{udterId,jdbcType=VARCHAR}
+			</when>
+			<otherwise>
+			, #{mbrNo,jdbcType=VARCHAR}
+			</otherwise>
+		</choose>
+			, SYSDATE
+		<choose>
+			<when test="loginId != null and loginId != '' ">
+			, #{loginId,jdbcType=VARCHAR}
+			</when>
+			<otherwise>
+			, (SELECT mbr_id FROM mbr WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR})
+			</otherwise>
+		</choose>			
+			, 'N'
+		)
+	</update>
+
+	<insert id="insertMbrIdCntcHist" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+		/* [biz.mbr.xml][insertMbrIdCntcHist][회원ID연계정보이력생성][Seed] */
+		INSERT INTO mbr_id_cntc_hist (
+			mbr_no
+			, id_cntc_tp_cd
+			, hist_dt
+			, tokn_id
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+			, login_id
+			, delete_yn
+			, pw_reconfig_yn
+		)
+		SELECT
+			mbr_no
+			, id_cntc_tp_cd
+			, SYSTIMESTAMP
+			, tokn_id
+			, regtr_id
+			, SYSDATE
+			, udter_id
+			, SYSDATE
+			, login_id
+			, delete_yn
+			, pw_reconfig_yn
+		FROM mbr_id_cntc
+		WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+			AND id_cntc_tp_cd = #{idCntcTpCd,jdbcType=VARCHAR}
+	</insert>
+
+	<select id="selectFaceBookUserInfo" parameterType="java.util.HashMap" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+		SELECT /* [biz.mbr.xml][selectFaceBookUserInfo][페이스북연계회원아이디조회-마이페이지][Owen] */
+    		b.mbr_no
+			, b.id_cntc_tp_cd
+			, b.tokn_id
+			, b.regtr_id
+			, b.reg_dt
+			, b.udter_id
+			, b.udt_dt
+			, b.login_id
+			, b.delete_yn
+    	 FROM MBR a
+			INNER JOIN MBR_ID_CNTC b ON a.mbr_no = b.mbr_no
+		WHERE b.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+			AND a.mbr_stat_cd = 'ACT'
+    		AND b.id_cntc_tp_cd = 'FACEBUK'
+    		AND b.delete_yn = 'N'
+    		AND b.login_id = #{mbrId,jdbcType=VARCHAR}
+    		<if test="mallId != null">
+            AND a.sso_grp_cd IN (SELECT sso_grp_cd FROM sys_mall WHERE mall_id = #{mallId, jdbcType=VARCHAR})
+        	</if>
+	</select>
+
+	<select id="selectNaverUserInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntcExtend" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+		SELECT /* [biz.mbr.xml][selectNaverUserInfo][네이버연계회원아이디조회-마이페이지][daelim.im] */
+    		b.mbr_no
+			, b.id_cntc_tp_cd
+			, b.tokn_id
+			, b.regtr_id
+			, b.reg_dt
+			, b.udter_id
+			, b.udt_dt			
+			<choose>
+				<when test='maskingYn == "Y"'>
+					, DECODE(INSTR(b.login_id, '@'), 0, FN_MASKING('ID', b.login_id , '', 'Y'), FN_MASKING('EMAIL', b.login_id , '', 'Y')) AS login_id 
+				</when>
+				<otherwise>
+					, b.login_id
+				</otherwise>
+			</choose>			
+			, b.delete_yn
+			, b.pw_reconfig_yn
+    	 FROM MBR a
+			INNER JOIN MBR_ID_CNTC b ON a.mbr_no = b.mbr_no
+		WHERE 1 = 1
+        <choose>
+        <when test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(loginId)">
+            AND b.LOGIN_ID = #{loginId,jdbcType=VARCHAR}
+        </when>
+        <when test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(toknId)">
+            AND b.TOKN_ID = #{toknId,jdbcType=VARCHAR}
+        </when>
+        <otherwise>
+            AND b.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+        </otherwise>
+        </choose>
+			AND a.mbr_stat_cd = 'ACT'
+    		AND b.id_cntc_tp_cd = #{idCntcTpCd,jdbcType=VARCHAR}
+    	<if test="deleteYn != null">
+    		AND b.delete_yn = #{deleteYn,jdbcType=VARCHAR}
+    	</if>
+    	<if test="mallId != null">
+            AND a.sso_grp_cd IN (SELECT sso_grp_cd FROM sys_mall WHERE mall_id = #{mallId, jdbcType=VARCHAR})
+        </if>
+	</select>
+   
+    <select id="getMbrIdMbrIdCntc" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultMap="memberResult" >
+        /* [biz.mbr.xml][getMbrIdMbrIdCntc][네이버 연동 회원 조회 : 아이디 찾기 ][daelim.im] */
+         SELECT
+	        fn_masking('ID', a.mbr_id, 'RTR', 'Y') AS mbr_id
+	        , a.mbr_nm
+	        , a.mbr_email
+	        , a.join_dt
+	        , a.mbr_no
+	        FROM mbr a
+			WHERE 1=1
+
+			    <if test="mbrEmail != null">
+			    AND a.mbr_email = #{mbrEmail,jdbcType=VARCHAR}
+			    </if>			    
+				AND a.mbr_stat_cd = 'ACT'
+	    		<if test="mallId != null">
+	            AND a.sso_grp_cd IN (SELECT sso_grp_cd FROM sys_mall WHERE mall_id = #{mallId, jdbcType=VARCHAR})
+	        	</if>
+    </select>
+       	
+	<select id="selectMemberOptionalAgreeList" resultType="com.plgrim.ncp.biz.member.data.MemberAgreementDTO">
+		SELECT /* [biz.mbr.xml][selectMemberOptionalAgreeList][회원 선택동의 리스트] */
+			A.STPLAT_CD,
+		    B.STPLAT_DSCR,
+		    A.STPLAT_IEM_AGR_YN,
+		    A.REG_DT,
+		    A.UDT_DT
+		FROM MBR_STPLAT_AGR A
+		    JOIN SYS_STPLAT B ON A.STPLAT_CD = B.STPLAT_CD
+		WHERE A.MBR_NO = #{mbrNo}
+		    AND (A.STPLAT_CD LIKE '%MARKT_PSNL_INFO_COLCT_USEF_AGR' OR A.STPLAT_CD LIKE '%PSNL_INFO_THPR_OFFER_DETL')
+    </select>
+
+	<!-- 회원 발급 쿠폰 저장 -->
+	<insert id="insertMemberIssueCPN" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIssuCpn">
+
+	    <selectKey keyProperty="mbrCpnNo" resultType="String" order="BEFORE">
+	        SELECT 'CP' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(TO_CHAR(SQ_MBR_ISSU_CPN.NEXTVAL), 7, '0')
+	          FROM DUAL
+	    </selectKey>
+
+		 /* [mbr.xml][insertMemberIssueCoupon][회원 발급 쿠폰 저장][20161116] */
+	    INSERT INTO MBR_ISSU_CPN
+		(
+	        MBR_CPN_NO
+	       ,MBR_NO
+	       ,CPN_TP_CD
+	       ,CPN_STAT_CD
+	       ,CPN_PUBLI_DT
+	       ,VALID_BEG_DATE
+	       ,VALID_END_DATE
+	       ,PRM_NO
+	       ,CPN_CRTFC_CD
+	       ,ISSU_ADMIN_ID
+	       ,CPN_USE_DT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{mbrCpnNo,jdbcType=VARCHAR}
+	       ,#{mbrNo,jdbcType=VARCHAR}
+	       ,#{cpnTpCd,jdbcType=VARCHAR}
+	       ,#{cpnStatCd,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{validBegDate,jdbcType=VARCHAR}
+	       ,#{validEndDate,jdbcType=VARCHAR}
+	       ,#{prmNo,jdbcType=VARCHAR}
+	       ,#{cpnCrtfcCd,jdbcType=VARCHAR}
+	       ,#{issuAdminId,jdbcType=VARCHAR}
+	       ,#{cpnUseDt, jdbcType=TIMESTAMP}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+    </insert>
+
+	<select id="selectMbrStatus" parameterType="String" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.Mbr">
+		SELECT /* [biz.mbr.xml][selectMbrStatus][회원 정보 조회][Id] */
+			  MBR_NO
+			, MBR_STAT_CD
+			, MBR_TP_CD
+			, MBR_ATRB_CD
+			, UNITY_MBR_CRTFC_SECT_CD
+			, UNITY_MBR_CRTFC_DT
+			, MBR_NM
+			, MBR_BRTHDY_SLRCLD_YN
+			, MBR_BRTHDY
+			, MBR_SEX_SECT_CD
+			, FRGNR_YN
+			, PSITN_GRPCO_ID
+			, MBR_EMPL_NO
+			, MBR_ID
+			, JOIN_MBR_IP
+			, MBR_PW
+			, MBR_ERP_PW
+			, MBR_LOGIN_LAST_FAILR_COUNT
+			, MBR_PW_LAST_UDT_DT
+			, TMPR_PW_YN
+			, MBR_EMAIL
+			, MOBIL_NATION_CD
+			, MOBIL_NATION_NO
+			, MOBIL_AREA_NO
+			, MOBIL_TLOF_NO
+			, MOBIL_TLOF_WTHN_NO
+			, OTEL_NATION_NO
+			, OTEL_AREA_NO
+			, OTEL_TLOF_NO
+			, OTEL_TLOF_WTHN_NO
+			, TEL_NATION_NO
+			, TEL_AREA_NO
+			, TEL_TLOF_NO
+			, TEL_TLOF_WTHN_NO
+			, JOIN_NATION_CD
+			, JOIN_DT
+			, SSO_GRP_CD
+			, JOIN_MALL_ID
+			, JOIN_LANG_CD
+			, JOIN_DVC_CD
+			, OS_CD
+			, MOBILE_APP_SECT_CD
+			, INFLOW_SN
+			, LINKPRC_SESION_ID
+			, DRMC_RESN_CONT
+			, DRMC_DT
+			, SECSN_SECT_CD
+			, SECSN_RESN_CD
+			, SECSN_RESN_DETAIL_CONT
+			, SECSN_DATE
+			, ENFRCSECSN_DSPS_ID
+			, MBR_ADDR_NATION_CD
+			, MBR_ADDR_TP_CD
+			, MBR_ADDR_SECT_CD
+			, MBR_POST_NO
+			, MBR_BASE_ADDR
+			, MBR_DETAIL_ADDR
+			, AUD_CD
+			, MBR_CTY_NM
+			, MBR_LCLTY_NM
+			, CPR_NM
+			, CPR_RPRSTIV_NM
+			, BMAN_REG_NO
+			, CPRTEL_NATION_NO
+			, CPRTEL_AREA_NO
+			, CPRTEL_TLOF_NO
+			, CPRTEL_TLOF_WTHN_NO
+			, CPR_TAX_BILL_CHRGER_EMAIL
+			, CPR_REG_NO
+			, INFOR_NTCN_RECPTN_TP_CD
+			, EMAIL_RECPTN_AGR_YN
+			, LAST_EMAIL_RECPTN_AGR_DT
+			, EMAIL_RECPTN_REJECT_TOKN_ID
+			, SMS_RECPTN_AGR_YN
+			, LAST_SMS_RECPTN_AGR_DT
+			, DM_RECPTN_AGR_YN
+			, LAST_DM_RECPTN_AGR_DT
+			, TM_RECPTN_AGR_YN
+			, LAST_TM_RECPTN_AGR_DT
+			, ERP_CSTMR_NO
+			, REGTR_ID
+			, REG_DT
+			, UDTER_ID
+			, UDT_DT
+		FROM MBR
+		WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	</select>
+
+    <select id="selectNaverConnectCount" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc" resultType="long">
+        SELECT /* [biz.mbr.xml][selectNaverConnectCount][조회 : 네이버 회원가입 및 연동 조회][Sungho.Moon] */
+        COUNT(*)
+        FROM mbr_id_cntc
+        WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+        AND id_cntc_tp_cd = #{idCntcTpCd, jdbcType=VARCHAR}
+    </select>
+
+	<select id="selectNaverUdterIdInfo" parameterType="java.util.HashMap" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+		SELECT /* [biz.mbr.xml][selectNaverUdterIdInfo][비밀번호를 설정한 아이디는 UPTER_ID 정보를 가져온다.][Sungho.Moon] */
+			  b.udter_id,
+			  b.login_id,
+			  b.pw_reconfig_yn
+    	 FROM MBR a
+			INNER JOIN MBR_ID_CNTC b ON a.mbr_no = b.mbr_no
+		WHERE b.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+			AND a.mbr_stat_cd = 'ACT'
+    		AND b.id_cntc_tp_cd = #{idCntcTpCd,jdbcType=VARCHAR}
+	</select>
+
+    <update id="updateMemberCampagin" parameterType="Map">
+        UPDATE /* [biz.mbr.xml][updateMemberCampagin][sms,email 정보 변경][Moon.SungHo] */
+        mbr
+        SET
+        	email_recptn_agr_yn = #{emailRecptnAgrYn,jdbcType=VARCHAR}          /* 이메일 수신 동의 여부 */
+        <if test='emailRecptnAgrYn != null and emailRecptnAgrYn == "Y"'>
+            , last_email_recptn_agr_dt = DECODE(email_recptn_agr_yn, 'N', SYSDATE, last_email_recptn_agr_dt)
+        </if>
+        	, sms_recptn_agr_yn = #{smsRecptnAgrYn,jdbcType=VARCHAR}              /* SMS 수신 동의 여부 */
+        <if test='smsRecptnAgrYn != null and smsRecptnAgrYn == "Y"'>
+            , last_sms_recptn_agr_dt = DECODE(sms_recptn_agr_yn, 'N', SYSDATE, last_sms_recptn_agr_dt)
+        </if>
+        , udter_id = #{udterId,jdbcType=VARCHAR}                              /* 수정자 ID */
+        , udt_dt = SYSDATE                                                    /* 수정 일시 */
+        WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+       
+	<update id="updateMbrIdCntcUdtDtTouch" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIdCntc">
+		/* [biz.mbr.xml][updateMbrIdCntcUdtDtTouch][네이버ID로 로그인 처음 연동 하고 로그인 했을때 사용됨 수정][daelim.im] */
+		UPDATE mbr_id_cntc
+			SET udt_dt = TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')+1, 'YYYYMMDDHH24MISS')											/* 수정일자 로그인 성공  SecurityAuthenticationSuccessHandler 에서 update 되는 경우가 있어 udt_dt 값을 차이를 주기 위함에 to_date 함수를 사용했음.*/				
+			WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+			  AND id_cntc_tp_cd = #{idCntcTpCd,jdbcType=VARCHAR}
+	</update>
+
+    <select id="isCheckkEmpCrtfc" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.Mbr" resultType="Integer">
+        SELECT /* [biz.mbr.xml][selectEmplNoCount][조회 : 임직원 사번으로 count 조회][Ivy] */
+        COUNT(*)
+        FROM MBR
+        WHERE MBR_EMPL_NO = #{mbrEmplNo,jdbcType=VARCHAR}
+          AND SSO_GRP_CD = #{ssoGrpCd,jdbcType=VARCHAR}
+          AND PSITN_GRPCO_ID = #{psitnGrpcoId,jdbcType=VARCHAR}
+          AND MBR_STAT_CD = 'ACT'
+          AND MBR_ATRB_CD != 'GNRL_MBR'
+    </select>
+
+    <update id="updateEmpInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.Mbr">
+        UPDATE /* [biz.mbr.xml][updateEmpInfo] [임직원 인증 완료 후 임직원 정보 업데이트] */
+			   MBR
+		  SET
+			   MBR_ATRB_CD = #{mbrAtrbCd,jdbcType=VARCHAR}
+			  ,PSITN_GRPCO_ID = #{psitnGrpcoId,jdbcType=VARCHAR}
+			  ,MBR_EMPL_NO = #{mbrEmplNo,jdbcType=VARCHAR}
+			  ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			  ,UDT_DT = SYSDATE
+		WHERE  MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectMbrGrd" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrGrd" resultType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrGrd">
+        SELECT *
+        FROM
+        (
+        SELECT  /* [biz.mbr.xml][selectMbrGrd][회원 등급 조회][Id] */
+               MALL_ID
+              ,MBR_NO
+              ,GRD_APL_BEG_DT
+              ,GRD_APL_END_DT
+              ,ONLNE_GRD_CD
+              ,GRD_SLCTN_DT
+              ,ACMSLT_SMON_BEG_DT
+              ,ACMSLT_SMON_END_DT
+          FROM MBR_GRD
+         WHERE 1 = 1
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mallId)">
+		   AND MALL_ID = #{mallId, jdbcType=VARCHAR}
+		</if>
+           AND MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+           AND SYSDATE BETWEEN GRD_APL_BEG_DT AND GRD_APL_END_DT
+         ORDER BY GRD_SLCTN_DT DESC
+        )
+         WHERE ROWNUM = 1
+    </select>
+
+    <update id="updateMbrIdCntcHistLog" parameterType="java.util.HashMap">
+		/* [biz.mbr.xml][updateMbrIdCntcHistLog][회원ID연계정보이력생성][Seed] */
+		UPDATE 
+			MBR_ID_CNTC_HIST
+		SET
+			MENU_SECT_NM=#{menusectnm,jdbcType=VARCHAR}
+		WHERE 
+			mbr_no = #{mbrNo,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateMbrGrdFo" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrGrd" >
+		UPDATE MBR_GRD mg /* [biz.mbr.xml][updateMbrGrdFo][온라인 회원 등급 변경시 기존 등급 변경][Id] */
+		SET mg.UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			,mg.UDT_DT = SYSDATE
+			,mg.GRD_APL_END_DT = #{grdAplEndDt,jdbcType=VARCHAR}
+		WHERE 1=1
+		AND mg.MALL_ID = #{mallId,jdbcType=VARCHAR}
+		AND mg.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		AND SYSDATE BETWEEN mg.GRD_APL_BEG_DT AND mg.GRD_APL_END_DT
+	</update>
+
+	<update id="insertMbrGrdFo" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrGrd" >
+		MERGE INTO MBR_GRD mg /* [biz.mbr.xml][insertMbrGrdFo][가입시 온라인 회원 등급 추가][jenna] */
+		USING DUAL ON ( mg.MALL_ID = #{mallId} AND mg.MBR_NO = #{mbrNo} AND mg.GRD_APL_BEG_DT=#{grdAplBegDt} )
+ 		WHEN MATCHED THEN
+			UPDATE
+			SET ONLNE_GRD_CD = #{onlneGrdCd,jdbcType=VARCHAR}
+				,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+				,GRD_APL_END_DT = to_date('9999-12-31 23:59:59', 'yyyy-mm-dd hh24:mi;ss')
+				,UDT_DT = SYSDATE
+		WHEN NOT MATCHED THEN
+			INSERT(
+				MALL_ID
+				,MBR_NO
+				,GRD_APL_BEG_DT
+				,GRD_APL_END_DT
+				,ONLNE_GRD_CD
+				,GRD_SLCTN_DT
+				,ACMSLT_SMON_BEG_DT
+				,ACMSLT_SMON_END_DT
+				,REGTR_ID
+				,REG_DT
+				,UDTER_ID
+				,UDT_DT
+ 			) VALUES (
+				#{mallId}
+				, #{mbrNo}
+				, #{grdAplBegDt}
+				, #{grdAplEndDt}
+				, #{onlneGrdCd}
+				, #{grdSlctnDt}
+				, #{acmsltSmonBegDt}
+				, #{acmsltSmonEndDt}
+				, #{regtrId}
+				, SYSDATE
+				, #{udterId}
+				, SYSDATE
+			)
+	</update>
+	
+	<update id="insertMbrGrdFoLogin" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrGrd" >
+		MERGE INTO MBR_GRD mg /* [biz.mbr.xml][insertMbrGrdFoLogin][가입시 온라인 회원 등급 추가][jenna] */
+		USING DUAL ON ( mg.MALL_ID = #{mallId} AND mg.MBR_NO = #{mbrNo}) 		
+		WHEN NOT MATCHED THEN
+			INSERT(
+				MALL_ID
+				,MBR_NO
+				,GRD_APL_BEG_DT
+				,GRD_APL_END_DT
+				,ONLNE_GRD_CD
+				,GRD_SLCTN_DT
+				,ACMSLT_SMON_BEG_DT
+				,ACMSLT_SMON_END_DT
+				,REGTR_ID
+				,REG_DT
+				,UDTER_ID
+				,UDT_DT
+ 			) VALUES (
+				#{mallId}
+				, #{mbrNo}
+				, #{grdAplBegDt}
+				, #{grdAplEndDt}
+				, #{onlneGrdCd}
+				, #{grdSlctnDt}
+				, #{acmsltSmonBegDt}
+				, #{acmsltSmonEndDt}
+				, #{regtrId}
+				, SYSDATE
+				, #{udterId}
+				, SYSDATE
+			)
+	</update>
+
+	<update id="updateMemberForReleaseDrmncy" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.Mbr">
+		UPDATE /* [biz.mbr.xml][updateMemberForReleaseDrmncy][휴면 해제 처리][Id] */
+		MBR
+		SET  MBR_STAT_CD = #{mbrStatCd,jdbcType=VARCHAR}
+		   , DRMC_RESN_CONT = null
+		   , DRMC_DT = null
+		   , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		   , UDT_DT = SYSDATE
+		WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	</update>
+
+    <select id="selectSecessionMbrInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.Mbr" resultMap="memberResult">
+        SELECT  /* [biz.mbr.xml][selectSecessionMbrInfo][탈퇴한 회원 정보 조회][Id] */
+               MBR_NO
+              ,MBR_STAT_CD
+              ,MBR_TP_CD
+              ,SECSN_SECT_CD
+              ,SECSN_RESN_CD
+              ,SECSN_RESN_DETAIL_CONT
+              ,TO_CHAR(SECSN_DATE, 'YYYY-MM-DD') AS SECSN_DT_STR
+          FROM MBR
+         WHERE 1 = 1
+           AND ERP_CSTMR_NO = #{erpCstmrNo, jdbcType=VARCHAR}
+           AND ROWNUM = 1
+    </select>
+
+    <select id="selectMbrSysInflow" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysInflow" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysInflow">
+		SELECT  /* [biz.mbr.xml][selectMbrSysInflow][유입 경로 조회][Id] */
+			   INFLOW_SN
+			 , MALL_ID
+			 , LANG_CD
+			 , USE_YN
+			 , EXCUT_REM_NM
+			 , ADVT_AFF_COM_ID
+			 , INFLOW_SECT_CD
+			 , INFLOW_CHNNL_TP_CD
+			 , BEG_DT
+			 , END_DT
+			 , PC_URL
+			 , MOBILE_URL
+			 , FEE_RT
+			 , FEE_USE_YN
+			 , ADVT_MATR_NM
+			 , ONLNE_UNT_DSCR
+			 , CREAT_CD
+			 , LP_CD
+			 , INFLOW_DSCR
+		  FROM SYS_INFLOW
+		 WHERE 1 = 1
+		   AND USE_YN = 'Y'
+		<if test="mallId != null">
+		   AND MALL_ID = #{mallId,jdbcType=NUMERIC}
+		</if>
+		<if test="inflowSn != null">
+		   AND INFLOW_SN = #{inflowSn,jdbcType=NUMERIC}
+		</if>
+		<if test="excutRemNm != null">
+		   AND EXCUT_REM_NM = #{excutRemNm, jdbcType=VARCHAR}
+		</if>
+    </select>
+
+	<update id="updateMemberForErpCstmrNoInit" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.Mbr">
+		UPDATE /* [biz.mbr.xml][updateMemberForErpCstmrNoInit][ERP_CSTMR_NO 삭제 처리][Id] */
+		MBR
+		SET  ERP_CSTMR_NO = null
+		   , UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+		   , UDT_DT = SYSDATE
+		WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateMbrForEmp" parameterType="mbr">
+		UPDATE /* [biz.mbr.xml][updateMbrForEmp][임직원 변경 처리][Id] */
+			   MBR
+		   SET UDTER_ID = #{mbrNo,jdbcType=VARCHAR}
+		     , UDT_DT = SYSDATE
+		     , MBR_ATRB_CD = #{mbrAtrbCd,jdbcType=VARCHAR}
+		     , MBR_EMPL_NO = #{mbrEmplNo,jdbcType=VARCHAR}
+		 WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	</update>
+
+
+	<resultMap id="memberGradeInfoResult" type="infMbrGrdInfoRecptn">
+		<result property="erpCstmrNo" column="ERP_CSTMR_NO" />
+		<result property="mbrGrdModDt" column="MBR_GRD_MOD_DT" />
+		<result property="mbrGrdCd" column="MBR_GRD_CD" />
+		<result property="brndId" column="BRND_ID" />
+		<result property="prmTpCd" column="PRM_TP_CD" />
+		<result property="erpCpnId" column="ERP_CPN_ID" />
+		<result property="regDt" column="REG_DT" />
+	</resultMap>
+
+    <select id="selectMemberGradeInfoCp" parameterType="infMbrGrdInfoRecptn" resultMap="memberGradeInfoResult">
+ SELECT * FROM (		
+		SELECT /* [biz.mbr.xm][selectMemberGradeInfo][ken] */
+			   ERP_CSTMR_NO
+			 , MBR_GRD_MOD_DT
+			 , MBR_GRD_CD
+			 , BRND_ID
+			 , PRM_TP_CD
+			 , ERP_CPN_ID
+			 , REG_DT
+		  FROM INF_MBR_GRD_INFO_RECPTN
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+	  <if test='!@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(brndId, "X")'>
+	  ORDER BY MBR_GRD_MOD_DT DESC
+	  </if>
+	  <if test='@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(brndId, "X")'>
+	  ORDER BY MBR_GRD_MOD_DT ASC
+	  </if>
+	           ) 
+	     <where>
+	     	<if test='!@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(brndId, "X")'>
+	     		ROWNUM = 1
+	     	</if>
+	     </where>
+         /* WHERE ROWNUM = 1 */
+    </select>
+
+	<delete id="deleteInfMbrGrdInfoRecptnCp" parameterType="infMbrGrdInfoRecptn">
+		DELETE /* [biz.mbr.xm][deleteInfMbrGrdInfoRecptn][ken] */
+		  FROM INF_MBR_GRD_INFO_RECPTN
+		 WHERE 1 = 1
+		   AND ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

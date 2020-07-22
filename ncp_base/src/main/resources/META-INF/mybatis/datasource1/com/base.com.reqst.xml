@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComReqst" parameterType="comReqst" resultType="comReqst">
+		SELECT /* com.plgrim.ncp.base.selectComReqst		Generator(Generator)	2018-05-23 */
+			   COM_REQST_SN
+			 , REQST_SJ
+			 , APPLCNT_NM
+			 , APPLCNT_TEL_NATION_NO
+			 , APPLCNT_TEL_AREA_NO
+			 , APPLCNT_TEL_TLOF_NO
+			 , APPLCNT_TEL_TLOF_WTHN_NO
+			 , APPLCNT_EMAIL
+			 , COM_NM
+			 , BMAN_REG_NO
+			 , RPRSTIV_NM
+			 , BRND_NM
+			 , CTGRY_DSCR
+			 , BRND_DSCR
+			 , LEGACY_DISTB_CHNNL_DSCR
+			 , MEMO_CONT
+			 , COM_REQST_PRCS_STAT_CD
+			 , PRCS_COMPT_DT
+			 , PRCS_COMPT_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_REQST
+		 WHERE 1 = 1
+	   	   AND COM_REQST_SN = #{comReqstSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateComReqst" parameterType="comReqst">
+		UPDATE /* com.plgrim.ncp.base.updateComReqst		Generator(Generator)	2018-05-23 */
+		COM_REQST SET
+			   REQST_SJ = #{reqstSj,jdbcType=VARCHAR}
+			 , APPLCNT_NM = #{applcntNm,jdbcType=VARCHAR}
+			 , APPLCNT_TEL_NATION_NO = #{applcntTelNationNo,jdbcType=VARCHAR}
+			 , APPLCNT_TEL_AREA_NO = #{applcntTelAreaNo,jdbcType=VARCHAR}
+			 , APPLCNT_TEL_TLOF_NO = #{applcntTelTlofNo,jdbcType=VARCHAR}
+			 , APPLCNT_TEL_TLOF_WTHN_NO = #{applcntTelTlofWthnNo,jdbcType=VARCHAR}
+			 , APPLCNT_EMAIL = #{applcntEmail,jdbcType=VARCHAR}
+			 , COM_NM = #{comNm,jdbcType=VARCHAR}
+			 , BMAN_REG_NO = #{bmanRegNo,jdbcType=VARCHAR}
+			 , RPRSTIV_NM = #{rprstivNm,jdbcType=VARCHAR}
+			 , BRND_NM = #{brndNm,jdbcType=VARCHAR}
+			 , CTGRY_DSCR = #{ctgryDscr,jdbcType=VARCHAR}
+			 , BRND_DSCR = #{brndDscr,jdbcType=VARCHAR}
+			 , LEGACY_DISTB_CHNNL_DSCR = #{legacyDistbChnnlDscr,jdbcType=VARCHAR}
+			 , MEMO_CONT = #{memoCont,jdbcType=VARCHAR}
+			 , COM_REQST_PRCS_STAT_CD = #{comReqstPrcsStatCd,jdbcType=VARCHAR}
+			 , PRCS_COMPT_DT = #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , PRCS_COMPT_ADMIN_ID = #{prcsComptAdminId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_REQST_SN = #{comReqstSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertComReqst" parameterType="comReqst">
+		INSERT /* com.plgrim.ncp.base.insertComReqst		Generator(Generator)	2018-05-23 */
+		INTO   COM_REQST (
+			   COM_REQST_SN
+			 , REQST_SJ
+			 , APPLCNT_NM
+			 , APPLCNT_TEL_NATION_NO
+			 , APPLCNT_TEL_AREA_NO
+			 , APPLCNT_TEL_TLOF_NO
+			 , APPLCNT_TEL_TLOF_WTHN_NO
+			 , APPLCNT_EMAIL
+			 , COM_NM
+			 , BMAN_REG_NO
+			 , RPRSTIV_NM
+			 , BRND_NM
+			 , CTGRY_DSCR
+			 , BRND_DSCR
+			 , LEGACY_DISTB_CHNNL_DSCR
+			 , MEMO_CONT
+			 , COM_REQST_PRCS_STAT_CD
+			 , PRCS_COMPT_DT
+			 , PRCS_COMPT_ADMIN_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comReqstSn,jdbcType=NUMERIC}
+			 , #{reqstSj,jdbcType=VARCHAR}
+			 , #{applcntNm,jdbcType=VARCHAR}
+			 , #{applcntTelNationNo,jdbcType=VARCHAR}
+			 , #{applcntTelAreaNo,jdbcType=VARCHAR}
+			 , #{applcntTelTlofNo,jdbcType=VARCHAR}
+			 , #{applcntTelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{applcntEmail,jdbcType=VARCHAR}
+			 , #{comNm,jdbcType=VARCHAR}
+			 , #{bmanRegNo,jdbcType=VARCHAR}
+			 , #{rprstivNm,jdbcType=VARCHAR}
+			 , #{brndNm,jdbcType=VARCHAR}
+			 , #{ctgryDscr,jdbcType=VARCHAR}
+			 , #{brndDscr,jdbcType=VARCHAR}
+			 , #{legacyDistbChnnlDscr,jdbcType=VARCHAR}
+			 , #{memoCont,jdbcType=VARCHAR}
+			 , #{comReqstPrcsStatCd,jdbcType=VARCHAR}
+			 , #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , #{prcsComptAdminId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComReqst" parameterType="comReqst">
+		DELETE /* com.plgrim.ncp.base.deleteComReqst		Generator(Generator)	2018-05-23 */
+		  FROM COM_REQST
+		 WHERE 1 = 1
+		   AND COM_REQST_SN = #{comReqstSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

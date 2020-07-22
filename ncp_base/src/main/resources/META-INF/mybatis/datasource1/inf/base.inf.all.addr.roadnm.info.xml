@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfAllAddrRoadnmInfo" parameterType="infAllAddrRoadnmInfo" resultType="infAllAddrRoadnmInfo">
+		SELECT /* com.plgrim.ncp.base.selectInfAllAddrRoadnmInfo		Generator(Generator)	2018-05-23 */
+			   SIGNGU_CD
+			 , ROAD_NM_NO
+			 , EMD_SN
+			 , ROAD_NM
+			 , ENG_ROAD_NM
+			 , SIDO_NM
+			 , SIGNGU_NM
+			 , EMD_SECT
+			 , EMD_CD
+			 , UPPER_ROAD_NM_NO
+			 , UPPER_ROAD_NM
+			 , USE_YN
+			 , MOD_HIST_RESN
+			 , MOD_HIST_INFO
+			 , ENG_SIDO_NM
+			 , ENG_SIGNGU_NM
+			 , ENG_EMD_NM
+			 , NTFC_DATE
+			 , ERSR_DATE
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_ALL_ADDR_ROADNM_INFO
+		 WHERE 1 = 1
+	   	   AND SIGNGU_CD = #{signguCd,jdbcType=VARCHAR}
+		   AND ROAD_NM_NO = #{roadNmNo,jdbcType=VARCHAR}
+		   AND EMD_SN = #{emdSn,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateInfAllAddrRoadnmInfo" parameterType="infAllAddrRoadnmInfo">
+		UPDATE /* com.plgrim.ncp.base.updateInfAllAddrRoadnmInfo		Generator(Generator)	2018-05-23 */
+		INF_ALL_ADDR_ROADNM_INFO SET
+			   ROAD_NM = #{roadNm,jdbcType=VARCHAR}
+			 , ENG_ROAD_NM = #{engRoadNm,jdbcType=VARCHAR}
+			 , SIDO_NM = #{sidoNm,jdbcType=VARCHAR}
+			 , SIGNGU_NM = #{signguNm,jdbcType=VARCHAR}
+			 , EMD_SECT = #{emdSect,jdbcType=VARCHAR}
+			 , EMD_CD = #{emdCd,jdbcType=VARCHAR}
+			 , UPPER_ROAD_NM_NO = #{upperRoadNmNo,jdbcType=VARCHAR}
+			 , UPPER_ROAD_NM = #{upperRoadNm,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , MOD_HIST_RESN = #{modHistResn,jdbcType=VARCHAR}
+			 , MOD_HIST_INFO = #{modHistInfo,jdbcType=VARCHAR}
+			 , ENG_SIDO_NM = #{engSidoNm,jdbcType=VARCHAR}
+			 , ENG_SIGNGU_NM = #{engSignguNm,jdbcType=VARCHAR}
+			 , ENG_EMD_NM = #{engEmdNm,jdbcType=VARCHAR}
+			 , NTFC_DATE = #{ntfcDate,jdbcType=VARCHAR}
+			 , ERSR_DATE = #{ersrDate,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND SIGNGU_CD = #{signguCd,jdbcType=VARCHAR}
+		   AND ROAD_NM_NO = #{roadNmNo,jdbcType=VARCHAR}
+		   AND EMD_SN = #{emdSn,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertInfAllAddrRoadnmInfo" parameterType="infAllAddrRoadnmInfo">
+		INSERT /* com.plgrim.ncp.base.insertInfAllAddrRoadnmInfo		Generator(Generator)	2018-05-23 */
+		INTO   INF_ALL_ADDR_ROADNM_INFO (
+			   SIGNGU_CD
+			 , ROAD_NM_NO
+			 , EMD_SN
+			 , ROAD_NM
+			 , ENG_ROAD_NM
+			 , SIDO_NM
+			 , SIGNGU_NM
+			 , EMD_SECT
+			 , EMD_CD
+			 , UPPER_ROAD_NM_NO
+			 , UPPER_ROAD_NM
+			 , USE_YN
+			 , MOD_HIST_RESN
+			 , MOD_HIST_INFO
+			 , ENG_SIDO_NM
+			 , ENG_SIGNGU_NM
+			 , ENG_EMD_NM
+			 , NTFC_DATE
+			 , ERSR_DATE
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{signguCd,jdbcType=VARCHAR}
+			 , #{roadNmNo,jdbcType=VARCHAR}
+			 , #{emdSn,jdbcType=VARCHAR}
+			 , #{roadNm,jdbcType=VARCHAR}
+			 , #{engRoadNm,jdbcType=VARCHAR}
+			 , #{sidoNm,jdbcType=VARCHAR}
+			 , #{signguNm,jdbcType=VARCHAR}
+			 , #{emdSect,jdbcType=VARCHAR}
+			 , #{emdCd,jdbcType=VARCHAR}
+			 , #{upperRoadNmNo,jdbcType=VARCHAR}
+			 , #{upperRoadNm,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{modHistResn,jdbcType=VARCHAR}
+			 , #{modHistInfo,jdbcType=VARCHAR}
+			 , #{engSidoNm,jdbcType=VARCHAR}
+			 , #{engSignguNm,jdbcType=VARCHAR}
+			 , #{engEmdNm,jdbcType=VARCHAR}
+			 , #{ntfcDate,jdbcType=VARCHAR}
+			 , #{ersrDate,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfAllAddrRoadnmInfo" parameterType="infAllAddrRoadnmInfo">
+		DELETE /* com.plgrim.ncp.base.deleteInfAllAddrRoadnmInfo		Generator(Generator)	2018-05-23 */
+		  FROM INF_ALL_ADDR_ROADNM_INFO
+		 WHERE 1 = 1
+		   AND SIGNGU_CD = #{signguCd,jdbcType=VARCHAR}
+		   AND ROAD_NM_NO = #{roadNmNo,jdbcType=VARCHAR}
+		   AND EMD_SN = #{emdSn,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

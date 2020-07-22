@@ -1,0 +1,1115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.settlement.prm.fee.event">
+	
+	<!-- 수수료행사관리 목록조회 조건 -->
+	<sql id="whereSelectPrmFeeEventList">
+		<if test="searchEventBegDt != null and searchEventBegDt != '' and searchEventEndDt != null and searchEventEndDt != ''">
+			AND #{searchEventBegDt, jdbcType=VARCHAR} <![CDATA[<=]]> TO_CHAR (PFE.EVENT_BEG_DT, 'YYYYMMDD') /* 행사시작일 */
+        	AND #{searchEventEndDt, jdbcType=VARCHAR} <![CDATA[>=]]> TO_CHAR (PFE.EVENT_END_DT, 'YYYYMMDD') /* 행사종료일 */
+        </if>
+        <if test="searchFeeEventNm != null and searchFeeEventNm != ''">
+        	AND UPPER(PFE.FEE_EVENT_NM) LIKE '%'||UPPER(#{searchFeeEventNm, jdbcType=VARCHAR})||'%'                       /* 행사명 */
+        </if>
+         <if test='searchFeeEventTpCdList != null and searchFeeEventTpCdList != "" and searchFeeEventTpCdList.size() > 0'>
+        	AND    PFE.FEE_EVENT_TP_CD IN (<foreach collection="searchFeeEventTpCdList" item="feeEventTpCd" separator=",">#{feeEventTpCd}</foreach>)       /* 업체구분 */
+        </if>
+   		<if test='searchAffAgncCom != null and searchAffAgncCom != "" and searchAffAgncCom.size() > 0'>
+      		AND AFF_VRSC_COM_ID IN 
+      		<foreach collection="searchAffAgncCom" item="affAgncCom" open="(" close=")" separator=",">
+      			 #{affAgncCom}
+      		</foreach>
+   		</if>        
+		<if test="partmalComIds != null and partmalComIds != ''">
+	   		AND UPPER(COM.COM_ID) IN 
+	   		<foreach collection="partmalComIds" item="comId" open="(" close=")" separator=",">
+      			 UPPER(#{comId, jdbcType=VARCHAR})								
+      		</foreach>										/*업체ID*/
+		</if>
+		<if test="partmalComNms != null and partmalComNms != ''">
+	    	AND UPPER(COM.COM_NM) IN
+	    	<foreach collection="partmalComNms" item="comNm" open="(" close=")" separator=",">
+      			 UPPER(#{comNm, jdbcType=VARCHAR})						
+      		</foreach>										/*업체명*/
+		</if>
+		<if test="schUseYn != null and schUseYn != ''">
+          	AND PFE.USE_YN = #{schUseYn, jdbcType=VARCHAR} 	/*행사진행상태*/
+        </if>
+        /* 상품코드 검색*/
+        <choose>
+        	<when test="schTypeIds == 1">/*ERP품번(모델번호)*/
+        		<if test="multiNos != null and multiNos != ''">
+		          	AND PFEAG.APL_GOD_NO IN
+		          	(SELECT GOD_NO FROM GOD G WHERE G.ERP_GOD_NO IN
+		          	<foreach collection="multiNos" item="multiNo" open="(" close=")" separator=",">
+		      			 #{multiNo}
+		      		</foreach>
+		      		)								
+		        </if>
+        	</when>
+        	<when test="schTypeIds == 2">/*온라인품번*/
+        		<if test="multiNos != null and multiNos != ''">
+		          	AND PFEAG.APL_GOD_NO IN
+		          	<foreach collection="multiNos" item="multiNo" open="(" close=")" separator=",">
+		      			 #{multiNo}						
+		      		</foreach>						
+		        </if>
+        	</when>
+        	<when test="schTypeIds == 3">/*디자인코드*/
+        		<if test="multiNos != null and multiNos != ''">
+		          	AND PFEAG.APL_GOD_NO IN
+		          	(SELECT GOD_NO FROM GOD G WHERE G.DSGN_GRP_NO IN 
+		          	<foreach collection="multiNos" item="multiNo" open="(" close=")" separator=",">
+		      			 #{multiNo}	
+		      		</foreach>	
+		      		)							
+		        </if>
+        	</when>
+        	<when test="schTypeIds == 4">/*구온라인품번*/
+        		<if test="multiNos != null and multiNos != ''">
+		          	AND PFEAG.APL_GOD_NO IN
+		          	(SELECT GOD_NO FROM GOD G WHERE G.COM_GOD_NO IN 
+		          	<foreach collection="multiNos" item="multiNo" open="(" close=")" separator=",">
+		      			 #{multiNo}
+		      		</foreach>
+		      		)							
+		        </if>
+        	</when>
+        	<when test="schTypeIds == 5">/*스타일코드*/
+        		<if test="multiNos != null and multiNos != ''">
+		          	AND PFEAG.APL_GOD_NO IN
+		          	(SELECT GOD_NO FROM GOD G WHERE SUBSTR(G.COM_GOD_NO,0,INSTR(G.COM_GOD_NO,'-')-1) IN 
+		          	<foreach collection="multiNos" item="multiNo" open="(" close=")" separator=",">
+		      			 #{multiNo}
+		      		</foreach>
+		      		)							
+		        </if>
+        	</when>
+        </choose>
+		<if test="eventNos != null and eventNos != ''">
+          	AND PFE.FEE_EVENT_SN IN 
+          	<foreach collection="eventNos" item="eventNo" open="(" close=")" separator=",">
+      			 #{eventNo}
+      		</foreach>										/*행사번호*/
+        </if>
+    </sql>
+	
+	<!-- 수수료행사관리 목록조회 건수 -->
+	<select id="selectPrmFeeEventListCount" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultType="long">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventListCount][수수료행사관리목록조회건수][Mark] */
+		     COUNT(*)
+		FROM ( 
+		      SELECT *
+		        FROM(
+		        	  <if test="(searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))">
+				      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+				             ,PFE.FEE_EVENT_TP_CD                        /* 업체구분 */
+				             ,COM.COM_ID                                 /* 업체코드 */
+				             ,COM.COM_NM                                 /* 업체명 */
+				             ,PFE.EVENT_APL_TGT_CD                       /* 행사대상 구분 */
+				             ,PFE.FEE_EVENT_NM                           /* 행사명 */
+				             ,PFE.EVENT_BEG_DT                           /* 행사시작 */
+				             ,PFE.EVENT_END_DT                           /* 행사종료 */
+				             ,PFE.ADIT_FEE_RT                            /* 추가 수수료 율*/
+				             ,PFE.USE_YN                                 /* 사용여부 */
+				             ,PFE.REG_DT                                 /* 등록일 */
+				        FROM COM COM,
+				             PRM_FEE_EVENT_COM PFEC,
+				             PRM_FEE_EVENT PFE,
+				             PRM_FEE_EVENT_APL_GOD PFEAG,
+				             GOD GOD
+				       WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+				             AND COM.COM_ID = PFEC.COM_ID
+				             AND PFE.FEE_EVENT_SN = PFEAG.FEE_EVENT_SN
+				             AND PFEAG.APL_GOD_NO = GOD.GOD_NO		             
+				            <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+							<if test="searchGodTxt != null and searchGodTxt != ''">
+								<choose>
+									<when test="searchGodGubun eq 'gbName'">
+								    	AND UPPER(GOD.GOD_NM) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%'     /*상품명*/
+								    </when>
+								    <when test="searchGodGubun eq 'gbCode'">
+								   		AND UPPER(GOD.ERP_GOD_NO) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%' /*ERP 품번*/
+								    </when>
+								</choose>
+							</if>
+				      </if>
+					  <if test="((searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))) and (((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != ''))">
+				      UNION ALL
+				      </if>
+				      <if test="((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != '')">
+				      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+				             ,PFE.FEE_EVENT_TP_CD                        /* 업체구분 */
+				             ,COM.COM_ID                                 /* 업체코드 */
+				             ,COM.COM_NM                                 /* 업체명 */
+				             ,PFE.EVENT_APL_TGT_CD                       /* 행사대상 구분 */
+				             ,PFE.FEE_EVENT_NM                           /* 행사명 */
+				             ,PFE.EVENT_BEG_DT                           /* 행사시작 */
+				             ,PFE.EVENT_END_DT                           /* 행사종료 */
+				             ,PFE.ADIT_FEE_RT                            /* 추가 수수료 율*/
+				             ,PFE.USE_YN                                 /* 사용여부 */
+				             ,PFE.REG_DT                                 /* 등록일 */
+				        FROM COM COM,
+				             PRM_FEE_EVENT_COM PFEC,
+				             PRM_FEE_EVENT PFE,
+				             PRM_FEE_EVENT_BRND PFEB,
+				             SYS_BRND SB
+				       WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+				             AND COM.COM_ID = PFEC.COM_ID
+				             AND PFE.FEE_EVENT_SN = PFEB.FEE_EVENT_SN
+				             AND PFEB.BRND_ID = SB.BRND_ID
+				             <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+				             <if test="searchUpperBrndId != null and searchUpperBrndId != ''">
+				             	 AND SB.UPPER_BRND_ID = #{searchUpperBrndId, jdbcType=VARCHAR}
+				             </if>
+				             <if test="searchBrndId != null and searchBrndId != ''">
+				             	 AND SB.BRND_ID  in (   SELECT brnd_id
+                                                                 FROM sys_brnd
+                                                                WHERE erp_brnd_id
+                                                                         IS NOT NULL
+                                                           CONNECT BY PRIOR brnd_id =
+                                                                         upper_brnd_id
+                                                           START WITH brnd_id = #{searchBrndId, jdbcType=VARCHAR} )
+				             </if>
+				        </if>
+				     ) PRM
+				     GROUP BY FEE_EVENT_SN, FEE_EVENT_TP_CD, COM_ID, COM_NM, EVENT_APL_TGT_CD, FEE_EVENT_NM, EVENT_BEG_DT, EVENT_END_DT, ADIT_FEE_RT, USE_YN, REG_DT
+				 )
+	</select>
+	
+	<resultMap id="prmFeeEventListResultMap" type="com.plgrim.ncp.biz.settlement.result.PrmFeeEventListResult">
+		<result property="feeEventSn"	     column="FEE_EVENT_SN"	   /><!-- 수수료 행사 일련번호 -->
+		<result property="comTpNm"	         column="COM_TP_NM"	       /><!-- 업체구분 -->
+		<result property="comId"	         column="COM_ID"	       /><!-- 업체코드 -->
+		<result property="comNm"	         column="COM_NM"	       /><!-- 업체명 -->
+		<result property="eventAplTgtCd"     column="EVENT_APL_TGT_CD" /><!-- 행사대상 구분 -->
+		<result property="feeEventNm"	     column="FEE_EVENT_NM"	   /><!-- 행사명 -->
+		<result property="eventBegDt"	     column="EVENT_BEG_DT"	   /><!-- 행사시작 -->
+		<result property="eventEndDt"	     column="EVENT_END_DT"	   /><!-- 행사종료 -->
+		<result property="aditFeeRt"	     column="ADIT_FEE_RT"	   /><!-- 추가 수수료 율 -->
+		<result property="useYn"	         column="USE_YN"	       /><!-- 사용여부 -->
+		<result property="brndList"	         column="BRND_LIST"	       /><!-- 브랜드 리스트 -->
+	</resultMap>
+
+	<!-- 수수료행사관리 목록조회 -->
+	<select id="selectPrmFeeEventList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultMap="prmFeeEventListResultMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventList][수수료행사관리목록조회][Mark] */
+		     PRM.FEE_EVENT_SN
+		     ,(SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'COM_TP' AND CD = PRM.FEE_EVENT_TP_CD) AS COM_TP_NM
+		     ,PRM.COM_ID
+		     ,PRM.COM_NM
+		     ,(SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'EVENT_APL_TGT' AND CD = PRM.EVENT_APL_TGT_CD) AS EVENT_APL_TGT_CD
+		     ,PRM.FEE_EVENT_NM 
+		     ,TO_CHAR (PRM.EVENT_BEG_DT, 'YYYY-MM-DD HH24:MI') AS EVENT_BEG_DT
+		     ,TO_CHAR (PRM.EVENT_END_DT, 'YYYY-MM-DD HH24:MI') AS EVENT_END_DT
+		     ,PRM.ADIT_FEE_RT || '%' AS ADIT_FEE_RT
+		     ,DECODE(PRM.USE_YN, 'Y', 'USE', 'STPGE') AS USE_YN
+		     ,(  SELECT LISTAGG (SB.BRND_NM, ', ') WITHIN GROUP (ORDER BY PFEB.FEE_EVENT_SN)
+            	 FROM PRM_FEE_EVENT_BRND PFEB, SYS_BRND SB
+           		 WHERE PFEB.FEE_EVENT_SN = PRM.FEE_EVENT_SN
+					 AND PFEB.BRND_ID = SB.BRND_ID
+				 GROUP BY PFEB.FEE_EVENT_SN) AS BRND_LIST
+		FROM ( 
+			<include refid="com.plgrim.ncp.base.beginPage"/>
+			SELECT *
+			  FROM(
+			  	  <if test="(searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))">
+			      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+			             ,PFE.FEE_EVENT_TP_CD                        /* 업체구분 */
+			             ,COM.COM_ID                                 /* 업체코드 */
+			             ,COM.COM_NM                                 /* 업체명 */
+			             ,PFE.EVENT_APL_TGT_CD                       /* 행사대상 구분 */
+			             ,PFE.FEE_EVENT_NM                           /* 행사명 */
+			             ,PFE.EVENT_BEG_DT                           /* 행사시작 */
+			             ,PFE.EVENT_END_DT                           /* 행사종료 */
+			             ,PFE.ADIT_FEE_RT                            /* 추가 수수료 율*/
+			             ,PFE.USE_YN                                 /* 사용여부 */
+			             ,PFE.REG_DT                                 /* 등록일 */
+			        FROM COM COM,
+			             PRM_FEE_EVENT_COM PFEC,
+			             PRM_FEE_EVENT PFE,
+			             PRM_FEE_EVENT_APL_GOD PFEAG,
+			             GOD GOD
+			       WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+			             AND COM.COM_ID = PFEC.COM_ID
+			             AND PFE.FEE_EVENT_SN = PFEAG.FEE_EVENT_SN
+			             AND PFEAG.APL_GOD_NO = GOD.GOD_NO		             
+			            <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+						<if test="searchGodTxt != null and searchGodTxt != ''">
+							<choose>
+								<when test="searchGodGubun eq 'gbName'">
+							    	AND UPPER(GOD.GOD_NM) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%'     /*상품명*/
+							    </when>
+							    <when test="searchGodGubun eq 'gbCode'">
+							   		AND UPPER(GOD.ERP_GOD_NO) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%' /*ERP 품번*/
+							    </when>
+							</choose>
+						</if>
+				  </if>
+				  <if test="((searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))) and (((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != ''))">
+				      UNION ALL
+			      </if>
+			      <if test="((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != '')">
+			      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+			             ,PFE.FEE_EVENT_TP_CD                        /* 업체구분 */
+			             ,COM.COM_ID                                 /* 업체코드 */
+			             ,COM.COM_NM                                 /* 업체명 */
+			             ,PFE.EVENT_APL_TGT_CD                       /* 행사대상 구분 */
+			             ,PFE.FEE_EVENT_NM                           /* 행사명 */
+			             ,PFE.EVENT_BEG_DT                           /* 행사시작 */
+			             ,PFE.EVENT_END_DT                           /* 행사종료 */
+			             ,PFE.ADIT_FEE_RT                            /* 추가 수수료 율*/
+			             ,PFE.USE_YN                                 /* 사용여부 */
+			             ,PFE.REG_DT                                 /* 등록일 */
+			        FROM COM COM,
+			             PRM_FEE_EVENT_COM PFEC,
+			             PRM_FEE_EVENT PFE,
+			             PRM_FEE_EVENT_BRND PFEB,
+			             SYS_BRND SB
+			       WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+			             AND COM.COM_ID = PFEC.COM_ID
+			             AND PFE.FEE_EVENT_SN = PFEB.FEE_EVENT_SN
+			             AND PFEB.BRND_ID = SB.BRND_ID
+			             <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+			             <if test="searchUpperBrndId != null and searchUpperBrndId != ''">
+			             	 AND SB.UPPER_BRND_ID = #{searchUpperBrndId, jdbcType=VARCHAR}
+			             </if>
+			             <if test="searchBrndId != null and searchBrndId != ''">
+				             	 AND SB.BRND_ID  in (   SELECT brnd_id
+                                                                 FROM sys_brnd
+                                                                WHERE erp_brnd_id
+                                                                         IS NOT NULL
+                                                           CONNECT BY PRIOR brnd_id =
+                                                                         upper_brnd_id
+                                                           START WITH brnd_id = #{searchBrndId, jdbcType=VARCHAR} )
+			             </if>
+			       </if>
+			     ) 
+			GROUP BY FEE_EVENT_SN, FEE_EVENT_TP_CD, COM_ID, COM_NM, EVENT_APL_TGT_CD, FEE_EVENT_NM, EVENT_BEG_DT, EVENT_END_DT, ADIT_FEE_RT, USE_YN, REG_DT
+			ORDER BY REG_DT DESC
+			<include refid="com.plgrim.ncp.base.endPage"/>
+		) PRM
+	</select>
+
+	<!-- 수수료행사관리 목록엑셀 -->
+	<select id="selectPrmFeeEventListExcel" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventList][수수료행사관리목록조회][Mark] */
+		     (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'COM_TP' AND CD = PRM.FEE_EVENT_TP_CD) AS COM_TP_NM
+		     ,PRM.COM_ID
+		     ,PRM.COM_NM
+		     ,(SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'EVENT_APL_TGT' AND CD = PRM.EVENT_APL_TGT_CD) AS EVENT_APL_TGT_CD
+		     ,PRM.FEE_EVENT_NM 
+		     ,TO_CHAR (PRM.EVENT_BEG_DT, 'YYYY-MM-DD HH24:MI') AS EVENT_BEG_DT
+		     ,TO_CHAR (PRM.EVENT_END_DT, 'YYYY-MM-DD HH24:MI') AS EVENT_END_DT
+		     ,PRM.ADIT_FEE_RT || '%' AS ADIT_FEE_RT
+		     ,DECODE(PRM.USE_YN, 'Y', '사용', '중지') AS USE_YN
+	      	 ,(SELECT LISTAGG (SB.BRND_NM, ', ') WITHIN GROUP (ORDER BY PFEB.FEE_EVENT_SN, SB.BRND_ID)
+	            	 FROM PRM_FEE_EVENT_BRND PFEB, SYS_BRND SB
+	           		 WHERE PFEB.FEE_EVENT_SN = PRM.FEE_EVENT_SN
+						AND PFEB.BRND_ID = SB.BRND_ID
+					 GROUP BY PFEB.FEE_EVENT_SN) AS BRND_NM_LIST
+			 ,(SELECT LISTAGG (SB.BRND_ID, ', ') WITHIN GROUP (ORDER BY PFEB.FEE_EVENT_SN, SB.BRND_ID)
+    				FROM PRM_FEE_EVENT_BRND PFEB, SYS_BRND SB
+	           		 WHERE PFEB.FEE_EVENT_SN = PRM.FEE_EVENT_SN
+	           		 	AND PFEB.BRND_ID = SB.BRND_ID
+					GROUP BY PFEB.FEE_EVENT_SN) AS BRND_ID_LIST
+			<!-- ,(  SELECT LISTAGG (GOD.GOD_NM, ', ') WITHIN GROUP (ORDER BY PFEEG.FEE_EVENT_SN)
+	            	 FROM PRM_FEE_EVENT_APL_GOD PFEAG, GOD GOD
+	           		 WHERE PFEAG.FEE_EVENT_SN = PRM.FEE_EVENT_SN
+						 AND PFEAG.GOD_NO = GOD.GOD_NO
+					 GROUP BY PFEB.FEE_EVENT_SN) AS APL_GOD_LIST
+			,(  SELECT LISTAGG (GOD.GOD_NM, ', ') WITHIN GROUP (ORDER BY PFEEG.FEE_EVENT_SN)
+	            	 FROM PRM_FEE_EVENT_EXCLS_GOD PFEEG, GOD GOD
+	           		 WHERE PFEEG.FEE_EVENT_SN = PRM.FEE_EVENT_SN
+						 AND PFEEG.GOD_NO = GOD.GOD_NO
+					 GROUP BY PFEEG.FEE_EVENT_SN) AS EXCLS_GOD_LIST -->
+		FROM ( 
+			  <if test="(searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))">
+		      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+		             ,PFE.FEE_EVENT_TP_CD                        /* 업체구분 */
+		             ,COM.COM_ID                                 /* 업체코드 */
+		             ,COM.COM_NM                                 /* 업체명 */
+		             ,PFE.EVENT_APL_TGT_CD                       /* 행사대상 구분 */
+		             ,PFE.FEE_EVENT_NM                           /* 행사명 */
+		             ,PFE.EVENT_BEG_DT                           /* 행사시작 */
+		             ,PFE.EVENT_END_DT                           /* 행사종료 */
+		             ,PFE.ADIT_FEE_RT                            /* 추가 수수료 율*/
+		             ,PFE.USE_YN                                 /* 사용여부 */
+		             ,PFE.REG_DT                                 /* 등록일 */
+		        FROM COM COM,
+		             PRM_FEE_EVENT_COM PFEC,
+		             PRM_FEE_EVENT PFE,
+		             PRM_FEE_EVENT_APL_GOD PFEAG,
+		             GOD GOD
+		       WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+		             AND COM.COM_ID = PFEC.COM_ID
+		             AND PFE.FEE_EVENT_SN = PFEAG.FEE_EVENT_SN
+		             AND PFEAG.APL_GOD_NO = GOD.GOD_NO		             
+		            <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+					<if test="searchGodTxt != null and searchGodTxt != ''">
+						<choose>
+							<when test="searchGodGubun eq 'gbName'">
+						    	AND UPPER(GOD.GOD_NM) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%'     /*상품명*/
+						    </when>
+						    <when test="searchGodGubun eq 'gbCode'">
+						   		AND UPPER(GOD.ERP_GOD_NO) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%' /*ERP 품번*/
+						    </when>
+						</choose>
+					</if>
+		      </if>
+			  <if test="((searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))) and (((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != ''))">
+		      UNION ALL
+		      </if>
+		      <if test="((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != '')">
+		      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+		             ,PFE.FEE_EVENT_TP_CD                        /* 업체구분 */
+		             ,COM.COM_ID                                 /* 업체코드 */
+		             ,COM.COM_NM                                 /* 업체명 */
+		             ,PFE.EVENT_APL_TGT_CD                       /* 행사대상 구분 */
+		             ,PFE.FEE_EVENT_NM                           /* 행사명 */
+		             ,PFE.EVENT_BEG_DT                           /* 행사시작 */
+		             ,PFE.EVENT_END_DT                           /* 행사종료 */
+		             ,PFE.ADIT_FEE_RT                            /* 추가 수수료 율*/
+		             ,PFE.USE_YN                                 /* 사용여부 */
+		             ,PFE.REG_DT                                 /* 등록일 */
+		        FROM COM COM,
+		             PRM_FEE_EVENT_COM PFEC,
+		             PRM_FEE_EVENT PFE,
+		             PRM_FEE_EVENT_BRND PFEB,
+		             SYS_BRND SB
+		       WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+		             AND COM.COM_ID = PFEC.COM_ID
+		             AND PFE.FEE_EVENT_SN = PFEB.FEE_EVENT_SN
+		             AND PFEB.BRND_ID = SB.BRND_ID
+		             <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+		             <if test="searchUpperBrndId != null and searchUpperBrndId != ''">
+		             	 AND SB.UPPER_BRND_ID = #{searchUpperBrndId, jdbcType=VARCHAR}
+		             </if>
+		             <if test="searchBrndId != null and searchBrndId != ''">
+		             	 AND SB.BRND_ID  in (   SELECT brnd_id
+	                                                              FROM sys_brnd
+	                                                             WHERE erp_brnd_id
+	                                                                      IS NOT NULL
+	                                                        CONNECT BY PRIOR brnd_id =
+	                                                                      upper_brnd_id
+	                                                        START WITH brnd_id = #{searchBrndId, jdbcType=VARCHAR} )
+		             </if>
+		        </if>
+		     ) PRM
+		GROUP BY FEE_EVENT_SN, FEE_EVENT_TP_CD, COM_ID, COM_NM, EVENT_APL_TGT_CD, FEE_EVENT_NM, EVENT_BEG_DT, EVENT_END_DT, ADIT_FEE_RT, USE_YN, REG_DT
+		ORDER BY PRM.REG_DT DESC
+	</select>
+	
+	
+	<!-- 수수료행사관리 상세목록 엑셀 -->
+	<select id="selectPrmFeeEventDetailListExcel" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventList][수수료행사관리목록조회][Mark] */
+		     (SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'COM_TP' AND CD = PRM.FEE_EVENT_TP_CD) AS COM_TP_NM
+		     ,PRM.COM_ID
+		     ,PRM.COM_NM
+		     ,(SELECT CD_NM FROM MV_SYS_CD WHERE USE_YN = 'Y' AND LANG_CD = 'KOR' AND UPPER_CD = 'EVENT_APL_TGT' AND CD = PRM.EVENT_APL_TGT_CD) AS EVENT_APL_TGT_CD
+		     ,PRM.FEE_EVENT_NM
+		     ,PRM.FEE_EVENT_SN
+		     ,TO_CHAR (PRM.EVENT_BEG_DT, 'YYYY-MM-DD HH24:MI') AS EVENT_BEG_DT
+		     ,TO_CHAR (PRM.EVENT_END_DT, 'YYYY-MM-DD HH24:MI') AS EVENT_END_DT
+		     ,PRM.ADIT_FEE_RT || '%' AS ADIT_FEE_RT
+		     ,DECODE(PRM.USE_YN, 'Y', '사용', '중지') AS USE_YN
+		     ,PRM.BRND_ID								/* 브랜드 ID */
+             ,PRM.APL_GOD_NO                 				/* 적용상품 NO */
+             ,PRM.ESC_GOD    /* 예외상품 NO */
+		FROM ( 
+			  <if test="(searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))">
+		      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+                         , PFE.FEE_EVENT_TP_CD                                /* 업체구분 */
+                         , COM.COM_ID                                        /* 업체코드 */
+                         , COM.COM_NM                                          /* 업체명 */
+                         , PFE.EVENT_APL_TGT_CD                            /* 행사대상 구분 */
+                         , PFE.FEE_EVENT_NM                                    /* 행사명 */
+                         , PFE.EVENT_BEG_DT                                   /* 행사시작 */
+                         , PFE.EVENT_END_DT                                   /* 행사종료 */
+                         , PFE.ADIT_FEE_RT                                 /* 추가 수수료 율*/
+                         , PFE.USE_YN                                         /* 사용여부 */
+                         , PFE.REG_DT                                          /* 등록일 */
+                         , GOD.BRND_ID
+                         , PFEAG.APL_GOD_NO                 
+                         , '' ESC_GOD
+            FROM COM COM,
+                 PRM_FEE_EVENT_COM PFEC,
+                 PRM_FEE_EVENT PFE,
+                 PRM_FEE_EVENT_APL_GOD PFEAG,
+                 GOD GOD
+           WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+                 AND COM.COM_ID = PFEC.COM_ID
+                 AND PFE.FEE_EVENT_SN = PFEAG.FEE_EVENT_SN
+                 AND PFEAG.APL_GOD_NO = GOD.GOD_NO
+		            <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+					<if test="searchGodTxt != null and searchGodTxt != ''">
+						<choose>
+							<when test="searchGodGubun eq 'gbName'">
+						    	AND UPPER(GOD.GOD_NM) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%'     /*상품명*/
+						    </when>
+						    <when test="searchGodGubun eq 'gbCode'">
+						   		AND UPPER(GOD.ERP_GOD_NO) LIKE '%'||UPPER(#{searchGodTxt, jdbcType=VARCHAR})||'%' /*ERP 품번*/
+						    </when>
+						</choose>
+					</if>
+		      </if>
+			  <if test="((searchUpperBrndId == null or searchUpperBrndId == '') or ((searchGodTxt != null and searchGodTxt != '') or (multiNo != null and multiNo != ''))) and (((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != ''))">
+		      UNION ALL
+		      </if>
+		      <if test="((searchGodTxt == null or searchGodTxt == '') and (multiNo == null or multiNo == '')) or (searchUpperBrndId != null and searchUpperBrndId != '')">
+		      SELECT PFE.FEE_EVENT_SN                            /* 수수료 행사 일련번호 */
+		                , PFE.FEE_EVENT_TP_CD                                /* 업체구분 */
+                        , COM.COM_ID                                         /* 업체코드 */
+                        , COM.COM_NM                                          /* 업체명 */
+                        , PFE.EVENT_APL_TGT_CD                            /* 행사대상 구분 */
+                        , PFE.FEE_EVENT_NM                                    /* 행사명 */
+                        , PFE.EVENT_BEG_DT                                   /* 행사시작 */
+						, PFE.EVENT_END_DT                                   /* 행사종료 */
+                        , PFE.ADIT_FEE_RT                                 /* 추가 수수료 율*/
+                        , PFE.USE_YN                                         /* 사용여부 */
+                        , PFE.REG_DT                                          /* 등록일 */
+                 		, PFEB.BRND_ID
+                 		, '' APL_GOD_NO                 
+                 		, EXGOD.EXCLS_GOD_NO ESC_GOD                 
+            FROM COM COM,
+                 PRM_FEE_EVENT_COM PFEC,
+                 PRM_FEE_EVENT PFE,
+                 PRM_FEE_EVENT_BRND PFEB,
+                 PRM_FEE_EVENT_EXCLS_GOD EXGOD,
+                 SYS_BRND SB
+           WHERE     PFE.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+                 AND COM.COM_ID = PFEC.COM_ID
+                 AND PFE.FEE_EVENT_SN = PFEB.FEE_EVENT_SN
+                 AND PFEB.BRND_ID = SB.BRND_ID
+                 AND PFE.FEE_EVENT_SN = EXGOD.FEE_EVENT_SN(+)
+		             <include refid="com.plgrim.ncp.biz.settlement.prm.fee.event.whereSelectPrmFeeEventList"/>
+		             <if test="searchUpperBrndId != null and searchUpperBrndId != ''">
+		             	 AND SB.UPPER_BRND_ID = #{searchUpperBrndId, jdbcType=VARCHAR}
+		             </if>
+		             <if test="searchBrndId != null and searchBrndId != ''">
+		             	 AND SB.BRND_ID  in (   SELECT brnd_id
+	                                                              FROM sys_brnd
+	                                                             WHERE erp_brnd_id
+	                                                                      IS NOT NULL
+	                                                        CONNECT BY PRIOR brnd_id =
+	                                                                      upper_brnd_id
+	                                                        START WITH brnd_id = #{searchBrndId, jdbcType=VARCHAR} )
+		             </if>
+		        </if>
+		     ) PRM
+		ORDER BY PRM.REG_DT DESC
+	</select>
+	
+	
+	<!-- 제휴대행사 업체 -->
+	<select id="selectPrmFeeEventAffAgncCom" resultType="com.plgrim.ncp.base.entities.datasource1.com.Com">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventAffAgncCom][제휴대행사 업체 목록][Mark] */
+			   COM_ID
+			   , COM_NM 
+		  FROM COM 
+		 WHERE COM_STAT_CD = 'USE'
+		   AND DELETE_YN = 'N'
+		   AND COM_TP_CD = 'AFF_AGNC'
+	</select>
+	
+	<resultMap id="prmFeeEventListBrandResultMap" type="com.plgrim.ncp.biz.settlement.result.PrmFeeEventListResult">
+		<result property="sysBrnd.brndId"	     column="BRND_ID"	   /><!-- 브랜드ID -->
+		<result property="sysBrnd.brndNm"	     column="BRND_NM"	   /><!-- 브랜드명 -->
+	</resultMap>
+	
+	<!-- 제휴사, 입점사, 제휴대행사  해당 브랜드 -->
+	<select id="selectPrmFeeEventBrandList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO" resultMap="prmFeeEventListBrandResultMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventBrandList][제휴사, 입점사, 제휴대행사  해당 브랜드][Mark] */
+		       SB.BRND_ID
+		       ,SB.BRND_NM
+		  FROM COM_BRND CB
+		       ,SYS_BRND SB
+		 WHERE CB.BRND_ID = SB.BRND_ID
+		   AND SB.USE_YN = 'Y'
+		   AND CB.COM_ID IN (<foreach collection="comList" item="com" separator=",">#{com.comId}</foreach>)
+	  GROUP BY SB.BRND_ID ,SB.BRND_NM
+	  UNION 
+	    SELECT  CAVCB.BRND_ID
+                    ,SB.BRND_NM  
+    FROM COM C, SYS_BRND SB, COM_AFF_VRSC_COM_BRND CAVCB
+   WHERE     C.COM_ID = CAVCB.AFF_COM_ID
+         AND SB.BRND_ID = CAVCB.BRND_ID
+         AND CAVCB.AFF_VRSC_COM_ID =  #{prmFeeEventCom.affVrscComId}
+          <if test='comList != null and comList != "" and comList.size() > 0'>
+         AND CAVCB.AFF_COM_ID   IN (<foreach collection="comList" item="com" separator=",">#{com.comId}</foreach>)
+         </if>
+	GROUP BY SB.BRND_NM, CAVCB.BRND_ID
+	</select>
+	
+	<resultMap id="prmFeeEventListBrandResultMap2" type="com.plgrim.ncp.biz.settlement.result.PrmFeeEventListResult">
+		<result property="comId"	             column="COM_ID"	   /><!-- 업체ID -->
+		<result property="comNm"	             column="COM_NM"	   /><!-- 업체명 -->
+		<result property="sysBrnd.brndId"	     column="BRND_ID"	   /><!-- 브랜드ID -->
+		<result property="sysBrnd.brndNm"	     column="BRND_NM"	   /><!-- 브랜드명 -->
+	</resultMap>
+	<!-- 제휴사 선택 브랜드 -->
+	<select id="selectPrmFeeEventBrandList2" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO" resultMap="prmFeeEventListBrandResultMap2">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventBrandList2][제휴사 선택 브랜드 ][Mark] */
+		       C.COM_ID
+		       ,C.COM_NM
+		       ,CAVCB.BRND_ID
+                    ,SB.BRND_NM 
+    FROM COM C, SYS_BRND SB, COM_AFF_VRSC_COM_BRND CAVCB
+   WHERE     C.COM_ID = CAVCB.AFF_COM_ID
+         AND SB.BRND_ID = CAVCB.BRND_ID
+         AND CAVCB.AFF_VRSC_COM_ID =  #{prmFeeEventCom.affVrscComId}
+          <if test='comList != null and comList != "" and comList.size() > 0'>
+         AND CAVCB.AFF_COM_ID   IN (<foreach collection="comList" item="com" separator=",">#{com.comId}</foreach>)
+         </if>
+	GROUP BY  C.COM_ID, C.COM_NM, SB.BRND_NM, CAVCB.BRND_ID
+	</select>
+	
+	<!-- 수수료행사 정보 저장 -->
+	<insert id="insertPrmFeeEvent" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+		<selectKey keyProperty="prmFeeEvent.feeEventSn" resultType="long" order="BEFORE">
+            SELECT SQ_PRM_FEE_EVENT.NEXTVAL FROM DUAL
+        </selectKey>
+	
+	    INSERT /* [biz.prm.fee.event][insertPrmFeeEvent][수수료행사 정보 저장 ][Mark] */  
+	    INTO PRM_FEE_EVENT
+		(
+	        FEE_EVENT_SN
+	       ,FEE_EVENT_TP_CD
+	       ,FEE_EVENT_NM
+	       ,EVENT_BEG_DT
+	       ,EVENT_END_DT
+	       ,ADIT_FEE_RT
+	       ,USE_YN
+	       ,EVENT_APL_TGT_CD
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID           
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{prmFeeEvent.feeEventSn,jdbcType=NUMERIC}
+	       ,#{prmFeeEvent.feeEventTpCd,jdbcType=VARCHAR}
+	       ,#{prmFeeEvent.feeEventNm,jdbcType=VARCHAR}
+	       ,TO_DATE(#{prmFeeEventBasicFormDTO.eventBegDt,jdbcType=VARCHAR},'YYYYMMDDHH24MISS')
+	       ,TO_DATE(#{prmFeeEventBasicFormDTO.eventEndDt,jdbcType=VARCHAR},'YYYYMMDDHH24MISS')
+	       ,#{prmFeeEvent.aditFeeRt,jdbcType=NUMERIC}
+	       ,#{prmFeeEvent.useYn,jdbcType=VARCHAR}
+	       ,#{prmFeeEvent.eventAplTgtCd,jdbcType=VARCHAR}
+	       ,#{prmFeeEvent.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{prmFeeEvent.udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)   
+    </insert>
+	
+	<!-- 수수료행사 (대용량) 상품정보 저장 -->
+	<insert id="insertPrmFeeEventGoods" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+		/* [biz.prm.fee.event][insertPrmFeeEventGoods][수수료행사 (대용량)상품정보 저장][KROMANO] */ 
+		
+		MERGE INTO PRM_FEE_EVENT_APL_GOD
+		USING DUAL
+		ON		  (  FEE_EVENT_SN = #{prmFeeEventAplGod.feeEventSn,jdbcType=NUMERIC}
+               	 AND APL_GOD_NO = #{prmFeeEventAplGod.aplGodNo,jdbcType=VARCHAR} )
+		
+		WHEN MATCHED THEN
+			UPDATE
+			   SET UDTER_ID = #{prmFeeEventAplGod.regtrId,jdbcType=VARCHAR},
+			       UDT_DT = SYSDATE
+			WHERE 1=1
+              AND FEE_EVENT_SN = #{prmFeeEventAplGod.feeEventSn,jdbcType=NUMERIC}
+              AND APL_GOD_NO = #{prmFeeEventAplGod.aplGodNo,jdbcType=VARCHAR}
+		
+		WHEN NOT MATCHED THEN
+		    INSERT
+			(
+		        FEE_EVENT_SN
+		       ,APL_GOD_NO
+		       ,USE_YN
+		       ,REGTR_ID
+	           ,REG_DT
+	           ,UDTER_ID           
+	           ,UDT_DT
+			)
+			VALUES
+			(
+		        #{prmFeeEventAplGod.feeEventSn,jdbcType=NUMERIC}
+		       ,#{prmFeeEventAplGod.aplGodNo,jdbcType=VARCHAR}
+		       ,#{prmFeeEventAplGod.useYn,jdbcType=VARCHAR}
+		       ,#{prmFeeEventAplGod.regtrId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,#{prmFeeEventAplGod.udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+			)   
+    </insert>
+    
+    <!-- 수수료행사 업체 저장 -->
+    <insert id="insertPrmFeeEventCom" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+	    INSERT /* [biz.prm.fee.event][insertPrmFeeEventCom][수수료행사 업체 저장][Mark] */  
+	    INTO PRM_FEE_EVENT_COM
+		(
+	        FEE_EVENT_SN
+	       ,COM_ID
+	       ,AFF_VRSC_COM_ID
+	       ,USE_YN
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID           
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{prmFeeEvent.feeEventSn,jdbcType=NUMERIC}
+	       ,#{prmFeeEventCom.comId,jdbcType=VARCHAR}
+	       ,#{prmFeeEventCom.affVrscComId,jdbcType=VARCHAR}
+	       ,#{prmFeeEventCom.useYn,jdbcType=VARCHAR}
+	       ,#{prmFeeEventCom.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+     	   ,#{prmFeeEventCom.udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)  
+    </insert>
+    
+    <!-- 수수료행사 브랜드 저장 -->
+    <insert id="insertPrmFeeEventBrnd" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+	    INSERT /* [biz.prm.fee.event][insertPrmFeeEventBrnd][수수료행사 브랜드 저장][Mark] */  
+	    INTO PRM_FEE_EVENT_BRND
+		(
+	        FEE_EVENT_SN
+	       ,BRND_ID
+	       ,USE_YN
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID           
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{prmFeeEvent.feeEventSn,jdbcType=NUMERIC}
+	       ,#{prmFeeEventBrnd.brndId,jdbcType=VARCHAR}
+	       ,#{prmFeeEventBrnd.useYn,jdbcType=VARCHAR}
+	       ,#{prmFeeEventBrnd.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{prmFeeEventBrnd.udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 수수료행사 상품 저장 -->
+    <insert id="insertPrmFeeEventAplGod" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+	    INSERT /* [biz.prm.fee.event][insertPrmFeeEventAplGod][수수료행사 상품 저장][Mark] */  
+	    INTO PRM_FEE_EVENT_APL_GOD
+		(
+	        FEE_EVENT_SN
+	       ,APL_GOD_NO
+	       ,USE_YN
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID           
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{prmFeeEvent.feeEventSn,jdbcType=NUMERIC}
+	       ,#{prmFeeEventAplGod.aplGodNo,jdbcType=VARCHAR}
+	       ,#{prmFeeEventAplGod.useYn,jdbcType=VARCHAR}
+	       ,#{prmFeeEventAplGod.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{prmFeeEventAplGod.udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 수수료행사 예외상품 저장 -->
+    <insert id="insertPrmFeeEventExclsGod" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+	    INSERT /* [biz.prm.fee.event][insertPrmFeeEventExclsGod][수수료행사 예외상품 저장][Mark] */  
+	    INTO PRM_FEE_EVENT_EXCLS_GOD
+		(
+	        FEE_EVENT_SN
+	       ,EXCLS_GOD_NO
+	       ,USE_YN
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID           
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{prmFeeEvent.feeEventSn,jdbcType=NUMERIC}
+	       ,#{prmFeeEventExclsGod.exclsGodNo,jdbcType=VARCHAR}
+	       ,#{prmFeeEventExclsGod.useYn,jdbcType=VARCHAR}
+	       ,#{prmFeeEventExclsGod.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{prmFeeEventExclsGod.udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 이벤트 상품 리스트 (Old)-->
+    <resultMap id="selectPrmFeeEventAplGodListOldResultMap" type="com.plgrim.ncp.biz.settlement.result.PrmFeeEventListResult">
+		<result property="god.godNm"	         column="GOD_NM"	   /><!-- 상품명 -->
+		<result property="god.godNo"	         column="GOD_NO"	   /><!-- 온라인 품번코드 -->
+		<result property="god.erpGodNo"	         column="ERP_GOD_NO"   /><!-- ERP 품번코드 -->
+		<result property="god.rtlPrc"	         column="RTL_PRC"	   /><!-- 정소가 -->
+		<result property="god.csmrPrc"	         column="CSMR_PRC"	   /><!-- 실소가 -->
+		<result property="sysBrnd.brndId"	     column="BRND_ID"	   /><!-- 브랜드ID -->
+		<result property="sysBrnd.brndNm"	     column="BRND_NM"	   /><!-- 브랜드명 -->
+	</resultMap>
+	
+	<select id="selectPrmFeeEventAplGodListOld" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultMap="selectPrmFeeEventAplGodListOldResultMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventAplGodList][이벤트 상품 리스트][Mark] */  
+		       G.GOD_NM
+		       ,G.GOD_NO
+		       ,G.ERP_GOD_NO
+		       ,G.RTL_PRC
+		       ,G.CSMR_PRC
+		       ,SB.BRND_ID
+		       ,SB.BRND_NM
+		  FROM SYS_BRND SB
+		       ,PRM_FEE_EVENT_APL_GOD PFEAG
+		       ,GOD G
+		  WHERE PFEAG.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+		    AND PFEAG.APL_GOD_NO = G.GOD_NO
+		    AND G.BRND_ID = SB.BRND_ID
+	</select>
+    
+	<!-- 이벤트 상품 리스트 카운트-->
+	<select id="selectPrmFeeEventAplGodListCount" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultType="long">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventAplGodListCount][이벤트 상품 리스트 카운트][KROMANO] */  
+		       COUNT(1)
+		  FROM SYS_BRND SB
+		       ,PRM_FEE_EVENT_APL_GOD PFEAG
+		       ,GOD G
+		  WHERE PFEAG.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+		    AND PFEAG.APL_GOD_NO = G.GOD_NO
+		    AND G.BRND_ID = SB.BRND_ID
+	</select>
+	
+    <resultMap id="selectPrmFeeEventAplGodListResultMap" type="com.plgrim.ncp.biz.settlement.result.PrmFeeEventListResult">
+		<result property="godNm"	         column="GOD_NM"	   /><!-- 상품명 -->
+		<result property="godNo"	         column="GOD_NO"	   /><!-- 온라인 품번코드 -->
+		<result property="erpGodNo"	         column="ERP_GOD_NO"   /><!-- ERP 품번코드 -->
+		<result property="rtlPrc"	         column="RTL_PRC"	   /><!-- 정소가 -->
+		<result property="csmrPrc"	         column="CSMR_PRC"	   /><!-- 실소가 -->
+		<result property="brndId"	     	 column="BRND_ID"	   /><!-- 브랜드ID -->
+		<result property="brndNm"	     	 column="BRND_NM"	   /><!-- 브랜드명 -->
+	</resultMap>
+	<!-- 이벤트 상품 리스트 -->
+	<select id="selectPrmFeeEventAplGodList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultMap="selectPrmFeeEventAplGodListResultMap">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventAplGodList][이벤트 상품 리스트][Mark] */ 
+				ROWNUM
+		       ,G.GOD_NM
+		       ,G.GOD_NO
+		       ,G.ERP_GOD_NO
+		       ,G.RTL_PRC
+		       ,G.CSMR_PRC
+		       ,SB.BRND_ID
+		       ,SB.BRND_NM
+		  FROM SYS_BRND SB
+		       ,PRM_FEE_EVENT_APL_GOD PFEAG
+		       ,GOD G
+		  WHERE PFEAG.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+		    AND PFEAG.APL_GOD_NO = G.GOD_NO
+		    AND G.BRND_ID = SB.BRND_ID
+	    <include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 이벤트 상품 리스트 엑셀 -->
+	<select id="selectPrmFeeEventAplGodListExcel" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventAplGodListExcel][이벤트 상품 리스트 엑셀][KROMANO] */  
+		       SB.BRND_NM
+		       ,G.GOD_NM
+		       ,G.ERP_GOD_NO
+		       ,G.GOD_NO
+		       ,G.CSMR_PRC
+		       ,G.RTL_PRC
+		  FROM SYS_BRND SB
+		       ,PRM_FEE_EVENT_APL_GOD PFEAG
+		       ,GOD G
+		  WHERE PFEAG.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+		    AND PFEAG.APL_GOD_NO = G.GOD_NO
+		    AND G.BRND_ID = SB.BRND_ID
+	</select>
+	
+	<resultMap id="selectPrmFeeEventExclsGodListResultMap" type="com.plgrim.ncp.biz.settlement.result.PrmFeeEventListResult">
+		<result property="god.godNm"	         column="GOD_NM"	   /><!-- 상품명 -->
+		<result property="god.godNo"	         column="GOD_NO"	   /><!-- 온라인 품번코드 -->
+		<result property="god.erpGodNo"	         column="ERP_GOD_NO"   /><!-- ERP 품번코드 -->
+		<result property="god.rtlPrc"	         column="RTL_PRC"	   /><!-- 정소가 -->
+		<result property="god.csmrPrc"	         column="CSMR_PRC"	   /><!-- 실소가 -->
+		<result property="sysBrnd.brndId"	     column="BRND_ID"	   /><!-- 브랜드ID -->
+		<result property="sysBrnd.brndNm"	     column="BRND_NM"	   /><!-- 브랜드명 -->
+	</resultMap>
+	<!-- 예외 상품 리스트 -->
+	<select id="selectPrmFeeEventExclsGodList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultMap="selectPrmFeeEventExclsGodListResultMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventExclsGodList][예외 상품 리스트][Mark] */
+		       G.GOD_NM
+		       ,G.GOD_NO
+		       ,G.ERP_GOD_NO
+		       ,G.RTL_PRC
+		       ,G.CSMR_PRC
+		       ,SB.BRND_ID
+		       ,SB.BRND_NM
+		  FROM SYS_BRND SB
+		       ,PRM_FEE_EVENT_EXCLS_GOD PFEEG
+		       ,GOD G
+		  WHERE PFEEG.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+		    AND PFEEG.EXCLS_GOD_NO = G.GOD_NO
+		    AND G.BRND_ID = SB.BRND_ID
+	</select>
+	
+	<!-- 행사대상 브랜드 -->
+	<select id="selectPrmFeeEventTargetBrandList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultMap="prmFeeEventListBrandResultMap">	  
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventTargetBrandList][행사대상 브랜드][Mark] */
+	           SB.BRND_ID
+		       ,SB.BRND_NM
+		  FROM SYS_BRND SB
+		       ,PRM_FEE_EVENT_BRND PFEB
+		 WHERE SB.BRND_ID = PFEB.BRND_ID
+		   AND PFEB.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+	</select>
+	
+	<resultMap id="selectPrmFeeEventResultMap" type="com.plgrim.ncp.biz.settlement.result.PrmFeeEventListResult">
+		<result property="feeEventSn"	         column="FEE_EVENT_SN"	  /><!-- 일련번호 -->
+		<result property="feeEventTpCd"	         column="FEE_EVENT_TP_CD" /><!-- 수수료 행사 유형 코드 -->
+		<result property="feeEventTpNm"	         column="FEE_EVENT_TP_NM" /><!-- 수수료 행사 유형 명 -->
+		<result property="feeEventNm"	         column="FEE_EVENT_NM"	  /><!-- 행사명 -->
+		<result property="eventBegDt"	         column="EVENT_BEG_DT"	  /><!-- 행사 시작일-->
+		<result property="eventEndDt"	         column="EVENT_END_DT"	  /><!-- 행사 종료일 -->
+		<result property="aditFeeRt"	         column="ADIT_FEE_RT"	  /><!-- 추가 수수료 율 -->
+		<result property="useYn"	             column="USE_YN"	      /><!-- 사용여부 -->
+		<result property="eventAplTgtCd"	     column="EVENT_APL_TGT_CD"/><!-- 행사 적용 대상 코드 -->
+		<result property="regtrId"	             column="REGTR_ID"	      /><!-- 등록자 아이디 -->
+		<result property="udterId"	         	 column="UDTER_ID"	      /><!-- 수정자 아이디 -->
+		<result property="regDt"	         	 column="REG_DT"	      /><!-- 등록일 -->
+		<result property="udtDt"	         	 column="UDT_DT"	      /><!-- 수정일 -->
+		<result property="regtrNm"	         	 column="REGTR_NM"	   	  /><!-- 등록자명 -->
+		<result property="udterNm"	         	 column="UDTER_NM"	   	  /><!-- 수정자명 -->
+	</resultMap>
+
+	<!-- 수수료행사 정보 -->
+	<select id="selectPrmFeeEvent" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventSearchDTO" resultMap="selectPrmFeeEventResultMap">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEvent][수수료행사 정보][Mark] */
+		        PFE.FEE_EVENT_SN
+		       ,PFE.FEE_EVENT_TP_CD
+		       ,(SELECT CD_NM FROM MV_SYS_CD WHERE LANG_CD='KOR' AND UPPER_CD = 'FEE_EVENT_TP' AND CD = PFE.FEE_EVENT_TP_CD) AS FEE_EVENT_TP_NM
+		       ,PFE.FEE_EVENT_NM
+		       ,TO_CHAR(PFE.EVENT_BEG_DT,'YYYY-MM-DD HH24 MI') AS EVENT_BEG_DT
+		       ,TO_CHAR(PFE.EVENT_END_DT,'YYYY-MM-DD HH24 MI') AS EVENT_END_DT
+		       ,PFE.ADIT_FEE_RT
+		       ,PFE.USE_YN
+		       ,PFE.EVENT_APL_TGT_CD
+		       ,PFE.REGTR_ID
+		       ,PFE.UDTER_ID
+		       ,TO_CHAR(PFE.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT
+		       ,TO_CHAR(PFE.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = PFE.REGTR_ID) AS REGTR_NM /*등록자명*/
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = PFE.UDTER_ID) AS UDTER_NM /*수정자명*/
+		  FROM PRM_FEE_EVENT PFE
+		 WHERE PFE.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 업체별 행사대상 브랜드-->
+	<select id="selectPrmFeeEventTargetComBrandList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO" resultMap="prmFeeEventListBrandResultMap2">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventTargetComBrandList][업체별 행사대상 브랜드][Mark] */
+               C.COM_ID
+               ,C.COM_NM
+               ,SB.BRND_ID
+               ,SB.BRND_NM
+          FROM SYS_BRND SB
+               ,PRM_FEE_EVENT_BRND PFEB
+               ,PRM_FEE_EVENT_COM PFEC
+               ,COM C
+         WHERE SB.BRND_ID = PFEB.BRND_ID
+           AND PFEB.FEE_EVENT_SN = PFEC.FEE_EVENT_SN
+           AND PFEC.COM_ID = C.COM_ID
+		   AND PFEB.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 행사 업체 리스트 -->
+	<select id="selectPrmFeeEventTargetComList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO" resultType="com.plgrim.ncp.base.entities.datasource1.com.Com">
+		SELECT /* [biz.prm.fee.event][selectPrmFeeEventTargetComList][제휴대행사 업체][Mark] */
+		       C.COM_ID
+		       ,C.COM_NM 
+		  FROM PRM_FEE_EVENT_COM PFEC
+		       ,COM C
+		 WHERE PFEC.COM_ID = C.COM_ID
+		   AND PFEC.FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 예외상품 merge -->
+	<insert id="mergePrmFeeEventExclsGod" parameterType="com.plgrim.ncp.base.entities.datasource1.prm.PrmFeeEventExclsGod">
+		MERGE /* [biz.prm.fee.event][mergePrmFeeEventExclsGod][예외상품 merge][Mark] */ 
+         INTO PRM_FEE_EVENT_EXCLS_GOD PFEEG
+        USING ( 
+                 SELECT  #{feeEventSn,jdbcType=VARCHAR} AS FEE_EVENT_SN
+                      , #{exclsGodNo,jdbcType=VARCHAR} AS EXCLS_GOD_NO
+                 FROM DUAL
+               ) TARGET
+           ON (PFEEG.FEE_EVENT_SN = TARGET.FEE_EVENT_SN
+               AND PFEEG.EXCLS_GOD_NO = TARGET.EXCLS_GOD_NO
+              )
+        WHEN MATCHED THEN         
+            UPDATE SET  
+                   PFEEG.UDTER_ID = #{regtrId,jdbcType=VARCHAR}            
+                 , PFEEG.UDT_DT   = SYSDATE
+        WHEN NOT MATCHED THEN 
+            INSERT (
+                    FEE_EVENT_SN
+                   ,EXCLS_GOD_NO
+                   ,USE_YN
+                   ,REGTR_ID
+                   ,REG_DT
+                   ,UDTER_ID
+                   ,UDT_DT
+                )
+                VALUES
+                (
+                    #{feeEventSn,jdbcType=VARCHAR}
+                   ,#{exclsGodNo,jdbcType=VARCHAR}
+                   ,#{useYn,jdbcType=VARCHAR}
+                   ,#{regtrId,jdbcType=VARCHAR}
+                   ,SYSDATE
+                   ,#{regtrId,jdbcType=VARCHAR}
+                   ,SYSDATE
+                )
+	</insert>
+	
+	<!-- 행사상품 삭제 -->
+	<delete id="deletePrmFeeEventAplGod" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+		DELETE /* [biz.prm.fee.event][deletePrmFeeEventAplGod][행사상품 삭제][Mark] */ 
+		  FROM PRM_FEE_EVENT_APL_GOD 
+		 WHERE FEE_EVENT_SN = #{prmFeeEventBasicFormDTO.feeEventSn,jdbcType=VARCHAR}
+		   AND APL_GOD_NO IN (<foreach collection="aplGodList" item="god" separator=",">#{god.godNo}</foreach>)
+	</delete>
+   
+   <!-- 예외상품 삭제 -->
+	<delete id="deletePrmfeeEventExclsGod" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+		DELETE /* [biz.prm.fee.event][deletePrmfeeEventExclsGod][예외상품 삭제][Mark] */ 
+		  FROM PRM_FEE_EVENT_EXCLS_GOD 
+		 WHERE FEE_EVENT_SN = #{prmFeeEventBasicFormDTO.feeEventSn,jdbcType=VARCHAR}
+		   AND EXCLS_GOD_NO NOT IN (<foreach collection="exclsGodList" item="god" separator=",">#{god.godNo}</foreach>)
+	</delete>
+	
+	<!-- 수수료행사 저장 -->
+	<update id="updatePrmFeeEventList" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventBasicFormDTO">
+        UPDATE /* [biz.prm.fee.event][updatePrmFeeEventList][수수료행사 수정][KROMANO] */ 
+        PRM_FEE_EVENT SET
+                EVENT_BEG_DT = TO_DATE(#{eventBegDt,jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI')
+                ,EVENT_END_DT = TO_DATE(#{eventEndDt,jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI')
+                ,USE_YN = DECODE(#{useYn,jdbcType=VARCHAR}, 'USE', 'Y', 'STPGE', 'N') 
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   FEE_EVENT_SN = #{feeEventSn,jdbcType=VARCHAR}
+    </update>
+	
+	<!-- 수수료행사 상세팝업 저장 -->
+	<update id="updatePrmFeeEvent" parameterType="com.plgrim.ncp.biz.settlement.data.PrmFeeEventFormDTO">
+        UPDATE /* [biz.prm.fee.event][updatePrmFeeEvent][수수료행사 수정][Mark] */ 
+        PRM_FEE_EVENT SET
+                EVENT_BEG_DT = TO_DATE(#{prmFeeEventBasicFormDTO.eventBegDt,jdbcType=VARCHAR},'YYYYMMDDHH24MISS')
+                ,EVENT_END_DT = TO_DATE(#{prmFeeEventBasicFormDTO.eventEndDt,jdbcType=VARCHAR},'YYYYMMDDHH24MISS')
+                ,USE_YN = #{prmFeeEventBasicFormDTO.useYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   FEE_EVENT_SN = #{prmFeeEventBasicFormDTO.feeEventSn,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="selectCom" parameterType="com" resultType="int">
+        SELECT /* com.plgrim.ncp.biz.settlement.prm.fee.event.selectCom Yoon 20150921 */
+               	COUNT(*)
+        FROM    COM t
+        WHERE   1 = 1
+        AND     COM_ID = #{comId,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectSysBrnd" parameterType="sysBrnd" resultType="int">
+        SELECT /* com.plgrim.ncp.biz.settlement.prm.fee.event.selectSysBrnd Yoon 20150921 */
+				COUNT(*)
+        FROM    SYS_BRND t
+        WHERE   1 = 1
+        AND     BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectErpGod" parameterType="god" resultType="god">
+        SELECT /* com.plgrim.ncp.biz.settlement.prm.fee.event.selectGod Yoon 20150921 */
+				GOD_NO
+               ,ERP_GOD_NO
+               ,DSGN_GRP_NO
+               ,GOD_NM
+               ,MOBILE_GOD_NM
+               ,TAG_NM
+               ,COLOR_TAG_NM
+               ,THEMA_TAG_NM
+               ,TEXT_ICON_CONT
+               ,GOD_APRV_SECT_CD
+               ,GOD_SALE_SECT_CD
+               ,SALE_BEG_DATE
+               ,SALE_END_DATE
+               ,COLOR_NM
+               ,COLOR_CD
+               ,CLOR_CHIP_IMG_URL
+               ,GOD_TP_CD
+               ,PARTMAL_SECT_CD
+               ,BRND_ID
+               ,BRND_GRP_ID
+               ,BRND_TAG_CD
+               ,STD_CTGRY_NO
+               ,TDF_SECT
+               ,SESON_GRP_CD
+               ,SESON_CD
+               ,PRDLST_CD
+               ,SRS_ID
+               ,LNE_ID
+               ,EMP_ONLY_YN
+               ,RESVE_SALE_GOD_YN
+               ,RESVE_ORD_PAY_SECT_CD
+               ,RESVE_ORD_PART_PAY_AMT
+               ,RESVE_ORD_PAY_CLOS_DT
+               ,RESVE_ORD_DLIVY_PREARNGE_DATE
+               ,DMSTC_DLV_CST_PLC_SN
+               ,OVSEA_DLV_PSB_YN
+               ,OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+               ,OVSEA_DLV_CST_PLC_SN
+               ,GOD_WT
+               ,GOD_VOL
+               ,SHOP_PKUP_PSB_YN
+               ,CVNSTOR_HDRY_RTRVL_PSB_YN
+               ,DSP_YN
+               ,SPCIFY_URL_DSP_YN
+               ,FIRST_DSP_DT
+               ,PRC_CMPR_SITE_EXPSR_YN
+               ,GOD_SRCH_SNM
+               ,COM_ID
+               ,BUY_AGE_LMIT_CD
+               ,RECOMEND_SEX_CD
+               ,RECOMEND_AGE_CD
+               ,SAFE_CRTFC_TGT_YN
+               ,KC_CRTFC_NO
+               ,INV_MANAGE_YN
+               ,LMTT_INV_YN
+               ,ERP_INV_INTRLCK_YN
+               ,MIN_ORD_QTY
+               ,MAX_ORD_QTY
+               ,OTLT_YN
+               ,PNT_ACCML_YN
+               ,PNT_ACCML_RT
+               ,PNT_USE_YN
+               ,IMDTL_DC_YN
+               ,IMDTL_DC_RT
+               ,RTL_PRC
+               ,CSMR_PRC
+               ,EMP_PRC
+               ,ONLY_AFF_COM_ID
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    GOD t
+        WHERE   1 = 1
+        AND     ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+    </select>
+    
+</mapper>

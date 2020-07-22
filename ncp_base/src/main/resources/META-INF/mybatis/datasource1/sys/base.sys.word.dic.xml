@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysWordDic" parameterType="sysWordDic" resultType="sysWordDic">
+		SELECT /* com.plgrim.ncp.base.selectSysWordDic		Generator(Generator)	2018-05-23 */
+			   WORD_NM
+			 , SYN
+			 , ENG_ABRV_NM
+			 , ENG_DSCR
+			 , KOR_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_WORD_DIC
+		 WHERE 1 = 1
+	   	   AND WORD_NM = #{wordNm,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysWordDic" parameterType="sysWordDic">
+		UPDATE /* com.plgrim.ncp.base.updateSysWordDic		Generator(Generator)	2018-05-23 */
+		SYS_WORD_DIC SET
+			   SYN = #{syn,jdbcType=VARCHAR}
+			 , ENG_ABRV_NM = #{engAbrvNm,jdbcType=VARCHAR}
+			 , ENG_DSCR = #{engDscr,jdbcType=VARCHAR}
+			 , KOR_DSCR = #{korDscr,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND WORD_NM = #{wordNm,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysWordDic" parameterType="sysWordDic">
+		INSERT /* com.plgrim.ncp.base.insertSysWordDic		Generator(Generator)	2018-05-23 */
+		INTO   SYS_WORD_DIC (
+			   WORD_NM
+			 , SYN
+			 , ENG_ABRV_NM
+			 , ENG_DSCR
+			 , KOR_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{wordNm,jdbcType=VARCHAR}
+			 , #{syn,jdbcType=VARCHAR}
+			 , #{engAbrvNm,jdbcType=VARCHAR}
+			 , #{engDscr,jdbcType=VARCHAR}
+			 , #{korDscr,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysWordDic" parameterType="sysWordDic">
+		DELETE /* com.plgrim.ncp.base.deleteSysWordDic		Generator(Generator)	2018-05-23 */
+		  FROM SYS_WORD_DIC
+		 WHERE 1 = 1
+		   AND WORD_NM = #{wordNm,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoChgcallPhonDetl" parameterType="csoChgcallPhonDetl" resultType="csoChgcallPhonDetl">
+		SELECT /* com.plgrim.ncp.base.selectCsoChgcallPhonDetl		Generator(Generator)	2018-05-23 */
+			   COM_NM
+			 , PHON_TURN
+			 , CNVRS_NATION_NO
+			 , CNVRS_AREA_NO
+			 , CNVRS_TLOF_NO
+			 , CNVRS_TLOF_WTHN_NO
+			 , CHRGER_NM
+			 , SORT_SEQ
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CHGCALL_PHON_DETL
+		 WHERE 1 = 1
+	   	   AND COM_NM = #{comNm,jdbcType=VARCHAR}
+		   AND PHON_TURN = #{phonTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoChgcallPhonDetl" parameterType="csoChgcallPhonDetl">
+		UPDATE /* com.plgrim.ncp.base.updateCsoChgcallPhonDetl		Generator(Generator)	2018-05-23 */
+		CSO_CHGCALL_PHON_DETL SET
+			   CNVRS_NATION_NO = #{cnvrsNationNo,jdbcType=VARCHAR}
+			 , CNVRS_AREA_NO = #{cnvrsAreaNo,jdbcType=VARCHAR}
+			 , CNVRS_TLOF_NO = #{cnvrsTlofNo,jdbcType=VARCHAR}
+			 , CNVRS_TLOF_WTHN_NO = #{cnvrsTlofWthnNo,jdbcType=VARCHAR}
+			 , CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_NM = #{comNm,jdbcType=VARCHAR}
+		   AND PHON_TURN = #{phonTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoChgcallPhonDetl" parameterType="csoChgcallPhonDetl">
+		INSERT /* com.plgrim.ncp.base.insertCsoChgcallPhonDetl		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CHGCALL_PHON_DETL (
+			   COM_NM
+			 , PHON_TURN
+			 , CNVRS_NATION_NO
+			 , CNVRS_AREA_NO
+			 , CNVRS_TLOF_NO
+			 , CNVRS_TLOF_WTHN_NO
+			 , CHRGER_NM
+			 , SORT_SEQ
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comNm,jdbcType=VARCHAR}
+			 , #{phonTurn,jdbcType=NUMERIC}
+			 , #{cnvrsNationNo,jdbcType=VARCHAR}
+			 , #{cnvrsAreaNo,jdbcType=VARCHAR}
+			 , #{cnvrsTlofNo,jdbcType=VARCHAR}
+			 , #{cnvrsTlofWthnNo,jdbcType=VARCHAR}
+			 , #{chrgerNm,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoChgcallPhonDetl" parameterType="csoChgcallPhonDetl">
+		DELETE /* com.plgrim.ncp.base.deleteCsoChgcallPhonDetl		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CHGCALL_PHON_DETL
+		 WHERE 1 = 1
+		   AND COM_NM = #{comNm,jdbcType=VARCHAR}
+		   AND PHON_TURN = #{phonTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

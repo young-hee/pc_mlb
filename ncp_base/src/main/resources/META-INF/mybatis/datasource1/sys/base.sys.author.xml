@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAuthor" parameterType="sysAuthor" resultType="sysAuthor">
+		SELECT /* com.plgrim.ncp.base.selectSysAuthor		Generator(Generator)	2018-05-23 */
+			   AUTHOR_GRP_SN
+			 , AUTHOR_TURN
+			 , MENU_SN
+			 , AUTHOR_RESRC_NM
+			 , AUTHOR_RESRC_VAL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_AUTHOR
+		 WHERE 1 = 1
+	   	   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+		   AND AUTHOR_TURN = #{authorTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysAuthor" parameterType="sysAuthor">
+		UPDATE /* com.plgrim.ncp.base.updateSysAuthor		Generator(Generator)	2018-05-23 */
+		SYS_AUTHOR SET
+			   MENU_SN = #{menuSn,jdbcType=NUMERIC}
+			 , AUTHOR_RESRC_NM = #{authorResrcNm,jdbcType=VARCHAR}
+			 , AUTHOR_RESRC_VAL = #{authorResrcVal,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+		   AND AUTHOR_TURN = #{authorTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysAuthor" parameterType="sysAuthor">
+		INSERT /* com.plgrim.ncp.base.insertSysAuthor		Generator(Generator)	2018-05-23 */
+		INTO   SYS_AUTHOR (
+			   AUTHOR_GRP_SN
+			 , AUTHOR_TURN
+			 , MENU_SN
+			 , AUTHOR_RESRC_NM
+			 , AUTHOR_RESRC_VAL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{authorGrpSn,jdbcType=NUMERIC}
+			 , #{authorTurn,jdbcType=NUMERIC}
+			 , #{menuSn,jdbcType=NUMERIC}
+			 , #{authorResrcNm,jdbcType=VARCHAR}
+			 , #{authorResrcVal,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAuthor" parameterType="sysAuthor">
+		DELETE /* com.plgrim.ncp.base.deleteSysAuthor		Generator(Generator)	2018-05-23 */
+		  FROM SYS_AUTHOR
+		 WHERE 1 = 1
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+		   AND AUTHOR_TURN = #{authorTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoCnsltDetailOrdGod" parameterType="csoCnsltDetailOrdGod" resultType="csoCnsltDetailOrdGod">
+		SELECT /* com.plgrim.ncp.base.selectCsoCnsltDetailOrdGod		Generator(Generator)	2018-05-23 */
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , CNSLT_DETAIL_ORD_GOD_TURN
+			 , GOD_NM
+			 , ORD_GOD_SECT_CD
+			 , GOD_NO
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CNSLT_DETAIL_ORD_GOD
+		 WHERE 1 = 1
+	   	   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_ORD_GOD_TURN = #{cnsltDetailOrdGodTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoCnsltDetailOrdGod" parameterType="csoCnsltDetailOrdGod">
+		UPDATE /* com.plgrim.ncp.base.updateCsoCnsltDetailOrdGod		Generator(Generator)	2018-05-23 */
+		CSO_CNSLT_DETAIL_ORD_GOD SET
+			   GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , ORD_GOD_SECT_CD = #{ordGodSectCd,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_ORD_GOD_TURN = #{cnsltDetailOrdGodTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoCnsltDetailOrdGod" parameterType="csoCnsltDetailOrdGod">
+		INSERT /* com.plgrim.ncp.base.insertCsoCnsltDetailOrdGod		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CNSLT_DETAIL_ORD_GOD (
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , CNSLT_DETAIL_ORD_GOD_TURN
+			 , GOD_NM
+			 , ORD_GOD_SECT_CD
+			 , GOD_NO
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{cnsltSn,jdbcType=NUMERIC}
+			 , #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , #{cnsltDetailOrdGodTurn,jdbcType=NUMERIC}
+			 , #{godNm,jdbcType=VARCHAR}
+			 , #{ordGodSectCd,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoCnsltDetailOrdGod" parameterType="csoCnsltDetailOrdGod">
+		DELETE /* com.plgrim.ncp.base.deleteCsoCnsltDetailOrdGod		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CNSLT_DETAIL_ORD_GOD
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_ORD_GOD_TURN = #{cnsltDetailOrdGodTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

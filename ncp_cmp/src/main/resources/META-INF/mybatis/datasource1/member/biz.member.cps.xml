@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr">
+
+	<select id="selectMbrInfoByMbrNo"  parameterType="String" resultType="mbr">
+		 SELECT 
+                mbr_no
+               ,mbr_stat_cd
+               ,mbr_tp_cd
+               ,mbr_atrb_cd
+               ,unity_mbr_crtfc_sect_cd
+               ,mbr_nm
+               ,mbr_empl_no
+               ,mbr_brthdy_slrcld_yn
+               ,mbr_brthdy
+               ,mbr_sex_sect_cd
+               ,mbr_id
+               ,join_mbr_ip
+               ,mbr_pw
+               ,mbr_login_last_failr_count
+               ,mbr_pw_last_udt_dt
+               ,tmpr_pw_yn
+               ,mbr_email
+               ,mobil_nation_no
+               ,mobil_area_no
+               ,mobil_tlof_no
+               ,mobil_tlof_wthn_no
+               ,otel_nation_no
+               ,otel_area_no
+               ,otel_tlof_no
+               ,otel_tlof_wthn_no
+               ,tel_nation_no
+               ,tel_area_no
+               ,tel_tlof_no
+               ,tel_tlof_wthn_no
+               ,join_nation_cd
+               ,join_dt
+               ,join_lang_cd
+               ,join_mall_id
+               ,join_dvc_cd
+               ,secsn_date
+               ,secsn_sect_cd
+               ,secsn_resn_cd
+               ,secsn_resn_detail_cont
+               ,enfrcsecsn_dsps_id
+               ,mbr_post_no
+               ,mbr_addr_sect_cd
+               ,mbr_base_addr
+               ,mbr_detail_addr
+               ,cpr_nm
+               ,cpr_rprstiv_nm
+               ,bman_reg_no
+               ,cprtel_nation_no
+               ,cprtel_area_no
+               ,cprtel_tlof_no
+               ,cprtel_tlof_wthn_no
+               ,cpr_tax_bill_chrger_email
+               ,cpr_reg_no
+               ,email_recptn_agr_yn
+               ,last_email_recptn_agr_dt
+               ,email_recptn_reject_tokn_id
+               ,sms_recptn_agr_yn
+               ,last_sms_recptn_agr_dt
+               ,dm_recptn_agr_yn
+               ,last_dm_recptn_agr_dt
+               ,erp_cstmr_no
+               ,regtr_id
+               ,reg_dt
+               ,udter_id
+               ,udt_dt
+               ,psitn_grpco_id
+        FROM    mbr
+        WHERE   1 = 1
+        AND     mbr_no = #{mbrNo,jdbcType=VARCHAR}
+	
+	</select>
+</mapper>

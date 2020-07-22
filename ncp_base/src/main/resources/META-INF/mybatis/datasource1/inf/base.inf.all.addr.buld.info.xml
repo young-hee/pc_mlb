@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfAllAddrBuldInfo" parameterType="infAllAddrBuldInfo" resultType="infAllAddrBuldInfo">
+		SELECT /* com.plgrim.ncp.base.selectInfAllAddrBuldInfo		Generator(Generator)	2018-05-23 */
+			   BULD_MANAGE_NO
+			 , SUD_CD
+			 , SIDO_NM
+			 , SIGNGU_NM
+			 , LEGALEMDNM
+			 , LEGALRINM
+			 , MTN_YN
+			 , LNM_MNNM
+			 , LNM_SLNO
+			 , ROAD_NM_CD
+			 , ROAD_NM
+			 , UNDGRND_YN
+			 , BULD_MNNM
+			 , BULD_SLNO
+			 , BILDNG_REGTER_BULD_NM
+			 , DETAIL_BULD_NM
+			 , EMD_SN
+			 , AUD_CD
+			 , AUD_NM
+			 , POST_NO
+			 , POST_SN
+			 , MUCH_DLVSP_NM
+			 , MVMT_RESN_CD
+			 , NTFC_DATE
+			 , MOD_BF_ROAD_NM_ADDR
+			 , SIGNGU_BULD_NM
+			 , COPERTN_HUS_YN
+			 , BSIS_ZONE_NO
+			 , DETAIL_ADDR_YN
+			 , RM_1
+			 , RM_2
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_ALL_ADDR_BULD_INFO
+		 WHERE 1 = 1
+	   	   AND BULD_MANAGE_NO = #{buldManageNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateInfAllAddrBuldInfo" parameterType="infAllAddrBuldInfo">
+		UPDATE /* com.plgrim.ncp.base.updateInfAllAddrBuldInfo		Generator(Generator)	2018-05-23 */
+		INF_ALL_ADDR_BULD_INFO SET
+			   SUD_CD = #{sudCd,jdbcType=VARCHAR}
+			 , SIDO_NM = #{sidoNm,jdbcType=VARCHAR}
+			 , SIGNGU_NM = #{signguNm,jdbcType=VARCHAR}
+			 , LEGALEMDNM = #{legalemdnm,jdbcType=VARCHAR}
+			 , LEGALRINM = #{legalrinm,jdbcType=VARCHAR}
+			 , MTN_YN = #{mtnYn,jdbcType=VARCHAR}
+			 , LNM_MNNM = #{lnmMnnm,jdbcType=NUMERIC}
+			 , LNM_SLNO = #{lnmSlno,jdbcType=NUMERIC}
+			 , ROAD_NM_CD = #{roadNmCd,jdbcType=VARCHAR}
+			 , ROAD_NM = #{roadNm,jdbcType=VARCHAR}
+			 , UNDGRND_YN = #{undgrndYn,jdbcType=VARCHAR}
+			 , BULD_MNNM = #{buldMnnm,jdbcType=NUMERIC}
+			 , BULD_SLNO = #{buldSlno,jdbcType=NUMERIC}
+			 , BILDNG_REGTER_BULD_NM = #{bildngRegterBuldNm,jdbcType=VARCHAR}
+			 , DETAIL_BULD_NM = #{detailBuldNm,jdbcType=VARCHAR}
+			 , EMD_SN = #{emdSn,jdbcType=VARCHAR}
+			 , AUD_CD = #{audCd,jdbcType=VARCHAR}
+			 , AUD_NM = #{audNm,jdbcType=VARCHAR}
+			 , POST_NO = #{postNo,jdbcType=VARCHAR}
+			 , POST_SN = #{postSn,jdbcType=VARCHAR}
+			 , MUCH_DLVSP_NM = #{muchDlvspNm,jdbcType=VARCHAR}
+			 , MVMT_RESN_CD = #{mvmtResnCd,jdbcType=VARCHAR}
+			 , NTFC_DATE = #{ntfcDate,jdbcType=VARCHAR}
+			 , MOD_BF_ROAD_NM_ADDR = #{modBfRoadNmAddr,jdbcType=VARCHAR}
+			 , SIGNGU_BULD_NM = #{signguBuldNm,jdbcType=VARCHAR}
+			 , COPERTN_HUS_YN = #{copertnHusYn,jdbcType=VARCHAR}
+			 , BSIS_ZONE_NO = #{bsisZoneNo,jdbcType=VARCHAR}
+			 , DETAIL_ADDR_YN = #{detailAddrYn,jdbcType=VARCHAR}
+			 , RM_1 = #{rm1,jdbcType=VARCHAR}
+			 , RM_2 = #{rm2,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BULD_MANAGE_NO = #{buldManageNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertInfAllAddrBuldInfo" parameterType="infAllAddrBuldInfo">
+		INSERT /* com.plgrim.ncp.base.insertInfAllAddrBuldInfo		Generator(Generator)	2018-05-23 */
+		INTO   INF_ALL_ADDR_BULD_INFO (
+			   BULD_MANAGE_NO
+			 , SUD_CD
+			 , SIDO_NM
+			 , SIGNGU_NM
+			 , LEGALEMDNM
+			 , LEGALRINM
+			 , MTN_YN
+			 , LNM_MNNM
+			 , LNM_SLNO
+			 , ROAD_NM_CD
+			 , ROAD_NM
+			 , UNDGRND_YN
+			 , BULD_MNNM
+			 , BULD_SLNO
+			 , BILDNG_REGTER_BULD_NM
+			 , DETAIL_BULD_NM
+			 , EMD_SN
+			 , AUD_CD
+			 , AUD_NM
+			 , POST_NO
+			 , POST_SN
+			 , MUCH_DLVSP_NM
+			 , MVMT_RESN_CD
+			 , NTFC_DATE
+			 , MOD_BF_ROAD_NM_ADDR
+			 , SIGNGU_BULD_NM
+			 , COPERTN_HUS_YN
+			 , BSIS_ZONE_NO
+			 , DETAIL_ADDR_YN
+			 , RM_1
+			 , RM_2
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{buldManageNo,jdbcType=VARCHAR}
+			 , #{sudCd,jdbcType=VARCHAR}
+			 , #{sidoNm,jdbcType=VARCHAR}
+			 , #{signguNm,jdbcType=VARCHAR}
+			 , #{legalemdnm,jdbcType=VARCHAR}
+			 , #{legalrinm,jdbcType=VARCHAR}
+			 , #{mtnYn,jdbcType=VARCHAR}
+			 , #{lnmMnnm,jdbcType=NUMERIC}
+			 , #{lnmSlno,jdbcType=NUMERIC}
+			 , #{roadNmCd,jdbcType=VARCHAR}
+			 , #{roadNm,jdbcType=VARCHAR}
+			 , #{undgrndYn,jdbcType=VARCHAR}
+			 , #{buldMnnm,jdbcType=NUMERIC}
+			 , #{buldSlno,jdbcType=NUMERIC}
+			 , #{bildngRegterBuldNm,jdbcType=VARCHAR}
+			 , #{detailBuldNm,jdbcType=VARCHAR}
+			 , #{emdSn,jdbcType=VARCHAR}
+			 , #{audCd,jdbcType=VARCHAR}
+			 , #{audNm,jdbcType=VARCHAR}
+			 , #{postNo,jdbcType=VARCHAR}
+			 , #{postSn,jdbcType=VARCHAR}
+			 , #{muchDlvspNm,jdbcType=VARCHAR}
+			 , #{mvmtResnCd,jdbcType=VARCHAR}
+			 , #{ntfcDate,jdbcType=VARCHAR}
+			 , #{modBfRoadNmAddr,jdbcType=VARCHAR}
+			 , #{signguBuldNm,jdbcType=VARCHAR}
+			 , #{copertnHusYn,jdbcType=VARCHAR}
+			 , #{bsisZoneNo,jdbcType=VARCHAR}
+			 , #{detailAddrYn,jdbcType=VARCHAR}
+			 , #{rm1,jdbcType=VARCHAR}
+			 , #{rm2,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfAllAddrBuldInfo" parameterType="infAllAddrBuldInfo">
+		DELETE /* com.plgrim.ncp.base.deleteInfAllAddrBuldInfo		Generator(Generator)	2018-05-23 */
+		  FROM INF_ALL_ADDR_BULD_INFO
+		 WHERE 1 = 1
+		   AND BULD_MANAGE_NO = #{buldManageNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

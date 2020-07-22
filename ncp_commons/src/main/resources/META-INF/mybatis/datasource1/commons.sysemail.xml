@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.sysemail">
+	<resultMap id="resultSysEmail" type="com.plgrim.ncp.commons.result.SysEmailResult">
+		<result property="sysSmsEmailTxt.txtSn" column="TXT_SN" />
+		<result property="sysSmsEmailTxt.txtSj" column="TXT_SJ" />
+		<result property="sysSmsEmailTxt.txtCont" column="TXT_CONT" />
+		<result property="sysSmsEmailTxt.txtCpcty" column="TXT_CPCTY" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+	</resultMap>
+	
+	<!-- 이메일 자주 사용하는 문구 목록 조회 -->
+	<select id="selectSysEmailTxtList" parameterType="com.plgrim.ncp.commons.data.SysEmailDTO" resultMap="resultSysEmail">
+		SELECT /* [commons.sysemail.xml]["selectSysEmailTxtList"][이메일 자주 사용하는 문구 목록 조회][Ed] */
+                SSET.TXT_SN
+               ,SSET.TXT_SJ /* 제목 */
+               ,SSET.TXT_CONT /* 내용 */
+               ,SSET.TXT_CPCTY /* 용량 */
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSET.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+        FROM    SYS_SMS_EMAIL_TXT SSET
+        WHERE   1 = 1
+        AND     SSET.SMS_EMAIL_SECT_CD = 'EMAIL'
+        AND 	SSET.TXT_USE_SECT_CD = 'CSO'
+        ORDER BY SSET.REG_DT DESC
+	</select>
+	
+	<!-- 이메일 자주 사용하는 문구 등록 -->
+	<insert id="insertSysEmailTxt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysSmsEmailTxt">
+	    INSERT /* [commons.sysemail.xml]["insertSysEmail"][이메일 자주 사용하는 문구 등록][Ed] */  
+	    INTO SYS_SMS_EMAIL_TXT
+		(
+	        TXT_SN
+	       ,SMS_EMAIL_SECT_CD
+	       ,TXT_SJ
+	       ,TXT_CONT
+	       ,TXT_CPCTY
+	       ,TXT_USE_SECT_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        SQ_SYS_SMS_EMAIL_TXT.NEXTVAL
+	       ,#{smsEmailSectCd,jdbcType=VARCHAR}
+	       ,#{txtSj,jdbcType=VARCHAR}
+	       ,#{txtCont,jdbcType=VARCHAR}
+	       ,#{txtCpcty,jdbcType=NUMERIC}
+	       ,#{txtUseSectCd,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)  
+    </insert>
+    
+	<!-- 이메일 자주 사용하는 문구 수정 -->
+    <update id="updateSysEmailTxt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysSmsEmailTxt">
+		UPDATE /* [commons.sysemail.xml]["updateSysEmail"][이메일 자주 사용하는 문구 수정][Ed] */  
+        SYS_SMS_EMAIL_TXT SET
+        		TXT_SJ = #{txtSj,jdbcType=VARCHAR}
+                ,TXT_CONT = #{txtCont,jdbcType=CLOB}
+                ,TXT_CPCTY = #{txtCpcty,jdbcType=NUMERIC}
+                ,TXT_USE_SECT_CD = #{txtUseSectCd,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     TXT_SN = #{txtSn,jdbcType=NUMERIC}
+    </update>
+</mapper>

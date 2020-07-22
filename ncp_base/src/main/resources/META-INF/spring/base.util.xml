@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+
+	<bean id="collectionService" class="com.plgrim.ncp.framework.commons.CollectionService" />
+
+	<bean id="dateService" class="com.plgrim.ncp.framework.commons.DateService" />
+
+	<bean id="idGenService" class="com.plgrim.ncp.framework.commons.IdGenService"
+		p:oracleSequenceMybatisId="${ncp_base.oracle.sequence.query.id}"
+		p:oracleNumberMybatisId="${ncp_base.oracle.number.query.id}"
+		p:oracleOrderMybatisId="${ncp_base.oracle.order.query.id}" />
+
+	<bean id="iOService" class="com.plgrim.ncp.framework.commons.IOService" />
+
+	<bean id="jsonService" class="com.plgrim.ncp.framework.commons.JsonService" />
+
+	<bean id="stringService" class="com.plgrim.ncp.framework.commons.StringService" />
+
+	<bean id="localeService" class="com.plgrim.ncp.framework.commons.LocaleService" />
+
+	<bean id="contextService" class="com.plgrim.ncp.framework.commons.ContextService" />
+
+	<bean id="configService" class="com.plgrim.ncp.framework.commons.ConfigService" />
+
+	<bean id="uriAuthService" class="com.plgrim.ncp.framework.commons.UriAuthService" />
+
+</beans>

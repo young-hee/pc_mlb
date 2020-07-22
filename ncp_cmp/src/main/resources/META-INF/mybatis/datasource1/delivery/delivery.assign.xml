@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.delivery.assign">
+
+	<resultMap id="deliveryOrderGoodResult" type="com.plgrim.ncp.biz.delivery.result.DeliveryOrderGoodResult">
+		<result property="rowNumber" column="ROWNUMBER" />
+		<result property="totalRow" column="TOTALROW" />
+        <result property="mallId" column="mallId" />
+		<result property="ord.ordNo" column="ordNo" />
+		<result property="ord.mallId" column="mallId" />
+        <result property="ord.langCd" column="langCd" />
+		<result property="ord.cstmrNm" column="cstmrNm" />
+		<result property="ord.ordDt" column="ordDt" />
+		<result property="ord.ordTpCd" column="ordTpCd" />
+		<result property="ord.affComId" column="affComId" />
+		<result property="ord.virtlDlvComptYn" column="virtlDlvComptYn" />
+		<result property="ord.lagQtyOrdDcsnYn" column="lagQtyOrdDcsnYn" />		
+		<result property="ord.mbrNo" column="mbrNo" />
+
+		<result property="ordGod.ordGodTurn" column="ordGodTurn" />
+		<result property="ordGod.erpGodNo" column="erpGodNo" />
+		<result property="ordGod.brndId" column="brndId" />
+		<result property="ordGod.brndGrpId" column="brndGrpId" />
+		<result property="ordGod.godNo" column="godNo" />
+		<result property="ordGod.itmNo" column="itmNo" />
+		<result property="ordGod.godNm" column="godNm" />
+		<result property="ordGod.itmNm" column="itmNm" />
+		<result property="ordGod.skuNo" column="skuNo" />
+		<result property="ordGod.godHistTurn" column="godHistTurn" />
+		<result property="ordGod.itmHistTurn" column="itmHistTurn" />
+		<result property="ordGod.godTpCd" column="godTpCd" />
+		<result property="ordGod.partmalSectCd" column="partmalSectCd" />
+		<result property="ordGod.rtlPrc" column="rtlPrc" />
+		<result property="ordGod.saleAmt" column="saleAmt" />
+		<result property="ordGod.comId" column="comId" />
+		<result property="ordGod.saleShopCd" column="saleShopCd" />
+		
+		<result property="lgsDsp.dlvPcupspTurn" column="dlvPcupspTurn" />
+		<result property="lgsDsp.dlvPcupspSectCd" column="dlvPcupspSectCd" />
+		<result property="lgsDlv.dlvMnCd" column="dlvMnCd" />
+		<result property="lgsDsp.addrseNm" column="addrseNm" />
+		<result property="lgsDsp.pkupShopId" column="pkupShopId" />
+		<result property="lgsDsp.addrseNationCd" column="addrseNationCd" />
+		<result property="lgsDsp.addrsePostNo" column="addrsePostNo" />
+		<result property="lgsDsp.pkupShopVisitDate" column="pkupShopVisitDate" />
+
+		<result property="lgsDlv.dlvTurn" column="dlvTurn" />
+		<result property="lgsDlv.dlvComCd" column="dlvComCd" />
+		<result property="lgsDlv.dmstcWaybilNo" column="dmstcWaybilNo" />
+		<result property="lgsDlv.dmstcWaybilNoRegDt" column="dmstcWaybilNoRegDt" />
+		<result property="lgsDlv.ovseaWaybilNo" column="ovseaWaybilNo" />
+		<result property="lgsDlv.ovseaWaybilNoRegDt" column="ovseaWaybilNoRegDt" />
+
+		<result property="lgsDdg.dlivyDrctGodNo" column="dlivyDrctGodNo" />
+		<result property="lgsDdg.dlvShopId" column="dlvShopId" />
+		<result property="lgsDdg.lgsItmYn" column="lgsItmYn" />
+		<result property="lgsDdg.gftYn" column="gftYn" />
+		<result property="lgsDdg.dlivyDrctGrpDgre" column="dlivyDrctGrpDgre" />
+		<result property="lgsDdg.dlivyDrctUserGrpDgre" column="dlivyDrctUserGrpDgre" />
+		<result property="lgsDdg.dlivyDrctTpCd" column="dlivyDrctTpCd" />
+		<result property="lgsDdg.dlivyDrctDt" column="dlivyDrctDt" />
+		<result property="lgsDdg.dlivyDrctYn" column="dlivyDrctYn" />
+		<result property="lgsDdg.dlivyDrctQty" column="dlivyDrctQty" />
+		<result property="lgsDdg.dlvStatCd" column="dlvStatCd" />
+		<result property="lgsDdg.shtgDt" column="shtgDt" />
+		<result property="lgsDdg.resveRcptfrCreatYn" column="resveRcptfrCreatYn" />
+		<result property="lgsDdg.invAplYn" column="invAplYn" />
+		<result property="lgsDdg.pckageGodTurn" column="pckageGodTurn" />
+		<result property="lgsDdg.dlivyPrearngeDt" column="dlivyPrearngeDt" />
+	</resultMap>
+    
+    <!-- 결품 알림 메시지 발송대상 확인 처리 -->
+	<update id="updateShtgMsgTransYn" parameterType="java.lang.String">
+	/* [delivery.assign.xml][updateShtgMsgTransYn][결품 알림 메시지 발송대상 확인 처리][] */
+		UPDATE LGS_DLIVY_DRCT_GOD
+		   SET shtg_expect_sms_snd_yn = 'Y'
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+		   AND dlivy_drct_god_no IN
+		       (
+		        SELECT dlivy_drct_god_no
+		          FROM ORD_GOD ordgod
+                       JOIN LGS_DLIVY_DRCT_GOD lgsddg 
+                         ON (ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)		          
+		         WHERE ordGod.partmal_sect_cd = 'MCOM'
+		           AND lgsddg.dlv_stat_cd = 'SHTG_RCEPT'
+		           AND lgsddg.dlv_shop_id = 'B031'
+		           AND lgsddg.shtg_expect_sms_snd_yn = 'N'
+		           AND lgsddg.ord_no = #{ordNo,jdbcType=VARCHAR}        
+		       )	
+	</update>    
+	
+	<!-- 퀵배송 영역 [E] -->
+
+
+
+
+
+
+
+
+</mapper>

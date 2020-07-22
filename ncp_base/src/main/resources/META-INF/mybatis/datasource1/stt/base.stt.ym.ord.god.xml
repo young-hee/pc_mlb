@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSttYmOrdGod" parameterType="sttYmOrdGod" resultType="sttYmOrdGod">
+		SELECT /* com.plgrim.ncp.base.selectSttYmOrdGod		Generator(Generator)	2018-05-23 */
+			   ORD_YM
+			 , MALL_ID
+			 , GOD_NO
+			 , BRND_ID
+			 , ORD_QTY
+			 , ORD_AMT
+			 , CLM_QTY
+			 , CLM_AMT
+			 , UDT_DT
+		  FROM STT_YM_ORD_GOD
+		 WHERE 1 = 1
+	   	   AND ORD_YM = #{ordYm,jdbcType=VARCHAR}
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSttYmOrdGod" parameterType="sttYmOrdGod">
+		UPDATE /* com.plgrim.ncp.base.updateSttYmOrdGod		Generator(Generator)	2018-05-23 */
+		STT_YM_ORD_GOD SET
+			   BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , ORD_QTY = #{ordQty,jdbcType=NUMERIC}
+			 , ORD_AMT = #{ordAmt,jdbcType=NUMERIC}
+			 , CLM_QTY = #{clmQty,jdbcType=NUMERIC}
+			 , CLM_AMT = #{clmAmt,jdbcType=NUMERIC}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_YM = #{ordYm,jdbcType=VARCHAR}
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSttYmOrdGod" parameterType="sttYmOrdGod">
+		INSERT /* com.plgrim.ncp.base.insertSttYmOrdGod		Generator(Generator)	2018-05-23 */
+		INTO   STT_YM_ORD_GOD (
+			   ORD_YM
+			 , MALL_ID
+			 , GOD_NO
+			 , BRND_ID
+			 , ORD_QTY
+			 , ORD_AMT
+			 , CLM_QTY
+			 , CLM_AMT
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordYm,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{ordQty,jdbcType=NUMERIC}
+			 , #{ordAmt,jdbcType=NUMERIC}
+			 , #{clmQty,jdbcType=NUMERIC}
+			 , #{clmAmt,jdbcType=NUMERIC}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSttYmOrdGod" parameterType="sttYmOrdGod">
+		DELETE /* com.plgrim.ncp.base.deleteSttYmOrdGod		Generator(Generator)	2018-05-23 */
+		  FROM STT_YM_ORD_GOD
+		 WHERE 1 = 1
+		   AND ORD_YM = #{ordYm,jdbcType=VARCHAR}
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

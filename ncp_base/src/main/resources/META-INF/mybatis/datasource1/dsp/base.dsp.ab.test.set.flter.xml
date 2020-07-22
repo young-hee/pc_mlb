@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspAbTestSetFlter" parameterType="dspAbTestSetFlter" resultType="dspAbTestSetFlter">
+		SELECT /* com.plgrim.ncp.base.selectDspAbTestSetFlter		Generator(Generator)	2018-05-23 */
+			   AB_TEST_SN
+			 , SET_TURN
+			 , FLTER_GRP_CD
+			 , FLTER_CD
+			 , ORD_BEG_DT
+			 , ORD_END_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_AB_TEST_SET_FLTER
+		 WHERE 1 = 1
+	   	   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		   AND FLTER_GRP_CD = #{flterGrpCd,jdbcType=VARCHAR}
+		   AND FLTER_CD = #{flterCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspAbTestSetFlter" parameterType="dspAbTestSetFlter">
+		UPDATE /* com.plgrim.ncp.base.updateDspAbTestSetFlter		Generator(Generator)	2018-05-23 */
+		DSP_AB_TEST_SET_FLTER SET
+			   ORD_BEG_DT = #{ordBegDt,jdbcType=TIMESTAMP}
+			 , ORD_END_DT = #{ordEndDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		   AND FLTER_GRP_CD = #{flterGrpCd,jdbcType=VARCHAR}
+		   AND FLTER_CD = #{flterCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspAbTestSetFlter" parameterType="dspAbTestSetFlter">
+		INSERT /* com.plgrim.ncp.base.insertDspAbTestSetFlter		Generator(Generator)	2018-05-23 */
+		INTO   DSP_AB_TEST_SET_FLTER (
+			   AB_TEST_SN
+			 , SET_TURN
+			 , FLTER_GRP_CD
+			 , FLTER_CD
+			 , ORD_BEG_DT
+			 , ORD_END_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{abTestSn,jdbcType=NUMERIC}
+			 , #{setTurn,jdbcType=NUMERIC}
+			 , #{flterGrpCd,jdbcType=VARCHAR}
+			 , #{flterCd,jdbcType=VARCHAR}
+			 , #{ordBegDt,jdbcType=TIMESTAMP}
+			 , #{ordEndDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspAbTestSetFlter" parameterType="dspAbTestSetFlter">
+		DELETE /* com.plgrim.ncp.base.deleteDspAbTestSetFlter		Generator(Generator)	2018-05-23 */
+		  FROM DSP_AB_TEST_SET_FLTER
+		 WHERE 1 = 1
+		   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		   AND FLTER_GRP_CD = #{flterGrpCd,jdbcType=VARCHAR}
+		   AND FLTER_CD = #{flterCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

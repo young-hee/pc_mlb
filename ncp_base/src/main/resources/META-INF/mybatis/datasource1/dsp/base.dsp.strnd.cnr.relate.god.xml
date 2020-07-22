@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspStrndCnrRelateGod" parameterType="dspStrndCnrRelateGod" resultType="dspStrndCnrRelateGod">
+		SELECT /* com.plgrim.ncp.base.selectDspStrndCnrRelateGod		Generator(Generator)	2018-05-23 */
+			   STRND_SN
+			 , REV_SN
+			 , TMPLAT_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , CONTT_GOD_NO
+			 , GOD_NO
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_STRND_CNR_RELATE_GOD
+		 WHERE 1 = 1
+	   	   AND STRND_SN = #{strndSn,jdbcType=NUMERIC}
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND CONTT_GOD_NO = #{conttGodNo,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspStrndCnrRelateGod" parameterType="dspStrndCnrRelateGod">
+		UPDATE /* com.plgrim.ncp.base.updateDspStrndCnrRelateGod		Generator(Generator)	2018-05-23 */
+		DSP_STRND_CNR_RELATE_GOD SET
+			   SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND STRND_SN = #{strndSn,jdbcType=NUMERIC}
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND CONTT_GOD_NO = #{conttGodNo,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspStrndCnrRelateGod" parameterType="dspStrndCnrRelateGod">
+		INSERT /* com.plgrim.ncp.base.insertDspStrndCnrRelateGod		Generator(Generator)	2018-05-23 */
+		INTO   DSP_STRND_CNR_RELATE_GOD (
+			   STRND_SN
+			 , REV_SN
+			 , TMPLAT_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , CONTT_GOD_NO
+			 , GOD_NO
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{strndSn,jdbcType=NUMERIC}
+			 , #{revSn,jdbcType=NUMERIC}
+			 , #{tmplatSn,jdbcType=NUMERIC}
+			 , #{cnrSn,jdbcType=NUMERIC}
+			 , #{cnrSetSn,jdbcType=NUMERIC}
+			 , #{conttGodNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspStrndCnrRelateGod" parameterType="dspStrndCnrRelateGod">
+		DELETE /* com.plgrim.ncp.base.deleteDspStrndCnrRelateGod		Generator(Generator)	2018-05-23 */
+		  FROM DSP_STRND_CNR_RELATE_GOD
+		 WHERE 1 = 1
+		   AND STRND_SN = #{strndSn,jdbcType=NUMERIC}
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND CONTT_GOD_NO = #{conttGodNo,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

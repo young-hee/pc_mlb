@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPayPgIntrlckLog" parameterType="payPgIntrlckLog" resultType="payPgIntrlckLog">
+		SELECT /* com.plgrim.ncp.base.selectPayPgIntrlckLog		Generator(Generator)	2018-05-23 */
+			   LOG_DT
+			 , LOG_TP_CD
+			 , LOG_CONT
+			 , PAY_NO
+			 , ORD_NO
+			 , CLM_NO
+			 , REPAIR_NO
+			 , MBR_NO
+			 , PG_APRV_NO
+		  FROM PAY_PG_INTRLCK_LOG
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updatePayPgIntrlckLog" parameterType="payPgIntrlckLog">
+		UPDATE /* com.plgrim.ncp.base.updatePayPgIntrlckLog		Generator(Generator)	2018-05-23 */
+		PAY_PG_INTRLCK_LOG SET
+			   LOG_DT = #{logDt,jdbcType=TIMESTAMP}
+			 , LOG_TP_CD = #{logTpCd,jdbcType=VARCHAR}
+			 , LOG_CONT = #{logCont,jdbcType=VARCHAR}
+			 , PAY_NO = #{payNo,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , REPAIR_NO = #{repairNo,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , PG_APRV_NO = #{pgAprvNo,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertPayPgIntrlckLog" parameterType="payPgIntrlckLog">
+		INSERT /* com.plgrim.ncp.base.insertPayPgIntrlckLog		Generator(Generator)	2018-05-23 */
+		INTO   PAY_PG_INTRLCK_LOG (
+			   LOG_DT
+			 , LOG_TP_CD
+			 , LOG_CONT
+			 , PAY_NO
+			 , ORD_NO
+			 , CLM_NO
+			 , REPAIR_NO
+			 , MBR_NO
+			 , PG_APRV_NO
+		)
+		VALUES (
+			   #{logDt,jdbcType=TIMESTAMP}
+			 , #{logTpCd,jdbcType=VARCHAR}
+			 , #{logCont,jdbcType=VARCHAR}
+			 , #{payNo,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{repairNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{pgAprvNo,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deletePayPgIntrlckLog" parameterType="payPgIntrlckLog">
+		DELETE /* com.plgrim.ncp.base.deletePayPgIntrlckLog		Generator(Generator)	2018-05-23 */
+		  FROM PAY_PG_INTRLCK_LOG
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

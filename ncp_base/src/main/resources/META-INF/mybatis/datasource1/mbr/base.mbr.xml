@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbr" parameterType="mbr" resultType="mbr">
+		SELECT /* com.plgrim.ncp.base.selectMbr		Generator(Generator)	2018-05-24 */
+			   MBR_NO
+			 , MBR_STAT_CD
+			 , MBR_TP_CD
+			 , MBR_ATRB_CD
+			 , UNITY_MBR_CRTFC_SECT_CD
+			 , UNITY_MBR_CRTFC_DT
+			 , MBR_NM
+			 , MBR_BRTHDY_SLRCLD_YN
+			 , MBR_BRTHDY
+			 , MBR_SEX_SECT_CD
+			 , FRGNR_YN
+			 , PSITN_GRPCO_ID
+			 , MBR_EMPL_NO
+			 , MBR_ID
+			 , JOIN_MBR_IP
+			 , MBR_PW
+			 , MBR_ERP_PW
+			 , MBR_LOGIN_LAST_FAILR_COUNT
+			 , MBR_PW_LAST_UDT_DT
+			 , TMPR_PW_YN
+			 , MBR_EMAIL
+			 , MOBIL_NATION_CD
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , OTEL_NATION_NO
+			 , OTEL_AREA_NO
+			 , OTEL_TLOF_NO
+			 , OTEL_TLOF_WTHN_NO
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , JOIN_NATION_CD
+			 , JOIN_DT
+			 , SSO_GRP_CD
+			 , JOIN_MALL_ID
+			 , JOIN_LANG_CD
+			 , JOIN_DVC_CD
+			 , OS_CD
+			 , MOBILE_APP_SECT_CD
+			 , INFLOW_SN
+			 , LINKPRC_SESION_ID
+			 , DRMC_RESN_CONT
+			 , DRMC_DT
+			 , SECSN_SECT_CD
+			 , SECSN_RESN_CD
+			 , SECSN_RESN_DETAIL_CONT
+			 , SECSN_DATE
+			 , ENFRCSECSN_DSPS_ID
+			 , MBR_ADDR_NATION_CD
+			 , MBR_ADDR_TP_CD
+			 , MBR_ADDR_SECT_CD
+			 , MBR_POST_NO
+			 , MBR_BASE_ADDR
+			 , MBR_DETAIL_ADDR
+			 , AUD_CD
+			 , MBR_CTY_NM
+			 , MBR_LCLTY_NM
+			 , CPR_NM
+			 , CPR_RPRSTIV_NM
+			 , BMAN_REG_NO
+			 , CPRTEL_NATION_NO
+			 , CPRTEL_AREA_NO
+			 , CPRTEL_TLOF_NO
+			 , CPRTEL_TLOF_WTHN_NO
+			 , CPR_TAX_BILL_CHRGER_EMAIL
+			 , CPR_REG_NO
+			 , INFOR_NTCN_RECPTN_TP_CD
+			 , EMAIL_RECPTN_AGR_YN
+			 , LAST_EMAIL_RECPTN_AGR_DT
+			 , EMAIL_RECPTN_REJECT_TOKN_ID
+			 , SMS_RECPTN_AGR_YN
+			 , LAST_SMS_RECPTN_AGR_DT
+			 , DM_RECPTN_AGR_YN
+			 , LAST_DM_RECPTN_AGR_DT
+			 , TM_RECPTN_AGR_YN
+			 , LAST_TM_RECPTN_AGR_DT
+			 , ERP_CSTMR_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbr" parameterType="mbr">
+		UPDATE /* com.plgrim.ncp.base.updateMbr		Generator(Generator)	2018-05-24 */
+		MBR SET
+			   MBR_STAT_CD = #{mbrStatCd,jdbcType=VARCHAR}
+			 , MBR_TP_CD = #{mbrTpCd,jdbcType=VARCHAR}
+			 , MBR_ATRB_CD = #{mbrAtrbCd,jdbcType=VARCHAR}
+			 , UNITY_MBR_CRTFC_SECT_CD = #{unityMbrCrtfcSectCd,jdbcType=VARCHAR}
+			 , UNITY_MBR_CRTFC_DT = #{unityMbrCrtfcDt,jdbcType=TIMESTAMP}
+			 , MBR_NM = #{mbrNm,jdbcType=VARCHAR}
+			 , MBR_BRTHDY_SLRCLD_YN = #{mbrBrthdySlrcldYn,jdbcType=VARCHAR}
+			 , MBR_BRTHDY = #{mbrBrthdy,jdbcType=VARCHAR}
+			 , MBR_SEX_SECT_CD = #{mbrSexSectCd,jdbcType=VARCHAR}
+			 , FRGNR_YN = #{frgnrYn,jdbcType=VARCHAR}
+			 , PSITN_GRPCO_ID = #{psitnGrpcoId,jdbcType=VARCHAR}
+			 , MBR_EMPL_NO = #{mbrEmplNo,jdbcType=VARCHAR}
+			 , MBR_ID = #{mbrId,jdbcType=VARCHAR}
+			 , JOIN_MBR_IP = #{joinMbrIp,jdbcType=VARCHAR}
+			 , MBR_PW = #{mbrPw,jdbcType=VARCHAR}
+			 , MBR_ERP_PW = #{mbrErpPw,jdbcType=VARCHAR}
+			 , MBR_LOGIN_LAST_FAILR_COUNT = #{mbrLoginLastFailrCount,jdbcType=NUMERIC}
+			 , MBR_PW_LAST_UDT_DT = #{mbrPwLastUdtDt,jdbcType=TIMESTAMP}
+			 , TMPR_PW_YN = #{tmprPwYn,jdbcType=VARCHAR}
+			 , MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+			 , MOBIL_NATION_CD = #{mobilNationCd,jdbcType=VARCHAR}
+			 , MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+			 , MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , OTEL_NATION_NO = #{otelNationNo,jdbcType=VARCHAR}
+			 , OTEL_AREA_NO = #{otelAreaNo,jdbcType=VARCHAR}
+			 , OTEL_TLOF_NO = #{otelTlofNo,jdbcType=VARCHAR}
+			 , OTEL_TLOF_WTHN_NO = #{otelTlofWthnNo,jdbcType=VARCHAR}
+			 , TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+			 , TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , JOIN_NATION_CD = #{joinNationCd,jdbcType=VARCHAR}
+			 , JOIN_DT = #{joinDt,jdbcType=TIMESTAMP}
+			 , SSO_GRP_CD = #{ssoGrpCd,jdbcType=VARCHAR}
+			 , JOIN_MALL_ID = #{joinMallId,jdbcType=VARCHAR}
+			 , JOIN_LANG_CD = #{joinLangCd,jdbcType=VARCHAR}
+			 , JOIN_DVC_CD = #{joinDvcCd,jdbcType=VARCHAR}
+			 , OS_CD = #{osCd,jdbcType=VARCHAR}
+			 , MOBILE_APP_SECT_CD = #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , INFLOW_SN = #{inflowSn,jdbcType=NUMERIC}
+			 , LINKPRC_SESION_ID = #{linkprcSesionId,jdbcType=VARCHAR}
+			 , DRMC_RESN_CONT = #{drmcResnCont,jdbcType=VARCHAR}
+			 , DRMC_DT = #{drmcDt,jdbcType=TIMESTAMP}
+			 , SECSN_SECT_CD = #{secsnSectCd,jdbcType=VARCHAR}
+			 , SECSN_RESN_CD = #{secsnResnCd,jdbcType=VARCHAR}
+			 , SECSN_RESN_DETAIL_CONT = #{secsnResnDetailCont,jdbcType=VARCHAR}
+			 , SECSN_DATE = #{secsnDate,jdbcType=TIMESTAMP}
+			 , ENFRCSECSN_DSPS_ID = #{enfrcsecsnDspsId,jdbcType=VARCHAR}
+			 , MBR_ADDR_NATION_CD = #{mbrAddrNationCd,jdbcType=VARCHAR}
+			 , MBR_ADDR_TP_CD = #{mbrAddrTpCd,jdbcType=VARCHAR}
+			 , MBR_ADDR_SECT_CD = #{mbrAddrSectCd,jdbcType=VARCHAR}
+			 , MBR_POST_NO = #{mbrPostNo,jdbcType=VARCHAR}
+			 , MBR_BASE_ADDR = #{mbrBaseAddr,jdbcType=VARCHAR}
+			 , MBR_DETAIL_ADDR = #{mbrDetailAddr,jdbcType=VARCHAR}
+			 , AUD_CD = #{audCd,jdbcType=VARCHAR}
+			 , MBR_CTY_NM = #{mbrCtyNm,jdbcType=VARCHAR}
+			 , MBR_LCLTY_NM = #{mbrLcltyNm,jdbcType=VARCHAR}
+			 , CPR_NM = #{cprNm,jdbcType=VARCHAR}
+			 , CPR_RPRSTIV_NM = #{cprRprstivNm,jdbcType=VARCHAR}
+			 , BMAN_REG_NO = #{bmanRegNo,jdbcType=VARCHAR}
+			 , CPRTEL_NATION_NO = #{cprtelNationNo,jdbcType=VARCHAR}
+			 , CPRTEL_AREA_NO = #{cprtelAreaNo,jdbcType=VARCHAR}
+			 , CPRTEL_TLOF_NO = #{cprtelTlofNo,jdbcType=VARCHAR}
+			 , CPRTEL_TLOF_WTHN_NO = #{cprtelTlofWthnNo,jdbcType=VARCHAR}
+			 , CPR_TAX_BILL_CHRGER_EMAIL = #{cprTaxBillChrgerEmail,jdbcType=VARCHAR}
+			 , CPR_REG_NO = #{cprRegNo,jdbcType=VARCHAR}
+			 , INFOR_NTCN_RECPTN_TP_CD = #{inforNtcnRecptnTpCd,jdbcType=VARCHAR}
+			 , EMAIL_RECPTN_AGR_YN = #{emailRecptnAgrYn,jdbcType=VARCHAR}
+			 , LAST_EMAIL_RECPTN_AGR_DT = #{lastEmailRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , EMAIL_RECPTN_REJECT_TOKN_ID = #{emailRecptnRejectToknId,jdbcType=VARCHAR}
+			 , SMS_RECPTN_AGR_YN = #{smsRecptnAgrYn,jdbcType=VARCHAR}
+			 , LAST_SMS_RECPTN_AGR_DT = #{lastSmsRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , DM_RECPTN_AGR_YN = #{dmRecptnAgrYn,jdbcType=VARCHAR}
+			 , LAST_DM_RECPTN_AGR_DT = #{lastDmRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , TM_RECPTN_AGR_YN = #{tmRecptnAgrYn,jdbcType=VARCHAR}
+			 , LAST_TM_RECPTN_AGR_DT = #{lastTmRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbr" parameterType="mbr">
+		INSERT /* com.plgrim.ncp.base.insertMbr		Generator(Generator)	2018-05-24 */
+		INTO   MBR (
+			   MBR_NO
+			 , MBR_STAT_CD
+			 , MBR_TP_CD
+			 , MBR_ATRB_CD
+			 , UNITY_MBR_CRTFC_SECT_CD
+			 , UNITY_MBR_CRTFC_DT
+			 , MBR_NM
+			 , MBR_BRTHDY_SLRCLD_YN
+			 , MBR_BRTHDY
+			 , MBR_SEX_SECT_CD
+			 , FRGNR_YN
+			 , PSITN_GRPCO_ID
+			 , MBR_EMPL_NO
+			 , MBR_ID
+			 , JOIN_MBR_IP
+			 , MBR_PW
+			 , MBR_ERP_PW
+			 , MBR_LOGIN_LAST_FAILR_COUNT
+			 , MBR_PW_LAST_UDT_DT
+			 , TMPR_PW_YN
+			 , MBR_EMAIL
+			 , MOBIL_NATION_CD
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , OTEL_NATION_NO
+			 , OTEL_AREA_NO
+			 , OTEL_TLOF_NO
+			 , OTEL_TLOF_WTHN_NO
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , JOIN_NATION_CD
+			 , JOIN_DT
+			 , SSO_GRP_CD
+			 , JOIN_MALL_ID
+			 , JOIN_LANG_CD
+			 , JOIN_DVC_CD
+			 , OS_CD
+			 , MOBILE_APP_SECT_CD
+			 , INFLOW_SN
+			 , LINKPRC_SESION_ID
+			 , DRMC_RESN_CONT
+			 , DRMC_DT
+			 , SECSN_SECT_CD
+			 , SECSN_RESN_CD
+			 , SECSN_RESN_DETAIL_CONT
+			 , SECSN_DATE
+			 , ENFRCSECSN_DSPS_ID
+			 , MBR_ADDR_NATION_CD
+			 , MBR_ADDR_TP_CD
+			 , MBR_ADDR_SECT_CD
+			 , MBR_POST_NO
+			 , MBR_BASE_ADDR
+			 , MBR_DETAIL_ADDR
+			 , AUD_CD
+			 , MBR_CTY_NM
+			 , MBR_LCLTY_NM
+			 , CPR_NM
+			 , CPR_RPRSTIV_NM
+			 , BMAN_REG_NO
+			 , CPRTEL_NATION_NO
+			 , CPRTEL_AREA_NO
+			 , CPRTEL_TLOF_NO
+			 , CPRTEL_TLOF_WTHN_NO
+			 , CPR_TAX_BILL_CHRGER_EMAIL
+			 , CPR_REG_NO
+			 , INFOR_NTCN_RECPTN_TP_CD
+			 , EMAIL_RECPTN_AGR_YN
+			 , LAST_EMAIL_RECPTN_AGR_DT
+			 , EMAIL_RECPTN_REJECT_TOKN_ID
+			 , SMS_RECPTN_AGR_YN
+			 , LAST_SMS_RECPTN_AGR_DT
+			 , DM_RECPTN_AGR_YN
+			 , LAST_DM_RECPTN_AGR_DT
+			 , TM_RECPTN_AGR_YN
+			 , LAST_TM_RECPTN_AGR_DT
+			 , ERP_CSTMR_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{mbrStatCd,jdbcType=VARCHAR}
+			 , #{mbrTpCd,jdbcType=VARCHAR}
+			 , #{mbrAtrbCd,jdbcType=VARCHAR}
+			 , #{unityMbrCrtfcSectCd,jdbcType=VARCHAR}
+			 , #{unityMbrCrtfcDt,jdbcType=TIMESTAMP}
+			 , #{mbrNm,jdbcType=VARCHAR}
+			 , #{mbrBrthdySlrcldYn,jdbcType=VARCHAR}
+			 , #{mbrBrthdy,jdbcType=VARCHAR}
+			 , #{mbrSexSectCd,jdbcType=VARCHAR}
+			 , #{frgnrYn,jdbcType=VARCHAR}
+			 , #{psitnGrpcoId,jdbcType=VARCHAR}
+			 , #{mbrEmplNo,jdbcType=VARCHAR}
+			 , #{mbrId,jdbcType=VARCHAR}
+			 , #{joinMbrIp,jdbcType=VARCHAR}
+			 , #{mbrPw,jdbcType=VARCHAR}
+			 , #{mbrErpPw,jdbcType=VARCHAR}
+			 , #{mbrLoginLastFailrCount,jdbcType=NUMERIC}
+			 , #{mbrPwLastUdtDt,jdbcType=TIMESTAMP}
+			 , #{tmprPwYn,jdbcType=VARCHAR}
+			 , #{mbrEmail,jdbcType=VARCHAR}
+			 , #{mobilNationCd,jdbcType=VARCHAR}
+			 , #{mobilNationNo,jdbcType=VARCHAR}
+			 , #{mobilAreaNo,jdbcType=VARCHAR}
+			 , #{mobilTlofNo,jdbcType=VARCHAR}
+			 , #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{otelNationNo,jdbcType=VARCHAR}
+			 , #{otelAreaNo,jdbcType=VARCHAR}
+			 , #{otelTlofNo,jdbcType=VARCHAR}
+			 , #{otelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{telNationNo,jdbcType=VARCHAR}
+			 , #{telAreaNo,jdbcType=VARCHAR}
+			 , #{telTlofNo,jdbcType=VARCHAR}
+			 , #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , #{joinNationCd,jdbcType=VARCHAR}
+			 , #{joinDt,jdbcType=TIMESTAMP}
+			 , #{ssoGrpCd,jdbcType=VARCHAR}
+			 , #{joinMallId,jdbcType=VARCHAR}
+			 , #{joinLangCd,jdbcType=VARCHAR}
+			 , #{joinDvcCd,jdbcType=VARCHAR}
+			 , #{osCd,jdbcType=VARCHAR}
+			 , #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , #{inflowSn,jdbcType=NUMERIC}
+			 , #{linkprcSesionId,jdbcType=VARCHAR}
+			 , #{drmcResnCont,jdbcType=VARCHAR}
+			 , #{drmcDt,jdbcType=TIMESTAMP}
+			 , #{secsnSectCd,jdbcType=VARCHAR}
+			 , #{secsnResnCd,jdbcType=VARCHAR}
+			 , #{secsnResnDetailCont,jdbcType=VARCHAR}
+			 , #{secsnDate,jdbcType=TIMESTAMP}
+			 , #{enfrcsecsnDspsId,jdbcType=VARCHAR}
+			 , #{mbrAddrNationCd,jdbcType=VARCHAR}
+			 , #{mbrAddrTpCd,jdbcType=VARCHAR}
+			 , #{mbrAddrSectCd,jdbcType=VARCHAR}
+			 , #{mbrPostNo,jdbcType=VARCHAR}
+			 , #{mbrBaseAddr,jdbcType=VARCHAR}
+			 , #{mbrDetailAddr,jdbcType=VARCHAR}
+			 , #{audCd,jdbcType=VARCHAR}
+			 , #{mbrCtyNm,jdbcType=VARCHAR}
+			 , #{mbrLcltyNm,jdbcType=VARCHAR}
+			 , #{cprNm,jdbcType=VARCHAR}
+			 , #{cprRprstivNm,jdbcType=VARCHAR}
+			 , #{bmanRegNo,jdbcType=VARCHAR}
+			 , #{cprtelNationNo,jdbcType=VARCHAR}
+			 , #{cprtelAreaNo,jdbcType=VARCHAR}
+			 , #{cprtelTlofNo,jdbcType=VARCHAR}
+			 , #{cprtelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{cprTaxBillChrgerEmail,jdbcType=VARCHAR}
+			 , #{cprRegNo,jdbcType=VARCHAR}
+			 , #{inforNtcnRecptnTpCd,jdbcType=VARCHAR}
+			 , #{emailRecptnAgrYn,jdbcType=VARCHAR}
+			 , #{lastEmailRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , #{emailRecptnRejectToknId,jdbcType=VARCHAR}
+			 , #{smsRecptnAgrYn,jdbcType=VARCHAR}
+			 , #{lastSmsRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , #{dmRecptnAgrYn,jdbcType=VARCHAR}
+			 , #{lastDmRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , #{tmRecptnAgrYn,jdbcType=VARCHAR}
+			 , #{lastTmRecptnAgrDt,jdbcType=TIMESTAMP}
+			 , #{erpCstmrNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbr" parameterType="mbr">
+		DELETE /* com.plgrim.ncp.base.deleteMbr		Generator(Generator)	2018-05-24 */
+		  FROM MBR
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

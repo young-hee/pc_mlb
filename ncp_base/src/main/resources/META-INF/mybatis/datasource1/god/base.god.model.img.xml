@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodModelImg" parameterType="godModelImg" resultType="godModelImg">
+		SELECT /* com.plgrim.ncp.base.selectGodModelImg		Generator(Generator)	2018-05-23 */
+			   MODEL_NO
+			 , MODEL_IMG_TURN
+			 , MODEL_IMG_URL
+			 , MODEL_IMG_ALTRTV_CONT
+			 , WEAR_SIZE_CD
+			 , CSLT_WEAR_SIZE_NM
+			 , PANTS_WEAR_SIZE_NM
+			 , DSP_YN
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_MODEL_IMG
+		 WHERE 1 = 1
+	   	   AND MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+		   AND MODEL_IMG_TURN = #{modelImgTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodModelImg" parameterType="godModelImg">
+		UPDATE /* com.plgrim.ncp.base.updateGodModelImg		Generator(Generator)	2018-05-23 */
+		GOD_MODEL_IMG SET
+			   MODEL_IMG_URL = #{modelImgUrl,jdbcType=VARCHAR}
+			 , MODEL_IMG_ALTRTV_CONT = #{modelImgAltrtvCont,jdbcType=VARCHAR}
+			 , WEAR_SIZE_CD = #{wearSizeCd,jdbcType=VARCHAR}
+			 , CSLT_WEAR_SIZE_NM = #{csltWearSizeNm,jdbcType=VARCHAR}
+			 , PANTS_WEAR_SIZE_NM = #{pantsWearSizeNm,jdbcType=VARCHAR}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+		   AND MODEL_IMG_TURN = #{modelImgTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodModelImg" parameterType="godModelImg">
+		INSERT /* com.plgrim.ncp.base.insertGodModelImg		Generator(Generator)	2018-05-23 */
+		INTO   GOD_MODEL_IMG (
+			   MODEL_NO
+			 , MODEL_IMG_TURN
+			 , MODEL_IMG_URL
+			 , MODEL_IMG_ALTRTV_CONT
+			 , WEAR_SIZE_CD
+			 , CSLT_WEAR_SIZE_NM
+			 , PANTS_WEAR_SIZE_NM
+			 , DSP_YN
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{modelNo,jdbcType=VARCHAR}
+			 , #{modelImgTurn,jdbcType=NUMERIC}
+			 , #{modelImgUrl,jdbcType=VARCHAR}
+			 , #{modelImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{wearSizeCd,jdbcType=VARCHAR}
+			 , #{csltWearSizeNm,jdbcType=VARCHAR}
+			 , #{pantsWearSizeNm,jdbcType=VARCHAR}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodModelImg" parameterType="godModelImg">
+		DELETE /* com.plgrim.ncp.base.deleteGodModelImg		Generator(Generator)	2018-05-23 */
+		  FROM GOD_MODEL_IMG
+		 WHERE 1 = 1
+		   AND MODEL_NO = #{modelNo,jdbcType=VARCHAR}
+		   AND MODEL_IMG_TURN = #{modelImgTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

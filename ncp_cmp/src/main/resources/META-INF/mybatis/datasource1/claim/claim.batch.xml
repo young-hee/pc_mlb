@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.claim.batch">
+
+<update id="updateOrdPayCancelAcclAmt" parameterType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+		UPDATE /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.updateOrdPayCancelAcclAmt][기존취소누적금액 + 취소될 금액 으로 취소누적금액 update][Aether] */
+		        PAY
+		   SET 
+		          cncl_acmtl_amt = (select #{payCrncyPayAmt} + cncl_acmtl_amt from pay where pay_no = #{payNo ,jdbcType=VARCHAR} and ord_no = #{ordNo ,jdbcType=VARCHAR})                   
+		        , udter_id = #{udterId,jdbcType=VARCHAR}
+		        , udt_dt = sysdate
+		 WHERE pay_no = #{payNo ,jdbcType=VARCHAR}
+		   AND ord_no = #{ordNo ,jdbcType=VARCHAR}   	
+	</update>
+	
+	<insert id="insertClmPay" parameterType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+		INSERT INTO pay (/* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.insertClmPay][결제 취소정보 insert][Aether] */
+								 acnthldr_nm	
+		                       , bnk_acct_no
+		                       , bnk_cd
+		                       , card_sv_deal_yn
+		                       , clm_no
+		                       , cncl_acmtl_amt
+		                       , deal_tp_cd
+		                       , escr_yn
+		                       , evt_no
+		                       , mbr_cpn_no
+		                       , mpay_mn_yn
+		                       , ord_no
+		                       , pay_crncy_cd
+		                       , pay_crncy_pay_amt
+		                       , pay_dt
+		                       , pay_mn_cd
+		                       , pay_mobil_area_no
+		                       , pay_mobil_nation_no
+		                       , pay_mobil_tlof_no
+		                       , pay_mobil_tlof_wthn_no
+		                       , pay_no
+		                       , pay_tmlmt_dt
+		                       , pay_tp_cd
+		                       , pg_aprv_no
+		                       , pg_crs_key
+		                       , pg_sect_cd
+		                       , pg_store_id
+		                       , prm_no
+		                       , regtr_id
+		                       , reg_dt
+		                       , rfd_acnthldr_nm
+		                       , rfd_bnk_acct_no
+		                       , rfd_bnk_cd
+		                       , stdr_crncy_pay_amt
+		                       , udter_id
+		                       , udt_dt
+		                       , upper_pay_no
+		                       , use_cpn_prm_no
+		                       , virtl_bnk_acct_valid_dt)
+		    SELECT acnthldr_nm
+		         , bnk_acct_no
+		         , bnk_cd
+		         , card_sv_deal_yn
+		         , #{clmNo}	as clm_no
+		         , cncl_acmtl_amt
+		         , #{dealTpCd} as deal_tp_cd
+		         , escr_yn
+		         , evt_no
+		         , mbr_cpn_no
+		         , mpay_mn_yn
+		         , ord_no
+		         , pay_crncy_cd
+		         , #{payCrncyPayAmt} AS pay_crncy_pay_amt
+		         <choose>
+		         	<when test='payDt != null and payDt != ""'>, (select c.clm_dt from clm c where c.clm_no = #{clmNo}) as pay_dt</when>
+		         	<otherwise>, sysdate</otherwise>
+		         </choose>		         
+		         , pay_mn_cd
+		         , pay_mobil_area_no
+		         , pay_mobil_nation_no
+		         , pay_mobil_tlof_no
+		         , pay_mobil_tlof_wthn_no
+		         , #{newPayNo} as pay_no
+		         , pay_tmlmt_dt
+		         , #{payTpCd} as pay_tp_cd
+		         , pg_aprv_no
+		         , pg_crs_key
+		         , pg_sect_cd
+		         , pg_store_id
+		         , prm_no
+		         , #{regtrId}	as regtr_id
+		         , sysdate	as reg_dt
+		         , rfd_acnthldr_nm
+		         , rfd_bnk_acct_no
+		         , rfd_bnk_cd
+		         , #{stdrCrncyPayAmt} AS stdr_crncy_pay_amt
+		         , #{regtrId}	as udter_id
+		         , sysdate	as udt_dt
+		         , #{payNo} as upper_pay_no
+		         , use_cpn_prm_no
+		         , virtl_bnk_acct_valid_dt
+		      FROM pay
+		     WHERE 1 = 1 
+		     	AND pay_no = #{payNo} 
+		     	AND ord_no = #{ordNo}		
+	</insert>
+	
+<!-- 	<insert id="insertClmPayRfd">
+		
+	</insert> -->
+	
+	<select id="getRepayGodCpn" parameterType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend" resultType="String">		
+		SELECT	CASE /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.getRepayGodCpn][상품쿠폰 복원 대상 여부 조회][Aether] */ 
+				WHEN outq.ordQty = outq.clmQty THEN outq.cpnNo 
+				ELSE NULL 
+				END mbrCpnNo
+				FROM(
+					SELECT 
+							sum(og.ordQty) as ordQty
+							,sum(cwg.clmQty) as clmQty
+							,max(p.mbr_cpn_no) as cpnNo
+					  FROM pay p
+					       JOIN
+					       (  SELECT ogapin.ord_no, ogin.god_no, ogin.itm_no
+					            FROM ord_god_apl_prm ogapin
+					                 JOIN
+					                 ord_god ogin
+					                     ON     ogin.ord_no = ogapin.ord_no
+					                        AND ogin.ord_god_turn = ogapin.ord_god_turn
+					           WHERE     1 = 1
+					                 AND ogapin.prm_dtl_tp_cd = 'GOD_CPN'
+					                 AND ogapin.ord_no = #{ordNo}
+					                 AND ogapin.mbr_cpn_no = #{mbrCpnNo}
+					        GROUP BY ogapin.ord_no, ogin.god_no, ogin.itm_no) ogap
+					           ON ogap.ord_no = p.ord_no
+					       JOIN
+					       (  SELECT ogin2.ord_no
+					               , ogin2.god_no
+					               , ogin2.itm_no
+					               , SUM (ogin2.ord_qty) AS ordQty
+					            FROM ord_god ogin2
+					           WHERE ogin2.ord_no = #{ordNo}
+					        GROUP BY ogin2.ord_no, ogin2.god_no, ogin2.itm_no) og
+					           ON     ogap.ord_no = og.ord_no
+					              AND ogap.god_no = og.god_no
+					              AND ogap.itm_no = og.itm_no
+					       JOIN
+					       (  SELECT cwgin.ord_no
+					               , cwgin.god_no
+					               , cwgin.itm_no
+					               , SUM (cwgin.clm_qty)-SUM(nvl(cwgin.clm_wthdraw_qty,0)) AS clmQty
+					            FROM clm_wrhs_god cwgin
+					           WHERE cwgin.ord_no = #{ordNo}
+					        GROUP BY cwgin.ord_no, cwgin.god_no, cwgin.itm_no) cwg
+					           ON     cwg.ord_no = ogap.ord_no
+					              AND cwg.god_no = ogap.god_no
+					              AND cwg.itm_no = ogap.itm_no 	
+							WHERE p.pay_no = #{payNo}        
+			) outq	      
+	</select>
+	
+		<select id="selectClaimTargetList" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBatchSearchDTO" 
+		resultType="com.plgrim.ncp.biz.claim.data.ClaimBatchTargetDTO">
+		SELECT /*+ INDEX(C PK_CLM) */ /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.selectClaimTargetList][클레임 erp 전송 배치 대상클레임 조회 쿼리][Aether] */
+		       C.CLM_NO
+		      ,C.ORD_NO
+		      ,C.CLM_TP_CD
+		      ,C.CLM_STAT_CD
+		      ,C.PKUP_CLM_YN
+              ,NVL((SELECT CST.ERP_TRNSMIS_CD
+                FROM   CLM_ERP_TRNSMIS CST
+                WHERE  CST.ORD_NO = C.ORD_NO
+                AND    CST.CLM_NO = C.CLM_NO
+                AND    CST.CLM_ERP_TRNSMIS_TP_CD = 'ERP_OR_ERP'), 'N') AS ERP_OR_ERP_YN
+              ,NVL((SELECT CST.ERP_TRNSMIS_CD
+                FROM   CLM_ERP_TRNSMIS CST
+                WHERE  CST.ORD_NO = C.ORD_NO
+                AND    CST.CLM_NO = C.CLM_NO
+                AND    CST.CLM_ERP_TRNSMIS_TP_CD = 'ERP_RE_ERP'), 'N') AS ERP_RE_ERP_YN
+              ,NVL((SELECT CST.ERP_TRNSMIS_CD
+                FROM   CLM_ERP_TRNSMIS CST
+                WHERE  CST.ORD_NO = C.ORD_NO
+                AND    CST.CLM_NO = C.CLM_NO
+                AND    CST.CLM_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_USE_TMPR'), 'N') AS ERP_TEMP_ERP_USE
+              ,NVL((SELECT CST.ERP_TRNSMIS_CD
+                FROM   CLM_ERP_TRNSMIS CST
+                WHERE  CST.ORD_NO = C.ORD_NO
+                AND    CST.CLM_NO = C.CLM_NO
+                AND    CST.CLM_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_ACCML_TMPR'), 'N') AS ERP_TEMP_ERP_INC
+              ,NVL((SELECT CST.ERP_TRNSMIS_CD
+                FROM   CLM_ERP_TRNSMIS CST
+                WHERE  CST.ORD_NO = C.ORD_NO
+                AND    CST.CLM_NO = C.CLM_NO
+                AND    CST.CLM_ERP_TRNSMIS_TP_CD = 'ONOFLNE_CPN_USE_TMPR'), 'N') AS ERP_TEMP_CPN_ERP_USE
+              ,NVL((SELECT CST.ERP_TRNSMIS_CD
+                FROM   CLM_ERP_TRNSMIS CST
+                WHERE  CST.ORD_NO = C.ORD_NO
+                AND    CST.CLM_NO = C.CLM_NO
+                AND    CST.CLM_ERP_TRNSMIS_TP_CD = 'RTL_TRNSMIS'), 'N') AS ERP_RET_YN
+              ,NVL((SELECT SUBSTR(MIN(TO_CHAR(OST.ERP_TRNSMIS_DT, 'YYYYMMDDHH24MISS') || OST.ERP_TRNSMIS_CD), 15)
+                FROM   ORD_ERP_TRNSMIS OST
+                WHERE  OST.ORD_NO = C.ORD_NO
+                AND    OST.ORD_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_USE_TMPR'), 'N') AS ORD_ERP_TEMP_ERP_USE
+              ,NVL((SELECT SUBSTR(MIN(TO_CHAR(OST.ERP_TRNSMIS_DT, 'YYYYMMDDHH24MISS') || OST.ERP_TRNSMIS_CD), 15)
+                FROM   ORD_ERP_TRNSMIS OST
+                WHERE  OST.ORD_NO = C.ORD_NO
+                AND    OST.ORD_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_ACCML_TMPR'), 'N') AS ORD_ERP_TEMP_ERP_INC
+              ,NVL((SELECT SUBSTR(MIN(TO_CHAR(OST.ERP_TRNSMIS_DT, 'YYYYMMDDHH24MISS') || OST.ERP_TRNSMIS_CD), 15)
+                FROM   ORD_ERP_TRNSMIS OST
+                WHERE  OST.ORD_NO = C.ORD_NO
+                AND    OST.ORD_ERP_TRNSMIS_TP_CD = 'ERP_OR_ERP'), 'N') AS ORD_ERP_OR_ERP_YN
+              ,NVL((SELECT SUBSTR(MIN(TO_CHAR(OST.ERP_TRNSMIS_DT, 'YYYYMMDDHH24MISS') || OST.ERP_TRNSMIS_CD), 15)
+                FROM   ORD_ERP_TRNSMIS OST
+                WHERE  OST.ORD_NO = C.ORD_NO
+                AND    OST.ORD_ERP_TRNSMIS_TP_CD = 'ONOFLNE_CPN_USE_TMPR'), 'N') AS ORD_ERP_TEMP_CPN_ERP_USE
+		      ,NVL(M.ERP_CSTMR_NO, '') AS BP_NO
+		      ,C.GOD_SUMRY || ' ' || (SELECT MCD.CD_NM
+		                              FROM   MV_SYS_CD MCD
+		                              WHERE  MCD.UPPER_CD = 'CLM_TP'
+		                              AND    MCD.CD = C.CLM_STAT_CD
+		                              AND    MCD.LANG_CD = 'KOR') AS REASON_CB
+		      ,O.MBR_EMPL_NO
+		      ,(SELECT P.PAY_MN_CD
+		        FROM   PAY P
+		        WHERE  P.ORD_NO = C.ORD_NO
+		        AND    P.MPAY_MN_YN = 'Y'
+		        AND    P.PAY_TP_CD = 'ORD') AS PAY_MN_CD
+		      ,(SELECT P.DEAL_TP_CD
+		        FROM   PAY P
+		        WHERE  P.ORD_NO = C.ORD_NO
+		        AND    P.MPAY_MN_YN = 'Y'
+		        AND    P.PAY_TP_CD = 'ORD') AS DEAL_TP_CD
+		      ,O.ORD_TP_CD
+		      ,O.VIRTL_DLV_COMPT_YN
+		FROM   CLM C
+		JOIN   ORD O
+		ON     C.ORD_NO = O.ORD_NO
+		LEFT   OUTER JOIN MBR M
+		ON     O.MBR_NO = M.MBR_NO
+		WHERE  C.CLM_NO IN (SELECT CST.CLM_NO
+		                    FROM   CLM_ERP_TRNSMIS CST
+		                    WHERE  CST.CLM_ERP_TRNSMIS_TP_CD IN ('UNITY_PNT_USE_TMPR','UNITY_PNT_ACCML_TMPR','ERP_RE_ERP', 'RTL_TRNSMIS', CASE WHEN #{clmTpCd} = 'GNRL_EXCHG' THEN 'ERP_OR_ERP' ELSE NULL END)
+		                    AND    CST.ERP_TRNSMIS_CD IN ('N', 'E'))
+		AND    C.CLM_TP_CD = #{clmTpCd}
+		AND    (C.CLM_DT <![CDATA[>=]]> TO_DATE('2015-07-20', 'YYYY-MM-DD'))
+		/* 2015-09-25 조건추가 -> 교환,반품 조회조건추가*/
+        AND    ((C.CLM_TP_CD = 'PART_CNCL' and c.clm_stat_cd = 'COMPT'  and o.ord_tp_cd != 'GFCT_ORD' and o.mall_id != 'TMALL') /* 2015-11-23 조건추가 티몰 주문취소는 erp ERP 통신을 하지 않는다. */
+            OR (C.CLM_TP_CD = 'ALL_CNCL' and c.clm_stat_cd = 'COMPT' and o.ord_tp_cd != 'GFCT_ORD')        
+            OR ((C.CLM_TP_CD = 'GNRL_EXCHG' and c.clm_stat_cd = 'COMPT') OR (C.CLM_TP_CD = 'GNRL_EXCHG' and c.clm_stat_cd = 'RCEPT' and c.clm_no in (select cst1.clm_no from CLM_ERP_TRNSMIS cst1 where cst1.CLM_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_ACCML_TMPR' and cst1.ERP_TRNSMIS_CD in ('N','E'))) OR (C.CLM_TP_CD = 'GNRL_EXCHG' and c.clm_stat_cd = 'WTHDRAW' and c.clm_no in (select cst1.clm_no from CLM_ERP_TRNSMIS cst1 where cst1.CLM_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_ACCML_TMPR' and cst1.ERP_TRNSMIS_CD not in ('X'))) )
+            OR (C.CLM_TP_CD = 'DRT_EXCHG') 
+            OR ((C.CLM_TP_CD = 'RTGOD' and c.clm_stat_cd = 'COMPT' and o.mall_id != 'TMALL') OR (C.CLM_TP_CD = 'RTGOD' and c.clm_stat_cd = 'RCEPT'  and o.mall_id != 'TMALL' and c.clm_no in (select cst1.clm_no from CLM_ERP_TRNSMIS cst1 where cst1.CLM_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_ACCML_TMPR' and cst1.ERP_TRNSMIS_CD in ('N','E')))  OR (C.CLM_TP_CD = 'RTGOD' and c.clm_stat_cd = 'WTHDRAW'  and o.mall_id != 'TMALL' and c.clm_no in (select cst1.clm_no from CLM_ERP_TRNSMIS cst1 where cst1.CLM_ERP_TRNSMIS_TP_CD = 'UNITY_PNT_ACCML_TMPR' and cst1.ERP_TRNSMIS_CD  NOT in ('X'))) )
+            OR (C.CLM_TP_CD = 'RTGOD' and c.clm_stat_cd = 'COMPT' and o.mall_id = 'TMALL' and c.clm_no in (select cst1.clm_no from CLM_ERP_TRNSMIS cst1 where cst1.CLM_ERP_TRNSMIS_TP_CD = 'RTL_TRNSMIS' and cst1.ERP_TRNSMIS_CD in ('N','E')))/* 2015-11-23 조건추가 티몰 반품은 erp ERP 통신을 하지 않는다. */
+        )
+            <if test='clmNo!=null and clmNo != ""'>
+            	AND c.clm_no = #{clmNo} /*클레임 유형 취소 실시간 전송을 위해 추가 --> 추가  */
+            </if>                 					
+	</select>
+	
+	<select id="selectReturnStoreOrderTargetList" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBatchTargetDTO" resultType="com.plgrim.ncp.biz.claim.data.ReturnStoreOrderTargetDTO">
+		SELECT /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.selectReturnStoreOrderTargetList][클레임 erp 전송 배치 return_store_order 대상쿼리][Aether] */
+		    LDDG.DLIVY_DRCT_TP_CD   as deliOrderDivCd
+		    , lrdg.rtrvl_drct_god_no AS rtrvlDrctGodNo
+		    , iogsd.ord_no  as ordNo
+		    , OG.ITM_NO as itemNo
+		    , iogsd.qty_turn as qtySeq
+		    , iogsd.clm_no as clmNo
+		    , LRDG.rtrvl_god_stat_cd as restoreStatusCd
+		    , iogsd.ord_no as fpiaOr
+		    , iogsd.qty_turn as seqNo
+		    , to_char(sysdate,'YYYYMMDD')    as wadatIst
+		    , OG.SKU_NO as matnr
+		    , 1 as menge
+		    , 'PC'  as meins
+		    , 'X' as ztype
+		    , nvl(iogsd.unity_pnt_use_unt_prc,0) + nvl(iogsd.imdtl_dc_unt_prc,0) AS cbamt
+		    , 'KRW' as waers /*통화키*/
+		    , IOGSD.S_STO_NO    as ebeln
+		    , iogsd.s_doc_no as vbeln
+		    , IOGSD.STDR_CRNCY_UNT_PRC + IOGSD.UNITY_PNT_USE_UNT_PRC as payPrice /* erp에 영수증 가격은 한화로 보낸다.*/
+		    , lrdg.rtrvl_drct_grp_dgre  as iChasu
+		    , LRDG.BADN_REQEST_CONT as iOtgrpt
+		    , nvl(iogsdr.REPAIR_NO,'')  as repareNo
+		    , nvl(iogsd.clm_erp_intrlck_yn,'N') as claimErpYn
+		    , nvl(iogsd.resve_rcptfr_dcsn_yn,'N') as sendDlvCfmYn
+		    , lrdg.erp_inv_trnsmis_sect_cd as erpTransDiv
+		    , lrdg.rtrvl_shop_id AS rtrvlShopId
+		    , nvl(lrdg.rtrvl_god_prcs_compt_yn,'N') as restoreEndYn
+		    , nvl(IOGSD.DRT_EXCHG_QTY_TURN,9999)    as orgQtySeq
+		    , LPAD(O.MBR_EMPL_NO,18,'0') as empNo    
+		    , lddg.dlv_shop_id	as dlvShopId     /*배송매장*/
+		    , lddg.dlivy_shop_id as dlivyShopId  /*출고매장*/
+		    , o.ord_tp_cd as ordTpCd
+		    , iogsd.erp_intrlck_tgt_yn AS intrlckTgtYn /*ERP 연동 대상여부*/
+    	    , og.sale_shop_cd as saleShopCd   /*판매매장*/
+    	    , lrdg.rtrvl_god_stat_detail_cd as rtrvlGodStatDetailCd	/*회수상품상태상세코드 소각 자가소비 코드*/
+    	    , to_char(lrdg.rtrvl_compt_dt,'YYYYMMDD')  as rtrvlComptDt /*회수완료일*/
+    	    , c.clm_tp_cd as clmTpCd /* 클레임구분 */
+    	    , iogsd.webpnt_use_unt_prc as nAmt /* P포인트 사용단가 */
+			, lrdg.udter_id AS rtrvlProcrId	/* 회수처리자 */
+			, nvl(iogsd.STDR_CRNCY_UNT_PRC,0)+nvl(iogsd.unity_pnt_use_unt_prc,0) + nvl(iogsd.imdtl_dc_unt_prc,0)+nvl(iogsd.webpnt_use_unt_prc,0) as zamnt   /* 상품분실시 분실보상금액 */
+			, (SELECT
+				  CASE
+				    WHEN c.CLM_PREPROGRS_SECT_CD = 'PREPROGRS' /* [#48750][개발] 불량상품 고객에 대한 교환/반품 Process 개선 요청 - 선진행조건 */
+                      THEN ''
+				    WHEN EXISTS (SELECT 1 FROM sys_admin_author_grp_mapng y WHERE y.admin_id = x.admin_id AND y.author_grp_sn = 106)
+				      THEN 'X'
+				    ELSE ''
+				    END
+				FROM sys_admin x
+				WHERE lrdg.udter_id = x.admin_id) AS cntrRtrvlImdtlProcYn /* 자동입고처리유무 - 권한그룹이 물류센터(106)인 관리자가 처리시 자동으로 입고처리하기 위한 구분값 */
+			, CASE
+                WHEN c.CLM_PREPROGRS_SECT_CD = 'PREPROGRS'
+                	THEN 'S'
+                ELSE DECODE(c.virtl_rtgod_yn, 'Y', 'X', '')
+              END AS virtlRtgodYn /* 가반품여부 */
+          FROM inf_ord_god_erp_dstb iogsd
+          	   LEFT OUTER JOIN INF_ORD_GOD_ERP_DSTB_REPAIR iogsdr
+               ON iogsd.ORD_NO = iogsdr.ord_no and iogsd.ord_god_turn = iogsdr.ord_god_turn and iogsd.qty_turn = iogsdr.qty_turn
+               JOIN clm c ON iogsd.clm_no = c.clm_no
+               JOIN clm_wrhs_god cwg
+                   ON     c.clm_no = cwg.clm_no
+                      AND iogsd.clm_wrhs_god_turn = cwg.clm_wrhs_god_turn
+               join ord o ON iogsd.ord_no = o.ord_no       
+               JOIN ord_god og
+                   ON     iogsd.ord_no = og.ord_no
+                      AND iogsd.ord_god_turn = og.ord_god_turn
+               JOIN lgs_dlivy_drct_god lddg
+                   ON lddg.dlivy_drct_god_no = iogsd.dlivy_drct_god_no
+               JOIN lgs_rtrvl_drct_god lrdg
+                   ON     cwg.clm_no = lrdg.clm_no
+                      AND cwg.clm_wrhs_god_turn = lrdg.clm_wrhs_god_turn
+                      AND lrdg.rtrvl_god_stat_cd = 'NORM_WRHS'                      
+		 WHERE     1 = 1
+		       AND NVL (iogsd.clm_erp_intrlck_yn, 'N') IN ('N', 'E')
+		       AND lrdg.rtrvl_stat_cd = 'RTRVL_COMPT'		       
+		       AND c.clm_no = #{clmNo}
+		       AND c.ord_no = #{ordNo}
+		  ORDER BY lrdg.rtrvl_drct_god_no
+	</select>
+	            
+		
+	<select id="selectReturnStoreExchgOri" resultType="com.plgrim.ncp.biz.claim.data.ReturnStoreExchgOriDTO" parameterType="com.plgrim.ncp.biz.claim.data.ReturnStoreOrderTargetDTO">
+		SELECT iogsd.qty_turn AS qtySeq
+		     , iogsd.s_sto_no AS sSto
+		     , iogsd.s_doc_no AS sDocno
+		  FROM inf_ord_god_erp_dstb iogsd
+		 WHERE     1 = 1
+		       AND iogsd.ord_no = #{ordNo}
+		       AND iogsd.qty_turn = #{orgQtySeq}			
+	</select>
+	
+	<select id="selectReleaseStockTargetList" resultType="com.plgrim.ncp.biz.claim.data.ReleaseStockTargetDTO" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBatchTargetDTO">
+		/* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.selectReleaseStockTargetList][클레임 erp 전송 배치 FP_RELEASE_STOCK 대상쿼리][Aether] */
+		SELECT iogsd.drt_exchg_qty_turn AS ebelp
+		     , iogsd.drt_exchg_sto_no AS ebeln
+		     , iogsd.ord_no AS ordNo
+		     , iogsd.qty_turn as qtySeq
+		     , og.itm_no AS itemNo
+		     , iogsd.clm_no AS clmNo
+		     , iogsd.erp_intrlck_tgt_yn AS intrlckTgtYn /*ERP 연동 대상여부*/
+		  FROM inf_ord_god_erp_dstb iogsd
+		       JOIN	ord_god og
+		           ON     iogsd.ord_no = og.ord_no
+		              AND iogsd.ord_god_turn = og.ord_god_turn
+               JOIN (SELECT distinct ord_no, ord_god_turn
+                       FROM ord_clm_god_cnnc
+                      WHERE god_cnnc_tp_cd = 'DLIVY_GOD_CNNC' AND clm_no = #{clmNo}) ocgcOr
+                on ocgcOr.ord_no = iogsd.ord_no
+                and ocgcOr.ord_god_turn = iogsd.ord_god_turn
+		 WHERE     1 = 1       
+		       AND NVL(iogsd.clm_erp_intrlck_yn,'N') <![CDATA[<>]]> 'Y'
+		       AND iogsd.drt_exchg_sto_no is not null	
+		 ORDER BY iogsd.ord_no ASC      	
+	</select>
+	
+	<update id="updateClmErpTrnsmis" parameterType="com.plgrim.ncp.biz.claim.data.ClmErpTrnsmis">
+        MERGE INTO /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.updateClmErpTrnsmis][clm_erp_trnsmis 테이블 erp 전송 시 update 쿼리][Aether] */
+                   clm_erp_trnsmis
+             USING DUAL
+                ON (clm_no = #{clmNo,jdbcType=VARCHAR} 
+                    AND ord_no = #{ordNo,jdbcType=VARCHAR} 
+                    AND clm_erp_trnsmis_tp_cd = #{clmErpTrnsmisTpCd,jdbcType=VARCHAR})
+        WHEN MATCHED
+        THEN
+            UPDATE SET                   
+				<choose>
+					<when test='batchYn == "N"'>
+						udt_dt = sysdate
+						, udter_id = #{regtrId,jdbcType=VARCHAR}
+					</when>
+					<otherwise>
+						udt_dt = sysdate
+		                , erp_trnsmis_dt = sysdate
+		                , erp_trnsmis_cd = #{erpTrnsmisCd,jdbcType=VARCHAR}
+		                , udter_id = 'BATCH'					
+					</otherwise>
+				</choose>
+            WHERE 1=1
+                AND clm_no = #{clmNo,jdbcType=VARCHAR}
+                AND ord_no = #{ordNo,jdbcType=VARCHAR}
+                AND clm_erp_trnsmis_tp_cd = #{clmErpTrnsmisTpCd,jdbcType=VARCHAR}
+        WHEN NOT MATCHED
+        THEN
+           INSERT    (
+                        ord_no
+                        , clm_no
+                        , clm_erp_trnsmis_tp_cd
+                        , erp_trnsmis_cd
+                        , regtr_id
+                        , reg_dt
+                        , udter_id
+                        , udt_dt
+                     ) 
+          VALUES     ( #{ordNo,jdbcType=VARCHAR}
+                     , #{clmNo,jdbcType=VARCHAR}
+                     , #{clmErpTrnsmisTpCd,jdbcType=VARCHAR}
+                     , #{erpTrnsmisCd,jdbcType=VARCHAR}
+                     , #{regtrId,jdbcType=VARCHAR}
+                     , SYSDATE
+                     , #{regtrId,jdbcType=VARCHAR}
+                     , SYSDATE
+                     )
+	</update>
+	
+
+	<update id="updateOrdErpTrnsmis" parameterType="com.plgrim.ncp.biz.claim.data.ClmErpTrnsmis">
+		UPDATE ord_erp_trnsmis /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.updateOrdErpTrnsmis][ord_erp_trnsmis 테이블 erp 전송 시 update 쿼리][Aether] */
+		    SET erp_trnsmis_cd = #{erpTrnsmisCd}
+		    , erp_trnsmis_dt = sysdate
+	    WHERE 1=1		    
+		    AND ord_no = #{ordNo}
+		    AND ord_erp_trnsmis_tp_cd = #{clmErpTrnsmisTpCd}
+	</update>	
+	
+	
+	
+	<update id="updateOrdGodErpClmErpYn" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBatchOrdGodErpClmErp">
+        UPDATE inf_ord_god_erp_dstb /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.updateOrdGodErpClmErpYn][clmerp통신 여부와 반품영수증을 update 하는 쿼리][Aether] */
+           SET clm_erp_intrlck_yn = #{clmErpYn}
+             , clm_erp_intrlck_dt = sysdate
+             , clm_prcs_err_cont = decode(#{clmErpYn},'Y',null,#{rtgodRcptfrNo})
+             <if test='clmErpYn != null and clmErpYn == "Y"'>
+	             , rtgod_rcptfr_no = #{rtgodRcptfrNo}
+	             , rtgod_rcptfr_creat_yn = 'Y'
+	             , rtgod_rcptfr_creat_dt = sysdate   
+	             , r_doc_no = #{dfgDocNo} /*반품납품문서번호 스플릿3차로 추가*/          
+             </if>
+             , UDT_DT = SYSDATE
+         WHERE ord_no = #{ordNo}
+           AND qty_turn = #{qtyTurn}
+	</update>
+	
+	
+	<update id="updateDrtExchgRcptfr" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBatchDrtExchgRcptfrDTO">
+		UPDATE inf_ord_god_erp_dstb /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.updateDrtExchgRcptfr][맞교환시 예약영수증 확정여부 update][Aether] */
+		   SET (resve_rcptfr_dcsn_yn, resve_rcptfr_dcsn_dt , UDT_DT  ) =
+		           (SELECT resve_rcptfr_dcsn_yn, resve_rcptfr_dcsn_yn, SYSDATE
+		              FROM inf_ord_god_erp_dstb
+		             WHERE     1 = 1
+		                   AND ord_no = #{ordNoOri}
+		                   AND qty_turn = #{qtyTurnOri})
+		 WHERE 1 = 1 
+		     AND ord_no = #{ordNo} 
+		     AND qty_turn = #{qtyTurn}	
+	</update>
+	
+	
+	<update id="updateClmErpWthdraw" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBatchTargetDTO">
+		UPDATE 
+			inf_ord_god_erp_dstb
+		   SET 
+		   	clm_no = NULL
+		   	, clm_wrhs_god_turn = NULL
+		   	, udt_dt= SYSDATE
+		 WHERE 1 = 1
+		 AND ord_no = #{ordNo} 
+		 AND clm_no = #{clmNo}	
+	</update>
+	
+	
+  	<insert id="insertOrdErpTrnsmisHist" parameterType="ordErpTrnsmisHist">
+        MERGE INTO /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.updateClmErpTrnsmis][clm_erp_trnsmis 테이블 erp 전송 시 update 쿼리][Aether] */
+                   ord_god_erp_trnsmis
+             USING DUAL
+                ON (ORD_NO = #{ordNo,jdbcType=VARCHAR} 
+                    AND ORD_ERP_TRNSMIS_TP_CD = #{ordErpTrnsmisTpCd,jdbcType=VARCHAR}
+                    AND ERP_TRNSMIS_CD = #{erpTrnsmisCd,jdbcType=VARCHAR}
+                    AND QTY_TURN = #{qtyTurn,jdbcType=VARCHAR}
+                    AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=VARCHAR}                    
+                    )
+                    
+        WHEN MATCHED
+        THEN
+            UPDATE SET                   
+                        udt_dt = sysdate
+                        , erp_trnsmis_dt = sysdate
+                        , udter_id = 'BATCH'                    
+            WHERE 1=1
+                    AND ORD_NO = #{ordNo,jdbcType=VARCHAR} 
+                    AND ORD_ERP_TRNSMIS_TP_CD = #{ordErpTrnsmisTpCd,jdbcType=VARCHAR}
+                    AND ERP_TRNSMIS_CD = #{erpTrnsmisCd,jdbcType=VARCHAR}
+                    AND QTY_TURN = #{qtyTurn,jdbcType=VARCHAR}
+                    AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=VARCHAR}    
+        WHEN NOT MATCHED
+        THEN
+           INSERT    (
+                      ORD_NO
+                     ,ORD_ERP_TRNSMIS_TP_CD
+                     ,ORD_GOD_TURN
+                     ,ERP_TRNSMIS_CD
+                     ,QTY_TURN
+                     ,ERP_TRNSMIS_DT
+                     ,REGTR_ID
+                     ,UDTER_ID
+                     ,REG_DT
+                     ,UDT_DT
+                     ) 
+          VALUES     (
+                      #{ordNo,jdbcType=VARCHAR}
+                     ,#{ordErpTrnsmisTpCd,jdbcType=VARCHAR}
+                     ,#{ordGodTurn,jdbcType=NUMERIC}
+                     ,#{erpTrnsmisCd,jdbcType=VARCHAR}
+                     ,#{qtyTurn,jdbcType=NUMERIC}
+                     ,SYSDATE
+                     ,#{regtrId,jdbcType=VARCHAR}
+                     ,#{udterId,jdbcType=VARCHAR}
+                     ,SYSDATE
+                     ,SYSDATE
+                     )  
+    </insert>	
+    
+    <insert id="insertOrdErpTrnsmis" parameterType="ordErpTrnsmis">
+        MERGE INTO /* [claim.batch.xml][com.plgrim.ncp.biz.claim.manage.insertOrdErpTrnsmis][clm_erp_trnsmis 테이블 erp 전송 시 update 쿼리][Aether] */
+                   ORD_ERP_TRNSMIS
+             USING DUAL
+                ON (ORD_NO = #{ordNo,jdbcType=VARCHAR} 
+                    AND ORD_ERP_TRNSMIS_TP_CD = #{ordErpTrnsmisTpCd,jdbcType=VARCHAR}
+                    AND ERP_TRNSMIS_CD = #{erpTrnsmisCd,jdbcType=VARCHAR})
+        WHEN MATCHED
+        THEN
+            UPDATE SET                   
+                        udt_dt = sysdate
+                        , erp_trnsmis_dt = sysdate
+                        , udter_id = 'BATCH'                    
+            WHERE 1=1                
+                AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+                AND ORD_ERP_TRNSMIS_TP_CD = #{ordErpTrnsmisTpCd,jdbcType=VARCHAR}
+                AND ERP_TRNSMIS_CD = #{erpTrnsmisCd,jdbcType=VARCHAR}
+        WHEN NOT MATCHED
+        THEN
+           INSERT    (
+                          ORD_NO
+                         ,ORD_ERP_TRNSMIS_TP_CD
+                         ,ERP_TRNSMIS_CD
+                         ,ERP_TRNSMIS_DT
+                         ,REGTR_ID
+                         ,UDTER_ID
+                         ,REG_DT
+                         ,UDT_DT
+                     ) 
+          VALUES     (
+                          #{ordNo,jdbcType=VARCHAR}
+                         ,#{ordErpTrnsmisTpCd,jdbcType=VARCHAR}
+                         ,#{erpTrnsmisCd,jdbcType=VARCHAR}
+                         ,SYSDATE
+                         ,#{regtrId,jdbcType=VARCHAR}
+                         ,#{udterId,jdbcType=VARCHAR}
+                         ,SYSDATE
+                         ,SYSDATE
+                     )
+    </insert>
+    
+    <update id="updateLgsRtrvlDrctGodErpTrnsmisYn" parameterType="com.plgrim.ncp.biz.claim.data.ReturnStoreOrderDTO">
+			UPDATE 
+				LGS_RTRVL_DRCT_GOD 
+					SET  ERP_TRNSMIS_YN = #{erpTrnsmisYn}
+					<if test='erpTrnsmisYn == "Y"'>
+			           , ERP_TRNSMIS_DT = SYSDATE
+			           <if test='erpTransDiv == "SHOP_INV"'>
+			           	, ERP_CNFIRM_YN = 'Y'
+			           	, ERP_CNFIRM_DT = SYSDATE
+			           </if>
+			        </if>
+			 WHERE RTRVL_DRCT_GOD_NO = #{rtrvlDrctGodNo}
+	</update>
+
+	<resultMap id="claimRefundVirtualCdResult" type="com.plgrim.ncp.biz.claim.result.ClaimRefundVirtualCdResult">
+		<result property="rfdBnkNm" column="RFD_BNK_NM" />
+		<result property="rfdBnkAcctNo" column="RFD_BNK_ACCT_NO" />
+		<result property="stdrCrncyPayAmt" column="STDR_CRNCY_PAY_AMT" />
+		<result property="payMnCd" column="PAY_MN_CD" />
+
+		<!-- //SMS개선 by cannon : 2016.07.17 -->
+		<result property="thisMonthsPayYn" column="THIS_MONTHS_PAY_YN" />
+		<result property="oriPayDealTpCd" column="ORI_PAY_DEAL_TP_CD" />
+	</resultMap>
+
+	<select id="selectClaimRefundVirtualCd" parameterType="String" resultMap="claimRefundVirtualCdResult">
+		SELECT   NVL(CHK.RFD_BNK_NM, CHKPA.BNK_NM) AS RFD_BNK_NM
+		       , CHK.RFD_BNK_ACCT_NO
+		       , CHK.STDR_CRNCY_PAY_AMT
+		       , CHK.PAY_MN_CD
+               , CASE WHEN TO_CHAR(CHKPA.PAY_DT,'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM') THEN 'Y' ELSE 'N' END AS THIS_MONTHS_PAY_YN
+               , CHKPA.DEAL_TP_CD	AS ORI_PAY_DEAL_TP_CD
+		FROM (
+				SELECT	rfdbnk.cd_nm as rfd_bnk_nm
+						, PKG_CRYPTO.DECRYPT(c.rfd_bnk_acct_no, 'FNFBNT02-5200001') AS rfd_bnk_acct_no
+						, p.stdr_crncy_pay_amt
+						, p.pay_mn_cd
+						, p.ord_no  as ord_no
+				  FROM clm c
+				  LEFT JOIN pay p on (c.clm_no = p.clm_no AND pay_tp_cd ='CLM')
+				  LEFT OUTER JOIN mv_sys_cd rfdbnk ON (rfdbnk.cd = c.rfd_bnk_cd AND rfdbnk.upper_cd = 'BNK' AND rfdbnk.lang_cd = 'KOR')
+				 WHERE c.clm_no = #{clmNo}
+		) CHK LEFT OUTER JOIN PAY CHKPA ON ( CHK.ORD_NO = CHKPA.ORD_NO AND CHK.PAY_MN_CD = CHKPA.PAY_MN_CD AND CHKPA.MPAY_MN_YN = 'Y' AND CHKPA.PAY_TP_CD  = 'ORD')
+	    WHERE 1=1
+		AND	  ROWNUM = 1
+	</select>
+
+	<select id="selectPcupsDlvCompNm" parameterType="String" resultType="String">
+		SELECT NVL(sc.cd_nm, ld.dlv_com_cd) AS pcups_dlv_com
+		FROM CLM c
+		LEFT JOIN lgs_dlvsp ldsp ON (ldsp.clm_no = c.clm_no)
+		LEFT JOIN lgs_dlv ld ON (ld.clm_no = ldsp.clm_no AND ld.dlv_pcupsp_turn = ldsp.dlv_pcupsp_turn)
+		LEFT OUTER JOIN sys_cd sc ON (sc.cd = ld.dlv_com_cd)
+		WHERE c.clm_no = #{clmNo}
+		  AND ldsp.dlv_pcupsp_sect_cd = 'CLM_PCUPSP'
+		  AND ROWNUM = 1
+	</select>
+
+	<!--
+    	[주문모듈]Off-line 매장 온라인 주문 반품 BO 개발
+
+    	1. 수정일자   : 2016-01-22
+	    2. 수정자     : 김재성 (jskim27)
+	    3. 요청 SR NO : #23144
+	    4. 수정내용   : '픽업프로세스' 개선 - 반품 배치프로세스 통합
+						- '반품' 처리 대상 클레임 조회
+						- 'getCheckRepayAmt 메소드를 추가 호출하지 않고
+						  '매장반품'의 경우로 추가 결제(반품배송비 등)는 없는 것으로 간주해서
+						  deal_tp_cd = 'PAY_COMPT' 조건 추가
+     -->
+	<select id="selectClaim4Return" parameterType="String"
+			resultType="com.plgrim.ncp.biz.claim.result.ClaimReturnResult">
+		SELECT /* [claim.batch.xml][selectClaim4Return][반품처리를 위한 클레임 정보를 조회][김재성] */
+            clmMst.clm_no
+            , clmMst.clm_tp_cd
+            , NVL(clmMst.pay_exchg_rt_crncy_sum_amt, 0) AS pay_exchg_rt_crncy_sum_amt
+            , payMst.pay_crncy_pay_amt
+            , payMst.pay_crncy_pay_amt - NVL(clmMst.pay_exchg_rt_crncy_sum_amt, 0) AS repay_amt
+            , payMst.pg_sect_cd
+            , payMst.pg_store_id
+            , NVL( ( SELECT clmErp.erp_trnsmis_cd
+                FROM clm_erp_trnsmis clmErp
+                WHERE clmErp.ord_no = clmMst.ORD_NO
+                AND clmErp.clm_no = clmMst.clm_no
+                AND clmErp.clm_erp_trnsmis_tp_cd = 'UNITY_PNT_ACCML_TMPR'
+                ), 'N') AS erp_temp_erp_inc
+            , NVL((SELECT SUBSTR( MIN( TO_CHAR(ost.erp_trnsmis_dt, 'YYYYMMDDHH24MISS') || ost.erp_trnsmis_cd), 15)
+                FROM   ord_erp_trnsmis ost
+                WHERE  ost.ord_no = clmMst.ord_no
+                AND    ost.ord_erp_trnsmis_tp_cd = 'ERP_OR_ERP'), 'N') AS ord_erp_or_erp_yn
+            , ordMst.ord_tp_cd
+            , ordMst.mall_id
+            , ordMst.ord_no
+            , ordMst.lang_cd
+            , ordMst.mbr_no
+            , l.erpInvTrnsmisSectCd
+		FROM clm clmMst
+            INNER JOIN pay payMst ON ( payMst.ord_no = clmMst.ord_no )
+            INNER JOIN ord ordMst ON ( ordMst.ord_no = clmMst.ord_no )
+            INNER JOIN (SELECT ORD_NO,
+                               CLM_NO,
+                               MAX (ERP_INV_TRNSMIS_SECT_CD) as erpInvTrnsmisSectCd
+                          FROM LGS_RTRVL_DRCT_GOD
+                         WHERE CLM_NO = #{clmNo, jdbcType=VARCHAR}
+                         GROUP BY ORD_NO, CLM_NO) l
+                    ON (l.ord_no = clmMst.ord_no AND l.clm_no = clmMst.clm_no)
+		WHERE 1 = 1
+            AND clmMst.clm_no = #{clmNo, jdbcType=VARCHAR}
+            AND clmMst.clm_tp_cd = 'RTGOD'
+            AND payMst.pay_tp_cd = 'ORD'
+            AND payMst.mpay_mn_yn = 'Y'
+            AND payMst.deal_tp_cd = 'PAY_COMPT'
+	</select>
+
+	<!--
+		기 등록되어 있는 클레임에 대해서 아직 회수완료되지 않은 'ERP상품일련번호' 로 변경
+	-->
+	<update id="modifyErpGodSn" parameterType="com.plgrim.ncp.biz.claim.data.ClmErpGodSnExchgDTO">
+		UPDATE /* [claim.batch.xml][modifyErpGodSn]['ERP상품일련번호' 변경][김재성] */
+			inf_ord_god_erp_dstb
+		SET erp_god_sn_mod_yn = 'Y'
+			, erp_god_sn_mod_dt = SYSDATE
+			, erp_god_sn = #{erpGodSnNew, jdbcType=VARCHAR}
+		    , udt_dt= SYSDATE
+		WHERE 1 = 1
+			AND ord_no = #{ordNo,jdbcType=VARCHAR}
+			AND qty_turn = #{qtyTurn,jdbcType=NUMERIC}
+	</update>
+
+	<!--
+		변경될 'ERP상품일련번호' 의 '수량순번' 조회
+	-->
+	<select id="selectQtyTurnByErpGodSn" parameterType="com.plgrim.ncp.biz.claim.data.ClmErpGodSnExchgDTO"
+			resultType="String">
+		SELECT /* [claim.batch.xml][selectQtyTurnByErpGodSn]['수량순번' 조회][김재성] */
+			qty_turn
+		FROM inf_ord_god_erp_dstb
+		WHERE 1 = 1
+			AND ord_no = #{ordNo,jdbcType=VARCHAR}
+			AND erp_god_sn = #{erpGodSnNew, jdbcType=VARCHAR}
+			AND ROWNUM = 1
+	</select>
+
+	<!--
+		'멤버쉽포인트 임시삭감 환원' 배치 체크 및 '임시삭감' 복원 수행
+			- batch.order.lgsdlv.xml의 selectInfOrdGod4ErpTrnsmis 참조
+		#26204 주문건의 적립 포인트 임시삭감 복원 로직 확인 요청
+			- 'CLM_NO' 유무에 따라 조회 조건 분기 처리
+	-->
+	<!--<resultMap id="resultBpCbTemDel"  type="com.plgrim.ncp.interfaces.erp.jco.member.data.BpCbTemDelListSDO">-->
+		<!--<result property="fspSeqno" column="QTY_TURN" />				&lt;!&ndash; 상품일련번호  &ndash;&gt;-->
+		<!--<result property="cbBalAmt" column="UNITY_PNT_ACCML_UNT_PRC" />	&lt;!&ndash; 조정 금액  &ndash;&gt;-->
+		<!--<result property="ordGodTurn" column="ORD_GOD_TURN" />	&lt;!&ndash; 조정 금액  &ndash;&gt;-->
+	<!--</resultMap>-->
+
+	<!--<select id="selectInfOrdGod4ErpTrnsmis" parameterType="com.plgrim.ncp.biz.claim.data.ClaimBatchTargetDTO"-->
+			<!--resultMap="resultBpCbTemDel">-->
+		<!--SELECT    /* [claim.batch.xml][selectInfOrdGod4ErpTrnsmis][멤버쉽포인트 지급을 위한 주문상품정보 조회][js279.kim] */-->
+			<!--hist.qty_turn    AS QTY_TURN-->
+			<!--, infErp.unity_pnt_accml_unt_prc  AS UNITY_PNT_ACCML_UNT_PRC /* 통합포인트 적립단가 */-->
+			<!--, hist.ord_god_turn AS ORD_GOD_TURN-->
+		<!--FROM lgs_dlivy_drct_god lgsGod-->
+			<!--INNER JOIN (-->
+				<!--SELECT ord_no, ord_god_turn, qty_turn-->
+				<!--FROM ord_god_erp_trnsmis transHist-->
+				<!--WHERE 1 = 1-->
+					<!--AND transHist.ord_no = #{ordNo, jdbcType=VARCHAR}-->
+					<!--AND transHist.ord_erp_trnsmis_tp_cd = 'UNITY_PNT_ACCML_TMPR'    /* 통합 포인트 적립 임시*/-->
+					<!--AND transHist.erp_trnsmis_cd = 'R'    /*임시삭감(OR-)성공 */-->
+					<!--AND NOT EXISTS (-->
+						<!--SELECT 'X'-->
+						<!--FROM ord_god_erp_trnsmis erpHistOther-->
+						<!--WHERE erpHistOther.ord_no = transHist.ord_no-->
+							<!--AND erpHistOther.ord_erp_trnsmis_tp_cd = transHist.ord_erp_trnsmis_tp_cd-->
+							<!--AND erpHistOther.ord_god_turn = transHist.ord_god_turn-->
+							<!--AND erpHistOther.qty_turn = transHist.qty_turn-->
+							<!--AND erpHistOther.erp_trnsmis_cd <![CDATA[<>]]> transHist.erp_trnsmis_cd-->
+				<!--)-->
+			<!--) hist ON ( lgsGod.ord_no = hist.ord_no AND-->
+				<!--hist.ord_god_turn = lgsGod.ord_god_turn )-->
+			<!--INNER JOIN inf_ord_god_erp_dstb infErp ON (infErp.ord_no = lgsGod.ord_no AND-->
+				<!--infErp.ord_god_turn = lgsGod.ord_god_turn AND-->
+				<!--infErp.qty_turn = hist.qty_turn )-->
+			<!--WHERE 1 = 1-->
+				<!--AND lgsGod.ord_no = #{ordNo, jdbcType=VARCHAR}-->
+			<!--<if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(clmNo)">-->
+				<!--AND infErp.clm_no = #{clmNo, jdbcType=VARCHAR}-->
+			<!--</if>-->
+			<!--<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(clmNo)">-->
+				<!--AND lgsGod.dlv_stat_cd = 'DLV_COMPT'    /* 배송완료 */-->
+		    	<!--AND infErp.clm_no IS NULL-->
+			<!--</if>-->
+				<!--AND infErp.unity_pnt_accml_unt_prc > 0-->
+	<!--</select>-->
+
+	<!--
+		'멤버쉽포인트 임시삭감 환원' 배치 체크 및 '임시삭감' 복원 수행
+			- batch.order.lgsdlv.xml의 addErpPntTrnsmisHist 참조
+	-->
+	<insert id="addErpPntTrnsmisHist" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdErpTrnsmisHist">
+		INSERT INTO ord_god_erp_trnsmis (
+			ord_no
+			, ord_god_turn
+			, qty_turn
+			, ord_erp_trnsmis_tp_cd
+			, erp_trnsmis_cd
+			, erp_trnsmis_dt
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+		)
+		VALUES (
+			#{ordNo, jdbcType=VARCHAR}
+			, #{ordGodTurn, jdbcType=NUMERIC}
+			, #{qtyTurn, jdbcType=NUMERIC}
+			, 'UNITY_PNT_ACCML_TMPR'				/* 멤버쉽포인트 */
+			, #{erpTrnsmisCd, jdbcType=VARCHAR}	/* ERP포인트 전송코드 */
+			, SYSDATE
+			, #{regtrId, jdbcType=VARCHAR}
+			, SYSDATE
+			, #{udterId, jdbcType=VARCHAR}
+			, SYSDATE
+		)
+	</insert>
+
+	<!--
+		'멤버쉽포인트 임시삭감 환원' 배치 체크 및 '임시삭감' 복원 수행
+			- batch.order.lgsdlv.xml의 addErpPntTrnsmis4Fail 참조
+	-->
+	<insert id="addErpPntTrnsmis4Fail" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdErpPntTrnsmis">
+		MERGE INTO ord_erp_trnsmis trnsmis USING  DUAL
+			ON ( ord_no = #{ordNo, jdbcType=VARCHAR} AND ord_erp_trnsmis_tp_cd = 'UNITY_PNT_ACCML_TMPR'
+				AND erp_trnsmis_cd = #{erpPntTrnsmisCd, jdbcType=VARCHAR}  )
+			WHEN MATCHED THEN
+			UPDATE SET
+				erp_trnsmis_dt = SYSDATE
+				, regtr_id = #{regtrId, jdbcType=VARCHAR}
+				, reg_dt  = SYSDATE
+				, udter_id = #{udterId, jdbcType=VARCHAR}
+				, udt_dt  = SYSDATE
+		WHEN NOT MATCHED THEN
+			INSERT (
+				ord_no
+				, ord_erp_trnsmis_tp_cd
+				, erp_trnsmis_cd
+				, erp_trnsmis_dt
+				, regtr_id
+				, reg_dt
+				, udter_id
+				, udt_dt
+			)
+			VALUES (
+				#{ordNo, jdbcType=VARCHAR}
+				, 'UNITY_PNT_ACCML_TMPR'				/* 멤버쉽포인트 */
+				, #{erpPntTrnsmisCd, jdbcType=VARCHAR}	/* ERP포인트 전송코드 */
+				, SYSDATE
+				, #{regtrId, jdbcType=VARCHAR}
+				, SYSDATE
+				, #{udterId, jdbcType=VARCHAR}
+				, SYSDATE
+			)
+	</insert>
+
+	<!--
+		'멤버쉽포인트 임시삭감 환원' 배치 체크 및 '임시삭감' 복원 수행
+			- batch.order.lgsdlv.xml의 addErpPntTrnsmis 참조
+	-->
+	<insert id="addErpPntTrnsmis" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdErpPntTrnsmis">
+		INSERT INTO ord_erp_trnsmis (
+			ord_no
+			, ord_erp_trnsmis_tp_cd
+			, erp_trnsmis_cd
+			, erp_trnsmis_dt
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+		)
+		SELECT
+			#{ordNo, jdbcType=VARCHAR}
+			, 'UNITY_PNT_ACCML_TMPR'
+			, 'Y'
+			, SYSDATE
+			, #{regtrId, jdbcType=VARCHAR}
+			, SYSDATE
+			, #{udterId, jdbcType=VARCHAR}
+			, SYSDATE
+		FROM (
+			SELECT DECODE (
+				(
+				SELECT SUM( CNT )
+				FROM (
+					SELECT COUNT(1) AS CNT
+					FROM ord_god_erp_trnsmis transHist
+					WHERE 1 = 1
+						AND transHist.ord_no = #{ordNo, jdbcType=VARCHAR}
+						AND transHist.ord_erp_trnsmis_tp_cd = 'UNITY_PNT_ACCML_TMPR'    /* 통합 포인트 적립 임시*/
+						AND transHist.erp_trnsmis_cd = 'R'    /*임시삭감(OR-)성공 */
+						AND NOT EXISTS (
+							SELECT 'X'
+							FROM ord_god_erp_trnsmis erpHistOther
+							WHERE erpHistOther.ORD_NO = transHist.ord_no
+								AND erpHistOther.ord_erp_trnsmis_tp_cd = transHist.ord_erp_trnsmis_tp_cd
+								AND erpHistOther.erp_trnsmis_cd <![CDATA[<>]]> transHist.erp_trnsmis_cd
+								AND erpHistOther.ord_god_turn = transHist.ord_god_turn
+								AND erpHistOther.qty_turn = transHist.qty_turn
+						)
+					GROUP BY transHist.ord_no
+					UNION
+					SELECT COUNT(1) AS CNT
+					FROM ORD_ERP_TRNSMIS trans
+					WHERE 1 = 1
+						AND trans.ord_no = #{ordNo, jdbcType=VARCHAR}
+						AND trans.ord_erp_trnsmis_tp_cd = 'UNITY_PNT_ACCML_TMPR'    /* 통합 포인트 적립 임시*/
+						AND trans.erp_trnsmis_cd = 'Y'  --  /*임시삭감복원(RE-)성공 */
+					)
+				), 0, 'Y', 'X' ) AS EX
+				FROM DUAL
+			) subHist
+		WHERE EX = 'Y'
+	</insert>
+
+	<select id="getOrderUseCouponCount" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrIssuCpn" resultType="Integer">
+		SELECT COUNT(1) /* [claim.batch.xml][getOrderUseCouponCount][주문사용쿠폰조회] */
+			FROM MBR_ISSU_CPN
+		   WHERE MBR_CPN_NO = #{mbrCpnNo, jdbcType=VARCHAR}
+		   	AND ORD_NO = #{ordNo, jdbcType=VARCHAR}
+		   	AND CPN_STAT_CD = 'USE'
+	</select>
+	
+</mapper>

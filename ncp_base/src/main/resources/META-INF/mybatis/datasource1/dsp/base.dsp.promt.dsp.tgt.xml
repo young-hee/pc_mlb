@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspPromtDspTgt" parameterType="dspPromtDspTgt" resultType="dspPromtDspTgt">
+		SELECT /* com.plgrim.ncp.base.selectDspPromtDspTgt		Generator(Generator)	2018-05-23 */
+			   PROMT_SN
+			 , DSP_TGT_TURN
+			 , DSP_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , GOD_EVL_EXPSR_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_PROMT_DSP_TGT
+		 WHERE 1 = 1
+	   	   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND DSP_TGT_TURN = #{dspTgtTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspPromtDspTgt" parameterType="dspPromtDspTgt">
+		UPDATE /* com.plgrim.ncp.base.updateDspPromtDspTgt		Generator(Generator)	2018-05-23 */
+		DSP_PROMT_DSP_TGT SET
+			   DSP_TGT_TP_CD = #{dspTgtTpCd,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , TGT_MBR_ATRB_CD = #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+			 , GOD_EVL_EXPSR_YN = #{godEvlExpsrYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND DSP_TGT_TURN = #{dspTgtTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspPromtDspTgt" parameterType="dspPromtDspTgt">
+		INSERT /* com.plgrim.ncp.base.insertDspPromtDspTgt		Generator(Generator)	2018-05-23 */
+		INTO   DSP_PROMT_DSP_TGT (
+			   PROMT_SN
+			 , DSP_TGT_TURN
+			 , DSP_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , GOD_EVL_EXPSR_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{promtSn,jdbcType=NUMERIC}
+			 , #{dspTgtTurn,jdbcType=NUMERIC}
+			 , #{dspTgtTpCd,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , #{grpcoId,jdbcType=VARCHAR}
+			 , #{godEvlExpsrYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspPromtDspTgt" parameterType="dspPromtDspTgt">
+		DELETE /* com.plgrim.ncp.base.deleteDspPromtDspTgt		Generator(Generator)	2018-05-23 */
+		  FROM DSP_PROMT_DSP_TGT
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND DSP_TGT_TURN = #{dspTgtTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodSizeGd" parameterType="godSizeGd" resultType="godSizeGd">
+		SELECT /* com.plgrim.ncp.base.selectGodSizeGd		Generator(Generator)	2018-04-19 */
+			   BRND_ID
+			 , STD_CTGRY_NO
+			 , SIZE_GD_USE_TP_CD
+			 , SIZE_GD_URL
+			 , SIZE_GD_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_SIZE_GD
+		 WHERE 1 = 1
+	   	   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodSizeGd" parameterType="godSizeGd">
+		UPDATE /* com.plgrim.ncp.base.updateGodSizeGd		Generator(Generator)	2018-04-19 */
+		GOD_SIZE_GD SET
+			   SIZE_GD_USE_TP_CD = #{sizeGdUseTpCd,jdbcType=VARCHAR}
+			 , SIZE_GD_URL = #{sizeGdUrl,jdbcType=VARCHAR}
+			 , SIZE_GD_HTML = #{sizeGdHtml,jdbcType=CLOB}
+			 , REGTR_ID = #{regtrId,jdbcType=VARCHAR}
+			 , REG_DT = #{regDt,jdbcType=DATE}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = #{udtDt,jdbcType=DATE}
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodSizeGd" parameterType="godSizeGd">
+		INSERT /* com.plgrim.ncp.base.insertGodSizeGd		Generator(Generator)	2018-04-19 */
+		INTO   GOD_SIZE_GD (
+			   BRND_ID
+			 , STD_CTGRY_NO
+			 , SIZE_GD_USE_TP_CD
+			 , SIZE_GD_URL
+			 , SIZE_GD_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{stdCtgryNo,jdbcType=VARCHAR}
+			 , #{sizeGdUseTpCd,jdbcType=VARCHAR}
+			 , #{sizeGdUrl,jdbcType=VARCHAR}
+			 , #{sizeGdHtml,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , #{regDt,jdbcType=DATE}
+			 , #{udterId,jdbcType=VARCHAR}
+			 , #{udtDt,jdbcType=DATE}
+        )
+    </insert>
+
+    <delete id="deleteGodSizeGd" parameterType="godSizeGd">
+		DELETE /* com.plgrim.ncp.base.deleteGodSizeGd		Generator(Generator)	2018-04-19 */
+		  FROM GOD_SIZE_GD
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

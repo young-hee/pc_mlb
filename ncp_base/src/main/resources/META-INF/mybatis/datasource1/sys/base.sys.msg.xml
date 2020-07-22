@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysMsg" parameterType="sysMsg" resultType="sysMsg">
+		SELECT /* com.plgrim.ncp.base.selectSysMsg		Generator(Generator)	2018-05-23 */
+			   MSG_NO
+			 , MSG_USE_DVC_CD
+			 , MSG_SYS_CLFC_CD
+			 , MSG_CLFC_CD
+			 , MSG_DETAIL_CLFC_CD
+			 , MSG_GRD_CD
+			 , GLB_USE_YN
+			 , MSG_SJ
+			 , PC_MSG_CONT
+			 , MOBILE_MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_MSG
+		 WHERE 1 = 1
+	   	   AND MSG_NO = #{msgNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysMsg" parameterType="sysMsg">
+		UPDATE /* com.plgrim.ncp.base.updateSysMsg		Generator(Generator)	2018-05-23 */
+		SYS_MSG SET
+			   MSG_USE_DVC_CD = #{msgUseDvcCd,jdbcType=VARCHAR}
+			 , MSG_SYS_CLFC_CD = #{msgSysClfcCd,jdbcType=VARCHAR}
+			 , MSG_CLFC_CD = #{msgClfcCd,jdbcType=VARCHAR}
+			 , MSG_DETAIL_CLFC_CD = #{msgDetailClfcCd,jdbcType=VARCHAR}
+			 , MSG_GRD_CD = #{msgGrdCd,jdbcType=VARCHAR}
+			 , GLB_USE_YN = #{glbUseYn,jdbcType=VARCHAR}
+			 , MSG_SJ = #{msgSj,jdbcType=VARCHAR}
+			 , PC_MSG_CONT = #{pcMsgCont,jdbcType=VARCHAR}
+			 , MOBILE_MSG_CONT = #{mobileMsgCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MSG_NO = #{msgNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysMsg" parameterType="sysMsg">
+		INSERT /* com.plgrim.ncp.base.insertSysMsg		Generator(Generator)	2018-05-23 */
+		INTO   SYS_MSG (
+			   MSG_NO
+			 , MSG_USE_DVC_CD
+			 , MSG_SYS_CLFC_CD
+			 , MSG_CLFC_CD
+			 , MSG_DETAIL_CLFC_CD
+			 , MSG_GRD_CD
+			 , GLB_USE_YN
+			 , MSG_SJ
+			 , PC_MSG_CONT
+			 , MOBILE_MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{msgNo,jdbcType=VARCHAR}
+			 , #{msgUseDvcCd,jdbcType=VARCHAR}
+			 , #{msgSysClfcCd,jdbcType=VARCHAR}
+			 , #{msgClfcCd,jdbcType=VARCHAR}
+			 , #{msgDetailClfcCd,jdbcType=VARCHAR}
+			 , #{msgGrdCd,jdbcType=VARCHAR}
+			 , #{glbUseYn,jdbcType=VARCHAR}
+			 , #{msgSj,jdbcType=VARCHAR}
+			 , #{pcMsgCont,jdbcType=VARCHAR}
+			 , #{mobileMsgCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysMsg" parameterType="sysMsg">
+		DELETE /* com.plgrim.ncp.base.deleteSysMsg		Generator(Generator)	2018-05-23 */
+		  FROM SYS_MSG
+		 WHERE 1 = 1
+		   AND MSG_NO = #{msgNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

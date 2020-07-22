@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodColorLang" parameterType="godColorLang" resultType="godColorLang">
+		SELECT /* com.plgrim.ncp.base.selectGodColorLang		Generator(Generator)	2018-05-23 */
+			   COLOR_CD
+			 , LANG_CD
+			 , BRND_GRP_ID
+			 , COLOR_NM
+			 , USE_YN
+			 , COLOR_STYLE_CONT_1
+			 , COLOR_STYLE_CONT_2
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_COLOR_LANG
+		 WHERE 1 = 1
+	   	   AND COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodColorLang" parameterType="godColorLang">
+		UPDATE /* com.plgrim.ncp.base.updateGodColorLang		Generator(Generator)	2018-05-23 */
+		GOD_COLOR_LANG SET
+			   COLOR_NM = #{colorNm,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , COLOR_STYLE_CONT_1 = #{colorStyleCont1,jdbcType=VARCHAR}
+			 , COLOR_STYLE_CONT_2 = #{colorStyleCont2,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodColorLang" parameterType="godColorLang">
+		INSERT /* com.plgrim.ncp.base.insertGodColorLang		Generator(Generator)	2018-05-23 */
+		INTO   GOD_COLOR_LANG (
+			   COLOR_CD
+			 , LANG_CD
+			 , BRND_GRP_ID
+			 , COLOR_NM
+			 , USE_YN
+			 , COLOR_STYLE_CONT_1
+			 , COLOR_STYLE_CONT_2
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{colorCd,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{brndGrpId,jdbcType=VARCHAR}
+			 , #{colorNm,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{colorStyleCont1,jdbcType=VARCHAR}
+			 , #{colorStyleCont2,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodColorLang" parameterType="godColorLang">
+		DELETE /* com.plgrim.ncp.base.deleteGodColorLang		Generator(Generator)	2018-05-23 */
+		  FROM GOD_COLOR_LANG
+		 WHERE 1 = 1
+		   AND COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

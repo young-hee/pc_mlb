@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.sysshop">
+	
+	<resultMap id="resultSysShop" type="com.plgrim.ncp.commons.result.SysShopResult">
+		<result property="sysShop.shopId" column="SHOP_ID" />
+		<result property="sysShop.shopNm" column="SHOP_NM" />
+		<result property="sysShop.shopTpCd" column="SHOP_TP_CD" />
+		<!--  <result property="sysShop.saleShopYn" column="SALE_SHOP_YN" />-->
+		<result property="sysShop.drtstorDrdlShopYn" column="DRTSTOR_DRDL_SHOP_YN" />
+		<result property="sysShop.foExpsrYn" column="FO_EXPSR_YN" />
+		<result property="sysShop.wrhusYn" column="WRHUS_YN" />
+		<result property="sysShop.useYn" column="USE_YN" />
+		<result property="sysShop.virtlShopYn" column="VIRTL_SHOP_YN" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+	</resultMap>
+	
+	<!-- 매장 목록 -->
+	<select id="selectSysShopList" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultMap="resultSysShop">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [commons.sysshop.xml]["selectSysShopList"][매장 목록 조회][Ed] */
+			SS.SHOP_ID /* 매장ID */
+			,SS.SHOP_NM  /* 매장명 */
+			,SS.SHOP_TP_CD /* 매장유형 */
+			,SS.DRTSTOR_DRDL_SHOP_YN /* 백화점직거래여부 */
+			,SS.WRHUS_YN /* 창고여부 */
+			,SS.FO_EXPSR_YN /* 프론트노출여부 */
+			,SS.USE_YN /* 사용여부 */
+			,SS.VIRTL_SHOP_YN /* 가상매장여부 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SS.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+		   	,TO_CHAR(SS.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+	       	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SS.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	       	,TO_CHAR(SS.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+	    FROM	SYS_SHOP SS
+		WHERE 	1 = 1
+		<include refid="selectSysShopListWhere"/>
+		ORDER BY SS.SHOP_NM
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 매장 목록 개수 -->
+	<select id="selectSysShopListCount" resultType="long"> 
+		SELECT /* [commons.sysshop.xml]["selectSysShopListCount"][매장 목록 개수][Ed] */
+			COUNT(*)
+	    FROM	SYS_SHOP SS
+		WHERE 	1 = 1
+		<include refid="selectSysShopListWhere"/>
+	</select>
+	
+	<!-- 매장 목록 엑셀-->
+	<select id="selectSysShopListExcel" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [commons.sysshop.xml]["selectSysShopListExcel"][매장 목록 조회][Ed] */
+			SS.SHOP_ID /* 매장ID */
+			,SS.SHOP_NM  /* 매장명 */
+			,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'SHOP_TP' AND LANG_CD= 'KOR' AND CD = SS.SHOP_TP_CD) AS SHOP_TP_CD_NM /* 공지유형 */
+			<!--  ,DECODE(SS.SALE_SHOP_YN, 'Y', '사용', 'N', '미사용') AS SALE_SHOP_YN_NM /* 판매매장여부 */-->
+			,DECODE(SS.DRTSTOR_DRDL_SHOP_YN, 'Y', '사용', 'N', '미사용') AS DRTSTOR_DRDL_SHOP_YN_NM /* 백화점직거래여부 */
+			,DECODE(SS.WRHUS_YN, 'Y', '사용', 'N', '미사용') AS WRHUS_YN_NM /* 창고여부 */
+			,DECODE(SS.FO_EXPSR_YN, 'Y', '사용', 'N', '미사용') AS FO_EXPSR_YN_NM /* 사용여부 */
+			,DECODE(SS.USE_YN, 'Y', '사용', 'N', '미사용') AS USE_YN_NM /* 사용여부 */
+			,DECODE(SS.VIRTL_SHOP_YN, 'Y', '사용', 'N', '미사용') AS VIRTL_SHOP_YN_NM /* 가상매장여부 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SS.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+		   	,TO_CHAR(SS.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+	       	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SS.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	       	,TO_CHAR(SS.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+	    FROM	SYS_SHOP SS
+		WHERE 	1 = 1	
+		<include refid="selectSysShopListWhere"/>
+		ORDER BY SS.SHOP_NM
+	</select>
+	
+	<!-- 매장 목록 조건문 -->
+	<sql id="selectSysShopListWhere"> 
+		<if test='search.shopType != null and search.shopType != "" and search.shopValue != null and search.shopValue != ""'>
+			<choose>
+				<when test='search.shopType == "shopNm"'>
+					AND UPPER(SS.SHOP_NM) LIKE '%' || UPPER(#{search.shopValue}) || '%' /* 매장명 */
+				</when>
+				<otherwise>
+					AND UPPER(SS.SHOP_ID) LIKE '%' || UPPER(#{search.shopValue}) || '%' /* 매장코드 */
+				</otherwise>
+			</choose>
+		</if>
+		<!--  
+		<if test='search.saleShopYns != null and search.saleShopYns != ""'>
+			AND SS.SALE_SHOP_YN IN
+			<foreach item ="item" index="index" collection="search.saleShopYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 판매매장여부 */
+		</if>
+		-->
+		<if test='search.shopTp != null and search.shopTp != ""'>
+			AND SS.SHOP_TP_CD = #{search.shopTp,jdbcType=VARCHAR} /* 매장유형 */
+		</if>
+		<if test='search.drtstorDrdlShopYns != null and search.drtstorDrdlShopYns != ""'>
+			AND SS.DRTSTOR_DRDL_SHOP_YN IN
+			<foreach item ="item" index="index" collection="search.drtstorDrdlShopYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 백화점직거래매장여부 */
+		</if>
+		<if test='search.foExpsrYn != null and search.foExpsrYn != ""'>
+			AND SS.FO_EXPSR_YN IN
+			<foreach item ="item" index="index" collection="search.foExpsrYn" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 프론트노출여부 */
+		</if>
+		<if test='search.wrhusYns != null and search.wrhusYns != ""'>
+			AND SS.WRHUS_YN IN
+			<foreach item ="item" index="index" collection="search.wrhusYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 창고여부 */
+		</if>
+		<if test='search.useYns != null and search.useYns != ""'>
+			AND SS.USE_YN IN
+			<foreach item ="item" index="index" collection="search.useYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 사용여부 */
+		</if>
+		<if test='search.virtlShopYn != null and search.virtlShopYn != ""'>
+			AND SS.VIRTL_SHOP_YN IN
+			<foreach item ="item" index="index" collection="search.virtlShopYn" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 가상매장여부 */
+		</if>
+	</sql>
+	
+	<resultMap id="resultSysShopDetail" type="com.plgrim.ncp.commons.result.SysShopResult">
+		<result property="sysShop.shopId" column="SHOP_ID" />
+		<result property="sysShop.shopNm" column="SHOP_NM" />
+		<result property="sysShop.shopTpCd" column="SHOP_TP_CD" />
+		<result property="sysShop.foExpsrYn" column="FO_EXPSR_YN" />
+		<result property="sysShop.otltShopYn" column="OTLT_SHOP_YN" />
+		<result property="sysShop.drtstorDrdlShopYn" column="DRTSTOR_DRDL_SHOP_YN" />
+		<result property="sysShop.wrhusYn" column="WRHUS_YN" />
+		<result property="sysShop.useYn" column="USE_YN" />
+		<result property="sysShop.sortSeq" column="SORT_SEQ" />
+		<result property="sysShop.spotNm" column="SPOT_NM" />
+		<result property="sysShop.rprstivNm" column="RPRSTIV_NM" />
+		<result property="sysShop.sidoCd" column="SIDO_CD" />
+		<result property="sysShop.sigunguCd" column="SIGUNGU_CD" />
+		<result property="sysShop.lttd" column="LTTD" />
+		<result property="sysShop.lgtd" column="LGTD" />
+		<result property="sysShop.openDate" column="OPEN_DATE" />
+		<result property="sysShop.shopWidthDscr" column="SHOP_WIDTH_DSCR" />
+		<result property="sysShop.shopRprstImgUrl" column="SHOP_RPRST_IMG_URL" />
+		<result property="sysShop.postNo" column="POST_NO" />
+		<result property="sysShop.baseAddr" column="BASE_ADDR" />
+		<result property="sysShop.detailAddr" column="DETAIL_ADDR" />
+		<result property="sysShop.shopTelNationNo" column="SHOP_TEL_NATION_NO" />
+		<result property="sysShop.shopTelAreaNo" column="SHOP_TEL_AREA_NO" />
+		<result property="sysShop.shopTelTlofNo" column="SHOP_TEL_TLOF_NO" />
+		<result property="sysShop.shopTelTlofWthnNo" column="SHOP_TEL_TLOF_WTHN_NO" />
+		<result property="sysShop.rprstivMobilNationNo" column="RPRSTIV_MOBIL_NATION_NO" />
+		<result property="sysShop.rprstivMobilAreaNo" column="RPRSTIV_MOBIL_AREA_NO" />
+		<result property="sysShop.rprstivMobilTlofNo" column="RPRSTIV_MOBIL_TLOF_NO" />
+		<result property="sysShop.rprstivMobilTlofWthnNo" column="RPRSTIV_MOBIL_TLOF_WTHN_NO" />
+		<result property="sysShop.wkdyOperBegHhmm" column="WKDY_OPER_BEG_HHMM" />
+		<result property="sysShop.wkdyOperEndHhmm" column="WKDY_OPER_END_HHMM" />
+		<result property="sysShop.satOperBegHhmm" column="SAT_OPER_BEG_HHMM" />
+		<result property="sysShop.satOperEndHhmm" column="SAT_OPER_END_HHMM" />
+		<result property="sysShop.hldyOperBegHhmm" column="HLDY_OPER_BEG_HHMM" />
+		<result property="sysShop.hldyOperEndHhmm" column="HLDY_OPER_END_HHMM" />
+		<result property="sysShop.cpnPrmNo" column="CPN_PRM_NO" />
+		<result property="cpnPrmNm" column="CPN_PRM_NM"/><!-- 쿠폰 프로모션 번호 -->
+		<result property="sysShop.instagramAcssToknId" column="INSTAGRAM_ACSS_TOKN_ID" />
+		<result property="sysShop.parkngPsbYn" column="PARKNG_PSB_YN" />
+		<result property="sysShop.parkngUpodnlInfoCont" column="PARKNG_UPODNL_INFO_CONT" />
+		<result property="sysShop.trnsportInfoCont" column="TRNSPORT_INFO_CONT" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+		<result property="sysShop.bsnChrgerNm" column="BSN_CHRGER_NM" />
+		<result property="sysShop.bsnChrgerMobilNationNo" column="BSN_CHRGER_MOBIL_NATION_NO" />
+		<result property="sysShop.bsnChrgerMobilAreaNo" column="BSN_CHRGER_MOBIL_AREA_NO" />
+		<result property="sysShop.bsnChrgerMobilTlofNo" column="BSN_CHRGER_MOBIL_TLOF_NO" />
+		<result property="sysShop.bsnChrgerMobilTlofWthnNo" column="BSN_CHRGER_MOBIL_TLOF_WTHN_NO" />
+		<result property="sysShop.virtlShopYn" column="VIRTL_SHOP_YN" />
+		<result property="sysBrnd.erpBrndId" column="ERP_BRND_ID" />
+	</resultMap>
+	
+	<!-- 매장 상세 -->
+	<select id="selectSysShopDetail" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultMap="resultSysShopDetail">
+		SELECT /* [commons.sysshop.xml]["selectSysShopDetail"][매장 상세 조회][Ed] */
+		 	SS.SHOP_ID  /* 매장ID */
+            ,SS.SHOP_NM /* 매장명 */
+            ,SS.SHOP_TP_CD /* 매장 유형 코드 */
+            ,SS.FO_EXPSR_YN /* 프론트 노출 여부 */
+            ,SS.OTLT_SHOP_YN /* 아울렛 매장 여부 */
+            ,SS.DRTSTOR_DRDL_SHOP_YN /* 백화점 직거래 매장 여부 */
+            ,SS.WRHUS_YN /* 창고 여부 */
+            ,SS.USE_YN /* 사용 여부 */
+            ,SS.SORT_SEQ /* 정렬 순서 */
+            ,SS.SPOT_NM /* 지점명 */
+            ,SS.RPRSTIV_NM /* 대표자명 */
+            ,SS.SIDO_CD /* 우편시도 코드 */
+            ,SS.SIGUNGU_CD /* 우편시군구 코드 */
+            ,SS.LTTD /* 위도 */
+            ,SS.LGTD /* 경도 */
+            ,SS.OPEN_DATE /* 오픈 일자 */
+            ,SS.SHOP_WIDTH_DSCR /* 매장 넓이 설명 */
+            ,SS.SHOP_RPRST_IMG_URL /* 매장 대표 이미지 URL */
+            ,SS.POST_NO /* 우편번호 */
+            ,SS.BASE_ADDR /* 기본주소 */
+            ,SS.DETAIL_ADDR /* 상세주소 */
+            ,SS.SHOP_TEL_NATION_NO /* 매장 전화 국가번호 */
+            ,SS.SHOP_TEL_AREA_NO /* 매장 전화 지역번호 */
+            ,SS.SHOP_TEL_TLOF_NO /* 매장 전화 국번호 */
+            ,SS.SHOP_TEL_TLOF_WTHN_NO /* 매장 전화 국내번호*/
+            ,SS.RPRSTIV_MOBIL_NATION_NO /* 대표자 휴대전화 국가번호 */
+            ,SS.RPRSTIV_MOBIL_AREA_NO /* 대표자 휴대전화 지역번호 */
+            ,SS.RPRSTIV_MOBIL_TLOF_NO /* 대표자 휴대전화 국번호 */
+            ,SS.RPRSTIV_MOBIL_TLOF_WTHN_NO /* 대표자 휴대전화 국내번호 */
+            ,SS.WKDY_OPER_BEG_HHMM /* 평일 운영 시작 시분 */
+            ,SS.WKDY_OPER_END_HHMM /* 평일 운영 종료 시분 */
+            ,SS.SAT_OPER_BEG_HHMM /* 토요일 운영 시작 시분 */
+            ,SS.SAT_OPER_END_HHMM /* 토요일 운영 종료 시분 */
+            ,SS.HLDY_OPER_BEG_HHMM /* 공휴일 운영 시작 시분 */
+            ,SS.HLDY_OPER_END_HHMM /* 공휴일 운영 종료 시분 */
+			,SS.CPN_PRM_NO	/* 쿠폰 프로모션 번호 */
+			,(SELECT PRM_NM FROM PRM WHERE PRM_NO = SS.CPN_PRM_NO) AS CPN_PRM_NM /* 쿠폰 프로모션 명 */		       
+			,SS.INSTAGRAM_ACSS_TOKN_ID /* 인스타그램 액세스 토큰 ID */
+			,PARKNG_PSB_YN /* 주차 가능 여부 */
+			,PARKNG_UPODNL_INFO_CONT /* 주차 상세 정보 내용 */
+			,TRNSPORT_INFO_CONT	/* 교통 정보 내용 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SS.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+		   	,TO_CHAR(SS.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+	       	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SS.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	       	,TO_CHAR(SS.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+	       	,SS.BSN_CHRGER_NM /* 영업담당자 이름 */
+	       	,SS.BSN_CHRGER_MOBIL_NATION_NO /* 영업담당자 휴대전화 국가번호 */
+            ,SS.BSN_CHRGER_MOBIL_AREA_NO /* 영업담당자 휴대전화 지역번호 */
+            ,SS.BSN_CHRGER_MOBIL_TLOF_NO /* 영업담당자 휴대전화 국번호 */
+            ,SS.BSN_CHRGER_MOBIL_TLOF_WTHN_NO /* 영업담당자 휴대전화 국내번호 */
+            ,SS.VIRTL_SHOP_YN /* 가상매장여부 */
+            ,BRND.ERP_BRND_ID /* 브랜드 id */
+	    FROM	SYS_SHOP SS
+	    		LEFT JOIN SYS_SHOP_BRND BRND ON SS.SHOP_ID = BRND.SHOP_ID 
+		WHERE 	1 = 1
+		AND     SS.SHOP_ID = #{search.shopId,jdbcType=VARCHAR}
+	</select>
+	
+    <!-- 매장 기본정보 수정 -->
+    <update id="updateSysShop" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShop">
+    	UPDATE /* [commons.sysshop.xml]["updateSysShop"][매장 기본정보 수정][Ed] */    
+        SYS_SHOP SET
+ 				SHOP_NM = #{shopNm,jdbcType=VARCHAR} /* 매장명 */
+                ,SHOP_TP_CD = #{shopTpCd,jdbcType=VARCHAR} /* 매장 유형 코드 */	
+                ,FO_EXPSR_YN = #{foExpsrYn,jdbcType=VARCHAR} /* 프론트 노출 여부 */
+                ,OTLT_SHOP_YN = #{otltShopYn,jdbcType=VARCHAR} /* 아울렛 매장 여부 */
+                ,DRTSTOR_DRDL_SHOP_YN = #{drtstorDrdlShopYn,jdbcType=VARCHAR} /* 백화점 직거래 여부 */
+                ,WRHUS_YN = #{wrhusYn,jdbcType=VARCHAR} /* 창고 여부 */
+                ,USE_YN = #{useYn,jdbcType=VARCHAR} /* 사용 여부 */
+                <if test="sortSeq != null and sortSeq != ''">
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC} /* 정렬 순서 */
+                </if>
+                ,SPOT_NM = #{spotNm,jdbcType=VARCHAR} /* 지점명 */
+                <if test="rprstivNm != null and rprstivNm != ''">
+                ,RPRSTIV_NM = #{rprstivNm,jdbcType=VARCHAR} /* 대표자명 */
+                </if>
+                ,SIDO_CD = #{sidoCd,jdbcType=VARCHAR} /* 우편시도 코드 */
+                ,SIGUNGU_CD = #{sigunguCd,jdbcType=VARCHAR} /* 우편시군구 코드 */
+                ,LTTD = #{lttd,jdbcType=NUMERIC} /* 위도 */
+                ,LGTD = #{lgtd,jdbcType=NUMERIC} /* 경도 */
+                <if test="openDate != null and openDate != ''">
+                ,OPEN_DATE = #{openDate,jdbcType=VARCHAR} /* 오픈 일자 */
+                </if>
+                <if test="shopWidthDscr != null and shopWidthDscr != ''">
+                ,SHOP_WIDTH_DSCR = #{shopWidthDscr,jdbcType=VARCHAR} /* 매장 넓이 */
+                </if>
+                ,POST_NO = #{postNo,jdbcType=VARCHAR} /* 우편 번호 */
+                ,BASE_ADDR = #{baseAddr,jdbcType=VARCHAR} /* 기본 주소 */
+                ,DETAIL_ADDR = #{detailAddr,jdbcType=VARCHAR} /* 상세 주소 */
+                ,SHOP_TEL_NATION_NO = #{shopTelNationNo,jdbcType=VARCHAR} /* 매장 전화 국가번호 */
+                ,SHOP_TEL_AREA_NO = #{shopTelAreaNo,jdbcType=VARCHAR} /* 매장 전화 지역번호 */
+                ,SHOP_TEL_TLOF_NO = #{shopTelTlofNo,jdbcType=VARCHAR} /* 매장 전화 국번호 */
+                ,SHOP_TEL_TLOF_WTHN_NO = #{shopTelTlofWthnNo,jdbcType=VARCHAR} /* 매장 전화 국내번호 */
+                ,RPRSTIV_MOBIL_NATION_NO = #{rprstivMobilNationNo,jdbcType=VARCHAR} /* 대표자 휴대전화 국가번호 */
+                ,RPRSTIV_MOBIL_AREA_NO = #{rprstivMobilAreaNo,jdbcType=VARCHAR} /* 대표자 휴대전화 지역번호 */
+                ,RPRSTIV_MOBIL_TLOF_NO = #{rprstivMobilTlofNo,jdbcType=VARCHAR} /* 대표자 휴대전화 국번호 */
+                ,RPRSTIV_MOBIL_TLOF_WTHN_NO = #{rprstivMobilTlofWthnNo,jdbcType=VARCHAR} /* 대표자 휴대전화 국내 번호 */
+                ,CPN_PRM_NO = #{cpnPrmNo,jdbcType=VARCHAR} /* 쿠폰 프로모션 번호 */
+				,PARKNG_PSB_YN = #{parkngPsbYn, jdbcType=VARCHAR} /* 주차 가능 여부 */
+				,PARKNG_UPODNL_INFO_CONT = #{parkngUpodnlInfoCont, jdbcType=VARCHAR} /* 주차 상세 정보 내용 */
+				,TRNSPORT_INFO_CONT = #{trnsportInfoCont, jdbcType=VARCHAR} /* 교통 정보 내용 */
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR} /* 수정자 ID */
+                ,UDT_DT = SYSDATE /* 수정 일자 */
+                ,BSN_CHRGER_NM = #{bsnChrgerNm,jdbcType=VARCHAR} /* 영업담당자 이름 */
+		       	,BSN_CHRGER_MOBIL_NATION_NO = #{bsnChrgerMobilNationNo,jdbcType=VARCHAR} /* 영업담당자 휴대전화 국가번호 */
+	            ,BSN_CHRGER_MOBIL_AREA_NO = #{bsnChrgerMobilAreaNo,jdbcType=VARCHAR} /* 영업담당자 휴대전화 지역번호 */
+	            ,BSN_CHRGER_MOBIL_TLOF_NO = #{bsnChrgerMobilTlofNo,jdbcType=VARCHAR} /* 영업담당자 휴대전화 국번호 */
+	            ,BSN_CHRGER_MOBIL_TLOF_WTHN_NO = #{bsnChrgerMobilTlofWthnNo,jdbcType=VARCHAR} /* 영업담당자 휴대전화 국내번호 */
+	            ,VIRTL_SHOP_YN = #{virtlShopYn,jdbcType=VARCHAR} /* 가상매장여부 */
+        WHERE   1 = 1
+        AND     SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </update>
+    
+     <!-- 매장 매장이미지 관리 페이지 수정 -->
+    <update id="updateSysShopImgPage" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShop">
+    	UPDATE /* [commons.sysshop.xml]["updateSysShopImgPage"][매장 기본정보 수정][Ed] */    
+        SYS_SHOP SET
+                UDTER_ID = #{udterId,jdbcType=VARCHAR} /* 수정자 ID */
+                ,UDT_DT = SYSDATE /* 수정 일자 */
+        		<if test="shopRprstImgUrl != null and shopRprstImgUrl != ''">
+				,SHOP_RPRST_IMG_URL = #{shopRprstImgUrl,jdbcType=VARCHAR}
+				</if>
+				,WKDY_OPER_BEG_HHMM = #{wkdyOperBegHhmm,jdbcType=VARCHAR}
+				,WKDY_OPER_END_HHMM = #{wkdyOperEndHhmm,jdbcType=VARCHAR}
+				,SAT_OPER_BEG_HHMM = #{satOperBegHhmm,jdbcType=VARCHAR}
+				,SAT_OPER_END_HHMM = #{satOperEndHhmm,jdbcType=VARCHAR}
+				,HLDY_OPER_BEG_HHMM = #{hldyOperBegHhmm,jdbcType=VARCHAR}
+				,HLDY_OPER_END_HHMM = #{hldyOperEndHhmm,jdbcType=VARCHAR}
+				<if test="instagramAcssToknId != null and instagramAcssToknId != ''">
+				,INSTAGRAM_ACSS_TOKN_ID = #{instagramAcssToknId,jdbcType=VARCHAR}
+				</if>
+        WHERE   1 = 1
+        AND     SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 매장 그리드 수정 -->
+    <update id="updateSysShopGrid" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShop">
+    	UPDATE /* [commons.sysshop.xml]["updateSysShopGrid"][매장 그리드 수정][Ed] */    
+        SYS_SHOP SET
+                <!--  SALE_SHOP_YN = #{saleShopYn,jdbcType=VARCHAR}-->
+                SHOP_TP_CD = #{shopTpCd,jdbcType=VARCHAR}
+                ,DRTSTOR_DRDL_SHOP_YN = #{drtstorDrdlShopYn,jdbcType=VARCHAR}
+                ,WRHUS_YN = #{wrhusYn,jdbcType=VARCHAR}
+                ,FO_EXPSR_YN = #{foExpsrYn,jdbcType=VARCHAR} /* 프론트 노출 여부 */
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,VIRTL_SHOP_YN = #{virtlShopYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 매장 중복 개수 -->
+	<select id="selectSysShopDupCount" resultType="long"> 
+		SELECT /* [commons.sysshop.xml]["selectSysShopDupCount"][매장 중복 개수][Ed] */
+			COUNT(*)
+	    FROM	SYS_SHOP SS
+		WHERE 	1 = 1
+		AND     SHOP_ID = #{shopId,jdbcType=VARCHAR}
+	</select>
+	
+	<resultMap id="commSysShopPhotoResultMap" type="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto">
+		<result property="photoSn" column="PHOTO_SN"/><!-- 사진 일련번호 -->
+		<result property="shopId" column="SHOP_ID"/><!-- 매장 ID -->
+		<result property="shopImgSectCd" column="SHOP_IMG_SECT_CD"/><!-- 매장 이미지 구분 코드 -->
+		<result property="useYn" column="USE_YN"/><!-- 사용여부 -->
+		<result property="sj" column="SJ"/><!-- 제목 -->
+		<result property="shopImgUrl" column="SHOP_IMG_URL"/><!-- 매장 이미지 URL -->
+		<result property="linkUrl" column="LINK_URL" />
+		<result property="regtrId" column="REGTR_ID"/><!-- 등록자 아이디 -->
+		<result property="regDt" column="REG_DT"/><!-- 등록 일시 -->
+    </resultMap>
+    
+    <select id="commSelectSysShopPhoto" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto" resultMap="commSysShopPhotoResultMap">
+        SELECT /* [commons.sysshop.xml]["commSelectSysShopPhoto"][매장 이미지 조회][Yoon] */
+                PHOTO_SN
+               ,SHOP_ID
+               ,SHOP_IMG_SECT_CD
+               ,USE_YN
+               ,SJ
+               ,SHOP_IMG_URL
+               ,LINK_URL
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    SYS_SHOP_PHOTO
+        WHERE   1 = 1
+        AND		USE_YN = 'Y'
+        AND		SHOP_ID = #{shopId,jdbcType=VARCHAR}
+        <if test="shopImgSectCd != null and shopImgSectCd != ''">
+        AND		SHOP_IMG_SECT_CD = #{shopImgSectCd,jdbcType=VARCHAR}
+        </if>
+		ORDER BY PHOTO_SN ASC
+    </select>
+	
+	<!-- 매장 이미지 등록 -->
+	<insert id="commInsertSysShopPhoto" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto">
+		INSERT /* [commons.sysshop.xml]["commInsertSysShopPhoto"][매장 이미지 등록][Yoon] */
+		INTO SYS_SHOP_PHOTO
+		(
+			PHOTO_SN
+			,SHOP_ID
+			,SHOP_IMG_SECT_CD
+			,USE_YN
+			,SJ
+			,SHOP_IMG_URL
+			,REGTR_ID
+			,REG_DT
+		)
+		VALUES
+		(
+			SQ_SYS_SHOP_PHOTO.NEXTVAL
+			,#{shopId,jdbcType=VARCHAR}
+			,#{shopImgSectCd,jdbcType=VARCHAR}
+			,#{useYn,jdbcType=VARCHAR}
+			,#{sj,jdbcType=VARCHAR}
+			,#{shopImgUrl,jdbcType=VARCHAR}
+			,#{regtrId,jdbcType=VARCHAR}
+			,SYSDATE
+		)
+	</insert>
+	
+	<update id="commUpdateSysShopPhoto" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopPhoto">
+        UPDATE /* [commons.sysshop.xml]["commUpdateSysShopPhoto"][매장 이미지 수정][Yoon] */  
+        SYS_SHOP_PHOTO SET
+                <if test="useYn != null and useYn != ''">
+                USE_YN = #{useYn,jdbcType=VARCHAR}
+                </if>
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     PHOTO_SN = #{photoSn,jdbcType=NUMERIC}
+    </update>
+    
+     <resultMap id="sysShopEventResultMap" type="com.plgrim.ncp.commons.result.SysShopEvtResult">
+		<result property="sysShopEvt.shopEvtSn"	    column="SHOP_EVT_SN"  /><!-- 매장 이벤트 일련번호 -->
+		<result property="sysShopEvt.shopId"	    column="SHOP_ID"	  /><!-- 매장 ID  -->
+		<result property="sysShopEvt.evtNm"	        column="EVT_NM"	      /><!-- 이벤트 명 -->
+		<result property="sysShopEvt.evtBegDate"	column="EVT_BEG_DATE" /><!-- 이벤트 시작 일자 -->
+		<result property="sysShopEvt.evtEndDate"	column="EVT_END_DATE" /><!-- 이벤트 종료 일자 -->
+		<result property="sysShopEvt.evtCont"	    column="EVT_CONT"	  /><!-- 이벤트 내용  -->
+		<result property="sysShopEvt.useYn"	        column="USE_YN"	      /><!-- 사용 여부 -->
+		<result property="sysShopEvt.regtrId"	    column="REGTR_ID"	  /><!-- 등록자 ID -->
+		<result property="sysShopEvt.regDt"	        column="REG_DT"	      /><!-- 등록 일시 -->
+		<result property="sysShopEvt.udterId"	    column="UDTER_ID"	  /><!-- 수정자 ID -->
+		<result property="sysShopEvt.udtDt"	        column="UDT_DT"	      /><!-- 수정 일시 -->
+		<result property="regterNm"	                column="REGTR_NM"     /><!-- 등록자명 -->
+		<result property="udterNm"                  column="UDTER_NM"     /><!-- 수정자명 -->
+		<result property="viewRegDt"                column="VIEW_REG_DT"  /><!-- 등록일 -->
+		<result property="viewUdtDt"                column="VIEW_UDT_DT"  /><!-- 수정일 -->
+		<result property="evtStatus"                column="EVT_STATUS"  /><!-- 상태 -->
+    </resultMap>
+    
+    <!-- 브랜드 매장 이벤트 상세조회 -->
+    <select id="selectSysShopEvt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt" resultMap="sysShopEventResultMap">
+        SELECT /* [commons.sysshop.xml][selectSysShopEvt][브랜드 매장 이벤트 상세조회]][Yoon] */
+                SSE.SHOP_EVT_SN
+               ,SSE.SHOP_ID
+               ,SSE.EVT_NM
+               ,SSE.EVT_BEG_DATE
+               ,SSE.EVT_END_DATE
+               ,SSE.EVT_CONT
+               ,SSE.USE_YN
+               ,SSE.REGTR_ID
+               ,SSE.REG_DT
+               ,SSE.UDTER_ID
+               ,SSE.UDT_DT
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSE.REGTR_ID) AS REGTR_NM /*등록자명*/
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSE.UDTER_ID) AS UDTER_NM /*수정자명*/
+		       ,TO_CHAR(SSE.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/		       
+		       ,TO_CHAR(SSE.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT                    /*수정일(YYYY-MM-DD HH24:MI)*/
+		       ,CASE WHEN SSE.USE_YN = 'Y' 
+                     THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+                               WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+                               ELSE '30' /* 종료 */
+                           END
+                     ELSE '10' /* 대기 */                      
+                 END AS EVT_STATUS
+        FROM    SYS_SHOP_EVT SSE
+        WHERE SSE.SHOP_EVT_SN = #{shopEvtSn,jdbcType=NUMERIC}        
+    </select>
+    
+    <!-- 브랜드 매장 이벤트 체크 -->
+    <select id="selectSysShopEvtCheck" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt" resultType="int">
+		SELECT /* [commons.sysshop.xml][selectSysShopEvtCheck][브랜드 매장 이벤트 체크][Yoon] */
+			   COUNT(*)
+		  FROM SYS_SHOP_EVT
+        WHERE USE_YN = 'Y'          
+          AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+          AND (
+               #{evtBegDate,jdbcType=NUMERIC} BETWEEN EVT_BEG_DATE AND EVT_END_DATE 
+               OR #{evtEndDate,jdbcType=NUMERIC} BETWEEN EVT_BEG_DATE AND EVT_END_DATE 
+               OR (EVT_BEG_DATE BETWEEN #{evtBegDate,jdbcType=NUMERIC} AND #{evtEndDate,jdbcType=NUMERIC}
+                   AND EVT_END_DATE BETWEEN #{evtBegDate,jdbcType=NUMERIC} AND #{evtEndDate,jdbcType=NUMERIC}
+                  )
+              )
+          <if test='shopEvtSn != null and shopEvtSn != ""'>
+          AND SHOP_EVT_SN != #{shopEvtSn,jdbcType=NUMERIC}
+          </if>
+	</select>
+    
+    <!-- 브랜드 매장 이벤트 수정 -->
+    <update id="updateSysShopEvt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt">
+        UPDATE /* [commons.sysshop.xml][updateSysShopEvt][브랜드 매장 이벤트 수정]][Yoon] */  
+        SYS_SHOP_EVT SET
+                 EVT_NM = #{evtNm,jdbcType=VARCHAR}
+                 ,EVT_BEG_DATE = #{evtBegDate,jdbcType=VARCHAR}
+                 ,EVT_END_DATE = #{evtEndDate,jdbcType=VARCHAR}
+                 ,EVT_CONT = #{evtCont,jdbcType=CLOB}
+                 ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                 ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                 ,UDT_DT = SYSDATE
+        WHERE    SHOP_EVT_SN = #{shopEvtSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 브랜드 매장 이벤트 등록 -->
+	<insert id="insertSysShopEvt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopEvt">
+		<selectKey keyProperty="shopEvtSn" resultType="long" order="BEFORE">
+            SELECT SQ_SYS_SHOP_EVT.NEXTVAL FROM DUAL
+        </selectKey>
+	    INSERT /* [commons.sysshop.xml][insertSysShopEvt][브랜드 매장 이벤트 등록]][Yoon] */  
+	    INTO SYS_SHOP_EVT
+		(
+	        SHOP_EVT_SN
+	       ,SHOP_ID
+	       ,EVT_NM
+	       ,EVT_BEG_DATE
+	       ,EVT_END_DATE
+	       ,EVT_CONT
+	       ,USE_YN
+	       ,REGTR_ID
+           ,REG_DT 
+		)
+		VALUES
+		(   
+	       #{shopEvtSn,jdbcType=NUMERIC}
+	       ,#{shopId,jdbcType=VARCHAR}
+	       ,#{evtNm,jdbcType=VARCHAR}
+	       ,#{evtBegDate,jdbcType=VARCHAR}
+	       ,#{evtEndDate,jdbcType=VARCHAR}
+	       ,#{evtCont,jdbcType=CLOB}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 브랜드 매장 이벤트 목록 조회를 위한 조건 쿼리 -->
+	<sql id="whereSysShopEvt">
+	    AND SSE.SHOP_ID = #{sysShopEvt.shopId,jdbcType=VARCHAR}
+		<if test="sysShopEvt != null">
+			<if test='sysShopEvt.evtNm != null and sysShopEvt.evtNm != ""'>
+	        	AND SSE.EVT_NM LIKE '%'||#{sysShopEvt.evtNm,jdbcType=VARCHAR}||'%'
+	        </if>  
+	        <if test="searchGubun == 'PROG'">
+		        <if test='sysShopEvt.evtBegDate != null and sysShopEvt.evtBegDate != "" and sysShopEvt.evtEndDate != null and sysShopEvt.evtEndDate != ""'>     
+			        AND (
+		                #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE 
+		               OR #{sysShopEvt.evtEndDate,jdbcType=NUMERIC} BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE 
+		               OR (SSE.EVT_BEG_DATE BETWEEN #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} AND #{sysShopEvt.evtEndDate,jdbcType=NUMERIC}
+		                   AND SSE.EVT_END_DATE BETWEEN #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} AND #{sysShopEvt.evtEndDate,jdbcType=NUMERIC}
+		                  )
+		              )
+	            </if>
+	    	</if>
+	    	<if test="searchGubun == 'REG'">
+	    		AND TO_CHAR(SSE.REG_DT, 'YYYYMMDD') BETWEEN  #{sysShopEvt.evtBegDate,jdbcType=NUMERIC} AND #{sysShopEvt.evtEndDate,jdbcType=NUMERIC}
+	    	</if>
+	    </if>
+	    <if test='evtUseYnList != null and evtUseYnList != ""'>
+			AND SSE.USE_YN IN (<foreach collection="evtUseYnList" item="useYn" separator=",">#{useYn}</foreach>)  /*사용여부*/
+		</if>
+	    
+	    
+        <if test='evtStatusList != null and evtStatusList != ""'>
+        	AND (CASE WHEN SSE.USE_YN = 'Y' 
+                      THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+                                WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+                                ELSE '30' /* 종료 */
+                            END
+                      ELSE '10' /* 대기 */                      
+                  END) IN (<foreach collection="evtStatusList" item="evtStatus" separator=",">#{evtStatus}</foreach>)
+        </if>        
+	</sql>
+	
+	<resultMap id="sysShopEventListResultMap" type="com.plgrim.ncp.commons.result.SysShopEvtResult">
+		<result property="sysShopEvt.shopEvtSn"	    column="SHOP_EVT_SN"  /><!-- 매장 이벤트 일련번호 -->
+		<result property="sysShopEvt.shopId"	    column="SHOP_ID"	  /><!-- 매장 ID  -->
+		<result property="sysShopEvt.evtNm"	        column="EVT_NM"	      /><!-- 이벤트 명 -->
+		<result property="sysShopEvt.evtBegDate"	column="EVT_BEG_DATE" /><!-- 이벤트 시작 일자 -->
+		<result property="sysShopEvt.evtEndDate"	column="EVT_END_DATE" /><!-- 이벤트 종료 일자 -->
+		<result property="sysShopEvt.evtCont"	    column="EVT_CONT"	  /><!-- 이벤트 내용  -->
+		<result property="sysShopEvt.useYn"	        column="USE_YN"	      /><!-- 사용 여부 -->
+		<result property="sysShopEvt.regtrId"	    column="REGTR_ID"	  /><!-- 등록자 ID -->
+		<result property="sysShopEvt.regDt"	        column="REG_DT"	      /><!-- 등록 일시 -->
+		<result property="sysShopEvt.udterId"	    column="UDTER_ID"	  /><!-- 수정자 ID -->
+		<result property="sysShopEvt.udtDt"	        column="UDT_DT"	      /><!-- 수정 일시 -->
+		<result property="evtStatus"                column="EVT_STATUS"   /><!-- 상태 -->
+		<result property="evtStatusNm"              column="EVT_STATUS_NM"/><!-- 상태명 -->
+		<result property="termDate"                 column="TERM_DATE"    /><!-- 진행기간 -->
+		<result property="useYnNm"                  column="USE_YN_NM"    /><!-- 사용여부명 -->
+		<result property="regterNm"                 column="REGTR_NM"     /><!-- 등록자 -->
+		<result property="viewRegDt"                column="VIEW_REG_DT"  /><!-- 등록일시 -->
+    </resultMap>
+    
+    <!-- 브랜드 매장 이벤트 목록 -->
+    <select id="selectSysShopEvtList" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultMap="sysShopEventListResultMap">
+        SELECT /* [commons.sysshop.xml][selectSysShopEvtList][브랜드 매장 이벤트 목록][Yoon] */
+                EVT.SHOP_EVT_SN
+               ,EVT.SHOP_ID
+               ,EVT.EVT_NM
+               ,EVT.EVT_BEG_DATE
+               ,EVT.EVT_END_DATE
+               ,EVT.EVT_CONT
+               ,EVT.USE_YN
+               ,EVT.REGTR_ID
+               ,EVT.REG_DT
+               ,EVT.UDTER_ID
+               ,EVT.UDT_DT
+               ,EVT.EVT_STATUS
+		       ,CASE WHEN EVT.EVT_STATUS = '10' THEN '대기'
+		       		 WHEN EVT.EVT_STATUS = '20' THEN '진행중'
+		       		 ELSE '종료'
+		         END AS EVT_STATUS_NM
+		       ,TO_CHAR(TO_DATE(EVT.EVT_BEG_DATE,'YYYYMMDD'),'YYYY-MM-DD')||' ~ '||TO_CHAR(TO_DATE(EVT.EVT_END_DATE,'YYYYMMDD'),'YYYY-MM-DD') AS TERM_DATE
+		       ,CASE WHEN USE_YN = 'Y' THEN '사용'
+		             ELSE '미사용'
+		         END AS USE_YN_NM
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = EVT.REGTR_ID) || CASE WHEN EVT.REGTR_ID IS NOT NULL THEN '(' || EVT.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		       ,TO_CHAR(EVT.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+         FROM(
+		        <include refid="com.plgrim.ncp.base.beginPage"/>
+				SELECT SSE.SHOP_EVT_SN
+		               ,SSE.SHOP_ID
+		               ,SSE.EVT_NM
+		               ,SSE.EVT_BEG_DATE
+		               ,SSE.EVT_END_DATE
+		               ,SSE.EVT_CONT
+		               ,SSE.USE_YN
+		               ,SSE.REGTR_ID
+		               ,SSE.REG_DT
+		               ,SSE.UDTER_ID
+		               ,SSE.UDT_DT
+				       ,CASE WHEN SSE.USE_YN = 'Y' 
+		                     THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+		                               WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+		                               ELSE '30' /* 종료 */
+		                           END
+		                     ELSE '10' /* 대기 */                      
+		                 END AS EVT_STATUS   
+			      FROM SYS_SHOP_EVT SSE
+			     WHERE 1=1          
+			     <include refid="com.plgrim.ncp.commons.sysshop.whereSysShopEvt"/>
+			     ORDER BY EVT_STATUS ASC, SSE.REG_DT DESC 
+	             <include refid="com.plgrim.ncp.base.endPage"/>
+		  )EVT		
+    </select>
+    
+    <!-- 브랜드 매장 이벤트 목록 건수 -->
+    <select id="selectSysShopEvtListCount" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultType="long">
+  		SELECT /* [commons.sysshop.xml][selectSysShopEvtListCount][브랜드 매장 이벤트 목록 건수][Yoon] */
+  		       COUNT(*)
+	      FROM SYS_SHOP_EVT SSE
+	     WHERE 1=1          
+	     <include refid="com.plgrim.ncp.commons.sysshop.whereSysShopEvt"/>
+    </select>
+    
+    <!-- 브랜드 매장 이벤트 목록 엑셀 -->
+    <select id="selectSysShopEvtListExcel" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [commons.sysshop.xml][selectSysShopEvtListExcel][브랜드 매장 이벤트 목록 엑셀][Yoon] */
+		       EVT.EVT_NM
+		       ,CASE WHEN EVT.EVT_STATUS = '10' THEN '대기'
+		             WHEN EVT.EVT_STATUS = '10' THEN '진행중'
+		             ELSE '종료'
+		         END AS EVT_STATUS_NM
+		       ,TO_CHAR(TO_DATE(EVT.EVT_BEG_DATE,'YYYYMMDD'),'YYYY-MM-DD')||' ~ '||TO_CHAR(TO_DATE(EVT.EVT_END_DATE,'YYYYMMDD'),'YYYY-MM-DD') AS TERM_DATE
+		       ,CASE WHEN EVT.USE_YN = 'Y' THEN '사용'
+				     ELSE '미사용'
+				END AS USE_YN_NM
+			   ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = EVT.REGTR_ID) || CASE WHEN EVT.REGTR_ID IS NOT NULL THEN '(' || EVT.REGTR_ID || ')' END AS REGTR_NM /*등록자명*/
+		       ,TO_CHAR(EVT.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT                   /*등록일(YYYY-MM-DD HH24:MI)*/
+		  FROM(
+				SELECT SSE.EVT_NM	
+				       ,SSE.EVT_BEG_DATE	
+				       ,SSE.EVT_END_DATE
+		               ,SSE.USE_YN		              
+				       ,CASE WHEN SSE.USE_YN = 'Y' 
+		                     THEN CASE WHEN SSE.EVT_BEG_DATE > TO_CHAR(SYSDATE,'YYYYMMDD') THEN '10' /* 대기 */
+		                               WHEN TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN SSE.EVT_BEG_DATE AND SSE.EVT_END_DATE THEN '20' /* 진행중 */
+		                               ELSE '30' /* 종료 */
+		                           END
+		                     ELSE '10' /* 대기 */
+		                 END AS EVT_STATUS 
+		                ,SSE.REGTR_ID
+		                ,SSE.REG_DT                
+			      FROM SYS_SHOP_EVT SSE
+			     WHERE 1=1          
+			     <include refid="com.plgrim.ncp.commons.sysshop.whereSysShopEvt"/>
+			     ORDER BY EVT_STATUS ASC, SSE.REG_DT DESC 
+			    )EVT
+    </select>
+    
+    <resultMap id="sysShopHoldyListResultMap" type="com.plgrim.ncp.commons.result.SysShopHoldyResult">
+		<result property="sysDate"	    column="SYS_DATE"   /><!-- 시스템일자 -->
+		<result property="shopId"	    column="SHOP_ID"    /><!-- 매장 아이디 -->
+		<result property="useYn"	    column="USE_YN"     /><!-- 사용여부 -->
+		<result property="dscr"	        column="DSCR"       /><!-- 설명 -->
+		<result property="regtrId"	    column="REGTR_ID"   /><!-- 등록자 아이디 -->
+		<result property="regDt"	    column="REG_DT"     /><!-- 등록일 -->
+		<result property="udterId"	    column="UDTER_ID"   /><!-- 수정자 아이디 -->
+		<result property="udtDt"	    column="UDT_DT"     /><!-- 수정일 -->
+		<result property="regtrNm"	    column="REGTR_NM"   /><!-- 등록자명 -->
+		<result property="udterNm"	    column="UDTER_NM"   /><!-- 수정자명 -->
+		<result property="viewRegDt"	column="VIEW_REG_DT"/><!-- 등록일(YYYY-MM-DD HH24:MI) -->
+		<result property="viewUdtDt"	column="VIEW_UDT_DT"/><!-- 수정일(YYYY-MM-DD HH24:MI) -->
+		<result property="gubun"    	column="GUBUN"      /><!-- 일별:DAY, 요일별:WEEK -->
+    </resultMap>
+    
+    <!-- 브랜드 매장 휴일 조회 목록 -->
+    <select id="selectSysShopHoldyList" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultMap="sysShopHoldyListResultMap">
+		SELECT /* [commons.sysshop.xml][selectSysShopHoldyList][브랜드 매장 휴일 조회 목록][Yoon] */
+		       T1.*
+		 FROM(	 
+			 <include refid="com.plgrim.ncp.base.beginPage"/>
+			 SELECT TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+			       ,HOLDY.SHOP_ID
+			       ,HOLDY.USE_YN
+			       ,HOLDY.DSCR
+			       ,HOLDY.REGTR_ID
+			       ,HOLDY.REG_DT
+			       ,HOLDY.UDTER_ID
+			       ,HOLDY.UDT_DT
+			       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID) || CASE WHEN HOLDY.REGTR_ID IS NOT NULL THEN '(' || HOLDY.REGTR_ID || ')' END AS REGTR_NM
+			       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID) || CASE WHEN HOLDY.UDTER_ID IS NOT NULL THEN '(' || HOLDY.UDTER_ID || ')' END AS UDTER_NM
+			       ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT               
+			       ,TO_CHAR(HOLDY.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT
+			       ,HOLDY.GUBUN
+			  FROM(
+			        SELECT SYS_DATE
+			               ,SHOP_ID
+			               ,USE_YN
+			               ,DSCR
+			               ,REGTR_ID
+			               ,REG_DT
+			               ,UDTER_ID
+			               ,UDT_DT
+			               ,'DAY' AS GUBUN
+			          FROM SYS_SHOP_HOLDY
+			         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+			           AND USE_YN = 'Y'
+			           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+			        UNION ALL
+			        SELECT SC.SYS_DATE
+			               ,SSHD.SHOP_ID
+			               ,'Y' AS USE_YN
+			               ,'정기휴일' AS DSCR
+			               ,SSHD.REGTR_ID
+			               ,SSHD.REG_DT
+			               ,SSHD.UDTER_ID
+			               ,SSHD.UDT_DT
+			               ,'WEEK' AS GUBUN
+			          FROM SYS_SHOP_HOLDY_DOW SSHD
+			               ,SYS_CLDR SC
+			         WHERE SSHD.SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+			           AND SSHD.DOW_CD = SC.DOW_CD
+			           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+			      )HOLDY
+			 ORDER BY HOLDY.SYS_DATE
+			 <include refid="com.plgrim.ncp.base.endPage"/>
+		    )T1
+    </select>
+    
+    <!-- 브랜드 매장 휴일 조회 건수 -->
+    <select id="selectSysShopHoldyListCount" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultType="long">
+		 SELECT /* [commons.sysshop.xml][selectSysShopHoldyListCount][브랜드 매장 휴일 조회 건수][Yoon] */
+		 	    COUNT(*)
+		  FROM(
+		        SELECT SYS_DATE
+		          FROM SYS_SHOP_HOLDY
+		         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND USE_YN = 'Y'
+		           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		        UNION ALL
+		        SELECT SC.SYS_DATE
+		          FROM SYS_SHOP_HOLDY_DOW SSHD
+		               ,SYS_CLDR SC
+		         WHERE SSHD.SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND SSHD.DOW_CD = SC.DOW_CD
+		           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		      )
+    </select>
+    
+    <!-- 브랜드 매장 휴일 조회 엑셀 -->
+    <select id="selectSysShopHoldyListExcel" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultType="java.util.LinkedHashMap">
+		 SELECT /* [commons.sysshop.xml][selectSysShopHoldyListExcel][브랜드 매장 휴일 조회 엑셀][Yoon] */
+		        TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+		       ,HOLDY.DSCR
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID)||'('||HOLDY.REGTR_ID||')' AS REGTR_NM
+		       ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT
+<!-- 		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID)||'('||HOLDY.REGTR_ID||')' AS UDTER_NM -->
+<!-- 		       ,TO_CHAR(HOLDY.UDT_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT -->
+		  FROM(
+		        SELECT SYS_DATE
+		               ,SHOP_ID
+		               ,USE_YN
+		               ,DSCR
+		               ,REGTR_ID
+		               ,REG_DT
+		               ,UDTER_ID
+		               ,UDT_DT
+		               ,'DAY' AS GUBUN
+		          FROM SYS_SHOP_HOLDY
+		         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND USE_YN = 'Y'
+		           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		        UNION ALL
+		        SELECT SC.SYS_DATE
+		               ,SSHD.SHOP_ID
+		               ,'Y' AS USE_YN
+		               ,'정기휴일' AS DSCR
+		               ,SSHD.REGTR_ID
+		               ,SSHD.REG_DT
+		               ,SSHD.UDTER_ID
+		               ,SSHD.UDT_DT
+		               ,'WEEK' AS GUBUN
+		          FROM SYS_SHOP_HOLDY_DOW SSHD
+		               ,SYS_CLDR SC
+		         WHERE SSHD.SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND SSHD.DOW_CD = SC.DOW_CD
+		           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		      )HOLDY
+		 ORDER BY HOLDY.SYS_DATE			 
+    </select>
+    
+    <!-- 브랜드 매장 휴일 일자별 체크 -->
+    <select id="selectSysShopHoldyDayCheck" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy" resultType="int">
+		SELECT /* [commons.sysshop.xml][selectSysShopHoldyDayCheck][브랜드 매장 휴일 일자별 체크][Yoon] */
+               COUNT(*)
+          FROM SYS_SHOP_HOLDY
+         WHERE SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+           AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </select>
+    
+    
+    
+    <!-- 상담 휴일 조회 목록 -->
+    <select id="selectCounselHoldyList" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultMap="sysShopHoldyListResultMap">
+		SELECT /* [commons.sysshop.xml][selectSysShopHoldyList][브랜드 매장 휴일 조회 목록][Yoon] */
+		       T1.*
+		 FROM(	 
+			 <include refid="com.plgrim.ncp.base.beginPage"/>
+			 SELECT TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+			       ,HOLDY.SHOP_ID
+			       ,HOLDY.USE_YN
+			       ,HOLDY.DSCR
+			       ,HOLDY.REGTR_ID
+			       ,HOLDY.REG_DT
+			       ,HOLDY.UDTER_ID
+			       ,HOLDY.UDT_DT
+			       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID) || CASE WHEN HOLDY.REGTR_ID IS NOT NULL THEN '(' || HOLDY.REGTR_ID || ')' END AS REGTR_NM
+			       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID) || CASE WHEN HOLDY.UDTER_ID IS NOT NULL THEN '(' || HOLDY.UDTER_ID || ')' END AS UDTER_NM
+			       ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT               
+			       ,TO_CHAR(HOLDY.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT
+			       ,HOLDY.GUBUN
+			  FROM(
+			        SELECT SYS_DATE
+			               ,SHOP_ID
+			               ,USE_YN
+			               ,DSCR
+			               ,REGTR_ID
+			               ,REG_DT
+			               ,UDTER_ID
+			               ,UDT_DT
+			               ,'DAY' AS GUBUN
+			          FROM SYS_SHOP_HOLDY
+			         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+			           AND USE_YN = 'Y'
+			           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+			        UNION ALL
+			        SELECT SC.SYS_DATE
+			               ,'SYS' AS SHOP_ID
+			               ,'Y' AS USE_YN
+			               , NVL2(DSCR , DSCR, '정기휴일') AS DSCR
+			               ,SC.REGTR_ID
+			               ,SC.REG_DT
+			               ,SC.UDTER_ID
+			               ,SC.UDT_DT
+			               ,'DAY' AS GUBUN
+			          FROM SYS_CLDR SC
+			         WHERE SC.HLDY_YN = 'Y'
+			           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+			      )HOLDY
+			 ORDER BY HOLDY.SYS_DATE
+			 <include refid="com.plgrim.ncp.base.endPage"/>
+		    )T1
+    </select>
+    
+    <!-- 상담 휴일 조회 건수 -->
+    <select id="selectCounselHoldyListCount" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultType="long">
+		 SELECT /* [commons.sysshop.xml][selectSysShopHoldyListCount][브랜드 매장 휴일 조회 건수][Yoon] */
+		 	    COUNT(*)
+		  FROM(
+		        SELECT SYS_DATE
+		          FROM SYS_SHOP_HOLDY
+		         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND USE_YN = 'Y'
+		           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		        UNION ALL
+		        SELECT SC.SYS_DATE
+		          FROM SYS_CLDR SC
+		         WHERE SC.HLDY_YN = 'Y'
+		           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		      )
+    </select>
+    
+    <!-- 상담 휴일 조회 엑셀 -->
+    <select id="selectCounselHoldyListExcel" parameterType="com.plgrim.ncp.commons.data.SysShopDTO" resultType="java.util.LinkedHashMap">
+		 SELECT /* [commons.sysshop.xml][selectSysShopHoldyListExcel][브랜드 매장 휴일 조회 엑셀][Yoon] */
+		        TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+		       ,HOLDY.DSCR
+		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID)||'('||HOLDY.REGTR_ID||')' AS REGTR_NM
+		       ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT
+<!-- 		       ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID)||'('||HOLDY.REGTR_ID||')' AS UDTER_NM -->
+<!-- 		       ,TO_CHAR(HOLDY.UDT_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT -->
+		  FROM(
+		        SELECT SYS_DATE
+		               ,SHOP_ID
+		               ,USE_YN
+		               ,DSCR
+		               ,REGTR_ID
+		               ,REG_DT
+		               ,UDTER_ID
+		               ,UDT_DT
+		               ,'DAY' AS GUBUN
+		          FROM SYS_SHOP_HOLDY
+		         WHERE SHOP_ID = #{sysShopHoldy.shopId,jdbcType=VARCHAR}
+		           AND USE_YN = 'Y'
+		           AND SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		        UNION ALL
+		        SELECT SC.SYS_DATE
+		               ,'SYS' AS SHOP_ID
+		               ,'Y' AS USE_YN
+		               , NVL2(DSCR , DSCR, '정기휴일') AS DSCR
+		               ,SC.REGTR_ID
+		               ,SC.REG_DT
+		               ,SC.UDTER_ID
+		               ,SC.UDT_DT
+		               ,'DAY' AS GUBUN
+		          FROM SYS_CLDR SC
+		         WHERE SC.HLDY_YN = 'Y'
+		           AND SC.SYS_DATE BETWEEN #{searchHoldyBegDate,jdbcType=VARCHAR} AND #{searchHoldyEndDate,jdbcType=VARCHAR}
+		      )HOLDY
+		 ORDER BY HOLDY.SYS_DATE			 
+    </select>
+    
+    <resultMap id="sysShopHoldyDayResultMap" type="com.plgrim.ncp.commons.result.SysShopHoldyResult">
+		<result property="sysDate"	    column="SYS_DATE"   /><!-- 시스템일자 -->
+		<result property="shopId"	    column="SHOP_ID"    /><!-- 매장 아이디 -->
+		<result property="useYn"	    column="USE_YN"     /><!-- 사용여부 -->
+		<result property="dscr"	        column="DSCR"       /><!-- 설명 -->
+		<result property="regtrId"	    column="REGTR_ID"   /><!-- 등록자 아이디 -->
+		<result property="regDt"	    column="REG_DT"     /><!-- 등록일 -->
+		<result property="udterId"	    column="UDTER_ID"   /><!-- 수정자 아이디 -->
+		<result property="udtDt"	    column="UDT_DT"     /><!-- 수정일 -->
+		<result property="regtrNm"	    column="REGTR_NM"   /><!-- 등록자명 -->
+		<result property="udterNm"	    column="UDTER_NM"   /><!-- 수정자명 -->
+		<result property="viewRegDt"	column="VIEW_REG_DT"/><!-- 등록일(YYYY-MM-DD HH24:MI) -->
+		<result property="viewUdtDt"	column="VIEW_UDT_DT"/><!-- 수정일(YYYY-MM-DD HH24:MI) -->
+    </resultMap>
+    
+    <!-- 브랜드 매장 휴일 일자별 상세조회 -->
+    <select id="selectSysShopHoldyDay" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy" resultMap="sysShopHoldyDayResultMap">
+        SELECT /* [commons.sysshop.xml][selectSysShopHoldyDay][브랜드 매장 휴일 일자별 상세조회][Yoon] */
+                TO_CHAR(TO_DATE(HOLDY.SYS_DATE,'YYYY-MM-DD'),'YYYY-MM-DD') AS SYS_DATE
+			    ,HOLDY.SHOP_ID
+			    ,HOLDY.USE_YN
+			    ,HOLDY.DSCR
+			    ,HOLDY.REGTR_ID
+			    ,HOLDY.REG_DT
+			    ,HOLDY.UDTER_ID
+			    ,HOLDY.UDT_DT
+			    ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.REGTR_ID) AS REGTR_NM
+			    ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = HOLDY.UDTER_ID) AS UDTER_NM
+			    ,TO_CHAR(HOLDY.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT               
+			    ,TO_CHAR(HOLDY.UDT_DT,'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT
+          FROM SYS_SHOP_HOLDY HOLDY
+         WHERE SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+           AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 브랜드 매장 휴일 일자별 등록 -->
+    <insert id="insertSysShopHoldyDay" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy">
+    	INSERT /* [commons.sysshop.xml][insertSysShopHoldyDay][브랜드 매장 휴일 일자별 등록][Yoon] */
+	    INTO SYS_SHOP_HOLDY
+		(
+	        SYS_DATE
+	       ,SHOP_ID
+	       ,USE_YN
+	       ,DSCR
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{sysDate,jdbcType=VARCHAR}
+	       ,#{shopId,jdbcType=VARCHAR}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{dscr,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+    </insert>
+    
+    <!-- 브랜드 매장 휴일 일자별 수정 -->
+    <update id="updateSysShopHoldyDay" parameterType="com.plgrim.ncp.commons.data.SysShopHoldyDTO">
+		UPDATE /* [commons.sysshop.xml][deleteSysShopHoldyDay][브랜드 매장 휴일 일자별 수정][Yoon] */    
+SYS_SHOP_HOLDY SET
+               SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+               ,DSCR = #{dscr,jdbcType=VARCHAR}
+               ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+               ,UDT_DT = SYSDATE
+         WHERE SYS_DATE = #{sysDateKey,jdbcType=VARCHAR}
+           AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </update>
+    
+    <!-- 브랜드 매장 휴일 일자별 삭제 -->
+    <delete id="deleteSysShopHoldyDay" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldy">
+		DELETE /* [commons.sysshop.xml][deleteSysShopHoldyDay][브랜드 매장 휴일 일자별 삭제][Yoon] */  
+	      FROM SYS_SHOP_HOLDY 
+		 WHERE SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </delete>
+    
+    <resultMap id="sysShopHoldyWeekResultMap" type="com.plgrim.ncp.commons.result.SysShopHoldyResult">
+		<result property="shopId"	    column="SHOP_ID"    /><!-- 매장 아이디 -->
+		<result property="dowCd"	    column="DOW_CD"     /><!-- 요일코드 -->
+		<result property="regtrId"	    column="REGTR_ID"   /><!-- 등록자 아이디 -->
+		<result property="regDt"	    column="REG_DT"     /><!-- 등록일 -->
+		<result property="udterId"	    column="UDTER_ID"   /><!-- 수정자 아이디 -->
+		<result property="udtDt"	    column="UDT_DT"     /><!-- 수정일 -->
+		<result property="regtrNm"	    column="REGTR_NM"   /><!-- 등록자명 -->
+		<result property="udterNm"	    column="UDTER_NM"   /><!-- 수정자명 -->
+		<result property="viewRegDt"	column="VIEW_REG_DT"/><!-- 등록일(YYYY-MM-DD HH24:MI) -->
+		<result property="viewUdtDt"	column="VIEW_UDT_DT"/><!-- 수정일(YYYY-MM-DD HH24:MI) -->
+    </resultMap>
+    
+    <!-- 브랜드 매장 휴일 요일별 상세조회 -->
+    <select id="selectSysShopHoldyWeek" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldyDow" resultMap="sysShopHoldyWeekResultMap">
+        SELECT /* [commons.sysshop.xml][selectSysShopHoldyWeek][브랜드 매장 휴일 요일별 상세조회][Yoon] */
+                SSHD.SHOP_ID
+               ,SSHD.DOW_CD
+               ,SSHD.REGTR_ID
+               ,SSHD.REG_DT
+               ,SSHD.UDTER_ID
+               ,SSHD.UDT_DT
+               ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSHD.REGTR_ID) AS REGTR_NM
+			   ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SSHD.UDTER_ID) AS UDTER_NM
+			   ,TO_CHAR(SSHD.REG_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_REG_DT               
+			   ,TO_CHAR(SSHD.UDT_DT, 'YYYY-MM-DD HH24:MI') AS VIEW_UDT_DT
+          FROM SYS_SHOP_HOLDY_DOW SSHD
+         WHERE SSHD.SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 브랜드 매장 휴일 요일별 등록 -->
+    <insert id="insertSysShopHoldyWeek" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldyDow">
+    	INSERT /* [commons.sysshop.xml][insertSysShopHoldyWeek][브랜드 매장 휴일 요일별 등록][Yoon] */  
+	    INTO SYS_SHOP_HOLDY_DOW
+		(
+	        SHOP_ID
+	       ,DOW_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{shopId,jdbcType=VARCHAR}
+	       ,#{dowCd,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+    </insert>
+    
+    <!-- 브랜드 매장 휴일 요일별 삭제 -->
+    <delete id="deleteSysShopHoldyWeek" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShopHoldyDow">
+		DELETE /* [commons.sysshop.xml][deleteSysShopHoldyWeek][브랜드 매장 휴일 요일별 삭제][Yoon] */  
+		  FROM SYS_SHOP_HOLDY_DOW 
+		 WHERE SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </delete>
+    
+    <update id="mergeSysShopModifyFlag" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysShop">
+    	/* [commons.sysshop.xml][mergeSysShopModifyFlag][시스템 매장 재고연동대상 체크를 위해 정보 삽입][Owen] */
+		MERGE INTO inf_inv_hub_hist a
+		USING (
+			SELECT 
+				g.god_no
+				, gi.itm_no
+				, gi.sku_no
+				, ss.shop_id
+				, sb.brnd_id
+				, sb.erp_brnd_id
+				, sb.use_yn as brnd_use_yn
+				, ssb.use_yn as brnd_shop_use_yn
+				, ssb.dlv_shop_yn as dlv_shop_yn
+				, ssb.pkup_shop_yn as pkup_shop_yn
+			FROM god g
+			INNER JOIN god_itm gi
+			ON g.god_no = gi.god_no
+			INNER JOIN sys_brnd sb
+			ON g.brnd_id = sb.brnd_id
+			INNER JOIN sys_shop_brnd ssb
+			ON sb.erp_brnd_id = ssb.erp_brnd_id
+			INNER JOIN sys_shop ss
+			ON ssb.shop_id = ss.shop_id
+			WHERE 1 = 1
+			AND g.erp_god_no IS NOT NULL
+			AND g.partmal_sect_cd = 'MCOM'				/* 입점구분 : 자사 */
+			AND g.god_aprv_sect_cd = 'APRV_COMPT'		/* 상품승인구분 : 승인완료 */
+			AND g.god_tp_cd = 'GNRL_GOD'				/* 상품유형 : 일반상품 */
+			AND g.lmtt_inv_yn = 'N'						/* 한정재고여부 */
+			AND g.erp_inv_intrlck_yn = 'Y'				/* ERP재고연동여부 */
+			AND gi.itm_stat_cd in ('SALE_PROGRS', 'SLDOUT', 'TMPR_SALE_STPGE')		/* 단품판매상태 : 판매중, 품절, 임시판매중지 */
+			AND gi.opt_val_cd_1 IS NOT NULL
+			AND sb.use_yn = 'Y'
+			AND ssb.use_yn = 'Y'
+			AND (ssb.dlv_shop_yn = 'Y' or ssb.pkup_shop_yn = 'Y')		/* 배송매장여부, 픽업매장여부 */
+			AND ss.shop_id = #{shopId}
+			AND ss.shop_tp_cd IS NOT NULL
+		) B
+		ON (
+			A.god_no = B.god_no
+			AND A.itm_no = B.itm_no
+			AND A.sku_no = B.sku_no
+			AND A.shop_id = B.shop_id
+		)
+		WHEN MATCHED THEN
+			UPDATE
+				SET
+					A.shop_use_yn = #{useYn}
+					, A.brnd_use_yn = B.brnd_use_yn
+					, A.brnd_shop_use_yn = B.brnd_shop_use_yn
+					, A.dlv_shop_yn = B.dlv_shop_yn
+					, A.pkup_shop_yn = B.pkup_shop_yn
+					, A.udt_dt = SYSDATE
+		WHEN NOT MATCHED THEN
+			INSERT (
+				god_no
+				, itm_no
+				, sku_no
+				, shop_id
+				, brnd_id
+				, erp_brnd_id
+				, brnd_use_yn
+				, shop_use_yn
+				, brnd_shop_use_yn
+				, dlv_shop_yn
+				, pkup_shop_yn
+				, udt_dt
+			) VALUES (
+				B.god_no
+				, B.itm_no
+				, B.sku_no
+				, B.shop_id
+				, B.brnd_id
+				, B.erp_brnd_id
+				, B.brnd_use_yn
+				, #{useYn}
+				, B.brnd_shop_use_yn
+				, B.dlv_shop_yn
+				, B.pkup_shop_yn
+				, SYSDATE 
+			)
+    </update>
+    
+    <!-- 매장 브랜드 ID 조회 -->
+	<select id="selectSysShopErpBrandId" parameterType="String" resultType="String">
+		SELECT /* [commons.sysshop.xml]["selectSysShopErpBrandId"][매장 브랜드 ID 조회][muba] */
+			ERP_BRND_ID
+	    FROM SYS_SHOP_BRND
+		WHERE 1 = 1 AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+	</select>
+    
+</mapper>

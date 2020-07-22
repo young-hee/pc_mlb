@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysShopEvt" parameterType="sysShopEvt" resultType="sysShopEvt">
+		SELECT /* com.plgrim.ncp.base.selectSysShopEvt		Generator(Generator)	2018-05-23 */
+			   SHOP_EVT_SN
+			 , SHOP_ID
+			 , EVT_NM
+			 , EVT_BEG_DATE
+			 , EVT_END_DATE
+			 , EVT_CONT
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_SHOP_EVT
+		 WHERE 1 = 1
+	   	   AND SHOP_EVT_SN = #{shopEvtSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysShopEvt" parameterType="sysShopEvt">
+		UPDATE /* com.plgrim.ncp.base.updateSysShopEvt		Generator(Generator)	2018-05-23 */
+		SYS_SHOP_EVT SET
+			   SHOP_ID = #{shopId,jdbcType=VARCHAR}
+			 , EVT_NM = #{evtNm,jdbcType=VARCHAR}
+			 , EVT_BEG_DATE = #{evtBegDate,jdbcType=VARCHAR}
+			 , EVT_END_DATE = #{evtEndDate,jdbcType=VARCHAR}
+			 , EVT_CONT = #{evtCont,jdbcType=CLOB}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND SHOP_EVT_SN = #{shopEvtSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysShopEvt" parameterType="sysShopEvt">
+		INSERT /* com.plgrim.ncp.base.insertSysShopEvt		Generator(Generator)	2018-05-23 */
+		INTO   SYS_SHOP_EVT (
+			   SHOP_EVT_SN
+			 , SHOP_ID
+			 , EVT_NM
+			 , EVT_BEG_DATE
+			 , EVT_END_DATE
+			 , EVT_CONT
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{shopEvtSn,jdbcType=NUMERIC}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{evtNm,jdbcType=VARCHAR}
+			 , #{evtBegDate,jdbcType=VARCHAR}
+			 , #{evtEndDate,jdbcType=VARCHAR}
+			 , #{evtCont,jdbcType=CLOB}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysShopEvt" parameterType="sysShopEvt">
+		DELETE /* com.plgrim.ncp.base.deleteSysShopEvt		Generator(Generator)	2018-05-23 */
+		  FROM SYS_SHOP_EVT
+		 WHERE 1 = 1
+		   AND SHOP_EVT_SN = #{shopEvtSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

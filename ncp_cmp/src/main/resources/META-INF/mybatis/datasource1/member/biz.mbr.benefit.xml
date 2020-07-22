@@ -1,0 +1,1090 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.benefit">
+
+	<!-- TODO 회원혜택 --> 
+
+	<resultMap id="memberBenefitResultMap" type="com.plgrim.ncp.biz.member.result.MemberBenefitBoResult">
+	    <id     property="bnefSn"					column="BNEF_SN" />						<!--혜택 일련번호-->
+		<result property="bnefSectCd"				column="BNEF_SECT_CD" />				<!--혜택 구분 코드-->
+		<result property="bnefDetailSectCd"			column="BNEF_DETAIL_SECT_CD" />			<!--혜택 상세 구분 코드-->		
+		<result property="bnefSectCdNm"				column="BNEF_SECT_CD_NM" />				<!--혜택 구분 코드명-->
+		<result property="bnefDetailSectCdNm"		column="BNEF_DETAIL_SECT_CD_NM" />		<!--혜택 상세 구분 코드명-->
+		<result property="bnefNm"           		column="BNEF_NM" />             		<!--혜택 명-->
+		<result property="bnefBegDt"        		column="BNEF_BEG_DT" />         		<!--혜택 시작 일자-->
+		<result property="bnefBegHour"        		column="BNEF_BEG_HOUR" />         		<!--혜택 시작 시각-->
+		<result property="bnefBegMinute"       		column="BNEF_BEG_MINUTE" />         	<!--혜택 시작 분-->
+		<result property="bnefEndDt"        		column="BNEF_END_DT" />         		<!--혜택 종료 일자-->
+		<result property="bnefEndHour"        		column="BNEF_END_HOUR" />         		<!--혜택 종료 일자-->
+		<result property="bnefEndMinute"       		column="BNEF_END_MINUTE" />        		<!--혜택 종료 일자-->
+		<result property="aprvSectCd"       		column="APRV_SECT_CD" />        		<!--승인 구분 코드-->
+		<result property="aprvSectCdNm"       		column="APRV_SECT_CD_NM" />        		<!--승인 구분 코드명-->	
+		<result property="stpgeResnCont"    		column="STPGE_RESN_CONT" />     		<!--중지 사유 내용-->
+		<result property="regtrId"          		column="REGTR_ID" />            		<!--등록자 ID-->
+		<result property="regtrNm"          		column="REGTR_NM" />            		<!--등록자 이름-->
+		<result property="regDt"            		column="REG_DT" />              		<!--등록 일시-->
+		<result property="udterId"          		column="UDTER_ID" />            		<!--수정자 ID-->
+		<result property="udterNm"          		column="UDTER_NM" />            		<!--수정자 이름-->
+		<result property="udtDt"            		column="UDT_DT" />              		<!--수정 일시-->
+		<result property="mallNm"            		column="MALL_NM" />              		<!--몰 이름-->
+		<result property="langNm"            		column="LANG_NM" />              		<!--다국어 이름-->
+		<result property="dtlPrmNo"            		column="PRM_NO" />              		<!--프로모션 번호-->		
+		<result property="dtlBnefSn"				column="DTL_BNEF_SN" />					<!--혜택 일련번호-->		
+		<result property="dtlBnefDetailTurn"		column="DTL_BNEF_DETAIL_TURN" />		<!--혜택 상세 순번-->
+		<result property="dtlStrBnefBegDt"        	column="DTL_STR_BNEF_BEG_DT" />         <!--혜택 시작 일자-->
+		<result property="dtlStrBnefEndDt"        	column="DTL_STR_BNEF_END_DT" />         <!--혜택 종료 일자-->
+		<result property="dtlAprvSectCd"       		column="DTL_APRV_SECT_CD" />        	<!--승인 구분 코드-->
+		<result property="dtlAprvSectCdNm"       	column="DTL_APRV_SECT_CD_NM" />        	<!--승인 구분 코드명-->
+		<result property="dtlAprvAdminId"         	column="DTL_APRV_ADMIN_ID" />           <!--승인 관리자 ID-->
+		<result property="dtlAprvAdminNm"         	column="DTL_APRV_ADMIN_NM" />           <!--승인 관리자 이름-->
+		<result property="dtlAprvDt"            	column="DTL_APRV_DT" />              	<!--승인 일시-->
+		<result property="dtlStpgeAdminId"        	column="DTL_STPGE_ADMIN_ID" />          <!--중지 관리자 ID-->
+		<result property="dtlStpgeAdminNm"        	column="DTL_STPGE_ADMIN_NM" />          <!--중지 관리자 이름-->
+		<result property="dtlStpgeDt"            	column="DTL_STPGE_DT" />              	<!--중지 일시-->		
+		<result property="dtlStpgeResnCont"    		column="DTL_STPGE_RESN_CONT" />     	<!--중지 사유 내용-->
+		<result property="dtlRegtrId"          		column="DTL_REGTR_ID" />            	<!--등록자 ID-->
+		<result property="dtlRegtrNm"          		column="DTL_REGTR_NM" />            	<!--등록자 이름-->
+		<result property="dtlRegDt"            		column="DTL_REG_DT" />              	<!--등록 일시-->
+		<result property="dtlStrRegDt"            	column="DTL_STR_REG_DT" />              <!--등록 일시-->
+		<result property="dtlUdterId"          		column="DTL_UDTER_ID" />            	<!--수정자 ID-->
+		<result property="dtlUdterNm"          		column="DTL_UDTER_NM" />            	<!--수정자 이름-->
+		<result property="dtlUdtDt"            		column="DTL_UDT_DT" />              	<!--수정 일시-->
+		<result property="dtlStrUdtDt"            	column="DTL_STR_UDT_DT" />              <!--수정 일시-->
+		<result property="dtlWebpntValidDaycnt"		column="DTL_WEBPNT_VALID_DAYCNT" />		<!--혜택 상세 구분 코드-->
+		<result property="dtlBnefTpCd"        	    column="DTL_BNEF_TP_CD" />        	    <!--혜택 유형-->
+		<result property="dtlBnefTpNm"          	column="DTL_BNEF_TP_NM" />            	<!--혜택 명-->
+		<result property="dtlPymntResnDscr"    		column="DTL_PYMNT_RESN_DSCR" />     	<!--지급 사유 설명-->
+		<result property="dtlPntAmt"          		column="DTL_PNT_AMT" />            		<!--포인트 금액-->
+		<result property="dtlWebpntAmt"          	column="DTL_WEBPNT_AMT" />            	<!--웹포인트 금액-->
+		<result property="cpnIssuMthdCd"        	column="CPN_ISSU_MTHD_CD" />        	<!--쿠폰발급 방법-->
+		<result property="rowNumber" 				column="NO" />	        				<!--순번-->
+		
+		<collection property="mbrBnefAplTgtList" column="{bnefSn=BNEF_SN}" ofType="mbrBnefAplTgt" select="com.plgrim.ncp.biz.mbr.benefit.selectMbrBnefAplTgtList"></collection>			
+	</resultMap>
+
+
+	<!-- 회원혜택 목록 건수 조회 -->
+	<select id="selectMemberBenefitListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="Long">
+		SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitListCount][회원혜택 목록 건수 조회] */
+			    COUNT(*)
+        FROM    
+			<choose>
+				<when test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+                MBR_BNEF MB
+               ,(SELECT BNEF_SN,
+				        LISTAGG (BNEF_TP_NM, ', ') WITHIN GROUP (ORDER BY BNEF_TP_NM) AS DTL_BNEF_TP_NM
+			      FROM (SELECT A.BNEF_SN,
+			                   A.BNEF_TP_CD,
+			                   (SELECT CD_NM FROM MV_SYS_CD WHERE CD = A.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_NM
+			              FROM MBR_BNEF_DETAIL A
+			             WHERE 1 = 1
+			             AND   A.APRV_SECT_CD = 'APRV'
+	                     AND   EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_DETAIL B 
+	                                    WHERE B.BNEF_SN = A.BNEF_SN
+	                                      AND B.APRV_SECT_CD = 'APRV' 
+	                                      AND B.BNEF_TP_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+	                                                              FROM (SELECT #{srchBnefTypeCd,jdbcType=VARCHAR} AS param FROM dual) d
+	                                                           CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+')))
+	           		   )
+                GROUP BY BNEF_SN ) MBD  	         
+				</when>
+				<otherwise>		        
+                MBR_BNEF MB LEFT OUTER JOIN
+               (SELECT BNEF_SN,
+				        LISTAGG (BNEF_TP_NM, ', ') WITHIN GROUP (ORDER BY BNEF_TP_NM) AS DTL_BNEF_TP_NM
+			      FROM (SELECT A.BNEF_SN,
+			                   A.BNEF_TP_CD,
+			                   (SELECT CD_NM FROM MV_SYS_CD WHERE CD = A.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_NM
+			              FROM MBR_BNEF_DETAIL A
+			             WHERE 1 = 1
+			             AND   A.APRV_SECT_CD = 'APRV'       
+           			   )
+                GROUP BY BNEF_SN ) MBD ON MB.BNEF_SN = MBD.BNEF_SN
+				</otherwise>
+			</choose> 
+               ,(SELECT BNEF_SN
+                       ,LISTAGG (MALL_NM, ', ') WITHIN GROUP (ORDER BY MALL_NM) AS MALL_NM
+                       ,LISTAGG (LANG_NM, ', ') WITHIN GROUP (ORDER BY LANG_NM) AS LANG_NM
+                  FROM (SELECT A.BNEF_SN,
+                               (SELECT MALL_NM FROM SYS_MALL SM WHERE SM.MALL_ID = A.MALL_ID) AS MALL_NM,
+                               (SELECT CD_NM FROM MV_SYS_CD MSC WHERE UPPER_CD='LANG' AND LANG_CD = 'KOR' AND CD = A.LANG_CD) AS LANG_NM                                
+                          FROM MBR_BNEF_APL_TGT A
+                         WHERE 1=1
+					   <if test="srchMallId != null and srchMallId != '' ">
+                           AND EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_APL_TGT B
+                                        WHERE A.BNEF_SN = B.BNEF_SN
+                                          AND B.BNEF_TGT_TP_CD = 'MALL_ID'
+						                  AND B.MALL_ID = #{srchMallId,jdbcType=VARCHAR})
+					   </if>
+					   <if test="srchLangCd != null and srchLangCd != '' ">
+                           AND EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_APL_TGT B
+                                        WHERE A.BNEF_SN = B.BNEF_SN
+                                          AND B.BNEF_TGT_TP_CD = 'LANG'
+                                          AND B.LANG_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                                              FROM (SELECT #{srchLangCd,jdbcType=VARCHAR} AS param FROM dual) d
+                                                           CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))) 
+				       </if>
+				       )
+                GROUP BY BNEF_SN) MBAT
+        WHERE   1 = 1
+          AND   MB.BNEF_SN = MBAT.BNEF_SN
+		<if test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+          AND   MB.BNEF_SN = MBD.BNEF_SN
+		</if>      
+		<if test="srchBnefSectCd != null and srchBnefSectCd != '' ">
+			<foreach collection="srchBnefSectCd" item="item" open="AND MB.BNEF_SECT_CD IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		<if test="srchAprvSectCd != null and srchAprvSectCd != '' ">
+			<foreach collection="srchAprvSectCd" item="item" open="AND MB.APRV_SECT_CD IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		<if test="srchBnefNm != null and srchBnefNm != '' ">
+		  AND   MB.BNEF_NM like '%'||#{srchBnefNm,jdbcType=VARCHAR}||'%'
+		</if>
+		<choose>
+			<when test="srchDateType == 'srchRegDate'">
+				AND MB.REG_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</when>
+			<when test="srchDateType == 'srchBegDate'">
+				AND MB.BNEF_BEG_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</when>
+			<otherwise>
+				AND MB.BNEF_END_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 회원혜택 목록 조회 -->
+	<select id="selectMemberBenefitList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultMap="memberBenefitResultMap">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitList][회원혜택 목록 조회] */
+                MB.BNEF_SN
+               ,MB.BNEF_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MB.BNEF_SECT_CD AND UPPER_CD = 'BNEF_SECT' AND LANG_CD = 'KOR') AS BNEF_SECT_CD_NM
+               ,MB.BNEF_DETAIL_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MB.BNEF_DETAIL_SECT_CD AND UPPER_CD = MB.BNEF_SECT_CD AND LANG_CD = 'KOR') AS BNEF_DETAIL_SECT_CD_NM
+               ,MB.BNEF_NM
+               ,MB.BNEF_BEG_DT
+               ,MB.BNEF_END_DT
+               ,MB.APRV_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MB.APRV_SECT_CD AND UPPER_CD='APRV_SECT' AND LANG_CD = 'KOR') AS APRV_SECT_CD_NM
+               ,MB.STPGE_RESN_CONT
+               ,MB.REGTR_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MB.REGTR_ID)||'('||MB.REGTR_ID||')' AS REGTR_NM
+               ,MB.REG_DT
+               ,MB.UDTER_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MB.UDTER_ID)||'('||MB.UDTER_ID||')' AS UDTER_NM
+               ,MB.UDT_DT
+               ,MALL_NM
+               ,LANG_NM
+               ,DTL_BNEF_TP_NM
+        FROM    
+			<choose>
+				<when test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+                MBR_BNEF MB
+               ,(SELECT BNEF_SN,
+				        LISTAGG (BNEF_TP_NM, ', ') WITHIN GROUP (ORDER BY BNEF_TP_NM) AS DTL_BNEF_TP_NM
+			      FROM (SELECT A.BNEF_SN,
+			                   A.BNEF_TP_CD,
+			                   (SELECT CD_NM FROM MV_SYS_CD WHERE CD = A.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_NM
+			              FROM MBR_BNEF_DETAIL A
+			             WHERE 1 = 1
+			             AND   A.APRV_SECT_CD = 'APRV'
+	                     AND   EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_DETAIL B 
+	                                    WHERE B.BNEF_SN = A.BNEF_SN
+	                                      AND B.APRV_SECT_CD = 'APRV' 
+	                                      AND B.BNEF_TP_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+	                                                              FROM (SELECT #{srchBnefTypeCd,jdbcType=VARCHAR} AS param FROM dual) d
+	                                                           CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+')))
+	           		   )
+                GROUP BY BNEF_SN ) MBD  	         
+				</when>
+				<otherwise>		        
+                MBR_BNEF MB LEFT OUTER JOIN
+               (SELECT BNEF_SN,
+				        LISTAGG (BNEF_TP_NM, ', ') WITHIN GROUP (ORDER BY BNEF_TP_NM) AS DTL_BNEF_TP_NM
+			      FROM (SELECT A.BNEF_SN,
+			                   A.BNEF_TP_CD,
+			                   (SELECT CD_NM FROM MV_SYS_CD WHERE CD = A.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_NM
+			              FROM MBR_BNEF_DETAIL A
+			             WHERE 1 = 1
+			             AND   A.APRV_SECT_CD = 'APRV'       
+           			   )
+                GROUP BY BNEF_SN ) MBD ON MB.BNEF_SN = MBD.BNEF_SN
+				</otherwise>
+			</choose> 
+               ,(SELECT BNEF_SN
+                       ,LISTAGG (MALL_NM, ', ') WITHIN GROUP (ORDER BY MALL_NM) AS MALL_NM
+                       ,LISTAGG (LANG_NM, ', ') WITHIN GROUP (ORDER BY LANG_NM) AS LANG_NM
+                  FROM (SELECT A.BNEF_SN,
+                               (SELECT MALL_NM FROM SYS_MALL SM WHERE SM.MALL_ID = A.MALL_ID) AS MALL_NM,
+                               (SELECT CD_NM FROM MV_SYS_CD MSC WHERE UPPER_CD='LANG' AND LANG_CD = 'KOR' AND CD = A.LANG_CD) AS LANG_NM                                
+                          FROM MBR_BNEF_APL_TGT A
+                         WHERE 1=1
+					   <if test="srchMallId != null and srchMallId != '' ">
+                           AND EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_APL_TGT B
+                                        WHERE A.BNEF_SN = B.BNEF_SN
+                                          AND B.BNEF_TGT_TP_CD = 'MALL_ID'
+						                  AND B.MALL_ID = #{srchMallId,jdbcType=VARCHAR})
+					   </if>
+					   <if test="srchLangCd != null and srchLangCd != '' ">
+                           AND EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_APL_TGT B
+                                        WHERE A.BNEF_SN = B.BNEF_SN
+                                          AND B.BNEF_TGT_TP_CD = 'LANG'
+                                          AND B.LANG_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                                              FROM (SELECT #{srchLangCd,jdbcType=VARCHAR} AS param FROM dual) d
+                                                           CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))) 
+				       </if>
+				       )
+                GROUP BY BNEF_SN) MBAT
+        WHERE   1 = 1
+          AND   MB.BNEF_SN = MBAT.BNEF_SN
+		<if test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+          AND   MB.BNEF_SN = MBD.BNEF_SN
+		</if>      
+		<if test="srchBnefSectCd != null and srchBnefSectCd != '' ">
+			<foreach collection="srchBnefSectCd" item="item" open="AND MB.BNEF_SECT_CD IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		<if test="srchAprvSectCd != null and srchAprvSectCd != '' ">
+			<foreach collection="srchAprvSectCd" item="item" open="AND MB.APRV_SECT_CD IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		<if test="srchBnefNm != null and srchBnefNm != '' ">
+		  AND   MB.BNEF_NM like '%'||#{srchBnefNm,jdbcType=VARCHAR}||'%'
+		</if>
+		<choose>
+			<when test="srchDateType == 'srchRegDate'">
+				AND MB.REG_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</when>
+			<when test="srchDateType == 'srchBegDate'">
+				AND MB.BNEF_BEG_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</when>
+			<otherwise>
+				AND MB.BNEF_END_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</otherwise>
+		</choose>
+		ORDER BY MB.REG_DT DESC
+    	<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+   <!-- 회원혜택 엑셀 목록 조회 -->
+   <select id="selectMemberBenefitExcelList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="java.util.LinkedHashMap">
+      SELECT
+	      	 BNEF_SN
+	      	,MALL_NM
+	        ,BNEF_NM
+	      	,BNEF_SECT_CD_NM
+	        ,BNEF_DETAIL_SECT_CD_NM
+	        ,DTL_BNEF_TP_NM
+	        ,BNEF_BEG_DT
+	        ,BNEF_END_DT
+	        ,APRV_SECT_CD_NM
+	        ,LANG_NM
+	        ,REGTR_NM
+	        ,TO_CHAR(REG_DT,'YYYY-MM-DD HH:MI:SS') AS REG_DT
+	      	,UDTER_NM
+	      	,TO_CHAR(UDT_DT,'YYYY-MM-DD HH:MI:SS') AS UDT_DT
+	        ,STPGE_RESN_CONT
+      FROM (	
+        SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitList][회원혜택 목록 조회] */
+                MB.BNEF_SN
+               ,MB.BNEF_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MB.BNEF_SECT_CD AND UPPER_CD = 'BNEF_SECT' AND LANG_CD = 'KOR') AS BNEF_SECT_CD_NM
+               ,MB.BNEF_DETAIL_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MB.BNEF_DETAIL_SECT_CD AND UPPER_CD = MB.BNEF_SECT_CD AND LANG_CD = 'KOR') AS BNEF_DETAIL_SECT_CD_NM
+               ,MB.BNEF_NM
+               ,MB.BNEF_BEG_DT
+               ,MB.BNEF_END_DT
+               ,MB.APRV_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MB.APRV_SECT_CD AND UPPER_CD='APRV_SECT' AND LANG_CD = 'KOR') AS APRV_SECT_CD_NM
+               ,MB.STPGE_RESN_CONT
+               ,MB.REGTR_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MB.REGTR_ID)||'('||MB.REGTR_ID||')' AS REGTR_NM
+               ,MB.REG_DT
+               ,MB.UDTER_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MB.UDTER_ID)||'('||MB.UDTER_ID||')' AS UDTER_NM
+               ,MB.UDT_DT
+               ,MALL_NM
+               ,LANG_NM
+               ,DTL_BNEF_TP_NM
+        FROM    
+			<choose>
+				<when test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+                MBR_BNEF MB
+               ,(SELECT BNEF_SN,
+				        LISTAGG (BNEF_TP_NM, ', ') WITHIN GROUP (ORDER BY BNEF_TP_NM) AS DTL_BNEF_TP_NM
+			      FROM (SELECT A.BNEF_SN,
+			                   A.BNEF_TP_CD,
+			                   (SELECT CD_NM FROM MV_SYS_CD WHERE CD = A.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_NM
+			              FROM MBR_BNEF_DETAIL A
+			             WHERE 1 = 1
+			             AND   A.APRV_SECT_CD = 'APRV'
+	                     AND   EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_DETAIL B 
+	                                    WHERE B.BNEF_SN = A.BNEF_SN
+	                                      AND B.APRV_SECT_CD = 'APRV' 
+	                                      AND B.BNEF_TP_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+	                                                              FROM (SELECT #{srchBnefTypeCd,jdbcType=VARCHAR} AS param FROM dual) d
+	                                                           CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))) 
+	           		   )
+                GROUP BY BNEF_SN ) MBD  	         
+				</when>
+				<otherwise>		        
+                MBR_BNEF MB LEFT OUTER JOIN
+               (SELECT BNEF_SN,
+				        LISTAGG (BNEF_TP_NM, ', ') WITHIN GROUP (ORDER BY BNEF_TP_NM) AS DTL_BNEF_TP_NM
+			      FROM (SELECT A.BNEF_SN,
+			                   A.BNEF_TP_CD,
+			                   (SELECT CD_NM FROM MV_SYS_CD WHERE CD = A.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_NM
+			              FROM MBR_BNEF_DETAIL A
+			             WHERE 1 = 1
+			             AND   A.APRV_SECT_CD = 'APRV'       
+           			   )
+                GROUP BY BNEF_SN ) MBD ON MB.BNEF_SN = MBD.BNEF_SN
+				</otherwise>
+			</choose> 
+               ,(SELECT BNEF_SN
+                       ,LISTAGG (MALL_NM, ', ') WITHIN GROUP (ORDER BY MALL_NM) AS MALL_NM
+                       ,LISTAGG (LANG_NM, ', ') WITHIN GROUP (ORDER BY LANG_NM) AS LANG_NM
+                  FROM (SELECT A.BNEF_SN,
+                               (SELECT MALL_NM FROM SYS_MALL SM WHERE SM.MALL_ID = A.MALL_ID) AS MALL_NM,
+                               (SELECT CD_NM FROM MV_SYS_CD MSC WHERE UPPER_CD='LANG' AND LANG_CD = 'KOR' AND CD = A.LANG_CD) AS LANG_NM                                
+                          FROM MBR_BNEF_APL_TGT A
+                         WHERE 1=1
+					   <if test="srchMallId != null and srchMallId != '' ">
+                           AND EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_APL_TGT B
+                                        WHERE A.BNEF_SN = B.BNEF_SN
+                                          AND B.BNEF_TGT_TP_CD = 'MALL_ID'
+						                  AND B.MALL_ID = #{srchMallId,jdbcType=VARCHAR})
+					   </if>
+					   <if test="srchLangCd != null and srchLangCd != '' ">
+                           AND EXISTS (SELECT /*+ NO_UNNEST*/ 1 FROM MBR_BNEF_APL_TGT B
+                                        WHERE A.BNEF_SN = B.BNEF_SN
+                                          AND B.BNEF_TGT_TP_CD = 'LANG'
+                                          AND B.LANG_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                                                              FROM (SELECT #{srchLangCd,jdbcType=VARCHAR} AS param FROM dual) d
+                                                           CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+')))
+				       </if>
+				       )
+                GROUP BY BNEF_SN) MBAT
+        WHERE   1 = 1
+          AND   MB.BNEF_SN = MBAT.BNEF_SN
+		<if test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+          AND   MB.BNEF_SN = MBD.BNEF_SN
+		</if>      
+		<if test="srchBnefSectCd != null and srchBnefSectCd != '' ">
+			<foreach collection="srchBnefSectCd" item="item" open="AND MB.BNEF_SECT_CD IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		<if test="srchAprvSectCd != null and srchAprvSectCd != '' ">
+			<foreach collection="srchAprvSectCd" item="item" open="AND MB.APRV_SECT_CD IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		<if test="srchBnefNm != null and srchBnefNm != '' ">
+		  AND   MB.BNEF_NM like '%'||#{srchBnefNm,jdbcType=VARCHAR}||'%'
+		</if>
+		<choose>
+			<when test="srchDateType == 'srchRegDate'">
+				AND MB.REG_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</when>
+			<when test="srchDateType == 'srchBegDate'">
+				AND MB.BNEF_BEG_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</when>
+			<otherwise>
+				AND MB.BNEF_END_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+			</otherwise>
+		</choose>
+		ORDER BY MB.REG_DT DESC
+	       )		
+	</select>	
+	
+	<!-- 회원혜택 상세조회 -->
+    <select id="selectMemberBenefitDetail" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultMap="memberBenefitResultMap">
+        SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitDetail][회원혜택 상세조회] */
+                BNEF_SN
+               ,BNEF_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = BNEF_SECT_CD AND UPPER_CD = 'BNEF_SECT' AND LANG_CD = 'KOR') AS BNEF_SECT_CD_NM
+               ,BNEF_DETAIL_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = BNEF_DETAIL_SECT_CD AND UPPER_CD = BNEF_SECT_CD AND LANG_CD = 'KOR') AS BNEF_DETAIL_SECT_CD_NM
+               ,BNEF_NM
+               ,BNEF_BEG_DT
+               ,TO_CHAR(BNEF_BEG_DT,'HH24') AS BNEF_BEG_HOUR
+               ,TO_CHAR(BNEF_BEG_DT,'MI') AS BNEF_BEG_MINUTE
+               ,BNEF_END_DT
+               ,TO_CHAR(BNEF_END_DT,'HH24') AS BNEF_END_HOUR
+               ,TO_CHAR(BNEF_END_DT,'MI') AS BNEF_END_MINUTE
+               ,APRV_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = APRV_SECT_CD AND UPPER_CD='APRV_SECT' AND LANG_CD = 'KOR') AS APRV_SECT_CD_NM
+               ,STPGE_RESN_CONT
+               ,REGTR_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MB.REGTR_ID) AS REGTR_NM
+               ,REG_DT
+               ,UDTER_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MB.UDTER_ID) AS UDTER_NM
+               ,UDT_DT
+        FROM    MBR_BNEF MB
+        WHERE   1 = 1
+        AND     BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+    </select>	
+    
+    <!-- 회원혜택 등록 -->
+	<insert id="insertMemberBenefit" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+	    INSERT /* [biz.mbr.benefit.xml][insertMemberBenefit][회원혜택 등록] */  
+	    INTO MBR_BNEF
+		(
+	        BNEF_SN
+	       ,BNEF_SECT_CD
+	       ,BNEF_DETAIL_SECT_CD
+	       ,BNEF_NM
+	       ,BNEF_BEG_DT
+	       ,BNEF_END_DT
+	       ,APRV_SECT_CD
+	       ,APRV_ADMIN_ID
+	       ,APRV_DT
+	       ,STPGE_ADMIN_ID
+	       ,STPGE_DT
+	       ,STPGE_RESN_CONT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{bnefSn,jdbcType=NUMERIC}
+	       ,#{bnefSectCd,jdbcType=VARCHAR}
+	       ,#{bnefDetailSectCd,jdbcType=VARCHAR}
+	       ,#{bnefNm,jdbcType=VARCHAR}
+	       ,#{bnefBegDt,jdbcType=TIMESTAMP}
+	       ,#{bnefEndDt,jdbcType=TIMESTAMP}
+	       ,#{aprvSectCd,jdbcType=VARCHAR}
+	       ,#{aprvAdminId,jdbcType=VARCHAR}
+	       ,#{aprvDt,jdbcType=TIMESTAMP}
+	       ,#{stpgeAdminId,jdbcType=VARCHAR}
+	       ,#{stpgeDt,jdbcType=TIMESTAMP}
+	       ,#{stpgeResnCont,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>  
+    
+    <!-- 회원혜택 수정 -->
+    <update id="updateMemberBenefit" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+        UPDATE /* [biz.mbr.benefit.xml][updateMemberBenefit][회원혜택 수정] */  
+        MBR_BNEF SET
+                 BNEF_SECT_CD = #{bnefSectCd,jdbcType=VARCHAR}
+                ,BNEF_DETAIL_SECT_CD = #{bnefDetailSectCd,jdbcType=VARCHAR}
+                ,BNEF_NM = #{bnefNm,jdbcType=VARCHAR}
+                ,BNEF_BEG_DT = #{bnefBegDt,jdbcType=TIMESTAMP}
+                ,BNEF_END_DT = #{bnefEndDt,jdbcType=TIMESTAMP}
+                ,APRV_SECT_CD = #{aprvSectCd,jdbcType=VARCHAR}
+                ,STPGE_RESN_CONT = #{stpgeResnCont,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE        
+        WHERE   1 = 1
+        AND     BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+    </update> 
+    
+   	<!-- 회원혜택 지급 혜택 목록 조회 -->
+	<select id="selectMemberBenefitDetailList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultMap="memberBenefitResultMap">
+    	<include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT /* [biz.mbr.benefit.xml]["selectMemberBenefitDetailList"][회원혜택 지급 혜택 목록 조회] */
+                MB.BNEF_SN
+               ,MB.BNEF_SN AS DTL_BNEF_SN
+               ,MB.BNEF_SECT_CD AS DTL_BNEF_SECT_CD
+               ,MB.BNEF_DETAIL_SECT_CD AS DTL_BNEF_DETAIL_SECT_CD               
+               ,MBD.PRM_NO AS DTL_PRM_NO
+               ,MBD.BNEF_BEG_DT AS DTL_STR_BNEF_BEG_DT
+               ,MBD.BNEF_END_DT AS DTL_STR_BNEF_END_DT
+               ,MBD.APRV_SECT_CD AS DTL_APRV_SECT_CD
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MBD.APRV_SECT_CD AND UPPER_CD='APRV_SECT' AND LANG_CD = 'KOR') AS DTL_APRV_SECT_CD_NM
+               ,MBD.STPGE_RESN_CONT AS DTL_STPGE_RESN_CONT
+               ,MBD.REGTR_ID AS DTL_REGTR_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MBD.REGTR_ID)||'('||MBD.REGTR_ID||')' AS DTL_REGTR_NM
+               ,MBD.REG_DT AS DTL_STR_REG_DT
+               ,MBD.UDTER_ID AS DTL_UDTER_ID
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MBD.UDTER_ID)||'('||MBD.UDTER_ID||')' AS DTL_UDTER_NM
+               ,MBD.UDT_DT AS DTL_STR_UDT_DT
+               ,MBD.PNT_AMT AS DTL_PNT_AMT
+               ,MBD.WEBPNT_AMT AS DTL_WEBPNT_AMT
+               ,(CASE WHEN PRM.PRM_TP_CD = 'CPN' THEN 
+                           PRM.PRM_NM || ' [' || DECODE(NVL(PRM.CPN_ISSU_MTHD_CD,''),'','',
+                           (SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'CPN_ISSU_MTHD' AND LANG_CD = 'KOR' AND CD = PRM.CPN_ISSU_MTHD_CD)) || ']'
+                      WHEN MBD.BNEF_TP_CD = 'MBSH_PNT' THEN TO_CHAR(MBD.PNT_AMT)
+                      WHEN MBD.BNEF_TP_CD = 'WEBPNT' THEN TO_CHAR(MBD.WEBPNT_AMT)
+                      ELSE PRM.PRM_NM END) AS DTL_BNEF_TP_NM
+               ,PRM.PRM_STAT_CD
+               ,(CASE WHEN PRM.PRM_TP_CD = 'CPN' AND CPN_KND_CD = 'ONLNE_CPN'   THEN PRM.CPN_KND_CD
+                      WHEN PRM.PRM_TP_CD = 'CPN' AND CPN_KND_CD = 'ONOFLNE_CPN' THEN PRM.CPN_KND_CD
+                      ELSE PRM.PRM_TP_CD END) AS FREE_GIFT_KND_CD
+               ,PRM.CPN_ISSU_MTHD_CD
+               ,MBD.BNEF_DETAIL_TURN AS DTL_BNEF_DETAIL_TURN
+               ,MBD.BNEF_TP_CD AS DTL_BNEF_TP_CD
+               ,MBD.WEBPNT_VALID_DAYCNT AS DTL_WEBPNT_VALID_DAYCNT
+               ,MBD.PYMNT_RESN_DSCR AS DTL_PYMNT_RESN_DSCR
+        FROM    MBR_BNEF_DETAIL MBD LEFT OUTER JOIN
+                (SELECT P.PRM_NO,
+				        P.PRM_NM,
+				        P.PRM_STAT_CD,
+				        P.PRM_TP_CD,
+				        PC.CPN_KND_CD,
+				        PC.CPN_ISSU_MTHD_CD
+				   FROM PRM P LEFT OUTER JOIN PRM_CPN PC ON P.PRM_NO = PC.PRM_NO
+				  WHERE 1 = 1 
+				    AND PRM_TP_CD IN ('MBSH_PNT', 'WEBPNT', 'CPN')) PRM ON MBD.PRM_NO = PRM.PRM_NO
+               ,MBR_BNEF MB				
+        WHERE   1 = 1
+        AND     MB.BNEF_SN = MBD.BNEF_SN
+        AND     MBD.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        ORDER BY MBD.REG_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+   
+	<!-- 회원혜택 지급 혜택 목록 건수 조회 -->
+	<select id="selectMemberBenefitDetailListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="Long">
+		SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitDetailListCount][회원혜택 목록 건수 조회] */
+				COUNT(*)
+        FROM    MBR_BNEF_DETAIL MBD LEFT OUTER JOIN
+                (SELECT P.PRM_NO,
+				        P.PRM_NM,
+				        P.PRM_STAT_CD,
+				        P.PRM_TP_CD,
+				        PC.CPN_KND_CD,
+				        PC.CPN_ISSU_MTHD_CD
+				   FROM PRM P LEFT OUTER JOIN PRM_CPN PC ON P.PRM_NO = PC.PRM_NO
+				  WHERE 1 = 1 
+				    AND PRM_TP_CD IN ('MBSH_PNT', 'WEBPNT', 'CPN')) PRM ON MBD.PRM_NO = PRM.PRM_NO
+               ,MBR_BNEF MB	
+        WHERE   1 = 1
+        AND     MB.BNEF_SN = MBD.BNEF_SN
+        AND     MBD.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+	</select> 
+	
+   	<!-- 회원혜택 적용 대상 목록 조회 -->
+   	<select id="selectMbrBnefAplTgtList" parameterType="mbrBnefAplTgt" resultType="mbrBnefAplTgt">  	
+        SELECT /* [biz.mbr.benefit.xml]["selectMbrBnefAplTgtList"][회원혜택 적용대상 목록 조회] */
+                BNEF_SN
+               ,APL_TURN
+               ,BNEF_TGT_TP_CD
+               ,MALL_ID
+               ,LANG_CD
+               ,DVC_CD
+               ,MOBILE_APP_SECT_CD
+               ,TGT_MBR_TP_CD
+               ,TGT_MBR_ATRB_CD
+               ,GRPCO_ID
+               ,AFF_COM_ID
+               ,CHNNL_RECPTN_AGR_SECT_CD
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    MBR_BNEF_APL_TGT t
+        WHERE   1 = 1
+        AND     BNEF_SN = #{bnefSn,jdbcType=NUMERIC}   
+   	</select> 	
+   
+    <!-- 회원혜택 지급혜택 등록 -->
+	<insert id="insertMemberBenefitDetail" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+	    INSERT /* [biz.mbr.benefit.xml][insertMemberBenefitDetail][회원혜택 지급혜택 등록] */
+	    INTO MBR_BNEF_DETAIL
+		(
+	        BNEF_SN
+	       ,BNEF_DETAIL_TURN
+	       ,BNEF_TP_CD
+	       ,BNEF_BEG_DT
+	       ,BNEF_END_DT
+	       ,APRV_SECT_CD
+	       ,APRV_ADMIN_ID
+	       ,APRV_DT
+	       ,STPGE_ADMIN_ID
+	       ,STPGE_DT
+	       ,STPGE_RESN_CONT
+	       ,PRM_NO
+	       ,PNT_AMT
+	       ,PNT_APL_RESN_CD
+	       ,WEBPNT_AMT
+	       ,WEBPNT_VALID_DAYCNT
+	       ,WEBPNT_RESN_CD
+	       ,WEBPNT_DETAIL_RESN_CD
+	       ,PYMNT_RESN_DSCR
+	       ,REGTR_ID
+	       ,UDTER_ID
+		<if test="dtlBnefTpCd == 'WEBPNT' ">
+	       ,PYMNT_PSB_COUNT	 
+		</if>
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{dtlBnefSn,jdbcType=NUMERIC}
+	       ,#{dtlBnefDetailTurn,jdbcType=NUMERIC}
+	       ,#{dtlBnefTpCd,jdbcType=VARCHAR}
+	       ,#{dtlBnefBegDt,jdbcType=TIMESTAMP}
+	       ,#{dtlBnefEndDt,jdbcType=TIMESTAMP}
+	       ,#{dtlAprvSectCd,jdbcType=VARCHAR}
+	       ,#{dtlAprvAdminId,jdbcType=VARCHAR}
+	       ,#{dtlAprvDt,jdbcType=TIMESTAMP}
+	       ,#{dtlStpgeAdminId,jdbcType=VARCHAR}
+	       ,#{dtlStpgeDt,jdbcType=TIMESTAMP}
+	       ,#{dtlStpgeResnCont,jdbcType=VARCHAR}
+	       ,#{dtlPrmNo,jdbcType=VARCHAR}
+	       ,#{dtlPntAmt,jdbcType=NUMERIC}
+	       ,#{dtlPntAplResnCd,jdbcType=VARCHAR}
+	       ,#{dtlWebpntAmt,jdbcType=NUMERIC}
+	       ,#{dtlWebpntValidDaycnt,jdbcType=NUMERIC}
+	       ,#{dtlWebpntResnCd,jdbcType=VARCHAR}
+	       ,#{dtlWebpntDetailResnCd,jdbcType=VARCHAR}
+	       ,#{dtlPymntResnDscr,jdbcType=VARCHAR}
+	       ,#{dtlRegtrId,jdbcType=VARCHAR}
+	       ,#{dtlUdterId,jdbcType=VARCHAR}
+		<if test="dtlBnefTpCd == 'WEBPNT' ">
+	       ,1
+		</if>	       
+	       ,SYSDATE
+	       ,SYSDATE	       
+		)   
+    </insert>
+    
+    <!-- 회원혜택 적용대상 삭제 -->
+    <delete id="deleteMemberBenefitApplyTarget" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+        DELETE /* [biz.mbr.benefit.xml][deleteMemberBenefitApplyTarget][회원혜택 적용대상 삭제] */  
+        FROM MBR_BNEF_APL_TGT 
+        WHERE   1 = 1
+        AND     BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 회원혜택 지급혜택 수정 -->
+        <update id="updateMemberBenefitDetail" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+        UPDATE /* [biz.mbr.benefit.xml][updateMemberBenefitDetail][회원혜택 지급혜택 수정] */  
+        MBR_BNEF_DETAIL SET
+                 BNEF_TP_CD = #{dtlBnefTpCd,jdbcType=VARCHAR}
+                ,BNEF_BEG_DT = #{dtlBnefBegDt,jdbcType=TIMESTAMP}
+                ,BNEF_END_DT = #{dtlBnefEndDt,jdbcType=TIMESTAMP}
+                ,APRV_SECT_CD = #{dtlAprvSectCd,jdbcType=VARCHAR}
+                ,STPGE_RESN_CONT = #{dtlStpgeResnCont,jdbcType=VARCHAR}
+                ,PRM_NO = #{dtlPrmNo,jdbcType=VARCHAR}
+                ,PNT_AMT = #{dtlPntAmt,jdbcType=NUMERIC}
+                ,PNT_APL_RESN_CD = #{dtlPntAplResnCd,jdbcType=VARCHAR}
+                ,WEBPNT_AMT = #{dtlWebpntAmt,jdbcType=NUMERIC}
+                ,WEBPNT_VALID_DAYCNT = #{dtlWebpntValidDaycnt,jdbcType=NUMERIC}
+                ,WEBPNT_RESN_CD = #{dtlWebpntResnCd,jdbcType=VARCHAR}
+                ,WEBPNT_DETAIL_RESN_CD = #{dtlWebpntDetailResnCd,jdbcType=VARCHAR}
+                ,PYMNT_RESN_DSCR = #{dtlPymntResnDscr,jdbcType=VARCHAR}
+                ,UDTER_ID = #{dtlUdterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        AND     BNEF_DETAIL_TURN = #{dtlBnefDetailTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 회원혜택 지급혜택 삭제 -->
+    <delete id="deleteMemberBenefitDetail" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+        DELETE /* [biz.mbr.benefit.xml][deleteMemberBenefitDetail][회원혜택 지급혜택 삭제] */
+        FROM MBR_BNEF_DETAIL 
+        WHERE   1 = 1
+        AND     BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        AND     BNEF_DETAIL_TURN = #{dtlBnefDetailTurn,jdbcType=NUMERIC}
+    </delete>
+    
+    <!-- 회원혜택 수정 -->
+    <update id="updateMemberBenefitStatus" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+        UPDATE /* [biz.mbr.benefit.xml][updateMemberBenefitStatus][회원혜택 상태 수정] */  
+        MBR_BNEF SET
+                 APRV_SECT_CD = #{aprvSectCd,jdbcType=VARCHAR}
+                <if test="aprvSectCd == 'APRV' ">
+                ,APRV_ADMIN_ID = #{aprvAdminId,jdbcType=VARCHAR}                
+                ,APRV_DT = SYSDATE
+                </if>
+                <if test="aprvSectCd == 'STPGE' "> 
+                ,STPGE_ADMIN_ID = #{stpgeAdminId,jdbcType=VARCHAR}
+                ,STPGE_DT = SYSDATE
+                </if>
+	      		<if test="stpgeResnCont != null">
+	            ,STPGE_RESN_CONT = #{stpgeResnCont,jdbcType=VARCHAR}
+	      		</if>                 
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     BNEF_SN = #{bnefSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 회원혜택 지급혜택 수정 -->
+    <update id="updateMemberBenefitDtlStatus" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO">
+        UPDATE /* [biz.mbr.benefit.xml][updateMemberBenefitDtlStatus][회원혜택 지급혜택 상태 수정] */  
+        MBR_BNEF_DETAIL SET
+                 APRV_SECT_CD = #{dtlAprvSectCd,jdbcType=VARCHAR}
+                <if test="dtlAprvSectCd == 'APRV' ">
+                ,APRV_ADMIN_ID = #{dtlAprvAdminId,jdbcType=VARCHAR}
+                ,APRV_DT = SYSDATE
+                </if>
+                <if test="dtlAprvSectCd == 'STPGE' ">
+                ,STPGE_ADMIN_ID = #{dtlStpgeAdminId,jdbcType=VARCHAR}
+                ,STPGE_DT = SYSDATE
+                </if>    
+	      		<if test="dtlStpgeResnCont != null">
+	            ,STPGE_RESN_CONT = #{dtlStpgeResnCont,jdbcType=VARCHAR}
+	      		</if>                 
+                ,UDTER_ID = #{dtlUdterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        AND     BNEF_DETAIL_TURN = #{dtlBnefDetailTurn,jdbcType=NUMERIC}
+    </update>
+    
+	<!-- 회원혜택 상세 수정이력 목록 건수 조회 -->
+	<select id="selectMemberBenefitDetailHistListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="Long">
+		SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitDetailHistListCount][회원혜택 상세 수정이력 목록 건수 조회] */
+				COUNT(*)
+        FROM    MBR_BNEF_DETAIL MBD
+        WHERE   1 = 1
+        AND     MBD.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        AND     MBD.APRV_SECT_CD IN ('APRV','STPGE')
+        <if test="srchBegDate != null and srchBegDate != '' ">
+        AND     MBD.APRV_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+        </if>       
+        ORDER BY MBD.APRV_DT ASC
+	</select> 
+	
+   	<!-- 회원혜택 상세 수정이력 목록 조회 -->
+   	<select id="selectMemberBenefitDetailHistList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultMap="memberBenefitResultMap">
+		<include refid="com.plgrim.ncp.base.beginPage"/>   	
+        SELECT /* [biz.mbr.benefit.xml]["selectMemberBenefitDetailHistList"][회원혜택 상세 수정이력 목록 조회] */
+                MBD.BNEF_SN
+               ,MBD.BNEF_SN AS DTL_BNEF_SN  
+               ,MBD.BNEF_DETAIL_TURN AS DTL_BNEF_DETAIL_TURN
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MBD.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS DTL_BNEF_TP_CD   /* 혜택유형 */          
+               ,(CASE WHEN MBD.BNEF_TP_CD = 'MBSH_PNT' THEN TO_CHAR(MBD.PNT_AMT)
+                      WHEN MBD.BNEF_TP_CD = 'WEBPNT' THEN TO_CHAR(MBD.WEBPNT_AMT)
+                 ELSE (SELECT
+                                (P.PRM_NM || ' [' || DECODE(NVL(PC.CPN_ISSU_MTHD_CD,''),'','',
+                                (SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'CPN_ISSU_MTHD' AND LANG_CD = 'KOR' AND CD = PC.CPN_ISSU_MTHD_CD)) || ']')
+                        FROM PRM P LEFT OUTER JOIN PRM_CPN PC ON P.PRM_NO = PC.PRM_NO
+                        WHERE 1=1
+                        AND P.PRM_NO = MBD.PRM_NO
+                        AND PRM_TP_CD = 'CPN')                  
+                 END) AS DTL_BNEF_TP_NM             
+               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MBD.APRV_ADMIN_ID)||'('||MBD.APRV_ADMIN_ID||')' AS DTL_APRV_ADMIN_NM
+               ,MBD.APRV_DT AS DTL_APRV_DT
+               ,(CASE WHEN MBD.STPGE_ADMIN_ID IS NOT NULL THEN (
+                           (SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MBD.STPGE_ADMIN_ID)||'('||MBD.STPGE_ADMIN_ID||')')
+                      ELSE MBD.STPGE_ADMIN_ID END) AS DTL_STPGE_ADMIN_NM
+               ,MBD.STPGE_DT AS DTL_STPGE_DT            
+        FROM    MBR_BNEF_DETAIL MBD
+        WHERE   1 = 1
+        AND     MBD.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        AND     MBD.APRV_SECT_CD IN ('APRV','STPGE')
+        <if test="srchBegDate != null and srchBegDate != '' ">
+        AND     MBD.APRV_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+        </if>       
+        ORDER BY MBD.APRV_DT ASC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+		ORDER BY NO DESC
+   	</select>
+   	
+   <!-- 회원혜택 상세 엑셀 수정이력 목록 조회 -->
+   <select id="selectMemberBenefitDetailHistExcelList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO"
+           resultType="java.util.LinkedHashMap">
+      SELECT
+	      	 ROWNUM NO
+	      	,DTL_BNEF_TP_CD
+	        ,DTL_BNEF_TP_NM
+	      	,DTL_APRV_ADMIN_NM
+            ,TO_CHAR(DTL_APRV_DT,'YYYY-MM-DD HH:MI:SS') AS DTL_APRV_DT
+	      	,DTL_STPGE_ADMIN_NM
+            ,TO_CHAR(DTL_STPGE_DT,'YYYY-MM-DD HH:MI:SS') AS DTL_STPGE_DT            
+      FROM (	
+	        SELECT /* [biz.mbr.benefit.xml]["selectMemberBenefitDetailHistList"][회원혜택 상세 수정이력 목록 조회] */
+	                MBD.BNEF_SN
+	               ,MBD.BNEF_SN AS DTL_BNEF_SN  
+	               ,MBD.BNEF_DETAIL_TURN AS DTL_BNEF_DETAIL_TURN
+	               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = MBD.BNEF_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS DTL_BNEF_TP_CD   /* 혜택유형 */          
+	               ,(CASE WHEN MBD.BNEF_TP_CD = 'MBSH_PNT' THEN TO_CHAR(MBD.PNT_AMT)
+	                      WHEN MBD.BNEF_TP_CD = 'WEBPNT' THEN TO_CHAR(MBD.WEBPNT_AMT)
+	                 ELSE (SELECT
+	                                (P.PRM_NM || ' [' || DECODE(NVL(PC.CPN_ISSU_MTHD_CD,''),'','',
+	                                (SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'CPN_ISSU_MTHD' AND LANG_CD = 'KOR' AND CD = PC.CPN_ISSU_MTHD_CD)) || ']')
+	                        FROM PRM P LEFT OUTER JOIN PRM_CPN PC ON P.PRM_NO = PC.PRM_NO
+	                        WHERE 1=1
+	                        AND P.PRM_NO = MBD.PRM_NO
+	                        AND PRM_TP_CD = 'CPN')                  
+	                 END) AS DTL_BNEF_TP_NM                
+	               ,(SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MBD.APRV_ADMIN_ID)||'('||MBD.APRV_ADMIN_ID||')' AS DTL_APRV_ADMIN_NM
+	               ,MBD.APRV_DT AS DTL_APRV_DT
+	               ,(CASE WHEN MBD.STPGE_ADMIN_ID IS NOT NULL THEN (
+	                           (SELECT S.ADMIN_NM FROM SYS_ADMIN S WHERE S.ADMIN_ID = MBD.STPGE_ADMIN_ID)||'('||MBD.STPGE_ADMIN_ID||')')
+	                      ELSE MBD.STPGE_ADMIN_ID END) AS DTL_STPGE_ADMIN_NM
+	               ,MBD.STPGE_DT AS DTL_STPGE_DT
+	               ,ROWNUM AS ROW_NUMBER               
+	        FROM    MBR_BNEF_DETAIL MBD
+	        WHERE   1 = 1        
+	        AND     MBD.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+	        AND     MBD.APRV_SECT_CD IN ('APRV','STPGE')
+	        <if test="srchBegDate != null and srchBegDate != '' ">
+	        AND     MBD.APRV_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+	        </if>
+	        ORDER BY MBD.APRV_DT ASC
+	    )
+	    ORDER BY NO DESC		
+	</select>     	
+   	
+	<resultMap id="memberBenefitPymntHistResultMap" type="com.plgrim.ncp.biz.member.result.MemberBenefitPymntHistResult">
+		<result property="bnefSn"				    column="BNEF_SN" />						<!--혜택 일련번호-->
+		<result property="bnefSectCd"				column="BNEF_SECT_CD" />				<!--혜택 구분 코드-->
+		<result property="bnefDetailSectCd"			column="BNEF_DETAIL_SECT_CD" />			<!--혜택 상세 구분 코드-->				
+		<result property="mbrNo"       				column="MBR_NO" />       				<!--쿠폰발급 방법-->
+		<result property="bnefPymntTurn"       		column="BNEF_PYMNT_TURN" />       		<!--혜택 지급 순번-->
+		<result property="pymntDt"       			column="PYMNT_DT" />       				<!--지급 일시-->
+		<result property="bnefPymntSuccesYn"       	column="BNEF_PYMNT_SUCCES_YN" />       	<!--혜택 지급 성공 여부-->
+		<result property="bnefPymntFailrResnCont"   column="BNEF_PYMNT_FAILR_RESN_CONT" />  <!--혜택 지급 실패 사유 내용-->
+		<result property="mbrId"       				column="MBR_ID" />       				<!--회원 ID-->
+		<result property="mbrNm"       				column="MBR_NM" />       				<!--회원 명-->
+		<result property="erpCstmrNo"       		column="ERP_CSTMR_NO" />       			<!--ERP 고객번호-->
+	    <result property="bnefTpCd"        	    	column="BNEF_TP_CD" />        	    	<!--혜택 유형-->
+		<result property="bnefTpNm"          		column="BNEF_TP_NM" />            		<!--혜택 명-->
+					
+	</resultMap>
+	
+	<!-- 회원혜택 상세 발급내역 목록 건수 조회 -->
+	<select id="selectMemberBenefitPymntHistListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="Long">
+		SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitPymntHistListCount][회원혜택 상세 수정이력 목록 건수 조회] */
+				COUNT(*)
+        FROM    MBR_BNEF_PYMNT_HIST MBPH
+               ,MBR M
+        WHERE   1 = 1
+        AND     MBPH.MBR_NO = M.MBR_NO
+        AND     M.MBR_ID IS NOT NULL
+        AND     MBPH.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        <if test="srchBegDate != null and srchBegDate != '' ">
+        AND     MBPH.PYMNT_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+        </if>
+        <if test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+        AND     MBPH.BNEF_PYMNT_TP_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                   					FROM (SELECT #{srchBnefTypeCd,jdbcType=VARCHAR} AS param FROM dual) d
+                					CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+
+        </if>
+        <if test="srchBnefPymntSuccesYn != null and srchBnefPymntSuccesYn != '' ">
+        AND     MBPH.BNEF_PYMNT_SUCCES_YN IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                   							  FROM (SELECT #{srchBnefPymntSuccesYn,jdbcType=VARCHAR} AS param FROM dual) d
+                							  CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+
+        </if>        
+		<if test="srchMbrNm != null and srchMbrNm != '' ">
+		  AND   M.MBR_NM like '%'||#{srchMbrNm,jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="srchMbrNo != null and srchMbrNo != '' ">
+			<foreach collection="vcMbrNo" item="item" open="AND M.MBR_NO IN (" close=")" separator=",">#{item}</foreach>
+		</if>        
+	</select> 	
+   	
+   	<!-- 회원혜택 상세 발급내역 목록 조회 -->
+   	<select id="selectMemberBenefitPymntHistList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultMap="memberBenefitPymntHistResultMap">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT  /* [biz.mbr.benefit.xml][selectMemberBenefitPymntHistList][회원혜택 상세 발급내역 목록 조회] */
+                MBPH.MBR_NO                                             /* 회원 번호 */
+               ,MBPH.BNEF_PYMNT_TURN                                    /* 혜택 지급 순번 */
+               ,MBPH.BNEF_SN                                             /* 혜택 일련번호 */
+               ,MB.BNEF_SECT_CD                                        /* 혜택 구분 코드 */
+               ,MBPH.PYMNT_DT                                           /* 지급 일시 */
+               ,MB.BNEF_DETAIL_SECT_CD                                 /* 혜택 상세 구분 코드 */
+               ,(DECODE(MBPH.BNEF_PYMNT_SUCCES_YN,
+                        'Y','지급완료','N','지급실패',NULL,'')) AS BNEF_PYMNT_SUCCES_YN  /* 혜택 지급 성공 여부 */
+               ,MBPH.BNEF_PYMNT_FAILR_RESN_CONT                         /* 혜택 지급 실패 사유 내용 */
+               ,FN_MASKING('ID'   , M.MBR_ID   , '', 'Y') AS MBR_ID     /* 회원 ID */
+               ,FN_MASKING('FLNM' , M.MBR_NM   , '', 'Y') AS MBR_NM     /* 회원 명 */   
+               ,M.ERP_CSTMR_NO                                          /* ERP 고객번호 */
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = BNEF_PYMNT_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_CD   /* 혜택유형 */
+               ,(CASE WHEN BNEF_PYMNT_TP_CD = 'MBSH_PNT' THEN TO_CHAR(PNT_PYMNT_AMT)
+                      WHEN BNEF_PYMNT_TP_CD = 'WEBPNT' THEN TO_CHAR(PNT_PYMNT_AMT)
+                 ELSE (SELECT
+                                (P.PRM_NM || ' [' || DECODE(NVL(PC.CPN_ISSU_MTHD_CD,''),'','',
+                                (SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'CPN_ISSU_MTHD' AND LANG_CD = 'KOR' AND CD = PC.CPN_ISSU_MTHD_CD)) || ']')
+                        FROM PRM P LEFT OUTER JOIN PRM_CPN PC ON P.PRM_NO = PC.PRM_NO
+                        WHERE 1=1
+                        AND P.PRM_NO = MBPH.PRM_NO
+                        AND PRM_TP_CD = 'CPN')                  
+                 END) AS BNEF_TP_NM
+        FROM    MBR_BNEF_PYMNT_HIST MBPH
+        JOIN    MBR M
+          ON    MBPH.MBR_NO = M.MBR_NO        
+        JOIN     MBR_BNEF MB
+          ON     MBPH.BNEF_SN = MB.BNEF_SN
+        WHERE   1 = 1
+        AND     M.MBR_STAT_CD = 'ACT'
+        AND     MBPH.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        <if test="srchBegDate != null and srchBegDate != '' ">
+        AND     MBPH.PYMNT_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+        </if>
+        <if test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+        AND     MBPH.BNEF_PYMNT_TP_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                   					FROM (SELECT #{srchBnefTypeCd,jdbcType=VARCHAR} AS param FROM dual) d
+                					CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+
+        </if>
+        <if test="srchBnefPymntSuccesYn != null and srchBnefPymntSuccesYn != '' ">
+        AND     MBPH.BNEF_PYMNT_SUCCES_YN IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                   							  FROM (SELECT #{srchBnefPymntSuccesYn,jdbcType=VARCHAR} AS param FROM dual) d
+                							  CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+
+        </if>        
+		<if test="srchMbrNm != null and srchMbrNm != '' ">
+		  AND   M.MBR_NM like '%'||#{srchMbrNm,jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="srchMbrNo != null and srchMbrNo != '' ">
+			<foreach collection="vcMbrNo" item="item" open="AND M.MBR_NO IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		ORDER BY MBPH.PYMNT_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>        
+   	</select> 
+   	
+   <!-- 회원혜택 상세 엑셀 발급내역 목록 조회 -->
+   <select id="selectMemberBenefitPymntHistExcelList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO"
+           resultType="java.util.LinkedHashMap">
+      SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitPymntHistExcelList][회원혜택 상세 엑셀 발급내역 목록 조회] */
+	      	 MBR_NM
+	        ,MBR_ID
+	      	,MBR_NO
+	        ,ERP_CSTMR_NO
+	        ,BNEF_TP_CD
+	        ,BNEF_TP_NM
+	        ,BNEF_PYMNT_SUCCES_YN
+	        ,TO_CHAR(PYMNT_DT,'YYYY-MM-DD HH:MI:SS') AS PYMNT_DT
+	        ,BNEF_PYMNT_FAILR_RESN_CONT
+      FROM (	
+        SELECT  /* [biz.mbr.benefit.xml][selectMemberBenefitPymntHistList][회원혜택 상세 발급내역 목록 조회] */
+                MBPH.MBR_NO                                             /* 회원 번호 */
+               ,MBPH.BNEF_PYMNT_TURN                                    /* 혜택 지급 순번 */
+               ,MBPH.BNEF_SN                                             /* 혜택 일련번호 */
+               ,MB.BNEF_SECT_CD                                        /* 혜택 구분 코드 */
+               ,MBPH.PYMNT_DT                                           /* 지급 일시 */
+               ,MB.BNEF_DETAIL_SECT_CD                                 /* 혜택 상세 구분 코드 */
+               ,(DECODE(MBPH.BNEF_PYMNT_SUCCES_YN,
+                        'Y','지급완료','N','지급실패',NULL,'')) AS BNEF_PYMNT_SUCCES_YN  /* 혜택 지급 성공 여부 */
+               ,MBPH.BNEF_PYMNT_FAILR_RESN_CONT                         /* 혜택 지급 실패 사유 내용 */
+               ,FN_MASKING('ID'   , M.MBR_ID   , '', 'Y') AS MBR_ID     /* 회원 ID */
+               ,FN_MASKING('FLNM' , M.MBR_NM   , '', 'Y') AS MBR_NM     /* 회원 명 */   
+               ,M.ERP_CSTMR_NO                                          /* ERP 고객번호 */
+               ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = BNEF_PYMNT_TP_CD AND UPPER_CD = 'BNEF_TP' AND LANG_CD = 'KOR') AS BNEF_TP_CD   /* 혜택유형 */
+               ,(CASE WHEN BNEF_PYMNT_TP_CD = 'MBSH_PNT' THEN TO_CHAR(PNT_PYMNT_AMT)
+                      WHEN BNEF_PYMNT_TP_CD = 'WEBPNT' THEN TO_CHAR(PNT_PYMNT_AMT)
+                 ELSE (SELECT
+                                (P.PRM_NM || ' [' || DECODE(NVL(PC.CPN_ISSU_MTHD_CD,''),'','',
+                                (SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'CPN_ISSU_MTHD' AND LANG_CD = 'KOR' AND CD = PC.CPN_ISSU_MTHD_CD)) || ']')
+                        FROM PRM P LEFT OUTER JOIN PRM_CPN PC ON P.PRM_NO = PC.PRM_NO
+                        WHERE 1=1
+                        AND P.PRM_NO = MBPH.PRM_NO
+                        AND PRM_TP_CD = 'CPN')                  
+                 END) AS BNEF_TP_NM
+        FROM    MBR_BNEF_PYMNT_HIST MBPH
+        JOIN    MBR M
+          ON    MBPH.MBR_NO = M.MBR_NO        
+        JOIN     MBR_BNEF MB
+          ON     MBPH.BNEF_SN = MB.BNEF_SN
+        WHERE   1 = 1
+        AND     M.MBR_STAT_CD = 'ACT'
+        AND     MBPH.BNEF_SN = #{dtlBnefSn,jdbcType=NUMERIC}
+        <if test="srchBegDate != null and srchBegDate != '' ">
+        AND     MBPH.PYMNT_DT BETWEEN  TO_DATE(#{srchBegDate}||'000000','yyyy-mm-dd HH24miss') AND TO_DATE(#{srchEndDate}||'235959','yyyy-mm-dd HH24miss')
+        </if>
+        <if test="srchBnefTypeCd != null and srchBnefTypeCd != '' ">
+        AND     MBPH.BNEF_PYMNT_TP_CD IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                   					FROM (SELECT #{srchBnefTypeCd,jdbcType=VARCHAR} AS param FROM dual) d
+                					CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+
+        </if>
+        <if test="srchBnefPymntSuccesYn != null and srchBnefPymntSuccesYn != '' ">
+        AND     MBPH.BNEF_PYMNT_SUCCES_YN IN (SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+                   							  FROM (SELECT #{srchBnefPymntSuccesYn,jdbcType=VARCHAR} AS param FROM dual) d
+                							  CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))
+
+        </if>        
+		<if test="srchMbrNm != null and srchMbrNm != '' ">
+		  AND   M.MBR_NM like '%'||#{srchMbrNm,jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="srchMbrNo != null and srchMbrNo != '' ">
+			<foreach collection="vcMbrNo" item="item" open="AND M.MBR_NO IN (" close=")" separator=",">#{item}</foreach>
+		</if>
+		ORDER BY MBPH.PYMNT_DT DESC
+	    )		
+	</select>
+	
+   <resultMap type="com.plgrim.ncp.biz.member.result.MemberBenefitAplTgtGrpCdResult" id="mbrBnefAplTgtGrpcdResult">
+		<result property="bnefSn"					column="BNEF_SN" />				<!--혜택 일련번호-->
+        <result property="aplTurn"                  column="APL_TURN" />
+        <result property="sysGrpco.grpcoId"         column="GRPCO_ID" />
+        <result property="sysGrpco.grpcoNm"         column="GRPCO_NM" />         
+   </resultMap>
+   
+   <!-- 회원혜택 상세 그룹사 목록 조회 -->
+   <select id="selectMbrBnefAplTgtGrpCdList" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultMap="mbrBnefAplTgtGrpcdResult">
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+         SELECT /* [biz.mbr.benefit.xml][selectMbrBnefAplTgtGrpCdList][회원혜택 상세 그룹사 목록 조회] */
+               M.BNEF_SN
+              ,M.APL_TURN
+              ,M.GRPCO_ID
+              ,G.GRPCO_NM
+         FROM  MBR_BNEF_APL_TGT M
+         LEFT OUTER JOIN  SYS_GRPCO G
+         ON    M.GRPCO_ID = G.GRPCO_ID
+         WHERE 1 = 1
+         AND   M.BNEF_SN              = #{mbrBnefAplTgt.bnefSn,jdbcType=NUMERIC}
+         AND   M.BNEF_TGT_TP_CD       = #{mbrBnefAplTgt.bnefTgtTpCd:VARCHAR}
+      <include refid="com.plgrim.ncp.base.endPage"/>
+   </select>
+   
+   <!-- 회원혜택 상세 그룹사 목록 건수 조회 -->
+   <select id="selectMbrBnefAplTgtGrpCdListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="Long">
+         SELECT /* [biz.mbr.benefit.xml][selectMbrBnefAplTgtGrpCdListCount][회원혜택 상세 그룹사 목록 조회] */
+            	COUNT(*)
+         FROM  MBR_BNEF_APL_TGT M
+         LEFT OUTER JOIN  SYS_GRPCO G
+         ON    M.GRPCO_ID = G.GRPCO_ID
+         WHERE 1 = 1
+         AND   M.BNEF_SN              = #{mbrBnefAplTgt.bnefSn,jdbcType=NUMERIC}
+         AND   M.BNEF_TGT_TP_CD       = #{mbrBnefAplTgt.bnefTgtTpCd:VARCHAR}
+   </select>	
+   
+	<!-- 회원혜택 중복체크 -->
+    <select id="checkMemberBenefitKey" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="int">
+        SELECT /* [biz.mbr.benefit.xml][selectMemberBenefitDetail][회원혜택 중복체크] */
+				COUNT(*)
+        FROM    MBR_BNEF MB
+        WHERE   1 = 1
+        AND     APRV_SECT_CD        <![CDATA[<>]]> 'STPGE'
+        AND     BNEF_SECT_CD 		= #{bnefSectCd,jdbcType=VARCHAR}
+        AND     BNEF_DETAIL_SECT_CD = #{bnefDetailSectCd,jdbcType=VARCHAR}
+        AND     BNEF_BEG_DT 		= #{bnefBegDt,jdbcType=TIMESTAMP}
+        AND     BNEF_END_DT 		= #{bnefEndDt,jdbcType=TIMESTAMP}
+        <if test="bnefSn != null and bnefSn != '' ">
+        AND     BNEF_SN   <![CDATA[<>]]> #{bnefSn,jdbcType=NUMERIC}
+        </if>
+    </select>
+    
+	<!-- 회원혜택 지급혜택 중복체크 -->
+    <select id="checkMemberBenefitDetailDup" parameterType="com.plgrim.ncp.biz.member.data.MemberBenefitBoDTO" resultType="int">
+        SELECT /* [biz.mbr.benefit.xml][checkMemberBenefitDetailDup][회원혜택 지급혜택 중복체크] */
+				COUNT(*)
+        FROM    MBR_BNEF_DETAIL MBD
+        WHERE   1 = 1
+        AND     BNEF_BEG_DT 		= TO_DATE(#{dtlStrBnefBegDt}||'00','yyyy-mm-dd HH24:miss')
+        AND     BNEF_END_DT 		= TO_DATE(#{dtlStrBnefEndDt}||'59','yyyy-mm-dd HH24:miss')
+        <if test="dtlBnefSn != null and dtlBnefSn != '' ">
+        AND     BNEF_SN             = #{dtlBnefSn,jdbcType=NUMERIC}
+        </if> 
+        <if test="dtlBnefTpCd != null and dtlBnefTpCd != '' ">
+        AND     BNEF_TP_CD          = #{dtlBnefTpCd,jdbcType=VARCHAR}
+        </if>
+        <if test="dtlPrmNo != null and dtlPrmNo != '' ">
+        AND     PRM_NO              = #{dtlPrmNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dtlWebpntValidDaycnt != null and dtlWebpntValidDaycnt != '' ">
+        AND     WEBPNT_VALID_DAYCNT = #{dtlWebpntValidDaycnt,jdbcType=NUMERIC}
+        </if>
+        <if test="dtlWebpntAmt != null and dtlWebpntAmt != '' ">
+        AND     WEBPNT_AMT          = #{dtlWebpntAmt,jdbcType=NUMERIC}
+        </if>
+        <if test="dtlPntAmt != null and dtlPntAmt != '' ">
+        AND     PNT_AMT          = #{dtlPntAmt,jdbcType=NUMERIC}
+        </if>
+    </select>    	
+        
+</mapper>

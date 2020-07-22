@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspGodPrcLdadng" parameterType="dspGodPrcLdadng" resultType="dspGodPrcLdadng">
+		SELECT /* com.plgrim.ncp.base.selectDspGodPrcLdadng		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , MALL_ID
+			 , LANG_CD
+			 , CRNCY_VALID_CPHR
+			 , CRNCY_CD
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , EMP_PRC
+			 , DC_PRC
+			 , APL_PRM_NO
+			 , DC_SECT_CD
+			 , PRM_DTL_TP_CD
+			 , LAST_SALE_PRC
+			 , CPN_PRM_NO
+			 , LAST_SALE_PRC_APL_CPN_PRM_NO
+			 , CPN_DC_SECT_CD
+			 , UDT_DT
+		  FROM DSP_GOD_PRC_LDADNG
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateDspGodPrcLdadng" parameterType="dspGodPrcLdadng">
+		UPDATE /* com.plgrim.ncp.base.updateDspGodPrcLdadng		Generator(Generator)	2018-05-23 */
+		DSP_GOD_PRC_LDADNG SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , CRNCY_VALID_CPHR = #{crncyValidCphr,jdbcType=NUMERIC}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+			 , CSMR_PRC = #{csmrPrc,jdbcType=NUMERIC}
+			 , EMP_PRC = #{empPrc,jdbcType=NUMERIC}
+			 , DC_PRC = #{dcPrc,jdbcType=NUMERIC}
+			 , APL_PRM_NO = #{aplPrmNo,jdbcType=VARCHAR}
+			 , DC_SECT_CD = #{dcSectCd,jdbcType=VARCHAR}
+			 , PRM_DTL_TP_CD = #{prmDtlTpCd,jdbcType=VARCHAR}
+			 , LAST_SALE_PRC = #{lastSalePrc,jdbcType=NUMERIC}
+			 , CPN_PRM_NO = #{cpnPrmNo,jdbcType=VARCHAR}
+			 , LAST_SALE_PRC_APL_CPN_PRM_NO = #{lastSalePrcAplCpnPrmNo,jdbcType=VARCHAR}
+			 , CPN_DC_SECT_CD = #{cpnDcSectCd,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertDspGodPrcLdadng" parameterType="dspGodPrcLdadng">
+		INSERT /* com.plgrim.ncp.base.insertDspGodPrcLdadng		Generator(Generator)	2018-05-23 */
+		INTO   DSP_GOD_PRC_LDADNG (
+			   GOD_NO
+			 , MALL_ID
+			 , LANG_CD
+			 , CRNCY_VALID_CPHR
+			 , CRNCY_CD
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , EMP_PRC
+			 , DC_PRC
+			 , APL_PRM_NO
+			 , DC_SECT_CD
+			 , PRM_DTL_TP_CD
+			 , LAST_SALE_PRC
+			 , CPN_PRM_NO
+			 , LAST_SALE_PRC_APL_CPN_PRM_NO
+			 , CPN_DC_SECT_CD
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{crncyValidCphr,jdbcType=NUMERIC}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{rtlPrc,jdbcType=NUMERIC}
+			 , #{csmrPrc,jdbcType=NUMERIC}
+			 , #{empPrc,jdbcType=NUMERIC}
+			 , #{dcPrc,jdbcType=NUMERIC}
+			 , #{aplPrmNo,jdbcType=VARCHAR}
+			 , #{dcSectCd,jdbcType=VARCHAR}
+			 , #{prmDtlTpCd,jdbcType=VARCHAR}
+			 , #{lastSalePrc,jdbcType=NUMERIC}
+			 , #{cpnPrmNo,jdbcType=VARCHAR}
+			 , #{lastSalePrcAplCpnPrmNo,jdbcType=VARCHAR}
+			 , #{cpnDcSectCd,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspGodPrcLdadng" parameterType="dspGodPrcLdadng">
+		DELETE /* com.plgrim.ncp.base.deleteDspGodPrcLdadng		Generator(Generator)	2018-05-23 */
+		  FROM DSP_GOD_PRC_LDADNG
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

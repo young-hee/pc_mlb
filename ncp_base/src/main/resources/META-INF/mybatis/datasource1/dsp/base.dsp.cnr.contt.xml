@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCnrContt" parameterType="dspCnrContt" resultType="dspCnrContt">
+		SELECT /* com.plgrim.ncp.base.selectDspCnrContt		Generator(Generator)	2018-06-05 */
+			   REV_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , CONTT_TURN
+			 , CONTT_TP_CD
+			 , GOD_NO
+			 , IMG_TURN
+			 , STK_EXPSR_YN
+			 , STK_LBL_CD
+			 , STK_DC_RT
+			 , CONTT_NM
+			 , IMG_NM
+			 , IMG_FILE_NM
+			 , IMG_FILE_URL
+			 , IMG_ALTRTV_CONT
+			 , IMG_OV_FILE_NM
+			 , IMG_OV_FILE_URL
+			 , IMG_OV_ALTRTV_CONT
+			 , IMG_BCRN_COLOR_CD
+			 , IMG_MAP_CONT
+			 , IMG_DSCR
+			 , MOVI_NM
+			 , MOVI_FILE_URL
+			 , MOVI_IMG_FILE_NM
+			 , MOVI_IMG_URL
+			 , MOVI_IMG_ALTRTV_CONT
+			 , MOVI_IMG_DSCR
+			 , HTML_SJ
+			 , HTML_DSCR
+			 , HTML_CONT
+			 , PROMT_SN
+			 , STRND_SN
+			 , OUTPT_TP_CD
+			 , CONTT_CNNC_URL
+			 , SORT_SEQ
+			 , DSP_YN
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , MD_BRND_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , CONTT_SIZE_CD
+			 , MOVI_KND_CD
+		  FROM DSP_CNR_CONTT
+		 WHERE 1 = 1
+	   	   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspCnrContt" parameterType="dspCnrContt">
+		UPDATE /* com.plgrim.ncp.base.updateDspCnrContt		Generator(Generator)	2018-06-05 */
+		DSP_CNR_CONTT SET
+			   CONTT_TP_CD = #{conttTpCd,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , IMG_TURN = #{imgTurn,jdbcType=NUMERIC}
+			 , STK_EXPSR_YN = #{stkExpsrYn,jdbcType=VARCHAR}
+			 , STK_LBL_CD = #{stkLblCd,jdbcType=VARCHAR}
+			 , STK_DC_RT = #{stkDcRt,jdbcType=NUMERIC}
+			 , CONTT_NM = #{conttNm,jdbcType=VARCHAR}
+			 , IMG_NM = #{imgNm,jdbcType=VARCHAR}
+			 , IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+			 , IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+			 , IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+			 , IMG_OV_FILE_NM = #{imgOvFileNm,jdbcType=VARCHAR}
+			 , IMG_OV_FILE_URL = #{imgOvFileUrl,jdbcType=VARCHAR}
+			 , IMG_OV_ALTRTV_CONT = #{imgOvAltrtvCont,jdbcType=VARCHAR}
+			 , IMG_BCRN_COLOR_CD = #{imgBcrnColorCd,jdbcType=VARCHAR}
+			 , IMG_MAP_CONT = #{imgMapCont,jdbcType=CLOB}
+			 , IMG_DSCR = #{imgDscr,jdbcType=VARCHAR}
+			 , MOVI_NM = #{moviNm,jdbcType=VARCHAR}
+			 , MOVI_FILE_URL = #{moviFileUrl,jdbcType=VARCHAR}
+			 , MOVI_IMG_FILE_NM = #{moviImgFileNm,jdbcType=VARCHAR}
+			 , MOVI_IMG_URL = #{moviImgUrl,jdbcType=VARCHAR}
+			 , MOVI_IMG_ALTRTV_CONT = #{moviImgAltrtvCont,jdbcType=VARCHAR}
+			 , MOVI_IMG_DSCR = #{moviImgDscr,jdbcType=VARCHAR}
+			 , HTML_SJ = #{htmlSj,jdbcType=VARCHAR}
+			 , HTML_DSCR = #{htmlDscr,jdbcType=VARCHAR}
+			 , HTML_CONT = #{htmlCont,jdbcType=CLOB}
+			 , PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+			 , STRND_SN = #{strndSn,jdbcType=NUMERIC}
+			 , OUTPT_TP_CD = #{outptTpCd,jdbcType=VARCHAR}
+			 , CONTT_CNNC_URL = #{conttCnncUrl,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+			 , DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+			 , MD_BRND_CD = #{mdBrndCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+			 , CONTT_SIZE_CD = #{conttSizeCd,jdbcType=VARCHAR}
+			 , MOVI_KND_CD = #{moviKndCd,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspCnrContt" parameterType="dspCnrContt">
+		INSERT /* com.plgrim.ncp.base.insertDspCnrContt		Generator(Generator)	2018-06-05 */
+		INTO   DSP_CNR_CONTT (
+			   REV_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , CONTT_TURN
+			 , CONTT_TP_CD
+			 , GOD_NO
+			 , IMG_TURN
+			 , STK_EXPSR_YN
+			 , STK_LBL_CD
+			 , STK_DC_RT
+			 , CONTT_NM
+			 , IMG_NM
+			 , IMG_FILE_NM
+			 , IMG_FILE_URL
+			 , IMG_ALTRTV_CONT
+			 , IMG_OV_FILE_NM
+			 , IMG_OV_FILE_URL
+			 , IMG_OV_ALTRTV_CONT
+			 , IMG_BCRN_COLOR_CD
+			 , IMG_MAP_CONT
+			 , IMG_DSCR
+			 , MOVI_NM
+			 , MOVI_FILE_URL
+			 , MOVI_IMG_FILE_NM
+			 , MOVI_IMG_URL
+			 , MOVI_IMG_ALTRTV_CONT
+			 , MOVI_IMG_DSCR
+			 , HTML_SJ
+			 , HTML_DSCR
+			 , HTML_CONT
+			 , PROMT_SN
+			 , STRND_SN
+			 , OUTPT_TP_CD
+			 , CONTT_CNNC_URL
+			 , SORT_SEQ
+			 , DSP_YN
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , MD_BRND_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , CONTT_SIZE_CD
+			 , MOVI_KND_CD
+		)
+		VALUES (
+			   #{revSn,jdbcType=NUMERIC}
+			 , #{cnrSn,jdbcType=NUMERIC}
+			 , #{cnrSetSn,jdbcType=NUMERIC}
+			 , #{conttTurn,jdbcType=NUMERIC}
+			 , #{conttTpCd,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{imgTurn,jdbcType=NUMERIC}
+			 , #{stkExpsrYn,jdbcType=VARCHAR}
+			 , #{stkLblCd,jdbcType=VARCHAR}
+			 , #{stkDcRt,jdbcType=NUMERIC}
+			 , #{conttNm,jdbcType=VARCHAR}
+			 , #{imgNm,jdbcType=VARCHAR}
+			 , #{imgFileNm,jdbcType=VARCHAR}
+			 , #{imgFileUrl,jdbcType=VARCHAR}
+			 , #{imgAltrtvCont,jdbcType=VARCHAR}
+			 , #{imgOvFileNm,jdbcType=VARCHAR}
+			 , #{imgOvFileUrl,jdbcType=VARCHAR}
+			 , #{imgOvAltrtvCont,jdbcType=VARCHAR}
+			 , #{imgBcrnColorCd,jdbcType=VARCHAR}
+			 , #{imgMapCont,jdbcType=CLOB}
+			 , #{imgDscr,jdbcType=VARCHAR}
+			 , #{moviNm,jdbcType=VARCHAR}
+			 , #{moviFileUrl,jdbcType=VARCHAR}
+			 , #{moviImgFileNm,jdbcType=VARCHAR}
+			 , #{moviImgUrl,jdbcType=VARCHAR}
+			 , #{moviImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{moviImgDscr,jdbcType=VARCHAR}
+			 , #{htmlSj,jdbcType=VARCHAR}
+			 , #{htmlDscr,jdbcType=VARCHAR}
+			 , #{htmlCont,jdbcType=CLOB}
+			 , #{promtSn,jdbcType=NUMERIC}
+			 , #{strndSn,jdbcType=NUMERIC}
+			 , #{outptTpCd,jdbcType=VARCHAR}
+			 , #{conttCnncUrl,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{dspBegDt,jdbcType=TIMESTAMP}
+			 , #{dspEndDt,jdbcType=TIMESTAMP}
+			 , #{mdBrndCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{conttSizeCd,jdbcType=VARCHAR}
+			 , #{moviKndCd,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteDspCnrContt" parameterType="dspCnrContt">
+		DELETE /* com.plgrim.ncp.base.deleteDspCnrContt		Generator(Generator)	2018-06-05 */
+		  FROM DSP_CNR_CONTT
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND CONTT_TURN = #{conttTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

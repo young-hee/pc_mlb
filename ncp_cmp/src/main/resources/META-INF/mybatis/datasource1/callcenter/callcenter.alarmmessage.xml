@@ -1,0 +1,454 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.alarmmessage">
+
+	<resultMap id="alarmResult" type="com.plgrim.ncp.biz.callcenter.result.AlarmResult">
+	
+		<result property="chrgerCnfirmNm" column="chrger_cnfirm_nm" />
+		<result property="cnsltSn" column="cnslt_sn" />
+		<result property="cnsltDetailTurn" column="cnslt_detail_turn" />
+		<result property="promsclDt" column="promscl_dt" />
+		<result property="promsclComptDt" column="promscl_compt_dt" />
+		<result property="promsclStatNm" column="promscl_stat_nm" />		
+		<result property="promsTgtNm" column="proms_tgt_nm" />
+		<result property="promsTel" column="proms_tel" />
+		<result property="promsRegDt" column="proms_reg_dt" />
+		<result property="transRecrId" column="trans_recr_id" />
+		<result property="transRqesterId" column="trans_rqester_id" />
+		
+		<result property="transRequstDt" column="trans_requst_dt" />
+		<result property="transRqesterNm" column="trans_rqester_nm" />
+		<result property="transStatNm" column="trans_stat_nm" />
+		<result property="transTgtNm" column="trans_tgt_nm" />
+		<result property="chrgJobTpNm" column="chrg_job_tp_nm" />
+		<result property="doiNm" column="doi_nm" />
+		<result property="translDelay" column="transl_delay" />
+		<result property="transComptDt" column="trans_compt_dt" />
+		<result property="rqesterCnfirmNn" column="rqester_cnfirm_nm" />
+
+	</resultMap>
+	
+	<select id="selectAlarmMessage" parameterType="com.plgrim.ncp.biz.callcenter.data.AlarmMessageSearchDTO" resultMap="alarmResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT	/* [callcenter.alarmmessage.xml][selectAlarmMessage][상단 팝업 약속콜 조회 CS][Henry] */
+				DECODE(cp.chrger_cnfirm_yn,'Y','확인','미확인') AS chrger_cnfirm_nm
+				, cp.cnslt_sn
+				, cp.cnslt_detail_turn
+				, cp.promscl_dt
+				, cp.promscl_compt_dt
+				, CASE 
+                	WHEN cp.promscl_stat_cd = 'PROMS_WAIT' AND cp.PROMSCL_DT <![CDATA[<]]> SYSDATE THEN '약속지연'
+                    ELSE cd1.cd_nm
+                   END  AS promscl_stat_nm
+				<!-- , cd1.cd_nm AS promscl_stat_nm -->
+				, cp.proms_tgt_nm
+				, DECODE(cp.promscl_nation_no,'82', cp.promscl_area_no || '-' || cp.promscl_tlof_no || '-' || cp.promscl_tlof_wthn_no, cp.promscl_nation_no || '-' || cp.promscl_area_no || '-' || cp.promscl_tlof_no || '-' || cp.promscl_tlof_wthn_no ) AS proms_tel
+				, cp.reg_dt AS proms_reg_dt
+		  FROM	cso_promscl cp
+		  LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = cp.promscl_stat_cd)
+		 WHERE promscl_config_yn = 'Y'
+		   AND cp.regtr_id = #{userId}
+		 <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		   AND cp.reg_dt BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD') + 0.99999
+		 </if>
+		 <if test="promsclStatCd != null and promsclStatCd != ''">
+		   AND cp.promscl_stat_cd = #{promsclStatCd} 
+		 </if>
+		 <if test="chrgerCnfirmYn != null and chrgerCnfirmYn != ''">
+		   AND cp.chrger_cnfirm_yn = #{chrgerCnfirmYn} 
+		 </if>
+		 <if test="promsTgtNm != null and promsTgtNm != ''">
+		   AND cp.proms_tgt_nm LIKE #{promsTgtNm} || '%'
+		 </if>
+		 ORDER BY cp.chrger_cnfirm_yn ASC, cp.promscl_dt  DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectAlarmMessageTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.AlarmMessageSearchDTO" resultType="long">
+		SELECT	/* [callcenter.alarmmessage.xml][selectAlarmMessageTotal][상단 팝업 약속콜 조회 Count CS][Henry] */
+		 COUNT(*)
+		  FROM	cso_promscl cp
+		  LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = cp.promscl_stat_cd)
+		 WHERE promscl_config_yn = 'Y'
+		   AND cp.regtr_id = #{userId}
+		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+			AND cp.reg_dt BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD') + 0.99999
+		</if>
+		<if test="promsclStatCd != null and promsclStatCd != ''">
+			AND cp.promscl_stat_cd = #{promsclStatCd}
+		</if>
+		<if test="chrgerCnfirmYn != null and chrgerCnfirmYn != ''">
+			AND cp.chrger_cnfirm_yn = #{chrgerCnfirmYn}
+		</if>
+		<if test="promsTgtNm != null and promsTgtNm != ''">
+			AND cp.proms_tgt_nm LIKE #{promsTgtNm} || '%'
+		</if>
+		ORDER BY cp.chrger_cnfirm_yn ASC, cp.promscl_dt  DESC
+	</select>
+
+	<!--<select id="selectCounselTransferAlarmMessageList" parameterType="com.plgrim.ncp.biz.callcenter.data.AlarmMessageSearchDTO" resultMap="alarmResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT
+			/* [callcenter.alarmmessage.xml][selectCounselTransferAlarmMessageList][상단 팝업 상담이관  조회 CS][Henry] */
+			DECODE(cct.chrger_cnfirm_yn,'Y','확인','미확인') AS chrger_cnfirm_nm
+			, DECODE(cct.rqester_cnfirm_yn,'Y','확인','미확인') AS rqester_cnfirm_nm
+			, cct.cnslt_sn
+			, cct.cnslt_detail_turn
+			, cct.trans_requst_dt
+			, cct.trans_recr_id
+   			, cct.trans_rqester_id
+			, sa.admin_nm AS trans_rqester_nm
+			, cd1.cd_nm AS trans_stat_nm
+			, cd2.cd_nm AS trans_tgt_nm
+			, cd3.cd_nm AS chrg_job_tp_mm
+			, cd4.cd_nm AS doi_cd
+			, (CASE WHEN cct.trans_compt_dt IS NULL THEN '' ELSE
+			 DECODE(FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5),0, '', FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5) ||'일')||
+			 DECODE(TRUNC(MOD(cct.trans_compt_dt - cct.trans_requst_dt,1)*24),0,'',TRUNC(MOD(cct.trans_compt_dt - cct.trans_requst_dt,1)*24) || ':') ||
+			 TRUNC(MOD((cct.trans_compt_dt - cct.trans_requst_dt)*24,1)*60) END) AS transl_delay 
+			, cct.trans_compt_dt
+		FROM cso_cnslt_trans cct
+			left outer JOIN sys_admin sa ON (sa.admin_id = cct.trans_rqester_id)
+			left outer JOIN sys_cd cd1  ON (cct.trans_stat_cd = cd1.cd) 
+			left outer JOIN sys_cd cd2  ON (cct.trans_tgt_cd = cd2.cd)
+			left outer JOIN sys_cd cd3  ON (cct.chrg_job_tp_cd = cd3.cd)
+			left outer JOIN sys_cd cd4  ON (cct.doi_cd = cd4.cd)
+		WHERE 1=1
+		   <if test="counselTransferAlarmSearchStartDate != null and counselTransferAlarmSearchStartDate != '' and counselTransferAlarmSearchEndDate != null and counselTransferAlarmSearchEndDate != ''">
+		     AND cct.trans_requst_dt BETWEEN TO_DATE(#{counselTransferAlarmSearchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{counselTransferAlarmSearchEndDate}, 'YYYY-MM-DD') + 0.99999
+		   </if>
+		   <if test="transStatCd != null and transStatCd != ''">
+		     AND cct.trans_stat_cd = #{transStatCd}
+		   </if>
+		   <if test="chrgerConfirmYn != null and chrgerConfirmYn != ''">
+		     AND (cct.chrger_cnfirm_yn = #{chrgerConfirmYn} OR cct.rqester_cnfirm_yn = #{chrgerConfirmYn})
+		   </if>		   
+			AND (cct.trans_recr_id = #{regtrId} OR cct.trans_rqester_id = #{regtrId})
+		   <if test="transTgtCd != null and transTgtCd != ''">
+		     	AND trans_tgt_cd = #{transTgtCd}
+		     <if test="transTgtCd == 'CNSLR_TRANS'">
+		     	<if test="transRecrId != null and transRecrId != ''">
+		     		AND cct.trans_recr_id = #{transRecrId}
+		     	</if>
+		     </if>
+		     &lt;!&ndash; <if test="transTgtCd == 'COM_TRANS'">
+		     	AND cct.trans_com_id = #{inputComId}
+		     </if> &ndash;&gt;
+		     <if test="transTgtCd == 'JOB_TRANS'">
+		     	<if test="selectChrgJobTpCd != null and selectChrgJobTpCd != ''">
+		     		AND cct.chrg_job_tp_cd = #{selectChrgJobTpCd}
+		     	</if>
+		     	<if test="selectTransRequstTpCd != null and selectTransRequstTpCd != ''">
+		     		AND cct.trans_requst_tp_Cd = #{selectTransRequstTpCd}
+		     	</if>
+		     </if>
+		 	</if>
+			ORDER BY cct.chrger_cnfirm_yn ASC, cct.trans_requst_dt DESC 
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>-->
+	<select id="selectCounselTransferAlarmMessageList"
+			parameterType="com.plgrim.ncp.biz.callcenter.data.AlarmMessageSearchDTO" resultMap="alarmResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT *
+		FROM (SELECT
+		/* [callcenter.alarmmessage.xml][selectCounselTransferAlarmMessageList][상단 팝업 상담이관 조회 CS][Henry] */
+		DECODE(cct.chrger_cnfirm_yn,'Y','확인','미확인') AS chrger_cnfirm_nm
+		, DECODE(cct.rqester_cnfirm_yn,'Y','확인','미확인') AS rqester_cnfirm_nm
+		, cct.cnslt_sn
+		, cct.cnslt_detail_turn
+		, cct.trans_requst_dt
+		, cct.trans_recr_id
+		, cct.trans_rqester_id
+		, sa.admin_nm AS trans_rqester_nm
+		, cd1.cd_nm AS trans_stat_nm
+		, cd2.cd_nm AS trans_tgt_nm
+		, cd3.cd_nm AS chrg_job_tp_mm
+		, cd4.cd_nm AS doi_cd
+		, (CASE WHEN cct.trans_compt_dt IS NULL THEN '' ELSE
+		DECODE(FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5),0, '',
+		FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5) ||'일')||
+		DECODE(TRUNC(MOD(cct.trans_compt_dt - cct.trans_requst_dt,1)*24),0,'',TRUNC(MOD(cct.trans_compt_dt -
+		cct.trans_requst_dt,1)*24) || ':') ||
+		TRUNC(MOD((cct.trans_compt_dt - cct.trans_requst_dt)*24,1)*60) END) AS transl_delay
+		, cct.trans_compt_dt
+		, cct.chrger_cnfirm_yn
+		FROM cso_cnslt_trans cct
+		left outer JOIN sys_admin sa ON (sa.admin_id = cct.trans_rqester_id)
+		left outer JOIN sys_cd cd1 ON (cct.trans_stat_cd = cd1.cd)
+		left outer JOIN sys_cd cd2 ON (cct.trans_tgt_cd = cd2.cd)
+		left outer JOIN sys_cd cd3 ON (cct.chrg_job_tp_cd = cd3.cd)
+		left outer JOIN sys_cd cd4 ON (cct.doi_cd = cd4.cd)
+		WHERE 1=1
+		<if test="counselTransferAlarmSearchStartDate != null and counselTransferAlarmSearchStartDate != '' and counselTransferAlarmSearchEndDate != null and counselTransferAlarmSearchEndDate != ''">
+			AND cct.trans_requst_dt BETWEEN TO_DATE(#{counselTransferAlarmSearchStartDate}, 'YYYY-MM-DD') AND
+			TO_DATE(#{counselTransferAlarmSearchEndDate}, 'YYYY-MM-DD') + 0.99999
+		</if>
+		<if test="transStatCd != null and transStatCd != ''">
+			AND cct.trans_stat_cd = #{transStatCd}
+		</if>
+		<if test="chrgerConfirmYn != null and chrgerConfirmYn != ''">
+			AND cct.chrger_cnfirm_yn = #{chrgerConfirmYn}
+		</if>
+		AND cct.trans_recr_id = #{regtrId}
+		<if test="transTgtCd != null and transTgtCd != ''">
+			AND trans_tgt_cd = #{transTgtCd}
+			<if test="transTgtCd == 'CNSLR_TRANS'">
+				<if test="transRecrId != null and transRecrId != ''">
+					AND cct.trans_recr_id = #{transRecrId}
+				</if>
+			</if>
+			<!-- <if test="transTgtCd == 'COM_TRANS'">
+                  AND cct.trans_com_id = #{inputComId}
+               </if> -->
+			<if test="transTgtCd == 'JOB_TRANS'">
+				<if test="selectChrgJobTpCd != null and selectChrgJobTpCd != ''">
+					AND cct.chrg_job_tp_cd = #{selectChrgJobTpCd}
+				</if>
+				<if test="selectTransRequstTpCd != null and selectTransRequstTpCd != ''">
+					AND cct.trans_requst_tp_Cd = #{selectTransRequstTpCd}
+				</if>
+			</if>
+		</if>
+		UNION ALL
+
+		SELECT
+		/* [callcenter.alarmmessage.xml][selectCounselTransferAlarmMessageList][상단 팝업 상담이관 조회 CS][Henry] */
+		DECODE(cct.chrger_cnfirm_yn,'Y','확인','미확인') AS chrger_cnfirm_nm
+		, DECODE(cct.rqester_cnfirm_yn,'Y','확인','미확인') AS rqester_cnfirm_nm
+		, cct.cnslt_sn
+		, cct.cnslt_detail_turn
+		, cct.trans_requst_dt
+		, cct.trans_recr_id
+		, cct.trans_rqester_id
+		, sa.admin_nm AS trans_rqester_nm
+		, cd1.cd_nm AS trans_stat_nm
+		, cd2.cd_nm AS trans_tgt_nm
+		, cd3.cd_nm AS chrg_job_tp_mm
+		, cd4.cd_nm AS doi_cd
+		, (CASE WHEN cct.trans_compt_dt IS NULL THEN '' ELSE
+		DECODE(FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5),0, '',
+		FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5) ||'일')||
+		DECODE(TRUNC(MOD(cct.trans_compt_dt - cct.trans_requst_dt,1)*24),0,'',TRUNC(MOD(cct.trans_compt_dt -
+		cct.trans_requst_dt,1)*24) || ':') ||
+		TRUNC(MOD((cct.trans_compt_dt - cct.trans_requst_dt)*24,1)*60) END) AS transl_delay
+		, cct.trans_compt_dt
+		, cct.chrger_cnfirm_yn
+		FROM cso_cnslt_trans cct
+		left outer JOIN sys_admin sa ON (sa.admin_id = cct.trans_rqester_id)
+		left outer JOIN sys_cd cd1 ON (cct.trans_stat_cd = cd1.cd)
+		left outer JOIN sys_cd cd2 ON (cct.trans_tgt_cd = cd2.cd)
+		left outer JOIN sys_cd cd3 ON (cct.chrg_job_tp_cd = cd3.cd)
+		left outer JOIN sys_cd cd4 ON (cct.doi_cd = cd4.cd)
+		WHERE 1=1
+		<if test="counselTransferAlarmSearchStartDate != null and counselTransferAlarmSearchStartDate != '' and counselTransferAlarmSearchEndDate != null and counselTransferAlarmSearchEndDate != ''">
+			AND cct.trans_requst_dt BETWEEN TO_DATE(#{counselTransferAlarmSearchStartDate}, 'YYYY-MM-DD') AND
+			TO_DATE(#{counselTransferAlarmSearchEndDate}, 'YYYY-MM-DD') + 0.99999
+		</if>
+		<if test="transStatCd != null and transStatCd != ''">
+			AND cct.trans_stat_cd = #{transStatCd}
+		</if>
+		<if test="chrgerConfirmYn != null and chrgerConfirmYn != ''">
+			AND cct.rqester_cnfirm_yn = #{chrgerConfirmYn}
+		</if>
+		AND cct.trans_rqester_id = #{regtrId}
+		<if test="transTgtCd != null and transTgtCd != ''">
+			AND trans_tgt_cd = #{transTgtCd}
+			<if test="transTgtCd == 'CNSLR_TRANS'">
+				<if test="transRecrId != null and transRecrId != ''">
+					AND cct.trans_recr_id = #{transRecrId}
+				</if>
+			</if>
+			<!-- <if test="transTgtCd == 'COM_TRANS'">
+                  AND cct.trans_com_id = #{inputComId}
+               </if> -->
+			<if test="transTgtCd == 'JOB_TRANS'">
+				<if test="selectChrgJobTpCd != null and selectChrgJobTpCd != ''">
+					AND cct.chrg_job_tp_cd = #{selectChrgJobTpCd}
+				</if>
+				<if test="selectTransRequstTpCd != null and selectTransRequstTpCd != ''">
+					AND cct.trans_requst_tp_Cd = #{selectTransRequstTpCd}
+				</if>
+			</if>
+		</if>
+		)
+		ORDER BY chrger_cnfirm_yn ASC, trans_requst_dt DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	<select id="selectCounselTransferAlarmMessageListTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.AlarmMessageSearchDTO" resultType="long">
+		SELECT COUNT(*)
+		FROM (SELECT
+		/* [callcenter.alarmmessage.xml][selectCounselTransferAlarmMessageList][상단 팝업 상담이관 조회 CS][Henry] */
+		DECODE(cct.chrger_cnfirm_yn,'Y','확인','미확인') AS chrger_cnfirm_nm
+		, DECODE(cct.rqester_cnfirm_yn,'Y','확인','미확인') AS rqester_cnfirm_nm
+		, cct.cnslt_sn
+		, cct.cnslt_detail_turn
+		, cct.trans_requst_dt
+		, cct.trans_recr_id
+		, cct.trans_rqester_id
+		, sa.admin_nm AS trans_rqester_nm
+		, cd1.cd_nm AS trans_stat_nm
+		, cd2.cd_nm AS trans_tgt_nm
+		, cd3.cd_nm AS chrg_job_tp_mm
+		, cd4.cd_nm AS doi_cd
+		, (CASE WHEN cct.trans_compt_dt IS NULL THEN '' ELSE
+		DECODE(FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5),0, '',
+		FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5) ||'일')||
+		DECODE(TRUNC(MOD(cct.trans_compt_dt - cct.trans_requst_dt,1)*24),0,'',TRUNC(MOD(cct.trans_compt_dt -
+		cct.trans_requst_dt,1)*24) || ':') ||
+		TRUNC(MOD((cct.trans_compt_dt - cct.trans_requst_dt)*24,1)*60) END) AS transl_delay
+		, cct.trans_compt_dt
+		, cct.chrger_cnfirm_yn
+		FROM cso_cnslt_trans cct
+		left outer JOIN sys_admin sa ON (sa.admin_id = cct.trans_rqester_id)
+		left outer JOIN sys_cd cd1 ON (cct.trans_stat_cd = cd1.cd)
+		left outer JOIN sys_cd cd2 ON (cct.trans_tgt_cd = cd2.cd)
+		left outer JOIN sys_cd cd3 ON (cct.chrg_job_tp_cd = cd3.cd)
+		left outer JOIN sys_cd cd4 ON (cct.doi_cd = cd4.cd)
+		WHERE 1=1
+		<if test="counselTransferAlarmSearchStartDate != null and counselTransferAlarmSearchStartDate != '' and counselTransferAlarmSearchEndDate != null and counselTransferAlarmSearchEndDate != ''">
+			AND cct.trans_requst_dt BETWEEN TO_DATE(#{counselTransferAlarmSearchStartDate}, 'YYYY-MM-DD') AND
+			TO_DATE(#{counselTransferAlarmSearchEndDate}, 'YYYY-MM-DD') + 0.99999
+		</if>
+		<if test="transStatCd != null and transStatCd != ''">
+			AND cct.trans_stat_cd = #{transStatCd}
+		</if>
+		<if test="chrgerConfirmYn != null and chrgerConfirmYn != ''">
+			AND cct.chrger_cnfirm_yn = #{chrgerConfirmYn}
+		</if>
+		AND cct.trans_recr_id = #{regtrId}
+		<if test="transTgtCd != null and transTgtCd != ''">
+			AND trans_tgt_cd = #{transTgtCd}
+			<if test="transTgtCd == 'CNSLR_TRANS'">
+				<if test="transRecrId != null and transRecrId != ''">
+					AND cct.trans_recr_id = #{transRecrId}
+				</if>
+			</if>
+			<!-- <if test="transTgtCd == 'COM_TRANS'">
+                  AND cct.trans_com_id = #{inputComId}
+               </if> -->
+			<if test="transTgtCd == 'JOB_TRANS'">
+				<if test="selectChrgJobTpCd != null and selectChrgJobTpCd != ''">
+					AND cct.chrg_job_tp_cd = #{selectChrgJobTpCd}
+				</if>
+				<if test="selectTransRequstTpCd != null and selectTransRequstTpCd != ''">
+					AND cct.trans_requst_tp_Cd = #{selectTransRequstTpCd}
+				</if>
+			</if>
+		</if>
+		UNION ALL
+
+		SELECT
+		/* [callcenter.alarmmessage.xml][selectCounselTransferAlarmMessageList][상단 팝업 상담이관 조회 CS][Henry] */
+		DECODE(cct.chrger_cnfirm_yn,'Y','확인','미확인') AS chrger_cnfirm_nm
+		, DECODE(cct.rqester_cnfirm_yn,'Y','확인','미확인') AS rqester_cnfirm_nm
+		, cct.cnslt_sn
+		, cct.cnslt_detail_turn
+		, cct.trans_requst_dt
+		, cct.trans_recr_id
+		, cct.trans_rqester_id
+		, sa.admin_nm AS trans_rqester_nm
+		, cd1.cd_nm AS trans_stat_nm
+		, cd2.cd_nm AS trans_tgt_nm
+		, cd3.cd_nm AS chrg_job_tp_mm
+		, cd4.cd_nm AS doi_cd
+		, (CASE WHEN cct.trans_compt_dt IS NULL THEN '' ELSE
+		DECODE(FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5),0, '',
+		FLOOR(MOD(MONTHS_BETWEEN(cct.trans_compt_dt,cct.trans_requst_dt),1)*30.5) ||'일')||
+		DECODE(TRUNC(MOD(cct.trans_compt_dt - cct.trans_requst_dt,1)*24),0,'',TRUNC(MOD(cct.trans_compt_dt -
+		cct.trans_requst_dt,1)*24) || ':') ||
+		TRUNC(MOD((cct.trans_compt_dt - cct.trans_requst_dt)*24,1)*60) END) AS transl_delay
+		, cct.trans_compt_dt
+		, cct.chrger_cnfirm_yn
+		FROM cso_cnslt_trans cct
+		left outer JOIN sys_admin sa ON (sa.admin_id = cct.trans_rqester_id)
+		left outer JOIN sys_cd cd1 ON (cct.trans_stat_cd = cd1.cd)
+		left outer JOIN sys_cd cd2 ON (cct.trans_tgt_cd = cd2.cd)
+		left outer JOIN sys_cd cd3 ON (cct.chrg_job_tp_cd = cd3.cd)
+		left outer JOIN sys_cd cd4 ON (cct.doi_cd = cd4.cd)
+		WHERE 1=1
+		<if test="counselTransferAlarmSearchStartDate != null and counselTransferAlarmSearchStartDate != '' and counselTransferAlarmSearchEndDate != null and counselTransferAlarmSearchEndDate != ''">
+			AND cct.trans_requst_dt BETWEEN TO_DATE(#{counselTransferAlarmSearchStartDate}, 'YYYY-MM-DD') AND
+			TO_DATE(#{counselTransferAlarmSearchEndDate}, 'YYYY-MM-DD') + 0.99999
+		</if>
+		<if test="transStatCd != null and transStatCd != ''">
+			AND cct.trans_stat_cd = #{transStatCd}
+		</if>
+		<if test="chrgerConfirmYn != null and chrgerConfirmYn != ''">
+			AND cct.rqester_cnfirm_yn = #{chrgerConfirmYn}
+		</if>
+		AND cct.trans_rqester_id = #{regtrId}
+		<if test="transTgtCd != null and transTgtCd != ''">
+			AND trans_tgt_cd = #{transTgtCd}
+			<if test="transTgtCd == 'CNSLR_TRANS'">
+				<if test="transRecrId != null and transRecrId != ''">
+					AND cct.trans_recr_id = #{transRecrId}
+				</if>
+			</if>
+			<!-- <if test="transTgtCd == 'COM_TRANS'">
+                  AND cct.trans_com_id = #{inputComId}
+               </if> -->
+			<if test="transTgtCd == 'JOB_TRANS'">
+				<if test="selectChrgJobTpCd != null and selectChrgJobTpCd != ''">
+					AND cct.chrg_job_tp_cd = #{selectChrgJobTpCd}
+				</if>
+				<if test="selectTransRequstTpCd != null and selectTransRequstTpCd != ''">
+					AND cct.trans_requst_tp_Cd = #{selectTransRequstTpCd}
+				</if>
+			</if>
+		</if>
+		)
+	</select>
+
+	<select id="selectTransferAlarmCount" parameterType="String" resultType="int">
+		SELECT SUM(count) AS count
+		  FROM (SELECT COUNT(*) AS count
+		          FROM cso_cnslt_trans
+		         WHERE chrger_cnfirm_yn='N'
+		           AND trans_recr_id=#{loginId}
+		
+		        UNION ALL
+		
+		        SELECT COUNT(*) AS count
+		          FROM cso_cnslt_trans
+		         WHERE RQESTER_CNFIRM_YN='N'
+		           AND TRANS_RQESTER_ID = #{loginId})
+	</select>
+
+	<select id="selectPromiseCallCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		  FROM cso_promscl
+		 WHERE chrger_cnfirm_yn='N'
+		   AND udter_id=#{loginId}
+	</select>
+
+	<select id="selectNotiCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM sys_noti
+		 WHERE NOTI_SECT_CD IN ('BO_NOTI','CS_NOTI')
+		   AND noti_reg_dt > SYSDATE-1
+	</select>
+
+	<update id="updateConfirmInPromiseCall" parameterType="Map">
+		UPDATE cso_promscl
+		SET chrger_cnfirm_yn = 'Y'
+		WHERE cnslt_sn = #{cnsltSn}
+		  AND cnslt_detail_turn = #{cnsltDetailTurn}
+	</update>
+
+	<update id="updateConfirmInTransfer" parameterType="Map">
+		UPDATE cso_cnslt_trans
+		SET 
+		<if test="ConfirmInTransfer == 'Recr'">
+			chrger_cnfirm_yn = 'Y'
+		</if>
+		<if test="ConfirmInTransfer == 'Rqester'">
+			rqester_cnfirm_yn = 'Y'
+		</if>
+		WHERE cnslt_sn = #{cnsltSn}
+		  AND cnslt_detail_turn = #{cnsltDetailTurn}
+	</update>
+
+	
+</mapper>

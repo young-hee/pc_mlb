@@ -1,0 +1,172 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script id="RSV_View" type="text/x-jsrender">
+
+{{if cartList}}
+{{for cartList[0] itemVar="~item"}}
+<tr>
+	<td>
+		<span class="check-skin">
+			{{if ~item.pckageGodTpCd !== 'ADIT_CPST_GOD'}}
+			<input type="checkbox" name="godCheck" id="godCheck_{{:~item.bskGod.godTurn}}" checked="checked" 
+				{{if ~item.sellYn != 'Y' || ~item.invYn != 'Y'}}
+					disabled="disabled"
+				{{/if}}
+			>
+			<span>{{:~messages['cart.js.txt.select']}}	</span>
+			{{/if}}
+		</span>
+	</td>
+	<td class="tleft">
+		<div class="product-info {{if ~item.pckageGodTpCd === 'ADIT_CPST_GOD'}}product-add-set{{/if}}">
+			<div class="product-info-img"><a href="/goods/{{:~item.bskGod.godNo}}/view"><img src="{{:~pimg(~item.imgUrl,'100x100')}}" alt="{{:~messages['cart.js.txt.goods.img']}}" onerror="errorImgShow(this, 100);"></a></div>
+			<input type="hidden" class="recommendProduct" value="{{:~item.god.erpGodNo}}"/>
+            <div class="product-info-text">
+				<div class="product-info-box">
+					<div class="product-more-info">
+						<span class="text-color01">[{{:~messages['cart.js.txt.resve']}}]</span>
+						{{if ~item.pckageGodTpCd === 'ADIT_CPST_GOD'}}
+							<span class="text-color01">[{{:~messages['cart.js.txt.additm']}}]</span>
+						{{/if}}
+						{{if ~item.shopDlvItm === 'Y'}}
+							<span class="text-color01">[{{:~messages['cart.js.txt.shop.dlv']}}]</span>
+						{{/if}}
+					</div>
+					<p class="product-name"><a href="/goods/{{:~item.bskGod.godNo}}/view">{{:~item.god.godNm}}</a></p>
+					<div class="product-price">
+						<span><%-- 가격고려 --%>{{:~otool.commaInAmount(~item.price)}} {{:~messages['common.js.crncy']}}</span>
+					</div>
+				</div>
+				<div class="product-option">
+					{{if ~item.bskGod.pckageGodYn === 'Y' && pckageGodTpCd !== 'ADIT_CPST_GOD'}}
+						<span>
+							{{for ~item.bskCpstGodCnnc itemVar="~citem"}}
+ 								{{if #getIndex()!==0}} , {{/if}} {{:~citem.godNm}} : {{:~citem.colorCd}}
+ 								{{for ~item.bskCpstGodItmCnnc itemVar="~innerItem"}}
+									{{if ~citem.godNo === ~innerItem.godNo}}
+										/ {{:~innerItem.itmNm}}
+									{{/if}}
+								{{/for}} 
+							{{/for}}
+						</span>
+					{{/if}}
+					{{if ~item.bskGod.pckageGodYn !== 'Y' || ~item.pckageGodTpCd === 'ADIT_CPST_GOD'}}
+						<span> {{:~item.god.colorCd}} / {{:~item.godItm.itmNm}}</span>
+					{{/if}}
+					{{if ~item.pckageGodTpCd != 'ADIT_CPST_GOD'}}
+					<a href="#layerPopupOption" data-godturn="{{:~item.bskGod.godTurn}}" data-godno="{{:~item.bskGod.godNo}}" data-itmqty="{{:~item.bskGod.itmQty}}"  class="btn_txt btn_modify d_layer_open"><em>{{:~messages['cart.js.txt.change']}}</em></a>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+		{{if bskPrmType && ~item.relateUrl}}
+			{{if bskPrmType == 'BUNDLE_DC'}}
+				<a href="{{:~item.relateUrl}}" class="bnr-text-promo type01">[{{:~messages['cart.js.txt.bundle']}}] {{:~item.bskPrmNm}}</a>
+			{{else}}
+				<a href="{{:~item.relateUrl}}" class="bnr-text-promo type02">[{{:~messages['cart.js.txt.crs']}}] {{:~item.bskPrmNm}}</a>
+			{{/if}}
+		{{/if}}
+		{{if ~item.shopDlvItm === 'Y'}}
+			<p class="product-info-text02"><span>{{:~messages['cart.js.txt.shop.dlv.msg.1.1']}}</span></p>
+			<p class="product-info-text02"><span>{{:~messages['cart.js.txt.shop.dlv.msg.1.2']}}</span></p>
+		{{/if}}
+	</td>
+	<td>
+		{{if ~item.sellYn == 'Y' && ~item.invYn == 'Y'}}
+		<div class="quantityWrap">
+			<button type="button" class="btMinus" name="itmFigureAdd" onClick="cart.changeQtyCart('{{:~item.bskGod.godTurn}}',-1);">{{:~messages['cart.js.txt.substract']}}</button>
+			<button type="button" class="btPlus" name="itmFigureDel" onClick="cart.changeQtyCart('{{:~item.bskGod.godTurn}}',1);">{{:~messages['cart.js.txt.add']}}</button>
+			<input type="number" class="pdNumber" name="itmFigure" maxlength="5" id="itmFigure_{{:~item.bskGod.godTurn}}" checked="checked" value="{{:~item.bskGod.itmQty}}">
+		</div>
+		<a href="#" class="btn_txt btn_num_save" name="itmFigureApply" onClick="cart.applyQtyCart('RSV','{{:~item.bskGod.godTurn}}');"><em>{{:~messages['cart.js.txt.apply']}}</em></a>
+		{{else}}
+		<div class="quantity-wrap">
+			{{:~item.bskGod.itmQty}}
+		</div>
+		{{/if}}
+	</td>
+	<td>
+		{{if ~item.sellYn == 'Y' && ~item.invYn == 'Y'}}
+		<div id="dcLayerBtnOuter_{{:~item.bskGod.godTurn}}" style="display:none">
+		<span id="totDcTitleInfo_{{:~item.bskGod.godTurn}}">{{:~otool.commaInAmount(~item.cpnAplyDcAmt*~item.bskGod.itmQty)}} {{:~messages['common.js.crncy']}}</span>
+		<div class="tooltip-wrap d_dropdown layer_discount">
+			<button type="button" class="btn_pay_view d_dropdown_sel" {{if !~item.cpnAplyDcAmt}}style="display:none;"{{/if}} id="dcLayerBtn_{{:~item.bskGod.godTurn}}" title="{{:~messages['cart.js.txt.dc.info.detail']}}">{{:~messages['cart.js.txt.tool.tip.open.close']}}</button>
+			<!-- 툴팁 레이어  -->
+			<div class="tooltip-layer" id="dcLayerInfo_{{:~item.bskGod.godTurn}}">
+				<div class="tooltip-cnt">
+					{{if ~item.cpnNo}}
+					<dl>
+						<dt>{{:~item.cpnNm}} </dt>
+						<dd>{{:~otool.commaInAmount(~otool.parseAmount(~item.cpnAplyDcAmt)*~otool.parseAmount(~item.bskGod.itmQty))}} {{:~messages['common.js.crncy']}}</dd>
+					</dl>
+					{{/if}}
+					<dl id="bskDcInfo_{{:~item.bskGod.godTurn}}">
+						<dt class="left"></dt>
+						<dd class="right"></dd>
+					</dl>
+					<dl id="totDcInfo_{{:~item.bskGod.godTurn}}">
+						<dt class="left fw_bold">{{:~messages['cart.js.txt.tot.dc.price']}}</dt>
+						<dd class="right fw_bold">{{:~otool.commaInAmount(~item.cpnAplyDcAmt*~item.bskGod.itmQty)}} {{:~messages['common.js.crncy']}}</dd>
+					</dl>
+				</div>
+				<button type="button" class="tooltip-close d_dropdown_close">{{:~messages['cart.js.txt.close']}}</button>
+			</div>
+		</div>
+		</div>
+		<!-- //툴팁 레이어  -->
+		
+		{{if ~item.godGftList}}
+			{{:~messages['cart.js.txt.gift.offer']}}
+			<div class="tooltip-wrap d_dropdown layer_free_gift">
+				<button type="button" class="btn_pay_view d_dropdown_sel" title="{{:~messages['cart.js.txt.gift.detail']}}">{{:~messages['cart.js.txt.']}}{{:~messages['cart.js.txt.tool.tip.open.close']}}</button>
+				<!-- 툴팁 레이어  -->
+				
+				<div class="tooltip-layer">
+					{{for ~item.godGftList itemVar="~giftItem"}}
+					<div class="tooltip-cnt">
+						<dl>
+							<dt><div class="product-info-img"><span><img src="{{:~pimg(~giftItem.imgUrl,'100x100')}}" alt="{{:~messages['cart.js.txt.gift.img']}}" onerror="errorImgShow(this, 100);"></span></div></dt>
+							<dd>{{:~giftItem.godNm}}</dd>
+						</dl>
+					</div>
+					{{/for}}
+					<button type="button" class="tooltip-close d_dropdown_close">{{:~messages['cart.js.txt.close']}}</button>
+				</div>
+				<!-- //툴팁 레이어  -->
+			</div>
+		{{/if}}
+		{{/if}}
+	</td>
+	<td>
+		{{if ~item.sellYn == 'Y' && ~item.invYn == 'Y'}}
+			<strong class="fw_bold" id="item-price_{{:~item.bskGod.godTurn}}">{{:~otool.commaInAmount(~otool.parseAmount(~item.price)*~otool.parseAmount(~item.bskGod.itmQty))}}{{:~messages['common.js.crncy']}}</strong>
+		{{else}}
+			{{if ~item.sellYn == 'N' }}
+				<strong class="fc_black">{{:~messages['cart.js.txt.sell.stop']}}</strong>
+			{{else}}
+				<strong class="fc_black">{{:~messages['cart.js.txt.sold.out.temp']}}</strong>
+			{{/if}}
+		{{/if}}
+	</td>
+	<td>
+		<a href="#" class="btn_list_del" onClick="cart.deleteCart('RSV','{{:~item.bskGod.godTurn}}');">{{:~messages['cart.js.txt.delete']}}</a>
+	</td>
+</tr>
+{{/for}}
+{{else}}
+	<tr>
+		<td colspan="6" class="no-result">
+			<div class="noProductMs">
+    			<p>{{:~messages['cart.js.txt.caption2']}}</p>
+    			<div class="linkBox">
+        			<a href="javascript:cateLink('MBMA01', '1', 'GNRL_CTGRY', 'MBMA01');">MEN</a>
+					<a href="javascript:cateLink('MBMA02', '1', 'GNRL_CTGRY', 'MBMA02');">WOMEN</a>
+					<a href="javascript:cateLink('MBMA03', '1', 'GNRL_CTGRY', 'MBMA03');">CAP</a>
+					<a href="javascript:cateLink('MBMA10', '1', 'GNRL_CTGRY', 'MBMA10');">SHOES</a>
+					<a href="javascript:cateLink('MBMA04', '1', 'GNRL_CTGRY', 'MBMA04');">ACC</a>
+					<a href="javascript:cateLink('MBMA05', '1', 'GNRL_CTGRY', 'MBMA05');">KIDS</a>
+    			</div>
+			</div>
+		</td>
+	</tr>
+{{/if}}
+</script>

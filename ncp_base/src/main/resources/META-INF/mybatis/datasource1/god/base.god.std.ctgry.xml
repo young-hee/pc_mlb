@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodStdCtgry" parameterType="godStdCtgry" resultType="godStdCtgry">
+		SELECT /* com.plgrim.ncp.base.selectGodStdCtgry		Generator(Generator)	2018-05-23 */
+			   STD_CTGRY_NO
+			 , UPPER_STD_CTGRY_NO
+			 , STD_CTGRY_NM
+			 , CHRG_MD_ADMIN_ID
+			 , SORT_SEQ
+			 , DELETE_YN
+			 , LEAF_CTGRY_YN
+			 , HS_CD
+			 , HS_CD_NM
+			 , PC_SIZE_IMG_SJ
+			 , PC_SIZE_IMG_FILE_URL
+			 , PC_SIZE_IMG_ALTRTV_CONT
+			 , PC_SIZE_IMG_HTML
+			 , MOBILE_SIZE_IMG_SJ
+			 , MOBILE_SIZE_IMG_FILE_URL
+			 , MOBILE_SIZE_IMG_ALTRTV_CONT
+			 , MOBILE_SIZE_IMG_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_STD_CTGRY
+		 WHERE 1 = 1
+	   	   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodStdCtgry" parameterType="godStdCtgry">
+		UPDATE /* com.plgrim.ncp.base.updateGodStdCtgry		Generator(Generator)	2018-05-23 */
+		GOD_STD_CTGRY SET
+			   UPPER_STD_CTGRY_NO = #{upperStdCtgryNo,jdbcType=VARCHAR}
+			 , STD_CTGRY_NM = #{stdCtgryNm,jdbcType=VARCHAR}
+			 , CHRG_MD_ADMIN_ID = #{chrgMdAdminId,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , LEAF_CTGRY_YN = #{leafCtgryYn,jdbcType=VARCHAR}
+			 , HS_CD = #{hsCd,jdbcType=VARCHAR}
+			 , HS_CD_NM = #{hsCdNm,jdbcType=VARCHAR}
+			 , PC_SIZE_IMG_SJ = #{pcSizeImgSj,jdbcType=VARCHAR}
+			 , PC_SIZE_IMG_FILE_URL = #{pcSizeImgFileUrl,jdbcType=VARCHAR}
+			 , PC_SIZE_IMG_ALTRTV_CONT = #{pcSizeImgAltrtvCont,jdbcType=VARCHAR}
+			 , PC_SIZE_IMG_HTML = #{pcSizeImgHtml,jdbcType=VARCHAR}
+			 , MOBILE_SIZE_IMG_SJ = #{mobileSizeImgSj,jdbcType=VARCHAR}
+			 , MOBILE_SIZE_IMG_FILE_URL = #{mobileSizeImgFileUrl,jdbcType=VARCHAR}
+			 , MOBILE_SIZE_IMG_ALTRTV_CONT = #{mobileSizeImgAltrtvCont,jdbcType=VARCHAR}
+			 , MOBILE_SIZE_IMG_HTML = #{mobileSizeImgHtml,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodStdCtgry" parameterType="godStdCtgry">
+		INSERT /* com.plgrim.ncp.base.insertGodStdCtgry		Generator(Generator)	2018-05-23 */
+		INTO   GOD_STD_CTGRY (
+			   STD_CTGRY_NO
+			 , UPPER_STD_CTGRY_NO
+			 , STD_CTGRY_NM
+			 , CHRG_MD_ADMIN_ID
+			 , SORT_SEQ
+			 , DELETE_YN
+			 , LEAF_CTGRY_YN
+			 , HS_CD
+			 , HS_CD_NM
+			 , PC_SIZE_IMG_SJ
+			 , PC_SIZE_IMG_FILE_URL
+			 , PC_SIZE_IMG_ALTRTV_CONT
+			 , PC_SIZE_IMG_HTML
+			 , MOBILE_SIZE_IMG_SJ
+			 , MOBILE_SIZE_IMG_FILE_URL
+			 , MOBILE_SIZE_IMG_ALTRTV_CONT
+			 , MOBILE_SIZE_IMG_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stdCtgryNo,jdbcType=VARCHAR}
+			 , #{upperStdCtgryNo,jdbcType=VARCHAR}
+			 , #{stdCtgryNm,jdbcType=VARCHAR}
+			 , #{chrgMdAdminId,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{leafCtgryYn,jdbcType=VARCHAR}
+			 , #{hsCd,jdbcType=VARCHAR}
+			 , #{hsCdNm,jdbcType=VARCHAR}
+			 , #{pcSizeImgSj,jdbcType=VARCHAR}
+			 , #{pcSizeImgFileUrl,jdbcType=VARCHAR}
+			 , #{pcSizeImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{pcSizeImgHtml,jdbcType=VARCHAR}
+			 , #{mobileSizeImgSj,jdbcType=VARCHAR}
+			 , #{mobileSizeImgFileUrl,jdbcType=VARCHAR}
+			 , #{mobileSizeImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{mobileSizeImgHtml,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodStdCtgry" parameterType="godStdCtgry">
+		DELETE /* com.plgrim.ncp.base.deleteGodStdCtgry		Generator(Generator)	2018-05-23 */
+		  FROM GOD_STD_CTGRY
+		 WHERE 1 = 1
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

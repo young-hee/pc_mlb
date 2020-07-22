@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrLoginLog" parameterType="mbrLoginLog" resultType="mbrLoginLog">
+		SELECT /* com.plgrim.ncp.base.selectMbrLoginLog		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , MBR_LOGIN_CD
+			 , LOG_OCCUR_DT
+			 , LOGIN_IP
+			 , LOGIN_NATION_CD
+			 , INFLOW_URL
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , OS_CD
+			 , MOBILE_APP_SECT_CD
+			 , INFLOW_SN
+			 , LOGIN_MDUL_SECT_CD
+			 , LOGIN_FAILR_PW
+			 , UTID
+		  FROM MBR_LOGIN_LOG
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateMbrLoginLog" parameterType="mbrLoginLog">
+		UPDATE /* com.plgrim.ncp.base.updateMbrLoginLog		Generator(Generator)	2018-05-23 */
+		MBR_LOGIN_LOG SET
+			   MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , MBR_LOGIN_CD = #{mbrLoginCd,jdbcType=VARCHAR}
+			 , LOG_OCCUR_DT = #{logOccurDt,jdbcType=TIMESTAMP}
+			 , LOGIN_IP = #{loginIp,jdbcType=VARCHAR}
+			 , LOGIN_NATION_CD = #{loginNationCd,jdbcType=VARCHAR}
+			 , INFLOW_URL = #{inflowUrl,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , OS_CD = #{osCd,jdbcType=VARCHAR}
+			 , MOBILE_APP_SECT_CD = #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , INFLOW_SN = #{inflowSn,jdbcType=NUMERIC}
+			 , LOGIN_MDUL_SECT_CD = #{loginMdulSectCd,jdbcType=VARCHAR}
+			 , LOGIN_FAILR_PW = #{loginFailrPw,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertMbrLoginLog" parameterType="mbrLoginLog">
+		INSERT /* com.plgrim.ncp.base.insertMbrLoginLog		Generator(Generator)	2018-05-23 */
+		INTO   MBR_LOGIN_LOG (
+			   MBR_NO
+			 , MBR_LOGIN_CD
+			 , LOG_OCCUR_DT
+			 , LOGIN_IP
+			 , LOGIN_NATION_CD
+			 , INFLOW_URL
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , OS_CD
+			 , MOBILE_APP_SECT_CD
+			 , INFLOW_SN
+			 , LOGIN_MDUL_SECT_CD
+			 , LOGIN_FAILR_PW
+			 , UTID
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{mbrLoginCd,jdbcType=VARCHAR}
+			 , #{logOccurDt,jdbcType=TIMESTAMP}
+			 , #{loginIp,jdbcType=VARCHAR}
+			 , #{loginNationCd,jdbcType=VARCHAR}
+			 , #{inflowUrl,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{osCd,jdbcType=VARCHAR}
+			 , #{mobileAppSectCd,jdbcType=VARCHAR}
+			 , #{inflowSn,jdbcType=NUMERIC}
+			 , #{loginMdulSectCd,jdbcType=VARCHAR}
+			 , #{loginFailrPw,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteMbrLoginLog" parameterType="mbrLoginLog">
+		DELETE /* com.plgrim.ncp.base.deleteMbrLoginLog		Generator(Generator)	2018-05-23 */
+		  FROM MBR_LOGIN_LOG
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

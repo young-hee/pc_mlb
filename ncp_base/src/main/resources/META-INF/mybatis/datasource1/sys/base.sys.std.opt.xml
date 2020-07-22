@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysStdOpt" parameterType="sysStdOpt" resultType="sysStdOpt">
+		SELECT /* com.plgrim.ncp.base.selectSysStdOpt		Generator(Generator)	2018-05-23 */
+			   STD_OPT_CD
+			 , OPT_NM
+			 , SORT_SEQ
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_STD_OPT
+		 WHERE 1 = 1
+	   	   AND STD_OPT_CD = #{stdOptCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysStdOpt" parameterType="sysStdOpt">
+		UPDATE /* com.plgrim.ncp.base.updateSysStdOpt		Generator(Generator)	2018-05-23 */
+		SYS_STD_OPT SET
+			   OPT_NM = #{optNm,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND STD_OPT_CD = #{stdOptCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysStdOpt" parameterType="sysStdOpt">
+		INSERT /* com.plgrim.ncp.base.insertSysStdOpt		Generator(Generator)	2018-05-23 */
+		INTO   SYS_STD_OPT (
+			   STD_OPT_CD
+			 , OPT_NM
+			 , SORT_SEQ
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stdOptCd,jdbcType=VARCHAR}
+			 , #{optNm,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysStdOpt" parameterType="sysStdOpt">
+		DELETE /* com.plgrim.ncp.base.deleteSysStdOpt		Generator(Generator)	2018-05-23 */
+		  FROM SYS_STD_OPT
+		 WHERE 1 = 1
+		   AND STD_OPT_CD = #{stdOptCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

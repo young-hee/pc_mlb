@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoGodInq" parameterType="csoGodInq" resultType="csoGodInq">
+		SELECT /* com.plgrim.ncp.base.selectCsoGodInq		Generator(Generator)	2018-05-23 */
+			   GOD_INQ_SN
+			 , DSGN_GRP_NO
+			 , GOD_NO
+			 , INQ_TP_CD
+			 , MBR_NO
+			 , INQ_CSTMR_NM
+			 , INQ_CONT
+			 , INQ_DT
+			 , SECRETSNTNC_YN
+			 , ANS_STAT_CD
+			 , INQIRE_COUNT
+			 , PRCS_COMPT_DT
+			 , DELETE_YN
+			 , CSTMR_EMAIL
+			 , CSTMR_EMAIL_RECPTN_YN
+			 , LANG_CD
+			 , MALL_ID
+			 , DVC_CD
+			 , ANS_EVL_CD
+			 , ANS_EVL_CONT
+			 , ANS_EVL_WRITNG_DT
+			 , ANS_EVL_ADMIN_ANS_CONT
+			 , ANS_EVL_ADMIN_ANS_DT
+			 , STPLAT_IEM_AGR_YN
+			 , STPLAT_CD
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_GOD_INQ
+		 WHERE 1 = 1
+	   	   AND GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoGodInq" parameterType="csoGodInq">
+		UPDATE /* com.plgrim.ncp.base.updateCsoGodInq		Generator(Generator)	2018-05-23 */
+		CSO_GOD_INQ SET
+			   DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , INQ_TP_CD = #{inqTpCd,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , INQ_CSTMR_NM = #{inqCstmrNm,jdbcType=VARCHAR}
+			 , INQ_CONT = #{inqCont,jdbcType=CLOB}
+			 , INQ_DT = #{inqDt,jdbcType=TIMESTAMP}
+			 , SECRETSNTNC_YN = #{secretsntncYn,jdbcType=VARCHAR}
+			 , ANS_STAT_CD = #{ansStatCd,jdbcType=VARCHAR}
+			 , INQIRE_COUNT = #{inqireCount,jdbcType=NUMERIC}
+			 , PRCS_COMPT_DT = #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , CSTMR_EMAIL = #{cstmrEmail,jdbcType=VARCHAR}
+			 , CSTMR_EMAIL_RECPTN_YN = #{cstmrEmailRecptnYn,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , ANS_EVL_CD = #{ansEvlCd,jdbcType=VARCHAR}
+			 , ANS_EVL_CONT = #{ansEvlCont,jdbcType=VARCHAR}
+			 , ANS_EVL_WRITNG_DT = #{ansEvlWritngDt,jdbcType=TIMESTAMP}
+			 , ANS_EVL_ADMIN_ANS_CONT = #{ansEvlAdminAnsCont,jdbcType=VARCHAR}
+			 , ANS_EVL_ADMIN_ANS_DT = #{ansEvlAdminAnsDt,jdbcType=TIMESTAMP}
+			 , STPLAT_IEM_AGR_YN = #{stplatIemAgrYn,jdbcType=VARCHAR}
+			 , STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoGodInq" parameterType="csoGodInq">
+		INSERT /* com.plgrim.ncp.base.insertCsoGodInq		Generator(Generator)	2018-05-23 */
+		INTO   CSO_GOD_INQ (
+			   GOD_INQ_SN
+			 , DSGN_GRP_NO
+			 , GOD_NO
+			 , INQ_TP_CD
+			 , MBR_NO
+			 , INQ_CSTMR_NM
+			 , INQ_CONT
+			 , INQ_DT
+			 , SECRETSNTNC_YN
+			 , ANS_STAT_CD
+			 , INQIRE_COUNT
+			 , PRCS_COMPT_DT
+			 , DELETE_YN
+			 , CSTMR_EMAIL
+			 , CSTMR_EMAIL_RECPTN_YN
+			 , LANG_CD
+			 , MALL_ID
+			 , DVC_CD
+			 , ANS_EVL_CD
+			 , ANS_EVL_CONT
+			 , ANS_EVL_WRITNG_DT
+			 , ANS_EVL_ADMIN_ANS_CONT
+			 , ANS_EVL_ADMIN_ANS_DT
+			 , STPLAT_IEM_AGR_YN
+			 , STPLAT_CD
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godInqSn,jdbcType=NUMERIC}
+			 , #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{inqTpCd,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{inqCstmrNm,jdbcType=VARCHAR}
+			 , #{inqCont,jdbcType=CLOB}
+			 , #{inqDt,jdbcType=TIMESTAMP}
+			 , #{secretsntncYn,jdbcType=VARCHAR}
+			 , #{ansStatCd,jdbcType=VARCHAR}
+			 , #{inqireCount,jdbcType=NUMERIC}
+			 , #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{cstmrEmail,jdbcType=VARCHAR}
+			 , #{cstmrEmailRecptnYn,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{ansEvlCd,jdbcType=VARCHAR}
+			 , #{ansEvlCont,jdbcType=VARCHAR}
+			 , #{ansEvlWritngDt,jdbcType=TIMESTAMP}
+			 , #{ansEvlAdminAnsCont,jdbcType=VARCHAR}
+			 , #{ansEvlAdminAnsDt,jdbcType=TIMESTAMP}
+			 , #{stplatIemAgrYn,jdbcType=VARCHAR}
+			 , #{stplatCd,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoGodInq" parameterType="csoGodInq">
+		DELETE /* com.plgrim.ncp.base.deleteCsoGodInq		Generator(Generator)	2018-05-23 */
+		  FROM CSO_GOD_INQ
+		 WHERE 1 = 1
+		   AND GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

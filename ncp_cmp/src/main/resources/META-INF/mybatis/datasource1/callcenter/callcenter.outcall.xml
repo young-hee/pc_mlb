@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.outcall">
+
+	<resultMap id="outCallResult" type="com.plgrim.ncp.biz.callcenter.result.OutCallResult">
+		<result property="comNm" 				column="COM_NM"/>
+		<result property="comNmKey" 				column="COM_NM_KEY"/>
+		<result property="chrgerNm" 			column="CHRGER_NM"/>
+		<result property="chrgerNmKey" 			column="CHRGER_NM_KEY"/>
+		<result property="cnvrsPhone" 		column="CNVRS_PHONE"/>
+		<result property="cnvrsNationNo" 		column="CNVRS_NATION_NO"/>
+		<result property="cnvrsAreaNo" 			column="CNVRS_AREA_NO"/>
+		<result property="cnvrsTlofNo" 			column="CNVRS_TLOF_NO"/>
+		<result property="cnvrsTlofWthnNo" 		column="CNVRS_TLOF_WTHN_NO"/>
+		<result property="sortSeq" 				column="SORT_SEQ"/>
+		<result property="useYn" 				column="USE_YN"/>
+		<result property="regtrId" 				column="REGTR_ID"/>
+		<result property="regDt" 				column="REG_DT"/>
+		<result property="udterId" 				column="UDTER_ID"/>
+		<result property="udterNm" 				column="UDTER_NM"/>
+		<result property="udtDt" 				column="UDT_DT"/>
+	</resultMap>
+
+
+	<select id="selectOutCall" parameterType="com.plgrim.ncp.biz.callcenter.data.OutCallSearchDTO" resultMap="outCallResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT ccpd.com_nm
+				, ccpd.phon_turn
+				, ccpd.com_nm AS com_nm_key
+				, ccpd.chrger_nm
+				, ccpd.chrger_nm AS chrger_nm_key
+				, nvl(ccpd.cnvrs_area_no,'') || nvl(ccpd.cnvrs_tlof_no,'') || nvl(ccpd.cnvrs_tlof_wthn_no,'') AS cnvrs_phone
+				, ccpd.cnvrs_nation_no
+				, ccpd.cnvrs_area_no
+				, ccpd.cnvrs_tlof_no
+				, ccpd.cnvrs_tlof_wthn_no
+				, ccpd.sort_seq
+				, ccpd.use_yn
+				, ccpd.regtr_id
+				, sa.admin_nm AS regtr_nm
+				, ccpd.reg_dt
+				, ccpd.udter_id
+				, sa2.admin_nm AS udter_nm
+				, ccpd.udt_dt
+		  FROM cso_chgcall_phon_detl ccpd
+		  LEFT OUTER JOIN sys_admin sa ON (ccpd.regtr_id = sa.admin_id)
+		  LEFT OUTER JOIN sys_admin sa2 ON (ccpd.UDTER_ID = sa2.admin_id)
+		 WHERE 1=1
+		 <if test="chrgerNm != '' and chrgerNm != null">
+		 	AND chrger_nm = #{chrgerNm}
+		 </if>
+		 <if test="useYn != '' and useYn != null">
+		 	AND use_yn = #{useYn}
+		 </if>
+		 ORDER BY sort_seq
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	<select id="selectOutCallTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.OutCallSearchDTO" resultType="int">
+		SELECT COUNT(*)
+		FROM cso_chgcall_phon_detl
+		WHERE 1=1
+		<if test="chrgerNm != '' and chrgerNm != null">
+			AND chrger_nm = #{chrgerNm}
+		</if>
+		<if test="useYn != '' and useYn != null">
+			AND use_yn = #{useYn}
+		</if>
+	</select>
+
+
+	<update id="updateOutCall" parameterType="com.plgrim.ncp.biz.callcenter.data.OutCallGridDTO">
+        UPDATE /* com.plgrim.ncp.base.repository.cso.updateCsoChgcallPhonDetl jackie 20150729 */
+        CSO_CHGCALL_PHON_DETL SET
+                 CNVRS_NATION_NO = #{cnvrsNationNo,jdbcType=VARCHAR}
+                ,CNVRS_AREA_NO = #{cnvrsAreaNo,jdbcType=VARCHAR}
+                ,CNVRS_TLOF_NO = #{cnvrsTlofNo,jdbcType=VARCHAR}
+                ,CNVRS_TLOF_WTHN_NO = #{cnvrsTlofWthnNo,jdbcType=VARCHAR}
+                ,CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+                ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                ,USE_YN = #{useYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     COM_NM = #{comNm,jdbcType=VARCHAR}
+        AND     PHON_TURN = #{phonTurn,jdbcType=NUMERIC}
+    </update>
+    
+	<insert id="insertOutCall" parameterType="com.plgrim.ncp.biz.callcenter.data.OutCallGridDTO">
+	    INSERT
+	    INTO CSO_CHGCALL_PHON_DETL
+		(
+	        COM_NM
+	       ,PHON_TURN
+	       ,CNVRS_NATION_NO
+	       ,CNVRS_AREA_NO
+	       ,CNVRS_TLOF_NO
+	       ,CNVRS_TLOF_WTHN_NO
+	       ,CHRGER_NM
+	       ,SORT_SEQ
+	       ,USE_YN
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{comNm,jdbcType=VARCHAR}
+	       ,#{phonTurn,jdbcType=NUMERIC}
+	       ,#{cnvrsNationNo,jdbcType=VARCHAR}
+	       ,#{cnvrsAreaNo,jdbcType=VARCHAR}
+	       ,#{cnvrsTlofNo,jdbcType=VARCHAR}
+	       ,#{cnvrsTlofWthnNo,jdbcType=VARCHAR}
+	       ,#{chrgerNm,jdbcType=VARCHAR}
+	       ,#{sortSeq,jdbcType=NUMERIC}
+	       ,#{useYn,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <delete id="deleteOutCall" parameterType="com.plgrim.ncp.biz.callcenter.data.OutCallGridDTO">
+        DELETE /* com.plgrim.ncp.base.repository.cso.deleteCsoChgcallPhonDetl jackie 20150430 */  
+        FROM CSO_CHGCALL_PHON_DETL 
+        WHERE   1 = 1
+        AND     COM_NM = #{comNmKey,jdbcType=VARCHAR}
+        AND     CHRGER_NM = #{chrgerNmKey,jdbcType=VARCHAR}
+    </delete>
+
+	<select id="selectCtiOutCall" resultMap="outCallResult">
+		SELECT	com_nm
+				, chrger_nm
+				, cnvrs_area_no
+				, cnvrs_tlof_no
+				, cnvrs_tlof_wthn_no
+		  FROM	cso_chgcall_phon_detl
+		  WHERE use_yn = 'Y'
+	</select>
+
+
+	<select id="hasOutCallCheck" parameterType="com.plgrim.ncp.biz.callcenter.data.OutCallDTO" resultType="long">
+		SELECT COUNT(*)
+		  FROM CSO_CHGCALL_PHON_DETL
+		 WHERE com_nm = #{comNm}
+           AND (CNVRS_AREA_NO || CNVRS_TLOF_NO || CNVRS_TLOF_WTHN_NO = REPLACE(REPLACE(#{cnvrsPhone}, ' ',''),'-',''))
+	</select>
+
+</mapper>

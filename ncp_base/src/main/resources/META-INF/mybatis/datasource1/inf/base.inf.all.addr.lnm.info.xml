@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfAllAddrLnmInfo" parameterType="infAllAddrLnmInfo" resultType="infAllAddrLnmInfo">
+		SELECT /* com.plgrim.ncp.base.selectInfAllAddrLnmInfo		Generator(Generator)	2018-05-23 */
+			   ROAD_NM_CD
+			 , UNDGRND_YN
+			 , BULD_MNNM
+			 , BULD_SLNO
+			 , LNM_SN
+			 , SUD_CD
+			 , SIDO_NM
+			 , SIGNGU_NM
+			 , LEGALEMDNM
+			 , LEGALRINM
+			 , MTN_YN
+			 , LNM_MNNM
+			 , LNM_SLNO
+			 , MVMT_RESN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_ALL_ADDR_LNM_INFO
+		 WHERE 1 = 1
+	   	   AND ROAD_NM_CD = #{roadNmCd,jdbcType=VARCHAR}
+		   AND UNDGRND_YN = #{undgrndYn,jdbcType=VARCHAR}
+		   AND BULD_MNNM = #{buldMnnm,jdbcType=NUMERIC}
+		   AND BULD_SLNO = #{buldSlno,jdbcType=NUMERIC}
+		   AND LNM_SN = #{lnmSn,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateInfAllAddrLnmInfo" parameterType="infAllAddrLnmInfo">
+		UPDATE /* com.plgrim.ncp.base.updateInfAllAddrLnmInfo		Generator(Generator)	2018-05-23 */
+		INF_ALL_ADDR_LNM_INFO SET
+			   SUD_CD = #{sudCd,jdbcType=VARCHAR}
+			 , SIDO_NM = #{sidoNm,jdbcType=VARCHAR}
+			 , SIGNGU_NM = #{signguNm,jdbcType=VARCHAR}
+			 , LEGALEMDNM = #{legalemdnm,jdbcType=VARCHAR}
+			 , LEGALRINM = #{legalrinm,jdbcType=VARCHAR}
+			 , MTN_YN = #{mtnYn,jdbcType=VARCHAR}
+			 , LNM_MNNM = #{lnmMnnm,jdbcType=NUMERIC}
+			 , LNM_SLNO = #{lnmSlno,jdbcType=NUMERIC}
+			 , MVMT_RESN_CD = #{mvmtResnCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ROAD_NM_CD = #{roadNmCd,jdbcType=VARCHAR}
+		   AND UNDGRND_YN = #{undgrndYn,jdbcType=VARCHAR}
+		   AND BULD_MNNM = #{buldMnnm,jdbcType=NUMERIC}
+		   AND BULD_SLNO = #{buldSlno,jdbcType=NUMERIC}
+		   AND LNM_SN = #{lnmSn,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertInfAllAddrLnmInfo" parameterType="infAllAddrLnmInfo">
+		INSERT /* com.plgrim.ncp.base.insertInfAllAddrLnmInfo		Generator(Generator)	2018-05-23 */
+		INTO   INF_ALL_ADDR_LNM_INFO (
+			   ROAD_NM_CD
+			 , UNDGRND_YN
+			 , BULD_MNNM
+			 , BULD_SLNO
+			 , LNM_SN
+			 , SUD_CD
+			 , SIDO_NM
+			 , SIGNGU_NM
+			 , LEGALEMDNM
+			 , LEGALRINM
+			 , MTN_YN
+			 , LNM_MNNM
+			 , LNM_SLNO
+			 , MVMT_RESN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{roadNmCd,jdbcType=VARCHAR}
+			 , #{undgrndYn,jdbcType=VARCHAR}
+			 , #{buldMnnm,jdbcType=NUMERIC}
+			 , #{buldSlno,jdbcType=NUMERIC}
+			 , #{lnmSn,jdbcType=VARCHAR}
+			 , #{sudCd,jdbcType=VARCHAR}
+			 , #{sidoNm,jdbcType=VARCHAR}
+			 , #{signguNm,jdbcType=VARCHAR}
+			 , #{legalemdnm,jdbcType=VARCHAR}
+			 , #{legalrinm,jdbcType=VARCHAR}
+			 , #{mtnYn,jdbcType=VARCHAR}
+			 , #{lnmMnnm,jdbcType=NUMERIC}
+			 , #{lnmSlno,jdbcType=NUMERIC}
+			 , #{mvmtResnCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfAllAddrLnmInfo" parameterType="infAllAddrLnmInfo">
+		DELETE /* com.plgrim.ncp.base.deleteInfAllAddrLnmInfo		Generator(Generator)	2018-05-23 */
+		  FROM INF_ALL_ADDR_LNM_INFO
+		 WHERE 1 = 1
+		   AND ROAD_NM_CD = #{roadNmCd,jdbcType=VARCHAR}
+		   AND UNDGRND_YN = #{undgrndYn,jdbcType=VARCHAR}
+		   AND BULD_MNNM = #{buldMnnm,jdbcType=NUMERIC}
+		   AND BULD_SLNO = #{buldSlno,jdbcType=NUMERIC}
+		   AND LNM_SN = #{lnmSn,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

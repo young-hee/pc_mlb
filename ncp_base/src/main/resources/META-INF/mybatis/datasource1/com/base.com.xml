@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCom" parameterType="com" resultType="com">
+		SELECT /* com.plgrim.ncp.base.selectCom		Generator(Generator)	2018-05-23 */
+			   COM_ID
+			 , COM_STAT_CD
+			 , ONLNE_MANAGE_COM_YN
+			 , DELETE_YN
+			 , COM_TP_CD
+			 , COM_DETAIL_TP_CD
+			 , TAXAT_TP_CD
+			 , COM_NM
+			 , COM_URL
+			 , RPRSTIV_NM
+			 , RPRSTIV_BRTHDY
+			 , KR_CPR_REG_NO
+			 , KR_BMAN_REG_NO
+			 , RPRST_EMAIL
+			 , TPINDU_NM
+			 , BIZCND_NM
+			 , NATION_CD
+			 , SIDO_CD
+			 , LNM_ADDR_POST_NO
+			 , LNM_ADDR_BASE_ADDR
+			 , LNM_ADDR_DETAIL_ADDR
+			 , RD_ADDR_POST_NO
+			 , RD_ADDR_BASE_ADDR
+			 , RD_ADDR_DETAIL_ADDR
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , FAX_NATION_NO
+			 , FAX_AREA_NO
+			 , FAX_TLOF_NO
+			 , FAX_TLOF_WTHN_NO
+			 , CONTR_BEG_DT
+			 , CONTR_END_DT
+			 , FEE_RT
+			 , DEAL_BNK_CD
+			 , BNK_ACCT_NO
+			 , ACNTHLDR_NM
+			 , CAL_DAY
+			 , OVSEA_DLV_PSB_YN
+			 , CHRGER_NM
+			 , CHRGER_CLSF
+			 , CHRGER_EMAIL
+			 , CHRGER_TEL_NATION_NO
+			 , CHRGER_TEL_AREA_NO
+			 , CHRGER_TEL_TLOF_NO
+			 , CHRGER_TEL_TLOF_WTHN_NO
+			 , CHRGER_MOBIL_NATION_NO
+			 , CHRGER_MOBIL_AREA_NO
+			 , CHRGER_MOBIL_TLOF_NO
+			 , CHRGER_MOBIL_TLOF_WTHN_NO
+			 , COM_PRIO_RANK
+			 , MDG_COM_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateCom" parameterType="com">
+		UPDATE /* com.plgrim.ncp.base.updateCom		Generator(Generator)	2018-05-23 */
+		COM SET
+			   COM_STAT_CD = #{comStatCd,jdbcType=VARCHAR}
+			 , ONLNE_MANAGE_COM_YN = #{onlneManageComYn,jdbcType=VARCHAR}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , COM_TP_CD = #{comTpCd,jdbcType=VARCHAR}
+			 , COM_DETAIL_TP_CD = #{comDetailTpCd,jdbcType=VARCHAR}
+			 , TAXAT_TP_CD = #{taxatTpCd,jdbcType=VARCHAR}
+			 , COM_NM = #{comNm,jdbcType=VARCHAR}
+			 , COM_URL = #{comUrl,jdbcType=VARCHAR}
+			 , RPRSTIV_NM = #{rprstivNm,jdbcType=VARCHAR}
+			 , RPRSTIV_BRTHDY = #{rprstivBrthdy,jdbcType=VARCHAR}
+			 , KR_CPR_REG_NO = #{krCprRegNo,jdbcType=VARCHAR}
+			 , KR_BMAN_REG_NO = #{krBmanRegNo,jdbcType=VARCHAR}
+			 , RPRST_EMAIL = #{rprstEmail,jdbcType=VARCHAR}
+			 , TPINDU_NM = #{tpinduNm,jdbcType=VARCHAR}
+			 , BIZCND_NM = #{bizcndNm,jdbcType=VARCHAR}
+			 , NATION_CD = #{nationCd,jdbcType=VARCHAR}
+			 , SIDO_CD = #{sidoCd,jdbcType=VARCHAR}
+			 , LNM_ADDR_POST_NO = #{lnmAddrPostNo,jdbcType=VARCHAR}
+			 , LNM_ADDR_BASE_ADDR = #{lnmAddrBaseAddr,jdbcType=VARCHAR}
+			 , LNM_ADDR_DETAIL_ADDR = #{lnmAddrDetailAddr,jdbcType=VARCHAR}
+			 , RD_ADDR_POST_NO = #{rdAddrPostNo,jdbcType=VARCHAR}
+			 , RD_ADDR_BASE_ADDR = #{rdAddrBaseAddr,jdbcType=VARCHAR}
+			 , RD_ADDR_DETAIL_ADDR = #{rdAddrDetailAddr,jdbcType=VARCHAR}
+			 , TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+			 , TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , FAX_NATION_NO = #{faxNationNo,jdbcType=VARCHAR}
+			 , FAX_AREA_NO = #{faxAreaNo,jdbcType=VARCHAR}
+			 , FAX_TLOF_NO = #{faxTlofNo,jdbcType=VARCHAR}
+			 , FAX_TLOF_WTHN_NO = #{faxTlofWthnNo,jdbcType=VARCHAR}
+			 , CONTR_BEG_DT = #{contrBegDt,jdbcType=TIMESTAMP}
+			 , CONTR_END_DT = #{contrEndDt,jdbcType=TIMESTAMP}
+			 , FEE_RT = #{feeRt,jdbcType=NUMERIC}
+			 , DEAL_BNK_CD = #{dealBnkCd,jdbcType=VARCHAR}
+			 , BNK_ACCT_NO = #{bnkAcctNo,jdbcType=VARCHAR}
+			 , ACNTHLDR_NM = #{acnthldrNm,jdbcType=VARCHAR}
+			 , CAL_DAY = #{calDay,jdbcType=VARCHAR}
+			 , OVSEA_DLV_PSB_YN = #{ovseaDlvPsbYn,jdbcType=VARCHAR}
+			 , CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+			 , CHRGER_CLSF = #{chrgerClsf,jdbcType=VARCHAR}
+			 , CHRGER_EMAIL = #{chrgerEmail,jdbcType=VARCHAR}
+			 , CHRGER_TEL_NATION_NO = #{chrgerTelNationNo,jdbcType=VARCHAR}
+			 , CHRGER_TEL_AREA_NO = #{chrgerTelAreaNo,jdbcType=VARCHAR}
+			 , CHRGER_TEL_TLOF_NO = #{chrgerTelTlofNo,jdbcType=VARCHAR}
+			 , CHRGER_TEL_TLOF_WTHN_NO = #{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_NATION_NO = #{chrgerMobilNationNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_AREA_NO = #{chrgerMobilAreaNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_TLOF_NO = #{chrgerMobilTlofNo,jdbcType=VARCHAR}
+			 , CHRGER_MOBIL_TLOF_WTHN_NO = #{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , COM_PRIO_RANK = #{comPrioRank,jdbcType=NUMERIC}
+			 , MDG_COM_ID = #{mdgComId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertCom" parameterType="com">
+		INSERT /* com.plgrim.ncp.base.insertCom		Generator(Generator)	2018-05-23 */
+		INTO   COM (
+			   COM_ID
+			 , COM_STAT_CD
+			 , ONLNE_MANAGE_COM_YN
+			 , DELETE_YN
+			 , COM_TP_CD
+			 , COM_DETAIL_TP_CD
+			 , TAXAT_TP_CD
+			 , COM_NM
+			 , COM_URL
+			 , RPRSTIV_NM
+			 , RPRSTIV_BRTHDY
+			 , KR_CPR_REG_NO
+			 , KR_BMAN_REG_NO
+			 , RPRST_EMAIL
+			 , TPINDU_NM
+			 , BIZCND_NM
+			 , NATION_CD
+			 , SIDO_CD
+			 , LNM_ADDR_POST_NO
+			 , LNM_ADDR_BASE_ADDR
+			 , LNM_ADDR_DETAIL_ADDR
+			 , RD_ADDR_POST_NO
+			 , RD_ADDR_BASE_ADDR
+			 , RD_ADDR_DETAIL_ADDR
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , FAX_NATION_NO
+			 , FAX_AREA_NO
+			 , FAX_TLOF_NO
+			 , FAX_TLOF_WTHN_NO
+			 , CONTR_BEG_DT
+			 , CONTR_END_DT
+			 , FEE_RT
+			 , DEAL_BNK_CD
+			 , BNK_ACCT_NO
+			 , ACNTHLDR_NM
+			 , CAL_DAY
+			 , OVSEA_DLV_PSB_YN
+			 , CHRGER_NM
+			 , CHRGER_CLSF
+			 , CHRGER_EMAIL
+			 , CHRGER_TEL_NATION_NO
+			 , CHRGER_TEL_AREA_NO
+			 , CHRGER_TEL_TLOF_NO
+			 , CHRGER_TEL_TLOF_WTHN_NO
+			 , CHRGER_MOBIL_NATION_NO
+			 , CHRGER_MOBIL_AREA_NO
+			 , CHRGER_MOBIL_TLOF_NO
+			 , CHRGER_MOBIL_TLOF_WTHN_NO
+			 , COM_PRIO_RANK
+			 , MDG_COM_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comId,jdbcType=VARCHAR}
+			 , #{comStatCd,jdbcType=VARCHAR}
+			 , #{onlneManageComYn,jdbcType=VARCHAR}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{comTpCd,jdbcType=VARCHAR}
+			 , #{comDetailTpCd,jdbcType=VARCHAR}
+			 , #{taxatTpCd,jdbcType=VARCHAR}
+			 , #{comNm,jdbcType=VARCHAR}
+			 , #{comUrl,jdbcType=VARCHAR}
+			 , #{rprstivNm,jdbcType=VARCHAR}
+			 , #{rprstivBrthdy,jdbcType=VARCHAR}
+			 , #{krCprRegNo,jdbcType=VARCHAR}
+			 , #{krBmanRegNo,jdbcType=VARCHAR}
+			 , #{rprstEmail,jdbcType=VARCHAR}
+			 , #{tpinduNm,jdbcType=VARCHAR}
+			 , #{bizcndNm,jdbcType=VARCHAR}
+			 , #{nationCd,jdbcType=VARCHAR}
+			 , #{sidoCd,jdbcType=VARCHAR}
+			 , #{lnmAddrPostNo,jdbcType=VARCHAR}
+			 , #{lnmAddrBaseAddr,jdbcType=VARCHAR}
+			 , #{lnmAddrDetailAddr,jdbcType=VARCHAR}
+			 , #{rdAddrPostNo,jdbcType=VARCHAR}
+			 , #{rdAddrBaseAddr,jdbcType=VARCHAR}
+			 , #{rdAddrDetailAddr,jdbcType=VARCHAR}
+			 , #{telNationNo,jdbcType=VARCHAR}
+			 , #{telAreaNo,jdbcType=VARCHAR}
+			 , #{telTlofNo,jdbcType=VARCHAR}
+			 , #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , #{faxNationNo,jdbcType=VARCHAR}
+			 , #{faxAreaNo,jdbcType=VARCHAR}
+			 , #{faxTlofNo,jdbcType=VARCHAR}
+			 , #{faxTlofWthnNo,jdbcType=VARCHAR}
+			 , #{contrBegDt,jdbcType=TIMESTAMP}
+			 , #{contrEndDt,jdbcType=TIMESTAMP}
+			 , #{feeRt,jdbcType=NUMERIC}
+			 , #{dealBnkCd,jdbcType=VARCHAR}
+			 , #{bnkAcctNo,jdbcType=VARCHAR}
+			 , #{acnthldrNm,jdbcType=VARCHAR}
+			 , #{calDay,jdbcType=VARCHAR}
+			 , #{ovseaDlvPsbYn,jdbcType=VARCHAR}
+			 , #{chrgerNm,jdbcType=VARCHAR}
+			 , #{chrgerClsf,jdbcType=VARCHAR}
+			 , #{chrgerEmail,jdbcType=VARCHAR}
+			 , #{chrgerTelNationNo,jdbcType=VARCHAR}
+			 , #{chrgerTelAreaNo,jdbcType=VARCHAR}
+			 , #{chrgerTelTlofNo,jdbcType=VARCHAR}
+			 , #{chrgerTelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilNationNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilAreaNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilTlofNo,jdbcType=VARCHAR}
+			 , #{chrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{comPrioRank,jdbcType=NUMERIC}
+			 , #{mdgComId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCom" parameterType="com">
+		DELETE /* com.plgrim.ncp.base.deleteCom		Generator(Generator)	2018-05-23 */
+		  FROM COM
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

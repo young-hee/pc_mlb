@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfSecsnMbrInfoRecptn" parameterType="infSecsnMbrInfoRecptn" resultType="infSecsnMbrInfoRecptn">
+		SELECT /* com.plgrim.ncp.base.selectInfSecsnMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+			   ERP_CSTMR_NO
+			 , SECSN_DT
+			 , REG_DT
+		  FROM INF_SECSN_MBR_INFO_RECPTN
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfSecsnMbrInfoRecptn" parameterType="infSecsnMbrInfoRecptn">
+		UPDATE /* com.plgrim.ncp.base.updateInfSecsnMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+		INF_SECSN_MBR_INFO_RECPTN SET
+			   ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+			 , SECSN_DT = #{secsnDt,jdbcType=TIMESTAMP}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfSecsnMbrInfoRecptn" parameterType="infSecsnMbrInfoRecptn">
+		INSERT /* com.plgrim.ncp.base.insertInfSecsnMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+		INTO   INF_SECSN_MBR_INFO_RECPTN (
+			   ERP_CSTMR_NO
+			 , SECSN_DT
+			 , REG_DT
+		)
+		VALUES (
+			   #{erpCstmrNo,jdbcType=VARCHAR}
+			 , #{secsnDt,jdbcType=TIMESTAMP}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfSecsnMbrInfoRecptn" parameterType="infSecsnMbrInfoRecptn">
+		DELETE /* com.plgrim.ncp.base.deleteInfSecsnMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+		  FROM INF_SECSN_MBR_INFO_RECPTN
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

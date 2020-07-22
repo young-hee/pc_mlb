@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspPromt" parameterType="dspPromt" resultType="dspPromt">
+		SELECT /* com.plgrim.ncp.base.selectDspPromt		Generator(Generator)	2018-05-23 */
+			   PROMT_SN
+			 , PROMT_GRP_SN
+			 , PROMT_NM
+			 , PROMT_DSCR
+			 , PROMT_APRV_STAT_CD
+			 , PROMT_APRV_DT
+			 , PROMT_APRV_REJECT_DT
+			 , PROMT_APRV_REJECT_RESN_CONT
+			 , PROMT_TP_CD
+			 , PROMT_SPRTR_TP_CD
+			 , CHRG_MD_ADMIN_ID
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , DSP_YN
+			 , DSP_PD_EXPSR_YN
+			 , GNB_UPEND_BANNER_EXPSR_YN
+			 , SORT_SEQ
+			 , SPCIFY_URL_DSP_YN
+			 , PROMT_EXPSR_SECT_CD
+			 , DSP_GOD_SORT_STDR_CD
+			 , PC_LIST_EXPSR_CNT_CD
+			 , MOBILE_LIST_EXPSR_CNT_CD
+			 , GOD_EVL_EXPSR_SECT_CD
+			 , IMG_GOD_EVL_PRIO_EXPSR_YN
+			 , PC_GOD_EVL_LIST_QTY
+			 , MOBILE_GOD_EVL_LIST_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_PROMT
+		 WHERE 1 = 1
+	   	   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspPromt" parameterType="dspPromt">
+		UPDATE /* com.plgrim.ncp.base.updateDspPromt		Generator(Generator)	2018-05-23 */
+		DSP_PROMT SET
+			   PROMT_GRP_SN = #{promtGrpSn,jdbcType=NUMERIC}
+			 , PROMT_NM = #{promtNm,jdbcType=VARCHAR}
+			 , PROMT_DSCR = #{promtDscr,jdbcType=VARCHAR}
+			 , PROMT_APRV_STAT_CD = #{promtAprvStatCd,jdbcType=VARCHAR}
+			 , PROMT_APRV_DT = #{promtAprvDt,jdbcType=TIMESTAMP}
+			 , PROMT_APRV_REJECT_DT = #{promtAprvRejectDt,jdbcType=TIMESTAMP}
+			 , PROMT_APRV_REJECT_RESN_CONT = #{promtAprvRejectResnCont,jdbcType=VARCHAR}
+			 , PROMT_TP_CD = #{promtTpCd,jdbcType=VARCHAR}
+			 , PROMT_SPRTR_TP_CD = #{promtSprtrTpCd,jdbcType=VARCHAR}
+			 , CHRG_MD_ADMIN_ID = #{chrgMdAdminId,jdbcType=VARCHAR}
+			 , DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+			 , DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , DSP_PD_EXPSR_YN = #{dspPdExpsrYn,jdbcType=VARCHAR}
+			 , GNB_UPEND_BANNER_EXPSR_YN = #{gnbUpendBannerExpsrYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+			 , PROMT_EXPSR_SECT_CD = #{promtExpsrSectCd,jdbcType=VARCHAR}
+			 , DSP_GOD_SORT_STDR_CD = #{dspGodSortStdrCd,jdbcType=VARCHAR}
+			 , PC_LIST_EXPSR_CNT_CD = #{pcListExpsrCntCd,jdbcType=VARCHAR}
+			 , MOBILE_LIST_EXPSR_CNT_CD = #{mobileListExpsrCntCd,jdbcType=VARCHAR}
+			 , GOD_EVL_EXPSR_SECT_CD = #{godEvlExpsrSectCd,jdbcType=VARCHAR}
+			 , IMG_GOD_EVL_PRIO_EXPSR_YN = #{imgGodEvlPrioExpsrYn,jdbcType=VARCHAR}
+			 , PC_GOD_EVL_LIST_QTY = #{pcGodEvlListQty,jdbcType=NUMERIC}
+			 , MOBILE_GOD_EVL_LIST_QTY = #{mobileGodEvlListQty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspPromt" parameterType="dspPromt">
+		INSERT /* com.plgrim.ncp.base.insertDspPromt		Generator(Generator)	2018-05-23 */
+		INTO   DSP_PROMT (
+			   PROMT_SN
+			 , PROMT_GRP_SN
+			 , PROMT_NM
+			 , PROMT_DSCR
+			 , PROMT_APRV_STAT_CD
+			 , PROMT_APRV_DT
+			 , PROMT_APRV_REJECT_DT
+			 , PROMT_APRV_REJECT_RESN_CONT
+			 , PROMT_TP_CD
+			 , PROMT_SPRTR_TP_CD
+			 , CHRG_MD_ADMIN_ID
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , DSP_YN
+			 , DSP_PD_EXPSR_YN
+			 , GNB_UPEND_BANNER_EXPSR_YN
+			 , SORT_SEQ
+			 , SPCIFY_URL_DSP_YN
+			 , PROMT_EXPSR_SECT_CD
+			 , DSP_GOD_SORT_STDR_CD
+			 , PC_LIST_EXPSR_CNT_CD
+			 , MOBILE_LIST_EXPSR_CNT_CD
+			 , GOD_EVL_EXPSR_SECT_CD
+			 , IMG_GOD_EVL_PRIO_EXPSR_YN
+			 , PC_GOD_EVL_LIST_QTY
+			 , MOBILE_GOD_EVL_LIST_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{promtSn,jdbcType=NUMERIC}
+			 , #{promtGrpSn,jdbcType=NUMERIC}
+			 , #{promtNm,jdbcType=VARCHAR}
+			 , #{promtDscr,jdbcType=VARCHAR}
+			 , #{promtAprvStatCd,jdbcType=VARCHAR}
+			 , #{promtAprvDt,jdbcType=TIMESTAMP}
+			 , #{promtAprvRejectDt,jdbcType=TIMESTAMP}
+			 , #{promtAprvRejectResnCont,jdbcType=VARCHAR}
+			 , #{promtTpCd,jdbcType=VARCHAR}
+			 , #{promtSprtrTpCd,jdbcType=VARCHAR}
+			 , #{chrgMdAdminId,jdbcType=VARCHAR}
+			 , #{dspBegDt,jdbcType=TIMESTAMP}
+			 , #{dspEndDt,jdbcType=TIMESTAMP}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{dspPdExpsrYn,jdbcType=VARCHAR}
+			 , #{gnbUpendBannerExpsrYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{spcifyUrlDspYn,jdbcType=VARCHAR}
+			 , #{promtExpsrSectCd,jdbcType=VARCHAR}
+			 , #{dspGodSortStdrCd,jdbcType=VARCHAR}
+			 , #{pcListExpsrCntCd,jdbcType=VARCHAR}
+			 , #{mobileListExpsrCntCd,jdbcType=VARCHAR}
+			 , #{godEvlExpsrSectCd,jdbcType=VARCHAR}
+			 , #{imgGodEvlPrioExpsrYn,jdbcType=VARCHAR}
+			 , #{pcGodEvlListQty,jdbcType=NUMERIC}
+			 , #{mobileGodEvlListQty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspPromt" parameterType="dspPromt">
+		DELETE /* com.plgrim.ncp.base.deleteDspPromt		Generator(Generator)	2018-05-23 */
+		  FROM DSP_PROMT
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

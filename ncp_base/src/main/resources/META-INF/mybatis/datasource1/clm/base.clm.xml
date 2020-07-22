@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectClm" parameterType="clm" resultType="clm">
+		SELECT /* com.plgrim.ncp.base.selectClm		Generator(Generator)	2018-05-23 */
+			   CLM_NO
+			 , ORD_NO
+			 , CLM_STAT_CD
+			 , PKUP_CLM_YN
+			 , PG_TRNSMIS_TGT_YN
+			 , CLM_TP_CD
+			 , CLM_RESN_CD
+			 , CLM_RESN_CONT
+			 , CLM_DT
+			 , CLM_RCEPT_MTHD_CD
+			 , CLM_PREPROGRS_SECT_CD
+			 , RCEPT_ADMIN_ID
+			 , RCEPT_DT
+			 , COMPT_DT
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_SUM_AMT
+			 , PAY_EXCHG_RT_CRNCY_SUM_AMT
+			 , RTL_PRC_SUM_AMT
+			 , SALE_SUM_AMT
+			 , WEB_DC_SUM_AMT
+			 , EMP_DC_SUM_AMT
+			 , SVC_SUM_AMT
+			 , DLV_CST_SUM_AMT
+			 , PKAG_TAX_SUM_AMT
+			 , ALL_DC_SUM_AMT
+			 , GOD_DC_SUM_AMT
+			 , BUNDLE_DC_SUM_AMT
+			 , CRS_DC_SUM_AMT
+			 , GOD_CPN_DC_SUM_AMT
+			 , BSK_CPN_DC_SUM_AMT
+			 , DLV_CST_CPN_DC_SUM_AMT
+			 , IMDTL_DC_SUM_AMT
+			 , UNITY_PNT_USE_SUM_AMT
+			 , EVT_PNT_USE_SUM_AMT
+			 , WEBPNT_USE_SUM_AMT
+			 , MILE_USE_SUM_AMT
+			 , UNITY_PNT_ACCML_SUM_AMT
+			 , EVT_PNT_ACCML_SUM_AMT
+			 , WEBPNT_ACCML_SUM_AMT
+			 , MILE_ACCML_SUM_AMT
+			 , AFF_COM_ORD_NO
+			 , AFF_COM_ID
+			 , AFF_VRSC_COM_ID
+			 , ADVT_AFF_COM_ID
+			 , GOD_SUMRY
+			 , RCPTFR_REQST_PRCS_CD
+			 , RCPTFR_APRV_NO
+			 , VIRTL_RTGOD_YN
+			 , VIRTL_ORD_NO
+			 , PKG_CRYPTO.DECRYPT(RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+			 , RFD_BNK_CD
+			 , RFD_ACNTHLDR_NM
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CLM
+		 WHERE 1 = 1
+	   	   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateClm" parameterType="clm">
+		UPDATE /* com.plgrim.ncp.base.updateClm		Generator(Generator)	2018-05-23 */
+		CLM SET
+			   ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , CLM_STAT_CD = #{clmStatCd,jdbcType=VARCHAR}
+			 , PKUP_CLM_YN = #{pkupClmYn,jdbcType=VARCHAR}
+			 , PG_TRNSMIS_TGT_YN = #{pgTrnsmisTgtYn,jdbcType=VARCHAR}
+			 , CLM_TP_CD = #{clmTpCd,jdbcType=VARCHAR}
+			 , CLM_RESN_CD = #{clmResnCd,jdbcType=VARCHAR}
+			 , CLM_RESN_CONT = #{clmResnCont,jdbcType=VARCHAR}
+			 , CLM_DT = #{clmDt,jdbcType=TIMESTAMP}
+			 , CLM_RCEPT_MTHD_CD = #{clmRceptMthdCd,jdbcType=VARCHAR}
+			 , CLM_PREPROGRS_SECT_CD = #{clmPreprogrsSectCd,jdbcType=VARCHAR}
+			 , RCEPT_ADMIN_ID = #{rceptAdminId,jdbcType=VARCHAR}
+			 , RCEPT_DT = #{rceptDt,jdbcType=TIMESTAMP}
+			 , COMPT_DT = #{comptDt,jdbcType=TIMESTAMP}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , STDR_CRNCY_SUM_AMT = #{stdrCrncySumAmt,jdbcType=NUMERIC}
+			 , PAY_EXCHG_RT_CRNCY_SUM_AMT = #{payExchgRtCrncySumAmt,jdbcType=NUMERIC}
+			 , RTL_PRC_SUM_AMT = #{rtlPrcSumAmt,jdbcType=NUMERIC}
+			 , SALE_SUM_AMT = #{saleSumAmt,jdbcType=NUMERIC}
+			 , WEB_DC_SUM_AMT = #{webDcSumAmt,jdbcType=NUMERIC}
+			 , EMP_DC_SUM_AMT = #{empDcSumAmt,jdbcType=NUMERIC}
+			 , SVC_SUM_AMT = #{svcSumAmt,jdbcType=NUMERIC}
+			 , DLV_CST_SUM_AMT = #{dlvCstSumAmt,jdbcType=NUMERIC}
+			 , PKAG_TAX_SUM_AMT = #{pkagTaxSumAmt,jdbcType=NUMERIC}
+			 , ALL_DC_SUM_AMT = #{allDcSumAmt,jdbcType=NUMERIC}
+			 , GOD_DC_SUM_AMT = #{godDcSumAmt,jdbcType=NUMERIC}
+			 , BUNDLE_DC_SUM_AMT = #{bundleDcSumAmt,jdbcType=NUMERIC}
+			 , CRS_DC_SUM_AMT = #{crsDcSumAmt,jdbcType=NUMERIC}
+			 , GOD_CPN_DC_SUM_AMT = #{godCpnDcSumAmt,jdbcType=NUMERIC}
+			 , BSK_CPN_DC_SUM_AMT = #{bskCpnDcSumAmt,jdbcType=NUMERIC}
+			 , DLV_CST_CPN_DC_SUM_AMT = #{dlvCstCpnDcSumAmt,jdbcType=NUMERIC}
+			 , IMDTL_DC_SUM_AMT = #{imdtlDcSumAmt,jdbcType=NUMERIC}
+			 , UNITY_PNT_USE_SUM_AMT = #{unityPntUseSumAmt,jdbcType=NUMERIC}
+			 , EVT_PNT_USE_SUM_AMT = #{evtPntUseSumAmt,jdbcType=NUMERIC}
+			 , WEBPNT_USE_SUM_AMT = #{webpntUseSumAmt,jdbcType=NUMERIC}
+			 , MILE_USE_SUM_AMT = #{mileUseSumAmt,jdbcType=NUMERIC}
+			 , UNITY_PNT_ACCML_SUM_AMT = #{unityPntAccmlSumAmt,jdbcType=NUMERIC}
+			 , EVT_PNT_ACCML_SUM_AMT = #{evtPntAccmlSumAmt,jdbcType=NUMERIC}
+			 , WEBPNT_ACCML_SUM_AMT = #{webpntAccmlSumAmt,jdbcType=NUMERIC}
+			 , MILE_ACCML_SUM_AMT = #{mileAccmlSumAmt,jdbcType=NUMERIC}
+			 , AFF_COM_ORD_NO = #{affComOrdNo,jdbcType=VARCHAR}
+			 , AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+			 , AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+			 , ADVT_AFF_COM_ID = #{advtAffComId,jdbcType=VARCHAR}
+			 , GOD_SUMRY = #{godSumry,jdbcType=VARCHAR}
+			 , RCPTFR_REQST_PRCS_CD = #{rcptfrReqstPrcsCd,jdbcType=VARCHAR}
+			 , RCPTFR_APRV_NO = #{rcptfrAprvNo,jdbcType=VARCHAR}
+			 , VIRTL_RTGOD_YN = #{virtlRtgodYn,jdbcType=VARCHAR}
+			 , VIRTL_ORD_NO = #{virtlOrdNo,jdbcType=VARCHAR}
+			 , RFD_BNK_ACCT_NO = PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , RFD_BNK_CD = #{rfdBnkCd,jdbcType=VARCHAR}
+			 , RFD_ACNTHLDR_NM = #{rfdAcnthldrNm,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertClm" parameterType="clm">
+		INSERT /* com.plgrim.ncp.base.insertClm		Generator(Generator)	2018-05-23 */
+		INTO   CLM (
+			   CLM_NO
+			 , BF_CLM_NO
+			 , ORD_NO
+			 , CLM_STAT_CD
+			 , PKUP_CLM_YN
+			 , PG_TRNSMIS_TGT_YN
+			 , CLM_TP_CD
+			 , CLM_RESN_CD
+			 , CLM_RESN_CONT
+			 , CLM_DT
+			 , CLM_RCEPT_MTHD_CD
+			 , CLM_PREPROGRS_SECT_CD
+			 , RCEPT_ADMIN_ID
+			 , RCEPT_DT
+			 , COMPT_DT
+			 , CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_SUM_AMT
+			 , PAY_EXCHG_RT_CRNCY_SUM_AMT
+			 , RTL_PRC_SUM_AMT
+			 , SALE_SUM_AMT
+			 , WEB_DC_SUM_AMT
+			 , EMP_DC_SUM_AMT
+			 , SVC_SUM_AMT
+			 , DLV_CST_SUM_AMT
+			 , PKAG_TAX_SUM_AMT
+			 , ALL_DC_SUM_AMT
+			 , GOD_DC_SUM_AMT
+			 , BUNDLE_DC_SUM_AMT
+			 , CRS_DC_SUM_AMT
+			 , GOD_CPN_DC_SUM_AMT
+			 , BSK_CPN_DC_SUM_AMT
+			 , DLV_CST_CPN_DC_SUM_AMT
+			 , IMDTL_DC_SUM_AMT
+			 , UNITY_PNT_USE_SUM_AMT
+			 , EVT_PNT_USE_SUM_AMT
+			 , WEBPNT_USE_SUM_AMT
+			 , MILE_USE_SUM_AMT
+			 , UNITY_PNT_ACCML_SUM_AMT
+			 , EVT_PNT_ACCML_SUM_AMT
+			 , WEBPNT_ACCML_SUM_AMT
+			 , MILE_ACCML_SUM_AMT
+			 , AFF_COM_ORD_NO
+			 , AFF_COM_ID
+			 , AFF_VRSC_COM_ID
+			 , ADVT_AFF_COM_ID
+			 , GOD_SUMRY
+			 , RCPTFR_REQST_PRCS_CD
+			 , RCPTFR_APRV_NO
+			 , VIRTL_RTGOD_YN
+			 , VIRTL_ORD_NO
+			 , RFD_BNK_ACCT_NO
+			 , RFD_BNK_CD
+			 , RFD_ACNTHLDR_NM
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{clmNo,jdbcType=VARCHAR}
+			 , #{bfClmNo,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{clmStatCd,jdbcType=VARCHAR}
+			 , #{pkupClmYn,jdbcType=VARCHAR}
+			 , #{pgTrnsmisTgtYn,jdbcType=VARCHAR}
+			 , #{clmTpCd,jdbcType=VARCHAR}
+			 , #{clmResnCd,jdbcType=VARCHAR}
+			 , #{clmResnCont,jdbcType=VARCHAR}
+			 , #{clmDt,jdbcType=TIMESTAMP}
+			 , #{clmRceptMthdCd,jdbcType=VARCHAR}
+			 , #{clmPreprogrsSectCd,jdbcType=VARCHAR}
+			 , #{rceptAdminId,jdbcType=VARCHAR}
+			 , #{rceptDt,jdbcType=TIMESTAMP}
+			 , #{comptDt,jdbcType=TIMESTAMP}
+			 , #{crncyCd,jdbcType=VARCHAR}
+			 , #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , #{stdrCrncySumAmt,jdbcType=NUMERIC}
+			 , #{payExchgRtCrncySumAmt,jdbcType=NUMERIC}
+			 , #{rtlPrcSumAmt,jdbcType=NUMERIC}
+			 , #{saleSumAmt,jdbcType=NUMERIC}
+			 , #{webDcSumAmt,jdbcType=NUMERIC}
+			 , #{empDcSumAmt,jdbcType=NUMERIC}
+			 , #{svcSumAmt,jdbcType=NUMERIC}
+			 , #{dlvCstSumAmt,jdbcType=NUMERIC}
+			 , #{pkagTaxSumAmt,jdbcType=NUMERIC}
+			 , #{allDcSumAmt,jdbcType=NUMERIC}
+			 , #{godDcSumAmt,jdbcType=NUMERIC}
+			 , #{bundleDcSumAmt,jdbcType=NUMERIC}
+			 , #{crsDcSumAmt,jdbcType=NUMERIC}
+			 , #{godCpnDcSumAmt,jdbcType=NUMERIC}
+			 , #{bskCpnDcSumAmt,jdbcType=NUMERIC}
+			 , #{dlvCstCpnDcSumAmt,jdbcType=NUMERIC}
+			 , #{imdtlDcSumAmt,jdbcType=NUMERIC}
+			 , #{unityPntUseSumAmt,jdbcType=NUMERIC}
+			 , #{evtPntUseSumAmt,jdbcType=NUMERIC}
+			 , #{webpntUseSumAmt,jdbcType=NUMERIC}
+			 , #{mileUseSumAmt,jdbcType=NUMERIC}
+			 , #{unityPntAccmlSumAmt,jdbcType=NUMERIC}
+			 , #{evtPntAccmlSumAmt,jdbcType=NUMERIC}
+			 , #{webpntAccmlSumAmt,jdbcType=NUMERIC}
+			 , #{mileAccmlSumAmt,jdbcType=NUMERIC}
+			 , #{affComOrdNo,jdbcType=VARCHAR}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{affVrscComId,jdbcType=VARCHAR}
+			 , #{advtAffComId,jdbcType=VARCHAR}
+			 , #{godSumry,jdbcType=VARCHAR}
+			 , #{rcptfrReqstPrcsCd,jdbcType=VARCHAR}
+			 , #{rcptfrAprvNo,jdbcType=VARCHAR}
+			 , #{virtlRtgodYn,jdbcType=VARCHAR}
+			 , #{virtlOrdNo,jdbcType=VARCHAR}
+			 , PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , #{rfdBnkCd,jdbcType=VARCHAR}
+			 , #{rfdAcnthldrNm,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteClm" parameterType="clm">
+		DELETE /* com.plgrim.ncp.base.deleteClm		Generator(Generator)	2018-05-23 */
+		  FROM CLM
+		 WHERE 1 = 1
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

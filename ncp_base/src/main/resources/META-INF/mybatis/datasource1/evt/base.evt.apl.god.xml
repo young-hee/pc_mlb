@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtAplGod" parameterType="evtAplGod" resultType="evtAplGod">
+		SELECT /* com.plgrim.ncp.base.selectEvtAplGod		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , APL_TURN
+			 , GOD_APL_YN
+			 , APL_GOD_SECT_CD
+			 , BRND_ID
+			 , DSP_CTGRY_NO
+			 , GOD_NO
+			 , PC_GOD_IMG_URL
+			 , PC_GOD_IMG_DSCR
+			 , MOBILE_GOD_IMG_URL
+			 , MOBILE_GOD_IMG_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_APL_GOD
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEvtAplGod" parameterType="evtAplGod">
+		UPDATE /* com.plgrim.ncp.base.updateEvtAplGod		Generator(Generator)	2018-05-23 */
+		EVT_APL_GOD SET
+			   GOD_APL_YN = #{godAplYn,jdbcType=VARCHAR}
+			 , APL_GOD_SECT_CD = #{aplGodSectCd,jdbcType=VARCHAR}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , PC_GOD_IMG_URL = #{pcGodImgUrl,jdbcType=VARCHAR}
+			 , PC_GOD_IMG_DSCR = #{pcGodImgDscr,jdbcType=VARCHAR}
+			 , MOBILE_GOD_IMG_URL = #{mobileGodImgUrl,jdbcType=VARCHAR}
+			 , MOBILE_GOD_IMG_DSCR = #{mobileGodImgDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEvtAplGod" parameterType="evtAplGod">
+		INSERT /* com.plgrim.ncp.base.insertEvtAplGod		Generator(Generator)	2018-05-23 */
+		INTO   EVT_APL_GOD (
+			   EVT_NO
+			 , APL_TURN
+			 , GOD_APL_YN
+			 , APL_GOD_SECT_CD
+			 , BRND_ID
+			 , DSP_CTGRY_NO
+			 , GOD_NO
+			 , PC_GOD_IMG_URL
+			 , PC_GOD_IMG_DSCR
+			 , MOBILE_GOD_IMG_URL
+			 , MOBILE_GOD_IMG_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{aplTurn,jdbcType=NUMERIC}
+			 , #{godAplYn,jdbcType=VARCHAR}
+			 , #{aplGodSectCd,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{pcGodImgUrl,jdbcType=VARCHAR}
+			 , #{pcGodImgDscr,jdbcType=VARCHAR}
+			 , #{mobileGodImgUrl,jdbcType=VARCHAR}
+			 , #{mobileGodImgDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtAplGod" parameterType="evtAplGod">
+		DELETE /* com.plgrim.ncp.base.deleteEvtAplGod		Generator(Generator)	2018-05-23 */
+		  FROM EVT_APL_GOD
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

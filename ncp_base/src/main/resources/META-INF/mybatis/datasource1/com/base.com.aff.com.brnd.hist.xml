@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComAffComBrndHist" parameterType="comAffComBrndHist" resultType="comAffComBrndHist">
+		SELECT /* com.plgrim.ncp.base.selectComAffComBrndHist		Generator(Generator)	2018-05-23 */
+			   AFF_VRSC_COM_ID
+			 , AFF_COM_ID
+			 , BRND_ID
+			 , COM_BRND_HIST_SECT_CD
+			 , HIST_BEG_DT
+			 , HIST_END_DT
+			 , MOD_BF_HIST_RT
+			 , MOD_AF_HIST_RT
+			 , AFF_VRSC_COM_OFFER_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_AFF_COM_BRND_HIST
+		 WHERE 1 = 1
+	   	   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND COM_BRND_HIST_SECT_CD = #{comBrndHistSectCd,jdbcType=VARCHAR}
+		   AND HIST_BEG_DT = #{histBegDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateComAffComBrndHist" parameterType="comAffComBrndHist">
+		UPDATE /* com.plgrim.ncp.base.updateComAffComBrndHist		Generator(Generator)	2018-05-23 */
+		COM_AFF_COM_BRND_HIST SET
+			   HIST_END_DT = #{histEndDt,jdbcType=TIMESTAMP}
+			 , MOD_BF_HIST_RT = #{modBfHistRt,jdbcType=NUMERIC}
+			 , MOD_AF_HIST_RT = #{modAfHistRt,jdbcType=NUMERIC}
+			 , AFF_VRSC_COM_OFFER_YN = #{affVrscComOfferYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND COM_BRND_HIST_SECT_CD = #{comBrndHistSectCd,jdbcType=VARCHAR}
+		   AND HIST_BEG_DT = #{histBegDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertComAffComBrndHist" parameterType="comAffComBrndHist">
+		INSERT /* com.plgrim.ncp.base.insertComAffComBrndHist		Generator(Generator)	2018-05-23 */
+		INTO   COM_AFF_COM_BRND_HIST (
+			   AFF_VRSC_COM_ID
+			 , AFF_COM_ID
+			 , BRND_ID
+			 , COM_BRND_HIST_SECT_CD
+			 , HIST_BEG_DT
+			 , HIST_END_DT
+			 , MOD_BF_HIST_RT
+			 , MOD_AF_HIST_RT
+			 , AFF_VRSC_COM_OFFER_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{affVrscComId,jdbcType=VARCHAR}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{comBrndHistSectCd,jdbcType=VARCHAR}
+			 , #{histBegDt,jdbcType=TIMESTAMP}
+			 , #{histEndDt,jdbcType=TIMESTAMP}
+			 , #{modBfHistRt,jdbcType=NUMERIC}
+			 , #{modAfHistRt,jdbcType=NUMERIC}
+			 , #{affVrscComOfferYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComAffComBrndHist" parameterType="comAffComBrndHist">
+		DELETE /* com.plgrim.ncp.base.deleteComAffComBrndHist		Generator(Generator)	2018-05-23 */
+		  FROM COM_AFF_COM_BRND_HIST
+		 WHERE 1 = 1
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND COM_BRND_HIST_SECT_CD = #{comBrndHistSectCd,jdbcType=VARCHAR}
+		   AND HIST_BEG_DT = #{histBegDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

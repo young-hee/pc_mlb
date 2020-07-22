@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrOnlnePch" parameterType="mbrOnlnePch" resultType="mbrOnlnePch">
+		SELECT /* com.plgrim.ncp.base.selectMbrOnlnePch		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , MBR_NO
+			 , ORD_DT
+			 , RTL_PRC_SUM_AMT
+			 , SALE_SUM_AMT
+			 , PAY_SUM_AMT
+			 , CLM_SUM_AMT
+			 , REG_DT
+		  FROM MBR_ONLNE_PCH
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbrOnlnePch" parameterType="mbrOnlnePch">
+		UPDATE /* com.plgrim.ncp.base.updateMbrOnlnePch		Generator(Generator)	2018-05-23 */
+		MBR_ONLNE_PCH SET
+			   MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , ORD_DT = #{ordDt,jdbcType=TIMESTAMP}
+			 , RTL_PRC_SUM_AMT = #{rtlPrcSumAmt,jdbcType=NUMERIC}
+			 , SALE_SUM_AMT = #{saleSumAmt,jdbcType=NUMERIC}
+			 , PAY_SUM_AMT = #{paySumAmt,jdbcType=NUMERIC}
+			 , CLM_SUM_AMT = #{clmSumAmt,jdbcType=NUMERIC}
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbrOnlnePch" parameterType="mbrOnlnePch">
+		INSERT /* com.plgrim.ncp.base.insertMbrOnlnePch		Generator(Generator)	2018-05-23 */
+		INTO   MBR_ONLNE_PCH (
+			   ORD_NO
+			 , MBR_NO
+			 , ORD_DT
+			 , RTL_PRC_SUM_AMT
+			 , SALE_SUM_AMT
+			 , PAY_SUM_AMT
+			 , CLM_SUM_AMT
+			 , REG_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{ordDt,jdbcType=TIMESTAMP}
+			 , #{rtlPrcSumAmt,jdbcType=NUMERIC}
+			 , #{saleSumAmt,jdbcType=NUMERIC}
+			 , #{paySumAmt,jdbcType=NUMERIC}
+			 , #{clmSumAmt,jdbcType=NUMERIC}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrOnlnePch" parameterType="mbrOnlnePch">
+		DELETE /* com.plgrim.ncp.base.deleteMbrOnlnePch		Generator(Generator)	2018-05-23 */
+		  FROM MBR_ONLNE_PCH
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

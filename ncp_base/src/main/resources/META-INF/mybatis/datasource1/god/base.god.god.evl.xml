@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodGodEvl" parameterType="godGodEvl" resultType="godGodEvl">
+		SELECT /* com.plgrim.ncp.base.selectGodGodEvl		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , GOD_EVL_TURN
+			 , GOD_EVL_WRITNG_DT
+			 , DSGN_GRP_NO
+			 , MBR_NO
+			 , CSTMR_NM
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , RCPTFR_NO
+			 , INFLOW_ORD_SECT_CD
+			 , SKU_NO
+			 , GOD_EVL_SJ
+			 , GOD_EVL_CONT
+			 , PKG_EVL_SCORE
+			 , QLTY_EVL_SCORE
+			 , DLV_EVL_SCORE
+			 , SIZE_EVL_CD
+			 , COLOR_EVL_CD
+			 , BST_GOD_EVL_YN
+			 , BST_GOD_EVL_CNDCY_YN
+			 , BADN_GOD_EVL_YN
+			 , NTCE_YN
+			 , INQIRE_NUM
+			 , BST_GOD_EVL_SORT_SEQ
+			 , GOD_EVL_SORT_SEQ
+			 , CNRS_SNS_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_GOD_EVL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodGodEvl" parameterType="godGodEvl">
+		UPDATE /* com.plgrim.ncp.base.updateGodGodEvl		Generator(Generator)	2018-05-23 */
+		GOD_GOD_EVL SET
+			   GOD_EVL_WRITNG_DT = #{godEvlWritngDt,jdbcType=TIMESTAMP}
+			 , DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , CSTMR_NM = #{cstmrNm,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+			 , RCPTFR_NO = #{rcptfrNo,jdbcType=VARCHAR}
+			 , INFLOW_ORD_SECT_CD = #{inflowOrdSectCd,jdbcType=VARCHAR}
+			 , SKU_NO = #{skuNo,jdbcType=VARCHAR}
+			 , GOD_EVL_SJ = #{godEvlSj,jdbcType=VARCHAR}
+			 , GOD_EVL_CONT = #{godEvlCont,jdbcType=VARCHAR}
+			 , PKG_EVL_SCORE = #{pkgEvlScore,jdbcType=NUMERIC}
+			 , QLTY_EVL_SCORE = #{qltyEvlScore,jdbcType=NUMERIC}
+			 , DLV_EVL_SCORE = #{dlvEvlScore,jdbcType=NUMERIC}
+			 , SIZE_EVL_CD = #{sizeEvlCd,jdbcType=VARCHAR}
+			 , COLOR_EVL_CD = #{colorEvlCd,jdbcType=VARCHAR}
+			 , BST_GOD_EVL_YN = #{bstGodEvlYn,jdbcType=VARCHAR}
+			 , BST_GOD_EVL_CNDCY_YN = #{bstGodEvlCndcyYn,jdbcType=VARCHAR}
+			 , BADN_GOD_EVL_YN = #{badnGodEvlYn,jdbcType=VARCHAR}
+			 , NTCE_YN = #{ntceYn,jdbcType=VARCHAR}
+			 , INQIRE_NUM = #{inqireNum,jdbcType=NUMERIC}
+			 , BST_GOD_EVL_SORT_SEQ = #{bstGodEvlSortSeq,jdbcType=NUMERIC}
+			 , GOD_EVL_SORT_SEQ = #{godEvlSortSeq,jdbcType=NUMERIC}
+			 , CNRS_SNS_CD = #{cnrsSnsCd,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodGodEvl" parameterType="godGodEvl">
+		INSERT /* com.plgrim.ncp.base.insertGodGodEvl		Generator(Generator)	2018-05-23 */
+		INTO   GOD_GOD_EVL (
+			   GOD_NO
+			 , GOD_EVL_TURN
+			 , GOD_EVL_WRITNG_DT
+			 , DSGN_GRP_NO
+			 , MBR_NO
+			 , CSTMR_NM
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , RCPTFR_NO
+			 , INFLOW_ORD_SECT_CD
+			 , SKU_NO
+			 , GOD_EVL_SJ
+			 , GOD_EVL_CONT
+			 , PKG_EVL_SCORE
+			 , QLTY_EVL_SCORE
+			 , DLV_EVL_SCORE
+			 , SIZE_EVL_CD
+			 , COLOR_EVL_CD
+			 , BST_GOD_EVL_YN
+			 , BST_GOD_EVL_CNDCY_YN
+			 , BADN_GOD_EVL_YN
+			 , NTCE_YN
+			 , INQIRE_NUM
+			 , BST_GOD_EVL_SORT_SEQ
+			 , GOD_EVL_SORT_SEQ
+			 , CNRS_SNS_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{godEvlTurn,jdbcType=NUMERIC}
+			 , #{godEvlWritngDt,jdbcType=TIMESTAMP}
+			 , #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{cstmrNm,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{rcptfrNo,jdbcType=VARCHAR}
+			 , #{inflowOrdSectCd,jdbcType=VARCHAR}
+			 , #{skuNo,jdbcType=VARCHAR}
+			 , #{godEvlSj,jdbcType=VARCHAR}
+			 , #{godEvlCont,jdbcType=VARCHAR}
+			 , #{pkgEvlScore,jdbcType=NUMERIC}
+			 , #{qltyEvlScore,jdbcType=NUMERIC}
+			 , #{dlvEvlScore,jdbcType=NUMERIC}
+			 , #{sizeEvlCd,jdbcType=VARCHAR}
+			 , #{colorEvlCd,jdbcType=VARCHAR}
+			 , #{bstGodEvlYn,jdbcType=VARCHAR}
+			 , #{bstGodEvlCndcyYn,jdbcType=VARCHAR}
+			 , #{badnGodEvlYn,jdbcType=VARCHAR}
+			 , #{ntceYn,jdbcType=VARCHAR}
+			 , #{inqireNum,jdbcType=NUMERIC}
+			 , #{bstGodEvlSortSeq,jdbcType=NUMERIC}
+			 , #{godEvlSortSeq,jdbcType=NUMERIC}
+			 , #{cnrsSnsCd,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodGodEvl" parameterType="godGodEvl">
+		DELETE /* com.plgrim.ncp.base.deleteGodGodEvl		Generator(Generator)	2018-05-23 */
+		  FROM GOD_GOD_EVL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

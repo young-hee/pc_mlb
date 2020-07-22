@@ -1,0 +1,3048 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.order.command">
+
+
+	<!-- //////////////////////////////////////////////////////// -->
+	<!-- ///////////////////// FRONT START ////////////////////// -->
+	<!-- //////////////////////////////////////////////////////// -->
+	<insert id="insertOrd" parameterType="ord"> 
+		INSERT INTO /*[order.command.xml][insertOrd][주문등록][victor]*/
+		ord
+		(
+		 ord_no
+		,ord_stat_cd
+		,ord_tp_cd
+		,ord_dt
+		,mbr_tp_cd
+		,mbr_atrb_cd
+		,mbr_no
+		,mbr_empl_no
+		,tel_ord_admin_id
+		,cstmr_nm
+		,cstmr_email
+		,post_no
+		,base_addr
+		,detail_addr
+		,cstmr_mobil_nation_no
+		,cstmr_mobil_area_no
+		,cstmr_mobil_tlof_no
+		,cstmr_mobil_tlof_wthn_no
+		,cstmr_tel_nation_no
+		,cstmr_tel_area_no
+		,cstmr_tel_tlof_no
+		,cstmr_tel_tlof_wthn_no
+		,crncy_cd
+		,stdr_crncy_sum_amt
+		,pay_exchg_rt_crncy_sum_amt
+		,rtl_prc_sum_amt
+		,sale_sum_amt
+<!-- 		,svc_sum_amt -->
+<!-- 		,dlv_cst_sum_amt -->
+<!-- 		,all_dc_sum_amt -->
+<!-- 		,god_dc_sum_amt -->
+<!-- 		,b2e_spsl_dc_sum_amt -->
+<!-- 		,emp_dc_sum_amt -->
+<!-- 		,bundle_dc_sum_amt -->
+<!-- 		,crs_dc_sum_amt -->
+<!-- 		,god_cpn_dc_sum_amt -->
+<!-- 		,bsk_cpn_dc_sum_amt -->
+<!-- 		,dlv_cst_cpn_dc_sum_amt -->
+<!-- 		,unity_pnt_use_sum_amt -->
+<!-- 		,evt_pnt_use_sum_amt -->
+<!-- 		,unity_pnt_accml_sum_amt -->
+<!-- 		,evt_pnt_accml_sum_amt -->
+		,mall_id
+		,lang_cd
+		,dvc_cd
+		,inflow_sn
+		,self_crtfc_sect_cd
+		,rlnm_crtfc_di
+		,rlnm_crtfc_ci
+		,rlnm_crtfc_ipin
+<!-- 		,b2e_empl_crtfc_cd  -->
+		,aff_com_ord_no
+		,aff_com_id
+		,aff_vrsc_com_id
+		,advt_aff_com_id
+<!-- 	예약장바구니 기능 추가  : by cannon (2016.04.18) -->
+<!-- 		,resve_ord_pay_sect_cd -->
+<!-- 		,resve_ord_part_pay_amt -->
+<!-- 		,resve_ord_pay_clos_dt -->
+<!-- 		,resve_ord_dlivy_prearnge_date -->
+<!-- 		,resve_ord_dlivy_aprv_cd -->
+		,god_sumry
+		,rcptfr_reqst_cd
+		,rcptfr_prcs_cd
+		,rcptfr_prpos_cd
+		,rcptfr_aprv_no
+		,virtl_dlv_compt_yn
+		,depst_wait_cncl_yn
+		,lag_qty_ord_dcsn_yn
+		,linkprc_sesion_id
+<!-- 		,exchg_rt_apl_beg_dt  -->
+        ,webpnt_use_sum_amt
+        ,webpnt_accml_sum_amt
+        ,frgnr_idt_card_no
+        ,frgnr_idt_card_sect_cd
+        ,os_cd
+        ,mobile_app_sect_cd
+        ,utid
+        ,auto_rfd_sect_cd
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		VALUES
+		(
+		 #{ordNo,jdbcType=VARCHAR}
+		,#{ordStatCd,jdbcType=VARCHAR}
+		,#{ordTpCd,jdbcType=VARCHAR}
+		,#{ordDt,jdbcType=TIMESTAMP}
+		,#{mbrTpCd,jdbcType=VARCHAR}
+		,#{mbrAtrbCd,jdbcType=VARCHAR}
+		,#{mbrNo,jdbcType=VARCHAR}
+		,#{mbrEmplNo,jdbcType=VARCHAR}
+		,#{telOrdAdminId,jdbcType=VARCHAR}
+		,#{cstmrNm,jdbcType=VARCHAR}
+		,#{cstmrEmail,jdbcType=VARCHAR}
+		,#{postNo,jdbcType=VARCHAR}
+		,#{baseAddr,jdbcType=VARCHAR}
+		,#{detailAddr,jdbcType=VARCHAR}
+		,#{cstmrMobilNationNo,jdbcType=VARCHAR}
+		,#{cstmrMobilAreaNo,jdbcType=VARCHAR}
+		,#{cstmrMobilTlofNo,jdbcType=VARCHAR}
+		,#{cstmrMobilTlofWthnNo,jdbcType=VARCHAR}
+		,#{cstmrTelNationNo,jdbcType=VARCHAR}
+		,#{cstmrTelAreaNo,jdbcType=VARCHAR}
+		,#{cstmrTelTlofNo,jdbcType=VARCHAR}
+		,#{cstmrTelTlofWthnNo,jdbcType=VARCHAR}
+		,#{crncyCd,jdbcType=VARCHAR}
+		,#{stdrCrncySumAmt,jdbcType=NUMERIC}
+		,#{payExchgRtCrncySumAmt,jdbcType=NUMERIC}
+		,#{rtlPrcSumAmt,jdbcType=NUMERIC}
+		,#{saleSumAmt,jdbcType=NUMERIC}
+<!-- 		,#{svcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{dlvCstSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{allDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{godDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{b2eSpslDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{empDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{bundleDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{crsDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{godCpnDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{bskCpnDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{dlvCstCpnDcSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{unityPntUseSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{evtPntUseSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{unityPntAccmlSumAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{evtPntAccmlSumAmt,jdbcType=NUMERIC} -->
+		,#{mallId,jdbcType=VARCHAR}
+		,#{langCd,jdbcType=VARCHAR}
+		,#{dvcCd,jdbcType=VARCHAR}
+		,#{inflowSn,jdbcType=NUMERIC}
+		,#{selfCrtfcSectCd,jdbcType=VARCHAR}
+		,#{rlnmCrtfcDi,jdbcType=VARCHAR}
+		,#{rlnmCrtfcCi,jdbcType=VARCHAR}
+		,#{rlnmCrtfcIpin,jdbcType=VARCHAR}
+<!--		,#{b2eEmplCrtfcCd,jdbcType=VARCHAR} -->
+		,#{affComOrdNo,jdbcType=VARCHAR}
+		,#{affComId,jdbcType=VARCHAR}
+		,#{affVrscComId,jdbcType=VARCHAR}
+		,#{advtAffComId,jdbcType=VARCHAR}
+<!-- 	예약장바구니 기능 추가  : by cannon (2016.04.18) -->		
+<!-- 		,#{resveOrdPaySectCd,jdbcType=VARCHAR} -->
+<!-- 		,#{resveOrdPartPayAmt,jdbcType=NUMERIC} -->
+<!-- 		,#{resveOrdPayClosDt,jdbcType=TIMESTAMP} -->
+<!-- 		,#{resveOrdDlivyPrearngeDate,jdbcType=VARCHAR} -->
+<!-- 		,#{resveOrdDlivyAprvCd,jdbcType=VARCHAR} -->
+		,#{godSumry,jdbcType=VARCHAR}
+		,#{rcptfrReqstCd,jdbcType=VARCHAR}
+		,#{rcptfrPrcsCd,jdbcType=VARCHAR}
+		,#{rcptfrPrposCd,jdbcType=VARCHAR}
+		,#{rcptfrAprvNo,jdbcType=VARCHAR}
+		,#{virtlDlvComptYn,jdbcType=VARCHAR}
+		,#{depstWaitCnclYn,jdbcType=VARCHAR}
+		,#{lagQtyOrdDcsnYn,jdbcType=VARCHAR}
+		,#{linkprcSesionId,jdbcType=VARCHAR}
+<!-- 		,#{exchgRtAplBegDt,jdbcType=TIMESTAMP}  -->
+        ,#{webpntUseSumAmt,jdbcType=NUMERIC}
+        ,#{webpntAccmlSumAmt,jdbcType=NUMERIC}
+        ,#{frgnrIdtCardNo,jdbcType=VARCHAR}
+        ,#{frgnrIdtCardSectCd,jdbcType=VARCHAR}
+        ,#{osCd,jdbcType=VARCHAR}
+        ,#{mobileAppSectCd,jdbcType=VARCHAR}
+        ,#{userTrackingId,jdbcType=VARCHAR}
+        ,#{autoRfdSectCd,jdbcType=VARCHAR}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<insert id="insertOrdGod" parameterType="ordGod">
+		INSERT INTO /*[order.command.xml][insertOrdGod][주문상품등록][victor]*/
+		ord_god
+		(
+		 ord_no
+		,ord_god_turn
+		,dlv_pcupsp_turn
+		,god_no
+		,itm_no
+		,god_hist_turn
+		,itm_hist_turn
+		,god_nm
+		,mobile_god_nm
+		,itm_nm
+		,color_nm
+		,color_cd
+		,clor_chip_img_url
+		,erp_god_no
+		,sku_no
+		,brnd_id
+		,brnd_grp_id
+		<!-- ,god_vol #49874 로 주석처리-->
+		,god_wt
+		,god_tp_cd
+		,partmal_sect_cd
+		,lst_img_url
+		,com_id
+		,dmstc_dlv_cst_plc_sn
+		,ovsea_dlv_dmstc_dlv_cst_plc_sn
+		,ovsea_dlv_cst_plc_sn
+		,sale_shop_id
+		,ord_qty
+		,crncy_cd
+		,stdr_crncy_amt
+		,pay_exchg_rt_crncy_amt
+		,rtl_prc
+		,sale_amt
+		,web_dc_amt
+		,emp_dc_amt
+		,all_dc_amt
+		,imdtl_dc_amt
+		,god_dc_amt
+<!--  		,signl_dc_amt -->
+<!--		,b2e_spsl_dc_amt -->
+		,bundle_dc_amt
+		,crs_dc_amt
+		,god_cpn_dc_amt
+		,bsk_cpn_dc_amt
+		,unity_pnt_use_amt
+		,evt_pnt_use_amt
+		,unity_pnt_accml_amt
+		,evt_pnt_accml_amt
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		,partmal_com_fee_rt		/* 업체수수료 율*/
+		,ordmk_god_yn			/* 주문제작 상품 여부*/
+		,god_dlivy_wait_time	/* 상품 출고 대기 시간 ㅁ. 일반 상품 : 48시간 ㅁ. 주문제작 상품 : 주문 완료 후 출고완료까지 소요되는 시간을 입력 */
+<!-- 		,exchg_rt_apl_beg_dt -->
+        ,webpnt_use_amt     /*P포인트*/
+        ,webpnt_accml_amt   /*P포인트*/
+        ,pkag_tax_amt
+<!--    예약장바구니 기능 추가  : by cannon (2016.04.18) -->
+        ,resve_sale_god_yn
+        ,resve_ord_pay_sect_cd
+        ,resve_ord_part_pay_amt
+        ,resve_ord_pay_clos_dt
+        ,resve_ord_dlivy_prearnge_date
+        ,resve_ord_dlivy_aprv_cd
+        ,hoff_inv_ord_qty
+		)
+		
+		  SELECT
+				 #{ordNo,jdbcType=VARCHAR}
+				,#{ordGodTurn,jdbcType=NUMERIC}
+				,#{dlvPcupspTurn,jdbcType=NUMERIC}
+				,#{godNo,jdbcType=VARCHAR}
+				,#{itmNo,jdbcType=VARCHAR}
+				,(SELECT MAX(god_hist_turn) FROM god_hist WHERE god_no = #{godNo,jdbcType=VARCHAR})
+				,(SELECT MAX(itm_hist_turn) FROM god_itm_hist WHERE itm_no = #{itmNo,jdbcType=VARCHAR})
+				,NVL(glgn.god_nm, g.god_nm)
+				,NVL(glgn.mobile_god_nm, g.mobile_god_nm)
+<!-- 				,REPLACE(itm.sku_no,g.erp_god_no,'') as itm_nm -->
+				,itm.itm_nm
+				,NVL(glgn.color_nm, g.color_nm)	as 	color_nm		
+<!-- 				,#{colorCd,jdbcType=VARCHAR} -->
+				,g.color_cd
+				,g.clor_chip_img_url
+				,g.erp_god_no
+<!-- 				,itm.sku_no -->
+				,#{skuNo,jdbcType=VARCHAR}
+				,g.brnd_id
+				,g.brnd_grp_id
+				<!-- ,g.god_vol #49874 로 주석처리-->
+				,#{godWt,jdbcType=NUMERIC}
+				,g.god_tp_cd
+				,g.partmal_sect_cd
+				,#{lstImgUrl,jdbcType=VARCHAR}
+				,g.com_id
+				
+				,#{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+<!-- 				,g.dmstc_dlv_cst_plc_sn -->
+<!-- 				,g.ovsea_dlv_dmstc_dlv_cst_plc_sn -->
+<!-- 				,g.ovsea_dlv_cst_plc_sn -->
+				,#{saleShopId}
+				,#{ordQty,jdbcType=NUMERIC}
+				,#{crncyCd,jdbcType=VARCHAR}
+				,#{stdrCrncyAmt,jdbcType=NUMERIC}
+				,#{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+				,g.rtl_prc
+				,#{saleAmt,jdbcType=NUMERIC}
+				,#{webDcAmt,jdbcType=NUMERIC}
+				,#{empDcAmt,jdbcType=NUMERIC}
+				,#{allDcAmt,jdbcType=NUMERIC}
+				,#{imdtlDcAmt,jdbcType=NUMERIC}
+				,#{godDcAmt,jdbcType=NUMERIC}
+<!-- 				,#{signlDcAmt,jdbcType=NUMERIC}		 -->		
+<!--				,#{b2eSpslDcAmt,jdbcType=NUMERIC}    -->
+				,#{bundleDcAmt,jdbcType=NUMERIC}
+				,#{crsDcAmt,jdbcType=NUMERIC}
+				,#{godCpnDcAmt,jdbcType=NUMERIC}
+				,#{bskCpnDcAmt,jdbcType=NUMERIC}
+				,#{unityPntUseAmt,jdbcType=NUMERIC}
+				,#{evtPntUseAmt,jdbcType=NUMERIC}
+				,#{unityPntAccmlAmt,jdbcType=NUMERIC}
+				,#{evtPntAccmlAmt,jdbcType=NUMERIC}		  
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+				,partmal_com_fee_rt  /*	업체 수수료 율*/
+				,ordmk_god_yn 		/*	주문제작 상품 여부*/
+				,god_dlivy_wait_time /* 상품 출고 대기 시간 ㅁ. 일반 상품 : 48시간 ㅁ. 주문제작 상품 : 주문 완료 후 출고완료까지 소요되는 시간을 입력 */
+<!-- 				,#{exchgRtAplBegDt,jdbcType=TIMESTAMP}  -->
+                ,#{webpntUseAmt,jdbcType=NUMERIC}     /*P포인트*/
+                ,#{webpntAccmlAmt,jdbcType=NUMERIC}   /*P포인트*/
+                ,#{pkagTaxAmt,jdbcType=NUMERIC}   /*행우세*/
+<!--    예약장바구니 기능 추가  : by cannon (2016.04.18) -->
+		        ,g.resve_sale_god_yn
+		        ,DECODE(g.resve_sale_god_yn, 'Y', g.resve_ord_pay_sect_cd, NULL)
+		        ,DECODE(g.resve_sale_god_yn, 'Y', g.resve_ord_part_pay_amt, NULL)
+		        ,DECODE(g.resve_sale_god_yn, 'Y', g.resve_ord_pay_clos_dt, NULL)
+		        ,DECODE(g.resve_sale_god_yn, 'Y', g.resve_ord_dlivy_prearnge_date, NULL)
+		        ,DECODE(g.resve_sale_god_yn, 'Y', 'APRV_WAIT', NULL)
+		        ,NVL(#{hoffInvOrdQty,jdbcType=NUMERIC},0)           
+			FROM god g
+			LEFT OUTER JOIN GOD_LANGBY_GOD_NM glgn
+						 ON g.god_no = glgn.god_no AND lang_cd =#{lang:VARCHAR}
+			INNER JOIN (SELECT god_no
+		   					, sku_no 
+		   					, itm_nm 
+		   				 FROM god_itm 
+		   				WHERE itm_no = #{itmNo,jdbcType=VARCHAR}) itm ON itm.god_no = g.god_no
+		   WHERE g.god_no = #{godNo,jdbcType=VARCHAR}
+	</insert>
+
+	<insert id="insertOrdCpstGodCnnc" parameterType="ordCpstGodCnnc">
+	    INSERT /*[order.command.xml][insertOrdCpstGodCnnc][주문구성상품등록][victor]*/
+	    INTO ord_cpst_god_cnnc
+		(
+	        ord_no
+	       ,ord_god_turn
+	       ,ord_cpst_god_turn
+	       ,pckage_god_tp_cd
+	       ,cpst_god_qty
+	       ,sort_seq
+	       ,regtr_id
+           ,reg_dt
+		   ,udter_id
+		   ,udt_dt
+		)
+		VALUES
+		(
+	        #{ordNo,jdbcType=VARCHAR}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{ordCpstGodTurn,jdbcType=NUMERIC}
+	       ,#{pckageGodTpCd,jdbcType=VARCHAR}
+	       ,#{cpstGodQty,jdbcType=NUMERIC}
+	       ,#{sortSeq,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{regDt,jdbcType=TIMESTAMP}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{regDt,jdbcType=TIMESTAMP}
+		)	
+<!-- 		INSERT INTO /*[order.command.xml][insertOrdCpstGodCnnc][주문구성상품등록][victor]*/ -->
+<!-- 		ord_cpst_god_cnnc -->
+<!-- 		( -->
+<!-- 		 ord_no -->
+<!-- 		,ord_god_turn -->
+<!-- 		,ord_cpst_god_turn -->
+<!-- 		,pckage_god_tp_cd -->
+<!-- 		,cpst_god_qty -->
+<!-- 		,sort_seq -->
+<!-- 		,regtr_id -->
+<!-- 		,reg_dt -->
+<!-- 		) -->
+<!-- 		  SELECT   s1.ord_no -->
+<!--                  , s1.parent_god_turn -->
+<!--                  , s1.cpst_god_turn -->
+<!--                  , s1.pckage_god_tp_cd -->
+<!--                  , s1.cpst_god_qty -->
+<!--                  , s1.sort_seq -->
+<!--                  , #{regtrId,jdbcType=VARCHAR} -->
+<!--                  , #{regDt,jdbcType=TIMESTAMP} -->
+<!-- 		    FROM (  SELECT t4.ord_no -->
+<!-- 		    			 , t4.dlv_pcupsp_turn -->
+<!-- 		                 , MAX (DECODE (t4.no, 1, t4.ord_god_turn)) AS parent_god_turn -->
+<!-- 		                 , MAX (DECODE (t4.no, 2, t4.ord_god_turn)) AS cpst_god_turn -->
+<!-- 		                 , t3.pckage_god_tp_cd -->
+<!-- 		                 , t3.cpst_god_qty -->
+<!-- 		                 , t3.sort_seq -->
+<!-- 		              FROM god_cpst_god_cnnc t3 -->
+<!-- 		                   INNER JOIN (SELECT t1.ord_no -->
+<!-- 		                                    , t1.god_no -->
+<!-- 		                                    , t1.dlv_pcupsp_turn -->
+<!-- 		                                    , t1.ord_god_turn -->
+<!-- 		                                    , t1.god_tp_cd -->
+<!-- 		                                    , t2.* -->
+<!-- 		                                 FROM ord_god t1 -->
+<!-- 		                                    , (SELECT 1 no FROM DUAL -->
+<!-- 		                                       UNION ALL -->
+<!-- 		                                       SELECT 2 FROM DUAL) t2 -->
+<!-- 		                                WHERE t1.ord_no = #{ordNo,jdbcType=VARCHAR} ) t4 -->
+<!-- 		                      ON 1 = CASE WHEN t4.no = 1 AND t3.god_no = t4.god_no THEN 1  -->
+<!-- 		                      			  WHEN t4.no = 2 AND t3.cpst_god_no = t4.god_no THEN 1  -->
+<!-- 		                      			  ELSE 0  -->
+<!-- 									 END -->
+<!-- 		          GROUP BY t4.ord_no -->
+<!-- 		          		 , t4.dlv_pcupsp_turn -->
+<!-- 		                 , t3.cpst_god_no -->
+<!-- 		                 , t3.pckage_god_tp_cd -->
+<!-- 		                 , t3.cpst_god_qty -->
+<!-- 		                 , t3.sort_seq) s1 -->
+<!-- 		   WHERE s1.parent_god_turn IS NOT NULL AND s1.cpst_god_turn IS NOT NULL		                  -->
+<!-- 		ORDER BY s1.parent_god_turn, s1.cpst_god_turn -->
+	</insert>
+
+<!-- 
+	<insert id="insertOrdGodSvcCnnc" parameterType="ordGodSvcCnnc">
+		INSERT INTO /*[order.command.xml][insertOrdGodSvcCnnc][주문상품서비스등록][victor]*/
+		ord_god_svc_cnnc
+		(
+		ord_no
+		,ord_god_turn
+		,svc_sn
+		,svc_amt
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		VALUES
+		(
+		 #{ordNo,jdbcType=VARCHAR}
+		,#{ordGodTurn,jdbcType=NUMERIC}
+		,#{svcSn,jdbcType=NUMERIC}
+		,#{svcAmt,jdbcType=NUMERIC}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		)
+	</insert>
+ -->
+	<insert id="insertOrdGodAplPrm" parameterType="ordGodAplPrm">
+		INSERT INTO /*[order.command.xml][insertOrdGodAplPrm][주문상품적용프로모션등록][victor]*/
+	    ord_god_apl_prm
+		(
+	        ord_no
+	       ,apl_prm_turn
+	       ,prm_no
+	       ,apl_tp_cd
+	       ,apl_unit_cd
+	       ,prm_tp_cd
+	       ,prm_dtl_tp_cd
+	       ,apl_amt
+	       ,ord_god_turn
+	       ,apl_qty
+	       ,ord_god_gft_turn
+	       ,ord_god_gft_nm
+	       ,mbr_cpn_no
+	       ,regtr_id
+           ,reg_dt
+		   ,udter_id
+		   ,udt_dt
+		)
+		VALUES
+		(
+	        #{ordNo,jdbcType=VARCHAR}
+	       ,#{aplPrmTurn,jdbcType=NUMERIC}
+	       ,#{prmNo,jdbcType=VARCHAR}
+	       ,#{aplTpCd,jdbcType=VARCHAR}
+	       ,#{aplUnitCd,jdbcType=VARCHAR}
+	       ,#{prmTpCd,jdbcType=VARCHAR}
+	       ,#{prmDtlTpCd,jdbcType=VARCHAR}
+	       ,#{aplAmt,jdbcType=NUMERIC}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{aplQty,jdbcType=NUMERIC}
+	       ,#{ordGodGftTurn,jdbcType=NUMERIC}
+	       ,#{ordGodGftNm,jdbcType=VARCHAR}
+	       ,#{mbrCpnNo,jdbcType=VARCHAR}
+		   ,#{regtrId,jdbcType=VARCHAR}
+		   ,#{regDt,jdbcType=TIMESTAMP}
+		   ,#{regtrId,jdbcType=VARCHAR}
+		   ,#{regDt,jdbcType=TIMESTAMP}
+		)   
+    </insert>
+    <!-- 
+	<insert id="insertOrdClmAplPrm" parameterType="ordClmAplPrm">
+		INSERT INTO /*[order.command.xml][insertOrdClmAplPrm][주문적용프로모션등록][victor]*/
+		ord_clm_apl_prm
+		(
+		apl_prm_turn
+		,ord_no
+		,apl_tp_cd
+		,apl_unit_cd
+		,prm_no
+		,prm_tp_cd
+		,prm_dtl_tp_cd
+		,crncy_cd
+		,stdr_crncy_amt
+		,pay_exchg_rt_crncy_amt
+		,dc_apl_unt_prc
+		,dc_apl_amt
+		,accml_amt
+		,dlv_cst_cpn_dc_amt
+		,gft_qty
+		,god_no
+		,itm_no
+		,god_hist_turn
+		,itm_hist_turn
+		,god_nm
+		,itm_nm
+		,erp_god_no
+		,brnd_id
+		,brnd_grp_id
+		,god_vol
+		,god_wt
+		,god_tp_cd
+		,lst_img_url
+		,dlv_pcupsp_turn
+		,dmstc_dlv_cst_plc_sn
+		,ovseadlv_dmstc_dlv_cst_plc_sn
+		,ovsea_dlv_cst_plc_sn
+		,clm_no
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		VALUES
+		(
+		 #{aplPrmTurn,jdbcType=NUMERIC}
+		,#{ordNo,jdbcType=VARCHAR}
+		,#{aplTpCd,jdbcType=VARCHAR}
+		,#{aplUnitCd,jdbcType=VARCHAR}
+		,#{prmNo,jdbcType=VARCHAR}
+		,#{prmTpCd,jdbcType=VARCHAR}
+		,#{prmDtlTpCd,jdbcType=VARCHAR}
+		,#{crncyCd,jdbcType=VARCHAR}
+		,#{stdrCrncyAmt,jdbcType=NUMERIC}
+		,#{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+		,#{dcAplUntPrc,jdbcType=NUMERIC}
+		,#{dcAplAmt,jdbcType=NUMERIC}
+		,#{accmlAmt,jdbcType=NUMERIC}
+		,#{dlvCstCpnDcAmt,jdbcType=NUMERIC}
+		,#{gftQty,jdbcType=NUMERIC}
+		,#{godNo,jdbcType=VARCHAR}
+		,#{itmNo,jdbcType=VARCHAR}
+		,#{godHistTurn,jdbcType=NUMERIC}
+		,#{itmHistTurn,jdbcType=NUMERIC}
+		,#{godNm,jdbcType=VARCHAR}
+		,#{itmNm,jdbcType=VARCHAR}
+		,#{erpGodNo,jdbcType=VARCHAR}
+		,#{brndId,jdbcType=VARCHAR}
+		,#{brndGrpId,jdbcType=VARCHAR}
+		,#{godVol,jdbcType=NUMERIC}
+		,#{godWt,jdbcType=NUMERIC}
+		,#{godTpCd,jdbcType=VARCHAR}
+		,#{lstImgUrl,jdbcType=VARCHAR}
+		,#{dlvPcupspTurn,jdbcType=NUMERIC}
+		,#{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		,#{ovseadlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+		,#{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		,#{clmNo,jdbcType=VARCHAR}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		)
+	</insert>
+ 	-->
+ 	
+	<insert id="insertLgsDlvsp" parameterType="lgsDlvsp">
+		INSERT INTO /*[order.command.xml][insertLgsDlvsp][주문배송지등록][victor]*/
+		lgs_dlvsp
+		(
+		 ord_no
+		,dlv_pcupsp_turn
+		,clm_no
+		,dlv_pcupsp_sect_cd
+		,addrse_nm
+		,dlv_sect_cd
+		,pkup_shop_id
+<!-- 		,pkup_shop_brnd_id -->
+ 		,pkup_shop_visit_date 
+		,addr_sect_cd
+		,addrse_nation_cd
+		,addrse_post_no
+		,addrse_base_addr
+		,addrse_detail_addr
+		,addrse_mobil_nation_no
+		,addrse_mobil_area_no
+		,addrse_mobil_tlof_no
+		,addrse_mobil_tlof_wthn_no
+		,addrse_tel_nation_no
+		,addrse_tel_area_no
+		,addrse_tel_tlof_no
+		,addrse_tel_tlof_wthn_no
+		,dlv_memo
+		,dlv_hope_date
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		,addrse_cty_nm
+		,addrse_lclty_nm
+		)
+		VALUES
+		(
+		#{ordNo,jdbcType=VARCHAR}
+		,#{dlvPcupspTurn,jdbcType=NUMERIC}
+		,#{clmNo,jdbcType=VARCHAR}
+		,#{dlvPcupspSectCd,jdbcType=VARCHAR}
+		,#{addrseNm,jdbcType=VARCHAR}
+		,#{dlvSectCd,jdbcType=VARCHAR}
+		,#{pkupShopId,jdbcType=VARCHAR}
+<!-- 		,#{pkupShopBrndId,jdbcType=VARCHAR}	 -->
+ 		,#{pkupShopVisitDate,jdbcType=VARCHAR}
+		,#{addrSectCd,jdbcType=VARCHAR}
+		,#{addrseNationCd,jdbcType=VARCHAR}
+		,#{addrsePostNo,jdbcType=VARCHAR}
+		,#{addrseBaseAddr,jdbcType=VARCHAR}
+		,#{addrseDetailAddr,jdbcType=VARCHAR}
+		,#{addrseMobilNationNo,jdbcType=VARCHAR}
+		,#{addrseMobilAreaNo,jdbcType=VARCHAR}
+		,#{addrseMobilTlofNo,jdbcType=VARCHAR}
+		,#{addrseMobilTlofWthnNo,jdbcType=VARCHAR}
+		,#{addrseTelNationNo,jdbcType=VARCHAR}
+		,#{addrseTelAreaNo,jdbcType=VARCHAR}
+		,#{addrseTelTlofNo,jdbcType=VARCHAR}
+		,#{addrseTelTlofWthnNo,jdbcType=VARCHAR}
+		,#{dlvMemo,jdbcType=VARCHAR}
+		,#{dlvHopeDate,jdbcType=VARCHAR}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		,#{addrseCtyNm,jdbcType=VARCHAR}
+		,#{addrseLcltyNm,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<insert id="insertLgsDlv" parameterType="lgsDlv">
+		INSERT INTO /*[order.command.xml][insertLgsDlv][배송등록][victor]*/
+		lgs_dlv
+		(
+		ord_no
+		,dlv_pcupsp_turn
+		,dlv_turn
+		,clm_no
+		,dmstc_dlv_cst_plc_sn
+		,ovsea_dlv_dmstc_dlv_cst_plc_sn
+		,ovsea_dlv_cst_plc_sn
+		,dlv_cst_bnd_mbd_cd
+		,dlv_mn_cd
+		,dlv_com_cd
+		,dmstc_waybil_no
+		,dmstc_waybil_no_reg_dt
+		,ovsea_waybil_no
+		,ovsea_waybil_no_reg_dt
+		,crncy_cd
+		,stdr_crncy_amt
+		,pay_exchg_rt_crncy_amt
+		,reality_dlv_cst
+		,plc_dlv_cst
+		,dlv_cst_cpn_dc_amt
+		,dlv_cst_cpn_no
+		,waybil_no_erp_trnsmis_cd
+		,waybil_no_erp_trnsmis_err_cont
+		,waybil_no_erp_trnsmis_dt
+		,dlv_com_trnsmis_tgt_yn
+		,dlv_com_trnsmis_yn
+		,dlv_com_trnsmis_dt
+		,mail_snd_yn
+		,DLV_SHOP_DLV_YN
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		SELECT
+		  		 #{ordNo,jdbcType=VARCHAR}
+				,#{dlvPcupspTurn,jdbcType=NUMERIC}
+				,#{dlvTurn,jdbcType=NUMERIC}
+				,#{clmNo,jdbcType=VARCHAR}
+				,#{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{dlvCstBndMbdCd,jdbcType=VARCHAR}
+				<choose>
+					<when test='dlvMnCd == "QDLV"'>
+				,#{dlvMnCd,jdbcType=VARCHAR}
+						,'GOGOVAN'
+					</when>
+					<when test='dlvMnCd == "SHOP_PKUP"'>
+				,#{dlvMnCd,jdbcType=VARCHAR}
+						,'SHOP_PKUP'
+					</when>
+					<otherwise>
+						,dlv_mn_cd
+						,dlv_com_cd
+					</otherwise>
+				</choose>
+				,#{dmstcWaybilNo,jdbcType=VARCHAR}
+				,#{dmstcWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{ovseaWaybilNo,jdbcType=VARCHAR}
+				,#{ovseaWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{crncyCd,jdbcType=VARCHAR}
+				,#{stdrCrncyAmt,jdbcType=NUMERIC}
+				,#{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+				,#{realityDlvCst,jdbcType=NUMERIC}
+				,#{plcDlvCst,jdbcType=NUMERIC}
+				,#{dlvCstCpnDcAmt,jdbcType=NUMERIC}
+				,#{dlvCstCpnNo,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisErrCont,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{dlvComTrnsmisTgtYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{mailSndYn,jdbcType=VARCHAR}
+				,#{dlvShopDlvYn,jdbcType=VARCHAR}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+			FROM com_dmstc_dlv_cst_plc
+			WHERE dmstc_dlv_cst_plc_sn = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+
+	</insert>
+
+	<insert id="insertLgsDlvWithShopPkup" parameterType="lgsDlv">
+		INSERT INTO /*[order.command.xml][insertLgsDlvWithShopPkup][배송등록][victor]*/
+		lgs_dlv
+		(
+		ord_no
+		,dlv_pcupsp_turn
+		,dlv_turn
+		,clm_no
+		,dmstc_dlv_cst_plc_sn
+		,ovsea_dlv_dmstc_dlv_cst_plc_sn
+		,ovsea_dlv_cst_plc_sn
+		,dlv_cst_bnd_mbd_cd
+		,dlv_mn_cd
+		,dlv_com_cd
+		,dmstc_waybil_no
+		,dmstc_waybil_no_reg_dt
+		,ovsea_waybil_no
+		,ovsea_waybil_no_reg_dt
+		,crncy_cd
+		,stdr_crncy_amt
+		,pay_exchg_rt_crncy_amt
+		,reality_dlv_cst
+		,plc_dlv_cst
+		,dlv_cst_cpn_dc_amt
+		,dlv_cst_cpn_no
+		,waybil_no_erp_trnsmis_cd
+		,waybil_no_erp_trnsmis_err_cont
+		,waybil_no_erp_trnsmis_dt
+		,dlv_com_trnsmis_tgt_yn
+		,dlv_com_trnsmis_yn
+		,dlv_com_trnsmis_dt
+		,mail_snd_yn
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		VALUES
+		(
+		  		 #{ordNo,jdbcType=VARCHAR}
+				,#{dlvPcupspTurn,jdbcType=NUMERIC}
+				,#{dlvTurn,jdbcType=NUMERIC}
+				,#{clmNo,jdbcType=VARCHAR}
+				,#{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{dlvCstBndMbdCd,jdbcType=VARCHAR}
+		,#{dlvMnCd,jdbcType=VARCHAR}
+		,#{dlvComCd,jdbcType=VARCHAR}
+				,#{dmstcWaybilNo,jdbcType=VARCHAR}
+				,#{dmstcWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{ovseaWaybilNo,jdbcType=VARCHAR}
+				,#{ovseaWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{crncyCd,jdbcType=VARCHAR}
+				,#{stdrCrncyAmt,jdbcType=NUMERIC}
+				,#{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+				,#{realityDlvCst,jdbcType=NUMERIC}
+				,#{plcDlvCst,jdbcType=NUMERIC}
+				,#{dlvCstCpnDcAmt,jdbcType=NUMERIC}
+				,#{dlvCstCpnNo,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisErrCont,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{dlvComTrnsmisTgtYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{mailSndYn,jdbcType=VARCHAR}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<insert id="insertLgsDlivyDrctGod" parameterType="lgsDlivyDrctGod">
+		INSERT /*[order.command.xml][insertLgsDlivyDrctGod][출고지시상품등록][victor]*/
+		INTO lgs_dlivy_drct_god
+		(
+		 dlivy_drct_god_no
+		,ord_no
+		,ord_god_turn
+		,pckage_god_turn
+		,gft_yn
+		,dlv_pcupsp_turn
+		,dlv_turn
+		,dlv_shop_id
+		,dlivy_shop_id
+		,acmtl_god_vol
+		,acmtl_god_wt
+		,lgs_itm_yn
+		,dlivy_drct_tgt_yn
+		,dlivy_drct_yn
+		,dlivy_drct_grp_dgre
+		,dlivy_drct_user_grp_dgre
+		,dlivy_drct_count
+		,dlivy_drct_tp_cd
+		,dlivy_drct_dt
+		,dlivy_drct_qty
+		,dlivy_drct_cncl_qty
+		,dlivy_drct_cncl_dt
+		,dlv_stat_cd
+		,shtg_qty
+		,shtg_dt
+		,shtg_dcsn_yn
+		,shtg_dcsn_dt
+		,dlivy_compt_qty
+		,dlivy_compt_dt
+		,dlv_compt_dt
+		,dlivy_drct_god_memo_cont
+		,rcptfr_no
+		,resve_rcptfr_creat_yn
+		,resve_rcptfr_creat_dt
+		,resve_rcptfr_dlivy_yn
+		,resve_rcptfr_dlivy_dt
+		,resve_rcptfr_dcsn_yn
+		,resve_rcptfr_dcsn_dt
+		,erp_resve_rcptfr_creat_cnt
+		,erp_resve_rcptfr_creat_yn
+		,erp_resve_rcptfr_creat_dt
+		,erp_resve_rcptfr_cncl_yn
+		,erp_resve_rcptfr_cncl_dt
+		,inv_apl_yn
+		,cntr_dlivy_cnfirm_yn
+		,cntr_dlivy_cnfirm_dt
+		,p_sto_no
+		,s_sto_no
+		,s_doc_no
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		SELECT 
+				'RO' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(TO_CHAR(SQ_LGS_DLIVY_DRCT_GOD.NEXTVAL), 7, '0') as dlivy_drct_god_no
+				,s1.ord_no
+				,s1.ord_god_turn
+				,s1.pckage_god_turn
+				,s1.gift_Yn
+				,s1.dlv_pcupsp_turn
+				,s1.dlv_turn
+				,s1.sale_shop_id
+				,#{dlivyShopId,jdbcType=VARCHAR} AS dlivyShopId
+				,#{acmtlGodVol,jdbcType=NUMERIC} AS acmtlGodVol
+				,#{acmtlGodWt,jdbcType=NUMERIC} AS acmtlGodWt
+				,#{lgsItmYn,jdbcType=VARCHAR} AS lgsItmYn
+				,#{dlivyDrctTgtYn,jdbcType=VARCHAR} AS dlivyDrctTgtYn
+				,#{dlivyDrctYn,jdbcType=VARCHAR} AS dlivyDrctYn
+				,#{dlivyDrctGrpDgre,jdbcType=NUMERIC} AS dlivyDrctGrpDgre
+				,#{dlivyDrctUserGrpDgre,jdbcType=NUMERIC} AS dlivyDrctUserGrpDgre
+				,#{dlivyDrctCount,jdbcType=NUMERIC} AS dlivyDrctCount
+				,#{dlivyDrctTpCd,jdbcType=VARCHAR} AS dlivyDrctTpCd
+				,#{dlivyDrctDt,jdbcType=TIMESTAMP} AS dlivyDrctDt
+				,s1.ord_qty
+				,#{dlivyDrctCnclQty,jdbcType=NUMERIC} AS dlivyDrctCnclQty
+				,#{dlivyDrctCnclDt,jdbcType=TIMESTAMP} AS dlivyDrctCnclDt
+				,DECODE(s1.sale_shop_id,null,'DLV_WAIT','DLIVY_DRCT_WAIT') AS dlvStatCd
+				,#{shtgQty,jdbcType=NUMERIC} AS shtgQty
+				,#{shtgDt,jdbcType=TIMESTAMP} AS shtgDt
+				,#{shtgDcsnYn,jdbcType=VARCHAR} AS shtgDcsnYn
+				,#{shtgDcsnDt,jdbcType=TIMESTAMP} AS shtgDcsnDt
+				,#{dlivyComptQty,jdbcType=NUMERIC} AS dlivyComptQty
+				,#{dlivyComptDt,jdbcType=TIMESTAMP} AS dlivyComptDt
+				,#{dlvComptDt,jdbcType=TIMESTAMP} AS dlvComptDt
+				,#{dlivyDrctGodMemoCont,jdbcType=TIMESTAMP} AS dlivyDrctGodMemoCont
+				,#{rcptfrNo,jdbcType=VARCHAR} AS rcptfrNo
+				,#{resveRcptfrCreatYn,jdbcType=VARCHAR} AS resveRcptfrCreatYn
+				,#{resveRcptfrCreatDt,jdbcType=TIMESTAMP} AS resveRcptfrCreatDt
+				,#{resveRcptfrDlivyYn,jdbcType=VARCHAR} AS resveRcptfrDlivyYn
+				,#{resveRcptfrDlivyDt,jdbcType=TIMESTAMP} AS resveRcptfrDlivyDt
+				,#{resveRcptfrDcsnYn,jdbcType=VARCHAR} AS resveRcptfrDcsnYn
+				,#{resveRcptfrDcsnDt,jdbcType=TIMESTAMP} AS resveRcptfrDcsnDt
+				,#{erpResveRcptfrCreatCnt,jdbcType=NUMERIC} AS erpResveRcptfrCreatCnt
+				,#{erpResveRcptfrCreatYn,jdbcType=VARCHAR} AS erpResveRcptfrCreatYn
+				,#{erpResveRcptfrCreatDt,jdbcType=TIMESTAMP} AS erpResveRcptfrCreatDt
+				,#{erpResveRcptfrCnclYn,jdbcType=VARCHAR} AS erpResveRcptfrCnclYn
+				,#{erpResveRcptfrCnclDt,jdbcType=TIMESTAMP} AS erpResveRcptfrCnclDt
+				,#{invAplYn,jdbcType=VARCHAR} AS invAplYn
+				,#{cntrDlivyCnfirmYn,jdbcType=VARCHAR} AS cntrDlivyCnfirmYn
+				,#{cntrDlivyCnfirmDt,jdbcType=TIMESTAMP} AS cntrDlivyCnfirmDt
+				,#{pStoNo,jdbcType=VARCHAR} AS pStoNo
+				,#{sStoNo,jdbcType=VARCHAR} AS sStoNo
+				,#{sDocNo,jdbcType=VARCHAR} AS sDocNo
+				,#{regtrId,jdbcType=VARCHAR} AS regtrId
+				,#{regDt,jdbcType=TIMESTAMP} AS regDt
+				,#{regtrId,jdbcType=VARCHAR} AS udterId
+				,#{regDt,jdbcType=TIMESTAMP} AS udtDt
+		  FROM
+			  (SELECT 
+					 t1.ord_no
+					,t1.ord_god_turn
+					,t2.ord_god_turn AS pckage_god_turn
+					,CASE
+						WHEN t1.god_tp_cd = 'PCHS_GFT' THEN 'Y'
+						WHEN t1.god_tp_cd = 'CNVRS_GFT' THEN 'Y'
+						ELSE 'N'
+					 END AS gift_Yn
+					,t1.dlv_pcupsp_turn
+					,t3.dlv_turn
+					,t1.ord_qty
+					,t1.sale_shop_id
+			    FROM ord_god t1
+					 LEFT OUTER JOIN ord_cpst_god_cnnc t2 ON t1.ord_no = t2.ord_no AND t1.ord_god_turn = t2.ord_cpst_god_turn
+					 INNER JOIN lgs_dlv t3 ON t1.ord_no = t3.ord_no AND t1.dlv_pcupsp_turn = t3.dlv_pcupsp_turn AND t1.dmstc_dlv_cst_plc_sn = t3.dmstc_dlv_cst_plc_sn
+				WHERE t1.ord_no = #{ordNo,jdbcType=VARCHAR} 
+				  AND t1.god_tp_cd != 'SET_GOD' 
+				  AND t1.god_tp_cd != 'PCKAGE_GOD'
+				  AND ( ( t3.DLV_SHOP_DLV_YN = 'N' and t1.sale_shop_id is not null) or ( t3.DLV_SHOP_DLV_YN = 'Y' and t1.sale_shop_id is null) ) 
+				ORDER BY t1.ord_god_turn) s1
+	</insert>
+
+	<insert id="insertPay" parameterType="pay">
+		INSERT /*[order.command.xml][insertPay][주문결제등록][victor]*/
+	    INTO pay
+		(
+	        pay_no
+	       ,upper_pay_no
+	       ,pay_mn_cd
+	       ,deal_tp_cd
+	       ,pay_dt
+	       ,pay_tmlmt_dt
+	       ,pay_crncy_cd
+<!-- 	       ,pay_exchg_rt_apl_beg_dt -->
+	       ,stdr_crncy_pay_amt
+	       ,pay_crncy_pay_amt
+	       ,cncl_acmtl_amt
+	       ,mpay_mn_yn
+	       ,card_sv_deal_yn
+	       ,use_cpn_prm_no
+	       ,mbr_cpn_no
+	       ,pay_tp_cd
+	       ,ord_no
+	       ,clm_no
+	       ,evt_no
+	       ,prm_no
+	       ,pg_deal_no
+	       ,pg_aprv_no
+	       ,pg_sect_cd
+	       ,pg_store_id
+	       ,pg_crs_key
+	       ,escr_yn
+	       ,acnthldr_nm
+	       ,bnk_cd
+	       ,bnk_nm
+	       ,bnk_acct_no
+	       ,virtl_bnk_acct_valid_dt
+	       ,pay_mobil_nation_no
+	       ,pay_mobil_area_no
+	       ,pay_mobil_tlof_no
+	       ,pay_mobil_tlof_wthn_no
+	       ,rfd_bnk_acct_no
+	       ,rfd_bnk_cd
+	       ,rfd_acnthldr_nm
+	       ,regtr_id
+           ,reg_dt
+		   ,udter_id
+		   ,udt_dt
+		)
+		VALUES
+		(
+	        #{payNo,jdbcType=VARCHAR}
+	       ,#{upperPayNo,jdbcType=VARCHAR}
+	       ,#{payMnCd,jdbcType=VARCHAR}
+	       ,#{dealTpCd,jdbcType=VARCHAR}
+	       ,#{payDt,jdbcType=TIMESTAMP}
+	       ,#{payTmlmtDt,jdbcType=TIMESTAMP}
+	       ,#{payCrncyCd,jdbcType=VARCHAR}
+<!-- 	       ,#{exchgRtAplBegDt,jdbcType=TIMESTAMP}  -->
+	       ,#{stdrCrncyPayAmt,jdbcType=NUMERIC}
+	       ,#{payCrncyPayAmt,jdbcType=NUMERIC}
+	       ,#{cnclAcmtlAmt,jdbcType=NUMERIC}
+	       ,#{mpayMnYn,jdbcType=VARCHAR}
+	       ,#{cardSvDealYn,jdbcType=VARCHAR}
+	       ,#{useCpnPrmNo,jdbcType=VARCHAR}
+	       ,#{mbrCpnNo,jdbcType=VARCHAR}
+	       ,#{payTpCd,jdbcType=VARCHAR}
+	       ,#{ordNo,jdbcType=VARCHAR}
+	       ,#{clmNo,jdbcType=VARCHAR}
+	       ,#{evtNo,jdbcType=VARCHAR}
+	       ,#{prmNo,jdbcType=VARCHAR}
+	       ,#{pgDealNo,jdbcType=VARCHAR}
+	       ,#{pgAprvNo,jdbcType=VARCHAR}
+	       ,#{pgSectCd,jdbcType=VARCHAR}
+	       ,#{pgStoreId,jdbcType=VARCHAR}
+	       ,#{pgCrsKey,jdbcType=VARCHAR}
+	       ,#{escrYn,jdbcType=VARCHAR}
+	       ,#{acnthldrNm,jdbcType=VARCHAR}
+	       ,#{bnkCd,jdbcType=VARCHAR}
+	       ,#{bnkNm,jdbcType=VARCHAR}
+	       ,#{bnkAcctNo,jdbcType=VARCHAR}
+	       ,#{virtlBnkAcctValidDt,jdbcType=TIMESTAMP}
+	       ,#{payMobilNationNo,jdbcType=VARCHAR}
+	       ,#{payMobilAreaNo,jdbcType=VARCHAR}
+	       ,#{payMobilTlofNo,jdbcType=VARCHAR}
+	       ,#{payMobilTlofWthnNo,jdbcType=VARCHAR}
+	       ,PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+	       ,#{rfdBnkCd,jdbcType=VARCHAR}
+	       ,#{rfdAcnthldrNm,jdbcType=VARCHAR}
+		   ,#{regtrId,jdbcType=VARCHAR}
+		   ,#{regDt,jdbcType=TIMESTAMP}
+		   ,#{regtrId,jdbcType=VARCHAR}
+		   ,#{regDt,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<insert id="insertPayEscr" parameterType="payEscr">
+		INSERT /*[order.command.xml][insertPayEscr][주문결제에스크로등록][victor]*/
+		INTO
+		pay_escr
+		(
+		pay_no
+		,escr_stat_cd
+		,escr_dlv_reg_dt
+		,escr_pch_dcsn_dt
+		,escr_pch_reject_dt
+		,escr_auto_pch_dcsn_dt
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		VALUES
+		(
+		#{payNo,jdbcType=VARCHAR}
+		,#{escrStatCd,jdbcType=VARCHAR}
+		,#{escrDlvRegDt,jdbcType=TIMESTAMP}
+		,#{escrPchDcsnDt,jdbcType=TIMESTAMP}
+		,#{escrPchRejectDt,jdbcType=TIMESTAMP}
+		,#{escrAutoPchDcsnDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<insert id="insertPayLog" parameterType="payPgIntrlckLog">
+		INSERT /*[order.command.xml][insertPayLog][주문결제로그등록][victor]*/
+		INTO
+		pay_pg_intrlck_log
+		(
+		 log_dt
+		,log_tp_cd
+		,log_cont
+		,pay_no
+		,ord_no
+		,clm_no
+		,mbr_no
+		,pg_aprv_no
+		)
+		VALUES
+		(
+		 #{logDt,jdbcType=TIMESTAMP}
+		,#{logTpCd,jdbcType=VARCHAR}
+		,#{logCont,jdbcType=VARCHAR}
+		,#{payNo,jdbcType=VARCHAR}
+		,#{ordNo,jdbcType=VARCHAR}
+		,#{clmNo,jdbcType=VARCHAR}
+		,#{mbrNo,jdbcType=VARCHAR}
+		,#{pgAprvNo,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<insert id="insertOrdErpPntTrnsmis" parameterType="ordErpPntTrnsmis">
+		INSERT /*[order.command.xml][insertOrdErpPntTrnsmis][주문ERP포인트연동등록][victor]*/
+		INTO ord_erp_pnt_trnsmis
+		(
+		 ord_no
+		,ord_erp_pnt_tp_cd
+		,erp_pnt_trnsmis_cd
+		,erp_pnt_trnsmis_dt
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		VALUES
+		(
+		#{ordNo,jdbcType=VARCHAR}
+		,#{ordErpPntTpCd,jdbcType=VARCHAR}
+		,#{erpPntTrnsmisCd,jdbcType=VARCHAR}
+		,#{erpPntTrnsmisDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{regDt,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+
+	<insert id="insertOrdNmbrStplatAgr" parameterType="ordNmbrStplatAgr">
+		INSERT /*[order.command.xml][insertOrdNmbrStplatAgr][비회원주문약관동의등록][victor]*/
+	    INTO ord_nmbr_stplat_agr
+		(
+	        ord_no
+	       ,stplat_cd
+	       ,stplat_iem_agr_yn
+	       ,regtr_id
+           ,reg_dt
+		   ,udter_id
+		   ,udt_dt
+		)
+		VALUES
+		(
+	        #{ordNo,jdbcType=VARCHAR}
+	       ,#{stplatCd,jdbcType=VARCHAR}
+	       ,#{stplatIemAgrYn,jdbcType=VARCHAR}
+		   ,#{regtrId,jdbcType=VARCHAR}
+		   ,#{regDt,jdbcType=TIMESTAMP}
+		   ,#{regtrId,jdbcType=VARCHAR}
+		   ,#{regDt,jdbcType=TIMESTAMP}
+		)   
+    </insert>
+
+	<insert id="insertInfOrdGodErpDstb" parameterType="infOrdGodErpDstb">
+		INSERT /*[order.command.xml][insertInfOrdGodErpDstb][주문ERP분배등록][victor]*/
+		INTO inf_ord_god_erp_dstb
+		(
+		 ord_no
+		,ord_god_turn
+		,qty_turn
+		,ord_god_qty_turn
+		,sku_no
+		,crncy_cd
+		,stdr_crncy_unt_prc
+		,pay_exchg_rt_crncy_unt_prc
+		,rtl_prc
+		,sale_unt_prc
+		,web_dc_unt_prc
+		,emp_dc_unt_prc
+		,imdtl_dc_unt_prc
+		,god_dc_unt_prc
+<!--		,signl_dc_unt_prc -->
+<!--		,b2e_spsl_dc_unt_prc -->
+		,bundle_dc_unt_prc
+		,crs_dc_unt_prc
+		,god_cpn_dc_unt_prc
+		,bsk_cpn_dc_unt_prc
+		,unity_pnt_use_unt_prc
+		,evt_pnt_use_unt_prc
+		,webpnt_use_unt_prc
+		,unity_pnt_accml_unt_prc
+		,evt_pnt_accml_unt_prc
+		,webpnt_accml_unt_prc
+		,clm_no
+		,clm_wrhs_god_turn
+		,clm_erp_intrlck_yn
+		,clm_erp_intrlck_dt
+		,clm_prcs_err_cont
+		,drt_exchg_qty_turn
+		,drt_exchg_sto_no
+		,opt_mod_no
+		,cntr_dlivy_cnfirm_yn
+		,cntr_dlivy_cnfirm_dt
+		,dlivy_drct_god_no
+		,dlivy_drct_tgt_yn
+		,dlivy_drct_yn
+		,dlivy_drct_dt
+		,rcptfr_no
+		,resve_rcptfr_creat_yn
+		,resve_rcptfr_creat_dt
+		,resve_rcptfr_dlivy_yn
+		,resve_rcptfr_dlivy_dt
+		,resve_rcptfr_dcsn_yn
+		,resve_rcptfr_dcsn_dt
+		,rtgod_rcptfr_no
+		,rtgod_rcptfr_creat_yn
+		,rtgod_rcptfr_creat_dt
+		,erp_resve_rcptfr_no
+		,erp_resve_cncl_rcptfr_no
+		,erp_resve_rcptfr_creat_cnt
+		,erp_resve_rcptfr_creat_yn
+		,erp_resve_rcptfr_creat_dt
+		,erp_resve_rcptfr_cncl_yn
+		,erp_resve_rcptfr_cncl_dt
+		,rtgod_shop_inv_mvmt_yn
+		,rtgod_shop_inv_mvmt_dt
+		,p_sto_no
+		,s_sto_no
+		,s_doc_no
+		,cp_err_yn
+		,cp_err_dt
+		,cp_err_cont
+		,st_err_yn
+		,st_err_dt
+		,st_err_cont
+		,docno_a
+		,docno_b
+		,docno_c
+		,docno_d
+		,docno_e
+		,docno_f
+		,docno_g
+		,docno_h
+		,docno_j
+		,docno_k
+		,erp_god_sn
+		,erp_god_sn_mod_yn
+		,erp_god_sn_mod_dt
+		,dlivy_acpt_yn
+		,wrhs_acpt_yn
+		,erp_intrlck_tgt_yn
+<!-- 		,exchg_rt_apl_beg_dt  -->
+		,pkag_tax_unt_prc
+		,reg_dt
+		)
+		VALUES
+		(
+		 #{ordNo,jdbcType=VARCHAR}
+		,#{ordGodTurn,jdbcType=NUMERIC}
+		,#{qtyTurn,jdbcType=NUMERIC}
+		,#{ordGodQtyTurn,jdbcType=NUMERIC}
+		,#{skuNo,jdbcType=VARCHAR}
+		,#{crncyCd,jdbcType=VARCHAR}
+		,#{stdrCrncyUntPrc,jdbcType=NUMERIC}
+		,#{payExchgRtCrncyUntPrc,jdbcType=NUMERIC}
+		,#{rtlPrc,jdbcType=NUMERIC}
+		,#{saleUntPrc,jdbcType=NUMERIC}
+		,#{webDcUntPrc,jdbcType=NUMERIC}
+		,#{empDcUntPrc,jdbcType=NUMERIC}
+		,#{imdtlDcUntPrc,jdbcType=NUMERIC}
+		,#{godDcUntPrc,jdbcType=NUMERIC}
+<!-- 		,#{signlDcUntPrc,jdbcType=NUMERIC} -->
+<!--		,#{b2eSpslDcUntPrc,jdbcType=NUMERIC} -->
+		,#{bundleDcUntPrc,jdbcType=NUMERIC}
+		,#{crsDcUntPrc,jdbcType=NUMERIC}
+		,#{godCpnDcUntPrc,jdbcType=NUMERIC}
+		,#{bskCpnDcUntPrc,jdbcType=NUMERIC}
+		,#{unityPntUseUntPrc,jdbcType=NUMERIC}
+		,#{evtPntUseUntPrc,jdbcType=NUMERIC}
+		,nvl(#{webpntUseUntPrc,jdbcType=NUMERIC},0)
+		,#{unityPntAccmlUntPrc,jdbcType=NUMERIC}
+		,#{evtPntAccmlUntPrc,jdbcType=NUMERIC}
+		,#{webpntAccmlUntPrc,jdbcType=NUMERIC}
+		,#{clmNo,jdbcType=VARCHAR}
+		,#{clmWrhsGodTurn,jdbcType=NUMERIC}
+		,#{clmErpIntrlckYn,jdbcType=VARCHAR}
+		,#{clmErpIntrlckDt,jdbcType=TIMESTAMP}
+		,#{clmPrcsErrCont,jdbcType=VARCHAR}
+		,#{drtExchgQtyTurn,jdbcType=NUMERIC}
+		,#{drtExchgStoNo,jdbcType=VARCHAR}
+		,#{optModNo,jdbcType=VARCHAR}
+		,#{cntrDlivyCnfirmYn,jdbcType=VARCHAR}
+		,#{cntrDlivyCnfirmDt,jdbcType=TIMESTAMP}
+<!-- 		,#{dlivyDrctGodNo,jdbcType=VARCHAR} -->
+		,(SELECT dlivy_drct_god_no FROM lgs_dlivy_drct_god WHERE ord_no = #{ordNo,jdbcType=VARCHAR} AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC})
+		,#{dlivyDrctTgtYn,jdbcType=VARCHAR}
+		,#{dlivyDrctYn,jdbcType=VARCHAR}
+		,#{dlivyDrctDt,jdbcType=TIMESTAMP}
+		,#{rcptfrNo,jdbcType=VARCHAR}
+		,#{resveRcptfrCreatYn,jdbcType=VARCHAR}
+		,#{resveRcptfrCreatDt,jdbcType=TIMESTAMP}
+		,#{resveRcptfrDlivyYn,jdbcType=VARCHAR}
+		,#{resveRcptfrDlivyDt,jdbcType=TIMESTAMP}
+		,#{resveRcptfrDcsnYn,jdbcType=VARCHAR}
+		,#{resveRcptfrDcsnDt,jdbcType=TIMESTAMP}
+		,#{rtgodRcptfrNo,jdbcType=VARCHAR}
+		,#{rtgodRcptfrCreatYn,jdbcType=VARCHAR}
+		,#{rtgodRcptfrCreatDt,jdbcType=TIMESTAMP}
+		,#{erpResveRcptfrNo,jdbcType=VARCHAR}
+		,#{erpResveCnclRcptfrNo,jdbcType=VARCHAR}
+		,#{erpResveRcptfrCreatCnt,jdbcType=NUMERIC}
+		,#{erpResveRcptfrCreatYn,jdbcType=VARCHAR}
+		,#{erpResveRcptfrCreatDt,jdbcType=TIMESTAMP}
+		,#{erpResveRcptfrCnclYn,jdbcType=VARCHAR}
+		,#{erpResveRcptfrCnclDt,jdbcType=TIMESTAMP}
+		,#{rtgodShopInvMvmtYn,jdbcType=VARCHAR}
+		,#{rtgodShopInvMvmtDt,jdbcType=TIMESTAMP}
+		,#{pStoNo,jdbcType=VARCHAR}
+		,#{sStoNo,jdbcType=VARCHAR}
+		,#{sDocNo,jdbcType=VARCHAR}
+		,#{cpErrYn,jdbcType=VARCHAR}
+		,#{cpErrDt,jdbcType=TIMESTAMP}
+		,#{cpErrCont,jdbcType=VARCHAR}
+		,#{stErrYn,jdbcType=VARCHAR}
+		,#{stErrDt,jdbcType=TIMESTAMP}
+		,#{stErrCont,jdbcType=VARCHAR}
+		,#{docnoA,jdbcType=VARCHAR}
+		,#{docnoB,jdbcType=VARCHAR}
+		,#{docnoC,jdbcType=VARCHAR}
+		,#{docnoD,jdbcType=VARCHAR}
+		,#{docnoE,jdbcType=VARCHAR}
+		,#{docnoF,jdbcType=VARCHAR}
+		,#{docnoG,jdbcType=VARCHAR}
+		,#{docnoH,jdbcType=VARCHAR}
+		,#{docnoJ,jdbcType=VARCHAR}
+		,#{docnoK,jdbcType=VARCHAR}
+		,#{erpGodSn,jdbcType=VARCHAR}
+		,#{erpGodSnModYn,jdbcType=VARCHAR}
+		,#{erpGodSnModDt,jdbcType=TIMESTAMP}
+		,#{dlivyAcptYn,jdbcType=VARCHAR}
+		,#{wrhsAcptYn,jdbcType=VARCHAR}
+		,#{erpIntrlckTgtYn,jdbcType=VARCHAR}
+<!-- 		,#{exchgRtAplBegDt,jdbcType=TIMESTAMP}  -->
+		,#{pkagTaxUntPrc,jdbcType=NUMERIC}
+		,SYSDATE
+		)
+	</insert>
+	
+	<insert id="insertLgsDlvspHist" parameterType="java.lang.String">
+		/*[order.command.xml][insertLgsDlvspHist][물류배송지이력등록][victor]*/
+		INSERT INTO lgs_dlvsp_hist (
+		  ord_no
+        , dlv_pcupsp_turn
+        , hist_dt
+        , clm_no
+        , dlv_pcupsp_sect_cd
+        , addrse_nm
+        , dlv_sect_cd
+        , pkup_shop_id
+        , pkup_shop_brnd_id
+        , pkup_shop_visit_date
+        , addr_sect_cd
+        , addrse_nation_cd
+        , addrse_post_no
+        , addrse_base_addr
+        , addrse_detail_addr
+        , addrse_mobil_nation_no
+        , addrse_mobil_area_no
+        , addrse_mobil_tlof_no
+        , addrse_mobil_tlof_wthn_no
+        , addrse_tel_nation_no
+        , addrse_tel_area_no
+        , addrse_tel_tlof_no
+        , addrse_tel_tlof_wthn_no
+        , dlv_memo
+        , dlv_hope_date
+        , regtr_id
+        , reg_dt
+        , udter_id
+        , udt_dt)
+   SELECT ord_no
+		, dlv_pcupsp_turn
+		, SYSDATE
+		, clm_no
+		, dlv_pcupsp_sect_cd
+		, addrse_nm
+		, dlv_sect_cd
+		, pkup_shop_id
+		, pkup_shop_brnd_id
+		, pkup_shop_visit_date
+		, addr_sect_cd
+		, addrse_nation_cd
+		, addrse_post_no
+		, addrse_base_addr
+		, addrse_detail_addr
+		, addrse_mobil_nation_no
+		, addrse_mobil_area_no
+		, addrse_mobil_tlof_no
+		, addrse_mobil_tlof_wthn_no
+		, addrse_tel_nation_no
+		, addrse_tel_area_no
+		, addrse_tel_tlof_no
+		, addrse_tel_tlof_wthn_no
+		, dlv_memo
+		, dlv_hope_date
+		, regtr_id
+		, reg_dt
+		, udter_id
+		, udt_dt
+  	FROM lgs_dlvsp
+   WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+	</insert>
+	
+	<insert id="insertLgsDlvHist" parameterType="java.lang.String">
+		/*[order.command.xml][insertLgsDlvHist][물류배송이력등록][victor]*/
+		INSERT INTO lgs_dlv_hist (
+		  ord_no
+		, dlv_pcupsp_turn
+		, dlv_turn
+		, hist_dt
+		, clm_no
+		, dmstc_dlv_cst_plc_sn
+		, ovsea_dlv_dmstc_dlv_cst_plc_sn
+		, ovsea_dlv_cst_plc_sn
+		, dlv_cst_bnd_mbd_cd
+		, dlv_com_cd
+		, gdgp_stat_cd
+		, dmstc_waybil_no
+		, dmstc_waybil_no_reg_dt
+		, ovsea_waybil_no
+		, ovsea_waybil_no_reg_dt
+		, cvnstor_hdry_aprv_no
+		, crncy_cd
+		, stdr_crncy_amt
+		, pay_exchg_rt_crncy_amt
+		, reality_dlv_cst
+		, plc_dlv_cst
+		, cncl_dlv_cst
+		, rtgod_dlv_cst
+		, exchg_dlv_cst
+		, dlv_cst_cpn_dc_amt
+		, dlv_cst_cpn_no
+		, waybil_no_erp_trnsmis_cd
+		, waybil_no_erp_trnsmis_err_cont
+		, waybil_no_erp_trnsmis_dt
+		, dlv_com_trnsmis_tgt_yn
+		, dlv_com_trnsmis_yn
+		, dlv_com_trnsmis_dt
+		, mail_snd_yn
+		, cal_dt
+		, regtr_id
+		, reg_dt
+		, udter_id
+		, udt_dt
+<!-- 		, dlv_chrge_hist_turn /*SR 32883 로 추가*/ -->
+		, zone_turn
+		, god_min_wt 
+		, dlv_mn_cd)
+   SELECT ord_no
+		, dlv_pcupsp_turn
+		, dlv_turn
+		, SYSDATE
+		, clm_no
+		, dmstc_dlv_cst_plc_sn
+		, ovsea_dlv_dmstc_dlv_cst_plc_sn
+		, ovsea_dlv_cst_plc_sn
+		, dlv_cst_bnd_mbd_cd
+		, dlv_com_cd
+		, gdgp_stat_cd
+		, dmstc_waybil_no
+		, dmstc_waybil_no_reg_dt
+		, ovsea_waybil_no
+		, ovsea_waybil_no_reg_dt
+		, cvnstor_hdry_aprv_no
+		, crncy_cd
+		, stdr_crncy_amt
+		, pay_exchg_rt_crncy_amt
+		, reality_dlv_cst
+		, plc_dlv_cst
+		, cncl_dlv_cst
+		, rtgod_dlv_cst
+		, exchg_dlv_cst
+		, dlv_cst_cpn_dc_amt
+		, dlv_cst_cpn_no
+		, waybil_no_erp_trnsmis_cd
+		, waybil_no_erp_trnsmis_err_cont
+		, waybil_no_erp_trnsmis_dt
+		, dlv_com_trnsmis_tgt_yn
+		, dlv_com_trnsmis_yn
+		, dlv_com_trnsmis_dt
+		, mail_snd_yn
+		, cal_dt
+		, regtr_id
+		, reg_dt
+		, udter_id
+		, udt_dt
+<!-- 		, dlv_chrge_hist_turn  -->
+		, zone_turn
+		, god_min_wt
+		, dlv_mn_cd
+	FROM lgs_dlv
+   WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+	</insert>
+	
+	<insert id="insertLgsDLivyDrctGodHist" parameterType="java.lang.String">
+		/*[order.command.xml][insertLgsDLivyDrctGodHist][물류출고지시이력등록][victor]*/
+		INSERT INTO lgs_dlivy_drct_god_hist (
+		  dlivy_drct_god_no
+		, hist_turn
+		, ord_no
+		, ord_god_turn
+		, pckage_god_turn
+		, gft_yn
+		, dlv_pcupsp_turn
+		, dlv_turn
+		, dlv_shop_id
+		, dlivy_shop_id
+		, acmtl_god_vol
+		, acmtl_god_wt
+		, lgs_itm_yn
+		, dlivy_drct_tgt_yn
+		, dlivy_drct_yn
+		, dlivy_drct_grp_dgre
+		, dlivy_drct_user_grp_dgre
+		, dlivy_drct_count
+		, dlivy_drct_tp_cd
+		, dlivy_drct_dt
+		, dlivy_drct_qty
+		, dlivy_drct_cncl_qty
+		, dlivy_drct_cncl_dt
+		, dlv_stat_cd
+		, shtg_qty
+		, shtg_dt
+		, shtg_dcsn_yn
+		, shtg_dcsn_dt
+		, dlivy_compt_qty
+		, dlivy_compt_dt
+		, dlv_compt_dt
+		, dlivy_drct_god_memo_cont
+		, rcptfr_no
+		, resve_rcptfr_creat_yn
+		, resve_rcptfr_creat_dt
+		, resve_rcptfr_dlivy_yn
+		, resve_rcptfr_dlivy_dt
+		, resve_rcptfr_dcsn_yn
+		, resve_rcptfr_dcsn_dt
+		, erp_resve_rcptfr_creat_cnt
+		, erp_resve_rcptfr_creat_yn
+		, erp_resve_rcptfr_creat_dt
+		, erp_resve_rcptfr_cncl_yn
+		, erp_resve_rcptfr_cncl_dt
+		, inv_apl_yn
+		, cntr_dlivy_cnfirm_yn
+		, cntr_dlivy_cnfirm_dt
+		, p_sto_no
+		, s_sto_no
+		, s_doc_no
+		, regtr_id
+		, reg_dt
+		, udter_id
+		, udt_dt)
+   SELECT dlivy_drct_god_no
+   		, ROWNUM
+		, ord_no
+		, ord_god_turn
+		, pckage_god_turn
+		, gft_yn
+		, dlv_pcupsp_turn
+		, dlv_turn
+		, dlv_shop_id
+		, dlivy_shop_id
+		, acmtl_god_vol
+		, acmtl_god_wt
+		, lgs_itm_yn
+		, dlivy_drct_tgt_yn
+		, dlivy_drct_yn
+		, dlivy_drct_grp_dgre
+		, dlivy_drct_user_grp_dgre
+		, dlivy_drct_count
+		, dlivy_drct_tp_cd
+		, dlivy_drct_dt
+		, dlivy_drct_qty
+		, dlivy_drct_cncl_qty
+		, dlivy_drct_cncl_dt
+		, dlv_stat_cd
+		, shtg_qty
+		, shtg_dt
+		, shtg_dcsn_yn
+		, shtg_dcsn_dt
+		, dlivy_compt_qty
+		, dlivy_compt_dt
+		, dlv_compt_dt
+		, dlivy_drct_god_memo_cont
+		, rcptfr_no
+		, resve_rcptfr_creat_yn
+		, resve_rcptfr_creat_dt
+		, resve_rcptfr_dlivy_yn
+		, resve_rcptfr_dlivy_dt
+		, resve_rcptfr_dcsn_yn
+		, resve_rcptfr_dcsn_dt
+		, erp_resve_rcptfr_creat_cnt
+		, erp_resve_rcptfr_creat_yn
+		, erp_resve_rcptfr_creat_dt
+		, erp_resve_rcptfr_cncl_yn
+		, erp_resve_rcptfr_cncl_dt
+		, inv_apl_yn
+		, cntr_dlivy_cnfirm_yn
+		, cntr_dlivy_cnfirm_dt
+		, p_sto_no
+		, s_sto_no
+		, s_doc_no
+		, regtr_id
+		, reg_dt
+		, udter_id
+		, udt_dt
+	FROM lgs_dlivy_drct_god
+   WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+   ORDER BY dlivy_drct_god_no
+	</insert>
+	
+	<insert id="insertOrdErpTrnsmisHist" parameterType="java.lang.String">
+		/*[order.command.xml][insertOrdErpTrnsmisHist][주문ERP전송이력수량단위등록][victor]*/
+		INSERT INTO ord_god_erp_trnsmis (
+		  ord_no
+		, ord_erp_trnsmis_tp_cd
+		, ord_god_turn
+        , qty_turn
+		, erp_trnsmis_cd
+		, erp_trnsmis_dt
+		, regtr_id
+		, reg_dt
+		, udter_id
+		, udt_dt)
+   SELECT t1.ord_no
+        , t1.ord_erp_trnsmis_tp_cd
+        , t2.ord_god_turn
+        , t2.qty_turn
+        , t1.erp_trnsmis_cd
+        , t1.erp_trnsmis_dt
+        , t1.regtr_id
+        , t1.reg_dt
+        , t1.udter_id
+        , t1.udt_dt
+     FROM ord_erp_trnsmis t1 INNER JOIN inf_ord_god_erp_dstb t2 ON t1.ord_no = t2.ord_no
+    WHERE t1.ord_no = #{ordNo, jdbcType=VARCHAR}
+      AND t1.ord_erp_trnsmis_tp_cd = 'UNITY_PNT_ACCML_TMPR'
+      AND t1.erp_trnsmis_cd = 'R'
+    ORDER BY t2.qty_turn
+	</insert>
+	
+	<update id="updateMbrIssuCoupon" parameterType="ordGodAplPrm">
+		/* [order.command.xml][updateMbrIssuCoupon][회원쿠폰사용갱신][victor] */
+		UPDATE mbr_issu_cpn
+		   SET cpn_stat_cd = 'USE'
+		     , cpn_use_dt = SYSDATE
+		     , ord_no = #{ordNo, jdbcType=VARCHAR}
+			 , udter_id = #{udterId,jdbcType=VARCHAR}
+			 , udt_dt = #{udtDt,jdbcType=TIMESTAMP}
+		 WHERE mbr_cpn_no = #{mbrCpnNo, jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateStockGeneral" parameterType="com.plgrim.ncp.biz.order.data.OrderStockDTO">
+		/*[order.command.xml][updateStockGeneral][주문상품재고갱신][victor]*/
+		UPDATE god_itm
+		   SET udt_dt = SYSDATE 
+		   , udter_id = 'updateStockGeneral'
+<!-- 		   
+		   , sale_prearnge_qty = NVL(sale_prearnge_qty, 0) + #{itmQty,jdbcType=NUMERIC}
+ -->		   
+		   <if test='reserveYn != null and reserveYn == "Y"'>
+			 , resve_inv_qty = resve_inv_qty - #{itmQty,jdbcType=NUMERIC}
+		   </if>
+		   <if test='onlineLimitYn != null and onlineLimitYn == "Y"'>
+			 , onlne_lmtt_inv_qty = onlne_lmtt_inv_qty - #{itmQty,jdbcType=NUMERIC}
+		   </if>
+		 WHERE itm_no = #{itmNo, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateStockStore" parameterType="com.plgrim.ncp.biz.order.data.OrderStockDTO">
+		/*[order.command.xml][updateStockStore][주문상품임시매장재고갱신][victor]*/
+		UPDATE god_shop_itm_inv
+		   SET udt_dt = SYSDATE 
+		   , udter_id = 'updateStockGeneral'
+<!-- 
+		   	, sale_prearnge_qty = NVL(sale_prearnge_qty, 0) + #{itmQty,jdbcType=NUMERIC}
+ -->
+		 WHERE itm_no = #{itmNo, jdbcType=VARCHAR}
+		   AND shop_id = #{shopId,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateStockGift" parameterType="com.plgrim.ncp.biz.order.data.OrderStockDTO">
+		/*[order.command.xml][updateStockGift][주문사은품재고갱신][victor]*/
+		UPDATE god_itm
+		   SET tot_useful_inv_qty = NVL(tot_useful_inv_qty, 0) - #{itmQty,jdbcType=NUMERIC}
+		 WHERE itm_no = #{itmNo, jdbcType=VARCHAR}
+	</update>
+
+    <update id="updateStockPartmall" parameterType="com.plgrim.ncp.biz.order.data.OrderStockDTO">
+        /*[order.command.xml][updateStockPartmall][입점사 주문상품 재고갱신][AshA]*/
+        UPDATE god_itm
+              SET udt_dt = SYSDATE
+                  , udter_id = 'updateStockPartmall'
+			<choose>
+			    <when test='reserveYn != null and reserveYn == "Y"'>
+				  , resve_inv_qty = NVL(resve_inv_qty, 0) - #{itmQty,jdbcType=NUMERIC}
+				</when>
+				<otherwise>
+				  , tot_useful_inv_qty = NVL(tot_useful_inv_qty, 0) - #{itmQty,jdbcType=NUMERIC}
+				</otherwise>
+			</choose>		
+         WHERE itm_no = #{itmNo, jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateOrd" parameterType="ord">
+		UPDATE ord t1 /*[order.command.xml][updateOrd][주문마스터갱신][victor]*/
+		   SET (stdr_crncy_sum_amt
+		      , pay_exchg_rt_crncy_sum_amt
+		      , rtl_prc_sum_amt
+		      , sale_sum_amt
+		      , web_dc_sum_amt
+		      , emp_dc_sum_amt
+		      , imdtl_dc_sum_amt
+		      , god_dc_sum_amt
+<!--  		      , signl_dc_sum_amt -->
+<!-- 		      , b2e_spsl_dc_sum_amt -->
+		      , bundle_dc_sum_amt
+		      , crs_dc_sum_amt
+		      , god_cpn_dc_sum_amt
+		      , bsk_cpn_dc_sum_amt
+		      , unity_pnt_use_sum_amt
+              , webpnt_use_sum_amt
+		      , evt_pnt_use_sum_amt
+		      , unity_pnt_accml_sum_amt
+              , webpnt_accml_sum_amt
+		      , evt_pnt_accml_sum_amt
+		      , all_dc_sum_amt                                                                                                                 
+			  , dlv_cst_sum_amt
+			  , dlv_cst_cpn_dc_sum_amt
+			 <if test='rcptfrReqstCd != null and rcptfrReqstCd != ""'>
+			  , rcptfr_reqst_cd
+			 </if>
+			 <if test='rcptfrPrcsCd != null and rcptfrPrcsCd != ""'>
+			  , rcptfr_prcs_cd
+			 </if>
+			 <if test='rcptfrPrposCd != null and rcptfrPrposCd != ""'>
+			  , rcptfr_prpos_cd
+			 </if>
+			 <if test='rcptfrAprvNo != null and rcptfrAprvNo != ""'>
+			  , rcptfr_aprv_no     
+			 </if>
+			 <if test='pkagTaxSumAmt != null and pkagTaxSumAmt != ""'>
+			  , pkag_tax_sum_amt
+			 </if>
+		      ) = (SELECT #{stdrCrncySumAmt,jdbcType=NUMERIC}
+		                , #{payExchgRtCrncySumAmt,jdbcType=NUMERIC}
+		                , SUM (NVL (rtl_prc * ord_qty, 0))
+		                , SUM (NVL (sale_amt, 0))
+		                , SUM (NVL (web_dc_amt, 0))
+		                , SUM (NVL (emp_dc_amt, 0))
+		                , SUM (NVL (imdtl_dc_amt, 0))
+		                , SUM (NVL (god_dc_amt, 0))
+<!-- 		                , SUM (NVL (signl_dc_amt, 0)) -->
+<!-- 		                , SUM (NVL (b2e_spsl_dc_amt, 0)) -->
+		                , SUM (NVL (bundle_dc_amt, 0))
+		                , SUM (NVL (crs_dc_amt, 0))
+		                , SUM (NVL (god_cpn_dc_amt, 0))
+		                , SUM (NVL (bsk_cpn_dc_amt, 0))
+		                , SUM (NVL (unity_pnt_use_amt, 0))
+                        , SUM (NVL (webpnt_use_amt, 0))
+		                , SUM (NVL (evt_pnt_use_amt, 0))
+		                , SUM (NVL (unity_pnt_accml_amt, 0))
+                        , SUM (NVL (webpnt_accml_amt, 0))
+		                , SUM (NVL (evt_pnt_accml_amt, 0))
+		                , SUM (NVL (all_dc_amt, 0))
+		                , #{dlvCstSumAmt,jdbcType=NUMERIC}
+		                , #{dlvCstCpnDcSumAmt,jdbcType=NUMERIC}
+						<if test='rcptfrReqstCd != null and rcptfrReqstCd != ""'>
+						, #{rcptfrReqstCd,jdbcType=VARCHAR}
+						</if>
+						<if test='rcptfrPrcsCd != null and rcptfrPrcsCd != ""'>
+						, #{rcptfrPrcsCd,jdbcType=VARCHAR}
+						</if>
+						<if test='rcptfrPrposCd != null and rcptfrPrposCd != ""'>
+						, #{rcptfrPrposCd,jdbcType=VARCHAR}
+						</if>
+						<if test='rcptfrAprvNo != null and rcptfrAprvNo != ""'>
+						, #{rcptfrAprvNo,jdbcType=VARCHAR}     
+						</if>
+						<if test='pkagTaxSumAmt != null and pkagTaxSumAmt != ""'>
+						, #{pkagTaxSumAmt,jdbcType=NUMERIC}
+						</if>
+		             FROM ord_god t2
+		            WHERE t2.ord_no = #{ordNo,jdbcType=VARCHAR} AND t1.ord_no = t2.ord_no
+		              AND t2.god_tp_cd <![CDATA[<>]]> 'PCKAGE_GOD'
+		              AND t2.god_tp_cd <![CDATA[<>]]> 'SET_GOD'
+		              AND t2.god_tp_cd <![CDATA[<>]]> 'PCHS_GFT'
+		              AND t2.god_tp_cd <![CDATA[<>]]> 'CNVRS_GFT'
+		            )
+		 WHERE EXISTS
+		          (SELECT 1
+		             FROM ord_god
+		            WHERE ord_no = #{ordNo,jdbcType=VARCHAR} AND t1.ord_no = ord_no)    
+    </update>
+    
+    
+	<!--  
+		예약영수증 생성-인터페이스주문 상품ERP분배
+			- 기 발행된 예약영수증 번호가 없는 경우에만 수정처리
+	-->
+	<update id="modifyPreSalesYnInf"  parameterType="infOrdGodErpDstbExtends">
+        UPDATE /* [ncp_order.command.xml ][modifyPreSalesYnInf][예약영수증생성2-인터페이스주문 상품ERP분배][js279.kim] */
+        	inf_ord_god_erp_dstb
+        SET erp_resve_rcptfr_creat_yn = 'Y'									/* 예약영수증 생성여부 */
+        	, erp_resve_rcptfr_creat_dt = SYSDATE							/* 예약영수증 생성일시 */
+        	, erp_resve_rcptfr_creat_cnt = NVL(erp_resve_rcptfr_creat_cnt, 0) + 1  		/* 예약영수증 생성건수 */
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(erpResveRcptfrNo)">
+        	, erp_resve_rcptfr_no = #{erpResveRcptfrNo, jdbcType=VARCHAR}	/* ERP 예약영수증 번호 */
+        </if>
+           	, udt_dt= SYSDATE
+        WHERE
+        	ord_no = #{ordNo, jdbcType=VARCHAR}						/* 주문번호  */
+        	AND ord_god_turn = #{ordGodTurn, jdbcType=NUMERIC}	/* 주문상품순번  */
+        	AND qty_turn = #{qtyTurn, jdbcType=NUMERIC}			/* 주문상품 수량 순번  */
+    </update>
+	
+	<!--  예약영수증 생성-물류출고지시상품 -->
+	<update id="modifyPreSalesYnLgs"  parameterType="infOrdGodErpDstbExtends">
+        UPDATE /* [ncp_order.command.xml ][modifyPreSalesYnLgs][예약영수증생성-물류출고지시상품][js279.kim] */
+        	lgs_dlivy_drct_god
+        SET erp_resve_rcptfr_creat_yn = 'Y'											<!-- 예약영수증 생성여부 -->
+        	, erp_resve_rcptfr_creat_dt = SYSDATE									<!-- 예약영수증 생성일시 -->
+        	, erp_resve_rcptfr_creat_cnt = NVL(erp_resve_rcptfr_creat_cnt, 0) + 1  <!-- 예약영수증 생성건수 -->
+        WHERE 
+        <!-- 물류출고지시상품번호  
+        	dlivy_drct_god_no = #{dlivyDrctGodNo, jdbcType=VARCHAR}	
+        -->
+			 ord_no = #{ordNo,jdbcType=VARCHAR} 
+		 AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}
+    </update>    
+    
+    
+	
+	<!-- 대량주문,전화주문 ORD 업데이트 -->
+    <update id="updatePayMethodChangeOrd" parameterType="ord">
+        UPDATE /* [order.command.xml][updatePayMethodChangeOrd][대량주문,전화주문 ORD 업데이트][hongsub.lim] */
+                ORD
+           SET
+	           	ord_stat_cd = CASE WHEN virtl_dlv_compt_yn = 'Y' THEN 'DLV_COMPT' ELSE 'PAY_COMPT' END
+                <if test='ordTpCd != null and ordTpCd != ""'>
+                , ord_tp_cd = #{ordTpCd,jdbcType=VARCHAR}                      /* 픽업 일반배송 전환시 일반 주문으로 변경 */
+                </if>
+                <if test='payExchgRtCrncySumAmt != null and payExchgRtCrncySumAmt != ""'>
+                , pay_exchg_rt_crncy_sum_amt = #{payExchgRtCrncySumAmt,jdbcType=NUMERIC}       /* 결제금액 */
+                </if>
+                 <if test='payExchgRtCrncySumAmt != null and payExchgRtCrncySumAmt != ""'>
+                , stdr_crncy_sum_amt = #{payExchgRtCrncySumAmt,jdbcType=NUMERIC}       /* 결제금액 */
+                </if>
+                <if test='dlvCstSumAmt != null and dlvCstSumAmt != ""'>
+                , dlv_cst_sum_amt = #{dlvCstSumAmt,jdbcType=NUMERIC}       /* 배송비 합계 */
+                </if>
+                <if test='autoRfdSectCd != null and autoRfdSectCd != ""'>
+                , auto_rfd_sect_cd = #{autoRfdSectCd,jdbcType=VARCHAR}       /* 자동환불구분코드 */
+                </if>
+                , rcptfr_reqst_cd = #{rcptfrReqstCd,jdbcType=VARCHAR}
+                , rcptfr_prcs_cd = #{rcptfrPrcsCd,jdbcType=VARCHAR}
+                , rcptfr_prpos_cd = #{rcptfrPrposCd,jdbcType=VARCHAR}
+                , rcptfr_aprv_no = #{rcptfrAprvNo,jdbcType=VARCHAR}     
+                , udter_id = #{regtrId,jdbcType=VARCHAR}
+                , udt_dt = #{regDt,jdbcType=DATE}
+         WHERE ord_no = #{ordNo ,jdbcType=VARCHAR}
+    </update>
+    
+ 	<!-- 클레임 배송비 결제후 접수처리 -->
+    <update id="updaeClmDlvAmtClmStatCd" parameterType="com.plgrim.ncp.biz.order.data.MypageOrderInfoDTO">
+        UPDATE /* [order.command.xml][updaeClmDlvAmtClmStatCd][클레임 배송비 결제후 접수처리][hongsub.lim] */
+                CLM
+           SET 
+                  clm_stat_cd = 'RCEPT'                      /* 결제대기 에서 접수로 */
+                , rcept_dt 	= SYSDATE                
+                , udter_id 	= #{regtrId,jdbcType=VARCHAR}
+                , udt_dt 	= SYSDATE
+     WHERE clm_no = #{clmNo ,jdbcType=VARCHAR}
+           AND ord_no = #{ordNo ,jdbcType=VARCHAR}
+           AND clm_stat_cd = 'PAY_WAIT'
+    </update>   
+    
+ 	<!-- REPAIR : 클레임 배송비 결제후 무료수선일 경우 신청 -->
+    <update id="updaeClmDlvAmtClmStatCdForRepair" parameterType="com.plgrim.ncp.biz.order.data.MypageOrderInfoDTO">
+        UPDATE /* [order.command.xml][updaeClmDlvAmtClmStatCdForRepair][클레임 배송비 결제후 무료수선일 경우 신청처리][dian] */
+                CLM
+           SET
+                  clm_stat_cd = 'REQST'                      /* 결제대기 에서 접수로 */
+                , rcept_dt 	= SYSDATE
+                , udter_id 	= #{regtrId,jdbcType=VARCHAR}
+                , udt_dt 	= SYSDATE
+     WHERE clm_no = #{clmNo ,jdbcType=VARCHAR}
+           AND ord_no = #{ordNo ,jdbcType=VARCHAR}
+           AND clm_stat_cd = 'PAY_WAIT'
+    </update>
+
+    <!-- 현금영수증 신청 -->
+    <update id="updateReceipt" parameterType="ord">
+        UPDATE /* [order.command.xml][updateReceipt][현금영수증 신청[hongsub.lim] */
+                ORD
+           SET    rcptfr_reqst_cd = #{rcptfrReqstCd,jdbcType=VARCHAR}
+                , rcptfr_prcs_cd = #{rcptfrPrcsCd,jdbcType=VARCHAR}
+                , rcptfr_prpos_cd = #{rcptfrPrposCd,jdbcType=VARCHAR}
+                , rcptfr_aprv_no = #{rcptfrAprvNo,jdbcType=VARCHAR}                
+         WHERE ord_no = #{ordNo ,jdbcType=VARCHAR}
+    </update>
+    
+	<!-- 대량주문,전화주문 pay 업데이트 -->
+    <update id="updatePayMethodChangePay" parameterType="pay">
+        UPDATE /* [order.command.xml][updatePayMethodChangePay][대량주문,전화주문 PAY 업데이트][hongsub.lim] */
+                PAY
+           SET 
+                  pay_mn_cd =  #{payMnCd,jdbcType=VARCHAR}
+                , deal_tp_cd = #{dealTpCd,jdbcType=VARCHAR}
+				, pay_dt = SYSDATE
+				, pg_aprv_no = #{pgAprvNo,jdbcType=VARCHAR}        
+				, pg_sect_cd = #{pgSectCd,jdbcType=VARCHAR}
+				<if test='pgDealNo!=null and pgDealNo!=""'>
+					,pg_deal_no = #{pgDealNo,jdbcType=VARCHAR}
+				</if>                    
+				, pg_store_id = #{pgStoreId,jdbcType=VARCHAR}                   
+				, pg_crs_key = #{pgCrsKey,jdbcType=VARCHAR}                      
+				, acnthldr_nm = #{acnthldrNm,jdbcType=VARCHAR}                   
+				, bnk_cd = #{bnkCd,jdbcType=VARCHAR}                         
+				, bnk_acct_no = #{bnkAcctNo,jdbcType=VARCHAR}                    
+				, virtl_bnk_acct_valid_dt = #{virtlBnkAcctValidDt,jdbcType=DATE}        
+				, pay_mobil_nation_no = #{payMobilNationNo,jdbcType=VARCHAR}
+				, pay_mobil_area_no = #{payMobilAreaNo,jdbcType=VARCHAR}
+				, pay_mobil_tlof_no = #{payMobilTlofNo,jdbcType=VARCHAR}
+				, pay_mobil_tlof_wthn_no = #{payMobilTlofWthnNo,jdbcType=VARCHAR}
+                , udter_id = #{regtrId,jdbcType=VARCHAR}
+                , udt_dt = SYSDATE				
+         WHERE pay_no = #{payNo ,jdbcType=VARCHAR}
+           AND ord_no = #{ordNo ,jdbcType=VARCHAR}
+           AND deal_tp_cd = 'PAY_WAIT'
+    </update>  
+    
+	<!-- 프론트 가상계좌 결제수단 변경시 기존에 있던 주결제 취소누적금액 추가 -->
+    <update id="updateCancelPay" parameterType="com.plgrim.ncp.biz.order.data.MypageOrderInfoDTO">
+        UPDATE /* [order.command.xml][updateCancelPay][프론트 가상계좌 결제수단 변경시 기존에 있던 주결제 취소누적금액 추가][hongsub.lim] */
+                PAY
+           SET 
+           <choose>
+           	<when test='cnclAcmtlAmt != null and cnclAcmtlAmt != ""'>
+           		cncl_acmtl_amt = (select #{cnclAcmtlAmt} + nvl(cncl_acmtl_amt,0) from pay where pay_no = #{payNo ,jdbcType=VARCHAR} and ord_no = #{ordNo ,jdbcType=VARCHAR}) /*부분취소일때 기존취소누적금액 + 취소될 금액 으로 취소누적금액 update*/
+           	</when>
+           	<otherwise>
+           		cncl_acmtl_amt = (select nvl(PAY_CRNCY_PAY_AMT,0) from pay where pay_no = #{payNo ,jdbcType=VARCHAR} and ord_no = #{ordNo ,jdbcType=VARCHAR})
+           	</otherwise>
+           </choose>                  
+                , mpay_mn_yn = #{mpayMnYn,jdbcType=VARCHAR}
+                <if test='regtrId!=null and regtrId!=""'>
+                , udter_id = #{regtrId,jdbcType=VARCHAR}
+                </if>                
+                , udt_dt = sysdate
+         WHERE pay_no = #{payNo ,jdbcType=VARCHAR}
+           AND ord_no = #{ordNo ,jdbcType=VARCHAR}
+           AND mpay_mn_yn = 'Y'
+    </update>
+    <!-- 프론트 변경시 취소 정보 insert -->
+	<insert id="insertCancelPay" parameterType="com.plgrim.ncp.biz.claim.data.RefundPayDTO">
+		INSERT /*[order.command.xml][insertCancelPay][프론트 변경시 취소 정보 insert][hongsub.lim]*/
+		INTO pay
+		(
+		pay_no
+		,upper_pay_no
+		,pay_mn_cd
+		,deal_tp_cd
+		,pay_dt
+		,pay_tmlmt_dt
+		,stdr_crncy_pay_amt
+		,pay_crncy_cd
+		,pay_crncy_pay_amt
+		,cncl_acmtl_amt
+		,use_cpn_prm_no
+		,mbr_cpn_no
+		,mpay_mn_yn
+		,pay_tp_cd
+		,ord_no
+		,clm_no
+		,evt_no
+		,prm_no
+		,pg_aprv_no
+		,pg_sect_cd
+		,pg_store_id
+		,pg_crs_key
+		,escr_yn
+		,acnthldr_nm
+		,bnk_cd
+		,bnk_acct_no
+		,virtl_bnk_acct_valid_dt
+		,pay_mobil_nation_no
+		,pay_mobil_area_no
+		,pay_mobil_tlof_no
+		,pay_mobil_tlof_wthn_no
+		,rfd_bnk_acct_no
+		,rfd_bnk_cd
+		,rfd_acnthldr_nm
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		,pay_exchg_rt_apl_beg_dt
+		)
+		  SELECT
+				  #{newPayNo,jdbcType=VARCHAR}
+				, pay_no
+				, pay_mn_cd
+				, CASE 
+					WHEN
+						(SELECT pay_crncy_pay_amt FROM pay WHERE pay_no = #{payNo ,jdbcType=VARCHAR}) =  #{payCrncyPayAmt}
+					THEN 'ALL_CNCL'
+					ELSE 'PART_CNCL'
+					END	
+				, sysdate
+				, pay_tmlmt_dt				
+				<choose>
+					<when test='stdrCrncyPayAmt != null and stdrCrncyPayAmt != ""'>,#{stdrCrncyPayAmt}</when>
+					<otherwise>, stdr_crncy_pay_amt</otherwise>
+				</choose>				
+				, pay_crncy_cd
+				<choose>
+					<when test='payCrncyPayAmt != null and payCrncyPayAmt != ""'>,#{payCrncyPayAmt}</when>
+					<otherwise>, pay_crncy_pay_amt</otherwise>
+				</choose>								
+				, 0
+				, use_cpn_prm_no
+				, mbr_cpn_no
+				, 'N'
+				<choose>
+					<when test='payTpCd != null and payTpCd !=""'>
+						, #{payTpCd}
+					</when>
+					<otherwise>
+						, pay_tp_cd
+					</otherwise>
+				</choose>				
+				, ord_no
+				<choose>
+					<when test='clmNo != null and clmNo !=""'>
+						, #{clmNo}
+					</when>
+					<otherwise>
+						, clm_no
+					</otherwise>
+				</choose>								
+				, evt_no
+				, prm_no
+				<choose>
+					<when test='pgAprvNo != null and pgAprvNo !=""'>
+						, #{pgAprvNo}
+					</when>
+					<otherwise>
+						, pg_aprv_no
+					</otherwise>
+				</choose>
+				, pg_sect_cd
+				, pg_store_id
+				, pg_crs_key
+				, escr_yn
+				, acnthldr_nm
+				, bnk_cd
+				, bnk_acct_no
+				, virtl_bnk_acct_valid_dt
+				, pay_mobil_nation_no
+				, pay_mobil_area_no
+				, pay_mobil_tlof_no
+				, pay_mobil_tlof_wthn_no				
+				<choose>
+					<when test='rfdBnkAcctNo!=null and rfdBnkAcctNo!=""'>
+					, PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo}, 'FNFBNT02-5200001') as rfd_bnk_acct_no
+					, #{rfdBnkCd} as rfd_bnk_cd
+					, #{rfdAcnthldrNm} as rfd_acnthldr_nm
+					</when>
+					<otherwise>
+					, rfd_bnk_acct_no
+					, rfd_bnk_cd
+					, rfd_acnthldr_nm
+					</otherwise>
+				</choose>
+				, #{regtrId,jdbcType=VARCHAR}
+				, sysdate as reg_dt
+				, #{regtrId,jdbcType=VARCHAR}
+				, sysdate as udt_dt
+				, pay_exchg_rt_apl_beg_dt
+			FROM pay
+			WHERE pay_no = #{payNo ,jdbcType=VARCHAR}
+              AND ord_no = #{ordNo ,jdbcType=VARCHAR}
+	</insert>
+	
+	
+	<insert id="insertCancelPayForApi" parameterType="com.plgrim.ncp.biz.order.data.MypageOrderInfoDTO">
+		INSERT /*[order.command.xml][insertCancelPay][프론트 변경시 취소 정보 insert][hongsub.lim]*/
+		INTO pay
+		(
+		pay_no
+		,upper_pay_no
+		,pay_mn_cd
+		,deal_tp_cd
+		,pay_dt
+		,pay_tmlmt_dt
+		,stdr_crncy_pay_amt
+		,pay_crncy_cd
+		,pay_crncy_pay_amt
+		,cncl_acmtl_amt
+		,use_cpn_prm_no
+		,mbr_cpn_no
+		,mpay_mn_yn
+		,pay_tp_cd
+		,ord_no
+		,clm_no
+		,evt_no
+		,prm_no
+		,pg_aprv_no
+		,pg_sect_cd
+		,pg_store_id
+		,pg_crs_key
+		,escr_yn
+		,acnthldr_nm
+		,bnk_cd
+		,bnk_acct_no
+		,virtl_bnk_acct_valid_dt
+		,pay_mobil_nation_no
+		,pay_mobil_area_no
+		,pay_mobil_tlof_no
+		,pay_mobil_tlof_wthn_no
+		,rfd_bnk_acct_no
+		,rfd_bnk_cd
+		,rfd_acnthldr_nm
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		  SELECT
+				  #{newPayNo,jdbcType=VARCHAR}
+				, pay_no
+				, pay_mn_cd
+				<choose>
+					<when test='dealTpCd != null and dealTpCd != ""'>, #{dealTpCd}</when>
+					<otherwise>, 'ALL_CNCL'</otherwise>
+				</choose>				
+				, (select clm_dt from clm c where c.clm_no = #{clmNo}) as pay_dt
+				, pay_tmlmt_dt				
+				<choose>
+					<when test='stdrCrncyPayAmt != null and stdrCrncyPayAmt != ""'>,#{stdrCrncyPayAmt}</when>
+					<otherwise>, stdr_crncy_pay_amt</otherwise>
+				</choose>				
+				, pay_crncy_cd
+				<choose>
+					<when test='payCrncyPayAmt != null and payCrncyPayAmt != ""'>,#{payCrncyPayAmt}</when>
+					<otherwise>, pay_crncy_pay_amt</otherwise>
+				</choose>								
+				, 0
+				, use_cpn_prm_no
+				, mbr_cpn_no
+				, 'N'
+				<choose>
+					<when test='payTpCd != null and payTpCd !=""'>
+						, #{payTpCd}
+					</when>
+					<otherwise>
+						, pay_tp_cd
+					</otherwise>
+				</choose>				
+				, ord_no
+				<choose>
+					<when test='clmNo != null and clmNo !=""'>
+						, #{clmNo}
+					</when>
+					<otherwise>
+						, clm_no
+					</otherwise>
+				</choose>								
+				, evt_no
+				, prm_no
+				, pg_aprv_no
+				, pg_sect_cd
+				, pg_store_id
+				, pg_crs_key
+				, escr_yn
+				, acnthldr_nm
+				, bnk_cd
+				, bnk_acct_no
+				, virtl_bnk_acct_valid_dt
+				, pay_mobil_nation_no
+				, pay_mobil_area_no
+				, pay_mobil_tlof_no
+				, pay_mobil_tlof_wthn_no				
+				<choose>
+					<when test='rfdBnkAcctNo!=null and rfdBnkAcctNo!=""'>
+					, PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo}, 'FNFBNT02-5200001') as rfd_bnk_acct_no
+					, #{rfdBnkCd} as rfd_bnk_cd
+					, #{rfdAcnthldrNm} as rfd_acnthldr_nm
+					</when>
+					<otherwise>
+					, rfd_bnk_acct_no
+					, rfd_bnk_cd
+					, rfd_acnthldr_nm
+					</otherwise>
+				</choose>
+				<choose>
+					<when test='regtrId != null and regtrId != ""'>, #{regtrId}</when>
+					<otherwise>, 'PASSIVE'</otherwise>
+				</choose>				
+				, sysdate as reg_dt
+				<choose>
+					<when test='regtrId != null and regtrId != ""'>, #{regtrId}</when>
+					<otherwise>, 'PASSIVE'</otherwise>
+				</choose>
+				, sysdate as udt_dt
+			FROM pay
+			WHERE pay_no = #{payNo ,jdbcType=VARCHAR}
+              AND ord_no = #{ordNo ,jdbcType=VARCHAR}
+	</insert>
+	
+	
+	
+	<insert id="insertMypagePay" parameterType="pay">
+		INSERT /*[order.command.xml][insertMypagePay][mypage pay 결제정보 insert][hongsub.lim]*/
+		INTO pay
+		(
+		pay_no
+		,upper_pay_no
+		,pay_mn_cd
+		,deal_tp_cd
+		,pay_dt
+		,pay_tmlmt_dt
+		,stdr_crncy_pay_amt
+		,pay_crncy_cd
+		,pay_crncy_pay_amt
+		,cncl_acmtl_amt
+		,use_cpn_prm_no
+		,mbr_cpn_no
+		,mpay_mn_yn
+		,pay_tp_cd
+		,ord_no
+		,clm_no
+		,evt_no
+		,prm_no
+		,pg_aprv_no
+		,pg_sect_cd
+		,pg_store_id
+		,pg_crs_key
+		,escr_yn
+		,acnthldr_nm
+		,bnk_cd
+		,bnk_acct_no
+		,virtl_bnk_acct_valid_dt
+		,pay_mobil_nation_no
+		,pay_mobil_area_no
+		,pay_mobil_tlof_no
+		,pay_mobil_tlof_wthn_no
+		,rfd_bnk_acct_no
+		,rfd_bnk_cd
+		,rfd_acnthldr_nm
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		)
+		SELECT
+		#{payNo,jdbcType=VARCHAR}
+		,#{upperPayNo,jdbcType=VARCHAR}
+		,#{payMnCd,jdbcType=VARCHAR}
+		,#{dealTpCd,jdbcType=VARCHAR}
+		,#{payDt,jdbcType=TIMESTAMP}
+		,#{payTmlmtDt,jdbcType=DATE}
+		,#{stdrCrncyPayAmt,jdbcType=NUMERIC}
+		,#{payCrncyCd,jdbcType=VARCHAR}
+		,#{payCrncyPayAmt,jdbcType=NUMERIC}
+		,NVL(#{cnclAcmtlAmt,jdbcType=NUMERIC}, 0)
+		,use_cpn_prm_no
+		,mbr_cpn_no
+		,#{mpayMnYn,jdbcType=VARCHAR}
+		,#{payTpCd,jdbcType=VARCHAR}
+		,#{ordNo,jdbcType=VARCHAR}
+		,clm_no
+		,evt_no
+		,prm_no
+		,#{pgAprvNo,jdbcType=VARCHAR}
+		,#{pgSectCd,jdbcType=VARCHAR}
+		,#{pgStoreId,jdbcType=VARCHAR}
+		,#{pgCrsKey,jdbcType=VARCHAR}
+		,#{escrYn,jdbcType=VARCHAR}
+		,#{acnthldrNm,jdbcType=VARCHAR}
+		,#{bnkCd,jdbcType=VARCHAR}
+		,#{bnkAcctNo,jdbcType=VARCHAR}
+		,#{virtlBnkAcctValidDt,jdbcType=DATE}
+		,#{payMobilNationNo,jdbcType=VARCHAR}
+		,#{payMobilAreaNo,jdbcType=VARCHAR}
+		,#{payMobilTlofNo,jdbcType=VARCHAR}
+		,#{payMobilTlofWthnNo,jdbcType=VARCHAR}
+		,PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+		,#{rfdBnkCd,jdbcType=VARCHAR}
+		,#{rfdAcnthldrNm,jdbcType=VARCHAR}
+		,#{regtrId,jdbcType=VARCHAR}
+		,SYSDATE
+		,#{regtrId,jdbcType=VARCHAR}
+		,SYSDATE
+			FROM pay
+			WHERE mpay_mn_yn = 'Y'
+              AND ord_no = #{ordNo ,jdbcType=VARCHAR}		
+	</insert>	
+	
+	
+	<update id="updateDealTpCd" parameterType="map">
+		UPDATE /* [order.command.xml][updateDealTpCd][PG 전용 무통장(가상계좌) 입금 승인처리][이영호] */
+                pay
+           SET 
+                  deal_tp_cd = 'PAY_COMPT'                      /* 결제상태 결제완료 */
+                , pay_dt = SYSDATE /* TO_DATE({approvalYmdhms ,jdbcType=VARCHAR},'YYYYMMDDHH24MISS')	 결제일자  매출 관련으로 입력일시로 교체*/
+                , udter_id = #{udterId ,jdbcType=VARCHAR}
+                , udt_dt = SYSDATE
+         WHERE ord_no = #{ordNo ,jdbcType=VARCHAR}
+	</update>
+
+	<!--
+		1. 수정일자   : 2016-03-16
+		2. 수정자     : 김재성 (jskim27)
+		3. 요청 SR NO : #17808
+		4. 수정내용   : [예약주문] 가상계좌결제 완료 시 '예약 주문 결제 완료' 상태로 수정
+	-->
+	<update id="updateOrdStatCd" parameterType="map">
+		UPDATE /* [order.command.xml][updateOrdStatCd][PG 전용 무통장(가상계좌) 입금 승인처리][이영호] */
+                ord
+           SET 
+                  /* 가상배송완료인 경우 주문상태는 배송완료 2016.01.15 by Cannon */
+				ord_stat_cd = CASE WHEN virtl_dlv_compt_yn = 'Y'
+					THEN 'DLV_COMPT'
+					ELSE 'PAY_COMPT'
+				  END
+                , udter_id = #{udterId ,jdbcType=VARCHAR}
+                , udt_dt = SYSDATE
+         WHERE ord_no = #{ordNo ,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="insertLgsDlvDlvPcupspTurn" parameterType="lgsDlvFoExtend">
+		INSERT /* [order.command.xml][insertLgsDlvDlvPcupspTurn][픽업주문 일반 배송 전환시 신배송지로 insert][hongsub.lim] */
+			INTO LGS_DLV
+		     ( 	  ord_no
+				, dlv_pcupsp_turn
+				, dlv_turn
+				, clm_no
+				, dmstc_dlv_cst_plc_sn
+				, ovsea_dlv_dmstc_dlv_cst_plc_sn
+				, ovsea_dlv_cst_plc_sn
+				, dlv_cst_bnd_mbd_cd
+				, dlv_com_cd
+				, dmstc_waybil_no
+				, dmstc_waybil_no_reg_dt
+				, ovsea_waybil_no
+				, ovsea_waybil_no_reg_dt
+				, cvnstor_hdry_aprv_no
+				, crncy_cd
+				, stdr_crncy_amt
+				, pay_exchg_rt_crncy_amt
+				, reality_dlv_cst
+				, plc_dlv_cst
+				, cncl_dlv_cst
+				, rtgod_dlv_cst
+				, exchg_dlv_cst
+				, dlv_cst_cpn_dc_amt
+				, waybil_no_erp_trnsmis_cd
+				, waybil_no_erp_trnsmis_err_cont
+				, waybil_no_erp_trnsmis_dt
+				, dlv_com_trnsmis_tgt_yn
+				, dlv_com_trnsmis_yn
+				, dlv_com_trnsmis_dt
+				, mail_snd_yn
+				, regtr_id
+				, reg_dt
+				, udter_id
+				, udt_dt)
+		SELECT	  ord_no
+				, #{dlvPcupspTurn,jdbcType=NUMERIC}
+				, dlv_turn
+				, clm_no
+				, dmstc_dlv_cst_plc_sn
+				, ovsea_dlv_dmstc_dlv_cst_plc_sn
+				, ovsea_dlv_cst_plc_sn
+				, dlv_cst_bnd_mbd_cd
+				, dlv_com_cd
+				, dmstc_waybil_no
+				, dmstc_waybil_no_reg_dt
+				, ovsea_waybil_no
+				, ovsea_waybil_no_reg_dt
+				, cvnstor_hdry_aprv_no
+				, crncy_cd
+				, stdr_crncy_amt
+				, pay_exchg_rt_crncy_amt
+				,  #{realityDlvCst,jdbcType=NUMERIC}
+				, plc_dlv_cst
+				, cncl_dlv_cst
+				, rtgod_dlv_cst
+				, exchg_dlv_cst
+				, dlv_cst_cpn_dc_amt
+				, waybil_no_erp_trnsmis_cd
+				, waybil_no_erp_trnsmis_err_cont
+				, waybil_no_erp_trnsmis_dt
+				, dlv_com_trnsmis_tgt_yn
+				, dlv_com_trnsmis_yn
+				, dlv_com_trnsmis_dt
+				, mail_snd_yn
+				, #{regtrId,jdbcType=VARCHAR}
+				, #{regDt,jdbcType=TIMESTAMP}
+				, #{regtrId,jdbcType=VARCHAR}
+				, #{regDt,jdbcType=TIMESTAMP}
+				
+		  FROM LGS_DLV
+	         WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+		   AND dlv_pcupsp_turn = #{dlvPcupspTurnOld,jdbcType=NUMERIC}
+		   AND dlv_turn = #{dlvTurn,jdbcType=NUMERIC}        
+	</insert>
+	
+	<update id="updateOrdGodDlvPcupspTurn" parameterType="ordGod">
+      UPDATE /* [order.command.xml][updateOrdGodDlvPcupspTurn][픽업주문 일반 배송 전환시 신배송지로 업데이트][hongsub.lim] */
+              ORD_GOD
+           SET
+               dlv_pcupsp_turn = #{dlvPcupspTurn,jdbcType=NUMERIC}
+             , udter_id = #{regtrId,jdbcType=VARCHAR}
+             , udt_dt = #{regDt,jdbcType=TIMESTAMP} 
+         WHERE ord_no = #{ordNo, jdbcType=VARCHAR}        
+	</update>		
+
+	<update id="mergeMbrPchShop" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrPchShop">
+		MERGE /* [biz.order.command.xml][mergeMbrPchShop][회원구매매장 픽업][이영호] */
+		 INTO mbr_pch_shop d
+		USING (SELECT #{mbrNo ,jdbcType=VARCHAR} 		as mbr_no
+					, #{shopId ,jdbcType=VARCHAR} 		as shop_id
+ 					, #{erpBrndId ,jdbcType=VARCHAR} 		as erp_brnd_id
+					From DUAL) s 
+					ON (d.mbr_no = s.mbr_no
+					AND d.shop_id = s.shop_id
+ 					AND d.erp_brnd_id = s.erp_brnd_id
+					)
+		WHEN MATCHED THEN
+				UPDATE SET
+					d.shop_pkup_count = d.shop_pkup_count + 1
+					, d.udter_id = #{udterId ,jdbcType=VARCHAR}
+					, d.udt_dt = SYSDATE
+		WHEN NOT MATCHED THEN
+				INSERT (
+					d.mbr_no
+					, d.shop_id
+ 					, d.erp_brnd_id
+					, d.shop_pkup_count
+					, d.regtr_id
+					, d.reg_dt
+					, d.udter_id
+					, d.udt_dt)
+				VALUES (
+					#{mbrNo ,jdbcType=VARCHAR}
+					, #{shopId ,jdbcType=VARCHAR}
+ 					, #{erpBrndId ,jdbcType=VARCHAR}
+					, 1
+					, #{regtrId ,jdbcType=VARCHAR}
+					, SYSDATE
+					, #{udterId ,jdbcType=VARCHAR}
+					, SYSDATE)	
+	</update>
+	
+	<insert id="insertOrdErpTrnsmis" parameterType="ordErpTrnsmis">
+	    INSERT /* [biz.order.command.xml][insertOrdErpTrnsmis][주문 ERP 전송][이영호] */
+	    INTO ORD_ERP_TRNSMIS
+		(
+	        ORD_NO
+	       ,ORD_ERP_TRNSMIS_TP_CD
+	       ,ERP_TRNSMIS_CD
+	       ,ERP_TRNSMIS_DT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{ordNo,jdbcType=VARCHAR}
+	       ,#{ordErpTrnsmisTpCd,jdbcType=VARCHAR}
+	       ,#{erpTrnsmisCd,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    <!--  입점사 쿠폰 분담율에 따른 업체 할인 금액 업데이트 -->
+    <update id="updateInfOrdGodErpDstbComputeComBndUntPrc" parameterType="map">
+		UPDATE INF_ORD_GOD_ERP_DSTB update_iogsd
+       	SET update_iogsd.PRM_COM_BND_UNT_PRC =
+       		(
+	          SELECT
+	          	/*
+	            	할인율 계산시 할인율이 정확하게 분배가 안되는 경우 마지막 qty_turn에 해당되는 ROW에 큰값을 넣음
+
+	            */
+	          	CASE WHEN   max(iogsd.qty_turn)  =  	update_iogsd.QTY_TURN	  AND COUNT(*) > 1
+	            	 THEN  	trunc(SUM(iogsd.god_cpn_dc_unt_prc)*(MAX(prm.PARTMAL_COM_COST_BND_RT)/100)/(COUNT(*)), -1)
+	                 		 + MOD(round(SUM(iogsd.god_cpn_dc_unt_prc)/MAX(prm.PARTMAL_COM_COST_BND_RT)/(COUNT(*)),-1),trunc(SUM(iogsd.god_cpn_dc_unt_prc)/MAX(prm.PARTMAL_COM_COST_BND_RT)/(COUNT(*)),-1))
+	                  ELSE trunc(SUM(iogsd.god_cpn_dc_unt_prc)*(MAX(prm.PARTMAL_COM_COST_BND_RT)/100)/(COUNT(*)),-1)
+	                 END aa
+	           FROM	INF_ORD_GOD_ERP_DSTB iogsd
+	                JOIN ORD_GOD_APL_PRM ogap
+	                    ON (iogsd.ord_no = ogap.ord_no and iogsd.ord_god_turn =   ogap.ord_god_turn )
+	                JOIN PRM prm
+	                    ON (ogap.prm_no = prm.prm_no)
+	                JOIN PRM_CPN pc
+	                    ON (prm.prm_no = pc.prm_no)
+	           WHERE iogsd.ord_no =update_iogsd.ord_no
+	             AND iogsd.ord_god_turn = update_iogsd.ord_god_turn
+	             AND prm.PRM_TP_CD = 'CPN'					/* 프로모션 유형 - 쿠폰 */
+	             AND prm.PRM_DTL_TP_CD = 'GOD_CPN'			/* 프로모션 상세유형 - 상품쿠폰 */
+	             AND PRm.PRM_STAT_CD = 'APRV'				/* 프로모션 승인상태 */
+	             AND prm.APL_COM_SECT_CD = 'PARTMAL_COM' 	/* 적용 업체 구분 - 입점사 */
+	             AND prm.PARTMAL_COM_COST_BND_RT > 0		/* 입점사 쿠폰 배분 비율이 0 보다 큰 경우가 해당  */
+	             AND prm.PRM_BEG_DATE <![CDATA[<=]]> TO_CHAR(SYSDATE,'yyyymmdd')
+	             AND prm.PRM_END_DATE <![CDATA[>=]]> TO_CHAR(SYSDATE,'yyyymmdd')
+	             AND PC.CPN_KND_CD =  'ONLNE_CPN' 			/* 온라인 쿠폰 */
+	             AND PC.CPN_ISSU_MTHD_CD = 'IMDTL_DC'   	/* 즉시할인 */
+
+       		)
+        	, udt_dt= SYSDATE
+       	WHERE update_iogsd.ord_no = #{ordNo ,jdbcType=VARCHAR}
+       	AND  	god_cpn_dc_unt_prc > 0	/* 쿠폰 할인율이 0보다 큰 경우에 대하여 검증 */
+	</update>
+
+	<!-- //////////////////////////////////////////////////////// -->
+	<!-- ///////////////////// FRONT END ////////////////////// -->
+	<!-- //////////////////////////////////////////////////////// -->
+
+
+
+	<!-- NCP 3차 -->
+
+	<insert id="insertLgsDlvOvseaDmst" parameterType="lgsDlv">
+		INSERT INTO /*[order.command.xml][insertLgsDlvOvseaDmst][주문생성시 해외배송 국내배송정보등록]*/
+		lgs_dlv
+		(
+		ord_no
+		,dlv_pcupsp_turn
+		,dlv_turn
+		,clm_no
+		,ovsea_dlv_dmstc_dlv_cst_plc_sn
+		,dlv_cst_bnd_mbd_cd
+		,dlv_mn_cd
+		,dlv_com_cd
+		,dmstc_waybil_no
+		,dmstc_waybil_no_reg_dt
+		,ovsea_waybil_no
+		,ovsea_waybil_no_reg_dt
+		,crncy_cd
+		,stdr_crncy_amt
+		,pay_exchg_rt_crncy_amt
+		,reality_dlv_cst
+		,plc_dlv_cst
+		,dlv_cst_cpn_dc_amt
+		,dlv_cst_cpn_no
+		,waybil_no_erp_trnsmis_cd
+		,waybil_no_erp_trnsmis_err_cont
+		,waybil_no_erp_trnsmis_dt
+		,dlv_com_trnsmis_tgt_yn
+		,dlv_com_trnsmis_yn
+		,dlv_com_trnsmis_dt
+		,mail_snd_yn
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+<!-- 		,exchg_rt_apl_beg_dt  -->
+		)
+		SELECT
+		  		 #{ordNo,jdbcType=VARCHAR}
+				,#{dlvPcupspTurn,jdbcType=NUMERIC}
+				,#{dlvTurn,jdbcType=NUMERIC}
+				,#{clmNo,jdbcType=VARCHAR}
+				,#{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{dlvCstBndMbdCd,jdbcType=VARCHAR}
+				<choose>
+					<when test='dlvMnCd == "DLV_CAR"'>
+					,#{dlvMnCd,jdbcType=VARCHAR}
+					,'PANTOS'
+					</when>
+					<otherwise>
+						,dlv_mn_cd
+						,dlv_com_cd
+					</otherwise>
+				</choose>
+
+				,#{dmstcWaybilNo,jdbcType=VARCHAR}
+				,#{dmstcWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{ovseaWaybilNo,jdbcType=VARCHAR}
+				,#{ovseaWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{crncyCd,jdbcType=VARCHAR}
+				,#{stdrCrncyAmt,jdbcType=NUMERIC}
+				,#{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+				,#{realityDlvCst,jdbcType=NUMERIC}
+				,#{plcDlvCst,jdbcType=NUMERIC}
+				,#{dlvCstCpnDcAmt,jdbcType=NUMERIC}
+				,#{dlvCstCpnNo,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisErrCont,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{dlvComTrnsmisTgtYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{mailSndYn,jdbcType=VARCHAR}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+<!-- 				,#{exchgRtAplBegDt,jdbcType=TIMESTAMP}  -->
+			FROM com_dmstc_dlv_cst_plc
+			WHERE dmstc_dlv_cst_plc_sn = #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+
+	</insert>
+
+
+
+	<insert id="insertLgsDlvOvsea" parameterType="lgsDlv">
+		INSERT INTO /*[order.command.xml][insertLgsDlvOvsea][주문생성시 해외배송 정보등록]*/
+		lgs_dlv
+		(
+		ord_no
+		,dlv_pcupsp_turn
+		,dlv_turn
+		,clm_no
+		,ovsea_dlv_cst_plc_sn
+		,dlv_cst_bnd_mbd_cd
+		,dlv_mn_cd
+		,dlv_com_cd
+		,dmstc_waybil_no
+		,dmstc_waybil_no_reg_dt
+		,ovsea_waybil_no
+		,ovsea_waybil_no_reg_dt
+		,crncy_cd
+		,stdr_crncy_amt
+		,pay_exchg_rt_crncy_amt
+		,reality_dlv_cst
+		,plc_dlv_cst
+		,dlv_cst_cpn_dc_amt
+		,dlv_cst_cpn_no
+		,waybil_no_erp_trnsmis_cd
+		,waybil_no_erp_trnsmis_err_cont
+		,waybil_no_erp_trnsmis_dt
+		,dlv_com_trnsmis_tgt_yn
+		,dlv_com_trnsmis_yn
+		,dlv_com_trnsmis_dt
+		,mail_snd_yn
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+<!-- 		,exchg_rt_apl_beg_dt  -->
+		,zone_turn
+        ,god_min_wt
+        ,dlv_chrge_hist_turn
+		)
+		SELECT
+		  		 #{ordNo,jdbcType=VARCHAR}
+				,#{dlvPcupspTurn,jdbcType=NUMERIC}
+				,#{dlvTurn,jdbcType=NUMERIC}
+				,#{clmNo,jdbcType=VARCHAR}
+				,#{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+				,#{dlvCstBndMbdCd,jdbcType=VARCHAR}
+				/*,dlv_mn_cd 2016-03-26 px ems 분기는 상품에따라 달라짐*/
+				,#{dlvMnCd,jdbcType=VARCHAR}
+				,'PANTOS'
+				,#{dmstcWaybilNo,jdbcType=VARCHAR}
+				,#{dmstcWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{ovseaWaybilNo,jdbcType=VARCHAR}
+				,#{ovseaWaybilNoRegDt,jdbcType=TIMESTAMP}
+				,#{crncyCd,jdbcType=VARCHAR}
+				,#{stdrCrncyAmt,jdbcType=NUMERIC}
+				,#{payExchgRtCrncyAmt,jdbcType=NUMERIC}
+				,#{realityDlvCst,jdbcType=NUMERIC}
+				,#{plcDlvCst,jdbcType=NUMERIC}
+				,#{dlvCstCpnDcAmt,jdbcType=NUMERIC}
+				,#{dlvCstCpnNo,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisCd,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisErrCont,jdbcType=VARCHAR}
+				,#{waybilNoErpTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{dlvComTrnsmisTgtYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisYn,jdbcType=VARCHAR}
+				,#{dlvComTrnsmisDt,jdbcType=TIMESTAMP}
+				,#{mailSndYn,jdbcType=VARCHAR}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+				,#{regtrId,jdbcType=VARCHAR}
+				,#{regDt,jdbcType=TIMESTAMP}
+<!-- 				,#{exchgRtAplBegDt,jdbcType=TIMESTAMP}  -->
+				,#{zoneTurn,jdbcType=NUMERIC}
+				,#{godMinWt,jdbcType=NUMERIC}
+				,#{dlvChrgeHistTurn,jdbcType=NUMERIC}
+			FROM com_ovsea_dlv_cst_plc
+			WHERE ovsea_dlv_cst_plc_sn = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+	</insert>
+
+
+
+	<insert id="insertLgsDlivyDrctGodOvsea" parameterType="lgsDlivyDrctGod">
+		INSERT /*[order.command.xml][insertLgsDlivyDrctGodOvsea][해외배송 출고지시상품등록]*/
+		INTO lgs_dlivy_drct_god
+		(
+		 dlivy_drct_god_no
+		,ord_no
+		,ord_god_turn
+		,pckage_god_turn
+		,gft_yn
+		,dlv_pcupsp_turn
+		,dlv_turn
+		,dlv_shop_id
+		,dlivy_shop_id
+		,acmtl_god_vol
+		,acmtl_god_wt
+		,lgs_itm_yn
+		,dlivy_drct_tgt_yn
+		,dlivy_drct_yn
+		,dlivy_drct_grp_dgre
+		,dlivy_drct_user_grp_dgre
+		,dlivy_drct_count
+		,dlivy_drct_tp_cd
+		,dlivy_drct_dt
+		,dlivy_drct_qty
+		,dlivy_drct_cncl_qty
+		,dlivy_drct_cncl_dt
+		,dlv_stat_cd
+		,shtg_qty
+		,shtg_dt
+		,shtg_dcsn_yn
+		,shtg_dcsn_dt
+		,dlivy_compt_qty
+		,dlivy_compt_dt
+		,dlv_compt_dt
+		,dlivy_drct_god_memo_cont
+		,rcptfr_no
+		,resve_rcptfr_creat_yn
+		,resve_rcptfr_creat_dt
+		,resve_rcptfr_dlivy_yn
+		,resve_rcptfr_dlivy_dt
+		,resve_rcptfr_dcsn_yn
+		,resve_rcptfr_dcsn_dt
+		,erp_resve_rcptfr_creat_cnt
+		,erp_resve_rcptfr_creat_yn
+		,erp_resve_rcptfr_creat_dt
+		,erp_resve_rcptfr_cncl_yn
+		,erp_resve_rcptfr_cncl_dt
+		,inv_apl_yn
+		,cntr_dlivy_cnfirm_yn
+		,cntr_dlivy_cnfirm_dt
+		,p_sto_no
+		,s_sto_no
+		,s_doc_no
+		,regtr_id
+		,reg_dt
+		,udter_id
+		,udt_dt
+		,ovsea_dlv_turn
+		)
+		SELECT
+				'RO' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(TO_CHAR(SQ_LGS_DLIVY_DRCT_GOD.NEXTVAL), 7, '0') as dlivy_drct_god_no
+				,s1.ord_no
+				,s1.ord_god_turn
+				,s1.pckage_god_turn
+				,s1.gift_Yn
+				,s1.dlv_pcupsp_turn
+				,s1.dlv_turn
+				,#{dlvShopId,jdbcType=VARCHAR} AS dlvShopId
+				,#{dlivyShopId,jdbcType=VARCHAR} AS dlivyShopId
+				,#{acmtlGodVol,jdbcType=NUMERIC} AS acmtlGodVol
+				,#{acmtlGodWt,jdbcType=NUMERIC} AS acmtlGodWt
+				,#{lgsItmYn,jdbcType=VARCHAR} AS lgsItmYn
+				,#{dlivyDrctTgtYn,jdbcType=VARCHAR} AS dlivyDrctTgtYn
+				,#{dlivyDrctYn,jdbcType=VARCHAR} AS dlivyDrctYn
+				,#{dlivyDrctGrpDgre,jdbcType=NUMERIC} AS dlivyDrctGrpDgre
+				,#{dlivyDrctUserGrpDgre,jdbcType=NUMERIC} AS dlivyDrctUserGrpDgre
+				,#{dlivyDrctCount,jdbcType=NUMERIC} AS dlivyDrctCount
+				,#{dlivyDrctTpCd,jdbcType=VARCHAR} AS dlivyDrctTpCd
+				,#{dlivyDrctDt,jdbcType=TIMESTAMP} AS dlivyDrctDt
+				,s1.ord_qty
+				,#{dlivyDrctCnclQty,jdbcType=NUMERIC} AS dlivyDrctCnclQty
+				,#{dlivyDrctCnclDt,jdbcType=TIMESTAMP} AS dlivyDrctCnclDt
+				,#{dlvStatCd,jdbcType=VARCHAR} AS dlvStatCd
+				,#{shtgQty,jdbcType=NUMERIC} AS shtgQty
+				,#{shtgDt,jdbcType=TIMESTAMP} AS shtgDt
+				,#{shtgDcsnYn,jdbcType=VARCHAR} AS shtgDcsnYn
+				,#{shtgDcsnDt,jdbcType=TIMESTAMP} AS shtgDcsnDt
+				,#{dlivyComptQty,jdbcType=NUMERIC} AS dlivyComptQty
+				,#{dlivyComptDt,jdbcType=TIMESTAMP} AS dlivyComptDt
+				,#{dlvComptDt,jdbcType=TIMESTAMP} AS dlvComptDt
+				,#{dlivyDrctGodMemoCont,jdbcType=TIMESTAMP} AS dlivyDrctGodMemoCont
+				,#{rcptfrNo,jdbcType=VARCHAR} AS rcptfrNo
+				,#{resveRcptfrCreatYn,jdbcType=VARCHAR} AS resveRcptfrCreatYn
+				,#{resveRcptfrCreatDt,jdbcType=TIMESTAMP} AS resveRcptfrCreatDt
+				,#{resveRcptfrDlivyYn,jdbcType=VARCHAR} AS resveRcptfrDlivyYn
+				,#{resveRcptfrDlivyDt,jdbcType=TIMESTAMP} AS resveRcptfrDlivyDt
+				,#{resveRcptfrDcsnYn,jdbcType=VARCHAR} AS resveRcptfrDcsnYn
+				,#{resveRcptfrDcsnDt,jdbcType=TIMESTAMP} AS resveRcptfrDcsnDt
+				,#{erpResveRcptfrCreatCnt,jdbcType=NUMERIC} AS erpResveRcptfrCreatCnt
+				,#{erpResveRcptfrCreatYn,jdbcType=VARCHAR} AS erpResveRcptfrCreatYn
+				,#{erpResveRcptfrCreatDt,jdbcType=TIMESTAMP} AS erpResveRcptfrCreatDt
+				,#{erpResveRcptfrCnclYn,jdbcType=VARCHAR} AS erpResveRcptfrCnclYn
+				,#{erpResveRcptfrCnclDt,jdbcType=TIMESTAMP} AS erpResveRcptfrCnclDt
+				,#{invAplYn,jdbcType=VARCHAR} AS invAplYn
+				,#{cntrDlivyCnfirmYn,jdbcType=VARCHAR} AS cntrDlivyCnfirmYn
+				,#{cntrDlivyCnfirmDt,jdbcType=TIMESTAMP} AS cntrDlivyCnfirmDt
+				,#{pStoNo,jdbcType=VARCHAR} AS pStoNo
+				,#{sStoNo,jdbcType=VARCHAR} AS sStoNo
+				,#{sDocNo,jdbcType=VARCHAR} AS sDocNo
+				,#{regtrId,jdbcType=VARCHAR} AS regtrId
+				,#{regDt,jdbcType=TIMESTAMP} AS regDt
+				,#{regtrId,jdbcType=VARCHAR} AS udterId
+				,#{regDt,jdbcType=TIMESTAMP} AS udtDt
+				,s1.ovseaDlvTurn as ovsea_dlv_turn
+		  FROM
+			  (SELECT
+					 t1.ord_no
+					,t1.ord_god_turn
+					,t2.ord_god_turn AS pckage_god_turn
+					,CASE
+						WHEN t1.god_tp_cd = 'PCHS_GFT' THEN 'Y'
+						WHEN t1.god_tp_cd = 'CNVRS_GFT' THEN 'Y'
+						ELSE 'N'
+					 END AS gift_Yn
+					,t1.dlv_pcupsp_turn
+					,t3.dlv_turn
+					,t1.ord_qty
+					,t4.dlv_turn as ovseaDlvTurn
+			    FROM ord_god t1
+					 LEFT OUTER JOIN ord_cpst_god_cnnc t2 ON t1.ord_no = t2.ord_no AND t1.ord_god_turn = t2.ord_cpst_god_turn
+					 INNER JOIN lgs_dlv t3 ON t1.ord_no = t3.ord_no AND t1.dlv_pcupsp_turn = t3.dlv_pcupsp_turn AND t1.ovsea_dlv_dmstc_dlv_cst_plc_sn = t3.ovsea_dlv_dmstc_dlv_cst_plc_sn
+					 INNER JOIN lgs_dlv t4 ON t1.ord_no = t4.ord_no AND t1.dlv_pcupsp_turn = t4.dlv_pcupsp_turn AND t1.ovsea_dlv_cst_plc_sn = t4.ovsea_dlv_cst_plc_sn
+				WHERE t1.ord_no = #{ordNo,jdbcType=VARCHAR}
+				  AND t1.god_tp_cd != 'SET_GOD'
+				  AND t1.god_tp_cd != 'PCKAGE_GOD'
+				ORDER BY t1.ord_god_turn) s1
+	</insert>
+
+
+
+	<!-- NCP 3차 -->
+	<update id="updateOrgMbrOrd" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.Ord">
+		update ord	/*[order.command.xml][updateOrgMbrOrd][카페24 회원 주문 정보 update] [Yoon]*/
+		   SET
+		      MBR_TP_CD = #{mbrTpCd,jdbcType=VARCHAR}
+			, MBR_ATRB_CD = #{mbrAtrbCd,jdbcType=VARCHAR}
+			, MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			, CSTMR_NM = #{cstmrNm,jdbcType=VARCHAR}
+			, CSTMR_EMAIL = #{cstmrEmail,jdbcType=VARCHAR}
+			, LANG_CD = #{langCd,jdbcType=VARCHAR}
+			, CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			, UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			, UDT_DT = SYSDATE
+	  	WHERE ORD_NO = #{ordNo,jdbcType=VARCHAR}
+	  	  AND MBR_TP_CD = 'NMBR'
+	  	  AND MBR_NO IS NULL
+	</update>
+
+	<update id="updateOrgOrdStatCd" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.Ord">
+		UPDATE ord	/*[order.command.xml][updateOrgOrdGod][카페24 회원 주문 상태 update] [Yoon]*/
+		   SET ORD_STAT_CD = #{ordStatCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+	  	 WHERE ORD_NO = #{ordNo,jdbcType=VARCHAR}
+	  	   AND ORD_STAT_CD <![CDATA[<>]]> 'ALL_CNCL'
+	</update>
+
+	<update id="updateOrgOrdGod" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGod">
+		update ord_god	/*[order.command.xml][updateOrgOrdGod][카페24 회원 주문 상품 정보 update] [Yoon]*/
+		   SET OVSEA_DLV_DMSTC_DLV_CST_PLC_SN = #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+	  	WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+	  	  AND com_id = #{comId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 배송비즉시할인쿠폰 : by cannon (2016.06.07) -->
+	<select id="genMbrIssuCpnNo" resultType="String">
+		/* [order.command.xml][genMbrIssuCpnNo][회원발급쿠폰번호 생성] */
+		SELECT 'CP' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(TO_CHAR(SQ_MBR_ISSU_CPN.NEXTVAL), 7, '0')
+	      FROM DUAL
+	</select>
+	
+	<update id="setSmsRecptnSect" parameterType="com.plgrim.ncp.biz.order.data.SmsRecptnSectDTO">
+		/*[order.command.xml][setSmsRecptnSect][SMS수신구분설정] */
+		UPDATE ord 
+		   SET sms_recptn_sect_cd	= #{smsRecptnSectCd}
+		     , udter_id				= #{udterId}
+		     , udt_dt				= SYSDATE
+		 WHERE ord_no = #{ordNo}		
+	</update>
+	
+	<update id="updateNewPayNoByPayNo"	parameterType="com.plgrim.ncp.biz.order.data.MypageOrderInfoDTO">
+		UPDATE PAY
+			SET pay_no = #{newPayNo}
+		WHERE pay_no = #{payNo}
+		 AND  ord_no = #{ordNo}
+	
+	</update>	
+	
+	<update id="checkInfoInit"	parameterType="com.plgrim.ncp.base.entities.datasource1.clm.Clm">
+		UPDATE inf_ord_god_erp_dstb /*[order.command.xml][checkInfoInit][시리얼검수정보초기화] */
+		   SET dlivy_acpt_yn = 'N', erp_god_sn = NULL
+		 WHERE 1 = 1 
+			<choose>
+				<when test='ordNo != null and ordNo != ""'>AND ord_no = #{ordNo}</when>
+				<when test='clmNo != null and clmNo != ""'>AND clm_no = #{clmNo}</when>
+				<otherwise>1=2</otherwise>
+			</choose>		  
+	</update>
+
+	<insert id="inesrtOrdGodSvcDetailCnnc" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodSvcDetailCnncExtend">
+		INSERT /* [order.command.xml][inesrtOrdGodSvcDetailCnnc][주문 상품 포장서비스 등록][Henry] */
+	    INTO ORD_GOD_SVC_DETAIL_CNNC
+		(
+	        ORD_NO
+	       ,ORD_GOD_TURN
+	       ,SVC_SN
+	       ,SVC_TP_CD
+	       ,SVC_DETAIL_TP_CD
+	       ,SVC_QTY
+	       ,SVC_AMT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{ordNo,jdbcType=VARCHAR}
+	       ,#{ordGodTurn,jdbcType=NUMERIC}
+	       ,#{svcSn,jdbcType=NUMERIC}
+	       ,#{svcTpCd,jdbcType=VARCHAR}
+	       ,#{svcDetailTpCd,jdbcType=VARCHAR}
+	       ,#{svcQty,jdbcType=NUMERIC}
+	       ,#{svcAmt,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+	</insert>
+
+	<update id="updateOrderDecision"	parameterType="com.plgrim.ncp.biz.order.data.MypageOrderInfoDTO">
+		UPDATE ord_god /*[order.command.xml][updateOrderDecision][구매확정처리] */
+		   SET cstmr_pch_dcsn_yn = 'Y'
+			   , cstmr_pch_dcsn_dt = SYSDATE
+		 WHERE 1 = 1 
+		 	AND ord_no = #{ordNo,jdbcType=VARCHAR}
+		 	AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<update id="updateHoffInventoryOrderQuantity" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodInv">
+		UPDATE ord_god /*[order.command.xml][updateHoffInventoryOrderQuantity][본사재고처리] */
+		   SET hoff_inv_ord_qty = #{hoffInvOrdQty,jdbcType=NUMERIC} 
+			   ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+	           ,UDT_DT = SYSDATE
+		 WHERE 1 = 1 
+		 	AND ord_no = #{ordNo,jdbcType=VARCHAR}
+		 	AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<update id="updateShortageOrderGod" parameterType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodInv">
+		UPDATE lgs_dlivy_drct_god /*[order.command.xml][updateShortageOrderGod][결품처리] */
+		   SET 
+		   		DLV_STAT_CD = 'SHTG_RCEPT'
+				,shtg_qty = #{ordQty,jdbcType=NUMERIC}
+				,SHTG_DT = SYSDATE
+				,SHTG_DCSN_YN = 'Y'
+				,SHTG_DCSN_DT = SYSDATE
+				,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+				,UDT_DT = SYSDATE
+		 WHERE 1 = 1 
+		 	AND ord_no = #{ordNo,jdbcType=VARCHAR}
+		 	AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<insert id="insertOrdGodMileAccmlErpTrnsmis" parameterType="com.plgrim.ncp.biz.order.data.OrdGodErpTrnsmisDTO">
+		INSERT INTO ord_god_erp_trnsmis (
+				ord_no
+				, ord_god_turn
+				, ord_god_erp_trnsmis_tp_cd
+				, qty_turn
+				, erp_trnsmis_cd
+				, erp_trnsmis_dt
+				, regtr_id
+				, reg_dt
+				, udter_id
+				, udt_dt
+		)
+		SELECT
+				ord_no
+				, ord_god_turn
+				, #{ordGodErpTrnsmisTpCd,jdbcType=VARCHAR}
+				, qty_turn
+				, #{erpTrnsmisCd,jdbcType=VARCHAR}
+				, DECODE(#{erpTrnsmisCd, jdbcType=VARCHAR}, 'SUCCES', SYSDATE, '')
+				, #{regtrId, jdbcType=VARCHAR}
+				, SYSDATE
+				, #{regtrId, jdbcType=VARCHAR}
+				, SYSDATE
+			FROM inf_ord_god_erp_dstb a 
+			WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+				AND ord_god_turn = #{ordGodTurn,jdbcType=NUMERIC}
+				AND (clm_no is null OR NOT EXISTS (SELECT 1 FROM clm WHERE clm_no = a.clm_no AND clm_tp_cd IN ('ALL_CNCL', 'PART_CNCL')))
+				AND unity_pnt_accml_unt_prc > 0
+				AND NOT EXISTS (SELECT 1 FROM ord_god_erp_trnsmis WHERE ord_no = a.ord_no AND ord_god_turn = a.ord_god_turn AND qty_turn = a.qty_turn AND ord_god_erp_trnsmis_tp_cd = 'MILE_ACCML')
+				AND NOT EXISTS (SELECT 1 FROM clm_wrhs_god_erp_trnsmis WHERE ord_no = a.ord_no AND qty_turn = a.qty_turn AND clm_erp_trnsmis_tp_cd = 'SALES_CNCL')
+	</insert>
+	
+	<update id="updateChangeOrderClaimOrderNumber" parameterType="com.plgrim.ncp.biz.order.data.ChangeOrderDTO">
+		/* [order.command.xml][changeOrderClaimOrderNumber][가격변경 클레임 주문 번호 갱신] */
+		UPDATE clm
+		   SET VIRTL_ORD_NO = #{ordNo, jdbcType=VARCHAR}
+		 WHERE ORD_NO = #{sourceOrdNo, jdbcType=VARCHAR}
+		 	AND CLM_STAT_CD = 'RCEPT'
+		 	AND CLM_TP_CD = 'RTGOD'
+		 	AND CLM_RESN_CD = 'PRC_MOD'
+		 	AND VIRTL_RTGOD_YN = 'Y'
+	</update>
+	
+	<update id="updateChangeOrderDeliveryComplete"	parameterType="String">
+		UPDATE ord /*[order.command.xml][updateChangeOrderDeliveryComplete][가격변경 배송완료처리] */
+		   SET ORD_STAT_CD = 'DLV_COMPT'
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateChangeOrderLgsDeliveryComplete"	parameterType="String">
+		UPDATE  lgs_dlivy_drct_god /*[order.command.xml][updateChangeOrderLgsDeliveryComplete][가격변경 배송완료처리 출고지시] */
+		   SET DLV_STAT_CD = 'DLV_COMPT'
+		   		,DLIVY_COMPT_QTY = DLIVY_DRCT_QTY
+		   		,DLIVY_COMPT_DT = SYSDATE
+		   		,DLV_COMPT_DT = SYSDATE
+		 WHERE ord_no = #{ordNo,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="changeOrderClaimRtrvlComplete" parameterType="String">
+		/* [order.command.xml]["changeOrderClaimRtrvlComplete"][가격변경 클레임 회수완료처리] */
+		UPDATE lgs_rtrvl_drct_god
+		   SET RTRVL_STAT_CD = 'RTRVL_COMPT'
+		   		,RTRVL_COMPT_DT = SYSDATE
+		WHERE CLM_NO = (SELECT MAX(CLM_NO) 
+							FROM CLM
+						 WHERE CLM_STAT_CD = 'RCEPT'
+						 	AND CLM_TP_CD = 'RTGOD'
+						 	AND CLM_RESN_CD = 'PRC_MOD'
+						 	AND VIRTL_RTGOD_YN = 'Y'
+						 	AND VIRTL_ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 	)
+	</update>
+	
+</mapper>

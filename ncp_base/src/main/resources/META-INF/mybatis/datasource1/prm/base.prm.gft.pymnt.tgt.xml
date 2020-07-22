@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmGftPymntTgt" parameterType="prmGftPymntTgt" resultType="prmGftPymntTgt">
+		SELECT /* com.plgrim.ncp.base.selectPrmGftPymntTgt		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , PRM_NO
+			 , AFF_ORD_YN
+		  FROM PRM_GFT_PYMNT_TGT
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updatePrmGftPymntTgt" parameterType="prmGftPymntTgt">
+		UPDATE /* com.plgrim.ncp.base.updatePrmGftPymntTgt		Generator(Generator)	2018-05-23 */
+		PRM_GFT_PYMNT_TGT SET
+			   AFF_ORD_YN = #{affOrdYn,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPrmGftPymntTgt" parameterType="prmGftPymntTgt">
+		INSERT /* com.plgrim.ncp.base.insertPrmGftPymntTgt		Generator(Generator)	2018-05-23 */
+		INTO   PRM_GFT_PYMNT_TGT (
+			   ORD_NO
+			 , PRM_NO
+			 , AFF_ORD_YN
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{prmNo,jdbcType=VARCHAR}
+			 , #{affOrdYn,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deletePrmGftPymntTgt" parameterType="prmGftPymntTgt">
+		DELETE /* com.plgrim.ncp.base.deletePrmGftPymntTgt		Generator(Generator)	2018-05-23 */
+		  FROM PRM_GFT_PYMNT_TGT
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

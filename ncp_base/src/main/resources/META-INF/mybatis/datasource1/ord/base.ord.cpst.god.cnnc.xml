@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectOrdCpstGodCnnc" parameterType="ordCpstGodCnnc" resultType="ordCpstGodCnnc">
+		SELECT /* com.plgrim.ncp.base.selectOrdCpstGodCnnc		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , ORD_CPST_GOD_TURN
+			 , PCKAGE_GOD_TP_CD
+			 , CPST_GOD_QTY
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM ORD_CPST_GOD_CNNC
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND ORD_CPST_GOD_TURN = #{ordCpstGodTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateOrdCpstGodCnnc" parameterType="ordCpstGodCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateOrdCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		ORD_CPST_GOD_CNNC SET
+			   PCKAGE_GOD_TP_CD = #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , CPST_GOD_QTY = #{cpstGodQty,jdbcType=NUMERIC}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND ORD_CPST_GOD_TURN = #{ordCpstGodTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertOrdCpstGodCnnc" parameterType="ordCpstGodCnnc">
+		INSERT /* com.plgrim.ncp.base.insertOrdCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		INTO   ORD_CPST_GOD_CNNC (
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , ORD_CPST_GOD_TURN
+			 , PCKAGE_GOD_TP_CD
+			 , CPST_GOD_QTY
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{ordCpstGodTurn,jdbcType=NUMERIC}
+			 , #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , #{cpstGodQty,jdbcType=NUMERIC}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteOrdCpstGodCnnc" parameterType="ordCpstGodCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteOrdCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		  FROM ORD_CPST_GOD_CNNC
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND ORD_CPST_GOD_TURN = #{ordCpstGodTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

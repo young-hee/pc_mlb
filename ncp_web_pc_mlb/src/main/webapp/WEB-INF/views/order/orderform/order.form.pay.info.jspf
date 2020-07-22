@@ -1,0 +1,29 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div class="orderPayList d_fix_obj">
+	<h3><spring:message code="order.js.txt.payment.info" /></h3>
+	<div class="orderPayInfo">
+		<dl>
+	        <dt><spring:message code="order.js.txt.goods.price" /></dt>
+	        <dd id="god_amt">0<spring:message code="common.js.crncy" /></dd>
+	        <dt><spring:message code="order.js.txt.dc.price" /></dt>
+	        <dd class="c_r" id="dc_amt">+0<spring:message code="common.js.crncy" /></dd>
+	        <dt><spring:message code="order.js.txt.delivery.cost" /></dt>
+	        <dd id="dlv_amt">+0<spring:message code="common.js.crncy" /></dd>
+	    </dl>
+	    <dl>
+	        <dt><spring:message code="order.js.txt.total.payment" /></dt>
+	        <dd><strong id="total_amount">0</strong><spring:message code="common.js.crncy" /></dd>
+	    </dl>
+	    <dl class="info_mem not_emp">
+	        <dt><spring:message code="order.js.txt.total.earn.mileage" /></dt>
+	        <dd class="c_r" id="mileage">0<spring:message code="common.js.crncy" /></dd>
+	    </dl>
+	</div>
+	<div class="chkPayAgree">
+        <span class="check-skin"><input type="checkbox" class="input_required" id="CheckoutAgree" alt="<spring:message code="order.js.txt.caption10" />" ><span><spring:message code="order.js.txt.select" /></span></span>
+        <label for="chkAgreeOk"><spring:message code="order.js.txt.caption10" /></label>
+    </div>                                    
+    <div class="btn_order">
+        <a href="javascript:orderform.addOrder();" class="btn lg fill"><spring:message code="order.js.txt.payemnt" /></a>
+    </div>
+</div>

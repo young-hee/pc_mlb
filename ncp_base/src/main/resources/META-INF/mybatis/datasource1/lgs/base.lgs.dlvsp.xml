@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectLgsDlvsp" parameterType="lgsDlvsp" resultType="lgsDlvsp">
+		SELECT /* com.plgrim.ncp.base.selectLgsDlvsp		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , DLV_PCUPSP_TURN
+			 , CLM_NO
+			 , DLV_PCUPSP_SECT_CD
+			 , ADDRSE_NM
+			 , DLV_SECT_CD
+			 , PKUP_SHOP_ID
+			 , PKUP_SHOP_BRND_ID
+			 , PKUP_SHOP_VISIT_DATE
+			 , ADDR_SECT_CD
+			 , ADDRSE_NATION_CD
+			 , ADDRSE_POST_NO
+			 , ADDRSE_BASE_ADDR
+			 , ADDRSE_DETAIL_ADDR
+			 , ADDRSE_CTY_NM
+			 , ADDRSE_LCLTY_NM
+			 , ADDRSE_MOBIL_NATION_NO
+			 , ADDRSE_MOBIL_AREA_NO
+			 , ADDRSE_MOBIL_TLOF_NO
+			 , ADDRSE_MOBIL_TLOF_WTHN_NO
+			 , ADDRSE_TEL_NATION_NO
+			 , ADDRSE_TEL_AREA_NO
+			 , ADDRSE_TEL_TLOF_NO
+			 , ADDRSE_TEL_TLOF_WTHN_NO
+			 , DLV_MEMO
+			 , DLV_HOPE_DATE
+			 , DRTDR_CLFC_ADDR
+			 , DRTDR_COLCT_DLV_EMPL_NM
+			 , DRTDR_COLCT_DLV_EMPL_CLFC_CD
+			 , DRTDR_CLFC_TERML_CD
+			 , DRTDR_SMLCLFC_CD
+			 , DRTDR_GDGP_PREARNGE_AG_PL_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM LGS_DLVSP
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateLgsDlvsp" parameterType="lgsDlvsp">
+		UPDATE /* com.plgrim.ncp.base.updateLgsDlvsp		Generator(Generator)	2018-05-23 */
+		LGS_DLVSP SET
+			   CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , DLV_PCUPSP_SECT_CD = #{dlvPcupspSectCd,jdbcType=VARCHAR}
+			 , ADDRSE_NM = #{addrseNm,jdbcType=VARCHAR}
+			 , DLV_SECT_CD = #{dlvSectCd,jdbcType=VARCHAR}
+			 , PKUP_SHOP_ID = #{pkupShopId,jdbcType=VARCHAR}
+			 , PKUP_SHOP_BRND_ID = #{pkupShopBrndId,jdbcType=VARCHAR}
+			 , PKUP_SHOP_VISIT_DATE = #{pkupShopVisitDate,jdbcType=VARCHAR}
+			 , ADDR_SECT_CD = #{addrSectCd,jdbcType=VARCHAR}
+			 , ADDRSE_NATION_CD = #{addrseNationCd,jdbcType=VARCHAR}
+			 , ADDRSE_POST_NO = #{addrsePostNo,jdbcType=VARCHAR}
+			 , ADDRSE_BASE_ADDR = #{addrseBaseAddr,jdbcType=VARCHAR}
+			 , ADDRSE_DETAIL_ADDR = #{addrseDetailAddr,jdbcType=VARCHAR}
+			 , ADDRSE_CTY_NM = #{addrseCtyNm,jdbcType=VARCHAR}
+			 , ADDRSE_LCLTY_NM = #{addrseLcltyNm,jdbcType=VARCHAR}
+			 , ADDRSE_MOBIL_NATION_NO = #{addrseMobilNationNo,jdbcType=VARCHAR}
+			 , ADDRSE_MOBIL_AREA_NO = #{addrseMobilAreaNo,jdbcType=VARCHAR}
+			 , ADDRSE_MOBIL_TLOF_NO = #{addrseMobilTlofNo,jdbcType=VARCHAR}
+			 , ADDRSE_MOBIL_TLOF_WTHN_NO = #{addrseMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , ADDRSE_TEL_NATION_NO = #{addrseTelNationNo,jdbcType=VARCHAR}
+			 , ADDRSE_TEL_AREA_NO = #{addrseTelAreaNo,jdbcType=VARCHAR}
+			 , ADDRSE_TEL_TLOF_NO = #{addrseTelTlofNo,jdbcType=VARCHAR}
+			 , ADDRSE_TEL_TLOF_WTHN_NO = #{addrseTelTlofWthnNo,jdbcType=VARCHAR}
+			 , DLV_MEMO = #{dlvMemo,jdbcType=VARCHAR}
+			 , DLV_HOPE_DATE = #{dlvHopeDate,jdbcType=VARCHAR}
+			 , DRTDR_CLFC_ADDR = #{drtdrClfcAddr,jdbcType=VARCHAR}
+			 , DRTDR_COLCT_DLV_EMPL_NM = #{drtdrColctDlvEmplNm,jdbcType=VARCHAR}
+			 , DRTDR_COLCT_DLV_EMPL_CLFC_CD = #{drtdrColctDlvEmplClfcCd,jdbcType=VARCHAR}
+			 , DRTDR_CLFC_TERML_CD = #{drtdrClfcTermlCd,jdbcType=VARCHAR}
+			 , DRTDR_SMLCLFC_CD = #{drtdrSmlclfcCd,jdbcType=VARCHAR}
+			 , DRTDR_GDGP_PREARNGE_AG_PL_NM = #{drtdrGdgpPrearngeAgPlNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertLgsDlvsp" parameterType="lgsDlvsp">
+		INSERT /* com.plgrim.ncp.base.insertLgsDlvsp		Generator(Generator)	2018-05-23 */
+		INTO   LGS_DLVSP (
+			   ORD_NO
+			 , DLV_PCUPSP_TURN
+			 , CLM_NO
+			 , DLV_PCUPSP_SECT_CD
+			 , ADDRSE_NM
+			 , DLV_SECT_CD
+			 , PKUP_SHOP_ID
+			 , PKUP_SHOP_BRND_ID
+			 , PKUP_SHOP_VISIT_DATE
+			 , ADDR_SECT_CD
+			 , ADDRSE_NATION_CD
+			 , ADDRSE_POST_NO
+			 , ADDRSE_BASE_ADDR
+			 , ADDRSE_DETAIL_ADDR
+			 , ADDRSE_CTY_NM
+			 , ADDRSE_LCLTY_NM
+			 , ADDRSE_MOBIL_NATION_NO
+			 , ADDRSE_MOBIL_AREA_NO
+			 , ADDRSE_MOBIL_TLOF_NO
+			 , ADDRSE_MOBIL_TLOF_WTHN_NO
+			 , ADDRSE_TEL_NATION_NO
+			 , ADDRSE_TEL_AREA_NO
+			 , ADDRSE_TEL_TLOF_NO
+			 , ADDRSE_TEL_TLOF_WTHN_NO
+			 , DLV_MEMO
+			 , DLV_HOPE_DATE
+			 , DRTDR_CLFC_ADDR
+			 , DRTDR_COLCT_DLV_EMPL_NM
+			 , DRTDR_COLCT_DLV_EMPL_CLFC_CD
+			 , DRTDR_CLFC_TERML_CD
+			 , DRTDR_SMLCLFC_CD
+			 , DRTDR_GDGP_PREARNGE_AG_PL_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{dlvPcupspSectCd,jdbcType=VARCHAR}
+			 , #{addrseNm,jdbcType=VARCHAR}
+			 , #{dlvSectCd,jdbcType=VARCHAR}
+			 , #{pkupShopId,jdbcType=VARCHAR}
+			 , #{pkupShopBrndId,jdbcType=VARCHAR}
+			 , #{pkupShopVisitDate,jdbcType=VARCHAR}
+			 , #{addrSectCd,jdbcType=VARCHAR}
+			 , #{addrseNationCd,jdbcType=VARCHAR}
+			 , #{addrsePostNo,jdbcType=VARCHAR}
+			 , #{addrseBaseAddr,jdbcType=VARCHAR}
+			 , #{addrseDetailAddr,jdbcType=VARCHAR}
+			 , #{addrseCtyNm,jdbcType=VARCHAR}
+			 , #{addrseLcltyNm,jdbcType=VARCHAR}
+			 , #{addrseMobilNationNo,jdbcType=VARCHAR}
+			 , #{addrseMobilAreaNo,jdbcType=VARCHAR}
+			 , #{addrseMobilTlofNo,jdbcType=VARCHAR}
+			 , #{addrseMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{addrseTelNationNo,jdbcType=VARCHAR}
+			 , #{addrseTelAreaNo,jdbcType=VARCHAR}
+			 , #{addrseTelTlofNo,jdbcType=VARCHAR}
+			 , #{addrseTelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{dlvMemo,jdbcType=VARCHAR}
+			 , #{dlvHopeDate,jdbcType=VARCHAR}
+			 , #{drtdrClfcAddr,jdbcType=VARCHAR}
+			 , #{drtdrColctDlvEmplNm,jdbcType=VARCHAR}
+			 , #{drtdrColctDlvEmplClfcCd,jdbcType=VARCHAR}
+			 , #{drtdrClfcTermlCd,jdbcType=VARCHAR}
+			 , #{drtdrSmlclfcCd,jdbcType=VARCHAR}
+			 , #{drtdrGdgpPrearngeAgPlNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteLgsDlvsp" parameterType="lgsDlvsp">
+		DELETE /* com.plgrim.ncp.base.deleteLgsDlvsp		Generator(Generator)	2018-05-23 */
+		  FROM LGS_DLVSP
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

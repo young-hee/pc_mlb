@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.humuson.mbronlinepurchase">
+	
+	<select id="getMemberPurchaseAmount"  resultType="Integer">
+		select 
+			nvl(sum(PAY_SUM_AMT) - sum(CLM_SUM_AMT), 0) PURCHASE_AMOUNT
+		from 
+			MBR_ONLNE_PCH 
+		where 
+			MBR_NO=#{mbrNo,jdbcType=VARCHAR}
+			AND  ORD_DT >= #{queryFrom, jdbcType=DATE}
+			AND  ORD_DT 	<![CDATA[ <= ]]> #{queryTo, jdbcType=DATE}
+			 
+	</select>
+	
+	<select id="getMemberPurchaseCount"  resultType="Integer">
+		select 
+			count(1) 
+		from 
+			MBR_ONLNE_PCH 
+		where 
+			MBR_NO=#{mbrNo,jdbcType=VARCHAR} 
+			AND ORD_DT >= #{queryFrom, jdbcType=DATE}
+			AND ORD_DT <![CDATA[ <= ]]> #{queryTo, jdbcType=DATE}
+			AND PAY_SUM_AMT - CLM_SUM_AMT > 0
+	</select>
+</mapper>

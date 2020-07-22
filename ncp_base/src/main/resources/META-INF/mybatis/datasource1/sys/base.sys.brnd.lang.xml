@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBrndLang" parameterType="sysBrndLang" resultType="sysBrndLang">
+		SELECT /* com.plgrim.ncp.base.selectSysBrndLang		Generator(Generator)	2018-05-23 */
+			   BRND_ID
+			 , LANG_CD
+			 , BRND_TAG_NM
+			 , BRND_NM
+			 , BRND_DSCR
+			 , BRND_STORY_INTRCN_CONT
+			 , BRND_IMG_URL
+			 , MODEL_SIZE_IMG_URL
+			 , MODEL_SIZE_MOBILE_IMG_URL
+			 , SIZE_GD_HTML
+			 , SIZE_GD_MOBILE_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BRND_LANG
+		 WHERE 1 = 1
+	   	   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysBrndLang" parameterType="sysBrndLang">
+		UPDATE /* com.plgrim.ncp.base.updateSysBrndLang		Generator(Generator)	2018-05-23 */
+		SYS_BRND_LANG SET
+			   BRND_TAG_NM = #{brndTagNm,jdbcType=VARCHAR}
+			 , BRND_NM = #{brndNm,jdbcType=VARCHAR}
+			 , BRND_DSCR = #{brndDscr,jdbcType=VARCHAR}
+			 , BRND_STORY_INTRCN_CONT = #{brndStoryIntrcnCont,jdbcType=VARCHAR}
+			 , BRND_IMG_URL = #{brndImgUrl,jdbcType=VARCHAR}
+			 , MODEL_SIZE_IMG_URL = #{modelSizeImgUrl,jdbcType=VARCHAR}
+			 , MODEL_SIZE_MOBILE_IMG_URL = #{modelSizeMobileImgUrl,jdbcType=VARCHAR}
+			 , SIZE_GD_HTML = #{sizeGdHtml,jdbcType=CLOB}
+			 , SIZE_GD_MOBILE_HTML = #{sizeGdMobileHtml,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysBrndLang" parameterType="sysBrndLang">
+		INSERT /* com.plgrim.ncp.base.insertSysBrndLang		Generator(Generator)	2018-05-23 */
+		INTO   SYS_BRND_LANG (
+			   BRND_ID
+			 , LANG_CD
+			 , BRND_TAG_NM
+			 , BRND_NM
+			 , BRND_DSCR
+			 , BRND_STORY_INTRCN_CONT
+			 , BRND_IMG_URL
+			 , MODEL_SIZE_IMG_URL
+			 , MODEL_SIZE_MOBILE_IMG_URL
+			 , SIZE_GD_HTML
+			 , SIZE_GD_MOBILE_HTML
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{brndTagNm,jdbcType=VARCHAR}
+			 , #{brndNm,jdbcType=VARCHAR}
+			 , #{brndDscr,jdbcType=VARCHAR}
+			 , #{brndStoryIntrcnCont,jdbcType=VARCHAR}
+			 , #{brndImgUrl,jdbcType=VARCHAR}
+			 , #{modelSizeImgUrl,jdbcType=VARCHAR}
+			 , #{modelSizeMobileImgUrl,jdbcType=VARCHAR}
+			 , #{sizeGdHtml,jdbcType=CLOB}
+			 , #{sizeGdMobileHtml,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBrndLang" parameterType="sysBrndLang">
+		DELETE /* com.plgrim.ncp.base.deleteSysBrndLang		Generator(Generator)	2018-05-23 */
+		  FROM SYS_BRND_LANG
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

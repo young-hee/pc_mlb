@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodStdCtgrySizeComCnnc" parameterType="godStdCtgrySizeComCnnc" resultType="godStdCtgrySizeComCnnc">
+		SELECT /* com.plgrim.ncp.base.selectGodStdCtgrySizeComCnnc		Generator(Generator)	2018-04-19 */
+			   STD_CTGRY_NO
+			 , STD_SIZE_SECT_CD
+			 , STD_SIZE_CD
+			 , COM_ID
+			 , OPT_CD
+			 , OPT_VAL_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_STD_CTGRY_SIZE_COM_CNNC
+		 WHERE 1 = 1
+	   	   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+		   AND OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodStdCtgrySizeComCnnc" parameterType="godStdCtgrySizeComCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateGodStdCtgrySizeComCnnc		Generator(Generator)	2018-04-19 */
+		GOD_STD_CTGRY_SIZE_COM_CNNC SET
+			   SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , REGTR_ID = #{regtrId,jdbcType=VARCHAR}
+			 , REG_DT = #{regDt,jdbcType=DATE}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = #{udtDt,jdbcType=DATE}
+		 WHERE 1 = 1
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+		   AND OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodStdCtgrySizeComCnnc" parameterType="godStdCtgrySizeComCnnc">
+		INSERT /* com.plgrim.ncp.base.insertGodStdCtgrySizeComCnnc		Generator(Generator)	2018-04-19 */
+		INTO   GOD_STD_CTGRY_SIZE_COM_CNNC (
+			   STD_CTGRY_NO
+			 , STD_SIZE_SECT_CD
+			 , STD_SIZE_CD
+			 , COM_ID
+			 , OPT_CD
+			 , OPT_VAL_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stdCtgryNo,jdbcType=VARCHAR}
+			 , #{stdSizeSectCd,jdbcType=VARCHAR}
+			 , #{stdSizeCd,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{optCd,jdbcType=VARCHAR}
+			 , #{optValCd,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , #{regDt,jdbcType=DATE}
+			 , #{udterId,jdbcType=VARCHAR}
+			 , #{udtDt,jdbcType=DATE}
+        )
+    </insert>
+
+    <delete id="deleteGodStdCtgrySizeComCnnc" parameterType="godStdCtgrySizeComCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteGodStdCtgrySizeComCnnc		Generator(Generator)	2018-04-19 */
+		  FROM GOD_STD_CTGRY_SIZE_COM_CNNC
+		 WHERE 1 = 1
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+		   AND OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

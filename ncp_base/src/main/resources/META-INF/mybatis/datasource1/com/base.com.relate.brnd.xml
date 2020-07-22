@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComRelateBrnd" parameterType="comRelateBrnd" resultType="comRelateBrnd">
+		SELECT /* com.plgrim.ncp.base.selectComRelateBrnd		Generator(Generator)	2018-05-23 */
+			   RELATE_BRND_ID
+			 , COM_ID
+			 , BRND_ID
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_RELATE_BRND
+		 WHERE 1 = 1
+	   	   AND RELATE_BRND_ID = #{relateBrndId,jdbcType=VARCHAR}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComRelateBrnd" parameterType="comRelateBrnd">
+		UPDATE /* com.plgrim.ncp.base.updateComRelateBrnd		Generator(Generator)	2018-05-23 */
+		COM_RELATE_BRND SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND RELATE_BRND_ID = #{relateBrndId,jdbcType=VARCHAR}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComRelateBrnd" parameterType="comRelateBrnd">
+		INSERT /* com.plgrim.ncp.base.insertComRelateBrnd		Generator(Generator)	2018-05-23 */
+		INTO   COM_RELATE_BRND (
+			   RELATE_BRND_ID
+			 , COM_ID
+			 , BRND_ID
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{relateBrndId,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComRelateBrnd" parameterType="comRelateBrnd">
+		DELETE /* com.plgrim.ncp.base.deleteComRelateBrnd		Generator(Generator)	2018-05-23 */
+		  FROM COM_RELATE_BRND
+		 WHERE 1 = 1
+		   AND RELATE_BRND_ID = #{relateBrndId,jdbcType=VARCHAR}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

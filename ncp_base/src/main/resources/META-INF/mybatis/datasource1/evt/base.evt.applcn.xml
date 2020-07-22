@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtApplcn" parameterType="evtApplcn" resultType="evtApplcn">
+		SELECT /* com.plgrim.ncp.base.selectEvtApplcn		Generator(Generator)	2018-05-23 */
+			   EVT_PARTCPTN_SN
+			 , EVT_NO
+			 , FREE_GIFT_TURN
+			 , APPLCN_MBR_SECT_CD
+			 , MBR_NO
+			 , APPLCN_DT
+			 , ORD_NO
+			 , ATEND_DAYCNT
+			 , STMP_COUNT
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_APPLCN
+		 WHERE 1 = 1
+	   	   AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEvtApplcn" parameterType="evtApplcn">
+		UPDATE /* com.plgrim.ncp.base.updateEvtApplcn		Generator(Generator)	2018-05-23 */
+		EVT_APPLCN SET
+			   EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			 , FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+			 , APPLCN_MBR_SECT_CD = #{applcnMbrSectCd,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , APPLCN_DT = #{applcnDt,jdbcType=TIMESTAMP}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ATEND_DAYCNT = #{atendDaycnt,jdbcType=NUMERIC}
+			 , STMP_COUNT = #{stmpCount,jdbcType=NUMERIC}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEvtApplcn" parameterType="evtApplcn">
+		INSERT /* com.plgrim.ncp.base.insertEvtApplcn		Generator(Generator)	2018-05-23 */
+		INTO   EVT_APPLCN (
+			   EVT_PARTCPTN_SN
+			 , EVT_NO
+			 , FREE_GIFT_TURN
+			 , APPLCN_MBR_SECT_CD
+			 , MBR_NO
+			 , APPLCN_DT
+			 , ORD_NO
+			 , ATEND_DAYCNT
+			 , STMP_COUNT
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , CONT
+		)
+		VALUES (
+			   #{evtPartcptnSn,jdbcType=NUMERIC}
+			 , #{evtNo,jdbcType=VARCHAR}
+			 , #{freeGiftTurn,jdbcType=NUMERIC}
+			 , #{applcnMbrSectCd,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{applcnDt,jdbcType=TIMESTAMP}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{atendDaycnt,jdbcType=NUMERIC}
+			 , #{stmpCount,jdbcType=NUMERIC}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{cont,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteEvtApplcn" parameterType="evtApplcn">
+		DELETE /* com.plgrim.ncp.base.deleteEvtApplcn		Generator(Generator)	2018-05-23 */
+		  FROM EVT_APPLCN
+		 WHERE 1 = 1
+		   AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,76 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>
+<c:if test="${info.dlvMnCd != 'SHOP_PKUP'}">
+<tr>
+	<td>
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td align="left" style="font:bold 14px/18px '돋움', dotum, sans-serif;">배송정보</td>
+			</tr>
+			<tr>
+				<td height="18"></td> 
+			</tr>
+			<tr>
+				<td style="border-top:1px solid #000" height="28"></td>
+			</tr>
+			<tr>
+				<td style="font:normal 12px/18px '돋움', dotum, sans-serif;"><c:out value="${info.lgsDlvspList[0].addrseNm}"/><span style="padding-left:20px"><c:out value="${info.lgsDlvspList[0].mobilNo}"/></td>
+			</tr>						
+			<tr>
+				<td style="font:normal 12px/18px '돋움', dotum, sans-serif; padding-top:18px"><c:out value="${info.lgsDlvspList[0].addrsePostNo}"/><br><c:out value="${info.lgsDlvspList[0].addrseBaseAddr}"/> &nbsp;<c:out value="${info.lgsDlvspList[0].addrseDetailAddr}"/></td>
+			</tr>
+			<c:if test="${not empty info.lgsDlvspList[0].dlvMemo }">
+				<tr>
+					<td style="font:normal 12px/18px '돋움', dotum, sans-serif; padding-top:18px"><c:out value="${info.lgsDlvspList[0].dlvMemo}"/></td>
+				</tr>
+			</c:if>														
+			<tr>
+				<td style="border-bottom:1px solid #ddd" height="28"></td>
+			</tr>								
+		</table>							
+	</td>
+</tr>
+</c:if>
+<c:if test="${info.dlvMnCd == 'SHOP_PKUP'}">
+<tr>
+	<td>
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td align="left" style="font:bold 14px/18px '돋움', dotum, sans-serif;">픽업매장안내</td>
+			</tr>
+			<tr>
+				<td height="18"></td> 
+			</tr>
+			<tr>
+				<td style="border-top:1px solid #000" height="28"></td>
+			</tr>
+			<tr>
+				<td style="font:normal 14px/18px '돋움', dotum, sans-serif;">
+					<c:out value="${info.lgsDlvspList[0].lgsDlvList[0].ordGodList[0].shopNm}"/>									
+				</td>
+			</tr>									
+			<tr>
+				<td style="font:normal 12px/22px '돋움', dotum, sans-serif; padding-top:5px;"><c:out value="${info.lgsDlvspList[0].addrseBaseAddr}"/> &nbsp;<c:out value="${info.lgsDlvspList[0].addrseDetailAddr}"/>  |  <c:out value="${info.lgsDlvspList[0].telNo}"/></td>
+			</tr>													
+			<tr>
+				<td style="font:normal 12px/20px '돋움', dotum, sans-serif; padding-top:18px; color:#666">매장픽업 주문 상품이 준비완료 되었다는 알림(알림톡 또는 SMS) 수신 후, 3일(영업일 기준)까지 픽업하지 않으면 주문이 자동 취소 됩니다.</td>
+			</tr>
+			<tr>
+				<td style="border-bottom:1px solid #ddd" height="28"></td>
+			</tr>								
+		</table>							
+	</td>							
+</tr>
+<tr><td height="35"></td></tr>
+<tr>
+	<td style="font:normal 12px/18px '돋움', dotum, sans-serif; color:#666; padding-left:10px; background:url('${_resourceURL }static/images/mail/icon_txt.png') no-repeat 0 6px">상품 픽업 시, [상품준비완료]문자 모바일 MLB의 회원 바코드를 반드시 지참해야 합니다.</td>
+</tr>					
+<tr><td height="13"></td></tr>
+<tr>
+	<td style="font:normal 12px/18px '돋움', dotum, sans-serif; color:#666; padding-left:10px; background:url('${_resourceURL }static/images/mail/icon_txt.png') no-repeat 0 6px">16시 이후 결제되는 매장픽업 주문은 당일 픽업 할 수 없습니다.</td>
+</tr>
+<tr><td height="13"></td></tr>
+<tr>
+	<td style="font:normal 12px/18px '돋움', dotum, sans-serif; color:#666; padding-left:10px; background:url('${_resourceURL }static/images/mail/icon_txt.png') no-repeat 0 6px">매장픽업 주문 시, [상품준비완료] 안내문자(알림톡)을 수신하신 후, 3일 이내로 상품을 픽업하지 않을 경우 주문은 자동으로 취소됩니다.</td>
+</tr>
+</c:if>

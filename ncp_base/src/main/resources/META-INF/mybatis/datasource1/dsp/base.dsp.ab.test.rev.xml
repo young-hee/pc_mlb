@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspAbTestRev" parameterType="dspAbTestRev" resultType="dspAbTestRev">
+		SELECT /* com.plgrim.ncp.base.selectDspAbTestRev		Generator(Generator)	2018-05-23 */
+			   AB_TEST_SN
+			 , SET_TURN
+			 , REV_SN
+			 , REV_CPST_TURN
+			 , DVC_SECT_CD
+			 , AB_TEST_GRP_CD
+			 , AB_TEST_REV_DSCR
+			 , MOD_TURN
+			 , EXPSR_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_AB_TEST_REV
+		 WHERE 1 = 1
+	   	   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+		   AND DVC_SECT_CD = #{dvcSectCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspAbTestRev" parameterType="dspAbTestRev">
+		UPDATE /* com.plgrim.ncp.base.updateDspAbTestRev		Generator(Generator)	2018-05-23 */
+		DSP_AB_TEST_REV SET
+			   AB_TEST_GRP_CD = #{abTestGrpCd,jdbcType=VARCHAR}
+			 , AB_TEST_REV_DSCR = #{abTestRevDscr,jdbcType=VARCHAR}
+			 , MOD_TURN = #{modTurn,jdbcType=NUMERIC}
+			 , EXPSR_RT = #{expsrRt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+		   AND DVC_SECT_CD = #{dvcSectCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspAbTestRev" parameterType="dspAbTestRev">
+		INSERT /* com.plgrim.ncp.base.insertDspAbTestRev		Generator(Generator)	2018-05-23 */
+		INTO   DSP_AB_TEST_REV (
+			   AB_TEST_SN
+			 , SET_TURN
+			 , REV_SN
+			 , REV_CPST_TURN
+			 , DVC_SECT_CD
+			 , AB_TEST_GRP_CD
+			 , AB_TEST_REV_DSCR
+			 , MOD_TURN
+			 , EXPSR_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{abTestSn,jdbcType=NUMERIC}
+			 , #{setTurn,jdbcType=NUMERIC}
+			 , #{revSn,jdbcType=NUMERIC}
+			 , #{revCpstTurn,jdbcType=NUMERIC}
+			 , #{dvcSectCd,jdbcType=VARCHAR}
+			 , #{abTestGrpCd,jdbcType=VARCHAR}
+			 , #{abTestRevDscr,jdbcType=VARCHAR}
+			 , #{modTurn,jdbcType=NUMERIC}
+			 , #{expsrRt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspAbTestRev" parameterType="dspAbTestRev">
+		DELETE /* com.plgrim.ncp.base.deleteDspAbTestRev		Generator(Generator)	2018-05-23 */
+		  FROM DSP_AB_TEST_REV
+		 WHERE 1 = 1
+		   AND AB_TEST_SN = #{abTestSn,jdbcType=NUMERIC}
+		   AND SET_TURN = #{setTurn,jdbcType=NUMERIC}
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND REV_CPST_TURN = #{revCpstTurn,jdbcType=NUMERIC}
+		   AND DVC_SECT_CD = #{dvcSectCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

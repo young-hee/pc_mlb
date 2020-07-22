@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion.onoffcoupon">
+	<select id="selectCouponPrmNo" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO" resultType="com.plgrim.ncp.biz.promotion.data.PrmExtend">
+		SELECT /* [promotion.onoffcoupon.xml][selectCouponPrmNo][프로모션 번호 조회 BY ERP_CPN_ID] */
+		       a.prm_no
+		FROM prm a
+		INNER JOIN prm_apl_tgt b
+		ON a.prm_no = b.prm_no
+		AND b.mall_id = #{mallId,jdbcType=VARCHAR}
+		AND b.prm_tgt_tp_cd = 'MALL_ID'
+		AND a.erp_cpn_id = #{prm.erpCpnId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectCouponPrmNoFromBenefit" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO" resultType="com.plgrim.ncp.biz.promotion.data.PrmExtend">
+		SELECT /* [promotion.onoffcoupon.xml][selectCouponPrmNoFromBenefit][프로모션 번호 조회 FROM BENEFIT] */
+		       MBD.PRM_NO
+		FROM MBR_GRD MG
+		JOIN MBR_BNEF MB ON (MB.BNEF_DETAIL_SECT_CD = MG.ONLNE_GRD_CD)
+		JOIN MBR_BNEF_DETAIL MBD ON (MBD.BNEF_SN = MB.BNEF_SN)
+		JOIN PRM P ON (P.PRM_NO = MBD.PRM_NO AND P.ERP_CPN_ID = #{prm.erpCpnId,jdbcType=VARCHAR})
+		WHERE 1=1
+		AND SYSDATE BETWEEN MG.GRD_APL_BEG_DT AND MG.GRD_APL_END_DT
+		AND MG.MALL_ID = #{mallId,jdbcType=VARCHAR}
+		AND MG.MBR_NO = #{mbrIssuCpn.mbrNo,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="insertCouponCrtfcCode" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO">
+		/* [promotion.onoffcoupon.xml][insertCouponCrtfcCode][쿠폰 인증코드(일련번호) 저장] */
+	    INSERT INTO prm_cpn_crtfc_cd (
+	        prm_no
+	       ,cpn_crtfc_cd
+	       ,regtr_id
+	       ,udter_id
+           ,reg_dt
+           ,udt_dt
+		)
+		VALUES (	       
+	        (
+	        SELECT a.prm_no
+			  FROM prm a
+			  INNER JOIN prm_apl_tgt b
+			  		ON a.prm_no = b.prm_no
+			  		AND b.mall_id = #{mallId,jdbcType=VARCHAR}
+					AND b.prm_tgt_tp_cd = 'MALL_ID'
+					AND a.erp_cpn_id = #{prm.erpCpnId,jdbcType=VARCHAR}
+	        )
+	       ,#{mbrIssuCpn.cpnCrtfcCd,jdbcType=VARCHAR}
+	       ,#{mbrIssuCpn.regtrId,jdbcType=VARCHAR}
+	       ,#{mbrIssuCpn.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <insert id="insertCouponCrtfcCodeByPrmNo" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO">
+		/* [promotion.onoffcoupon.xml][insertCouponCrtfcCodeByPrmNo][쿠폰 인증코드(일련번호) 저장] */
+	    INSERT INTO prm_cpn_crtfc_cd (
+	        prm_no
+	       ,cpn_crtfc_cd
+	       ,regtr_id
+	       ,udter_id
+           ,reg_dt
+           ,udt_dt
+		)
+		VALUES (
+	        #{prm.prmNo,jdbcType=VARCHAR}
+	       ,#{mbrIssuCpn.cpnCrtfcCd,jdbcType=VARCHAR}
+	       ,#{mbrIssuCpn.regtrId,jdbcType=VARCHAR}
+	       ,#{mbrIssuCpn.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <update id="mergeCouponCrtfcCode" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO">
+		/* [promotion.onoffcoupon.xml][insertCouponCrtfcCode][쿠폰 인증코드(일련번호) 저장] */
+		MERGE INTO prm_cpn_crtfc_cd a
+			 USING dual b
+			    ON (a.prm_no = (SELECT prm_no FROM prm WHERE erp_cpn_id = #{prm.erpCpnId,jdbcType=VARCHAR}) and cpn_crtfc_cd = #{mbrIssuCpn.cpnCrtfcCd,jdbcType=VARCHAR})
+		WHEN NOT MATCHED THEN
+		    INSERT (
+		        prm_no
+		       ,cpn_crtfc_cd
+		       ,regtr_id
+		       ,udter_id
+	           ,reg_dt
+	           ,udt_dt
+			)
+			VALUES (
+		        (SELECT prm_no FROM prm WHERE erp_cpn_id = #{prm.erpCpnId,jdbcType=VARCHAR})
+		       ,#{mbrIssuCpn.cpnCrtfcCd,jdbcType=VARCHAR}
+		       ,#{mbrIssuCpn.regtrId,jdbcType=VARCHAR}
+		       ,#{mbrIssuCpn.regtrId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+			)   
+    </update>
+    
+    <insert id="insertMemberIssueCoupon" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO">
+		/* [promotion.onoffcoupon.xml][insertMemberIssueCoupon][회원발급쿠폰 저장] */
+		INSERT INTO mbr_issu_cpn (
+			mbr_cpn_no
+			, mbr_no
+			, cpn_tp_cd
+			, cpn_stat_cd
+			, cpn_publi_dt
+			, valid_beg_date
+			, valid_end_date
+			<if test="mbrIssuCpn.cpnUseDt != null">
+			, cpn_use_dt
+			</if>
+			, prm_no
+			, cpn_crtfc_cd
+			, issu_admin_id
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+		)
+		SELECT 
+				'CP' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(TO_CHAR(SQ_MBR_ISSU_CPN.NEXTVAL), 7, '0') AS mbr_cpn_no
+				, #{mbrIssuCpn.mbrNo,jdbcType=VARCHAR} AS mbr_no
+				, prm_dtl_tp_cd AS cpn_tp_cd
+				, #{mbrIssuCpn.cpnStatCd,jdbcType=VARCHAR} AS cpn_stat_cd
+				<choose>
+				<when test="mbrIssuCpn.cpnPubliDt != null">
+				, #{mbrIssuCpn.cpnPubliDt} AS cpn_publi_dt
+				</when>
+				<otherwise>
+				, SYSDATE AS cpn_publi_dt
+				</otherwise>
+				</choose>
+				<choose>
+				<when test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(mbrIssuCpn.validBegDate) and @com.plgrim.ncp.framework.commons.StringService@isNotEmpty(mbrIssuCpn.validEndDate)">
+				, TO_CHAR(TO_DATE(#{mbrIssuCpn.validBegDate,jdbcType=VARCHAR}, 'YYYY-MM-DD'), 'YYYYMMDD') AS valid_beg_date
+				, TO_CHAR(TO_DATE(#{mbrIssuCpn.validEndDate,jdbcType=VARCHAR}, 'YYYY-MM-DD'), 'YYYYMMDD') AS valid_end_date
+				</when>
+				<otherwise>
+				, TO_CHAR(SYSDATE, 'YYYYMMDD') AS valid_beg_date
+				, TO_CHAR(SYSDATE + b.ISSU_STDR_VALID_DAYCNT, 'YYYYMMDD') AS valid_end_date
+				</otherwise>
+				</choose>
+				<if test="mbrIssuCpn.cpnUseDt != null">
+				, #{mbrIssuCpn.cpnUseDt} AS cpn_use_dt
+				</if>
+				, a.prm_no AS prm_no
+				, #{mbrIssuCpn.cpnCrtfcCd,jdbcType=VARCHAR} AS cpn_crtfc_cd
+				, '' AS issu_admin_id
+				, #{mbrIssuCpn.regtrId,jdbcType=VARCHAR} AS regtr_id
+				, SYSDATE AS reg_dt
+				, #{mbrIssuCpn.regtrId,jdbcType=VARCHAR} AS udter_id
+				, SYSDATE AS udt_dt
+		FROM prm a
+		INNER JOIN prm_cpn b ON a.prm_no = b.prm_no
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(mallId)">
+		INNER JOIN prm_apl_tgt c ON c.prm_no = a.prm_no AND c.prm_tgt_tp_cd = 'MALL_ID' AND c.mall_id = #{mallId,jdbcType=VARCHAR}
+		</if>		
+		WHERE erp_cpn_id = #{prm.erpCpnId,jdbcType=VARCHAR}
+		<if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prm.prmNo)">
+		AND a.prm_no = #{prm.prmNo,jdbcType=VARCHAR}
+		</if>
+    </insert>
+    
+</mapper>

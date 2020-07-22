@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysShopBrndFeeHist" parameterType="sysShopBrndFeeHist" resultType="sysShopBrndFeeHist">
+		SELECT /* com.plgrim.ncp.base.selectSysShopBrndFeeHist		Generator(Generator)	2018-05-23 */
+			   SHOP_ID
+			 , ERP_BRND_ID
+			 , FEE_HIST_SECT_CD
+			 , HIST_BEG_DT
+			 , HIST_END_DT
+			 , MOD_BF_SHOP_FEE_SECT_CD
+			 , MOD_BF_SHOP_FEE_AMT
+			 , MOD_BF_SHOP_FEE_RT
+			 , MOD_AF_SHOP_FEE_SECT_CD
+			 , MOD_AF_SHOP_FEE_AMT
+			 , MOD_AF_SHOP_FEE_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_SHOP_BRND_FEE_HIST
+		 WHERE 1 = 1
+	   	   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+		   AND FEE_HIST_SECT_CD = #{feeHistSectCd,jdbcType=VARCHAR}
+		   AND HIST_BEG_DT = #{histBegDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateSysShopBrndFeeHist" parameterType="sysShopBrndFeeHist">
+		UPDATE /* com.plgrim.ncp.base.updateSysShopBrndFeeHist		Generator(Generator)	2018-05-23 */
+		SYS_SHOP_BRND_FEE_HIST SET
+			   HIST_END_DT = #{histEndDt,jdbcType=TIMESTAMP}
+			 , MOD_BF_SHOP_FEE_SECT_CD = #{modBfShopFeeSectCd,jdbcType=VARCHAR}
+			 , MOD_BF_SHOP_FEE_AMT = #{modBfShopFeeAmt,jdbcType=NUMERIC}
+			 , MOD_BF_SHOP_FEE_RT = #{modBfShopFeeRt,jdbcType=NUMERIC}
+			 , MOD_AF_SHOP_FEE_SECT_CD = #{modAfShopFeeSectCd,jdbcType=VARCHAR}
+			 , MOD_AF_SHOP_FEE_AMT = #{modAfShopFeeAmt,jdbcType=NUMERIC}
+			 , MOD_AF_SHOP_FEE_RT = #{modAfShopFeeRt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+		   AND FEE_HIST_SECT_CD = #{feeHistSectCd,jdbcType=VARCHAR}
+		   AND HIST_BEG_DT = #{histBegDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertSysShopBrndFeeHist" parameterType="sysShopBrndFeeHist">
+		INSERT /* com.plgrim.ncp.base.insertSysShopBrndFeeHist		Generator(Generator)	2018-05-23 */
+		INTO   SYS_SHOP_BRND_FEE_HIST (
+			   SHOP_ID
+			 , ERP_BRND_ID
+			 , FEE_HIST_SECT_CD
+			 , HIST_BEG_DT
+			 , HIST_END_DT
+			 , MOD_BF_SHOP_FEE_SECT_CD
+			 , MOD_BF_SHOP_FEE_AMT
+			 , MOD_BF_SHOP_FEE_RT
+			 , MOD_AF_SHOP_FEE_SECT_CD
+			 , MOD_AF_SHOP_FEE_AMT
+			 , MOD_AF_SHOP_FEE_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{shopId,jdbcType=VARCHAR}
+			 , #{erpBrndId,jdbcType=VARCHAR}
+			 , #{feeHistSectCd,jdbcType=VARCHAR}
+			 , #{histBegDt,jdbcType=TIMESTAMP}
+			 , #{histEndDt,jdbcType=TIMESTAMP}
+			 , #{modBfShopFeeSectCd,jdbcType=VARCHAR}
+			 , #{modBfShopFeeAmt,jdbcType=NUMERIC}
+			 , #{modBfShopFeeRt,jdbcType=NUMERIC}
+			 , #{modAfShopFeeSectCd,jdbcType=VARCHAR}
+			 , #{modAfShopFeeAmt,jdbcType=NUMERIC}
+			 , #{modAfShopFeeRt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysShopBrndFeeHist" parameterType="sysShopBrndFeeHist">
+		DELETE /* com.plgrim.ncp.base.deleteSysShopBrndFeeHist		Generator(Generator)	2018-05-23 */
+		  FROM SYS_SHOP_BRND_FEE_HIST
+		 WHERE 1 = 1
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+		   AND FEE_HIST_SECT_CD = #{feeHistSectCd,jdbcType=VARCHAR}
+		   AND HIST_BEG_DT = #{histBegDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

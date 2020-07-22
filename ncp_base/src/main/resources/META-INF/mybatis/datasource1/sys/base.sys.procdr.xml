@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysProcdr" parameterType="sysProcdr" resultType="sysProcdr">
+		SELECT /* com.plgrim.ncp.base.selectSysProcdr		Generator(Generator)	2018-05-23 */
+			   PROCDR_NM
+			 , OBJ_TP_CD
+			 , PROCDR_DSCR
+			 , EXECUT_CYCL_CONT
+			 , PRMTR_DSCR
+			 , BEG_DT
+			 , END_DT
+			 , MAX_EXC_TIME
+			 , PROCDR_STAT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_PROCDR
+		 WHERE 1 = 1
+	   	   AND PROCDR_NM = #{procdrNm,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysProcdr" parameterType="sysProcdr">
+		UPDATE /* com.plgrim.ncp.base.updateSysProcdr		Generator(Generator)	2018-05-23 */
+		SYS_PROCDR SET
+			   OBJ_TP_CD = #{objTpCd,jdbcType=VARCHAR}
+			 , PROCDR_DSCR = #{procdrDscr,jdbcType=VARCHAR}
+			 , EXECUT_CYCL_CONT = #{executCyclCont,jdbcType=VARCHAR}
+			 , PRMTR_DSCR = #{prmtrDscr,jdbcType=VARCHAR}
+			 , BEG_DT = #{begDt,jdbcType=TIMESTAMP}
+			 , END_DT = #{endDt,jdbcType=TIMESTAMP}
+			 , MAX_EXC_TIME = #{maxExcTime,jdbcType=NUMERIC}
+			 , PROCDR_STAT_CD = #{procdrStatCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROCDR_NM = #{procdrNm,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysProcdr" parameterType="sysProcdr">
+		INSERT /* com.plgrim.ncp.base.insertSysProcdr		Generator(Generator)	2018-05-23 */
+		INTO   SYS_PROCDR (
+			   PROCDR_NM
+			 , OBJ_TP_CD
+			 , PROCDR_DSCR
+			 , EXECUT_CYCL_CONT
+			 , PRMTR_DSCR
+			 , BEG_DT
+			 , END_DT
+			 , MAX_EXC_TIME
+			 , PROCDR_STAT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{procdrNm,jdbcType=VARCHAR}
+			 , #{objTpCd,jdbcType=VARCHAR}
+			 , #{procdrDscr,jdbcType=VARCHAR}
+			 , #{executCyclCont,jdbcType=VARCHAR}
+			 , #{prmtrDscr,jdbcType=VARCHAR}
+			 , #{begDt,jdbcType=TIMESTAMP}
+			 , #{endDt,jdbcType=TIMESTAMP}
+			 , #{maxExcTime,jdbcType=NUMERIC}
+			 , #{procdrStatCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysProcdr" parameterType="sysProcdr">
+		DELETE /* com.plgrim.ncp.base.deleteSysProcdr		Generator(Generator)	2018-05-23 */
+		  FROM SYS_PROCDR
+		 WHERE 1 = 1
+		   AND PROCDR_NM = #{procdrNm,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

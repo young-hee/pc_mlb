@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrCrtfc" parameterType="mbrCrtfc" resultType="mbrCrtfc">
+		SELECT /* com.plgrim.ncp.base.selectMbrCrtfc		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , MBR_CRTFC_TURN
+			 , MBR_CRTFC_TP_CD
+			 , MBR_CRTFC_YN
+			 , MBR_CRTFC_DATE
+			 , RLNM_CRTFC_MOBIL_NATION_NO
+			 , RLNM_CRTFC_MOBIL_AREA_NO
+			 , RLNM_CRTFC_MOBIL_TLOF_NO
+			 , RLNM_CRTFC_MOBIL_TLOF_WTHN_NO
+			 , RLNM_CRTFC_RESULT_CD
+			 , RLNM_CRTFC_DI
+			 , RLNM_CRTFC_CI
+			 , RLNM_CRTFC_VER
+			 , RLNM_CRTFC_IPIN
+			 , MBR_EMAIL
+			 , MBR_EMAIL_CRTFC_TOKN_ID
+			 , MBR_EMAIL_CRTFC_TMLMT_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_CRTFC
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrCrtfc" parameterType="mbrCrtfc">
+		UPDATE /* com.plgrim.ncp.base.updateMbrCrtfc		Generator(Generator)	2018-05-23 */
+		MBR_CRTFC SET
+			   MBR_CRTFC_TP_CD = #{mbrCrtfcTpCd,jdbcType=VARCHAR}
+			 , MBR_CRTFC_YN = #{mbrCrtfcYn,jdbcType=VARCHAR}
+			 , MBR_CRTFC_DATE = #{mbrCrtfcDate,jdbcType=TIMESTAMP}
+			 , RLNM_CRTFC_MOBIL_NATION_NO = #{rlnmCrtfcMobilNationNo,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_MOBIL_AREA_NO = #{rlnmCrtfcMobilAreaNo,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_MOBIL_TLOF_NO = #{rlnmCrtfcMobilTlofNo,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_MOBIL_TLOF_WTHN_NO = #{rlnmCrtfcMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_RESULT_CD = #{rlnmCrtfcResultCd,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_DI = #{rlnmCrtfcDi,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_CI = #{rlnmCrtfcCi,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_VER = #{rlnmCrtfcVer,jdbcType=VARCHAR}
+			 , RLNM_CRTFC_IPIN = #{rlnmCrtfcIpin,jdbcType=VARCHAR}
+			 , MBR_EMAIL = #{mbrEmail,jdbcType=VARCHAR}
+			 , MBR_EMAIL_CRTFC_TOKN_ID = #{mbrEmailCrtfcToknId,jdbcType=VARCHAR}
+			 , MBR_EMAIL_CRTFC_TMLMT_DT = #{mbrEmailCrtfcTmlmtDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrCrtfc" parameterType="mbrCrtfc">
+		INSERT /* com.plgrim.ncp.base.insertMbrCrtfc		Generator(Generator)	2018-05-23 */
+		INTO   MBR_CRTFC (
+			   MBR_NO
+			 , MBR_CRTFC_TURN
+			 , MBR_CRTFC_TP_CD
+			 , MBR_CRTFC_YN
+			 , MBR_CRTFC_DATE
+			 , RLNM_CRTFC_MOBIL_NATION_NO
+			 , RLNM_CRTFC_MOBIL_AREA_NO
+			 , RLNM_CRTFC_MOBIL_TLOF_NO
+			 , RLNM_CRTFC_MOBIL_TLOF_WTHN_NO
+			 , RLNM_CRTFC_RESULT_CD
+			 , RLNM_CRTFC_DI
+			 , RLNM_CRTFC_CI
+			 , RLNM_CRTFC_VER
+			 , RLNM_CRTFC_IPIN
+			 , MBR_EMAIL
+			 , MBR_EMAIL_CRTFC_TOKN_ID
+			 , MBR_EMAIL_CRTFC_TMLMT_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{mbrCrtfcTurn,jdbcType=NUMERIC}
+			 , #{mbrCrtfcTpCd,jdbcType=VARCHAR}
+			 , #{mbrCrtfcYn,jdbcType=VARCHAR}
+			 , #{mbrCrtfcDate,jdbcType=TIMESTAMP}
+			 , #{rlnmCrtfcMobilNationNo,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcMobilAreaNo,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcMobilTlofNo,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcResultCd,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcDi,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcCi,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcVer,jdbcType=VARCHAR}
+			 , #{rlnmCrtfcIpin,jdbcType=VARCHAR}
+			 , #{mbrEmail,jdbcType=VARCHAR}
+			 , #{mbrEmailCrtfcToknId,jdbcType=VARCHAR}
+			 , #{mbrEmailCrtfcTmlmtDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrCrtfc" parameterType="mbrCrtfc">
+		DELETE /* com.plgrim.ncp.base.deleteMbrCrtfc		Generator(Generator)	2018-05-23 */
+		  FROM MBR_CRTFC
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_CRTFC_TURN = #{mbrCrtfcTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

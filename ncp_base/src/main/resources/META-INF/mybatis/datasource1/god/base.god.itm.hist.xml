@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodItmHist" parameterType="godItmHist" resultType="godItmHist">
+		SELECT /* com.plgrim.ncp.base.selectGodItmHist		Generator(Generator)	2018-05-23 */
+			   ITM_NO
+			 , ITM_HIST_TURN
+			 , GOD_NO
+			 , SKU_NO
+			 , ITM_STAT_CD
+			 , ITM_NM
+			 , OPT_CD_1
+			 , OPT_NM_1
+			 , OPT_VAL_CD_1
+			 , OPT_VAL_NM_1
+			 , OPT_CD_2
+			 , OPT_NM_2
+			 , OPT_VAL_CD_2
+			 , OPT_VAL_NM_2
+			 , OPT_CD_3
+			 , OPT_NM_3
+			 , OPT_VAL_CD_3
+			 , OPT_VAL_NM_3
+			 , OPT_CD_4
+			 , OPT_NM_4
+			 , OPT_VAL_CD_4
+			 , OPT_VAL_NM_4
+			 , OPT_CD_5
+			 , OPT_NM_5
+			 , OPT_VAL_CD_5
+			 , OPT_VAL_NM_5
+			 , TOT_USEFUL_INV_QTY
+			 , SALE_PREARNGE_QTY
+			 , SAFE_INV_USE_YN
+			 , SAFE_INV_QTY
+			 , ONLNE_LMTT_INV_QTY
+			 , AFF_COM_LMTT_INV_QTY
+			 , RESVE_QTY
+			 , RESVE_INV_QTY
+			 , PARTMAL_COM_INV_NTCN_YN
+			 , PARTMAL_COM_INV_NTCN_QTY
+			 , WRHS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_ITM_HIST
+		 WHERE 1 = 1
+	   	   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND ITM_HIST_TURN = #{itmHistTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodItmHist" parameterType="godItmHist">
+		UPDATE /* com.plgrim.ncp.base.updateGodItmHist		Generator(Generator)	2018-05-23 */
+		GOD_ITM_HIST SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , SKU_NO = #{skuNo,jdbcType=VARCHAR}
+			 , ITM_STAT_CD = #{itmStatCd,jdbcType=VARCHAR}
+			 , ITM_NM = #{itmNm,jdbcType=VARCHAR}
+			 , OPT_CD_1 = #{optCd1,jdbcType=VARCHAR}
+			 , OPT_NM_1 = #{optNm1,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_1 = #{optValCd1,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_1 = #{optValNm1,jdbcType=VARCHAR}
+			 , OPT_CD_2 = #{optCd2,jdbcType=VARCHAR}
+			 , OPT_NM_2 = #{optNm2,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_2 = #{optValCd2,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_2 = #{optValNm2,jdbcType=VARCHAR}
+			 , OPT_CD_3 = #{optCd3,jdbcType=VARCHAR}
+			 , OPT_NM_3 = #{optNm3,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_3 = #{optValCd3,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_3 = #{optValNm3,jdbcType=VARCHAR}
+			 , OPT_CD_4 = #{optCd4,jdbcType=VARCHAR}
+			 , OPT_NM_4 = #{optNm4,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_4 = #{optValCd4,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_4 = #{optValNm4,jdbcType=VARCHAR}
+			 , OPT_CD_5 = #{optCd5,jdbcType=VARCHAR}
+			 , OPT_NM_5 = #{optNm5,jdbcType=VARCHAR}
+			 , OPT_VAL_CD_5 = #{optValCd5,jdbcType=VARCHAR}
+			 , OPT_VAL_NM_5 = #{optValNm5,jdbcType=VARCHAR}
+			 , TOT_USEFUL_INV_QTY = #{totUsefulInvQty,jdbcType=NUMERIC}
+			 , SALE_PREARNGE_QTY = #{salePrearngeQty,jdbcType=NUMERIC}
+			 , SAFE_INV_USE_YN = #{safeInvUseYn,jdbcType=VARCHAR}
+			 , SAFE_INV_QTY = #{safeInvQty,jdbcType=NUMERIC}
+			 , ONLNE_LMTT_INV_QTY = #{onlneLmttInvQty,jdbcType=NUMERIC}
+			 , AFF_COM_LMTT_INV_QTY = #{affComLmttInvQty,jdbcType=NUMERIC}
+			 , RESVE_QTY = #{resveQty,jdbcType=NUMERIC}
+			 , RESVE_INV_QTY = #{resveInvQty,jdbcType=NUMERIC}
+			 , PARTMAL_COM_INV_NTCN_YN = #{partmalComInvNtcnYn,jdbcType=VARCHAR}
+			 , PARTMAL_COM_INV_NTCN_QTY = #{partmalComInvNtcnQty,jdbcType=NUMERIC}
+			 , WRHS_DT = #{wrhsDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND ITM_HIST_TURN = #{itmHistTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodItmHist" parameterType="godItmHist">
+		INSERT /* com.plgrim.ncp.base.insertGodItmHist		Generator(Generator)	2018-05-23 */
+		INTO   GOD_ITM_HIST (
+			   ITM_NO
+			 , ITM_HIST_TURN
+			 , GOD_NO
+			 , SKU_NO
+			 , ITM_STAT_CD
+			 , ITM_NM
+			 , OPT_CD_1
+			 , OPT_NM_1
+			 , OPT_VAL_CD_1
+			 , OPT_VAL_NM_1
+			 , OPT_CD_2
+			 , OPT_NM_2
+			 , OPT_VAL_CD_2
+			 , OPT_VAL_NM_2
+			 , OPT_CD_3
+			 , OPT_NM_3
+			 , OPT_VAL_CD_3
+			 , OPT_VAL_NM_3
+			 , OPT_CD_4
+			 , OPT_NM_4
+			 , OPT_VAL_CD_4
+			 , OPT_VAL_NM_4
+			 , OPT_CD_5
+			 , OPT_NM_5
+			 , OPT_VAL_CD_5
+			 , OPT_VAL_NM_5
+			 , TOT_USEFUL_INV_QTY
+			 , SALE_PREARNGE_QTY
+			 , SAFE_INV_USE_YN
+			 , SAFE_INV_QTY
+			 , ONLNE_LMTT_INV_QTY
+			 , AFF_COM_LMTT_INV_QTY
+			 , RESVE_QTY
+			 , RESVE_INV_QTY
+			 , PARTMAL_COM_INV_NTCN_YN
+			 , PARTMAL_COM_INV_NTCN_QTY
+			 , WRHS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{itmNo,jdbcType=VARCHAR}
+			 , #{itmHistTurn,jdbcType=NUMERIC}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{skuNo,jdbcType=VARCHAR}
+			 , #{itmStatCd,jdbcType=VARCHAR}
+			 , #{itmNm,jdbcType=VARCHAR}
+			 , #{optCd1,jdbcType=VARCHAR}
+			 , #{optNm1,jdbcType=VARCHAR}
+			 , #{optValCd1,jdbcType=VARCHAR}
+			 , #{optValNm1,jdbcType=VARCHAR}
+			 , #{optCd2,jdbcType=VARCHAR}
+			 , #{optNm2,jdbcType=VARCHAR}
+			 , #{optValCd2,jdbcType=VARCHAR}
+			 , #{optValNm2,jdbcType=VARCHAR}
+			 , #{optCd3,jdbcType=VARCHAR}
+			 , #{optNm3,jdbcType=VARCHAR}
+			 , #{optValCd3,jdbcType=VARCHAR}
+			 , #{optValNm3,jdbcType=VARCHAR}
+			 , #{optCd4,jdbcType=VARCHAR}
+			 , #{optNm4,jdbcType=VARCHAR}
+			 , #{optValCd4,jdbcType=VARCHAR}
+			 , #{optValNm4,jdbcType=VARCHAR}
+			 , #{optCd5,jdbcType=VARCHAR}
+			 , #{optNm5,jdbcType=VARCHAR}
+			 , #{optValCd5,jdbcType=VARCHAR}
+			 , #{optValNm5,jdbcType=VARCHAR}
+			 , #{totUsefulInvQty,jdbcType=NUMERIC}
+			 , #{salePrearngeQty,jdbcType=NUMERIC}
+			 , #{safeInvUseYn,jdbcType=VARCHAR}
+			 , #{safeInvQty,jdbcType=NUMERIC}
+			 , #{onlneLmttInvQty,jdbcType=NUMERIC}
+			 , #{affComLmttInvQty,jdbcType=NUMERIC}
+			 , #{resveQty,jdbcType=NUMERIC}
+			 , #{resveInvQty,jdbcType=NUMERIC}
+			 , #{partmalComInvNtcnYn,jdbcType=VARCHAR}
+			 , #{partmalComInvNtcnQty,jdbcType=NUMERIC}
+			 , #{wrhsDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodItmHist" parameterType="godItmHist">
+		DELETE /* com.plgrim.ncp.base.deleteGodItmHist		Generator(Generator)	2018-05-23 */
+		  FROM GOD_ITM_HIST
+		 WHERE 1 = 1
+		   AND ITM_NO = #{itmNo,jdbcType=VARCHAR}
+		   AND ITM_HIST_TURN = #{itmHistTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

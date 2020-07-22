@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
+	<!-- ========전체 시스템 cache 설정 영역 (AA 외 핸들링 또는 설정 복사 금지)========== -->
+	<defaultCache maxElementsInMemory="10" timeToLiveSeconds="600" />
+	<!-- ========Application General Cache Setting================================ -->
+
+	<cache name="anonymousContentsCache" maxElementsInMemory="100" timeToLiveSeconds="60" />
+
+	<!--  MB Main  -->
+	<cache name="displayCnrConttFrRepository.selectTmplatPageInfoV2" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCnrConttFrRepository.selectDspCnrConttTp" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectDisplayCategoryInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectDisplayCategoryFoInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectDspCtgryGodSortFo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectCtgryNo" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="displayCategoryRepository.selectDspCtgryGodList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectDspCtgryGodsListCnt" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="displayCategoryRepository.selectGodResve2" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="displayCategoryRepository.selectGodIconList2" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="displayCategoryRepository.selectCtgryInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectBrandInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="displayCategoryRepository.selectCategoryChack" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectBrandCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectBrandAllList" maxElementsInMemory="1000" timeToLiveSeconds="60" /> 
+	<cache name="displayCategoryRepository.popupNoti" maxElementsInMemory="100" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectBrandMBCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	<!--  MB Goods Detail -->
+	<cache name="goodsRepository.selectErpGodNo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getFoGoodsDetail" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="sysBrndRepository.selectSysBrnd" maxElementsInMemory="100" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.getGoodsSizeList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getGoodsImages" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectPartmalGoodsOpt1" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.getGoodsColorList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getGoodsPromotionList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getCategoryPathByGodNo" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.getCodiGoods" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectNotiListByLang" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectBrndNotiListByLang" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectGodEventList" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectGodPromtList" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectCardBenefitList" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectEvtList" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectComAsChrger" maxElementsInMemory="1000" timeToLiveSeconds="60" />	
+	<cache name="goodsRepository.selectMcomBrandGroupYn" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectMcbrCount" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsRepository.selectMcbrYn" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectGodDetailHtmlList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGodTypeCd" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="codeViewRepository.getAddInfoCodeList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGodAditDetailData" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGodLocationDspCtgryNo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.selectLocationList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsModelRepository.selectGoodsModelList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGodMySizeList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGodMySizeListCount" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryFrRepository.selectDspCtgryFrInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getRecommendGoodsInfoList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getCategoryBestGoods" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectStrendSn" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	<!--  QnA  같은 정보는 30초만 유지  -->
+	<cache name="goodsContentRepository.selectCountFoReview" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectFoReviewList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectFoReviewList2" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectCountFoQna" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectFoQnaList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectSizeScoreList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectColorScoreList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectReviewScore" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	
+	<!--  PC Main -->
+	<cache name="displayCnrConttFrRepository.selectDspCnrConttListV2" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	<!--  PC Goods Detail -->
+	<cache name="goodsRepository.selectSetGoodsOptionList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="godNtfcDetailRepository.selectGodNtfcDetail" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectPartmalSetGoodsOpt1" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectSetGoodsAddGodList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getCategoryPathByCateNo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getDspCtgryInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectSetCpstList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGodTypeAditDetail" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	<!--  Search  -->
+	<cache name="searchSelectComponent.getgoodSearchNew" maxElementsInMemory="1000" timeToLiveSeconds="300" />
+	<cache name="searchSelectComponent.getcateSearchNew" maxElementsInMemory="1000" timeToLiveSeconds="300" />
+	<cache name="searchSelectComponent.getgoodSearch" maxElementsInMemory="1000" timeToLiveSeconds="300" />
+	
+	<!--  Friendly Url  -->
+	<cache name="friendlyUrlRepository.selectGodBrandInfo" maxElementsInMemory="1000" timeToLiveSeconds="3600" />
+	<cache name="friendlyUrlRepository.selectDspCtgryFrInfo" maxElementsInMemory="1000" timeToLiveSeconds="3600" />
+	<cache name="friendlyUrlRepository.selectMetaDspCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="10800" /><!--  3시간(60*60*3)  -->
+
+	<!--  카테고리 listing  -->
+	<cache name="displayCategoryRepository.selectDspCtgryDspGodListTotCnt" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+
+	<!--  viewGnb  -->
+	<cache name="displayCategoryRepository.dspCtgrySubDspCtgryList" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.godExistDspCtgryList" maxElementsInMemory="10" timeToLiveSeconds="60" />
+
+<!-- 
+	<cache name="displayCategoryRepository.dspCnrSetList" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	
+	<cache name="displayCategoryRepository.dspCtgrySubDspCtgryList" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.godExistDspCtgryList" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.NewArrivalAutoLoading" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	
+	<cache name="displayCategoryRepository.selectTestGodList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.test" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCategoryRepository.TopSellerAutoLoading" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCornerRepository.dspCnrContentsCnncGod" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCornerRepository.dspCnrContentsCnncPromt" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCornerRepository.dspCnrContentsCnncStrnd" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCornerRepository.fullDspCnrContents" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	<cache name="displayCornerRepository.selectDspCnrConttList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCornerRepository.selectDspCnrConttList2" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="displayCornerRepository.selectDspCnrDefaultInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsContentRepository.selectColorScoreList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	
+	<cache name="goodsContentRepository.selectFoReviewList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	
+	<cache name="goodsContentRepository.selectReviewScore" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsContentRepository.selectSizeScoreList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+	<cache name="goodsImageRepository.selectRprstGodImagePath" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsMbSfRepository.getGoodPrdlstGrpCd" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsMbSfRepository.getGoodsMetaTagInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsPcSfRepository.selectB2EPrmotionInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	<cache name="goodsRepository.getCouponGoodsDetail" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	<cache name="goodsRepository.getGodIcons" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.getGoodPrdlstGrpCd" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	<cache name="goodsRepository.selectAccsessTerm" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	
+	<cache name="goodsRepository.selectGoodsDetailStrendInfo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGoodsLocationDspCtgryNo" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectGoodsPartmalSect" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	
+	<cache name="goodsRepository.selectMoColorList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	
+	
+	
+	<cache name="goodsRepository.selectSetCpstList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="goodsRepository.selectStrendSn" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="mb.displayGoodsRepository.selectSearchTextBannerList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	<cache name="OrderSelectRepository.selectExchangeRt" maxElementsInMemory="10" timeToLiveSeconds="60" />
+	
+	  신규 추가 UXUI
+	
+	<cache name="displayCategoryRepository.selectGodIconList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+	-->
+	
+	
+	<cache name="labRepository.selectLab" maxElementsInMemory="100" timeToLiveSeconds="60" />
+    <cache name="goodsRepository.getGoodsSizeExtendList" maxElementsInMemory="1000" timeToLiveSeconds="60" />
+    
+    <cache name="NcpFeatureProvider.getFeatures" maxElementsInMemory="2" timeToLiveSeconds="30" />
+    
+    <cache name="system.cacheMonitor" maxElementsInMemory="100" timeToLiveSeconds="-1" />
+    <cache name="TestingController" maxElementsInMemory="100" timeToLiveSeconds="60" />
+    
+    
+    <cache name="dxmDisplayRepository.lnbCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectLeafCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectDisplayGodList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+    <cache name="dxmDisplayRepository.selectFilterList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectCategoryCornerList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectCategoryCornerSetList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectCategoryCornerConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectCategoryCornerConttListByPagingTotCnt" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectCategoryCornerConttListByPaging" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectCategoryCornerGodConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectMainCornerConttList" maxElementsInMemory="1000" timeToLiveSeconds="3600" />
+    <cache name="dxmDisplayRepository.searchDisplayGodList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+    <cache name="dxmDisplayRepository.selectRecoPickGodList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectDisplayReviewList" maxElementsInMemory="1000" timeToLiveSeconds="99999" />
+    <cache name="dxmDisplayRepository.selectDisplayBestReviewList" maxElementsInMemory="1000" timeToLiveSeconds="99999" />
+    <cache name="dxmDisplayRepository.selectLnbCategory" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="dxmDisplayRepository.selectDspUseGrpTpCd" maxElementsInMemory="1000" timeToLiveSeconds="9999999999" />
+    <cache name="dxmDisplayRepository.mypageLnbCurrentCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="planRepository.selectDxmPlanSprtrGodList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+    <cache name="planRepository.selectDxmEvtAplGodList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+    
+    <cache name="dxmDisplayRepository.selectCategotyNaviNm" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    
+	<!--     MLB Start -->
+    <cache name="mbmDisplayRepository.lnbCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectLeafCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectFilterList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategoryCornerGrpList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategoryCornerCnrList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategoryCornerList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategoryCornerSetList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategoryCornerConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategoryCornerGodConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectMainCornerConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectRecoPickGodList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectDisplayReviewList" maxElementsInMemory="1000" timeToLiveSeconds="99999" />
+    <cache name="mbmDisplayRepository.selectDisplayBestReviewList" maxElementsInMemory="1000" timeToLiveSeconds="99999" />
+    <cache name="mbmDisplayRepository.selectLnbCategory" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectDspUseGrpTpCd" maxElementsInMemory="1000" timeToLiveSeconds="9999999999" />
+    <cache name="mbmDisplayRepository.mypageLnbCurrentCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    
+    <cache name="mbmDisplayRepository.selectGNBCategotyList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategotyNavi" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="mbmDisplayRepository.selectCategotyNaviNm" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    
+    <cache name="mbmDisplayRepository.selectDisplayGodList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+    <!--     MLB End -->
+    
+    <!--     SA Start -->
+    <cache name="samDisplayRepository.lnbCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectLeafCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectFilterList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategoryCornerGrpList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategoryCornerCnrList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategoryCornerList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategoryCornerSetList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategoryCornerConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategoryCornerGodConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectMainCornerConttList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectRecoPickGodList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectDisplayReviewList" maxElementsInMemory="1000" timeToLiveSeconds="99999" />
+    <cache name="samDisplayRepository.selectDisplayBestReviewList" maxElementsInMemory="1000" timeToLiveSeconds="99999" />
+    <cache name="samDisplayRepository.selectLnbCategory" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectDspUseGrpTpCd" maxElementsInMemory="1000" timeToLiveSeconds="9999999999" />
+    <cache name="samDisplayRepository.mypageLnbCurrentCtgryList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    
+    <cache name="samDisplayRepository.selectGNBCategotyList" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategotyNavi" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    <cache name="samDisplayRepository.selectCategotyNaviNm" maxElementsInMemory="1000" timeToLiveSeconds="999999" />
+    
+    <cache name="samDisplayRepository.selectDisplayGodList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+    <!--     SA End -->
+    
+    <!--     MLB/SA Start -->
+    <cache name="planRepository.selectMallPlanSprtrGodList" maxElementsInMemory="1000" timeToLiveSeconds="30" />
+    <!--     MLB/SA End -->
+</ehcache>

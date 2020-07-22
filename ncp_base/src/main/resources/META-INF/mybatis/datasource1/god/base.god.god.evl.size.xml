@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodGodEvlSize" parameterType="godGodEvlSize" resultType="godGodEvlSize">
+		SELECT /* com.plgrim.ncp.base.selectGodGodEvlSize		Generator(Generator)	2018-04-19 */
+			   GOD_NO
+			 , GOD_EVL_TURN
+			 , MBR_SIZE_CD
+			 , SIZE_VAL
+			 , SIZE_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_GOD_EVL_SIZE
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+		   AND MBR_SIZE_CD = #{mbrSizeCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodGodEvlSize" parameterType="godGodEvlSize">
+		UPDATE /* com.plgrim.ncp.base.updateGodGodEvlSize		Generator(Generator)	2018-04-19 */
+		GOD_GOD_EVL_SIZE SET
+			   SIZE_VAL = #{sizeVal,jdbcType=VARCHAR}
+			 , SIZE_UNIT_CD = #{sizeUnitCd,jdbcType=VARCHAR}
+			 , REGTR_ID = #{regtrId,jdbcType=VARCHAR}
+			 , REG_DT = #{regDt,jdbcType=DATE}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = #{udtDt,jdbcType=DATE}
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+		   AND MBR_SIZE_CD = #{mbrSizeCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodGodEvlSize" parameterType="godGodEvlSize">
+		INSERT /* com.plgrim.ncp.base.insertGodGodEvlSize		Generator(Generator)	2018-04-19 */
+		INTO   GOD_GOD_EVL_SIZE (
+			   GOD_NO
+			 , GOD_EVL_TURN
+			 , MBR_SIZE_CD
+			 , SIZE_VAL
+			 , SIZE_UNIT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{godEvlTurn,jdbcType=NUMERIC}
+			 , #{mbrSizeCd,jdbcType=VARCHAR}
+			 , #{sizeVal,jdbcType=VARCHAR}
+			 , #{sizeUnitCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , #{regDt,jdbcType=DATE}
+			 , #{udterId,jdbcType=VARCHAR}
+			 , #{udtDt,jdbcType=DATE}
+        )
+    </insert>
+
+    <delete id="deleteGodGodEvlSize" parameterType="godGodEvlSize">
+		DELETE /* com.plgrim.ncp.base.deleteGodGodEvlSize		Generator(Generator)	2018-04-19 */
+		  FROM GOD_GOD_EVL_SIZE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_EVL_TURN = #{godEvlTurn,jdbcType=NUMERIC}
+		   AND MBR_SIZE_CD = #{mbrSizeCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

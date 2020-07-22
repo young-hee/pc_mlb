@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComBrnd" parameterType="comBrnd" resultType="comBrnd">
+		SELECT /* com.plgrim.ncp.base.selectComBrnd		Generator(Generator)	2018-05-23 */
+			   COM_ID
+			 , BRND_ID
+			 , AFF_VRSC_COM_USE_BRND_NM
+			 , PARTMAL_COM_FEE_RT
+			 , RELATE_BRND_AUTO_EXPSR_YN
+			 , DELETE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_BRND
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComBrnd" parameterType="comBrnd">
+		UPDATE /* com.plgrim.ncp.base.updateComBrnd		Generator(Generator)	2018-05-23 */
+		COM_BRND SET
+			   AFF_VRSC_COM_USE_BRND_NM = #{affVrscComUseBrndNm,jdbcType=VARCHAR}
+			 , PARTMAL_COM_FEE_RT = #{partmalComFeeRt,jdbcType=NUMERIC}
+			 , RELATE_BRND_AUTO_EXPSR_YN = #{relateBrndAutoExpsrYn,jdbcType=VARCHAR}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComBrnd" parameterType="comBrnd">
+		INSERT /* com.plgrim.ncp.base.insertComBrnd		Generator(Generator)	2018-05-23 */
+		INTO   COM_BRND (
+			   COM_ID
+			 , BRND_ID
+			 , AFF_VRSC_COM_USE_BRND_NM
+			 , PARTMAL_COM_FEE_RT
+			 , RELATE_BRND_AUTO_EXPSR_YN
+			 , DELETE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comId,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{affVrscComUseBrndNm,jdbcType=VARCHAR}
+			 , #{partmalComFeeRt,jdbcType=NUMERIC}
+			 , #{relateBrndAutoExpsrYn,jdbcType=VARCHAR}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComBrnd" parameterType="comBrnd">
+		DELETE /* com.plgrim.ncp.base.deleteComBrnd		Generator(Generator)	2018-05-23 */
+		  FROM COM_BRND
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

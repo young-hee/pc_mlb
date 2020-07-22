@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion">
+
+   <select id="selectPrmAplTgt" parameterType="prmAplTgt" resultType="com.plgrim.ncp.biz.promotion.data.PrmAplTgtExtend">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmAplTgt  20150504 */
+            apl_turn
+           ,prm_tgt_tp_cd
+           ,mall_id
+           ,lang_cd
+           ,dvc_cd
+           ,tgt_mbr_atrb_cd
+           ,tgt_mbr_tp_cd
+           ,grpco_id
+           ,(SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = PAT.MALL_ID) AS MALL_NM
+      FROM  prm_apl_tgt PAT
+      WHERE 1 = 1
+      AND   prm_no = #{prmNo,jdbcType=VARCHAR}
+   </select>
+   
+   <resultMap type="com.plgrim.ncp.biz.promotion.result.PromotionApplyGoodBoResult" id="selectPrmAplGodResult">
+      <id column="prm_no" property="prmNo" />
+      <id column="apl_turn" property="aplTurn" />
+      <association property="prmAplGodEx" javaType="com.plgrim.ncp.biz.promotion.data.PrmAplGodExtend">
+         <result column="prm_no"            property="prmNo"/>
+         <result column="apl_turn"          property="aplTurn"/>
+         <result column="apl_god_sect_cd"   property="aplGodSectCd"/>
+         
+         <discriminator column="apl_god_sect_cd" javaType="String">
+            <case value="BRND" resultType="com.plgrim.ncp.biz.promotion.data.PrmAplGodExtend">
+               <result column="brnd_id"           property="brndId"/>
+               <result column="brnd_nm"           property="brndNm"/>
+            </case>
+            <case value="DSP_CTGRY" resultType="com.plgrim.ncp.biz.promotion.data.PrmAplGodExtend">
+               <result column="dsp_ctgry_no"      property="dspCtgryNo"/>
+               <result column="dsp_ctgry_nm"      property="dspCtgryNm"/>
+            </case>
+            <case value="GOD" resultType="com.plgrim.ncp.biz.promotion.data.PrmAplGodExtend">
+               <result column="erp_god_no"        property="erpGodNo"/>
+               <result column="god_no"            property="godNo"/>
+               <result column="god_nm"            property="godNm"/>
+               <result column="g_brnd_id"         property="brndId"/>
+               <result column="g_brnd_nm"         property="brndNm"/>
+               <result column="god_sale_sect_cd"  property="godSaleSectCd"/>
+            </case>
+            <case value="SESON" resultType="com.plgrim.ncp.biz.promotion.data.PrmAplGodExtend">
+               <result column="seson_cd"			property="sesonCd"/>
+               <result column="seson_nm"            property="sesonNm"/>
+            </case>
+         </discriminator>
+      </association>
+   </resultMap>
+   
+   <select id="selectPrmAplGodList" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionApplyGoodBoDTO"
+           resultMap="selectPrmAplGodResult">
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+         SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmAplGodList  20150504 */
+               p.prm_no
+              ,p.apl_turn
+              ,p.god_apl_yn
+              ,p.apl_god_sect_cd
+              ,p.god_no
+              ,p.brnd_id
+              ,(SELECT brnd_nm FROM sys_brnd b WHERE b.brnd_id = p.brnd_id) AS brnd_nm
+              ,p.dsp_ctgry_no
+              ,(SELECT dsp_ctgry_nm FROM dsp_ctgry c WHERE p.dsp_ctgry_no = c.dsp_ctgry_no) AS dsp_ctgry_nm
+              ,g.erp_god_no
+              ,g.god_nm
+              ,g.brnd_id AS g_brnd_id
+              ,(SELECT brnd_nm FROM sys_brnd b WHERE b.brnd_id = g.brnd_id) AS g_brnd_nm
+              ,g.god_sale_sect_cd
+              ,p.seson_cd
+              ,(SELECT cd_nm FROM mv_sys_cd c WHERE c.upper_cd = 'SESON' AND c.lang_cd = 'KOR' AND c.cd = p.seson_cd) AS seson_nm
+         FROM  prm_apl_god p
+         LEFT OUTER JOIN  god g
+         ON    p.god_no = g.god_no
+         WHERE 1 = 1
+         AND   p.prm_no = #{prmAplGod.prmNo:VARCHAR}
+         <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmAplGod.godAplYn)">
+         AND   p.god_apl_yn = #{prmAplGod.godAplYn:VARCHAR}
+         </if>
+         <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmAplGod.aplGodSectCd)">
+         AND   p.apl_god_sect_cd = #{prmAplGod.aplGodSectCd:VARCHAR}
+         </if>
+         ORDER BY P.APL_TURN DESC
+      <include refid="com.plgrim.ncp.base.endPage"/>
+   </select>
+   
+   <select id="selectPrmAplGodListCount" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionApplyGoodBoDTO" resultType="java.lang.Long">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmAplGodListCount  20150504 */
+            count(1) as total_count
+      FROM  prm_apl_god p
+      LEFT OUTER JOIN  god g
+      ON    p.god_no = g.god_no
+      WHERE 1 = 1
+      AND   p.prm_no = #{prmAplGod.prmNo:VARCHAR}
+      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmAplGod.godAplYn)">
+      AND   p.god_apl_yn = #{prmAplGod.godAplYn:VARCHAR}
+      </if>
+      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmAplGod.aplGodSectCd)">
+      AND   p.apl_god_sect_cd = #{prmAplGod.aplGodSectCd:VARCHAR}
+      </if>
+   </select>
+
+   <select id="selectPrmAplGodInfoForSearch" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionApplyGoodBoDTO" resultType="java.lang.Integer">
+		SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmAplGodInfoForSearch sid.yoon 20171123 */
+		       COUNT(1)
+		FROM
+        (
+            SELECT p.prm_no
+                 , p.god_apl_yn
+                 , p.apl_god_sect_cd
+                 , p.brnd_id
+                 , p.dsp_ctgry_no
+                 , p.god_no
+                 , p.seson_cd
+            FROM  prm_apl_god p
+            WHERE 1 = 1
+            AND   p.prm_no = #{prmAplGod.prmNo:VARCHAR}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmAplGod.godAplYn)">
+            AND   p.god_apl_yn = #{prmAplGod.godAplYn:VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmAplGod.aplGodSectCd)">
+            AND   p.apl_god_sect_cd = #{prmAplGod.aplGodSectCd:VARCHAR}
+		</if>
+        ) p
+		<choose>
+		<when test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmAplGod.aplGodSectCd)">
+		<!-- 브랜드 -->
+			<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(prmAplGod.aplGodSectCd, 'BRND')">
+		JOIN sys_brnd b ON b.brnd_id = p.brnd_id
+		<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(searchField, '1')">
+		AND   b.brnd_id = #{searchText:VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(searchField, '2')">
+		AND   b.brnd_nm = #{searchText:VARCHAR}
+		</if>
+			</if>
+		<!-- 전시카테고리 -->	
+			<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(prmAplGod.aplGodSectCd, 'DSP_CTGRY')">
+		JOIN dsp_ctgry c ON c.dsp_ctgry_no = p.dsp_ctgry_no
+		<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(searchField, '1')">
+		AND   c.dsp_ctgry_no = #{searchText:VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(searchField, '2')">
+		AND   c.dsp_ctgry_nm = #{searchText:VARCHAR}
+		</if>
+			</if>
+		<!-- 상품 -->
+			<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(prmAplGod.aplGodSectCd, 'GOD')">
+		JOIN god g ON g.god_no = p.god_no
+		<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(searchField, '1')">
+		AND   g.erp_god_no = #{searchText:VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(searchField, '2')">
+		AND   g.god_no = #{searchText:VARCHAR}
+		</if>
+		<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(searchField, '3')">
+		AND   g.god_nm = #{searchText:VARCHAR}
+		</if>
+			</if>
+		<!-- 시즌 -->
+			<if test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(prmAplGod.aplGodSectCd, 'SESON')">
+		JOIN mv_sys_cd c ON c.upper_cd = 'SESON' AND c.lang_cd = 'KOR' AND c.cd = p.seson_cd
+		AND   c.cd_nm = #{searchText:VARCHAR}
+			</if>
+		</when>
+		<otherwise>
+		WHERE 1 = 2
+		</otherwise>
+		</choose>
+   </select>
+
+   <resultMap type="com.plgrim.ncp.biz.promotion.result.PromotionBoResult" id="prmAplTgtGrpcdResult">
+      <id column="prm_no"       property="prmAplTgtEx.prmNo" />
+      <id column="apl_turn"     property="prmAplTgtEx.aplTurn" />
+      <association property="prmAplTgtEx" javaType="com.plgrim.ncp.biz.promotion.data.PrmAplTgtExtend">
+         <result column="prm_no"            property="prmNo"/>
+         <result column="apl_turn"          property="aplTurn"/>
+         <result column="grpco_id"          property="grpcoId"/>
+         <result column="grpco_nm"          property="grpcoNm"/>
+      </association>
+   </resultMap>
+   
+   <select id="selectPrmAplTgtGrpcdList" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO"
+           resultMap="prmAplTgtGrpcdResult">
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+         SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmAplTgtGrpcdList  20150504 */
+               p.prm_no
+              ,p.apl_turn
+              ,p.grpco_id
+              ,g.grpco_nm
+         FROM  prm_apl_tgt p
+         LEFT OUTER JOIN  sys_grpco g
+         ON    p.grpco_id = g.grpco_id
+         WHERE 1 = 1
+         AND   p.prm_no         = #{prmAplTgt.prmNo:VARCHAR}
+         AND   p.prm_tgt_tp_cd  = #{prmAplTgt.prmTgtTpCd:VARCHAR}
+      <include refid="com.plgrim.ncp.base.endPage"/>
+   </select>
+   
+   <select id="selectPrmAplTgtGrpcdListCount" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO" resultType="java.lang.Long">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmAplTgtGrpcdListCount  20150504 */
+            count(1) as total_count
+      FROM  prm_apl_tgt p
+      LEFT OUTER JOIN  sys_grpco g
+      ON    p.grpco_id = g.grpco_id
+      WHERE 1 = 1
+      AND   p.prm_tgt_tp_cd  = 'GRPCO_ID'
+      AND   p.prm_no         = #{prmAplTgt.prmNo:VARCHAR}
+   </select>
+   
+   <resultMap type="com.plgrim.ncp.biz.promotion.result.PromotionApplyGoodBoResult" id="selectPrmCrsDcAplGodResult">
+      <id column="prm_no"                   property="prmNo" />
+      <id column="apl_tgt_god_grp_cd"       property="aplTgtGodGrpCd"/>
+      <id column="god_no"                   property="godNo"/>
+      <association property="prmAplGodEx" javaType="com.plgrim.ncp.biz.promotion.data.PrmAplGodExtend">
+         <result column="prm_no"                property="prmNo"/>
+         <result column="apl_tgt_god_grp_cd"    property="aplTgtGodGrpCd"/>
+         <result column="erp_god_no"            property="erpGodNo"/>
+         <result column="god_no"                property="godNo"/>
+         <result column="god_nm"                property="godNm"/>
+         <result column="g_brnd_id"             property="brndId"/>
+         <result column="g_brnd_nm"             property="brndNm"/>
+         <result column="god_sale_sect_cd"      property="godSaleSectCd"/>
+      </association>
+   </resultMap>
+   
+   <select id="selectPrmCrsDcAplGodList" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionApplyGoodBoDTO"
+           resultMap="selectPrmCrsDcAplGodResult">
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+         SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmCrsDcAplGodList  20150504 */
+               p.prm_no
+              ,p.apl_tgt_god_grp_cd
+              ,p.god_no
+              ,g.erp_god_no
+              ,g.god_nm
+              ,g.brnd_id AS g_brnd_id
+              ,(SELECT brnd_nm FROM sys_brnd b WHERE b.brnd_id = g.brnd_id) AS g_brnd_nm
+              ,g.god_sale_sect_cd
+         FROM  prm_crs_dc_apl_god p
+         LEFT OUTER JOIN  god g
+         ON    p.god_no = g.god_no
+         WHERE 1 = 1
+         AND   p.prm_no = #{prmCrsDcAplGod.prmNo:VARCHAR}
+         <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmCrsDcAplGod.aplTgtGodGrpCd)">
+         AND   p.apl_tgt_god_grp_cd = #{prmCrsDcAplGod.aplTgtGodGrpCd:VARCHAR}
+         </if>
+      <include refid="com.plgrim.ncp.base.endPage"/>
+   </select>
+   
+   <select id="selectPrmCrsDcAplGodListCount" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionApplyGoodBoDTO" resultType="java.lang.Long">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmCrsDcAplGodListCount  20150504 */
+            count(1) as total_count
+      FROM  prm_crs_dc_apl_god p
+      LEFT OUTER JOIN  god g
+      ON    p.god_no = g.god_no
+      WHERE 1 = 1
+      AND   p.prm_no = #{prmCrsDcAplGod.prmNo:VARCHAR}
+      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(prmCrsDcAplGod.aplTgtGodGrpCd)">
+      AND   p.apl_tgt_god_grp_cd = #{prmCrsDcAplGod.aplTgtGodGrpCd:VARCHAR}
+      </if>
+   </select>
+   
+   <select id="selectPrmAplGodInfo" parameterType="prmAplGod" resultType="prmAplGod">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmAplGodInfo  20150504 */
+            t.*
+      FROM  ( 
+               SELECT
+                     p.prm_no
+                    ,p.apl_turn
+                    ,p.god_apl_yn
+                    ,p.apl_god_sect_cd
+                    ,ROW_NUMBER() OVER(PARTITION BY prm_no, god_apl_yn ORDER BY apl_turn) AS rnum
+               FROM  prm_apl_god p
+               WHERE 1 = 1
+               AND   p.prm_no = #{prmAplGod.prmNo:VARCHAR}
+               AND	 p.apl_god_sect_cd <![CDATA[<>]]> 'SESON'
+            ) t
+      WHERE 1 = 1
+      AND   t.rnum = 1
+   </select>
+   
+   <select id="selectPrmCrsDcAplGodInfo" parameterType="prmCrsDcAplGod" resultType="prmCrsDcAplGod">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectPrmCrsDcAplGodInfo  20150504 */
+            t.*
+      FROM  (
+               SELECT
+                     p.prm_no
+                    ,p.apl_tgt_god_grp_cd
+                    ,ROW_NUMBER() OVER(PARTITION BY p.prm_no, p.apl_tgt_god_grp_cd ORDER BY p.apl_tgt_god_grp_cd) AS rnum
+               FROM  prm_crs_dc_apl_god p
+               WHERE 1 = 1
+               AND   p.prm_no = #{prmCrsDcAplGod.prmNo:VARCHAR}
+            ) t
+      WHERE 1 = 1
+      AND   t.rnum = 1
+   </select>
+   
+   <delete id="deletePrmAplTgt" parameterType="prmAplTgt">
+      DELETE /* com.plgrim.ncp.biz.promotion.deletePrmAplTgt vito 20150601 */  
+      FROM  prm_apl_tgt
+      WHERE 1 = 1
+      AND   prm_no = #{prmNo,jdbcType=VARCHAR}
+   </delete>
+   
+   <delete id="deletePromotionTargetGoods" parameterType="prmAplGod">
+      DELETE /* com.plgrim.ncp.biz.promotion.deletePrmAplTgt vito 20150601 */  
+      FROM  prm_apl_god
+      WHERE 1 = 1
+      AND   prm_no          = #{prmNo,jdbcType=VARCHAR}
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(aplTurn)">
+      AND   apl_turn        = #{aplTurn:VARCHAR}
+      </if>
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(aplGodSectCd)">
+      AND   apl_god_sect_cd = #{aplGodSectCd:VARCHAR}
+      </if>
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(godAplYn)">
+      AND   god_apl_yn      = #{godAplYn:VARCHAR}
+      </if>
+   </delete>
+   
+   <delete id="deletePrmCrsDcAplGod" parameterType="prmCrsDcAplGod">
+      DELETE /* com.plgrim.ncp.biz.promotion.deletePrmCrsDcAplGod vito 20150601 */  
+      FROM  prm_crs_dc_apl_god
+      WHERE 1 = 1
+      AND   prm_no              = #{prmNo,jdbcType=VARCHAR}
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(aplTgtGodGrpCd)">
+      AND   apl_tgt_god_grp_cd  = #{aplTgtGodGrpCd:VARCHAR}
+      </if>
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(godNo)">
+      AND   god_no              = #{godNo:VARCHAR}
+      </if>
+   </delete>
+   
+   <!--
+   *************************************************************************************************
+   * 유효성 체크 영역
+   *************************************************************************************************
+   * -->
+   
+   <!-- 주문할인 적용상품 등록여부 체크 -->
+   <select id="selectValidOrderPromotionApplyGoodInfo" parameterType="com.plgrim.ncp.biz.promotion.data.PrmAplGodExtend"
+           resultType="com.plgrim.ncp.biz.promotion.result.PromotionApplyGoodBoResult">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectValidOrderPromotionApplyGoodInfo  20150504 */
+            z.ord_dc_god_count
+          , (SELECT MAX(apl_tgt_god_grp_cd) FROM prm_crs_dc_apl_god WHERE prm_no = #{prmNo:VARCHAR} AND god_no = #{godNo:VARCHAR}) AS apl_tgt_god_grp_cd
+          , (SELECT MAX(god_apl_yn) FROM prm_apl_god WHERE prm_no = #{prmNo:VARCHAR} AND god_no = #{godNo:VARCHAR} AND apl_god_sect_cd = 'GOD') AS god_apl_yn
+      FROM  (
+               SELECT
+                     count(1) AS ord_dc_god_count
+               FROM  (
+                        SELECT
+                              1
+                        FROM  prm p
+                        WHERE 1              = 1
+                        AND   p.prm_stat_cd  IN ('APRV_WAIT', 'APRV')
+                        AND   p.prm_tp_cd    = 'ORD_DC'
+                        AND   SYSDATE BETWEEN TO_DATE(p.prm_beg_date, 'yyyyMMdd') AND TO_DATE(p.prm_end_date, 'yyyyMMdd')+1-1/86400
+                        AND   EXISTS   (  SELECT
+                                                1
+                                          FROM  prm_apl_god g
+                                          WHERE p.prm_no          = g.prm_no
+                                          AND   g.god_apl_yn      = 'Y'
+                                          AND   g.apl_god_sect_cd = 'GOD'
+                                          AND   g.god_no          = #{godNo:VARCHAR}
+                                       )
+                        UNION
+                        SELECT
+                              1
+                        FROM  prm p
+                        WHERE 1              = 1
+                        AND   p.prm_stat_cd  IN ('APRV_WAIT', 'APRV')
+                        AND   p.prm_tp_cd    = 'ORD_DC'
+                        AND   SYSDATE BETWEEN TO_DATE(p.prm_beg_date, 'yyyyMMdd') AND TO_DATE(p.prm_end_date, 'yyyyMMdd')+1-1/86400
+                        AND   EXISTS   (  SELECT
+                                                1
+                                          FROM  prm_crs_dc_apl_god g
+                                          WHERE p.prm_no          = g.prm_no
+                                          AND   g.god_no          = #{godNo:VARCHAR}
+                                       )
+                     ) a
+            ) z
+   </select>
+   
+   <!-- 주문할인프로모션 교차할인 적용상품-->
+   <select id="selectValidPrmCrsDcAplGod" parameterType="prmCrsDcAplGod" resultType="prmCrsDcAplGod">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectValidPrmCrsDcAplGod  20150504 */
+            g.prm_no
+          , g.apl_tgt_god_grp_cd
+      FROM  prm_crs_dc_apl_god g
+      WHERE 1 = 1
+      AND   g.prm_no = #{prmNo:VARCHAR}
+      AND   g.god_no = #{godNo:VARCHAR}
+   </select>
+   
+   <!-- 적용대상상품 등록여부 체크-->
+   <select id="selectValidPrmAplGod" parameterType="prmAplGod" resultType="com.plgrim.ncp.biz.promotion.result.PromotionApplyGoodBoResult">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectValidPrmAplGod  20150504 */
+            t.prm_apl_god_count
+          , (SELECT god_no FROM god WHERE god_no = #{godNo:VARCHAR}) AS god_no
+      FROM  (
+                SELECT
+                      COUNT(1) as prm_apl_god_count
+                FROM  prm_apl_god g
+                WHERE 1 = 1
+                AND   g.prm_no       = #{prmNo:VARCHAR}
+                <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(brndId)">
+                AND   g.brnd_id      = #{brndId:VARCHAR}
+                </if>
+                <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(dspCtgryNo)">
+                AND   g.dsp_ctgry_no = #{dspCtgryNo:VARCHAR}
+                </if>
+                <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(godNo)">
+                AND   g.god_no       = #{godNo:VARCHAR}
+                </if>
+                 <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(sesonCd)">
+                AND   g.seson_cd     = #{sesonCd:VARCHAR}
+                </if>
+            ) t
+   </select>
+   
+   <!-- 적용대상상품 전체대상 여부 체크 -->
+   <select id="selectValidPrmAplGodTargetAll" parameterType="prmAplGod" resultType="java.lang.Integer">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectValidPrmAplGodTargetAll  20151125 */
+            COUNT(1) as prm_apl_god_tgt_all_count
+      FROM  prm_apl_god g
+      WHERE 1                 = 1
+      AND   g.prm_no          = #{prmNo:VARCHAR}
+      AND   g.apl_god_sect_cd = 'ALL'
+      AND   NOT EXISTS (SELECT 1 FROM prm p WHERE p.prm_no = g.prm_no AND p.prm_dtl_tp_cd = 'DLV_CST_CPN')
+   </select>
+   
+</mapper>

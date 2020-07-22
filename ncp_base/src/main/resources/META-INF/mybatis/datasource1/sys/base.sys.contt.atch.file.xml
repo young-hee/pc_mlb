@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysConttAtchFile" parameterType="sysConttAtchFile" resultType="sysConttAtchFile">
+		SELECT /* com.plgrim.ncp.base.selectSysConttAtchFile		Generator(Generator)	2018-05-23 */
+			   CONTT_SN
+			 , ATCH_FILE_TURN
+			 , ATCH_FILE_NM
+			 , ATCH_FILE_URL
+			 , ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_CONTT_ATCH_FILE
+		 WHERE 1 = 1
+	   	   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+		   AND ATCH_FILE_TURN = #{atchFileTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysConttAtchFile" parameterType="sysConttAtchFile">
+		UPDATE /* com.plgrim.ncp.base.updateSysConttAtchFile		Generator(Generator)	2018-05-23 */
+		SYS_CONTT_ATCH_FILE SET
+			   ATCH_FILE_NM = #{atchFileNm,jdbcType=VARCHAR}
+			 , ATCH_FILE_URL = #{atchFileUrl,jdbcType=VARCHAR}
+			 , ATCH_FILE_CPCTY = #{atchFileCpcty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+		   AND ATCH_FILE_TURN = #{atchFileTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysConttAtchFile" parameterType="sysConttAtchFile">
+		INSERT /* com.plgrim.ncp.base.insertSysConttAtchFile		Generator(Generator)	2018-05-23 */
+		INTO   SYS_CONTT_ATCH_FILE (
+			   CONTT_SN
+			 , ATCH_FILE_TURN
+			 , ATCH_FILE_NM
+			 , ATCH_FILE_URL
+			 , ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{conttSn,jdbcType=NUMERIC}
+			 , #{atchFileTurn,jdbcType=NUMERIC}
+			 , #{atchFileNm,jdbcType=VARCHAR}
+			 , #{atchFileUrl,jdbcType=VARCHAR}
+			 , #{atchFileCpcty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysConttAtchFile" parameterType="sysConttAtchFile">
+		DELETE /* com.plgrim.ncp.base.deleteSysConttAtchFile		Generator(Generator)	2018-05-23 */
+		  FROM SYS_CONTT_ATCH_FILE
+		 WHERE 1 = 1
+		   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+		   AND ATCH_FILE_TURN = #{atchFileTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

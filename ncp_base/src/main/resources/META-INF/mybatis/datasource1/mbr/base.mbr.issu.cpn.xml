@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrIssuCpn" parameterType="mbrIssuCpn" resultType="mbrIssuCpn">
+		SELECT /* com.plgrim.ncp.base.selectMbrIssuCpn		Generator(Generator)	2018-06-28 */
+			   MBR_CPN_NO
+			 , MBR_NO
+			 , CPN_TP_CD
+			 , CPN_STAT_CD
+			 , CPN_PUBLI_DT
+			 , VALID_BEG_DATE
+			 , VALID_END_DATE
+			 , CPN_USE_DT
+			 , ORD_NO
+			 , CLM_NO
+			 , PRM_NO
+			 , CPN_CRTFC_CD
+			 , ISSU_ADMIN_ID
+			 , CPN_USE_IMPS_RESN_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_ISSU_CPN
+		 WHERE 1 = 1
+	   	   AND MBR_CPN_NO = #{mbrCpnNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbrIssuCpn" parameterType="mbrIssuCpn">
+		UPDATE /* com.plgrim.ncp.base.updateMbrIssuCpn		Generator(Generator)	2018-06-28 */
+		MBR_ISSU_CPN SET
+			   MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , CPN_TP_CD = #{cpnTpCd,jdbcType=VARCHAR}
+			 , CPN_STAT_CD = #{cpnStatCd,jdbcType=VARCHAR}
+			 , CPN_PUBLI_DT = #{cpnPubliDt,jdbcType=TIMESTAMP}
+			 , VALID_BEG_DATE = #{validBegDate,jdbcType=VARCHAR}
+			 , VALID_END_DATE = #{validEndDate,jdbcType=VARCHAR}
+			 , CPN_USE_DT = #{cpnUseDt,jdbcType=TIMESTAMP}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , PRM_NO = #{prmNo,jdbcType=VARCHAR}
+			 , CPN_CRTFC_CD = #{cpnCrtfcCd,jdbcType=VARCHAR}
+			 , ISSU_ADMIN_ID = #{issuAdminId,jdbcType=VARCHAR}
+			 , CPN_USE_IMPS_RESN_DSCR = #{cpnUseImpsResnDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_CPN_NO = #{mbrCpnNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbrIssuCpn" parameterType="mbrIssuCpn">
+		INSERT /* com.plgrim.ncp.base.insertMbrIssuCpn		Generator(Generator)	2018-06-28 */
+		INTO   MBR_ISSU_CPN (
+			   MBR_CPN_NO
+			 , MBR_NO
+			 , CPN_TP_CD
+			 , CPN_STAT_CD
+			 , CPN_PUBLI_DT
+			 , VALID_BEG_DATE
+			 , VALID_END_DATE
+			 , CPN_USE_DT
+			 , ORD_NO
+			 , CLM_NO
+			 , PRM_NO
+			 , CPN_CRTFC_CD
+			 , ISSU_ADMIN_ID
+			 , CPN_USE_IMPS_RESN_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrCpnNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{cpnTpCd,jdbcType=VARCHAR}
+			 , #{cpnStatCd,jdbcType=VARCHAR}
+			 , #{cpnPubliDt,jdbcType=TIMESTAMP}
+			 , #{validBegDate,jdbcType=VARCHAR}
+			 , #{validEndDate,jdbcType=VARCHAR}
+			 , #{cpnUseDt,jdbcType=TIMESTAMP}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{prmNo,jdbcType=VARCHAR}
+			 , #{cpnCrtfcCd,jdbcType=VARCHAR}
+			 , #{issuAdminId,jdbcType=VARCHAR}
+			 , #{cpnUseImpsResnDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrIssuCpn" parameterType="mbrIssuCpn">
+		DELETE /* com.plgrim.ncp.base.deleteMbrIssuCpn		Generator(Generator)	2018-06-28 */
+		  FROM MBR_ISSU_CPN
+		 WHERE 1 = 1
+		   AND MBR_CPN_NO = #{mbrCpnNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

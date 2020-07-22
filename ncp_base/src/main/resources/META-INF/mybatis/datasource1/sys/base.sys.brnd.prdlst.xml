@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBrndPrdlst" parameterType="sysBrndPrdlst" resultType="sysBrndPrdlst">
+		SELECT /* com.plgrim.ncp.base.selectSysBrndPrdlst		Generator(Generator)	2018-06-14 */
+			   BRND_ID
+			 , PRDLST_CD
+			 , BRND_PRDLST_NM
+			 , PRDLST_GRP_CD
+			 , USE_YN
+			 , REPAIR_PSB_YN
+			 , SHOP_REPAIR_FEE_SECT_CD
+			 , SHOP_REPAIR_FEE_AMT
+			 , SHOP_REPAIR_FEE_RT
+			 , SIZE_GD_IMG_FILE_URL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BRND_PRDLST
+		 WHERE 1 = 1
+	   	   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysBrndPrdlst" parameterType="sysBrndPrdlst">
+		UPDATE /* com.plgrim.ncp.base.updateSysBrndPrdlst		Generator(Generator)	2018-06-14 */
+		SYS_BRND_PRDLST SET
+			   BRND_PRDLST_NM = #{brndPrdlstNm,jdbcType=VARCHAR}
+			 , PRDLST_GRP_CD = #{prdlstGrpCd,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , REPAIR_PSB_YN = #{repairPsbYn,jdbcType=VARCHAR}
+			 , SHOP_REPAIR_FEE_SECT_CD = #{shopRepairFeeSectCd,jdbcType=VARCHAR}
+			 , SHOP_REPAIR_FEE_AMT = #{shopRepairFeeAmt,jdbcType=NUMERIC}
+			 , SHOP_REPAIR_FEE_RT = #{shopRepairFeeRt,jdbcType=NUMERIC}
+			 , SIZE_GD_IMG_FILE_URL = #{sizeGdImgFileUrl,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysBrndPrdlst" parameterType="sysBrndPrdlst">
+		INSERT /* com.plgrim.ncp.base.insertSysBrndPrdlst		Generator(Generator)	2018-06-14 */
+		INTO   SYS_BRND_PRDLST (
+			   BRND_ID
+			 , PRDLST_CD
+			 , BRND_PRDLST_NM
+			 , PRDLST_GRP_CD
+			 , USE_YN
+			 , REPAIR_PSB_YN
+			 , SHOP_REPAIR_FEE_SECT_CD
+			 , SHOP_REPAIR_FEE_AMT
+			 , SHOP_REPAIR_FEE_RT
+			 , SIZE_GD_IMG_FILE_URL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{prdlstCd,jdbcType=VARCHAR}
+			 , #{brndPrdlstNm,jdbcType=VARCHAR}
+			 , #{prdlstGrpCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{repairPsbYn,jdbcType=VARCHAR}
+			 , #{shopRepairFeeSectCd,jdbcType=VARCHAR}
+			 , #{shopRepairFeeAmt,jdbcType=NUMERIC}
+			 , #{shopRepairFeeRt,jdbcType=NUMERIC}
+			 , #{sizeGdImgFileUrl,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBrndPrdlst" parameterType="sysBrndPrdlst">
+		DELETE /* com.plgrim.ncp.base.deleteSysBrndPrdlst		Generator(Generator)	2018-06-14 */
+		  FROM SYS_BRND_PRDLST
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+		   AND PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

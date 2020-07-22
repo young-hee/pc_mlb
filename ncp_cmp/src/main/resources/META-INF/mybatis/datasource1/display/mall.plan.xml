@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.mall.display">
+
+     <select id="selectMallPlan" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspPromtExtend" >
+      
+		SELECT  /* [dXm.plan.xml][selectPlanCornerList][기획전 상세 ][ken] */ 
+			   A.PROMT_SN
+			 , CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  A.PROMT_NM ELSE DPL.PROMT_NM END AS PROMT_NM
+			 , A.PROMT_DSCR
+			 , A.PROMT_APRV_STAT_CD
+			 , A.PROMT_APRV_DT
+			 , A.PROMT_APRV_REJECT_DT
+			 , A.PROMT_APRV_REJECT_RESN_CONT
+			 , A.PROMT_TP_CD
+			 , A.PROMT_SPRTR_TP_CD
+			 , A.CHRG_MD_ADMIN_ID
+			 , A.DSP_BEG_DT
+			 , A.DSP_END_DT
+			 , A.DSP_YN
+			 , A.DSP_PD_EXPSR_YN
+			 , A.GNB_UPEND_BANNER_EXPSR_YN
+			 , A.SORT_SEQ
+			 , A.SPCIFY_URL_DSP_YN
+			 , A.PROMT_EXPSR_SECT_CD
+			 , A.DSP_GOD_SORT_STDR_CD
+			 , A.PC_LIST_EXPSR_CNT_CD
+			 , A.MOBILE_LIST_EXPSR_CNT_CD
+			 , A.GOD_EVL_EXPSR_SECT_CD
+			 , A.IMG_GOD_EVL_PRIO_EXPSR_YN
+			 , A.PC_GOD_EVL_LIST_QTY
+			 , A.MOBILE_GOD_EVL_LIST_QTY
+			 , A.REGTR_ID
+			 , A.REG_DT
+			 , A.UDTER_ID
+			 , A.UDT_DT
+			 , A1.PC_IMG_FILE_URL||'/'||A1.PC_IMG_FILE_NM           AS pcImgFileUrl  
+			 , A1.MOBILE_IMG_FILE_URL||'/'||A1.MOBILE_IMG_FILE_NM   AS moImgFileUrl      
+		  FROM DSP_PROMT A
+LEFT OUTER JOIN DSP_PROMT_LANG DPL ON A.PROMT_SN = DPL.PROMT_SN AND DPL.LANG_CD = #{lang, jdbcType=VARCHAR}
+		<choose>
+			<when test="lang == 'KOR'">
+			LEFT OUTER JOIN DSP_PROMT_IMG A1
+			ON 	A.PROMT_SN = A1.PROMT_SN
+			AND A1.PROMT_IMG_SECT_CD = 'RPRST_IMG_1PCE'
+			</when>
+			<otherwise>
+			LEFT OUTER JOIN DSP_PROMT_IMG_LANG A1
+		  	ON 	A.PROMT_SN = A1.PROMT_SN
+		  	AND A1.LANG_CD = #{lang, jdbcType=VARCHAR}
+		  	AND A1.PROMT_IMG_SECT_CD = 'RPRST_IMG_1PCE'
+		    </otherwise>
+		</choose>
+		 WHERE A.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND A.PROMT_TP_CD = #{promtTpCd}
+		   <if test="promtExpsrSectCd != '' and promtExpsrSectCd != null and promtTpCd != 'GNRL_PROMT'">
+		   		AND PROMT_EXPSR_SECT_CD = #{promtExpsrSectCd}
+		   </if>
+	       AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT  t4 WHERE A.PROMT_SN = t4.PROMT_SN AND t4.DSP_TGT_TP_CD = 'MALL_ID' AND t4.MALL_ID = #{mallId, jdbcType=VARCHAR})
+	       AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT  t4 WHERE A.PROMT_SN = t4.PROMT_SN AND t4.DSP_TGT_TP_CD = 'LANG' AND t4.LANG_CD = #{lang, jdbcType=VARCHAR})
+	       AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT  t4 WHERE A.PROMT_SN = t4.PROMT_SN AND t4.DSP_TGT_TP_CD = 'DVC' AND t4.DVC_CD = #{device, jdbcType=VARCHAR})
+			<if test="tgtMbrTpCd != null">
+			AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT t4 WHERE A.PROMT_SN  = t4.PROMT_SN  AND t4.DSP_TGT_TP_CD = 'TGT_MBR_TP' AND t4.TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR})
+			</if>
+			<if test="!@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase(prev, 'Y')">
+		      AND A.DSP_YN = 'Y'
+<!--               AND A.SPCIFY_URL_DSP_YN = 'N' -->
+		      AND A.PROMT_APRV_STAT_CD = 'APRV_COMPT'
+			  AND SYSDATE BETWEEN A.DSP_BEG_DT AND A.DSP_END_DT 
+			</if>
+ 
+    </select>
+    
+     <select id="selectMallPlanSprtrList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.data.DspPromtSprtrExt" >
+		SELECT /* [mall.plan.xml][selectMallPlanSprtrList][기획전 구분자 목록][ken] */ 
+			   DP.PROMT_SN
+			 , DP.SPRTR_TURN
+			 , CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  DP.SPRTR_NM ELSE DPL.SPRTR_NM END AS SPRTR_NM
+			 , CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  DP.SPRTR_IMG_FILE_NM ELSE DPL.SPRTR_IMG_FILE_NM END AS SPRTR_IMG_FILE_NM  
+			 , CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  DP.SPRTR_IMG_FILE_URL ELSE DPL.SPRTR_IMG_FILE_URL END AS SPRTR_IMG_FILE_URL 
+			 , DP.SPRTR_IMG_ALTRTV_CONT
+			 , DP.SPRTR_ADIT_CONT
+			 , DP.SPRTR_ADIT_URL
+			 , DP.SPRTR_ADIT_CONT_OUTPT_TP_CD
+			 , DP.RPRST_SPRTR_YN
+		   FROM DSP_PROMT_SPRTR DP
+LEFT OUTER JOIN	DSP_PROMT_SPRTR_LANG DPL ON DP.PROMT_SN = DPL.PROMT_SN AND DP.SPRTR_TURN = DPL.SPRTR_TURN AND DPL.LANG_CD = #{lang, jdbcType=VARCHAR}
+		 WHERE 1 = 1
+	   	   AND DP.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+	   	   AND DP.DSP_YN ='Y'
+	  ORDER BY SORT_SEQ
+    </select>
+    
+     <select id="selectMallPlanSprtrGodList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.data.DspCnrConttExt" >
+		SELECT G.*  /* [mall.plan.xml][selectMallPlanSprtrGodList][기획전 상품 목록][ken] */ 
+		     , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 1 AND GI.IMG_USE_YN = 'Y') AS imgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'DETAIL' AND GI.IMG_USE_YN = 'Y' AND ROWNUM = 1)  AS detailImgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 2 AND GI.IMG_USE_YN = 'Y')  AS imgBackUrl
+             , 	<![CDATA[(SELECT LISTAGG(CASE WHEN GI.ITM_STAT_CD  =  'SALE_PROGRS' 
+                                    THEN '<li>'||OPT_VAL_CD_1||'</li>'  
+                                    ELSE '<li><del>'||OPT_VAL_CD_1||'</del></li>'  
+                                    END ,' '
+                               )   WITHIN GROUP (ORDER BY GOV.SORT_SEQ )
+                  FROM GOD_ITM GI
+                     , GOD_OPT_VAL GOV
+                 WHERE G.GOD_NO = GI.GOD_NO
+                   AND GI.GOD_NO = GOV.GOD_NO
+                   AND GI.OPT_VAL_CD_1 = OPT_VAL_CD
+                   AND GI.ITM_STAT_CD  != 'SALE_END' )   ]]>AS optValCd1
+		FROM (SELECT GD.GOD_NO 
+                   , DGP.LANG_CD
+                   , CASE WHEN #{lang,jdbcType=VARCHAR} ='KOR' THEN GD.GOD_NM  ELSE GLGN.GOD_NM  END AS GOD_NM
+                   , GD.GOD_SALE_SECT_CD 
+                   , DGP.RTL_PRC 
+                   , DGP.LAST_SALE_PRC 
+                   , DGP.CSMR_PRC
+                   , GD.REG_DT  
+                   , DPG.SORT_SEQ
+                   , FN_SEO_URL(#{mallId, jdbcType=VARCHAR}, #{lang, jdbcType=VARCHAR}, GD.GOD_NO) AS godUrl
+                   , GD.TAG_NM
+	          	   , GD.COLOR_TAG_NM
+	          	   , GD.BRND_ID    
+                FROM   GOD GD  
+     LEFT OUTER JOIN GOD_LANGBY_GOD_NM GLGN ON GD.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  JOIN DSP_GOD_PRC DGP ON GD.GOD_NO = DGP.GOD_NO AND DGP.MALL_ID = #{mallId, jdbcType=VARCHAR} AND DGP.LANG_CD = 'KOR' AND DGP.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR} 
+                  JOIN DSP_PROMT_GOD DPG ON GD.GOD_NO = DPG.GOD_NO 
+                WHERE GD.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                  AND GD.DSP_YN ='Y'
+                  AND DPG.DSP_YN ='Y'                 
+	   	          AND DPG.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		          AND DPG.SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+                  <if test="lang == 'ENG'">
+                  AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  </if>
+            ) G
+ 
+     ORDER BY G.SORT_SEQ, G.REG_DT DESC 
+    </select>
+    
+     <select id="selectPlanCornerList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.result.DspPlanFoResult" >
+          SELECT *
+          FROM (
+          	SELECT /* [mall.plan.xml][selectPlanCornerList][기획전 코너 리스트][ken] */
+	          	DP.PROMT_SN
+		          , DNR.CNR_SN 
+		          , DCT.CNR_TP_GRP_SN   
+		          , DNR.DSP_CNR_NM
+		          , DNR.DSP_CNR_SECT_CD
+		          , MIN(DS.SORT_SEQ) AS SORT_SEQ
+		       FROM DSP_PROMT DP 
+		       JOIN DSP_CNR_TMPLAT_INFO_CNNC DIC ON DP.PROMT_SN = DIC.PROMT_SN AND DIC.REV_SN = 1
+		       JOIN DSP_TMPLAT DT ON DT.TMPLAT_SN = DIC.TMPLAT_SN AND DT.DVC_SECT_CD  LIKE '%'||#{device} || '%' 
+		       JOIN DSP_CNR DNR ON  DIC.CNR_SN = DNR.CNR_SN 
+		       JOIN DSP_CNR_TP_GRP DCT ON  DNR.CNR_SN = DCT.CNR_SN AND DIC.REV_SN  = DCT.REV_SN AND DCT.UPPER_CNR_TP_GRP_SN IS NULL 
+		       JOIN DSP_CNR_SET DS ON DS.REV_SN = DCT.REV_SN AND DS.CNR_SN  = DCT.CNR_SN AND DS.CNR_TP_GRP_SN = DCT.CNR_TP_GRP_SN AND DP.PROMT_SN = DS.PROMT_SN  
+		      WHERE DP.PROMT_SN = #{promtSn}  
+		        AND DIC.DSP_CNR_USE_YN ='Y' 
+		        AND DP.DSP_YN ='Y'
+		        AND DS.DSP_YN = 'Y'
+		        AND EXISTS ( SELECT 1 FROM DSP_REV_CPST  DRC WHERE  DRC.PC_TMPLAT_SN = DIC.TMPLAT_SN AND DRC.PROMT_SN = DIC.PROMT_SN
+		                       UNION ALL
+		                     SELECT 1 FROM DSP_REV_CPST  DRC WHERE  DRC.MOBILE_TMPLAT_SN = DIC.TMPLAT_SN AND DRC.PROMT_SN = DIC.PROMT_SN
+		        ) 
+		        GROUP BY DP.PROMT_SN
+		               , DNR.CNR_SN 
+		               , DCT.CNR_TP_GRP_SN   
+		               , DNR.DSP_CNR_NM
+		               , DNR.DSP_CNR_SECT_CD
+          )
+	      ORDER BY SORT_SEQ 
+    </select>
+     <select id="selectPlanCornerSetList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.result.DspCnrSetFrResult" >
+          SELECT  /* [mall.display.category.xml][selectPlanCornerSetList][기획전 세트 리스트][ken] */ 
+                 DS.CNR_SN 
+               , DS.CNR_SET_SN
+           FROM DSP_CNR_SET DS 
+           JOIN DSP_CNR_TP_GRP DCT ON DS.REV_SN = DCT.REV_SN AND DS.CNR_SN  = DCT.CNR_SN AND DS.CNR_TP_GRP_SN = DCT.CNR_TP_GRP_SN 
+          WHERE DCT.REV_SN = 1 
+            AND DCT.CNR_SN = #{cnrSn} 
+            AND DCT.CNR_TP_GRP_SN = #{cnrTpGrpSn,jdbcType=NUMERIC}   
+            AND DS.PROMT_SN = #{promtSn}  
+            AND DCT.UPPER_CNR_TP_GRP_SN IS NULL  
+       ORDER BY DS.SORT_SEQ 
+    </select>
+    
+ 
+    <select id="selectMallEvtSprtrList" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="com.plgrim.ncp.biz.promotion.data.EvtSprtrExt">
+		SELECT /* [mall.plan.xml][selectMallEvtSprtrList][이벤트 구분자 목록][ken] */
+			   ES.EVT_NO
+			 , ES.SPRTR_TURN
+			 , CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  ES.SPRTR_NM ELSE EL.SPRTR_NM END AS SPRTR_NM
+			 , CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  ES.SPRTR_IMG_FILE_NM ELSE EL.SPRTR_IMG_FILE_NM END AS SPRTR_IMG_FILE_NM  
+			 , CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  ES.SPRTR_IMG_FILE_URL ELSE EL.SPRTR_IMG_FILE_URL END AS SPRTR_IMG_FILE_URL
+			 , ES.SPRTR_IMG_ALTRTV_CONT
+			 , ES.RPRST_SPRTR_YN
+		  FROM EVT_SPRTR  ES
+LEFT OUTER JOIN	EVT_SPRTR_LANG EL ON ES.EVT_NO = EL.EVT_NO AND ES.SPRTR_TURN = EL.SPRTR_TURN AND EL.LANG_CD = #{lang, jdbcType=VARCHAR}
+		 WHERE 1 = 1
+	   	   AND ES.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+	   	   AND ES.DSP_YN = 'Y'
+	  ORDER BY ES.SORT_SEQ
+    </select>
+
+    <select id="selectMallEvtAplGodList" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="com.plgrim.ncp.biz.display.data.DspCnrConttExt">
+		SELECT G.*  /* [mall.plan.xml][selectMallEvtAplGodList][이벤트 상품 목록 ][ken] */ 
+		     , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 1 AND GI.IMG_USE_YN = 'Y') AS imgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'DETAIL' AND GI.IMG_USE_YN = 'Y' AND ROWNUM = 1)  AS detailImgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 2 AND GI.IMG_USE_YN = 'Y')  AS imgBackUrl
+             , 	<![CDATA[(SELECT LISTAGG(CASE WHEN GI.ITM_STAT_CD  =  'SALE_PROGRS' 
+                                    THEN '<li>'||OPT_VAL_CD_1||'</li>'  
+                                    ELSE '<li><del>'||OPT_VAL_CD_1||'</del></li>'  
+                                    END ,' '
+                               )   WITHIN GROUP (ORDER BY GOV.SORT_SEQ )
+                  FROM GOD_ITM GI
+                     , GOD_OPT_VAL GOV
+                 WHERE G.GOD_NO = GI.GOD_NO
+                   AND GI.GOD_NO = GOV.GOD_NO
+                   AND GI.OPT_VAL_CD_1 = OPT_VAL_CD
+                   AND GI.ITM_STAT_CD  != 'SALE_END' )   ]]>AS optValCd1
+		FROM (SELECT GD.GOD_NO 
+                   , DGP.LANG_CD
+                   , CASE WHEN #{lang,jdbcType=VARCHAR} ='KOR' THEN GD.GOD_NM  ELSE GLGN.GOD_NM  END AS GOD_NM
+                   , GD.GOD_SALE_SECT_CD 
+                   , DGP.RTL_PRC 
+                   , DGP.LAST_SALE_PRC 
+                   , ERG.SORT_SEQ
+                   , '/goods/'|| (SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'RECOMEND_SEX' AND CD= GD.RECOMEND_SEX_CD  AND LANG_CD ='KOR') || '/'
+                       || (SELECT SB.BRND_PRDLST_NM
+                             FROM SYS_BRND_PRDLST SB WHERE SB.BRND_ID = GD.BRND_ID AND SB.PRDLST_CD  = GD.PRDLST_CD)|| '/'|| GD.ERP_GOD_NO AS godUrl
+                FROM  GOD GD  
+       LEFT OUTER JOIN GOD_LANGBY_GOD_NM GLGN ON GD.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  JOIN DSP_GOD_PRC DGP ON GD.GOD_NO = DGP.GOD_NO AND DGP.MALL_ID = 'MBM' AND DGP.LANG_CD = 'KOR' AND DGP.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR} 
+                  JOIN EVT_RELATE_GOD ERG ON GD.GOD_NO = ERG.GOD_NO 
+                WHERE GD.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                  AND GD.DSP_YN ='Y'
+                  AND GD.GOD_SALE_SECT_CD  = 'SALE_PROGRS'
+                  AND ERG.DSP_YN ='Y'                 
+	   	          AND ERG.EVT_NO = #{evtNo}
+		          AND ERG.SPRTR_TURN = #{sprtrTurn}
+                  <if test="lang == 'ENG'">
+                  AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  </if>
+            ) G
+ 
+     ORDER BY G.SORT_SEQ ASC 
+    </select>
+   <select id="selectMallEventPlanListTotCnt" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="int">
+      SELECT COUNT(1) /* [dXm.plan.xml][selectMallEventPlanListTotCnt][이벤트 기획전 리스트 카운트][ken] */
+       FROM  (
+	                            <choose>
+	                                <when test="searchCategory == 'EVENT'">
+	                                  <include refid="selectMallEventListQuery" />
+	                                </when>
+	                                 <when test="searchCategory == 'PLAN'">
+	                                   <include refid="selectMallPlanListQuery" />
+	                                </when>
+	                                <otherwise>
+	                                   <include refid="selectMallEventListQuery" />
+	         	                           UNION ALL
+	         	                       <include refid="selectMallPlanListQuery" />
+	                                </otherwise>
+   	 	                        </choose> 	 	 
+	         	       
+	         	       )
+   </select>
+	<select id="selectMallEventPlanList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.result.DspPlanFoResult">
+	
+		SELECT G.* 
+		       ,TO_CHAR(G.EVT_BEG_DT,'yyyy-mm-dd') AS beginDate
+               ,TO_CHAR(G.EVT_END_DT,'yyyy-mm-dd') AS endDate
+		     /* [dXm.plan.xml][selectMallEventPlanList][이벤트 기획전 리스트][ken] */
+ 
+		FROM ( SELECT b.*
+		            , ROWNUM AS NO
+	         	FROM ( 
+	         	       SELECT * FROM (
+	         	       
+	                            <choose>
+	                                <when test="searchCategory == 'EVENT'">
+	                                  <include refid="selectMallEventListQuery" />
+	                                </when>
+	                                 <when test="searchCategory == 'PLAN'">
+	                                   <include refid="selectMallPlanListQuery" />
+	                                </when>
+	                                <otherwise>
+	                                   <include refid="selectMallEventListQuery" />
+	         	                           UNION ALL
+	         	                       <include refid="selectMallPlanListQuery" />
+	                                </otherwise>
+   	 	                        </choose> 	 	         	       	         	      
+	         	       
+	         	       )
+	         	      ORDER BY EVT_BEG_DT DESC ,EVT_NO DESC                         
+		) b
+			WHERE ROWNUM &lt;= #{endIndex}
+		) G
+			WHERE NO &gt;= #{beginIndex}
+			
+	</select>
+
+	<sql id="selectMallEventListQuery">
+		SELECT 	T1.EVT_NO
+               ,T1.EVT_NM
+               , 'EVT'      AS evtTycd
+               ,T1.SORT_SEQ
+               ,T1.EVT_BEG_DT
+               ,T1.EVT_END_DT
+               ,T2.IMG_FILE_URL||'/'||T2.IMG_FILE_NM  AS pcImgFileUrl
+               ,T2.IMG_EXPSR_TXT1_CONT                AS pcImgExpsrTxt1Cont
+               ,T2.IMG_EXPSR_TXT2_CONT                AS pcImgExpsrTxt2Cont
+               ,T2.IMG_ALTRTV_CONT                    AS pcImgAltrtvCont
+               ,T2.IMG_FILE_URL||'/'||T2.IMG_FILE_NM  AS moImgFileUrl
+               ,T2.IMG_EXPSR_TXT1_CONT                AS moImgExpsrTxt1Cont
+               ,T2.IMG_EXPSR_TXT2_CONT                AS moImgExpsrTxt2Cont
+               ,T2.IMG_ALTRTV_CONT                    AS moImgAltrtvCont
+               ,CASE WHEN T1.EVT_DETAIL_TP_CD ='URL'
+                     THEN T1.PC_URL  
+                     ELSE '/event/'||T1.EVT_NO||'/'|| T1.EVT_TP_CD END    AS pcUrl
+               ,CASE WHEN T1.EVT_DETAIL_TP_CD ='URL'
+                     THEN T1.MOBILE_URL  
+                     ELSE '/event/'||T1.EVT_NO||'/'|| T1.EVT_TP_CD END    AS mobileUrl
+               ,T1.REG_DT
+        FROM EVT T1 
+		LEFT OUTER JOIN EVT_IMG T2 
+        ON   T1.EVT_NO = T2.EVT_NO 
+        AND  T2.EVT_IMG_SECT_CD = 'RPRST_IMG_1PCE'
+		<choose>
+	    <when test="device == 'PC'">
+	    AND  T2.DVC_SECT_CD IN ('PC','PC_MOBILE')
+	    </when>
+	    <when test="device == 'MOBILE_APP' or device == 'MOBILE_WEB'">
+	    AND  T2.DVC_SECT_CD IN ('MOBILE','PC_MOBILE')
+	    </when>
+   	 	</choose> 	 	
+		WHERE 1 = 1
+	       AND EVT_STAT_CD = 'APRV'
+           AND DSP_YN = 'Y'
+           AND T1.SPCIFY_URL_DSP_YN = 'N'
+           AND T1.UPPER_EVT_NO IS NULL
+			AND EXISTS (SELECT 1 FROM EVT_DSP_TGT WHERE evt_no = T1.evt_no AND evt_dsp_tgt_tp_cd = 'MALL_ID' AND mall_id = #{mallId, jdbcType=VARCHAR})
+			AND EXISTS (SELECT 1 FROM EVT_DSP_TGT WHERE evt_no = T1.evt_no AND evt_dsp_tgt_tp_cd = 'LANG' AND lang_cd = #{lang,jdbcType=VARCHAR})
+			AND EXISTS (SELECT 1 FROM EVT_DSP_TGT WHERE evt_no = T1.evt_no AND evt_dsp_tgt_tp_cd = 'DVC' AND dvc_cd = #{device,jdbcType=VARCHAR})
+			<if test="tgtMbrTpCd != null">
+			AND EXISTS (SELECT 1 FROM EVT_DSP_TGT WHERE evt_no = T1.evt_no AND evt_dsp_tgt_tp_cd = 'TGT_MBR_TP' AND TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR})
+			</if>
+			<if test="absMbrAtrbCd != null">
+			AND
+				<if test="absMbrAtrbCd != 'GRPCO'">
+				EXISTS (SELECT 1 FROM EVT_DSP_TGT
+						WHERE evt_no = T1.evt_no
+							AND evt_dsp_tgt_tp_cd = 'TGT_MBR_ATRB' AND TGT_MBR_ATRB_CD = #{absMbrAtrbCd,jdbcType=VARCHAR})
+				</if>
+				<if test="absMbrAtrbCd == 'GRPCO'">
+					(	EXISTS (SELECT 1 FROM EVT_DSP_TGT
+								WHERE evt_no = T1.evt_no
+									AND evt_dsp_tgt_tp_cd = 'TGT_MBR_ATRB' AND TGT_MBR_ATRB_CD = 'GRPCO_IND' AND GRPCO_ID = #{absGepcoId,jdbcType=VARCHAR})
+					OR	EXISTS (SELECT 1 FROM EVT_DSP_TGT
+								WHERE evt_no = T1.evt_no 
+									AND evt_dsp_tgt_tp_cd = 'TGT_MBR_ATRB' AND TGT_MBR_ATRB_CD = 'GRPCO_ALL')
+					)
+				</if>
+			</if> 			
+       AND SYSDATE BETWEEN EVT_BEG_DT AND EVT_END_DT 
+
+	</sql>	
+
+	<sql id="selectMallPlanListQuery">                              
+		SELECT                                            
+		<choose>
+			 <when  test="promtTpCd != null and promtTpCd == 'CULTURE_PROMT'">
+			 A.PROMT_SN                                  AS EVT_NO          
+			 </when>
+			 <otherwise>
+			 TO_CHAR( A.PROMT_SN)                                  AS EVT_NO
+			 </otherwise>
+		</choose>
+			, CASE WHEN  #{lang, jdbcType=VARCHAR} ='KOR' THEN  A.PROMT_NM ELSE DPL.PROMT_NM END AS EVT_NM
+			, 'PROMT'                                              AS evtTycd
+			, A.SORT_SEQ
+			, A.DSP_BEG_DT                                         AS EVT_BEG_DT
+			, A.DSP_END_DT                                         AS EVT_END_DT
+			, CASE WHEN A1.PC_IMG_FILE_URL IS NOT NULL THEN A1.PC_IMG_FILE_URL||'/'||A1.PC_IMG_FILE_NM 
+					ELSE NULL	END AS pcImgFileUrl       
+			, A1.PC_IMG_EXPSR_TXT1_CONT                            AS pcImgExpsrTxt1Cont 
+			, A1.PC_IMG_EXPSR_TXT2_CONT                            AS pcImgExpsrTxt2Cont 
+			, A1.PC_IMG_ALTRTV_CONT                                AS pcImgAltrtvCont    
+			, CASE WHEN A1.MOBILE_IMG_FILE_URL IS NOT NULL THEN A1.MOBILE_IMG_FILE_URL||'/'||A1.MOBILE_IMG_FILE_NM
+					ELSE NULL	END AS moImgFileUrl       
+			, A1.MOBILE_IMG_EXPSR_TXT1_CONT                        AS moImgExpsrTxt1Cont 
+			, A1.MOBILE_IMG_EXPSR_TXT2_CONT                        AS moImgExpsrTxt2Cont 
+			, A1.MOBILE_IMG_ALTRTV_CONT                            AS moImgAltrtvCont    
+            , CASE WHEN #{promtTpCd} = 'CULTURE_PROMT' THEN '/culture/'|| TO_CHAR( A.PROMT_SN) || '/view' || '?promtExpsrSectCd=' || A.PROMT_EXPSR_SECT_CD
+                   ELSE  '/special/'||TO_CHAR( A.PROMT_SN)    END   AS pcUrl              
+            , CASE WHEN #{promtTpCd} = 'CULTURE_PROMT' THEN '/culture/'||TO_CHAR( A.PROMT_SN)  || '/view' || '?promtExpsrSectCd=' || A.PROMT_EXPSR_SECT_CD
+                   ELSE  '/special/'||TO_CHAR( A.PROMT_SN)    END   AS mobileUrl   
+            ,A.REG_DT       
+		FROM DSP_PROMT A
+LEFT OUTER JOIN DSP_PROMT_LANG DPL ON A.PROMT_SN = DPL.PROMT_SN AND DPL.LANG_CD = #{lang, jdbcType=VARCHAR}
+		<choose>
+			<when test="lang == 'KOR'">
+			LEFT OUTER JOIN DSP_PROMT_IMG A1
+			ON 	A.PROMT_SN = A1.PROMT_SN
+			AND A1.PROMT_IMG_SECT_CD = 'RPRST_IMG_1PCE'
+			</when>
+			<otherwise>
+			LEFT OUTER JOIN DSP_PROMT_IMG_LANG A1
+		  	ON 	A.PROMT_SN = A1.PROMT_SN
+		  	AND A1.LANG_CD = #{lang, jdbcType=VARCHAR}
+		  	AND A1.PROMT_IMG_SECT_CD = 'RPRST_IMG_1PCE'
+		    </otherwise>
+		</choose>
+		INNER JOIN
+		(
+			SELECT 	DPB.PROMT_SN
+			,		DPB.MD_BRND_CD
+			FROM	DSP_PROMT_BRND DPB
+			,		MV_SYS_CD MSC
+			WHERE 	DPB.MD_BRND_CD = MSC.CD
+			AND		MSC.UPPER_CD = 'MD_BRND'
+			AND 	MSC.USE_YN = 'Y'
+			AND 	MSC.LANG_CD = #{lang, jdbcType=VARCHAR}
+		)A3
+	    ON A.PROMT_SN  = A3.PROMT_SN
+		WHERE 1=1
+		AND A.DSP_YN = 'Y'
+        AND	A.SPCIFY_URL_DSP_YN = 'N'
+		AND	A.PROMT_APRV_STAT_CD = 'APRV_COMPT'
+		AND A.PROMT_TP_CD != 'B2E_SPSL_PROMT'
+		<if test="promtSn != null">
+		AND A.PROMT_SN != #{promtSn}
+		</if>
+		<choose>
+			<when  test="promtTpCd != null">
+	         AND PROMT_TP_CD = #{promtTpCd}
+	         <if test="promtExpsrSectCd != '' and promtExpsrSectCd != null and promtTpCd != 'GNRL_PROMT'">
+	         	AND PROMT_EXPSR_SECT_CD = #{promtExpsrSectCd}
+	         </if>
+			</when>
+			<otherwise>
+	         AND PROMT_TP_CD = 'GNRL_PROMT'
+		    </otherwise>
+		</choose>
+ 
+	    AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT  t4 WHERE A.PROMT_SN = t4.PROMT_SN AND t4.DSP_TGT_TP_CD = 'MALL_ID' AND t4.MALL_ID = #{mallId, jdbcType=VARCHAR})
+	    AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT  t4 WHERE A.PROMT_SN = t4.PROMT_SN AND t4.DSP_TGT_TP_CD = 'LANG' AND t4.LANG_CD = #{lang, jdbcType=VARCHAR})
+	    AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT  t4 WHERE A.PROMT_SN = t4.PROMT_SN AND t4.DSP_TGT_TP_CD = 'DVC' AND t4.DVC_CD = #{device, jdbcType=VARCHAR})
+			<if test="tgtMbrTpCd != null">
+			AND EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT t4 WHERE A.PROMT_SN  = t4.PROMT_SN  AND t4.DSP_TGT_TP_CD = 'TGT_MBR_TP' AND t4.TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR})
+			</if>
+			<if test="absMbrAtrbCd != null">
+			AND
+				<if test="absMbrAtrbCd != 'GRPCO'">
+				EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT t4
+						WHERE A.PROMT_SN = t4.PROMT_SN
+							AND t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB' AND TGT_MBR_ATRB_CD = #{absMbrAtrbCd,jdbcType=VARCHAR})
+				</if>
+				<if test="absMbrAtrbCd == 'GRPCO'">
+					(	EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT t4
+								WHERE A.PROMT_SN = t4.PROMT_SN
+									AND t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB' AND  t4.TGT_MBR_ATRB_CD = 'GRPCO_IND' AND  t4.GRPCO_ID = #{absGepcoId,jdbcType=VARCHAR})
+					OR	EXISTS (SELECT 1 FROM DSP_PROMT_DSP_TGT t4
+								WHERE A.PROMT_SN = t4.PROMT_SN
+									AND t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB' AND  t4.TGT_MBR_ATRB_CD = 'GRPCO_ALL')
+					)
+				</if>
+			</if> 
+	   AND SYSDATE BETWEEN A.DSP_BEG_DT AND A.DSP_END_DT 		
+	</sql>
+
+	<select id="selectMallStyleList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.result.DspPlanFoResult">
+	
+	 SELECT * FROM ( 
+	
+      <include refid="selectMallPlanListQuery" />
+<!--       ORDER BY A.REG_DT DESC -->
+      ORDER BY EVT_BEG_DT DESC, EVT_NO DESC
+      )
+      WHERE  <![CDATA[ ROWNUM <4]]>
+   
+	</select>
+	
+	<select id="selectWebPointInfo"	parameterType="string" resultType="com.plgrim.ncp.base.entities.datasource1.prm.PrmResult">
+		SELECT 	/* [dXm.plan.xml][selectWebPointInfo][P포인트 현황 조회][Neps] */
+				 NVL(SUM(a.usefulAmt), 0) + NVL(SUM(a.ddctAmt), 0) AS usefulAmt		/*가용포인트*/
+				,NVL(SUM(a.extshPrearngeAmt), 0) AS extshPrearngeAmt				/*소멸예정포인트*/
+				,MAX(TO_CHAR(ADD_MONTHS(SYSDATE, 1), 'yyyy-MM')) AS expirationDate
+                ,MAX(TO_CHAR(ADD_MONTHS(SYSDATE, 1), 'yyyy')) AS expirationDateYear
+                ,MAX(TO_CHAR(ADD_MONTHS(SYSDATE, 1), 'MM')) AS expirationDateMonth
+		FROM (
+				SELECT
+						CASE WHEN mwh.webpnt_stat_cd = 'ACCML_DCSN'
+								AND mwh.remndr_webpnt_amt <![CDATA[>]]> 0
+								AND TO_CHAR(SYSDATE, 'yyyyMMdd') BETWEEN TO_CHAR(mwh.use_beg_dt,'yyyyMMdd') AND TO_CHAR(mwh.use_end_dt, 'yyyyMMdd')
+							 THEN mwh.remndr_webpnt_amt
+							 ELSE 0
+						END  usefulAmt,
+						CASE WHEN mwh.webpnt_stat_cd = 'ACCML_DCSN'
+								AND TO_DATE(TO_CHAR(USE_END_DT, 'yyyyMMdd'), 'yyyyMMdd')
+                                    BETWEEN TO_DATE(TO_CHAR(ADD_MONTHS(SYSDATE, 1), 'yyyyMM')||'01','yyyyMMdd') AND TO_DATE(TO_CHAR(LAST_DAY(ADD_MONTHS(SYSDATE, 1)), 'yyyyMMdd')||'235959','yyyyMMddhh24miss')
+							 THEN mwh.remndr_webpnt_amt
+							 ELSE 0
+						END  extshPrearngeAmt,
+						CASE WHEN mwh.remndr_webpnt_amt <![CDATA[<]]> 0
+							 THEN mwh.remndr_webpnt_amt
+							 ELSE 0
+						END  ddctAmt	/*차감해야하는 코인*/
+				FROM mbr_webpnt_hist mwh
+				WHERE mwh.mbr_no = #{mbrNo}
+				) a
+	</select>
+   <select id="searchDisplayGodPageListTotCnt" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="int">
+      SELECT COUNT(1) /* [dXm.plan.xml][searchDisplayGodPageListTotCnt][ 카운트][ken] */
+       FROM  (SELECT GD.GOD_NO 
+                   , DGP.LANG_CD
+                   , CASE WHEN #{lang,jdbcType=VARCHAR} ='KOR' THEN GD.GOD_NM  ELSE GLGN.GOD_NM  END AS GOD_NM
+                   , GD.GOD_SALE_SECT_CD 
+                   , DGP.RTL_PRC 
+                   , DGP.LAST_SALE_PRC 
+                   , DGP.CSMR_PRC
+                   , GD.REG_DT  
+                   , DPG.SORT_SEQ
+                   , FN_SEO_URL(#{mallId, jdbcType=VARCHAR}, #{lang, jdbcType=VARCHAR}, GD.GOD_NO) AS godUrl
+                   , GD.TAG_NM
+	          	   , GD.COLOR_TAG_NM
+	          	   , GD.BRND_ID    
+                FROM   GOD GD  
+     LEFT OUTER JOIN GOD_LANGBY_GOD_NM GLGN ON GD.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  JOIN DSP_GOD_PRC DGP ON GD.GOD_NO = DGP.GOD_NO AND DGP.MALL_ID = #{mallId, jdbcType=VARCHAR} AND DGP.LANG_CD = 'KOR' AND DGP.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR} 
+                  JOIN DSP_PROMT_GOD DPG ON GD.GOD_NO = DPG.GOD_NO 
+                  JOIN DSP_PROMT_SPRTR DP ON DP.PROMT_SN = DPG.PROMT_SN AND DP.SPRTR_TURN = DPG.SPRTR_TURN
+                WHERE GD.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                  AND GD.DSP_YN ='Y'
+                  AND DPG.DSP_YN ='Y'                 
+	   	          AND DPG.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+	   	          AND DP.DSP_YN ='Y'
+	   	           <if test="sprtrTurn != null and sprtrTurn != ''">
+		          AND DPG.SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+		          </if>
+                  <if test="lang == 'ENG'">
+                  AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  </if>
+	         	       )
+   </select>
+	     <select id="searchDisplayGodPageList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.data.DspCnrConttExt" >
+	
+		SELECT G.* 
+ 		     , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 1 AND GI.IMG_USE_YN = 'Y') AS imgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'DETAIL' AND GI.IMG_USE_YN = 'Y' AND ROWNUM = 1)  AS detailImgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 2 AND GI.IMG_USE_YN = 'Y')  AS imgBackUrl
+ 
+		FROM ( SELECT b.*
+		            , ROWNUM AS NO
+	         	FROM ( 
+		SELECT G.*  /* [mall.plan.xml][searchDisplayGodPageList][기획전 상품 목록][ken] */ 
+ 
+		FROM (SELECT GD.GOD_NO 
+                   , DGP.LANG_CD
+                   , CASE WHEN #{lang,jdbcType=VARCHAR} ='KOR' THEN GD.GOD_NM  ELSE GLGN.GOD_NM  END AS GOD_NM
+                   , GD.GOD_SALE_SECT_CD 
+                   , DGP.RTL_PRC 
+                   , DGP.LAST_SALE_PRC 
+                   , DGP.CSMR_PRC
+                   , GD.REG_DT  
+                   , DP.SORT_SEQ AS DP_SORT_SEQ
+                   , DPG.SORT_SEQ
+                   , FN_SEO_URL(#{mallId, jdbcType=VARCHAR}, #{lang, jdbcType=VARCHAR}, GD.GOD_NO) AS godUrl
+                   , GD.TAG_NM
+	          	   , GD.COLOR_TAG_NM
+	          	   , GD.BRND_ID    
+	          	   , DPG.SPRTR_TURN
+                FROM   GOD GD  
+     LEFT OUTER JOIN GOD_LANGBY_GOD_NM GLGN ON GD.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  JOIN DSP_GOD_PRC DGP ON GD.GOD_NO = DGP.GOD_NO AND DGP.MALL_ID = #{mallId, jdbcType=VARCHAR} AND DGP.LANG_CD = 'KOR' AND DGP.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR} 
+                  JOIN DSP_PROMT_GOD DPG ON GD.GOD_NO = DPG.GOD_NO 
+                  JOIN DSP_PROMT_SPRTR DP ON DP.PROMT_SN = DPG.PROMT_SN AND DP.SPRTR_TURN = DPG.SPRTR_TURN
+                WHERE GD.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                  AND GD.DSP_YN ='Y'
+                  AND DPG.DSP_YN ='Y'                 
+	   	          AND DPG.PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+	   	          AND DP.DSP_YN ='Y'
+	   	           <if test="sprtrTurn != null and sprtrTurn != ''">
+		          AND DPG.SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+		          </if>
+                  <if test="lang == 'ENG'">
+                  AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  </if>
+            ) G
+ 
+     ORDER BY G.DP_SORT_SEQ,G.SPRTR_TURN, G.SORT_SEQ, G.REG_DT DESC                       
+		        ) b
+			WHERE ROWNUM &lt;= #{endIndex}
+		) G
+			WHERE NO &gt;= #{beginIndex}
+			
+	</select>
+   <select id="searchEvtGodPageListTotCnt" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="int">
+      SELECT COUNT(1) /* [dXm.plan.xml][searchEvtGodPageListTotCnt][ 카운트][ken] */
+       FROM  (SELECT GD.GOD_NO 
+                   , DGP.LANG_CD
+                   , CASE WHEN #{lang,jdbcType=VARCHAR} ='KOR' THEN GD.GOD_NM  ELSE GLGN.GOD_NM  END AS GOD_NM
+                   , GD.GOD_SALE_SECT_CD 
+                   , DGP.RTL_PRC 
+                   , DGP.LAST_SALE_PRC 
+                   , DGP.CSMR_PRC
+                   , GD.REG_DT  
+                   , ERG.SORT_SEQ
+                   , FN_SEO_URL(#{mallId, jdbcType=VARCHAR}, #{lang, jdbcType=VARCHAR}, GD.GOD_NO) AS godUrl
+                   , GD.TAG_NM
+	          	   , GD.COLOR_TAG_NM
+	          	   , GD.BRND_ID    
+	          	   , ERG.SPRTR_TURN
+                FROM   GOD GD  
+       LEFT OUTER JOIN GOD_LANGBY_GOD_NM GLGN ON GD.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  JOIN DSP_GOD_PRC DGP ON GD.GOD_NO = DGP.GOD_NO AND DGP.MALL_ID = 'MBM' AND DGP.LANG_CD = 'KOR' AND DGP.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR} 
+                  JOIN EVT_RELATE_GOD ERG ON GD.GOD_NO = ERG.GOD_NO 
+                  JOIN EVT_SPRTR  ES ON ES.EVT_NO = ERG.EVT_NO AND ERG.SPRTR_TURN = ES.SPRTR_TURN
+                WHERE GD.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                  AND GD.DSP_YN ='Y'
+                  AND GD.GOD_SALE_SECT_CD  = 'SALE_PROGRS'
+                  AND ERG.DSP_YN ='Y'    
+                  AND ES.DSP_YN = 'Y'             
+	   	          AND ERG.EVT_NO = #{evtNo}
+	   	           <if test="sprtrTurn != null and sprtrTurn != ''">
+		          AND ERG.SPRTR_TURN = #{sprtrTurn}
+		          </if>
+                  <if test="lang == 'ENG'">
+                  AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  </if>
+	         	       )
+   </select>
+	     <select id="searchEvtGodPageList" parameterType="com.plgrim.ncp.biz.display.data.DspPromtScFrDTO" resultType="com.plgrim.ncp.biz.display.data.DspCnrConttExt" >
+	
+		SELECT G.* 
+ 		     , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 1 AND GI.IMG_USE_YN = 'Y') AS imgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'DETAIL' AND GI.IMG_USE_YN = 'Y' AND ROWNUM = 1)  AS detailImgFrontUrl
+             , (SELECT GI.IMG_URL FROM GOD_IMG GI WHERE G.GOD_NO = GI.GOD_NO AND GI.IMG_TP_CD = 'THNAIL' AND GI.IMG_TURN = 2 AND GI.IMG_USE_YN = 'Y')  AS imgBackUrl
+ 
+		FROM ( SELECT b.*
+		            , ROWNUM AS NO
+	         	FROM ( 
+		SELECT G.*  /* [mall.plan.xml][searchDisplayGodPageList][기획전 상품 목록][ken] */ 
+ 
+		FROM (SELECT GD.GOD_NO 
+                   , DGP.LANG_CD
+                   , CASE WHEN #{lang,jdbcType=VARCHAR} ='KOR' THEN GD.GOD_NM  ELSE GLGN.GOD_NM  END AS GOD_NM
+                   , GD.GOD_SALE_SECT_CD 
+                   , DGP.RTL_PRC 
+                   , DGP.LAST_SALE_PRC 
+                   , DGP.CSMR_PRC
+                   , GD.REG_DT  
+                   , ES.SORT_SEQ AS ES_SORT_SEQ
+                   , ERG.SORT_SEQ
+                   , FN_SEO_URL(#{mallId, jdbcType=VARCHAR}, #{lang, jdbcType=VARCHAR}, GD.GOD_NO) AS godUrl
+                   , GD.TAG_NM
+	          	   , GD.COLOR_TAG_NM
+	          	   , GD.BRND_ID    
+	          	   , ERG.SPRTR_TURN
+                FROM   GOD GD  
+       LEFT OUTER JOIN GOD_LANGBY_GOD_NM GLGN ON GD.GOD_NO = GLGN.GOD_NO AND GLGN.LANG_CD = #{lang,jdbcType=VARCHAR} AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  JOIN DSP_GOD_PRC DGP ON GD.GOD_NO = DGP.GOD_NO AND DGP.MALL_ID = 'MBM' AND DGP.LANG_CD = 'KOR' AND DGP.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR} 
+                  JOIN EVT_RELATE_GOD ERG ON GD.GOD_NO = ERG.GOD_NO 
+                  JOIN EVT_SPRTR  ES ON ES.EVT_NO = ERG.EVT_NO AND ERG.SPRTR_TURN = ES.SPRTR_TURN
+                WHERE GD.GOD_APRV_SECT_CD = 'APRV_COMPT'
+                  AND GD.DSP_YN ='Y'
+                  AND GD.GOD_SALE_SECT_CD  = 'SALE_PROGRS'
+                  AND ERG.DSP_YN ='Y'        
+                  AND ES.DSP_YN = 'Y'         
+	   	          AND ERG.EVT_NO = #{evtNo}
+	   	           <if test="sprtrTurn != null and sprtrTurn != ''">
+		          AND ERG.SPRTR_TURN = #{sprtrTurn}
+		          </if>
+                  <if test="lang == 'ENG'">
+                  AND GLGN.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+                  </if>
+            ) G
+ 
+     ORDER BY G.ES_SORT_SEQ ,G.SPRTR_TURN , G.SORT_SEQ, G.REG_DT DESC                       
+		        ) b
+			WHERE ROWNUM &lt;= #{endIndex}
+		) G
+			WHERE NO &gt;= #{beginIndex}
+			
+	</select>
+</mapper>

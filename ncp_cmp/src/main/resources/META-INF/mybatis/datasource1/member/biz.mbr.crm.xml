@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.erp">
+
+
+<resultMap id="memberResultMapForErp" type="com.plgrim.ncp.biz.member.result.MemberFoResult">
+       <!-- <result property="mbr.mbrNo" column="MBR_NO" />                             회원 번호
+       <result property="mbr.mbrId" column="MBR_ID" />                    회원 ID
+       <result property="mbr.mbrPw" column="MBR_PW" />                    회원 PW
+       <result property="mbr.mbrAtrbCd" column="MBR_ATRB_CD" />                    회원 유형 코드 -->
+<!--        <result property="mbr.mbrTpCd" column="MBR_TP_CD" />                    회원 속성 코드 -->
+       <result property="mbrCrtfc.rlnmCrtfcDi" column="RLNM_CRTFC_DI" />                    <!-- 인증 DI-->
+       <result property="mbrCrtfc.rlnmCrtfcCi" column="RLNM_CRTFC_CI" />                    <!-- 인증 CI-->
+       <result property="mbrCrtfc.rlnmCrtfcVer" column="RLNM_CRTFC_VER" />                    <!-- 인증 VER-->
+       <result property="mbrCrtfc.rlnmCrtfcResultCd" column="RLNM_CRTFC_RESULT_CD" />                    <!-- 인증 휴대폰-->
+       <result property="mbrCrtfc.rlnmCrtfcIpin" column="RLNM_CRTFC_IPIN" />                    <!-- 인증 ipin-->
+       
+       
+       
+       
+       <result property="mbr.mbrNo"                    column="MBR_NO" />                      <!-- 회원 번호 -->
+       <result property="mbr.mbrStatCd"                column="MBR_STAT_CD" />                 <!-- 회원 상태 코드 -->
+       <result property="mbr.mbrTpCd"                  column="MBR_TP_CD" />                   <!-- 회원 유형 코드 -->
+       <result property="mbr.mbrAtrbCd"                column="MBR_ATRB_CD" />                 <!-- 회원 속성 코드 -->
+       <result property="mbr.unityMbrCrtfcSectCd"      column="UNITY_MBR_CRTFC_SECT_CD" />     <!-- 통합 회원 인증 구분 코드 -->
+       <result property="mbr.mbrNm"                    column="MBR_NM" />                      <!-- 회원 명 -->
+       <result property="mbr.mbrEmplNo"                column="MBR_EMPL_NO" />                 <!-- 회원 사원 번호 -->
+       <result property="mbr.mbrBrthdySlrcldYn"        column="MBR_BRTHDY_SLRCLD_YN" />        <!-- 회원 생년월일 양력 여부 -->
+       <result property="mbr.mbrBrthdy"                column="MBR_BRTHDY" />                  <!-- 회원 생년월일 -->
+       <result property="mbr.mbrSexSectCd"             column="MBR_SEX_SECT_CD" />             <!-- 회원 성별 구분 코드 -->
+       <result property="mbr.mbrId"                    column="MBR_ID" />                      <!-- 회원 ID -->
+       <result property="mbr.joinMbrIp"                column="JOIN_MBR_IP" />                 <!-- 가입 회원 IP -->
+       <result property="mbr.mbrPw"                    column="MBR_PW" />                      <!-- 회원 비밀번호 -->
+       <result property="mbr.mbrLoginLastFailrCount"   column="MBR_LOGIN_LAST_FAILR_COUNT" />  <!-- 회원 로그인 최종 실패 횟수 -->
+       <result property="mbr.mbrPwLastUdtDt"           column="MBR_PW_LAST_UDT_DT" />          <!-- 회원 비밀번호 최종 수정 일시 -->
+       <result property="mbr.mbrEmail"                 column="MBR_EMAIL" />                   <!-- 회원 이메일 -->
+       <result property="mbr.mobilNationCd"            column="MOBIL_NATION_CD" />             <!-- 휴대전화 국가코드 -->
+       <result property="mbr.mobilNationNo"            column="MOBIL_NATION_NO" />             <!-- 휴대전화 국가번호 -->
+       <result property="mbr.mobilAreaNo"              column="MOBIL_AREA_NO" />               <!-- 휴대전화 지역번호 -->
+       <result property="mbr.mobilTlofNo"              column="MOBIL_TLOF_NO" />               <!-- 휴대전화 국번호 -->
+       <result property="mbr.mobilTlofWthnNo"          column="MOBIL_TLOF_WTHN_NO" />          <!-- 휴대전화 국내번호 -->
+       <result property="mbr.otelNationNo"             column="OTEL_NATION_NO" />              <!-- 회사전화 국가번호 -->
+       <result property="mbr.otelAreaNo"               column="OTEL_AREA_NO" />                <!-- 회사전화 지역번호 -->
+       <result property="mbr.otelTlofNo"               column="OTEL_TLOF_NO" />                <!-- 회사전화 국번호 -->
+       <result property="mbr.otelTlofWthnNo"           column="OTEL_TLOF_WTHN_NO" />           <!-- 회사전화 국내번호 -->
+       <result property="mbr.telNationNo"              column="TEL_NATION_NO" />               <!-- 전화 국가번호 -->
+       <result property="mbr.telAreaNo"                column="TEL_AREA_NO" />                 <!-- 전화 지역번호 -->
+       <result property="mbr.telTlofNo"                column="TEL_TLOF_NO" />                 <!-- 전화 국번호 -->
+       <result property="mbr.telTlofWthnNo"            column="TEL_TLOF_WTHN_NO" />            <!-- 전화 국내번호 -->
+       <result property="mbr.joinNationCd"             column="JOIN_NATION_CD" />              <!-- 가입 국가 코드 -->
+       <result property="mbr.joinDt"                   column="JOIN_DT" />                     <!-- 가입 일시 -->
+       <result property="mbr.joinMallId"               column="JOIN_MALL_ID" />                <!-- 가입 몰 ID -->
+       <result property="mbr.joinLangCd"               column="JOIN_LANG_CD" />                <!-- 가입 언어 코드 -->
+       <result property="mbr.joinDvcCd"                column="JOIN_DVC_CD" />                 <!-- 가입 디바이스 코드 -->
+       <result property="mbr.secsnDate"                column="SECSN_DATE" />                  <!-- 탈퇴 일자 -->
+       <result property="mbr.secsnSectCd"              column="SECSN_SECT_CD" />               <!-- 탈퇴 구분 코드 -->
+       <result property="mbr.secsnResnCd"              column="SECSN_RESN_CD" />               <!-- 탈퇴 사유 코드 -->
+       <result property="mbr.secsnResnDetailCont"      column="SECSN_RESN_DETAIL_CONT" />      <!-- 탈퇴 사유 상세 내용 -->
+       <result property="mbr.enfrcsecsnDspsId"         column="ENFRCSECSN_DSPS_ID" />          <!-- 강제탈퇴 처리자 ID -->
+       
+       <result property="mbr.mbrAddrNationCd"                column="MBR_ADDR_NATION_CD" />                 <!-- 주소국가코드 -->
+       <result property="mbr.mbrPostNo"                column="MBR_POST_NO" />                 <!-- 회원 우편번호 -->
+       <result property="mbr.mbrAddrSectCd"            column="MBR_ADDR_SECT_CD" />            <!-- 회원 주소 구분 코드 -->
+<!--        <result property="mbr.mbrPostaddr"              column="MBR_POSTADDR" />                회원 우편주소 -->
+       <result property="mbr.mbrBaseAddr"              column="MBR_BASE_ADDR" />                <!-- 회원 우편주소 -->
+       <result property="mbr.mbrDetailAddr"            column="MBR_DETAIL_ADDR" />             <!-- 회원 상세주소 -->
+       <result property="mbr.audCd"            column="AUD_CD" />             <!-- 행정동코드 -->
+       
+       <result property="mbr.mbrCtyNm"            column="MBR_CTY_NM" />             <!-- 도시 -->
+       <result property="mbr.mbrLcltyNm"            column="MBR_LCLTY_NM" />             <!--지역 -->
+       
+       <result property="mbr.cprNm"                    column="CPR_NM" />                      <!-- 법인 명 -->
+       <result property="mbr.cprRprstivNm"             column="CPR_RPRSTIV_NM" />              <!-- 법인 대표자명 -->
+       <result property="mbr.bmanRegNo"                column="BMAN_REG_NO" />                 <!-- 사업자등록번호 -->
+       <result property="mbr.cprtelNationNo"           column="CPRTEL_NATION_NO" />            <!-- 법인전화 국가번호 -->
+       <result property="mbr.cprtelAreaNo"             column="CPRTEL_AREA_NO" />              <!-- 법인전화 지역번호 -->
+       <result property="mbr.cprtelTlofNo"             column="CPRTEL_TLOF_NO" />              <!-- 법인전화 국번호 -->
+       <result property="mbr.cprtelTlofWthnNo"         column="CPRTEL_TLOF_WTHN_NO" />         <!-- 법인전화 국내번호 -->
+       <result property="mbr.cprTaxBillChrgerEmail"    column="CPR_TAX_BILL_CHRGER_EMAIL" />   <!-- 법인 세금계산서 담당자 이메일 -->
+       <result property="mbr.cprRegNo"                 column="CPR_REG_NO" />                  <!-- 법인등록번호 -->
+       <result property="mbr.emailRecptnAgrYn"         column="EMAIL_RECPTN_AGR_YN" />         <!-- 이메일 수신 동의 여부 -->
+       <result property="mbr.lastEmailRecptnAgrDt"     column="LAST_EMAIL_RECPTN_AGR_DT" />    <!-- 최종 이메일 수신 동의 일시 -->
+       <result property="mbr.smsRecptnAgrYn"           column="SMS_RECPTN_AGR_YN" />           <!-- SMS 수신 동의 여부 -->
+       <result property="mbr.dmRecptnAgrYn"            column="DM_RECPTN_AGR_YN" />           <!-- SMS 수신 동의 여부 -->
+       <result property="mbr.lastSmsRecptnAgrDt"       column="LAST_SMS_RECPTN_AGR_DT" />      <!-- 최종 SMS 수신 동의 일시 -->
+       <result property="mbr.tmRecptnAgrYn"            column="TM_RECPTN_AGR_YN" />           <!-- TM 수신 동의 여부 -->
+       <result property="mbr.lastTmRecptnAgrDt"        column="LAST_TM_RECPTN_AGR_DT" />      <!-- 최종 TM 수신 동의 일시 -->
+       <result property="mbr.erpCstmrNo"               column="ERP_CSTMR_NO" />                <!-- ERP 고객번호 -->
+       <result property="mbr.regtrId"                  column="REGTR_ID" />                    <!-- 등록자 ID -->
+       <result property="mbr.regDt"                    column="REG_DT" />                      <!-- 등록 일시 -->
+       <result property="mbr.udterId"                  column="UDTER_ID" />                    <!-- 수정자 ID -->
+       <result property="mbr.udtDt"                    column="UDT_DT" />                      <!-- 수정 일시 -->
+       <result property="mbr.frgnrYn"                  column="FRGNR_YN" />                    <!-- 내 외국인 구분 -->
+	   <result property="mbr.ssoGrpCd"                 column="SSO_GRP_CD" />				   <!-- SSO 그룹코드 -->
+       
+       
+       <result property="mbrStatNm"                   column="MBR_STAT_NM" />                 <!-- 회원 상태 코드명 -->
+       <result property="mbrTpNm"                     column="MBR_TP_NM" />                   <!-- 회원 유형 코드명 -->
+       <result property="mbrAtrbNm"                   column="MBR_ATRB_NM" />                 <!-- 회원 속성 코드명 -->
+       <result property="joinLangNm"                  column="JOIN_LANG_NM" />                <!-- 가입 언어 코드명 -->
+       <result property="joinDvcNm"                   column="JOIN_DVC_NM" />                 <!-- 가입 디바이스 코드명 -->
+
+       
+       <collection property="mbrStplatAgrs" ofType="mbrStplatAgr" >
+<!--     	<id property="mbr.mbrNo" column="MBR_NO" /> -->
+    	<result property="stplatCd" column="STPLAT_CD" />
+    	<result property="stplatIemAgrYn" column="STPLAT_IEM_AGR_YN" />
+       </collection>
+       
+       
+       
+       
+    </resultMap>
+    
+    
+	<select id="selectMemberForErp" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultMap="memberResultMapForErp"   >
+		SELECT 
+		  		m2.mbr_no
+		          ,m2.mbr_id
+		          ,m2.mbr_nm
+		          ,m2.mbr_brthdy
+		          ,m2.mbr_brthdy_slrcld_yn
+		          ,m2.mbr_sex_sect_cd
+		          ,m2.join_nation_cd
+		          ,m2.mbr_addr_nation_cd
+		          ,m2.mbr_addr_sect_cd
+		          ,m2.mbr_post_no
+		          ,m2.mbr_base_addr
+		          ,m2.mbr_detail_addr
+		          ,m2.mbr_cty_nm
+		          ,m2.mbr_lclty_nm
+		          ,m2.tel_nation_no
+		          ,m2.tel_area_no
+		          ,m2.tel_tlof_no
+		          ,m2.tel_tlof_wthn_no
+		          ,m2.mobil_nation_cd
+		          ,m2.mobil_nation_no
+		          ,m2.mobil_area_no
+		          ,m2.mobil_tlof_no
+		          ,m2.mobil_tlof_wthn_no
+		          ,m2.mbr_email
+		          ,m2.email_recptn_agr_yn
+		          ,m2.sms_recptn_agr_yn
+		          ,m2.dm_recptn_agr_yn
+		          ,m2.tm_recptn_agr_yn
+		          ,m2.rlnm_crtfc_di
+		          ,m2.rlnm_crtfc_ci
+		          ,m2.rlnm_crtfc_ver
+		          ,m2.rlnm_crtfc_result_cd
+		          ,m2.rlnm_crtfc_ipin
+		          ,m2.frgnr_yn
+		          ,m2.erp_cstmr_no
+		          ,m2.join_mall_id
+		          ,m2.join_lang_cd
+		          ,m2.join_dvc_cd
+		          ,m2.mbr_tp_cd
+		          ,m2.sso_grp_cd
+		          ,m2.aud_cd
+		          ,agr.stplat_cd
+		          ,agr.stplat_iem_agr_yn
+		          
+          FROM 
+		       (SELECT 
+		          m.mbr_no
+		          ,m.mbr_id
+		          ,m.mbr_nm
+		          ,m.mbr_brthdy
+		          ,m.mbr_brthdy_slrcld_yn
+		          ,m.mbr_sex_sect_cd
+		          ,m.join_nation_cd
+		          ,m.mbr_addr_nation_cd
+		          ,m.mbr_addr_sect_cd
+		          ,m.mbr_post_no
+		          ,m.mbr_base_addr
+		          ,m.mbr_detail_addr
+		          ,m.mbr_cty_nm
+		          ,m.mbr_lclty_nm
+		          ,m.tel_nation_no
+		          ,m.tel_area_no
+		          ,m.tel_tlof_no
+		          ,m.tel_tlof_wthn_no
+		          ,m.mobil_nation_cd
+		          ,m.mobil_nation_no
+		          ,m.mobil_area_no
+		          ,m.mobil_tlof_no
+		          ,m.mobil_tlof_wthn_no
+		          ,m.mbr_email
+		          ,m.email_recptn_agr_yn
+		          ,m.sms_recptn_agr_yn
+		          ,m.dm_recptn_agr_yn
+		          ,m.tm_recptn_agr_yn
+		          ,m.frgnr_yn
+		          ,m.erp_cstmr_no
+		          ,m.join_mall_id
+		          ,m.join_lang_cd
+		          ,m.join_dvc_cd
+		          ,m.mbr_tp_cd
+		          ,m.sso_grp_cd
+		          ,m.aud_cd
+		          ,crt.rlnm_crtfc_di
+		          ,crt.rlnm_crtfc_ci
+		          ,crt.rlnm_crtfc_ver
+		          ,crt.rlnm_crtfc_result_cd
+		          ,crt.rlnm_crtfc_ipin
+		          FROM mbr m 
+			          INNER JOIN 
+			          		mbr_crtfc crt 
+				            ON m.mbr_no= crt.mbr_no 
+				            AND crt.rlnm_crtfc_di is not null
+				            AND crt.rlnm_crtfc_ci is not null
+		          WHERE m.mbr_no = #{mbr.mbrNo}
+		          AND rownum = 1
+		          ORDER BY crt.mbr_crtfc_date desc
+		      ) m2
+		 
+		
+		  INNER JOIN mbr_stplat_agr agr 
+		  ON  m2.mbr_no = agr.mbr_no 
+		  AND agr.mbr_no = #{mbr.mbrNo}
+
+	</select>
+
+    
+</mapper>

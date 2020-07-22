@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrPreferPayMn" parameterType="mbrPreferPayMn" resultType="mbrPreferPayMn">
+		SELECT /* com.plgrim.ncp.base.selectMbrPreferPayMn		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , LANG_CD
+			 , MBR_NO
+			 , PAY_MN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_PREFER_PAY_MN
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbrPreferPayMn" parameterType="mbrPreferPayMn">
+		UPDATE /* com.plgrim.ncp.base.updateMbrPreferPayMn		Generator(Generator)	2018-05-23 */
+		MBR_PREFER_PAY_MN SET
+			   PAY_MN_CD = #{payMnCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbrPreferPayMn" parameterType="mbrPreferPayMn">
+		INSERT /* com.plgrim.ncp.base.insertMbrPreferPayMn		Generator(Generator)	2018-05-23 */
+		INTO   MBR_PREFER_PAY_MN (
+			   MALL_ID
+			 , LANG_CD
+			 , MBR_NO
+			 , PAY_MN_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{payMnCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrPreferPayMn" parameterType="mbrPreferPayMn">
+		DELETE /* com.plgrim.ncp.base.deleteMbrPreferPayMn		Generator(Generator)	2018-05-23 */
+		  FROM MBR_PREFER_PAY_MN
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.mailTemplate">
+
+	<resultMap id="mailTemplateResult" type="com.plgrim.ncp.biz.callcenter.result.MailTemplateResult">
+		<result property="inqCstmrNm" column="INQ_CSTMR_NM" />
+		<result property="cdDscr" column="CD_DSCR" />
+		<result property="regDt" column="REG_DT" />
+		<result property="inqCont" column="INQ_CONT" />
+		<result property="inqSj" column="INQ_SJ" />
+		<result property="ansEvlCd" column="ANS_EVL_CD" />
+		<result property="ansEvlAdminAnsCont" column="ANS_EVL_ADMIN_ANS_CONT" />
+		<result property="ansEvlAdminAnsDt" column="ANS_EVL_ADMIN_ANS_DT" />
+	</resultMap>
+	
+	<resultMap id="mailAnsResult" type="com.plgrim.ncp.biz.callcenter.result.MailAnsResult">
+		<result property="ansCont" column="ANS_CONT" />
+		<result property="regDt" column="REG_DT" />
+	</resultMap>
+	
+	<resultMap id="mailImgResult" type="com.plgrim.ncp.biz.callcenter.result.MailImgResult">
+		<result property="imgUrl" column="IMG_URL" />
+		<result property="brndNm" column="BRND_NM" />
+		<result property="godNm" column="GOD_NM" />
+	</resultMap>
+
+
+
+	<!-- 1:1 상품 문의 내용 조회  -->
+	<select id="selectInqryMailInfo" parameterType="String" resultMap="mailTemplateResult">
+		  SELECT cmi.INQ_CSTMR_NM                  AS INQ_CSTMR_NM
+  				, msc.cd_nm                         AS CD_DSCR
+  				, TO_CHAR(cmi.REG_DT, 'YYYY.MM.DD') AS REG_DT
+  				, cmi.INQ_CONT                      AS INQ_CONT
+  				, cmi.INQ_SJ
+  				, cmi.ANS_EVL_CD
+  				, cmi.ANS_EVL_ADMIN_ANS_CONT
+  				, TO_CHAR(cmi.ANS_EVL_ADMIN_ANS_DT, 'YYYY.MM.DD') AS ANS_EVL_ADMIN_ANS_DT
+			FROM CSO_MTM_INQ cmi
+			JOIN mv_sys_cd msc ON cmi.INQ_TP_CD = msc.CD AND msc.UPPER_CD = 'INQ_TP' AND cmi.LANG_CD = msc.LANG_CD
+		   WHERE cmi.MTM_INQ_SN = #{mtmInqSn}
+	</select>
+	
+	<!-- 1:1 문의 답변 조회  -->
+	<select id="selectInqryMailAns" parameterType="String" resultMap="mailAnsResult">
+		SELECT cmia.ANS_CONT 					   AS ANS_CONT
+			 , TO_CHAR(cmia.REG_DT,'YYYY.MM.DD')   AS REG_DT
+		  FROM CSO_MTM_INQ_ANS cmia
+		 WHERE cmia.MTM_INQ_SN = #{mtmInqSn}
+		 ORDER BY cmia.MTM_INQ_ANS_TURN
+	</select>
+	
+	<!-- 1:1 상품 이미지 조회  -->
+	<select id="selectInqryMailImg" parameterType="String" resultMap="mailImgResult">
+		SELECT og.LST_IMG_URL AS IMG_URL
+		  FROM ORD_GOD og
+		 WHERE og.ord_no = (SELECT DISTINCT cmiog.ord_no
+		                      FROM CSO_MTM_INQ cmi
+		                      LEFT OUTER JOIN CSO_MTM_INQ_ORD_GOD cmiog ON cmi.mtm_inq_sn = cmiog.mtm_inq_sn 
+		                     WHERE 1 = 1
+		                       AND cmi.mtm_inq_sn = #{mtmInqSn} )
+		 ORDER BY og.ord_god_turn
+	</select>
+	
+	
+	
+	<!-- 상품QNA 문의 내용 조회  -->
+	<select id="selectMemberGoodsQnaMailInfo" parameterType="long" resultMap="mailTemplateResult">
+		SELECT jgi.INQ_CSTMR_NM 
+			 , jgi.INQ_CONT     
+		     , TO_CHAR(jgi.REG_DT,'YYYY.MM.DD') AS REG_DT       
+		  FROM cso_god_inq jgi
+		 WHERE 1 = 1
+		   AND jgi.GOD_INQ_SN = #{godInqSn,jdbcType=NUMERIC}
+	</select>
+	
+	<!-- 상품QNA 문의 답변 조회  -->
+	<select id="selectMemberGoodsQnaMailAns" parameterType="long" resultMap="mailAnsResult">
+		SELECT cgia.ANS_CONT
+			 , TO_CHAR(cgia.REG_DT,'YYYY.MM.DD') AS REG_DT
+		  FROM CSO_GOD_INQ_ANS cgia
+		 WHERE 1 = 1
+		   AND cgia.god_inq_sn = #{godInqSn,jdbcType=NUMERIC}
+		 ORDER BY cgia.god_ans_turn
+	</select>
+	
+	<!-- 상품QNA 이미지 조회  -->
+	<select id="selectMemberGoodsQnaMailImg" parameterType="com.plgrim.ncp.base.entities.datasource1.cso.CsoGodInq" resultMap="mailImgResult">
+		SELECT gi.IMG_URL AS IMG_URL
+			 ,sb.brnd_nm AS BRND_NM
+		     , g.GOD_NM
+		  FROM god g
+		   LEFT OUTER JOIN GOD_LANGBY_GOD_NM glgn ON g.GOD_NO = glgn.GOD_NO AND glgn.LANG_CD=#{langCd}
+           LEFT OUTER JOIN GOD_IMG gi on g.GOD_NO = gi.GOD_NO and IMG_SIZE_CD='100X132'
+           LEFT OUTER JOIN SYS_BRND sb ON sb.brnd_id = g.brnd_id LEFT OUTER JOIN SYS_BRND_LANG sbl ON sb.BRND_ID =  sbl.BRND_ID AND sbl.LANG_CD =#{langCd}
+		 WHERE 1 = 1
+		   AND g.god_no = (SELECT jgi.god_no
+		       			     FROM cso_god_inq jgi
+		                    WHERE 1 = 1
+		                      AND jgi.GOD_INQ_SN = #{godInqSn})
+	</select>
+
+</mapper>

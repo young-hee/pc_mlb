@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.mtm">
+
+	<resultMap id="mtmListResult" type="com.plgrim.ncp.biz.callcenter.result.MtmListResult">
+		<result property="mtmInqSn" column="mtm_inq_sn" />
+		<result property="mtmInqAnsTurn" column="mtm_inq_ans_turn" />
+		<result property="mtmInqSnTurn" column="mtm_inq_sn_turn" />
+		<result property="inqTpCdNm" column="inq_tp_cd_nm" />
+		<result property="inqSj" column="inq_sj" />
+		<result property="inqMbrNo" column="inq_mbr_no" />
+		<result property="mbrId" column="mbr_id" />
+		<result property="mbrNm" column="mbr_nm" />
+		<result property="mbrNo" column="mbr_no" />
+		<result property="ordNo" column="ord_no" />
+		<result property="godNo" column="god_no" />
+		<result property="inqDt" column="inq_dt" />
+		<result property="ansStatCd" column="ans_stat_cd" />
+		<result property="ansStatCdNm" column="ans_stat_cd_nm" />
+		<result property="ansDt" column="ans_dt" />
+		<result property="ansAdminNm" column="ans_admin_nm" />
+		<result property="cnsltStatCd" column="cnslt_stat_cd" />
+		<result property="cnsltStatNm" column="cnslt_stat_nm" />
+		<result property="cnsltDetailStatCdNm" column="cnslt_detail_stat_cd_nm" />
+		<result property="prcsComptDt" column="prcs_compt_dt" />
+		<result property="udterId" column="udter_id" />
+		<result property="udterNm" column="udter_nm" />
+		<result property="udtDt" column="udt_dt" />
+		<result property="dvcCdNm" column="dvc_cd_nm" />
+		<result property="langCdNm" column="lang_cd_nm" />
+		<result property="mallNm" column="mall_nm" />
+		<result property="partmalSectCd" column="partmal_sect_cd" />
+		<result property="ansDelayDate " column="ans_delay_date " />
+		<result property="ansDelayHour" column="ans_delay_hour" />
+		<result property="ansDelayMin" column="ans_delay_min" />
+		<result property="ansReqDt" column="ansReqDt" />
+		<result property="updateHistory" column="update_history" />
+		<result property="ansEvlCd" column="ans_evl_cd" />
+		<result property="ansEvlCdNm" column="ans_evl_cd_nm" />
+		<result property="ansEvlCont" column="ans_evl_cont" />
+		<result property="ansEvlAdminAns" column="ans_evl_admin_ans" />
+		<result property="ansReqWorkDt" column="ansReqWorkDt" />
+		<result property="inqReqDt" column="inqReqDt" />
+		<result property="inqReqWorkDt" column="inqReqWorkDt" />
+		<result property="ansDscnttTpCd" column="ans_dscntt_tp_cd" />
+		<result property="ansDscnttTpCdNm" column="ans_dscntt_tp_cd_nm" />
+		<result property="onlneGrdNm"    column="ONLNE_GRD_NM"/>
+		<result property="erpGodNo"    column="erp_god_no"/>
+		<result property="inqGodNo"    column="inq_god_no"/>
+	</resultMap>
+	
+	<resultMap id="mtmDetailResult" type="com.plgrim.ncp.biz.callcenter.result.MtmDetailResult">
+		<id property="ordNo" column="ORD_NO"/>		
+		<result property="inqCstmrNm" column="INQ_CSTMR_NM" />
+		<result property="mbrSexSectCd" column="MBR_SEX_SECT_CD" />
+		<result property="inqCstmrNm" column="INQ_CSTMR_NM" />
+		<result property="mbrTpCd" column="MBR_TP_CD" />
+		<result property="mbrId" column="MBR_ID" />
+		<result property="mbrNo" column="MBR_NO" />
+		<result property="erpCstmrNo" column="ERP_CSTMR_NO" />
+		<result property="mtmInqSn" column="MTM_INQ_SN" />
+		<result property="mtmRegDt" column="REG_DT" />
+		<result property="cstmrSmsRecptnYn" column="CSTMR_SMS_RECPTN_YN" />
+		<result property="cstmrtelTlofNo" column="CSTMRTEL_TLOF_NO" />		
+		<result property="cstmrEmailRecptnYn" column="CSTMR_EMAIL_RECPTN_YN" />		
+		<result property="cstmrEmail" column="CSTMR_EMAIL" />		
+		<result property="inqTpCd" column="INQ_TP_CD" />
+		<result property="cnsltStatCd" column="CNSLT_STAT_CD" />
+		<result property="mtmInqSn" column="MTM_INQ_SN" />
+		<result property="inqSj" column="INQ_SJ" />
+		<result property="inqCont" column="INQ_CONT" />
+		<result property="ansStatCd" column="ANS_STAT_CD" />		
+		<collection property="inqOrdGod" ofType="com.plgrim.ncp.biz.callcenter.result.InqOrdGodResult">			
+			<result property="ordGodTurn" column="ORD_GOD_TURN" />
+			<result property="godNm" column="GOD_NM" />
+			<result property="erpGodNo" column="ERP_GOD_NO" />
+		</collection>	
+	</resultMap>
+
+
+	<resultMap id="mtmUserInfoResult" type="com.plgrim.ncp.biz.callcenter.result.MtmUserInfoResult">
+		<result property="inqCstmrNm" 		column="INQ_NM" />
+		<result property="inqMbrNo" 		column="inq_mbr_no" />
+		<result property="cstmrSmsRectptnYn" 		column="cstmr_sms_recptn_yn" />
+		<result property="cstmrEmailRectptnYn" 		column="cstmr_email_recptn_yn" />
+		<result property="mbrSexSectCd" 	column="mbr_sex_sect_cd" />
+		<result property="mbrSexSectNm" 	column="mbr_sex_sect_nm" />
+		<result property="mbrTpCd" 			column="mbr_tp_cd" />
+		<result property="mbrTpNm" 			column="mbr_tp_nm" />
+		<result property="mbrId" 			column="mbr_id" />
+		<result property="mbrEmail"			column="mbr_email" />
+		<result property="erpCstmrNo" 		column="erp_cstmr_no" />
+		<result property="ordNo" 			column="ord_no" />
+		<result property="ordGodTurn" 		column="ord_god_turn" />
+		<result property="godNo" 			column="god_no" />
+		<result property="erpGodNo" 		column="erp_god_no" />
+		<result property="godNm" 			column="god_nm" />
+		<result property="mobilNo" 			column="mobil_no" />
+		<result property="mallNm" 			column="MALL_NM" />
+		<!-- #31806  2016.12.06 eunsik10.kim  멤버십 제도 개선관련 -->
+		<result property="erpGrdCd" 		column="ERP_GRD_CD" />
+		<result property="inqErpGodNo" 		column="inq_erp_god_no" />
+		<result property="inqGodNo" 		column="inq_god_no" />
+	</resultMap>
+
+
+	<resultMap id="mtmInqInfoResult" type="com.plgrim.ncp.biz.callcenter.result.MtmInqInfoResult">
+		<result property="mtmInqSn" 			column="mtm_inq_sn" />
+		<result property="inqDt"				column="inq_dt" />
+		<result property="inqTpCd" 				column="inq_tp_cd" />
+		<result property="inqTpNm" 				column="inq_tp_nm" />
+		<result property="inqSj" 				column="inq_sj" />
+		<result property="inqCont" 				column="inq_cont" />
+		<result property="ansStatCd" 			column="ans_stat_cd" />
+		<result property="ansStatNm" 			column="ans_stat_nm" />
+		<result property="cnsltStatCd"			column="cnslt_stat_cd" />
+		<result property="cnsltStatNm"			column="cnslt_stat_nm" />
+		<result property="inqCstmrNm" 			column="inq_cstmr_nm" />
+		<result property="cstmrSmsRecptnYn" 	column="cstmr_sms_recptn_yn" />
+		<result property="cstmrEmailRecptYn" 	column="cstmr_email_recptn_yn" />
+		<result property="cstmrEmail" 			column="cstmr_email" />
+		<result property="cstmrmobilNationNo" 	column="cstmrmobil_nation_no" />
+		<result property="cstmrmobilAreaNo" 	column="cstmrmobil_area_no" />
+		<result property="cstmrmobilTlofNo" 	column="cstmrmobil_tlof_no" />
+		<result property="cstmrmobilTlofWthnNo" column="cstmrmobil_tlof_wthn_no" />
+		<result property="mallId"               column="mall_id" />
+		<result property="langCd"			 	column="lang_cd" />
+		<result property="ansDscnttTpCd" 		column="ans_dscntt_tp_cd" />
+		<result property="ansDscnttTpCdNm" 		column="ans_dscntt_tp_cd_nm" />
+		<result property="ansDscnttDetailCont" 	column="ans_dscntt_detail_cont" />
+		<result property="ansEvlCd" 			column="ans_evl_cd" />
+		<result property="ansEvlCdNm" 			column="ans_evl_cd_nm" />
+		<result property="ansEvlCont" 			column="ans_evl_cont" />
+		<result property="ansEvlAdminAnsCont" 	column="ans_evl_admin_ans_cont" />
+		<result property="ansCont" 				column="ans_cont" />
+		<result property="ansDt" 				column="INQ_ANS_DT" />
+	</resultMap>
+
+	<resultMap id="mtmResult" type="com.plgrim.ncp.biz.callcenter.result.MtmResult">
+		<result property="mtmInqSn" 			column="MTM_INQ_SN" />
+		<result property="inqTpCd" 				column="INQ_TP_CD" />
+		<result property="inqMbrNo" 			column="INQ_MBR_NO" />
+		<result property="inqCstmrNm" 			column="INQ_CSTMR_NM" />
+		<result property="inqSj" 				column="INQ_SJ" />
+		<result property="inqCont" 				column="INQ_CONT" />
+		<result property="inqDt" 				column="INQ_DT" />
+		<result property="ansStatCd" 			column="ANS_STAT_CD" />
+		<result property="inqireCount" 			column="INQIRE_COUNT" />
+		<result property="prcsComptDt" 			column="PRCS_COMPT_DT" />
+		<result property="deleteYn" 			column="DELETE_YN" />
+		<result property="cstmrEmail" 			column="CSTMR_EMAIL" />
+		<result property="cstmrtelAreaNo" 		column="CSTMRTEL_AREA_NO" />
+		<result property="cstmrtelTlofNo" 		column="CSTMRTEL_TLOF_NO" />
+		<result property="cstmrtelTlofWthnNo" 	column="CSTMRTEL_TLOF_WTHN_NO" />
+		<result property="cstmrtelNationNo" 	column="CSTMRTEL_NATION_NO" />
+		<result property="cstmrmobilAreaNo" 	column="CSTMRMOBIL_AREA_NO" />
+		<result property="cstmrmobilTlofNo" 	column="CSTMRMOBIL_TLOF_NO" />
+		<result property="cstmrmobilTlofWthnNo" column="CSTMRMOBIL_TLOF_WTHN_NO" />
+		<result property="cstmrmobilNationNo" 	column="CSTMRMOBIL_NATION_NO" />
+		<result property="cstmrSmsRecptnYn" 	column="CSTMR_SMS_RECPTN_YN" />
+		<result property="cstmrEmailRecptnYn" 	column="CSTMR_EMAIL_RECPTN_YN" />
+		<result property="langCd" 				column="LANG_CD" />
+		<result property="mallId" 				column="MALL_ID" />
+		<result property="dvcCd" 				column="DVC_CD" />
+		<result property="ansDscnttTpCd" 		column="ANS_DSCNTT_TP_CD" />
+		<result property="ansDscnttDetailCont" 		column="ANS_DSCNTT_DETAIL_CONT" />
+		<result property="ansEvlCd" 			column="ANS_EVL_CD" />
+		<result property="ansEvlCont" 			column="ANS_EVL_CONT" />
+		<result property="ansEvlAdminAnsCont" 	column="ANS_EVL_ADMIN_ANS_CONT" />
+		<result property="regtrId" 				column="REGTR_ID" />
+		<result property="regDt" 				column="REG_DT" />
+		<result property="udterId" 				column="UDTER_ID" />
+		<result property="udtDt" 				column="UDT_DT" />
+	</resultMap>
+
+	<resultMap id="mtmOrdGodResult" type="com.plgrim.ncp.biz.callcenter.result.MtmOrdGodResult">
+		<result property="mtmInqSn" 				column="MTM_INQ_SN" />
+		<result property="mtmInqOrdGodTurn" 		column="MTM_INQ_ORD_GOD_TURN" />
+		<result property="godNm" 					column="GOD_NM" />
+		<result property="godNo" 					column="GOD_NO" />
+		<result property="ordNo" 					column="ORD_NO" />
+		<result property="ordGodTurn" 				column="ORD_GOD_TURN" />
+		<result property="regtrId" 					column="REGTR_ID" />
+		<result property="regDt" 					column="REG_DT" />
+		<result property="udterId" 					column="UDTER_ID" />
+		<result property="udtDt" 					column="UDT_DT" />
+	</resultMap>
+
+	<resultMap id="inquirySelectGodResult" type="com.plgrim.ncp.biz.callcenter.result.InquirySelectGodResult">
+		<result property="ordNo" 				column="ord_no" />
+		<result property="ordGodTurn" 			column="ord_god_turn" />
+		<result property="dlvPcupspTurn" 		column="dlv_pcupsp_turn" />
+		<result property="godNo" 				column="god_no" />
+		<result property="erpGodNo" 			column="erp_god_no" />
+		<result property="godNm" 				column="god_nm" />
+	</resultMap>
+	
+	<select id="getListMtm" parameterType="com.plgrim.ncp.biz.callcenter.data.MtmListSearchDTO" resultMap="mtmListResult">
+	<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT	gru.mtm_inq_sn
+		      , gru.mtm_inq_ans_turn
+		      , (CASE nvl(gru.mtm_inq_ans_turn,0) WHEN 0 then TO_CHAR(gru.mtm_inq_sn) else TO_CHAR(gru.mtm_inq_sn) || '-' || TO_CHAR(gru.mtm_inq_ans_turn) end) AS mtm_inq_sn_turn
+		      , cd1.cd_nm AS inq_tp_cd_nm
+		      , gru.inq_sj
+		      , gru.inq_mbr_no
+		      , gru.inq_god_no as inq_god_no
+		      , gru.erp_god_no
+		      , mb.mbr_id
+		      , mb.mbr_nm
+		      , mb.mbr_no
+		      , gru.ord_no
+		      , CASE WHEN gru.god_no IS NULL THEN gru.inq_god_no ELSE gru.god_no END  AS god_no
+		      , gru.inq_dt
+		      , gru.ans_stat_cd
+		      , cd2.cd_nm AS ans_stat_cd_nm
+		      , gru.ans_dt
+		      , sa1.admin_nm AS ans_admin_nm
+		      , cd3.cd_nm AS cnslt_detail_stat_cd_nm
+		      , gru.prcs_compt_dt AS prcs_compt_dt
+		      , sa2.admin_nm ||'('|| ccd.udter_id ||')'|| TO_CHAR(ccd.udt_dt, 'YYYY-MM-DD HH24:MM') AS update_history
+		      , gru.udter_id AS udter_id
+		      , sa2.admin_nm AS udter_nm
+		      , gru.udt_dt AS udt_dt
+		      , cd4.cd_nm AS dvc_cd_nm
+		      , cd5.cd_nm AS lang_cd_nm
+		      , cc.cnslt_stat_cd
+		      , cd6.cd_nm AS cnslt_stat_nm
+		      , mall.mall_nm AS mall_nm
+		      , CASE WHEN gru.ans_stat_cd ='ANS_COMPT' 
+		             THEN CASE WHEN FLOOR(MOD(MONTHS_BETWEEN(gru.ans_dt,gru.inq_dt),1)*30.5) > 0 THEN FLOOR(MOD(MONTHS_BETWEEN(gru.ans_dt,gru.inq_dt),1)*30.5) ||'일'   
+		                        END ||
+		                  CASE WHEN TRUNC(MOD(gru.ans_dt - gru.inq_dt,1)*24) > 0 THEN TRUNC(MOD(gru.ans_dt - gru.inq_dt,1)*24) ||'시간'   
+		                        END ||
+		                  CASE WHEN TRUNC(MOD((gru.ans_dt - gru.inq_dt)*24,1)*60) > 0 THEN TRUNC(MOD((gru.ans_dt - gru.inq_dt)*24,1)*60) ||'분'   
+		                       END
+		              END AS  ansReqDt
+		      , gru.ans_dscntt_tp_cd ans_dscntt_tp_cd
+		      , cd8.cd_nm ans_dscntt_tp_cd_nm
+		      , gru.ans_evl_cd ans_evl_cd
+		      , cd7.cd_nm || nvl2(gru.ans_evl_cont,' : ' || gru.ans_evl_cont,'') AS ans_evl_cd_nm
+		      , gru.ans_evl_cont as ans_evl_cont
+		      , nvl2(gru.ans_evl_admin_ans_cont,'Y','N') AS ans_evl_admin_ans
+		      , CASE WHEN gru.ans_stat_cd ='ANS_COMPT' 
+		             THEN FN_ELAPSE_TIME(gru.ans_dt, gru.inq_dt, 'CSHLD')
+		              END AS  ansReqWorkDt
+		      , ( CASE WHEN FLOOR(MOD(MONTHS_BETWEEN(SYSDATE,gru.inq_dt),1)*30.5) > 0 THEN FLOOR(MOD(MONTHS_BETWEEN(SYSDATE ,gru.inq_dt),1)*30.5) ||'일'   
+                      END ||
+                CASE WHEN TRUNC(MOD(SYSDATE - gru.inq_dt,1)*24) > 0 THEN TRUNC(MOD(SYSDATE - gru.inq_dt,1)*24) ||'시간'   
+                      END ||
+                CASE WHEN TRUNC(MOD((SYSDATE - gru.inq_dt)*24,1)*60) > 0 THEN TRUNC(MOD((SYSDATE - gru.inq_dt)*24,1)*60) ||'분'   
+                     END )  AS  inqReqDt
+		      ,  FN_ELAPSE_TIME(SYSDATE, gru.inq_dt, 'CSHLD') as inqReqWorkDt
+			  , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 */
+		  FROM	(SELECT cmi.mtm_inq_sn
+		              , MAX(cmia.mtm_inq_ans_turn) AS mtm_inq_ans_turn
+		              , cmi.inq_sj
+		              , cmi.inq_mbr_no
+		              , cmi.god_no as inq_god_no
+		              , cmi.erp_god_no
+		              , cmi.inq_dt
+		              , cmi.inq_tp_cd
+		              , cmi.ans_stat_cd
+		              , cmi.ans_evl_cd
+		              , cmi.ans_evl_cont
+		              , cmi.ans_evl_admin_ans_cont
+		              , cmi.dvc_cd
+		              , cmi.lang_cd
+		              , cmi.mall_id
+		              , cmi.delete_yn
+		              , od.ord_no
+		              /*, LISTAGG(od.god_no, ',<![CDATA[</br>]]>') WITHIN GROUP (ORDER BY od.god_no) AS god_no*/
+		              ,od.god_no AS god_no
+		              , MAX(cmia.ans_dt) AS ans_dt
+		              , max(cmia.ans_admin_id) AS ans_admin_id
+		              , cmi.prcs_compt_dt
+		              , cmi.udter_id
+		              , cmi.udt_dt
+		              , cmi.ans_dscntt_tp_cd
+		            FROM	cso_mtm_inq cmi
+		            LEFT OUTER JOIN cso_mtm_inq_ans cmia ON  (cmi.mtm_inq_sn = cmia.mtm_inq_sn)
+		            LEFT OUTER JOIN ( SELECT	cmiog.mtm_inq_sn
+											,cmiog.ord_no
+											,god_no AS god_no
+		    								/*, LISTAGG((CASE og.partmal_sect_cd WHEN 'MCOM' THEN og.erp_god_no WHEN 'PARTMAL' THEN og.god_no END), ',') WITHIN GROUP (ORDER BY og.god_no) AS god_no
+		    								, LISTAGG(og.partmal_sect_cd, ',') WITHIN GROUP (ORDER BY og.partmal_sect_cd) AS partmal_sect_cd*/
+									FROM	cso_mtm_inq_ord_god cmiog
+									LEFT OUTER JOIN ord_god og ON (og.ORD_NO = cmiog.ord_no AND  og.ORD_GOD_TURN = cmiog.ORD_GOD_TURN)
+		            ) od
+					ON (od.mtm_inq_sn = cmi.mtm_inq_sn)
+		            WHERE     1 = 1
+					AND cmi.delete_yn = 'N'					
+					<if test='inqTpCd != null and inqTpCd != ""'>
+						AND cmi.INQ_TP_CD = #{inqTpCd}
+					</if>
+					<if test='ansStatCd != null and ansStatCd != ""'>
+						AND cmi.ANS_STAT_CD = #{ansStatCd}
+					</if>
+			        <if test="langCd != null and langCd != ''">
+			            AND cmi.lang_cd = #{langCd}
+			        </if>
+					<if test='inqSj != null and inqSj != ""'>
+						AND cmi.INQ_SJ LIKE '%' || #{inqSj} || '%'
+					</if>
+					<if test='searchDtType != null and searchDtType != ""'>
+			            <if test="searchDtType ==  'INQ_DT'">
+						AND (cmi.INQ_DT <![CDATA[>=]]> to_date(#{searchDtStart},'YYYYMMDDHH24MISS')) and (cmi.INQ_DT <![CDATA[<]]> to_date(#{searchDtEnd},'YYYYMMDDHH24MISS'))
+						</if>
+						<if test="searchDtType ==  'ANS_DT'">
+						AND (cmia.ANS_DT <![CDATA[>=]]> to_date(#{searchDtStart},'YYYYMMDDHH24MISS')) and (cmia.ANS_DT <![CDATA[<]]> to_date(#{searchDtEnd},'YYYYMMDDHH24MISS'))
+						</if>
+					</if>
+					<if test='ansAfterDt != null and ansAfterDt != ""'>
+						<if test='ansAfterDt != "4"'>
+							AND cmi.INQ_DT <![CDATA[<=]]> (sysdate - #{ansAfterDt, jdbcType=NUMERIC})
+						</if>
+						<if test='ansAfterDt == "4"'>
+			            	AND cmi.INQ_DT <![CDATA[<=]]> (SYSDATE-1/24*3)
+			            </if>
+					</if>
+					<if test='dvcCd != null and dvcCd != ""'>
+						AND cmi.DVC_CD = #{dvcCd}
+					</if>
+					<if test="mallId != null and mallId != ''">
+						AND cmi.mall_id = #{mallId, jdbcType=VARCHAR}
+					</if>
+					<if test='mtmInqSn != null and mtmInqSn != ""'>
+						AND cmi.mtm_inq_sn = #{mtmInqSn}
+					</if>
+					<if test='ansEvlCd != null and ansEvlCd != ""'>
+						AND cmi.ans_evl_cd IN (  SELECT REGEXP_SUBSTR(d.param, '[^,]+', 1, level) as param
+						FROM (SELECT #{ansEvlCd, jdbcType=VARCHAR} AS param FROM DUAL) d
+								CONNECT BY LEVEL <![CDATA[<=]]> REGEXP_COUNT(d.param, '[^,]+'))   /* 만족도평가 코드 */
+					</if>
+					<if test='ansEvlAdminAns != null and ansEvlAdminAns != ""'>
+						<if test='ansEvlAdminAns == "Y"'>
+							AND cmi.ans_evl_admin_ans_cont is not null
+						</if>
+						<if test='ansEvlAdminAns == "N"'>
+			            	AND cmi.ans_evl_admin_ans_cont is null
+			            </if>
+					</if>
+					<if test='ansDscnttTpCd != null and ansDscnttTpCd != ""'>
+						AND cmi.ans_dscntt_tp_cd IN (  SELECT REGEXP_SUBSTR(d.param, '[^,]+', 1, level) as param
+						FROM (SELECT #{ansDscnttTpCd, jdbcType=VARCHAR} AS param FROM DUAL) d
+								CONNECT BY LEVEL <![CDATA[<=]]> REGEXP_COUNT(d.param, '[^,]+'))   /* 답변 불만 유형 코드 */
+					</if>
+		            
+					GROUP BY cmi.mtm_inq_sn
+		                  , cmi.inq_sj
+		                  , cmi.inq_tp_cd
+		                  , cmi.inq_mbr_no
+		                  , cmi.dvc_cd 
+		                  , cmi.delete_yn
+		                  , od.ord_no
+		                  , cmi.prcs_compt_dt
+		                  , cmi.udter_id
+		                  , cmi.udt_dt
+		                  , cmi.mall_id
+		                  , cmi.lang_cd
+		                  , cmi.inq_dt 
+		                  , cmi.ans_stat_cd
+		                  , cmi.ans_dscntt_tp_cd 
+		                  , cmi.ans_evl_cd 
+		                  , cmi.ans_evl_cont
+		                  , cmi.erp_god_no 
+		                  , cmi.ans_evl_admin_ans_cont
+		                  , od.god_no
+                          , cmi.god_no
+				) gru
+		  
+		  LEFT OUTER JOIN CSO_CNSLT cc ON (gru.mtm_inq_sn = cc.mtm_inq_sn)
+		  LEFT OUTER JOIN cso_cnslt_detail ccd ON (gru.mtm_inq_sn = ccd.mtm_inq_sn AND gru.mtm_inq_ans_turn=ccd.mtm_inq_ans_turn)
+		  
+		  LEFT OUTER JOIN mbr mb ON (mb.mbr_no = gru.inq_mbr_no)
+		  LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = gru.inq_tp_cd)
+		  LEFT OUTER JOIN sys_cd cd2 ON (cd2.cd = gru.ans_stat_cd)
+		  LEFT OUTER JOIN sys_cd cd3 ON (cd3.cd = ccd.cnslt_detail_stat_cd)
+		  LEFT OUTER JOIN sys_cd cd4 ON (cd4.cd = gru.dvc_cd)
+		  LEFT OUTER JOIN sys_cd cd5 ON (cd5.cd = gru.lang_cd)
+		  LEFT OUTER JOIN sys_cd cd6 ON (cd6.cd = cc.cnslt_stat_cd)
+		  LEFT OUTER JOIN sys_mall mall ON (mall.mall_id = gru.mall_id)
+		  LEFT OUTER JOIN sys_admin sa1 ON (sa1.admin_id = gru.ans_admin_id)
+		  LEFT OUTER JOIN sys_admin sa2 ON (sa2.admin_id = gru.udter_id)
+		  LEFT OUTER JOIN sys_cd cd7 ON (cd7.cd = gru.ans_evl_cd)
+		  LEFT OUTER JOIN sys_cd cd8 ON (cd8.cd = gru.ans_dscntt_tp_cd)
+		  LEFT OUTER JOIN mbr_grd mbrGrd 
+		  	ON (mb.mbr_no = mbrGrd.mbr_no AND SYSDATE BETWEEN mbrGrd.GRD_APL_BEG_DT AND mbrGrd.GRD_APL_END_DT AND mbrGrd.mall_id=#{mallId})
+		  LEFT OUTER JOIN mv_sys_cd sconlnembrgrd
+		  	ON (sconlnembrgrd.cd = mbrGrd.onlne_grd_cd AND sconlnembrgrd.upper_cd='ONLNE_GRD' 	AND sconlnembrgrd.lang_cd = 'KOR' AND sconlnembrgrd.asstn_cd_1=#{mallId}) /* 온라인 등급 상태 */
+		WHERE 1=1
+		<if test='inqDetailCd != null and inqDetailCd != ""'>
+			AND CCD.INQ_DETAIL_TP_CD = #{inqDetailCd}
+		</if>
+		<if test='cnsltStatCd != null and cnsltStatCd != ""'>
+			AND CC.CNSLT_STAT_CD = #{cnsltStatCd}
+		</if>
+		<if test='cnsltChrgerId != null and cnsltChrgerId != ""'>
+			AND CCD.CNSLT_CHRGER_ID = #{cnsltChrgerId}
+		</if>
+		<if test='searchDtType != null and searchDtType != ""'>
+			<if test="searchDtType ==  'COMPL_DT'">
+				AND (CC.cnslt_prcs_compt_dt <![CDATA[>=]]> to_date(#{searchDtStart},'YYYYMMDDHH24MISS')) and (CC.cnslt_prcs_compt_dt <![CDATA[<]]> to_date(#{searchDtEnd},'YYYYMMDDHH24MISS'))
+				AND CC.CNSLT_STAT_CD = 'PROC_COMPT'
+			</if>
+		</if>
+		<if test='ordNo != null and ordNo != ""'>
+			AND od.ORD_NO = #{ordNo}
+		</if>
+		<if test='mbrId != null and mbrId != ""'>
+			AND mb.MBR_ID = #{mbrId}
+		</if>
+		<if test='ansAdminId != null and ansAdminId != ""'>
+			AND ccd.CNSLT_CHRGER_ID = #{ansAdminId}
+		</if>
+		<if test='ansDelayWorkTm != null and ansDelayWorkTm != ""'>
+        	<if test="ansDelayWorkTm != 5">
+				AND gru.ans_stat_cd = 'ANS_COMPT'
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+				AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}+1, 'CSHLD') 
+			</if>
+        	<if test="ansDelayWorkTm == 5">
+				AND gru.ans_stat_cd = 'ANS_COMPT'
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+			</if>
+		</if>
+		<if test='inqDelayWorkTm != null and inqDelayWorkTm != ""'>
+			<if test="inqDelayWorkTm !=  5">
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+				AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}+1, 'CSHLD') 
+			</if>
+			<if test="inqDelayWorkTm ==  5">
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+			</if>
+		</if>
+		<if test='onlneGrdCd != null and onlneGrdCd != ""'>
+			AND mbrGrd.onlne_grd_cd = #{onlneGrdCd, jdbcType=VARCHAR} /* 온라인 등급 코드 */
+		</if>
+		ORDER BY gru.mtm_inq_sn DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+
+	<select id="getListMtmTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.MtmListSearchDTO" resultType="long">
+		SELECT	COUNT(*)
+		FROM	(SELECT cmi.mtm_inq_sn
+		              , MAX(cmia.mtm_inq_ans_turn) AS mtm_inq_ans_turn
+		              , cmi.inq_sj
+		              , cmi.inq_mbr_no
+		              , cmi.inq_dt
+		              , cmi.inq_tp_cd
+		              , cmi.ans_stat_cd
+		              , cmi.dvc_cd
+		              , cmi.lang_cd
+		              , cmi.mall_id
+		              , cmi.delete_yn
+		              , MAX(cmia.ans_dt) AS ans_dt
+		              , max(cmia.ans_admin_id) AS ans_admin_id
+		              , cmi.prcs_compt_dt
+		              , cmi.udter_id
+		              , cmi.udt_dt
+		              , cmi.ans_dscntt_tp_cd
+		              , cmi.ans_evl_cd
+		              , cmi.ans_evl_cont
+		              , cmi.ans_evl_admin_ans_cont
+		            FROM	cso_mtm_inq cmi
+		            LEFT OUTER JOIN cso_mtm_inq_ans cmia ON  (cmi.mtm_inq_sn = cmia.mtm_inq_sn)		           
+		           GROUP BY cmi.mtm_inq_sn
+		                  , cmi.inq_sj
+		                  , cmi.inq_tp_cd
+		                  , cmi.inq_mbr_no
+		                  , cmi.dvc_cd 
+		                  , cmi.delete_yn
+		                  , cmi.prcs_compt_dt
+		                  , cmi.udter_id
+		                  , cmi.udt_dt
+		                  , cmi.mall_id
+		                  , cmi.lang_cd
+		                  , cmi.inq_dt 
+		                  , cmi.ans_stat_cd 
+			              , cmi.ans_dscntt_tp_cd
+			              , cmi.ans_evl_cd
+			              , cmi.ans_evl_cont
+			              , cmi.ans_evl_admin_ans_cont ) gru
+		  
+		  LEFT OUTER JOIN CSO_CNSLT cc ON (gru.mtm_inq_sn = cc.mtm_inq_sn)
+		  
+		  LEFT OUTER JOIN cso_cnslt_detail ccd ON (gru.mtm_inq_sn = ccd.mtm_inq_sn AND gru.mtm_inq_ans_turn=ccd.mtm_inq_ans_turn)
+		  
+		  LEFT OUTER JOIN mbr mb ON (mb.mbr_no = gru.inq_mbr_no)
+		  LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = gru.inq_tp_cd)
+		  LEFT OUTER JOIN sys_cd cd2 ON (cd2.cd = gru.ans_stat_cd)
+		  LEFT OUTER JOIN sys_cd cd3 ON (cd3.cd = ccd.cnslt_detail_stat_cd)
+		  LEFT OUTER JOIN sys_cd cd4 ON (cd4.cd = gru.dvc_cd)
+		  LEFT OUTER JOIN sys_cd cd5 ON (cd5.cd = gru.lang_cd)
+		  LEFT OUTER JOIN sys_cd cd6 ON (cd6.cd = cc.cnslt_stat_cd)
+		  LEFT OUTER JOIN sys_mall mall ON (mall.mall_id = gru.mall_id)
+		  LEFT OUTER JOIN sys_admin sa1 ON (sa1.admin_id = gru.ans_admin_id)
+		  LEFT OUTER JOIN sys_admin sa2 ON (sa2.admin_id = gru.udter_id)
+		LEFT OUTER JOIN ( SELECT	cmiog.mtm_inq_sn
+											,cmiog.ord_no
+											, LISTAGG(god_no, ',') WITHIN GROUP (ORDER BY og.god_no) AS god_no
+		    								/*, LISTAGG((CASE og.partmal_sect_cd WHEN 'MCOM' THEN og.erp_god_no WHEN 'PARTMAL' THEN og.god_no END), ',') WITHIN GROUP (ORDER BY og.god_no) AS god_no
+		    								, LISTAGG(og.partmal_sect_cd, ',') WITHIN GROUP (ORDER BY og.partmal_sect_cd) AS partmal_sect_cd*/
+		                        FROM	cso_mtm_inq_ord_god cmiog
+		                        LEFT OUTER JOIN ord_god og ON (og.ORD_NO = cmiog.ord_no AND  og.ORD_GOD_TURN = cmiog.ORD_GOD_TURN)
+		                        GROUP BY cmiog.mtm_inq_sn, cmiog.ord_no)  od ON (od.mtm_inq_sn = gru.mtm_inq_sn)
+		LEFT OUTER JOIN mbr_grd mbrGrd ON mb.mbr_no = mbrGrd.mbr_no
+		WHERE 1=1
+		AND gru.delete_yn='N'
+		<if test='inqTpCd != null and inqTpCd != ""'>
+			AND gru.INQ_TP_CD = #{inqTpCd}
+		</if>
+		<if test='inqDetailCd != null and inqDetailCd != ""'>
+			AND CCD.INQ_DETAIL_TP_CD = #{inqDetailCd}
+		</if>
+		<if test='cnsltStatCd != null and cnsltStatCd != ""'>
+			AND CC.CNSLT_STAT_CD = #{cnsltStatCd}
+		</if>
+		<if test='ansStatCd != null and ansStatCd != ""'>
+			AND gru.ANS_STAT_CD = #{ansStatCd}
+		</if>
+        <if test="mallId != null and mallId != ''">
+            AND gru.mall_id = #{mallId}
+        </if>
+        <if test="langCd != null and langCd != ''">
+            AND gru.lang_cd = #{langCd}
+        </if>
+		<if test='cnsltChrgerId != null and cnsltChrgerId != ""'>
+			AND CCD.CNSLT_CHRGER_ID = #{cnsltChrgerId}
+		</if>
+		<if test='inqSj != null and inqSj != ""'>
+			AND gru.INQ_SJ LIKE '%' || #{inqSj} || '%'
+		</if>
+		<if test='searchDtType != null and searchDtType != ""'>
+			<if test="searchDtType ==  'INQ_DT'">
+				AND (gru.INQ_DT <![CDATA[>=]]> to_date(#{searchDtStart},'YYYYMMDDHH24MISS')) and (gru.INQ_DT <![CDATA[<]]> to_date(#{searchDtEnd},'YYYYMMDDHH24MISS'))
+			</if>
+			<if test="searchDtType ==  'ANS_DT'">
+				AND (gru.ANS_DT <![CDATA[>=]]> to_date(#{searchDtStart},'YYYYMMDDHH24MISS')) and (gru.ANS_DT <![CDATA[<]]> to_date(#{searchDtEnd},'YYYYMMDDHH24MISS'))
+			</if>
+			<if test="searchDtType ==  'COMPL_DT'">
+				AND (CC.cnslt_prcs_compt_dt <![CDATA[>=]]> to_date(#{searchDtStart},'YYYYMMDDHH24MISS')) and (CC.cnslt_prcs_compt_dt <![CDATA[<]]> to_date(#{searchDtEnd},'YYYYMMDDHH24MISS'))
+				AND CC.CNSLT_STAT_CD = 'PROC_COMPT'
+			</if>
+		</if>
+		<if test='ansAfterDt != null and ansAfterDt != ""'>
+			<if test='ansAfterDt != "4"'>
+				AND gru.INQ_DT <![CDATA[<=]]> (sysdate - #{ansAfterDt, jdbcType=NUMERIC})
+			</if>
+			<if test='ansAfterDt == "4"'>
+            	AND gru.INQ_DT <![CDATA[<=]]> (SYSDATE-1/24*3)
+            </if>
+		</if>
+		<if test='ordNo != null and ordNo != ""'>
+			AND od.ORD_NO = #{ordNo}
+		</if>
+		<if test='mbrId != null and mbrId != ""'>
+			AND mb.MBR_ID = #{mbrId}
+		</if>
+		<if test='dvcCd != null and dvcCd != ""'>
+			AND gru.DVC_CD = #{dvcCd}
+		</if>
+		<if test='ansAdminId != null and ansAdminId != ""'>
+			AND gru.ans_admin_id = #{ansAdminId}
+		</if>
+		<if test='mtmInqSn != null and mtmInqSn != ""'>
+			AND gru.mtm_inq_sn = #{mtmInqSn}
+		</if>
+		<if test='ansEvlCd != null and ansEvlCd != ""'>
+			AND gru.ans_evl_cd IN (  SELECT regexp_substr(d.param, '[^,]+', 1, level) as param
+			FROM (SELECT #{ansEvlCd, jdbcType=VARCHAR} AS param FROM dual) d
+			CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^,]+'))   /* 만족도평가 코드 */
+		</if>
+		<if test='ansEvlAdminAns != null and ansEvlAdminAns != ""'>
+			<if test='ansEvlAdminAns == "Y"'>
+				AND gru.ans_evl_admin_ans_cont is not null
+			</if>
+			<if test='ansEvlAdminAns == "N"'>
+            	AND gru.ans_evl_admin_ans_cont is null
+            </if>
+		</if>
+		<if test='ansDelayWorkTm != null and ansDelayWorkTm != ""'>
+			<if test="ansDelayWorkTm !=  5">
+				AND gru.ans_stat_cd = 'ANS_COMPT'
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+				AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}+1, 'CSHLD') 
+			</if>
+			<if test="ansDelayWorkTm ==  5">
+				AND gru.ans_stat_cd = 'ANS_COMPT'
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(gru.ans_dt, #{ansDelayWorkTm}, 'CSHLD') 
+			</if>
+		</if>
+		<if test='inqDelayWorkTm != null and inqDelayWorkTm != ""'>
+			<if test="inqDelayWorkTm !=  5">
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+				AND gru.inq_dt <![CDATA[>]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}+1, 'CSHLD') 
+			</if>
+			<if test="inqDelayWorkTm ==  5">
+				AND gru.inq_dt <![CDATA[<=]]> FN_ELAPSE_DAY(sysdate, #{inqDelayWorkTm}, 'CSHLD') 
+			</if>
+		</if>
+		<if test='ansDscnttTpCd != null and ansDscnttTpCd != ""'>
+			AND gru.ans_dscntt_tp_cd IN (  SELECT REGEXP_SUBSTR(d.param, '[^,]+', 1, level) as param
+			FROM (SELECT #{ansDscnttTpCd, jdbcType=VARCHAR} AS param FROM DUAL) d
+					CONNECT BY LEVEL <![CDATA[<=]]> REGEXP_COUNT(d.param, '[^,]+'))   /* 답변 불만 유형 코드 */
+		</if>
+		<if test='onlneGrdCd != null and onlneGrdCd != ""'>
+			AND mbrGrd.onlne_grd_cd = #{onlneGrdCd, jdbcType=VARCHAR} /* 온라인 등급 코드 */
+		</if>
+		ORDER BY gru.mtm_inq_sn DESC
+	</select>
+
+	<select id="getInqOrdGodsNo" resultType="String" parameterType="String">
+		SELECT 	erp_god_no	/* com.plgrim.ncp.biz.callcenter.mtm.getListMtm Aether 20150420 */
+		FROM ord_god og
+		where og.ord_no = #{ordNo}
+	</select>	
+	
+	
+	
+	<select id="getMtmDetail" parameterType="string" resultMap="mtmDetailResult">
+    SELECT 		/* com.plgrim.ncp.biz.callcenter.mtm.getMtmDetail Aether 20150420 */
+        CMI.INQ_CSTMR_NM
+        ,M.MBR_SEX_SECT_CD
+        ,(SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = M.MBR_TP_CD) AS MBR_TP_CD
+        ,M.MBR_ID
+        ,M.MBR_NO
+        ,M.ERP_CSTMR_NO
+        ,CMIOG.ORD_NO
+        ,CMIOG.ORD_GOD_TURN
+        ,CMIOG.GOD_NM
+        ,CMIOG.GOD_NO        
+        ,CMI.MTM_INQ_SN
+        ,CMI.REG_DT
+        ,CMI.CSTMR_SMS_RECPTN_YN
+        ,CMI.CSTMRTEL_TLOF_NO
+        ,CMI.CSTMR_EMAIL_RECPTN_YN
+        ,CMI.CSTMR_EMAIL
+        ,(SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = CMI.INQ_TP_CD) AS INQ_TP_CD
+        ,(SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = CH.CNSLT_STAT_CD) AS CNSLT_STAT_CD 
+        ,CMI.INQ_SJ
+        ,CMI.INQ_CONT
+        ,(SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = CMI.ANS_STAT_CD) AS ANS_STAT_CD
+    FROM  CSO_MTM_INQ CMI
+    LEFT OUTER JOIN MBR M ON CMI.INQ_MBR_NO = M.MBR_NO
+    LEFT OUTER JOIN CSO_MTM_INQ_ORD_GOD CMIOG ON CMI.MTM_INQ_SN = CMIOG.MTM_INQ_SN
+    LEFT OUTER JOIN CSO_CNSLT CH ON CMI.MTM_INQ_SN = CH.MTM_INQ_SN    
+    WHERE CMI.MTM_INQ_SN = #{mtmInqSn}       
+	</select>
+	
+	
+	
+	<select id="getMaxMtmAnsTurn" parameterType="string" resultType="int">
+		SELECT NVL (MAX (cmir.MTM_ANS_TURN), 0)
+	  	FROM cso_mtm_inq_rspons cmir
+	 	WHERE cmir.mtm_inq_sn = #{mtmInqSn}    
+	</select>
+	
+	
+
+
+
+    <select id="getInqryCnslt" parameterType="Long" resultType="csoCnslt">
+        SELECT /* com.plgrim.ncp.base.repository.cso.selectCsoCnslt jackie 20150406 */
+                CNSLT_SN
+               ,MBR_TP_CD
+               ,MBR_ATRB_CD
+               ,CNSLT_REQST_MBR_NO
+               ,CSTMRNM
+               ,CNSLT_KND_CD
+               ,INQ_TP_CD
+               ,CNSLT_STAT_CD
+               ,MTM_INQ_SN
+               ,GOD_INQ_SN
+               ,CSTMR_EMAIL
+               ,CSTMRTEL_NATION_NO
+               ,CSTMRTEL_AREA_NO
+               ,CSTMRTEL_TLOF_NO
+               ,CSTMRTEL_TLOF_WTHN_NO
+               ,CSTMRMOBIL_NATION_NO
+               ,CSTMRMOBIL_AREA_NO
+               ,CSTMRMOBIL_TLOF_NO
+               ,CSTMRMOBIL_TLOF_WTHN_NO
+               ,MALL_ID
+               ,LANG_CD
+               ,DVC_CD
+               ,CSTMR_CLM_CD
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    CSO_CNSLT t
+        WHERE   1 = 1
+        AND     MTM_INQ_SN = #{mtmInqrySn}                       
+        AND		ROWNUM = 1
+    </select>
+
+	<select id="selectMtmUserInfo" parameterType="long" resultMap="mtmUserInfoResult">
+		<!-- #31806  2016.12.06 eunsik10.kim  멤버십 제도 개선관련 -->
+		SELECT cmi.mtm_inq_sn	/*[callcenter.mtm.xml][selectMtmUserInfo]*/
+				, cmi.inq_mbr_no
+				, cmi.erp_god_no as inq_erp_god_no
+				, cmi.god_no as inq_god_no
+				, cmi.cstmr_sms_recptn_yn
+				, cmi.cstmr_email_recptn_yn
+				, mbr.mbr_sex_sect_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = mbr.mbr_sex_sect_cd) AS mbr_sex_sect_nm
+				, mbr.mbr_tp_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = mbr.mbr_tp_cd) AS mbr_tp_nm
+				, mbr.mbr_id
+				, mbr.mbr_NM AS INQ_NM
+				, mbr.erp_cstmr_no
+				, mbr.mbr_email
+				, (SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = mbr.join_mall_id) AS MALL_NM
+				, cmiog.ord_no
+				, cmiog.ord_god_turn
+				, cmiog.god_nm
+				, og.god_no
+				, og.erp_god_no
+				, mbr.MOBIL_AREA_NO||mbr.MOBIL_TLOF_NO||mbr.MOBIL_TLOF_WTHN_NO AS mobil_no
+				/*, mbr.erp_grd_cd*/
+				, cmi.mall_id
+		FROM    cso_mtm_inq cmi
+				LEFT OUTER JOIN mbr mbr ON cmi.inq_mbr_no = mbr.mbr_no
+				LEFT OUTER JOIN cso_mtm_inq_ord_god cmiog ON cmi.mtm_inq_sn = cmiog.mtm_inq_sn
+				LEFT OUTER JOIN ord_god og ON cmiog.ord_no = og.ord_no AND CMIOG.ORD_GOD_TURN = OG.ORD_GOD_TURN
+		WHERE 1=1
+		AND cmi.mtm_inq_sn = #{mtmInqSn}
+		AND rownum = 1		
+		ORDER by cmiog.ord_god_turn DESC
+	</select>
+
+
+	<select id="selectMtmInqInfoFlag" parameterType="long" resultType="int">
+     SELECT   count(*)
+     FROM 	CSO_MTM_INQ_ANS S
+     WHERE 1=1 
+     AND S.mtm_inq_sn = #{mtmInqSn}
+     AND ROWNUM = 1
+	 ORDER BY S.mtm_inq_ans_turn DESC
+	</select>
+
+	<select id="selectMtmInqInfo" parameterType="long" resultMap="mtmInqInfoResult">
+		
+		
+		SELECT S.*  /*답변이 안달려있음*/
+		FROM(
+		SELECT cmi.mtm_inq_sn
+				,cmi.inq_dt
+				, cmi.inq_tp_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.inq_tp_cd) AS inq_tp_nm
+				, cmi.inq_sj
+				, cmi.inq_cont
+				, cmi.ans_stat_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.ans_stat_cd) AS ans_stat_nm
+				, cmi.inq_cstmr_nm
+				, cmi.cstmr_sms_recptn_yn
+				, cmi.cstmr_email_recptn_yn
+				, cmi.cstmr_email
+				, cmi.cstmrmobil_nation_no
+				, cmi.cstmrmobil_area_no
+				, cmi.cstmrmobil_tlof_no
+				, cmi.cstmrmobil_tlof_wthn_no
+				, CC.CNSLT_STAT_CD
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = CC.CNSLT_STAT_CD) AS CNSLT_STAT_NM
+				, cmi.mall_id
+				, cmi.lang_cd
+				, cmi.ans_dscntt_tp_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.ANS_DSCNTT_TP_CD) AS ANS_DSCNTT_TP_CD_NM
+				, cmi.ans_dscntt_detail_cont
+				, cmi.ans_evl_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.ANS_EVL_CD) AS ANS_EVL_CD_NM
+				, cmi.ans_evl_cont
+				, cmi.ans_evl_admin_ans_cont
+                , cmia.ans_cont
+                , TO_CHAR(cmia.ans_dt , 'YYYY-MM-DD hh:ss') AS INQ_ANS_DT
+		FROM cso_mtm_inq cmi
+		LEFT OUTER JOIN cso_cnslt cc ON cmi.mtm_inq_sn = cc.mtm_inq_sn
+        LEFT OUTER JOIN CSO_MTM_INQ_ANS cmia ON cmi.mtm_inq_sn = cmia.mtm_inq_sn 
+         /*and CMIA.DETAIL_ANS_STAT_CD = 'ANS_COMPT'*/
+		WHERE 1=1
+		AND cmi.mtm_inq_sn = #{mtmInqSn}
+			) S
+			
+	</select>
+	
+	<select id="selectAnsedMtmInqInfo" parameterType="long" resultMap="mtmInqInfoResult">
+		
+		
+		SELECT S.* /* com.plgrim.ncp.base.repository.cso.selectAnsedMtmInqInfo Brandon 20180814 */ /*답변이 달려있음*/
+		FROM(
+		SELECT cmi.mtm_inq_sn
+				,cmi.inq_dt
+				, cmi.inq_tp_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.inq_tp_cd) AS inq_tp_nm
+				, cmi.inq_sj
+				, cmi.inq_cont
+				, cmi.ans_stat_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.ans_stat_cd) AS ans_stat_nm
+				, cmi.inq_cstmr_nm
+				, cmi.cstmr_sms_recptn_yn
+				, cmi.cstmr_email_recptn_yn
+				, cmi.cstmr_email
+				, cmi.cstmrmobil_nation_no
+				, cmi.cstmrmobil_area_no
+				, cmi.cstmrmobil_tlof_no
+				, cmi.cstmrmobil_tlof_wthn_no
+				, CC.CNSLT_STAT_CD
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = CC.CNSLT_STAT_CD) AS CNSLT_STAT_NM
+				, cmi.mall_id
+				, cmi.lang_cd
+				, cmi.ans_dscntt_tp_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.ANS_DSCNTT_TP_CD) AS ANS_DSCNTT_TP_CD_NM
+				, cmi.ans_dscntt_detail_cont
+				, cmi.ans_evl_cd
+				, (SELECT SC.CD_NM FROM SYS_CD SC WHERE CD = cmi.ANS_EVL_CD) AS ANS_EVL_CD_NM
+				, cmi.ans_evl_cont
+				, cmi.ans_evl_admin_ans_cont
+                , cmia.ans_cont
+                , TO_CHAR(cmia.ans_dt , 'YYYY-MM-DD hh:ss') AS INQ_ANS_DT
+                , cmia.mtm_inq_ans_turn
+		FROM cso_mtm_inq cmi
+		LEFT OUTER JOIN cso_cnslt cc ON cmi.mtm_inq_sn = cc.mtm_inq_sn
+        LEFT OUTER JOIN CSO_MTM_INQ_ANS cmia ON cmi.mtm_inq_sn = cmia.mtm_inq_sn 
+        /* and CMIA.DETAIL_ANS_STAT_CD = 'ANS_COMPT'*/
+		WHERE 1=1
+		AND cmi.mtm_inq_sn = #{mtmInqSn}
+		order by cmia.mtm_inq_ans_turn desc
+			) S
+		WHERE ROWNUM = 1
+			
+	</select>
+
+	<select id="selectMtmInqAtchInfo" parameterType="long" resultType="csoMtmInqAtchFile">
+		SELECT  mtm_inq_sn
+        		, mtm_inq_atch_file_turn
+        		, mtm_inq_atch_file_nm
+        		, mtm_inq_atch_file_url
+        		, mtm_inq_atch_file_cpcty
+		  FROM cso_mtm_inq_atch_file
+		 WHERE 1=1
+		   AND mtm_inq_sn = #{mtmInqSn}
+	</select>
+
+
+	<insert id="insertCsoMtmInqAns" parameterType="csoMtmInqAns">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoMtmInqAns jackie 20150515 */
+	    INTO CSO_MTM_INQ_ANS
+		(
+	        MTM_INQ_SN
+	       ,MTM_INQ_ANS_TURN
+	       ,ANS_SJ
+	       ,ANS_CONT
+	       ,DETAIL_ANS_STAT_CD
+	       ,ANS_CNFIRM_YN
+	       ,ANS_DT
+	       ,ANS_ADMIN_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{mtmInqSn,jdbcType=NUMERIC}
+	       ,#{mtmInqAnsTurn,jdbcType=NUMERIC}
+	       ,#{ansSj,jdbcType=VARCHAR}
+	       ,#{ansCont,jdbcType=CLOB}
+	       ,#{detailAnsStatCd,jdbcType=VARCHAR}
+	       ,#{ansCnfirmYn,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{ansAdminId,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+	</insert>
+
+	<update id="updateCsoMtmInq" parameterType="csoMtmInq">
+		UPDATE /* com.plgrim.ncp.base.repository.cso.updateCsoMtmInq jackie 20150406 */
+		CSO_MTM_INQ SET
+		ANS_STAT_CD = #{ansStatCd,jdbcType=VARCHAR}
+		<if test="ansStatCd == 'ANS_COMPT'">
+			,PRCS_COMPT_DT = SYSDATE
+		</if>
+		,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		,UDT_DT = SYSDATE
+		WHERE   1 = 1
+		AND     MTM_INQ_SN = #{mtmInqSn}
+	</update>
+	
+	<update id="updateCsoMtmInqAnsEvlAdminAns" parameterType="csoMtmInq">
+		UPDATE /* com.plgrim.ncp.base.repository.cso.updateCsoMtmInqAnsEvlStat */
+		CSO_MTM_INQ SET 
+		 ANS_EVL_ADMIN_ANS_CONT = #{ansEvlAdminAnsCont}
+                ,ANS_EVL_ADMIN_ANS_DT = SYSDATE
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+		WHERE   1 = 1
+		AND     MTM_INQ_SN = #{mtmInqSn}
+	</update>
+	<update id="updateAnsDscnttTp" parameterType="csoMtmInq">
+		UPDATE /* com.plgrim.ncp.base.repository.cso.updateAnsDscnttTp */
+		CSO_MTM_INQ SET 
+		 ANS_DSCNTT_TP_CD = #{ansDscnttTpCd}
+                ,ANS_DSCNTT_DETAIL_CONT = #{ansDscnttDetailCont}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+		WHERE   MTM_INQ_SN = #{mtmInqSn}
+	</update>
+
+	<select id="selectCsoMtmInq" parameterType="long" resultMap="mtmResult">
+		SELECT /* com.plgrim.ncp.base.repository.cso.selectCsoMtmInq jackie 20150615 */
+				MTM_INQ_SN
+				,INQ_TP_CD
+				,INQ_MBR_NO
+				,INQ_CSTMR_NM
+				,INQ_SJ
+				,INQ_CONT
+				,INQ_DT
+				,ANS_STAT_CD
+				,INQIRE_COUNT
+				,PRCS_COMPT_DT
+				,DELETE_YN
+				,CSTMR_EMAIL
+				,CSTMRTEL_AREA_NO
+				,CSTMRTEL_TLOF_NO
+				,CSTMRTEL_TLOF_WTHN_NO
+				,CSTMRTEL_NATION_NO
+				,CSTMRMOBIL_AREA_NO
+				,CSTMRMOBIL_TLOF_NO
+				,CSTMRMOBIL_TLOF_WTHN_NO
+				,CSTMRMOBIL_NATION_NO
+				,CSTMR_SMS_RECPTN_YN
+				,CSTMR_EMAIL_RECPTN_YN
+				,LANG_CD
+				,MALL_ID
+				,DVC_CD
+				,ANS_DSCNTT_TP_CD
+				,ANS_DSCNTT_DETAIL_CONT
+				,ANS_EVL_CD
+				,ANS_EVL_CONT
+				,ANS_EVL_ADMIN_ANS_CONT
+				,REGTR_ID
+				,REG_DT
+				,UDTER_ID
+				,UDT_DT
+		FROM    CSO_MTM_INQ t
+		WHERE   1 = 1
+        AND     MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectCsoMtmInqOrdGod" parameterType="long" resultMap="mtmOrdGodResult">
+		 SELECT /* com.plgrim.ncp.base.repository.cso.selectCsoMtmInqOrdGod jackie 20150615 */
+                t.MTM_INQ_SN AS MTM_INQ_SN
+               ,t.MTM_INQ_ORD_GOD_TURN AS MTM_INQ_ORD_GOD_TURN
+               ,t.GOD_NM AS GOD_NM
+               ,t.ORD_NO AS ORD_NO
+               ,t.ORD_GOD_TURN AS ORD_GOD_TURN
+               ,t.REGTR_ID AS REGTR_ID
+               ,t.REG_DT AS  REG_DT
+               ,t.UDTER_ID AS UDTER_ID
+               ,t.UDT_DT AS UDT_DT
+               ,og.god_no AS GOD_NO
+        FROM    CSO_MTM_INQ_ORD_GOD t
+        JOIN   ORD_GOD og ON t.ord_no = og.ord_no AND t.ord_god_turn = og.ord_god_turn
+        WHERE   1 = 1
+        AND     MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectCnsltSn" parameterType="long" resultType="long">
+		SELECT cnslt_sn
+		  FROM cso_cnslt
+		 WHERE mtm_inq_sn = #{mtmInqSn,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectGodList" parameterType="String" resultMap="inquirySelectGodResult">
+		SELECT ord_no
+				, ord_god_turn
+				, dlv_pcupsp_turn
+				, god_no
+				, erp_god_no
+				, god_nm
+		FROM ord_god WHERE ord_no = #{ordNo}
+	</select>
+	
+	<select id="selectGodsList" parameterType="com.plgrim.ncp.biz.member.data.MypageMtmFoDTO" resultMap="inquirySelectGodResult">
+	<include refid="com.plgrim.ncp.base.beginPage"/>
+	
+		SELECT /* [callcenter.mtm.xml][selectGodsList][1:1문의 주문상품조회][Brandon] */
+			ord_no
+				, ord_god_turn
+				, dlv_pcupsp_turn
+				, god_no
+				, erp_god_no
+				, god_nm
+		FROM ord_god WHERE ord_no = #{ordGod.ordNo}
+		
+	<include refid="com.plgrim.ncp.base.endPage"/>		
+	</select>
+	
+	<select id="selectGodsListCount" parameterType="com.plgrim.ncp.biz.member.data.MypageMtmFoDTO" resultType="long">	
+		SELECT /* [callcenter.mtm.xml][selectGodsListCount][1:1문의 주문상품조회][Brandon] */
+			COUNT(*)
+		FROM 
+			ord_god 
+		WHERE 1=1 AND
+			ord_no = #{ordGod.ordNo}				
+	</select>
+
+	<select id="mtmInqStatCheck" parameterType="Long" resultType="String">
+		SELECT ANS_STAT_CD
+		  FROM CSO_MTM_INQ
+		 WHERE 1=1
+		   AND mtm_inq_sn = #{mtmInqSn}
+	</select>
+
+	<select id="selectCounselInfo" parameterType="Long" resultType="csoCnslt">
+		SELECT /* com.plgrim.ncp.base.repository.cso.selectCsoCnslt jackie 20150601 */
+                CNSLT_SN
+               ,CSTMR_CLM_CD
+               ,CNSLT_REQST_MBR_NO
+               ,CSTMRNM
+               ,CNSLT_KND_CD
+               ,INQ_TP_CD
+               ,CNSLT_STAT_CD
+               ,CNSLT_PRCS_COMPT_DT
+               ,CSTMR_EMAIL
+               ,CSTMRTEL_NATION_NO
+               ,CSTMRTEL_AREA_NO
+               ,CSTMRTEL_TLOF_NO
+               ,CSTMRTEL_TLOF_WTHN_NO
+               ,CSTMRMOBIL_NATION_NO
+               ,CSTMRMOBIL_AREA_NO
+               ,CSTMRMOBIL_TLOF_NO
+               ,CSTMRMOBIL_TLOF_WTHN_NO
+               ,MALL_ID
+               ,LANG_CD
+               ,DVC_CD
+               ,MTM_INQ_SN
+               ,GOD_INQ_SN
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    CSO_CNSLT t
+        WHERE   1 = 1
+        AND     MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectCounselDetailInfo" parameterType="csoCnsltDetail" resultType="csoCnsltDetail">
+		SELECT /* com.plgrim.ncp.base.repository.cso.selectCsoCnsltDetail jackie 20150602 */
+                CNSLT_SN
+               ,CNSLT_DETAIL_TURN
+               ,CNSLT_KND_CD
+               ,CNSLT_TGT_CD
+               ,CSTMR_CLM_CD
+               ,INQ_TP_CD
+               ,INQ_DETAIL_TP_CD
+               ,CNSLT_DETAIL_STAT_CD
+               ,CNSLT_DETAIL_CONT
+               ,CNSLT_DT
+               ,CNSLT_CHRGER_ID
+               ,CNSLT_DETL_TRNSMIS_REQUST_YN
+               ,SMS_SND_COUNT
+               ,EMAIL_SND_COUNT
+               ,DELETE_YN
+               ,MTM_INQ_SN
+               ,MTM_INQ_ANS_TURN
+               ,TRANS_CNSLT_DETAIL_TURN
+               ,TRANS_REQUST_TURN
+               ,CNSLT_TMPLAT_SN
+               ,CNSLT_TMPLAT_NM
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    CSO_CNSLT_DETAIL t
+        WHERE   1 = 1
+        AND     CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+        AND     CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectmtmInqAnsInfo" parameterType="csoMtmInqAns" resultType="csoMtmInqAns">
+		SELECT /* com.plgrim.ncp.base.repository.cso.selectCsoMtmInqAns jackie 20150615 */
+                MTM_INQ_SN
+               ,MTM_INQ_ANS_TURN
+               ,ANS_SJ
+               ,ANS_CONT
+               ,DETAIL_ANS_STAT_CD
+               ,ANS_CNFIRM_YN
+               ,ANS_DT
+               ,ANS_ADMIN_ID
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    CSO_MTM_INQ_ANS t
+        WHERE   1 = 1
+        AND     MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+        AND     MTM_INQ_ANS_TURN = #{mtmInqAnsTurn,jdbcType=NUMERIC}
+	</select>
+
+	<update id="upddateCsoMtmInqAns" parameterType="csoMtmInqAns">
+		UPDATE
+        CSO_MTM_INQ_ANS SET
+                ANS_CONT = #{ansCont,jdbcType=CLOB}
+                ,DETAIL_ANS_STAT_CD = #{detailAnsStatCd,jdbcType=VARCHAR}
+                ,ANS_CNFIRM_YN = 'N'
+                ,ANS_DT = SYSDATE
+                ,ANS_ADMIN_ID = #{ansAdminId,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+        AND     MTM_INQ_ANS_TURN = #{mtmInqAnsTurn,jdbcType=NUMERIC}
+	</update>
+
+	<select id="selectCounselCount" parameterType="Long" resultType="String">
+		select cnslt_sn
+		from cso_cnslt
+		where mtm_inq_sn=#{mtmInqSn}
+	</select>
+
+	<select id="selectInquiryTemplate" parameterType="csoCnsltTmplat" resultType="csoCnsltTmplat">
+		SELECT cnslt_tmplat_sn
+				, mtm_inq_ans_tp_cd
+				, mtm_inq_ans_detail_tp_cd
+				, cnslt_tmplat_nm
+				, cnslt_tmplat_sj
+				, cnslt_tmplat_cont
+  		  FROM cso_cnslt_tmplat
+ 		 WHERE 1=1
+   		   AND cnslt_tmplat_knd_cd = 'MTM_INQ_ANS'
+   		   AND use_yn = 'Y'
+	</select>
+
+	<select id="selectAnsStat" parameterType="Long" resultType="String">
+		select ans_stat_cd
+		from cso_mtm_inq
+		where 1=1
+		and mtm_inq_sn=#{mtmInqSn}
+	</select>
+	
+		<select id="selectInqAns" parameterType="map" resultType="String">
+	 SELECT ANS_CONT 
+	 FROM cso_mtm_inq_ans 
+	 WHERE 1=1
+	 AND mtm_inq_sn = #{mtmInqSn}
+	 AND MTM_INQ_ANS_TURN= #{inqAnsTurn}
+	</select>
+
+</mapper>

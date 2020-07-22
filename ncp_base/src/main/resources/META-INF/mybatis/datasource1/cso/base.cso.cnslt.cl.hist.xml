@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoCnsltClHist" parameterType="csoCnsltClHist" resultType="csoCnsltClHist">
+		SELECT /* com.plgrim.ncp.base.selectCsoCnsltClHist		Generator(Generator)	2018-05-23 */
+			   CNSLT_ADMIN_ID
+			 , CNSLT_DT
+			 , CL_TP_CD
+			 , CSTMRTEL_NATION_NO
+			 , CSTMRTEL_AREA_NO
+			 , CSTMRTEL_TLOF_NO
+			 , CSTMRTEL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CNSLT_CL_HIST
+		 WHERE 1 = 1
+	   	   AND CNSLT_ADMIN_ID = #{cnsltAdminId,jdbcType=VARCHAR}
+		   AND CNSLT_DT = #{cnsltDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateCsoCnsltClHist" parameterType="csoCnsltClHist">
+		UPDATE /* com.plgrim.ncp.base.updateCsoCnsltClHist		Generator(Generator)	2018-05-23 */
+		CSO_CNSLT_CL_HIST SET
+			   CL_TP_CD = #{clTpCd,jdbcType=VARCHAR}
+			 , CSTMRTEL_NATION_NO = #{cstmrtelNationNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_AREA_NO = #{cstmrtelAreaNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_TLOF_NO = #{cstmrtelTlofNo,jdbcType=VARCHAR}
+			 , CSTMRTEL_TLOF_WTHN_NO = #{cstmrtelTlofWthnNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CNSLT_ADMIN_ID = #{cnsltAdminId,jdbcType=VARCHAR}
+		   AND CNSLT_DT = #{cnsltDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertCsoCnsltClHist" parameterType="csoCnsltClHist">
+		INSERT /* com.plgrim.ncp.base.insertCsoCnsltClHist		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CNSLT_CL_HIST (
+			   CNSLT_ADMIN_ID
+			 , CNSLT_DT
+			 , CL_TP_CD
+			 , CSTMRTEL_NATION_NO
+			 , CSTMRTEL_AREA_NO
+			 , CSTMRTEL_TLOF_NO
+			 , CSTMRTEL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{cnsltAdminId,jdbcType=VARCHAR}
+			 , #{cnsltDt,jdbcType=TIMESTAMP}
+			 , #{clTpCd,jdbcType=VARCHAR}
+			 , #{cstmrtelNationNo,jdbcType=VARCHAR}
+			 , #{cstmrtelAreaNo,jdbcType=VARCHAR}
+			 , #{cstmrtelTlofNo,jdbcType=VARCHAR}
+			 , #{cstmrtelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoCnsltClHist" parameterType="csoCnsltClHist">
+		DELETE /* com.plgrim.ncp.base.deleteCsoCnsltClHist		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CNSLT_CL_HIST
+		 WHERE 1 = 1
+		   AND CNSLT_ADMIN_ID = #{cnsltAdminId,jdbcType=VARCHAR}
+		   AND CNSLT_DT = #{cnsltDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

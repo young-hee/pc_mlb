@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBrnd" parameterType="sysBrnd" resultType="sysBrnd">
+		SELECT /* com.plgrim.ncp.base.selectSysBrnd		Generator(Generator)	2018-05-23 */
+			   BRND_ID
+			 , UPPER_BRND_ID
+			 , ERP_BRND_ID
+			 , ERP_BRND_GRP_ID
+			 , BRND_TAG_CD
+			 , BRND_TAG_NM
+			 , BRND_NM
+			 , BRND_DSCR
+			 , BRND_STORY_INTRCN_CONT
+			 , BRND_IMG_URL
+			 , MODEL_SIZE_IMG_URL
+			 , MODEL_SIZE_MOBILE_IMG_URL
+			 , SIZE_GD_HTML
+			 , SIZE_GD_MOBILE_HTML
+			 , USE_YN
+			 , ON_SALE_EXPSR_STDR_DC_RT
+			 , BRND_GRP_YN
+			 , OVSEA_BRND_YN
+			 , BRND_SALE_IDEX
+			 , SORT_SEQ
+			 , OVSEA_DLV_PSB_YN
+			 , EMP_ONLY_YN
+			 , PCH_PSB_SHOP_EXPSR_YN
+			 , CSMR_PRC_DC_RT
+			 , EMP_PRC_DC_RT
+			 , PNT_ACCML_YN
+			 , PNT_ACCML_RT
+			 , PNT_USE_YN
+			 , WEBPNT_ACCML_YN
+			 , WEBPNT_ACCML_RT
+			 , WEBPNT_USE_YN
+			 , IMDTL_DC_YN
+			 , IMDTL_DC_RT
+			 , IMG_RSIZE_GRP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BRND
+		 WHERE 1 = 1
+	   	   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysBrnd" parameterType="sysBrnd">
+		UPDATE /* com.plgrim.ncp.base.updateSysBrnd		Generator(Generator)	2018-05-23 */
+		SYS_BRND SET
+			   UPPER_BRND_ID = #{upperBrndId,jdbcType=VARCHAR}
+			 , ERP_BRND_ID = #{erpBrndId,jdbcType=VARCHAR}
+			 , ERP_BRND_GRP_ID = #{erpBrndGrpId,jdbcType=VARCHAR}
+			 , BRND_TAG_CD = #{brndTagCd,jdbcType=VARCHAR}
+			 , BRND_TAG_NM = #{brndTagNm,jdbcType=VARCHAR}
+			 , BRND_NM = #{brndNm,jdbcType=VARCHAR}
+			 , BRND_DSCR = #{brndDscr,jdbcType=VARCHAR}
+			 , BRND_STORY_INTRCN_CONT = #{brndStoryIntrcnCont,jdbcType=VARCHAR}
+			 , BRND_IMG_URL = #{brndImgUrl,jdbcType=VARCHAR}
+			 , MODEL_SIZE_IMG_URL = #{modelSizeImgUrl,jdbcType=VARCHAR}
+			 , MODEL_SIZE_MOBILE_IMG_URL = #{modelSizeMobileImgUrl,jdbcType=VARCHAR}
+			 , SIZE_GD_HTML = #{sizeGdHtml,jdbcType=CLOB}
+			 , SIZE_GD_MOBILE_HTML = #{sizeGdMobileHtml,jdbcType=CLOB}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , ON_SALE_EXPSR_STDR_DC_RT = #{onSaleExpsrStdrDcRt,jdbcType=NUMERIC}
+			 , BRND_GRP_YN = #{brndGrpYn,jdbcType=VARCHAR}
+			 , OVSEA_BRND_YN = #{ovseaBrndYn,jdbcType=VARCHAR}
+			 , BRND_SALE_IDEX = #{brndSaleIdex,jdbcType=NUMERIC}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , OVSEA_DLV_PSB_YN = #{ovseaDlvPsbYn,jdbcType=VARCHAR}
+			 , EMP_ONLY_YN = #{empOnlyYn,jdbcType=VARCHAR}
+			 , PCH_PSB_SHOP_EXPSR_YN = #{pchPsbShopExpsrYn,jdbcType=VARCHAR}
+			 , CSMR_PRC_DC_RT = #{csmrPrcDcRt,jdbcType=NUMERIC}
+			 , EMP_PRC_DC_RT = #{empPrcDcRt,jdbcType=NUMERIC}
+			 , PNT_ACCML_YN = #{pntAccmlYn,jdbcType=VARCHAR}
+			 , PNT_ACCML_RT = #{pntAccmlRt,jdbcType=NUMERIC}
+			 , PNT_USE_YN = #{pntUseYn,jdbcType=VARCHAR}
+			 , WEBPNT_ACCML_YN = #{webpntAccmlYn,jdbcType=VARCHAR}
+			 , WEBPNT_ACCML_RT = #{webpntAccmlRt,jdbcType=NUMERIC}
+			 , WEBPNT_USE_YN = #{webpntUseYn,jdbcType=VARCHAR}
+			 , IMDTL_DC_YN = #{imdtlDcYn,jdbcType=VARCHAR}
+			 , IMDTL_DC_RT = #{imdtlDcRt,jdbcType=NUMERIC}
+			 , IMG_RSIZE_GRP_CD = #{imgRsizeGrpCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysBrnd" parameterType="sysBrnd">
+		INSERT /* com.plgrim.ncp.base.insertSysBrnd		Generator(Generator)	2018-05-23 */
+		INTO   SYS_BRND (
+			   BRND_ID
+			 , UPPER_BRND_ID
+			 , ERP_BRND_ID
+			 , ERP_BRND_GRP_ID
+			 , BRND_TAG_CD
+			 , BRND_TAG_NM
+			 , BRND_NM
+			 , BRND_DSCR
+			 , BRND_STORY_INTRCN_CONT
+			 , BRND_IMG_URL
+			 , MODEL_SIZE_IMG_URL
+			 , MODEL_SIZE_MOBILE_IMG_URL
+			 , SIZE_GD_HTML
+			 , SIZE_GD_MOBILE_HTML
+			 , USE_YN
+			 , ON_SALE_EXPSR_STDR_DC_RT
+			 , BRND_GRP_YN
+			 , OVSEA_BRND_YN
+			 , BRND_SALE_IDEX
+			 , SORT_SEQ
+			 , OVSEA_DLV_PSB_YN
+			 , EMP_ONLY_YN
+			 , PCH_PSB_SHOP_EXPSR_YN
+			 , CSMR_PRC_DC_RT
+			 , EMP_PRC_DC_RT
+			 , PNT_ACCML_YN
+			 , PNT_ACCML_RT
+			 , PNT_USE_YN
+			 , WEBPNT_ACCML_YN
+			 , WEBPNT_ACCML_RT
+			 , WEBPNT_USE_YN
+			 , IMDTL_DC_YN
+			 , IMDTL_DC_RT
+			 , IMG_RSIZE_GRP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{upperBrndId,jdbcType=VARCHAR}
+			 , #{erpBrndId,jdbcType=VARCHAR}
+			 , #{erpBrndGrpId,jdbcType=VARCHAR}
+			 , #{brndTagCd,jdbcType=VARCHAR}
+			 , #{brndTagNm,jdbcType=VARCHAR}
+			 , #{brndNm,jdbcType=VARCHAR}
+			 , #{brndDscr,jdbcType=VARCHAR}
+			 , #{brndStoryIntrcnCont,jdbcType=VARCHAR}
+			 , #{brndImgUrl,jdbcType=VARCHAR}
+			 , #{modelSizeImgUrl,jdbcType=VARCHAR}
+			 , #{modelSizeMobileImgUrl,jdbcType=VARCHAR}
+			 , #{sizeGdHtml,jdbcType=CLOB}
+			 , #{sizeGdMobileHtml,jdbcType=CLOB}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{onSaleExpsrStdrDcRt,jdbcType=NUMERIC}
+			 , #{brndGrpYn,jdbcType=VARCHAR}
+			 , #{ovseaBrndYn,jdbcType=VARCHAR}
+			 , #{brndSaleIdex,jdbcType=NUMERIC}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{ovseaDlvPsbYn,jdbcType=VARCHAR}
+			 , #{empOnlyYn,jdbcType=VARCHAR}
+			 , #{pchPsbShopExpsrYn,jdbcType=VARCHAR}
+			 , #{csmrPrcDcRt,jdbcType=NUMERIC}
+			 , #{empPrcDcRt,jdbcType=NUMERIC}
+			 , #{pntAccmlYn,jdbcType=VARCHAR}
+			 , #{pntAccmlRt,jdbcType=NUMERIC}
+			 , #{pntUseYn,jdbcType=VARCHAR}
+			 , #{webpntAccmlYn,jdbcType=VARCHAR}
+			 , #{webpntAccmlRt,jdbcType=NUMERIC}
+			 , #{webpntUseYn,jdbcType=VARCHAR}
+			 , #{imdtlDcYn,jdbcType=VARCHAR}
+			 , #{imdtlDcRt,jdbcType=NUMERIC}
+			 , #{imgRsizeGrpCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBrnd" parameterType="sysBrnd">
+		DELETE /* com.plgrim.ncp.base.deleteSysBrnd		Generator(Generator)	2018-05-23 */
+		  FROM SYS_BRND
+		 WHERE 1 = 1
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

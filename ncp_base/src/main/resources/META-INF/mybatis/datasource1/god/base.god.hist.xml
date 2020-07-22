@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodHist" parameterType="godHist" resultType="godHist">
+		SELECT /* com.plgrim.ncp.base.selectGodHist		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , GOD_HIST_TURN
+			 , ERP_GOD_NO
+			 , DSGN_GRP_NO
+			 , COM_GOD_NO
+			 , REORD_BF_GOD_NO
+			 , GOD_NM
+			 , MOBILE_GOD_NM
+			 , TAG_NM
+			 , COLOR_TAG_NM
+			 , THEMA_TAG_NM
+			 , TEXT_ICON_CONT
+			 , GOD_APRV_SECT_CD
+			 , GOD_SALE_SECT_CD
+			 , SALE_BEG_DATE
+			 , SALE_END_DATE
+			 , GOD_INFO_MOD_CONT
+			 , TEAM_CD
+			 , COLOR_NM
+			 , COLOR_CD
+			 , CLOR_CHIP_IMG_URL
+			 , GOD_TP_CD
+			 , PARTMAL_SECT_CD
+			 , BRND_ID
+			 , BRND_GRP_ID
+			 , BRND_TAG_CD
+			 , STD_CTGRY_NO
+			 , TDF_SECT
+			 , MNFCTUR_YEAR_CD
+			 , SESON_GRP_CD
+			 , SESON_CD
+			 , PRDLST_CD
+			 , STYLE_CD
+			 , EMP_ONLY_YN
+			 , ORDMK_GOD_YN
+			 , ONLNE_ONLY_GOD_YN
+			 , FREE_REPAIR_PSB_YN
+			 , SVC_OFFER_YN
+			 , QDLV_PSB_YN
+			 , RESVE_SALE_GOD_YN
+			 , RESVE_ORD_PAY_SECT_CD
+			 , RESVE_ORD_PART_PAY_AMT
+			 , RESVE_ORD_PAY_CLOS_DT
+			 , RESVE_ORD_DLIVY_PREARNGE_DATE
+			 , GOD_DLIVY_WAIT_TIME
+			 , DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_PSB_YN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_CST_PLC_SN
+			 , GOD_WT
+			 , SHOP_PKUP_PSB_YN
+			 , CVNSTOR_HDRY_RTRVL_PSB_YN
+			 , SINGL_SHOP_DLIVY_YN
+			 , DSP_YN
+			 , SPCIFY_URL_DSP_YN
+			 , FIRST_DSP_DT
+			 , PRC_CMPR_SITE_EXPSR_YN
+			 , GOD_SRCH_SNM
+			 , MOBILE_GOD_DSCR_EXPSR_YN
+			 , COM_ID
+			 , PARTMAL_COM_FEE_RT
+			 , BUY_AGE_LMIT_CD
+			 , RECOMEND_SEX_CD
+			 , RECOMEND_AGE_CD
+			 , SAFE_CRTFC_TGT_YN
+			 , KC_CRTFC_NO
+			 , INV_MANAGE_YN
+			 , LMTT_INV_YN
+			 , ERP_INV_INTRLCK_YN
+			 , CDC_INV_ONLY_YN
+			 , MIN_ORD_QTY
+			 , MAX_ORD_QTY
+			 , OTLT_YN
+			 , PNT_ACCML_YN
+			 , PNT_ACCML_RT
+			 , PNT_USE_YN
+			 , WEBPNT_ACCML_YN
+			 , WEBPNT_ACCML_RT
+			 , WEBPNT_USE_YN
+			 , MD_APL_IMDTL_DC_YN
+			 , IMDTL_DC_YN
+			 , IMDTL_DC_RT
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , EMP_PRC
+			 , ONLY_AFF_COM_ID
+			 , MNFCTUR_NATION_MOD_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , CSMR_PRC_TP_CD
+			 , EP_GOD_NM
+		  FROM GOD_HIST
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_HIST_TURN = #{godHistTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodHist" parameterType="godHist">
+		UPDATE /* com.plgrim.ncp.base.updateGodHist		Generator(Generator)	2018-05-23 */
+		GOD_HIST SET
+			   ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , COM_GOD_NO = #{comGodNo,jdbcType=VARCHAR}
+			 , REORD_BF_GOD_NO = #{reordBfGodNo,jdbcType=VARCHAR}
+			 , GOD_NM = #{godNm,jdbcType=VARCHAR}
+			 , MOBILE_GOD_NM = #{mobileGodNm,jdbcType=VARCHAR}
+			 , TAG_NM = #{tagNm,jdbcType=VARCHAR}
+			 , COLOR_TAG_NM = #{colorTagNm,jdbcType=VARCHAR}
+			 , THEMA_TAG_NM = #{themaTagNm,jdbcType=VARCHAR}
+			 , TEXT_ICON_CONT = #{textIconCont,jdbcType=VARCHAR}
+			 , GOD_APRV_SECT_CD = #{godAprvSectCd,jdbcType=VARCHAR}
+			 , GOD_SALE_SECT_CD = #{godSaleSectCd,jdbcType=VARCHAR}
+			 , SALE_BEG_DATE = #{saleBegDate,jdbcType=VARCHAR}
+			 , SALE_END_DATE = #{saleEndDate,jdbcType=VARCHAR}
+			 , GOD_INFO_MOD_CONT = #{godInfoModCont,jdbcType=VARCHAR}
+			 , TEAM_CD = #{teamCd,jdbcType=VARCHAR}
+			 , COLOR_NM = #{colorNm,jdbcType=VARCHAR}
+			 , COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+			 , CLOR_CHIP_IMG_URL = #{clorChipImgUrl,jdbcType=VARCHAR}
+			 , GOD_TP_CD = #{godTpCd,jdbcType=VARCHAR}
+			 , PARTMAL_SECT_CD = #{partmalSectCd,jdbcType=VARCHAR}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+			 , BRND_TAG_CD = #{brndTagCd,jdbcType=VARCHAR}
+			 , STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+			 , TDF_SECT = #{tdfSect,jdbcType=VARCHAR}
+			 , MNFCTUR_YEAR_CD = #{mnfcturYearCd,jdbcType=VARCHAR}
+			 , SESON_GRP_CD = #{sesonGrpCd,jdbcType=VARCHAR}
+			 , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			 , PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+			 , STYLE_CD = #{styleCd,jdbcType=VARCHAR}
+			 , EMP_ONLY_YN = #{empOnlyYn,jdbcType=VARCHAR}
+			 , ORDMK_GOD_YN = #{ordmkGodYn,jdbcType=VARCHAR}
+			 , ONLNE_ONLY_GOD_YN = #{onlneOnlyGodYn,jdbcType=VARCHAR}
+			 , FREE_REPAIR_PSB_YN = #{freeRepairPsbYn,jdbcType=VARCHAR}
+			 , SVC_OFFER_YN = #{svcOfferYn,jdbcType=VARCHAR}
+			 , QDLV_PSB_YN = #{qdlvPsbYn,jdbcType=VARCHAR}
+			 , RESVE_SALE_GOD_YN = #{resveSaleGodYn,jdbcType=VARCHAR}
+			 , RESVE_ORD_PAY_SECT_CD = #{resveOrdPaySectCd,jdbcType=VARCHAR}
+			 , RESVE_ORD_PART_PAY_AMT = #{resveOrdPartPayAmt,jdbcType=NUMERIC}
+			 , RESVE_ORD_PAY_CLOS_DT = #{resveOrdPayClosDt,jdbcType=TIMESTAMP}
+			 , RESVE_ORD_DLIVY_PREARNGE_DATE = #{resveOrdDlivyPrearngeDate,jdbcType=VARCHAR}
+			 , GOD_DLIVY_WAIT_TIME = #{godDlivyWaitTime,jdbcType=NUMERIC}
+			 , DMSTC_DLV_CST_PLC_SN = #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_PSB_YN = #{ovseaDlvPsbYn,jdbcType=VARCHAR}
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN = #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , GOD_WT = #{godWt,jdbcType=NUMERIC}
+			 , SHOP_PKUP_PSB_YN = #{shopPkupPsbYn,jdbcType=VARCHAR}
+			 , CVNSTOR_HDRY_RTRVL_PSB_YN = #{cvnstorHdryRtrvlPsbYn,jdbcType=VARCHAR}
+			 , SINGL_SHOP_DLIVY_YN = #{singlShopDlivyYn,jdbcType=VARCHAR}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+			 , FIRST_DSP_DT = #{firstDspDt,jdbcType=TIMESTAMP}
+			 , PRC_CMPR_SITE_EXPSR_YN = #{prcCmprSiteExpsrYn,jdbcType=VARCHAR}
+			 , GOD_SRCH_SNM = #{godSrchSnm,jdbcType=VARCHAR}
+			 , MOBILE_GOD_DSCR_EXPSR_YN = #{mobileGodDscrExpsrYn,jdbcType=VARCHAR}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , PARTMAL_COM_FEE_RT = #{partmalComFeeRt,jdbcType=NUMERIC}
+			 , BUY_AGE_LMIT_CD = #{buyAgeLmitCd,jdbcType=VARCHAR}
+			 , RECOMEND_SEX_CD = #{recomendSexCd,jdbcType=VARCHAR}
+			 , RECOMEND_AGE_CD = #{recomendAgeCd,jdbcType=VARCHAR}
+			 , SAFE_CRTFC_TGT_YN = #{safeCrtfcTgtYn,jdbcType=VARCHAR}
+			 , KC_CRTFC_NO = #{kcCrtfcNo,jdbcType=VARCHAR}
+			 , INV_MANAGE_YN = #{invManageYn,jdbcType=VARCHAR}
+			 , LMTT_INV_YN = #{lmttInvYn,jdbcType=VARCHAR}
+			 , ERP_INV_INTRLCK_YN = #{erpInvIntrlckYn,jdbcType=VARCHAR}
+			 , CDC_INV_ONLY_YN = #{cdcInvOnlyYn,jdbcType=VARCHAR}
+			 , MIN_ORD_QTY = #{minOrdQty,jdbcType=NUMERIC}
+			 , MAX_ORD_QTY = #{maxOrdQty,jdbcType=NUMERIC}
+			 , OTLT_YN = #{otltYn,jdbcType=VARCHAR}
+			 , PNT_ACCML_YN = #{pntAccmlYn,jdbcType=VARCHAR}
+			 , PNT_ACCML_RT = #{pntAccmlRt,jdbcType=NUMERIC}
+			 , PNT_USE_YN = #{pntUseYn,jdbcType=VARCHAR}
+			 , WEBPNT_ACCML_YN = #{webpntAccmlYn,jdbcType=VARCHAR}
+			 , WEBPNT_ACCML_RT = #{webpntAccmlRt,jdbcType=NUMERIC}
+			 , WEBPNT_USE_YN = #{webpntUseYn,jdbcType=VARCHAR}
+			 , MD_APL_IMDTL_DC_YN = #{mdAplImdtlDcYn,jdbcType=VARCHAR}
+			 , IMDTL_DC_YN = #{imdtlDcYn,jdbcType=VARCHAR}
+			 , IMDTL_DC_RT = #{imdtlDcRt,jdbcType=NUMERIC}
+			 , RTL_PRC = #{rtlPrc,jdbcType=NUMERIC}
+			 , CSMR_PRC = #{csmrPrc,jdbcType=NUMERIC}
+			 , EMP_PRC = #{empPrc,jdbcType=NUMERIC}
+			 , ONLY_AFF_COM_ID = #{onlyAffComId,jdbcType=VARCHAR}
+			 , MNFCTUR_NATION_MOD_YN = #{mnfcturNationModYn,jdbcType=VARCHAR}			 
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+			 , CSMR_PRC_TP_CD = #{csmrPrcTpCd,jdbcType=VARCHAR}
+			 , EP_GOD_NM = #{epGodNm,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_HIST_TURN = #{godHistTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodHist" parameterType="godHist">
+		INSERT /* com.plgrim.ncp.base.insertGodHist		Generator(Generator)	2018-05-23 */
+		INTO   GOD_HIST (
+			   GOD_NO
+			 , GOD_HIST_TURN
+			 , ERP_GOD_NO
+			 , DSGN_GRP_NO
+			 , COM_GOD_NO
+			 , REORD_BF_GOD_NO
+			 , GOD_NM
+			 , MOBILE_GOD_NM
+			 , TAG_NM
+			 , COLOR_TAG_NM
+			 , THEMA_TAG_NM
+			 , TEXT_ICON_CONT
+			 , GOD_APRV_SECT_CD
+			 , GOD_SALE_SECT_CD
+			 , SALE_BEG_DATE
+			 , SALE_END_DATE
+			 , GOD_INFO_MOD_CONT
+			 , TEAM_CD
+			 , COLOR_NM
+			 , COLOR_CD
+			 , CLOR_CHIP_IMG_URL
+			 , GOD_TP_CD
+			 , PARTMAL_SECT_CD
+			 , BRND_ID
+			 , BRND_GRP_ID
+			 , BRND_TAG_CD
+			 , STD_CTGRY_NO
+			 , TDF_SECT
+			 , MNFCTUR_YEAR_CD
+			 , SESON_GRP_CD
+			 , SESON_CD
+			 , PRDLST_CD
+			 , STYLE_CD
+			 , EMP_ONLY_YN
+			 , ORDMK_GOD_YN
+			 , ONLNE_ONLY_GOD_YN
+			 , FREE_REPAIR_PSB_YN
+			 , SVC_OFFER_YN
+			 , QDLV_PSB_YN
+			 , RESVE_SALE_GOD_YN
+			 , RESVE_ORD_PAY_SECT_CD
+			 , RESVE_ORD_PART_PAY_AMT
+			 , RESVE_ORD_PAY_CLOS_DT
+			 , RESVE_ORD_DLIVY_PREARNGE_DATE
+			 , GOD_DLIVY_WAIT_TIME
+			 , DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_PSB_YN
+			 , OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+			 , OVSEA_DLV_CST_PLC_SN
+			 , GOD_WT
+			 , SHOP_PKUP_PSB_YN
+			 , CVNSTOR_HDRY_RTRVL_PSB_YN
+			 , SINGL_SHOP_DLIVY_YN
+			 , DSP_YN
+			 , SPCIFY_URL_DSP_YN
+			 , FIRST_DSP_DT
+			 , PRC_CMPR_SITE_EXPSR_YN
+			 , GOD_SRCH_SNM
+			 , MOBILE_GOD_DSCR_EXPSR_YN
+			 , COM_ID
+			 , PARTMAL_COM_FEE_RT
+			 , BUY_AGE_LMIT_CD
+			 , RECOMEND_SEX_CD
+			 , RECOMEND_AGE_CD
+			 , SAFE_CRTFC_TGT_YN
+			 , KC_CRTFC_NO
+			 , INV_MANAGE_YN
+			 , LMTT_INV_YN
+			 , ERP_INV_INTRLCK_YN
+			 , CDC_INV_ONLY_YN
+			 , MIN_ORD_QTY
+			 , MAX_ORD_QTY
+			 , OTLT_YN
+			 , PNT_ACCML_YN
+			 , PNT_ACCML_RT
+			 , PNT_USE_YN
+			 , WEBPNT_ACCML_YN
+			 , WEBPNT_ACCML_RT
+			 , WEBPNT_USE_YN
+			 , MD_APL_IMDTL_DC_YN
+			 , IMDTL_DC_YN
+			 , IMDTL_DC_RT
+			 , RTL_PRC
+			 , CSMR_PRC
+			 , EMP_PRC
+			 , ONLY_AFF_COM_ID
+			 , MNFCTUR_NATION_MOD_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+			 , CSMR_PRC_TP_CD
+			 , EP_GOD_NM			 
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{godHistTurn,jdbcType=NUMERIC}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{comGodNo,jdbcType=VARCHAR}
+			 , #{reordBfGodNo,jdbcType=VARCHAR}
+			 , #{godNm,jdbcType=VARCHAR}
+			 , #{mobileGodNm,jdbcType=VARCHAR}
+			 , #{tagNm,jdbcType=VARCHAR}
+			 , #{colorTagNm,jdbcType=VARCHAR}
+			 , #{themaTagNm,jdbcType=VARCHAR}
+			 , #{textIconCont,jdbcType=VARCHAR}
+			 , #{godAprvSectCd,jdbcType=VARCHAR}
+			 , #{godSaleSectCd,jdbcType=VARCHAR}
+			 , #{saleBegDate,jdbcType=VARCHAR}
+			 , #{saleEndDate,jdbcType=VARCHAR}
+			 , #{godInfoModCont,jdbcType=VARCHAR}
+			 , #{teamCd,jdbcType=VARCHAR}
+			 , #{colorNm,jdbcType=VARCHAR}
+			 , #{colorCd,jdbcType=VARCHAR}
+			 , #{clorChipImgUrl,jdbcType=VARCHAR}
+			 , #{godTpCd,jdbcType=VARCHAR}
+			 , #{partmalSectCd,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{brndGrpId,jdbcType=VARCHAR}
+			 , #{brndTagCd,jdbcType=VARCHAR}
+			 , #{stdCtgryNo,jdbcType=VARCHAR}
+			 , #{tdfSect,jdbcType=VARCHAR}
+			 , #{mnfcturYearCd,jdbcType=VARCHAR}
+			 , #{sesonGrpCd,jdbcType=VARCHAR}
+			 , #{sesonCd,jdbcType=VARCHAR}
+			 , #{prdlstCd,jdbcType=VARCHAR}
+			 , #{styleCd,jdbcType=VARCHAR}
+			 , #{empOnlyYn,jdbcType=VARCHAR}
+			 , #{ordmkGodYn,jdbcType=VARCHAR}
+			 , #{onlneOnlyGodYn,jdbcType=VARCHAR}
+			 , #{freeRepairPsbYn,jdbcType=VARCHAR}
+			 , #{svcOfferYn,jdbcType=VARCHAR}
+			 , #{qdlvPsbYn,jdbcType=VARCHAR}
+			 , #{resveSaleGodYn,jdbcType=VARCHAR}
+			 , #{resveOrdPaySectCd,jdbcType=VARCHAR}
+			 , #{resveOrdPartPayAmt,jdbcType=NUMERIC}
+			 , #{resveOrdPayClosDt,jdbcType=TIMESTAMP}
+			 , #{resveOrdDlivyPrearngeDate,jdbcType=VARCHAR}
+			 , #{godDlivyWaitTime,jdbcType=NUMERIC}
+			 , #{dmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{ovseaDlvPsbYn,jdbcType=VARCHAR}
+			 , #{ovseaDlvDmstcDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{godWt,jdbcType=NUMERIC}
+			 , #{shopPkupPsbYn,jdbcType=VARCHAR}
+			 , #{cvnstorHdryRtrvlPsbYn,jdbcType=VARCHAR}
+			 , #{singlShopDlivyYn,jdbcType=VARCHAR}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{spcifyUrlDspYn,jdbcType=VARCHAR}
+			 , #{firstDspDt,jdbcType=TIMESTAMP}
+			 , #{prcCmprSiteExpsrYn,jdbcType=VARCHAR}
+			 , #{godSrchSnm,jdbcType=VARCHAR}
+			 , #{mobileGodDscrExpsrYn,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{partmalComFeeRt,jdbcType=NUMERIC}
+			 , #{buyAgeLmitCd,jdbcType=VARCHAR}
+			 , #{recomendSexCd,jdbcType=VARCHAR}
+			 , #{recomendAgeCd,jdbcType=VARCHAR}
+			 , #{safeCrtfcTgtYn,jdbcType=VARCHAR}
+			 , #{kcCrtfcNo,jdbcType=VARCHAR}
+			 , #{invManageYn,jdbcType=VARCHAR}
+			 , #{lmttInvYn,jdbcType=VARCHAR}
+			 , #{erpInvIntrlckYn,jdbcType=VARCHAR}
+			 , #{cdcInvOnlyYn,jdbcType=VARCHAR}
+			 , #{minOrdQty,jdbcType=NUMERIC}
+			 , #{maxOrdQty,jdbcType=NUMERIC}
+			 , #{otltYn,jdbcType=VARCHAR}
+			 , #{pntAccmlYn,jdbcType=VARCHAR}
+			 , #{pntAccmlRt,jdbcType=NUMERIC}
+			 , #{pntUseYn,jdbcType=VARCHAR}
+			 , #{webpntAccmlYn,jdbcType=VARCHAR}
+			 , #{webpntAccmlRt,jdbcType=NUMERIC}
+			 , #{webpntUseYn,jdbcType=VARCHAR}
+			 , #{mdAplImdtlDcYn,jdbcType=VARCHAR}
+			 , #{imdtlDcYn,jdbcType=VARCHAR}
+			 , #{imdtlDcRt,jdbcType=NUMERIC}
+			 , #{rtlPrc,jdbcType=NUMERIC}
+			 , #{csmrPrc,jdbcType=NUMERIC}
+			 , #{empPrc,jdbcType=NUMERIC}
+			 , #{onlyAffComId,jdbcType=VARCHAR}
+			 , #{mnfcturNationModYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{csmrPrcTpCd,jdbcType=VARCHAR}
+			 , #{epGodNm,jdbcType=VARCHAR}			 
+        )
+    </insert>
+
+    <delete id="deleteGodHist" parameterType="godHist">
+		DELETE /* com.plgrim.ncp.base.deleteGodHist		Generator(Generator)	2018-05-23 */
+		  FROM GOD_HIST
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND GOD_HIST_TURN = #{godHistTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

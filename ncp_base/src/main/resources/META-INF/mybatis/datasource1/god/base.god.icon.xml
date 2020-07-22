@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodIcon" parameterType="godIcon" resultType="godIcon">
+		SELECT /* com.plgrim.ncp.base.selectGodIcon		Generator(Generator)	2018-05-23 */
+			   ICON_TURN
+			 , ICON_NM
+			 , ICON_IMG_URL
+			 , ICON_DSCR
+			 , AUTO_DSP_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_ICON
+		 WHERE 1 = 1
+	   	   AND ICON_TURN = #{iconTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodIcon" parameterType="godIcon">
+		UPDATE /* com.plgrim.ncp.base.updateGodIcon		Generator(Generator)	2018-05-23 */
+		GOD_ICON SET
+			   ICON_NM = #{iconNm,jdbcType=VARCHAR}
+			 , ICON_IMG_URL = #{iconImgUrl,jdbcType=VARCHAR}
+			 , ICON_DSCR = #{iconDscr,jdbcType=VARCHAR}
+			 , AUTO_DSP_YN = #{autoDspYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ICON_TURN = #{iconTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodIcon" parameterType="godIcon">
+		INSERT /* com.plgrim.ncp.base.insertGodIcon		Generator(Generator)	2018-05-23 */
+		INTO   GOD_ICON (
+			   ICON_TURN
+			 , ICON_NM
+			 , ICON_IMG_URL
+			 , ICON_DSCR
+			 , AUTO_DSP_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{iconTurn,jdbcType=NUMERIC}
+			 , #{iconNm,jdbcType=VARCHAR}
+			 , #{iconImgUrl,jdbcType=VARCHAR}
+			 , #{iconDscr,jdbcType=VARCHAR}
+			 , #{autoDspYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodIcon" parameterType="godIcon">
+		DELETE /* com.plgrim.ncp.base.deleteGodIcon		Generator(Generator)	2018-05-23 */
+		  FROM GOD_ICON
+		 WHERE 1 = 1
+		   AND ICON_TURN = #{iconTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

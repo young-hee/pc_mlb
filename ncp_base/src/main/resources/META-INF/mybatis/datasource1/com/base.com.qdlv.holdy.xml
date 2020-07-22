@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComQdlvHoldy" parameterType="comQdlvHoldy" resultType="comQdlvHoldy">
+		SELECT /* com.plgrim.ncp.base.selectComQdlvHoldy		Generator(Generator)	2018-05-23 */
+			   COM_ID
+			 , SYS_DATE
+			 , DSCR
+			 , DELETE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_QDLV_HOLDY
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComQdlvHoldy" parameterType="comQdlvHoldy">
+		UPDATE /* com.plgrim.ncp.base.updateComQdlvHoldy		Generator(Generator)	2018-05-23 */
+		COM_QDLV_HOLDY SET
+			   DSCR = #{dscr,jdbcType=VARCHAR}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComQdlvHoldy" parameterType="comQdlvHoldy">
+		INSERT /* com.plgrim.ncp.base.insertComQdlvHoldy		Generator(Generator)	2018-05-23 */
+		INTO   COM_QDLV_HOLDY (
+			   COM_ID
+			 , SYS_DATE
+			 , DSCR
+			 , DELETE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comId,jdbcType=VARCHAR}
+			 , #{sysDate,jdbcType=VARCHAR}
+			 , #{dscr,jdbcType=VARCHAR}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComQdlvHoldy" parameterType="comQdlvHoldy">
+		DELETE /* com.plgrim.ncp.base.deleteComQdlvHoldy		Generator(Generator)	2018-05-23 */
+		  FROM COM_QDLV_HOLDY
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

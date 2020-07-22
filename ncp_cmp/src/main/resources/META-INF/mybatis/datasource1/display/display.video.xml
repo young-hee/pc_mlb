@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+<!-- 	
+	<select id="selectVideoList" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideo">
+		SELECT /* [display.video.xml][selectVideoList][video 목록 조회][kwonoh.kim] */
+			VIDEO_SN
+			,DSP_VIDEO_ID
+			,DSP_VIDEO_TITLE
+			,DSP_VIDEO_DSCR
+			,DSP_VIDEO_URL
+			,DSP_VIDEO_COVER_IMG_URL
+			,DSP_VIDEO_COVER_OVER_IMG_URL
+			,DSP_VIDEO_START_IMG_URL
+			,DSP_VIDEO_END_IMG_URL
+			,DSP_VIDEO_STILL_IMG_URL
+			,DSP_VIDEO_MENU_IMG_URL
+			,DSP_VIDEO_LIKE_COUNT
+			,DSP_VIDEO_PLAY_TIME
+			,DSP_VIDEO_TYPE
+			,DSP_VIDEO_EPISODE
+			,DSP_EVT_NO
+			,DSP_REPLY_NO
+			,USE_YN
+			,REGTR_ID
+			,REG_DT
+			,UDTER_ID
+			,UDT_DT
+		FROM
+			INF_DSP_VIDEO
+		WHERE
+			1 = 1
+		AND 
+			USE_YN = 'Y'
+		<if test="dspVideoTitle != null">
+		AND
+			DSP_VIDEO_TITLE like '%' || #{dspVideoTitle} || '%'
+		</if>
+		ORDER BY
+        	VIDEO_SN
+	</select>
+	
+	<select id="selectVideoTotalCount" parameterType="java.util.Map"  resultType="Integer">
+        SELECT /* [display.video.xml][selectVideoTotalCount][video 목록 총 Count][kwonoh.kim] */
+			  count(*) videoCount
+		FROM
+			INF_DSP_VIDEO
+	</select>
+	
+	<select id="selectVideoDetail" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideo">
+		SELECT /* [display.video.xml][selectVideoDetail][video 상세 조회][kwonoh.kim] */
+			VIDEO_SN
+			,DSP_VIDEO_ID
+			,DSP_VIDEO_TITLE
+			,DSP_VIDEO_DSCR
+			,DSP_VIDEO_URL
+			,DSP_VIDEO_COVER_IMG_URL
+			,DSP_VIDEO_COVER_OVER_IMG_URL
+			,DSP_VIDEO_START_IMG_URL
+			,DSP_VIDEO_END_IMG_URL
+			,DSP_VIDEO_STILL_IMG_URL
+			,DSP_VIDEO_MENU_IMG_URL
+			,DSP_VIDEO_LIKE_COUNT
+			,DSP_VIDEO_PLAY_TIME
+			,DSP_VIDEO_EPISODE
+			,DSP_EVT_NO
+			,DSP_REPLY_NO
+			,DSP_VIDEO_TYPE
+			,USE_YN
+			,REGTR_ID
+			,REG_DT
+			,UDTER_ID
+			,UDT_DT
+		FROM
+			INF_DSP_VIDEO
+		WHERE
+			1 = 1
+		AND 
+			USE_YN = 'Y'
+		<if test="videoSn != null">
+		AND
+			VIDEO_SN = #{videoSn}
+		</if>
+		<if test="dspVideoEpisode != null">
+		AND
+			DSP_VIDEO_EPISODE = #{dspVideoEpisode}
+		</if>
+		ORDER BY
+        	VIDEO_SN DESC
+	</select>
+	<select id="selectVideoNext" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideo">
+		<![CDATA[
+		SELECT /* [display.video.xml][selectVideoNext][video 상세 조회][kwonoh.kim] */
+			VIDEO_SN
+			,DSP_VIDEO_ID
+			,DSP_VIDEO_TITLE
+			,DSP_VIDEO_DSCR
+			,DSP_VIDEO_URL
+			,DSP_VIDEO_COVER_IMG_URL
+			,DSP_VIDEO_COVER_OVER_IMG_URL
+			,DSP_VIDEO_START_IMG_URL
+			,DSP_VIDEO_END_IMG_URL
+			,DSP_VIDEO_STILL_IMG_URL
+			,DSP_VIDEO_MENU_IMG_URL
+			,DSP_VIDEO_LIKE_COUNT
+			,DSP_VIDEO_PLAY_TIME
+			,DSP_VIDEO_TYPE
+			,DSP_VIDEO_EPISODE
+			,DSP_EVT_NO
+			,DSP_REPLY_NO
+			,USE_YN
+			,REGTR_ID
+			,REG_DT
+			,UDTER_ID
+			,UDT_DT
+		FROM
+			INF_DSP_VIDEO
+		WHERE
+			ROWNUM = 1
+		AND 
+			USE_YN = 'Y'
+		AND
+			VIDEO_SN > #{videoSn}
+		ORDER BY VIDEO_SN ASC
+	]]>
+	</select>
+	<select id="selectVideoBefore" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideo">
+	<![CDATA[
+		SELECT /* [display.video.xml][selectVideoBefore][video 상세 조회][kwonoh.kim] */
+			VIDEO_SN
+			,DSP_VIDEO_ID
+			,DSP_VIDEO_TITLE
+			,DSP_VIDEO_DSCR
+			,DSP_VIDEO_URL
+			,DSP_VIDEO_COVER_IMG_URL
+			,DSP_VIDEO_COVER_OVER_IMG_URL
+			,DSP_VIDEO_START_IMG_URL
+			,DSP_VIDEO_END_IMG_URL
+			,DSP_VIDEO_STILL_IMG_URL
+			,DSP_VIDEO_MENU_IMG_URL
+			,DSP_VIDEO_LIKE_COUNT
+			,DSP_VIDEO_PLAY_TIME
+			,DSP_VIDEO_TYPE
+			,DSP_VIDEO_EPISODE
+			,DSP_EVT_NO
+			,DSP_REPLY_NO
+			,USE_YN
+			,REGTR_ID
+			,REG_DT
+			,UDTER_ID
+			,UDT_DT
+		FROM
+			INF_DSP_VIDEO
+		WHERE
+			ROWNUM = 1
+		AND 
+			USE_YN = 'Y'
+		AND
+			VIDEO_SN < #{videoSn}
+		ORDER BY VIDEO_SN DESC
+	  ]]>
+	</select>
+    
+	<select id="selectQueList" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspQuePoint" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspQuePoint">
+		SELECT /* [display.video.xml][selectQueList][큐포인트 리스트][kwonoh.kim] */
+			point.QUE_SN AS queSn,
+		    point.VIDEO_SN AS video_sn,
+		    point.DSP_VIDEO_ID AS video_id,
+		    point.QUE_TIME AS time,
+		    point.QUE_X AS x,
+		    point.QUE_Y AS y,
+		    point.REGTR_ID AS regtrId,
+		    point.REG_DT AS regDt,
+		    point.UDTER_ID AS udterId,
+		    point.UDT_DT AS udtDt
+		FROM
+			INF_DSP_VIDEO_QUE_POINT point
+			INNER JOIN
+			INF_DSP_VIDEO_GOODS goods
+			ON ( point.QUE_SN = goods.QUE_SN )
+		WHERE
+			1 = 1
+		AND
+        	point.VIDEO_SN = #{video_sn}
+        AND
+        	point.DSP_VIDEO_ID = #{video_id}
+        ORDER BY
+        	to_number(point.QUE_TIME)
+	</select>
+	
+	<select id="selectQueTotalCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspQuePoint"  resultType="Integer">
+        SELECT /* [display.video.xml][selectQueTotalCount][큐포인트 목록 총 Count][kwonoh.kim] */
+			  count(*) queCount
+		FROM
+			INF_DSP_VIDEO_QUE_POINT
+		WHERE
+			1 = 1
+		AND
+        	VIDEO_SN = #{video_sn}
+        AND
+        	DSP_VIDEO_ID = #{video_id}
+	</select>
+	
+	<select id="selectGoodsList" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspQuePoint" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspGoods">
+		SELECT /* [display.video.xml][selectGoodsList][상품 리스트][kwonoh.kim] */
+			goods.GOODS_SN,
+			goods.VIDEO_SN,
+			goods.QUE_SN,
+			goods.DSP_VIDEO_ID,
+			goods.GOODS_BRAND,
+			goods.GOODS_NAME,
+			goods.GOODS_URL,
+			goods.GOODS_IMAGE_DEFAULT,
+			goods.GOODS_IMAGE_OVER,
+			goods.GOODS_PERSON_SN,
+			goods.GOODS_PERSON,
+			goods.DEL,
+			goods.DSP_FACEBOOK,
+			goods.REGTR_ID,
+			goods.REG_DT,
+			goods.UDTER_ID,
+			goods.UDT_DT
+		FROM
+			INF_DSP_VIDEO_GOODS goods
+			INNER JOIN
+			INF_DSP_VIDEO_QUE_POINT point
+			ON ( goods.QUE_SN = point.QUE_SN )
+		WHERE
+			1 = 1
+		AND
+        	goods.VIDEO_SN = #{video_sn}
+        AND
+        	goods.DSP_VIDEO_ID = #{video_id}
+        ORDER BY
+        	to_number(point.QUE_TIME)
+	</select>
+	
+	<select id="selectVideoLike" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike"  resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike">
+        SELECT /* [display.video.xml][selectVideoLike][비디오 좋아요 목록][kwonoh.kim] */
+			HISTORY_SN,
+			VIDEO_SN,
+			DSP_VIDEO_ID,
+			MBR_NO,
+			DEL,
+			REG_DT,
+			UDT_DT
+		FROM
+			INF_DSP_VIDEO_LIKE_HISTORY
+		WHERE
+			1 = 1
+		<if test="mbrNo != null">
+		AND
+        	MBR_No = #{mbrNo}
+        </if>
+		<if test="videoSn != null">
+		AND
+        	VIDEO_SN = #{videoSn}
+        </if>
+        AND
+        	(DEL = '' OR DEL IS NULL)
+	</select>
+	<select id="selectGoodsTotalCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspQuePoint"  resultType="Integer">
+        SELECT /* [wb.video.xml][selectGoodsTotalCount][상품 목록 총 Count][kwonoh.kim] */
+			  count(*) goodsCount
+		FROM
+			INF_DSP_VIDEO_GOODS
+		WHERE
+			1 = 1
+		AND
+        	VIDEO_SN = #{video_sn}
+        AND
+        	DSP_VIDEO_ID = #{video_id}
+	</select>
+	
+	<select id="selectVideoLikeTotalCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike"  resultType="Integer">
+        SELECT /* [display.video.xml][selectVideoLikeTotalCount][비디오 좋아요 목록 총 Count][kwonoh.kim] */
+			count(*) likeCount
+		FROM
+			INF_DSP_VIDEO_LIKE_HISTORY
+		WHERE
+			1 = 1
+		<if test="mbrNo != null">
+		AND
+        	MBR_No = #{mbrNo}
+        </if>
+		<if test="videoSn != null">
+		AND
+        	VIDEO_SN = #{videoSn}
+        </if>
+        AND
+        	(DEL = '' OR DEL IS NULL)
+	</select>
+    <insert id="addVideoLike" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike">
+        /* [display.video.xml][addVideoLike][비디오 좋아요 등록][kwonoh.kim] */
+        INSERT INTO INF_DSP_VIDEO_LIKE_HISTORY (
+			HISTORY_SN,
+			VIDEO_SN,
+			DSP_VIDEO_ID,
+			MBR_NO,
+			DEL,
+			REG_DT
+		)VALUES(
+			#{historySn}
+			,#{videoSn}
+			,#{dspVideoId}
+			,#{mbrNo}
+			,''
+			,SYSDATE
+		)
+    </insert>
+    <update id="addVideoLikeCancel" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike">
+        /* [display.video.xml][addVideoLikeCancel][비디오 좋아요 취소][kwonoh.kim] */
+        UPDATE INF_DSP_VIDEO_LIKE_HISTORY 
+        SET	DEL = 'DEL',
+			UDT_DT = SYSDATE
+		WHERE
+			1 = 1
+		<if test="mbrNo != null">
+		AND
+        	MBR_No = #{mbrNo}
+        </if>
+		<if test="videoSn != null">
+		AND
+        	VIDEO_SN = #{videoSn}
+        </if>
+    </update>
+    <select id="selectRelationVideo" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspRelationVideo" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspRelationVideo">
+        /* [display.video.xml][selectRelationVideo][관련 동영상 검색][kwonoh.kim] */
+        SELECT
+			RELATION_SN,
+			VIDEO_SN,
+			DSP_RELATION_VIDEO_ID,
+			DSP_RELATION_VIDEO_TITLE,
+			DSP_RELATION_VIDEO_DSCR,
+			DSP_RELATION_VIDEO_URL,
+			DSP_RELATION_IMG_URL,
+			DSP_RELATION_MENU_IMG_URL,
+			USE_YN,
+			REGTR_ID,
+			REG_DT,
+			UDTER_ID,
+			UDT_DT
+		FROM
+			INF_DSP_RELATION_VIDEO
+		WHERE
+			1 = 1
+		AND 
+			USE_YN = 'Y'
+		<if test="relationSn != null">
+		AND
+        	RELATION_SN = #{relationSn}
+        </if>
+		<if test="videoSn != null">
+		AND
+        	VIDEO_SN = #{videoSn}
+        </if>
+        <if test="dspRelationVideoId != null">
+        AND
+        	DSP_RELATION_VIDEO_ID = #{dspRelationVideoId}
+        </if>
+        ORDER BY RELATION_SN
+    </select>
+    
+	<select id="selectRelationVideoTotalCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspRelationVideo"  resultType="Integer">
+        SELECT /* [display.video.xml][selectRelationVideoTotalCount][관련 비디오 목록 총 Count][kwonoh.kim] */
+			  count(*) relaCount
+		FROM
+			INF_DSP_RELATION_VIDEO
+		WHERE
+			1 = 1
+		AND 
+			USE_YN = 'Y'
+		<if test="relationSn != null">
+		AND
+        	RELATION_SN = #{relationSn}
+        </if>
+		<if test="videoSn != null">
+		AND
+        	VIDEO_SN = #{videoSn}
+        </if>
+        <if test="dspRelationVideoId != null">
+        AND
+        	DSP_RELATION_VIDEO_ID = #{dspRelationVideoId}
+        </if>
+	</select>
+	
+	<select id="selectFaceBookList" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspGoods">
+		SELECT /* [display.video.xml][selectFaceBookList][페이스북 상품 목록 조회][kwonoh.kim] */
+			goods.GOODS_SN,
+			goods.VIDEO_SN,
+			goods.QUE_SN,
+			goods.DSP_VIDEO_ID,
+			goods.GOODS_BRAND,
+			goods.GOODS_NAME,
+			goods.GOODS_URL,
+			goods.GOODS_IMAGE_DEFAULT,
+			goods.GOODS_IMAGE_OVER,
+			goods.GOODS_PERSON_SN,
+			goods.GOODS_PERSON,
+			goods.DEL,
+			goods.DSP_FACEBOOK,
+			goods.REGTR_ID,
+			goods.REG_DT,
+			goods.UDTER_ID,
+			goods.UDT_DT
+		FROM
+				INF_DSP_VIDEO_GOODS goods
+			INNER JOIN
+				INF_DSP_VIDEO_QUE_POINT point
+			ON ( goods.QUE_SN = point.QUE_SN )
+		WHERE
+			1 = 1
+		AND
+        	goods.DSP_FACEBOOK = 'Y'
+        AND
+        	goods.DSP_VIDEO_ID = #{video_id}
+        ORDER BY
+        	to_number(point.QUE_TIME)
+	</select>
+ -->
+</mapper>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- 스프링 적용 예외 모듈 정의 -->
+	<http pattern="/favicon.ico" security="none" />
+
+	<!-- 팝업 로그인 전용 -->
+	<http pattern="/member/login/view.popup" auto-config="true" disable-url-rewriting="true" use-expressions="true">
+		<form-login username-parameter="userId" password-parameter="password" login-page="${ncp_web_pc_mlb.login.popup.url}" login-processing-url="${ncp_web_pc_mlb.login.process.url}"
+			default-target-url="${ncp_web_pc_mlb.logout.success.url}" authentication-success-handler-ref="securityAuthenticationSuccessHandler" authentication-failure-handler-ref="securityAuthenticationFailureHandler" />
+
+		<!-- 로그아웃 설정 -->
+		<logout invalidate-session="true" delete-cookies="JSESSIONID,GF_RM,MBRNO" logout-url="${ncp_web_pc_mlb.logout.url}" success-handler-ref="forcedCleanLogoutHandler1" />
+
+		<!--logout-success-url="${ncp_web_pc_mlb.logout.success.url}" -->
+
+		<!-- <csrf disabled="true"/> -->
+
+		<intercept-url pattern="/public/**" access="permitAll" />
+		<intercept-url pattern="/secured/**" access="hasAnyRole('ROLE_USER')" />
+		<!-- csrf + hdiv 체크를 실행(추후 반드시 주석 해제) -->
+		<csrf request-matcher-ref="securityCsrfRequestMatcher" />
+		<custom-filter after="SECURITY_CONTEXT_FILTER" ref="hdivFilter" />
+		<session-management session-authentication-strategy-ref="sas" />
+		<access-denied-handler ref="securityAccessDeniedHandler" />
+	</http>
+
+	<http pattern="/**" auto-config="true" disable-url-rewriting="true" use-expressions="true">
+
+		<form-login username-parameter="userId" password-parameter="password" login-page="${ncp_web_pc_mlb.login.url}" login-processing-url="${ncp_web_pc_mlb.login.process.url}" default-target-url="${ncp_web_pc_mlb.logout.success.url}"
+			authentication-success-handler-ref="securityAuthenticationSuccessHandler" authentication-failure-handler-ref="securityAuthenticationFailureHandler" />
+		<!-- 로그아웃 설정 -->
+		<logout invalidate-session="true" delete-cookies="JSESSIONID,GF_RM,MBRNO" logout-url="${ncp_web_pc_mlb.logout.url}" success-handler-ref="forcedCleanLogoutHandler2" />
+
+		<!--logout-success-url="/public/member/logoutGate" -->
+
+		<!-- 사이트 루트 / 페이지 -->
+		<intercept-url pattern="/" access="permitAll" requires-channel="any" />
+
+		<intercept-url pattern="/errors/**" access="permitAll" requires-channel="any" />
+
+		<intercept-url pattern="${ncp_web_pc_mlb.login.process.url}" access="permitAll" requires-channel="any" />
+		<intercept-url pattern="${ncp_web_pc_mlb.login.url}*" access="permitAll" requires-channel="any" />
+		<intercept-url pattern="${ncp_web_pc_mlb.logout.url}" access="permitAll" requires-channel="any" />
+		<intercept-url pattern="${ncp_web_pc_mlb.logout.success.url}" access="permitAll" requires-channel="any" />
+		
+		<intercept-url pattern="/naverloginProcess" access="permitAll" requires-channel="any" />
+		
+		<!-- css 리소스 -->
+		<intercept-url pattern="/css/**" access="permitAll" requires-channel="any" />
+		<!-- js 리소스 -->
+		<intercept-url pattern="/js/**" access="permitAll" requires-channel="any" />
+		<!-- images 리소스 -->
+		<intercept-url pattern="/images/**" access="permitAll" requires-channel="any" />
+		<intercept-url pattern="/img/**" access="permitAll" requires-channel="any" />
+		<!-- font 리소스 -->
+		<intercept-url pattern="/font/**" access="permitAll" requires-channel="any" />
+		<!-- plugin 리소스 -->
+		<intercept-url pattern="/plugin/**" access="permitAll" requires-channel="any" />
+
+		<intercept-url pattern="/**" access="permitAll" requires-channel="any" />
+
+
+
+		<headers>
+			<frame-options policy="SAMEORIGIN" />
+			<hsts disabled="true" />
+		</headers>
+
+		<!-- <csrf disabled="true"/> -->
+		<!-- csrf + hdiv 체크를 실행(추후 반드시 주석 해제한다.) -->
+		<csrf request-matcher-ref="securityCsrfRequestMatcher" />
+		<custom-filter after="SECURITY_CONTEXT_FILTER" ref="hdivFilter" />
+		<!-- 커스텀 필터 묶음 추가 -->
+		<custom-filter before="FORM_LOGIN_FILTER" ref="compositeAuthFilter" />
+
+		<session-management session-authentication-strategy-ref="sas" />
+		<access-denied-handler ref="securityAccessDeniedHandler" />
+
+		<port-mappings>
+			<port-mapping http="${ncp_web_pc_mlb.protocol.http.port}" https="${ncp_web_pc_mlb.protocol.https.port}" />
+		</port-mappings>
+	</http>
+
+	<beans:bean id="hdivFilter" class="org.hdiv.filter.ValidatorFilter" />
+
+	<!-- 커스텀 필터 묶음. -->
+	<beans:bean id="compositeAuthFilter" class="org.springframework.web.filter.CompositeFilter">
+	    <beans:property name="filters">
+	        <beans:list>
+	            <beans:ref bean="naverAuthenticationFilter"/>
+	        </beans:list>
+	    </beans:property>
+	</beans:bean>
+
+	<beans:bean id="naverAuthenticationFilter" class="com.plgrim.ncp.commons.auth.naver.NaverAuthenticationFilter">
+		<beans:property name="postOnly" value="true" />
+		<beans:property name="authenticationSuccessHandler"  ref="securityAuthenticationSuccessHandler" />
+		<beans:property name="authenticationFailureHandler"  ref="securityAuthenticationFailureHandler" />
+	</beans:bean>
+
+	<beans:bean id="forcedCleanLogoutHandler1" class="com.plgrim.ncp.commons.util.ForcedCleanLogoutHandler">
+		<beans:property name="logoutSuccessUrl" value="${ncp_web_pc_mlb.logout.success.url}" />
+	</beans:bean>
+
+	<beans:bean id="forcedCleanLogoutHandler2" class="com.plgrim.ncp.commons.util.ForcedCleanLogoutHandler">
+		<beans:property name="logoutSuccessUrl" value="/member/base/logoutGate" />
+	</beans:bean>
+
+
+	<beans:bean id="securityAccessDeniedHandler" class="com.plgrim.ncp.framework.security.SecurityAccessDeniedHandler" p:expiredURL="${ncp_web_pc_mlb.expired.vulnerability.url}" />
+
+	<beans:bean id="securityCsrfRequestMatcher" class="com.plgrim.ncp.framework.security.SecurityCsrfRequestMatcher">
+		<beans:property name="excludes">
+			<beans:list>
+				<beans:value>${ncp_web_pc_mlb.login.process.url}</beans:value>
+				<beans:value>${ncp_web_pc_mlb.logout.success.url}</beans:value>
+				<beans:value>${ncp_web_pc_mlb.logout.url}</beans:value>
+				<beans:value>${ncp_web_pc_mlb.naver.login.process.url}</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" p:alwaysCreateSession="false" p:migrateSessionAttributes="true">
+				</beans:bean>
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+
+	<!-- 메서드 레벨 보안 강화 -->
+	<global-method-security pre-post-annotations="enabled" />
+
+	<!-- 인증이 성공할 경우 페이지 리다이렉트 처리 -->
+	<beans:bean id="securityAuthenticationSuccessHandler" class="com.plgrim.ncp.cmp.member.fo.auth.SecurityAuthenticationSuccessHandler" p:defaultUrl="${ncp_web_pc_mlb.logout.success.url}"
+                p:popupSuccessURL="${ncp_web_pc_mlb.login.success.url}" p:securitySessionInitHandler-ref="authenticationMemberService" p:sessionRegistry-ref="sessionRegistry" />
+
+	<!-- 인증이 실패할 경우 페이지 리다이렉트 처리 -->
+	<beans:bean id="securityAuthenticationFailureHandler" class="com.plgrim.ncp.cmp.member.fo.auth.SecurityAuthenticationFailureHandler" p:failURL="${ncp_web_pc_mlb.login.url}" p:failPopupURL="${ncp_web_pc_mlb.login.fail.url}" />
+
+	<authentication-manager alias="authenticationManager">
+		<!--  provider 선언 순서 중요!  -->
+		<authentication-provider ref="naverAuthenticationProvider" />
+
+<!-- 		<authentication-provider ref="foAuthenticationProvider" /> -->
+
+		<authentication-provider user-service-ref="authenticationMemberService">
+			<password-encoder ref="passwordEncoder" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="naverAuthenticationProvider" class="com.plgrim.ncp.commons.auth.naver.NaverAuthenticationProvider" />
+
+<!-- 	<beans:bean id="foAuthenticationProvider" class="com.plgrim.ncp.commons.auth.FOAuthenticationProvider" > -->
+<!-- 		<beans:property name="passwordEncoder"> -->
+<!-- 			<beans:ref bean="passwordEncoder" /> -->
+<!-- 		</beans:property> -->
+<!-- 	</beans:bean> -->
+
+	<beans:bean id="authenticationMemberService" class="com.plgrim.ncp.cmp.member.fo.auth.AuthenticationMemberService" />
+
+	<beans:bean id="passwordEncoder" class="com.plgrim.ncp.cmp.member.fo.auth.CustomPasswordEncoder" />
+
+
+</beans:beans>
+

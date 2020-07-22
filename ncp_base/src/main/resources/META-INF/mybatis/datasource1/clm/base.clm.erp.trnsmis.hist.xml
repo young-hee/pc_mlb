@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectClmErpTrnsmisHist" parameterType="clmErpTrnsmisHist" resultType="clmErpTrnsmisHist">
+		SELECT /* com.plgrim.ncp.base.selectClmErpTrnsmisHist		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , CLM_NO
+			 , CLM_ERP_TRNSMIS_TP_CD
+			 , CLM_WRHS_GOD_TURN
+			 , ERP_TRNSMIS_CD
+			 , QTY_TURN
+			 , ERP_TRNSMIS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CLM_ERP_TRNSMIS_HIST
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		   AND CLM_ERP_TRNSMIS_TP_CD = #{clmErpTrnsmisTpCd,jdbcType=VARCHAR}
+		   AND CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+		   AND ERP_TRNSMIS_CD = #{erpTrnsmisCd,jdbcType=VARCHAR}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateClmErpTrnsmisHist" parameterType="clmErpTrnsmisHist">
+		UPDATE /* com.plgrim.ncp.base.updateClmErpTrnsmisHist		Generator(Generator)	2018-05-23 */
+		CLM_ERP_TRNSMIS_HIST SET
+			   ERP_TRNSMIS_DT = #{erpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		   AND CLM_ERP_TRNSMIS_TP_CD = #{clmErpTrnsmisTpCd,jdbcType=VARCHAR}
+		   AND CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+		   AND ERP_TRNSMIS_CD = #{erpTrnsmisCd,jdbcType=VARCHAR}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertClmErpTrnsmisHist" parameterType="clmErpTrnsmisHist">
+		INSERT /* com.plgrim.ncp.base.insertClmErpTrnsmisHist		Generator(Generator)	2018-05-23 */
+		INTO   CLM_ERP_TRNSMIS_HIST (
+			   ORD_NO
+			 , CLM_NO
+			 , CLM_ERP_TRNSMIS_TP_CD
+			 , CLM_WRHS_GOD_TURN
+			 , ERP_TRNSMIS_CD
+			 , QTY_TURN
+			 , ERP_TRNSMIS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{clmErpTrnsmisTpCd,jdbcType=VARCHAR}
+			 , #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , #{erpTrnsmisCd,jdbcType=VARCHAR}
+			 , #{qtyTurn,jdbcType=NUMERIC}
+			 , #{erpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteClmErpTrnsmisHist" parameterType="clmErpTrnsmisHist">
+		DELETE /* com.plgrim.ncp.base.deleteClmErpTrnsmisHist		Generator(Generator)	2018-05-23 */
+		  FROM CLM_ERP_TRNSMIS_HIST
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND CLM_NO = #{clmNo,jdbcType=VARCHAR}
+		   AND CLM_ERP_TRNSMIS_TP_CD = #{clmErpTrnsmisTpCd,jdbcType=VARCHAR}
+		   AND CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+		   AND ERP_TRNSMIS_CD = #{erpTrnsmisCd,jdbcType=VARCHAR}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.sysshop">
+	
+	<select id="selectSysErpSaleShopList" parameterType="sysErpSaleShop" resultType="sysErpSaleShop">
+        SELECT /* com.plgrim.ncp.commons.repository.selectSysErpSaleShopList jackie 20150529 */
+                SALE_SHOP_CD
+               ,MALL_ID
+               ,AREA_SECT_CD
+               ,PARTMAL_SECT_CD
+               ,SALE_MBD_CD
+               ,USE_YN
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    SYS_ERP_SALE_SHOP t
+        WHERE   1 = 1
+    </select>
+	
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComLangbyChrger" parameterType="comLangbyChrger" resultType="comLangbyChrger">
+		SELECT /* com.plgrim.ncp.base.selectComLangbyChrger		Generator(Generator)	2018-05-23 */
+			   COM_ID
+			 , CHRGER_JOB_CD
+			 , CHRGER_TURN
+			 , LANG_CD
+			 , CHRGER_NM
+			 , CHRGER_CLSF
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_LANGBY_CHRGER
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+		   AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComLangbyChrger" parameterType="comLangbyChrger">
+		UPDATE /* com.plgrim.ncp.base.updateComLangbyChrger		Generator(Generator)	2018-05-23 */
+		COM_LANGBY_CHRGER SET
+			   CHRGER_NM = #{chrgerNm,jdbcType=VARCHAR}
+			 , CHRGER_CLSF = #{chrgerClsf,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+		   AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComLangbyChrger" parameterType="comLangbyChrger">
+		INSERT /* com.plgrim.ncp.base.insertComLangbyChrger		Generator(Generator)	2018-05-23 */
+		INTO   COM_LANGBY_CHRGER (
+			   COM_ID
+			 , CHRGER_JOB_CD
+			 , CHRGER_TURN
+			 , LANG_CD
+			 , CHRGER_NM
+			 , CHRGER_CLSF
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comId,jdbcType=VARCHAR}
+			 , #{chrgerJobCd,jdbcType=VARCHAR}
+			 , #{chrgerTurn,jdbcType=NUMERIC}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{chrgerNm,jdbcType=VARCHAR}
+			 , #{chrgerClsf,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComLangbyChrger" parameterType="comLangbyChrger">
+		DELETE /* com.plgrim.ncp.base.deleteComLangbyChrger		Generator(Generator)	2018-05-23 */
+		  FROM COM_LANGBY_CHRGER
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND CHRGER_JOB_CD = #{chrgerJobCd,jdbcType=VARCHAR}
+		   AND CHRGER_TURN = #{chrgerTurn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

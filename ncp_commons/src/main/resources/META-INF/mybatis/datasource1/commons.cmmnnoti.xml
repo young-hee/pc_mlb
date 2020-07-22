@@ -1,0 +1,1505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.cmmnnoti">
+	
+	<resultMap id="resultSysCmmnNotiBo" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<result property="sysNoti.notiSn" column="NOTI_SN" />
+		<result property="siteNm" column="SITE_NM" />
+		<result property="adminTpCdNm" column="ADMIN_TP_CD_NM" />
+		<result property="notiTpCdNm" column="NOTI_TP_CD_NM" />
+		<result property="sysNoti.upendFixYn" column="UPEND_FIX_YN" />
+		<result property="sysNoti.sortSeq" column="SORT_SEQ" />
+		<result property="sysNoti.notiSj" column="NOTI_SJ" />
+		<result property="popupDtNm" column="POPUP_DT_NM" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="sysNoti.dspYn" column="DSP_YN" />
+		<result property="sysNoti.popupYn" column="POPUP_YN" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+		<result property="sysNoti.inqireNum" column="INQIRE_NUM" />
+		<result property="sysNoti.notiSectCd" column="NOTI_SECT_CD" />
+		<result property="newYn" column="NEW_YN" />
+		<result property="sysNoti.notiSectCd" column="NOTI_SECT_CD" />
+		<result property="day7InYn" column="DAY7_IN_YN" />
+		<result property="regDt" column="REG_DT" />
+		<result property="langCd" column="LANG_CD" />
+	</resultMap>
+	
+	<!-- 시스템공지 -->
+	<select id="selectSysCmmnNotiBoList" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysCmmnNotiBo">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT
+			*
+		FROM (
+			SELECT /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoList"][시스템공지 목록 조회][Ed] */
+				SN.NOTI_SN /* 공지번호 */
+				,CASE
+					WHEN SN.NOTI_SECT_CD = 'BO_NOTI' OR SN.NOTI_SECT_CD = 'PO_NOTI' THEN /* BO */
+					(
+						SELECT
+	        				LISTAGG((SELECT BO_SITE_ID FROM SYS_BO_SITE WHERE BO_SITE_ID = SBNS.BO_SITE_ID), ',') WITHIN GROUP(ORDER BY SBNS.NOTI_SN)
+	        			FROM SYS_BO_NOTI_SITE SBNS 
+	        			WHERE 1 = 1
+	        			AND SBNS.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SBNS.NOTI_SN
+					)
+					ELSE /* FO */
+					(
+						SELECT
+	        				LISTAGG((SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = SFNM.MALL_ID), ',') WITHIN GROUP(ORDER BY SFNM.NOTI_SN)
+	        			FROM SYS_FO_NOTI_MALL SFNM 
+	        			WHERE 1 = 1
+	        			AND SFNM.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SFNM.NOTI_SN
+					)
+				 END AS SITE_NM /* 노출타겟 */
+				,(
+					SELECT
+	       				LISTAGG((SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ADMIN_TP' AND LANG_CD= 'KOR' AND CD = SBNT.ADMIN_TP_CD), ',') WITHIN GROUP(ORDER BY SBNT.NOTI_SN)
+	       			FROM SYS_BO_NOTI_TGT SBNT 
+	       			WHERE SBNT.NOTI_SN = SN.NOTI_SN
+	       			GROUP BY SBNT.NOTI_SN
+				 ) AS ADMIN_TP_CD_NM /* 세부타겟 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'NOTI_TP' AND LANG_CD= 'KOR' AND CD = SN.NOTI_TP_CD) AS NOTI_TP_CD_NM /* 공지유형 */
+				,SN.UPEND_FIX_YN /* 상단고정여부 */
+				,SN.SORT_SEQ /* 상단노출순서 */
+				,SN.NOTI_SJ /* 공지제목 */
+				,TO_CHAR(SN.POPUP_BEG_DT, 'YYYY-MM-DD HH24:MI') || ' ~ ' || TO_CHAR(SN.POPUP_END_DT, 'YYYY-MM-DD HH24:MI') AS POPUP_DT_NM /* 공지기간 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+				,TO_CHAR(SN.REG_DT, 'YYYY-MM-DD') AS REG_DT_NM /* 등록일 */
+				,SN.DSP_YN /* 게시여부 */
+				,SN.POPUP_YN /* 팝업여부 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+				,TO_CHAR(SN.UDT_DT,'YYYY-MM-DD') AS UDT_DT_NM /* 수정일 */
+				,SN.INQIRE_NUM /* 조회수 */
+				,SN.NOTI_SECT_CD /* 공지구분코드 */
+				, CASE WHEN ((SYSDATE - SN.REG_DT) <![CDATA[<]]> 7) THEN 'NEW'
+				  ELSE '' END AS NEW_YN
+				,CASE WHEN SN.REG_DT > SYSDATE-7 THEN 'Y' ELSE 'N' END AS DAY7_IN_YN
+                ,SN.LANG_CD
+			FROM	SYS_NOTI SN
+			WHERE	1 = 1
+			<include refid="selectSysCmmnNotiBoListWhere1"/>
+			<if test="search.notiCont != null and search.notiCont != ''" >
+				AND		SN.PC_NOTI_CONT LIKE '%' || #{search.notiCont} || '%'
+			</if>
+			ORDER BY SN.NOTI_SN DESC
+		) T
+		WHERE	1 = 1
+		<include refid="selectSysCmmnNotiBoListWhere2"/>
+		<if test="targetTpCd == 'PO'">
+		AND		T.SITE_NM LIKE '%' || #{targetTpCd} || '%'
+		</if>
+		<if test="targetTpCd == 'PO'">
+		AND 	T.DSP_YN = 'Y'
+		</if>
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 시스템공지 개수 -->
+	<select id="selectSysCmmnNotiBoListCount" resultType="long">
+		SELECT
+			COUNT(*)
+		FROM (
+			SELECT /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoListCount"][시스템공지 목록 조회 개수][Ed] */
+				SN.NOTI_SN /* 공지번호 */
+				,CASE
+					WHEN SN.NOTI_SECT_CD = 'BO_NOTI' OR SN.NOTI_SECT_CD = 'PO_NOTI' THEN /* BO */
+					(
+						SELECT
+	        				LISTAGG((SELECT BO_SITE_ID FROM SYS_BO_SITE WHERE BO_SITE_ID = SBNS.BO_SITE_ID), ',') WITHIN GROUP(ORDER BY SBNS.NOTI_SN)
+	        			FROM SYS_BO_NOTI_SITE SBNS 
+	        			WHERE 1 = 1
+	        			AND SBNS.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SBNS.NOTI_SN
+					)
+					ELSE /* FO */
+					(
+						SELECT
+	        				LISTAGG((SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = SFNM.MALL_ID), ',') WITHIN GROUP(ORDER BY SFNM.NOTI_SN)
+	        			FROM SYS_FO_NOTI_MALL SFNM 
+	        			WHERE 1 = 1
+	        			AND SFNM.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SFNM.NOTI_SN
+					)
+				 END AS SITE_NM /* 노출타겟 */
+				,(
+					SELECT
+	       				LISTAGG((SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ADMIN_TP' AND LANG_CD= 'KOR' AND CD = SBNT.ADMIN_TP_CD), ',') WITHIN GROUP(ORDER BY SBNT.NOTI_SN)
+	       			FROM SYS_BO_NOTI_TGT SBNT 
+	       			WHERE SBNT.NOTI_SN = SN.NOTI_SN
+	       			GROUP BY SBNT.NOTI_SN
+				 ) AS ADMIN_TP_CD_NM /* 세부타겟 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'NOTI_TP' AND LANG_CD= 'KOR' AND CD = SN.NOTI_TP_CD) AS NOTI_TP_CD_NM /* 공지유형 */
+				,SN.UPEND_FIX_YN /* 상단고정여부 */
+				,SN.SORT_SEQ /* 상단노출순서 */
+				,SN.NOTI_SJ /* 공지제목 */
+				,TO_CHAR(SN.POPUP_BEG_DT, 'YYYY-MM-DD HH24:MI') || ' ~ ' || TO_CHAR(SN.POPUP_END_DT, 'YYYY-MM-DD HH24:MI') AS POPUP_DT_NM /* 공지기간 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+				,TO_CHAR(SN.REG_DT, 'YYYY-MM-DD') AS REG_DT_NM /* 등록일 */
+				,SN.DSP_YN /* 게시여부 */
+				,SN.POPUP_YN /* 팝업여부 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+				,TO_CHAR(SN.UDT_DT,'YYYY-MM-DD') AS UDT_DT_NM /* 수정일 */
+				,SN.INQIRE_NUM /* 조회수 */
+				,SN.NOTI_SECT_CD /* 공지구분코드 */
+                ,SN.LANG_CD
+			FROM	SYS_NOTI SN
+			WHERE	1 = 1
+			<include refid="selectSysCmmnNotiBoListWhere1"/>
+			<if test="search.notiCont != null and search.notiCont != ''" >
+				AND		SN.PC_NOTI_CONT LIKE '%' || #{search.notiCont} || '%'
+			</if>
+		) T
+		WHERE	1 = 1
+		<include refid="selectSysCmmnNotiBoListWhere2"/>
+		<if test="targetTpCd == 'PO'">
+		AND		T.SITE_NM LIKE '%' || #{targetTpCd} || '%'
+		</if>
+		<if test="targetTpCd == 'PO'">
+			AND 	T.DSP_YN = 'Y'
+		</if>
+	</select>
+	
+	<!-- 시스템공지 엑셀-->
+	<select id="selectSysCmmnNotiBoListExcel" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultType="java.util.LinkedHashMap">
+		SELECT 
+			*
+		FROM (
+			SELECT /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoList"][시스템공지 목록 조회 엑셀][Ed] */
+				ROWNUM AS NUM
+				,CASE
+					WHEN SN.NOTI_SECT_CD = 'BO_NOTI' THEN /* BO */
+					(
+						SELECT
+	        				LISTAGG((SELECT BO_SITE_ID FROM SYS_BO_SITE WHERE BO_SITE_ID = SBNS.BO_SITE_ID), ',') WITHIN GROUP(ORDER BY SBNS.NOTI_SN)
+	        			FROM SYS_BO_NOTI_SITE SBNS 
+	        			WHERE 1 = 1
+	        			AND SBNS.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SBNS.NOTI_SN
+					)
+					ELSE /* FO */
+					(
+						SELECT
+	        				LISTAGG((SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = SFNM.MALL_ID), ',') WITHIN GROUP(ORDER BY SFNM.NOTI_SN)
+	        			FROM SYS_FO_NOTI_MALL SFNM 
+	        			WHERE 1 = 1
+	        			AND SFNM.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SFNM.NOTI_SN
+					)
+				 END AS SITE_NM /* 노출타겟 */
+				,(
+					SELECT
+	       				LISTAGG((SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ADMIN_TP' AND LANG_CD= 'KOR' AND CD = SBNT.ADMIN_TP_CD), ',') WITHIN GROUP(ORDER BY SBNT.NOTI_SN)
+	       			FROM SYS_BO_NOTI_TGT SBNT 
+	       			WHERE SBNT.NOTI_SN = SN.NOTI_SN
+	       			GROUP BY SBNT.NOTI_SN
+				 ) AS ADMIN_TP_CD_NM /* 세부타겟 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'NOTI_TP' AND LANG_CD= 'KOR' AND CD = SN.NOTI_TP_CD) AS NOTI_TP_CD_NM /* 공지유형 */
+				,SN.UPEND_FIX_YN /* 상단고정여부 */
+				,SN.SORT_SEQ /* 상단노출순서 */
+				,SN.NOTI_SJ /* 공지제목 */
+				,TO_CHAR(SN.POPUP_BEG_DT, 'YYYY-MM-DD HH24:MI') || ' ~ ' || TO_CHAR(SN.POPUP_END_DT, 'YYYY-MM-DD HH24:MI') AS POPUP_DT_NM /* 공지기간 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+				,TO_CHAR(SN.REG_DT, 'YYYY-MM-DD') AS REG_DT_NM /* 등록일 */
+				,DECODE(SN.DSP_YN, 'Y', '게시', 'N', '미게시') AS DSP_YN_NM /* 게시여부 */
+				,DECODE(SN.POPUP_YN, 'Y', '게시', 'N', '미게시') AS POPUP_YN_NM /* 팝업여부 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+				,TO_CHAR(SN.UDT_DT,'YYYY-MM-DD') AS UDT_DT_NM /* 수정일 */
+				,SN.INQIRE_NUM /* 조회수 */
+                ,SN.LANG_CD
+			FROM	SYS_NOTI SN
+			WHERE	1 = 1
+			<include refid="selectSysCmmnNotiBoListWhere1"/>
+			ORDER BY SN.NOTI_SN DESC
+		) T
+		WHERE	1 = 1
+		<include refid="selectSysCmmnNotiBoListWhere2"/>
+	</select>
+	
+	<!-- 시스템공지 조건문1 -->
+	<sql id="selectSysCmmnNotiBoListWhere1"> 
+		<if test='search.notiSj != null and search.notiSj != ""'>
+			AND UPPER(SN.NOTI_SJ) LIKE '%' || UPPER(#{search.notiSj}) || '%' /* 제목 */
+		</if>
+		<if test='search.notiTpCds != null and search.notiTpCds != ""'>
+			AND SN.NOTI_TP_CD IN
+			<foreach item ="item" index="index" collection="search.notiTpCds" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 공지유형 */
+		</if>
+		<if test='search.dspYns != null and search.dspYns != ""'>
+			AND SN.DSP_YN IN
+			<foreach item ="item" index="index" collection="search.dspYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 전시여부 */
+		</if>
+		<if test='search.popupYns != null and search.popupYns != ""'>
+			AND SN.POPUP_YN IN
+			<foreach item ="item" index="index" collection="search.popupYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 팝업여부 */
+		</if>
+        <if test='search.langCd != null and search.langCd != ""'>
+            AND SN.LANG_CD IN ( select REGEXP_SUBSTR(#{search.langCd,jdbcType=VARCHAR},'[^,]+',1,level ) from dual connect by level <![CDATA[ <= ]]> REGEXP_COUNT(#{search.langCd,jdbcType=VARCHAR},'[^,]+') )
+            /* 언어구분 */
+        </if>
+		<!-- 기간검색 -->
+		<if test='search.calType != null and search.calType != ""'>
+			<choose>
+				<when test='search.calType == "popupCal"'>
+					<if test='search.popupBegDt != null and search.popupBegDt != "" and search.popupEndDt != null and search.popupEndDt != ""'>
+						AND SN.POPUP_BEG_DT >= TO_DATE(#{search.popupBegDt}, 'YYYY-MM-DD') AND SN.POPUP_END_DT &lt;= TO_DATE(#{search.popupEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 공지기간 */
+					</if>
+				</when>
+				<otherwise>
+					<if test='search.popupBegDt != null and search.popupBegDt != "" and search.popupEndDt != null and search.popupEndDt != ""'>
+						AND SN.REG_DT >= TO_DATE(#{search.popupBegDt}, 'YYYY-MM-DD') AND SN.REG_DT &lt;= TO_DATE(#{search.popupEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 등록일 */
+					</if>
+				</otherwise>
+			</choose>
+		</if>
+		AND (
+		    EXISTS (
+		        SELECT 1 
+		        FROM SYS_BO_NOTI_SITE SBNS
+		        WHERE SBNS.NOTI_SN = SN.NOTI_SN
+		        <choose>
+			        <when test='search.boSiteIds != null and search.boSiteIds != ""'>
+						AND SBNS.BO_SITE_ID IN
+						<foreach item ="item" index="index" collection="search.boSiteIds" open="(" separator="," close=")">
+			         		#{item}
+			   			</foreach>
+						/* 사이트 */
+					</when>
+					<otherwise>
+						<!-- FO만 설정되어 있을 경우 FO만 보여주도록 함  -->
+						<if test='search.mallIds != null and search.mallIds != ""'>
+							AND 1 = 2
+						</if>
+					</otherwise>
+				</choose>
+		    ) OR
+		    EXISTS (
+		        SELECT 1 
+		        FROM SYS_FO_NOTI_MALL SFNM
+		        WHERE SFNM.NOTI_SN = SN.NOTI_SN
+		        <choose>
+			        <when test='search.mallIds != null and search.mallIds != ""'>
+						AND SFNM.MALL_ID IN
+						<foreach item ="item" index="index" collection="search.mallIds" open="(" separator="," close=")">
+			         		#{item}
+			   			</foreach>
+						/* 몰 */
+					</when>
+					<otherwise>
+						<!-- BO만 설정되어 있을 경우 BO만 보여주도록 함  -->
+						<if test='search.boSiteIds != null and search.boSiteIds != ""'>
+							AND 1 = 2
+						</if>
+					</otherwise>
+				</choose>
+		    )
+		)
+	</sql>
+	
+	<!-- 이전글, 다음글 조회 -->
+    <select id="selectSysPrevNxtNotice" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultType="sysNoti">
+        /* Formatted on 2015/11/05 오전 10:44:07 (QP5 v5.227.12220.39754) */
+		SELECT 		*
+  		   	  FROM 	(  SELECT /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoList"][시스템공지 목록 조회][Ed] */
+                						SN.NOTI_SN                                          /* 공지번호 */
+                             		,	SN.NOTI_SJ                                         /* 공지제목 */
+            				FROM SYS_NOTI SN
+           				  WHERE 1 = 1
+        			ORDER BY SN.NOTI_SN DESC) T
+ 		WHERE     1 = 1
+		      AND 	T.NOTI_SN =	(SELECT MAX(SN1.NOTI_SN)
+                 								FROM SYS_NOTI SN1
+                 								  JOIN SYS_BO_NOTI_SITE SBNS
+                   									ON SN1.NOTI_SN = SBNS.NOTI_SN
+                							 WHERE SN1.NOTI_SN <![CDATA[<]]> #{search.notiSn, jdbcType=NUMERIC}
+                  									AND SBNS.BO_SITE_ID = #{targetTpCd}
+													<if test="search.popupBegDt != null and search.popupBegDt != '' and search.popupEndDt != null and search.popupEndDt != ''">
+													AND SN1.REG_DT <![CDATA[>]]>= TO_DATE(#{search.popupBegDt}, 'YYYY-MM-DD') AND SN1.REG_DT <![CDATA[<]]>= TO_DATE(#{search.popupEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 등록일 */
+													</if>
+													<if test="search.notiSj != null and search.notiSj != ''">
+													AND SN1.NOTI_SJ LIKE '%'||#{search.notiSj}||'%'
+													</if>
+													<if test="search.notiCont != null and search.notiCont != ''">
+													AND SN1.PC_NOTI_CONT LIKE '%'||#{search.notiCont}||'%'
+													</if>
+                                                    <choose>
+                                                        <when test="search.langCd != null and search.langCd != ''">
+                                                            AND SN1.LANG_CD = #{langCd,jdbcType=VARCHAR}
+                                                        </when>
+                                                        <otherwise>
+                                                            AND SN1.LANG_CD = 'KOR'
+                                                        </otherwise>
+                                                    </choose>
+													AND SN1.DSP_YN = 'Y'
+                 					)
+
+		UNION
+		SELECT 			*
+  		   FROM 			(  SELECT                  /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoList"][시스템공지 목록 조회][Ed] */
+                									SN.NOTI_SN                                          /* 공지번호 */
+                              					  , SN.NOTI_SJ                                         /* 공지제목 */
+            						  FROM SYS_NOTI SN
+           							WHERE 1 = 1
+        						ORDER BY SN.NOTI_SN DESC) T
+ 		WHERE     1 = 1
+       		AND T.NOTI_SN = (SELECT MIN (SN1.NOTI_SN)
+                 							 FROM SYS_NOTI SN1
+                 							    JOIN SYS_BO_NOTI_SITE SBNS
+                   									ON SN1.NOTI_SN = SBNS.NOTI_SN
+                							WHERE SN1.NOTI_SN <![CDATA[>]]> #{search.notiSn, jdbcType=NUMERIC}
+                  								   	AND SBNS.BO_SITE_ID = #{targetTpCd}
+													<if test="search.popupBegDt != null and search.popupBegDt != '' and search.popupEndDt != null and search.popupEndDt != ''">
+													AND SN1.REG_DT <![CDATA[>]]>= TO_DATE(#{search.popupBegDt}, 'YYYY-MM-DD') AND SN1.REG_DT <![CDATA[<]]>= TO_DATE(#{search.popupEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 등록일 */
+													</if>
+													<if test="search.notiSj != null and search.notiSj != ''">
+													AND SN1.NOTI_SJ LIKE '%'||#{search.notiSj}||'%'
+													</if>
+													<if test="search.notiCont != null and search.notiCont != ''">
+													AND SN1.PC_NOTI_CONT LIKE '%'||#{search.notiCont}||'%'
+													</if>
+                                                    <choose>
+                                                        <when test="search.langCd != null and search.langCd != ''">
+                                                            AND SN1.LANG_CD = #{langCd,jdbcType=VARCHAR}
+                                                        </when>
+                                                        <otherwise>
+                                                            AND SN1.LANG_CD = 'KOR'
+                                                        </otherwise>
+                                                    </choose>
+													AND SN1.DSP_YN = 'Y'
+											)
+    </select>
+	<!-- 시스템공지 조건문2 -->
+	<sql id="selectSysCmmnNotiBoListWhere2"> 
+		<if test='search.regtrIdNm != null and search.regtrIdNm != ""'>
+			AND UPPER(T.REGTR_ID_NM) = UPPER(#{search.regtrIdNm}) /* 작성자 */
+		</if>
+	</sql>
+	
+	<!-- 시스템공지 등록 -->
+	<insert id="insertSysNoti" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO">
+		<selectKey keyProperty="sysNoti.notiSn" resultType="long" order="BEFORE">
+            SELECT SQ_SYS_NOTI.NEXTVAL FROM DUAL
+        </selectKey>
+	    INSERT /* [commons.cmmnnoti.xml]["insertSysNoti"][시스템공지 등록][Ed] */  
+	    INTO SYS_NOTI
+		(
+	        NOTI_SN
+	       ,NOTI_TP_CD
+	       ,NOTI_SECT_CD
+	       ,REG_ADMIN_ID
+	       ,NOTI_REG_DT
+	       ,DSP_YN
+	       ,UPEND_FIX_YN
+	       ,SORT_SEQ
+	       ,LANG_CD
+	       ,EXPSR_SCRIN_SECT_CD
+	       ,NOTI_SJ
+	       ,NOTI_CONT_USE_SECT_CD
+	       ,PC_NOTI_CONT
+	       ,MOBILE_NOTI_CONT
+	       ,INQIRE_NUM
+	       ,POPUP_YN
+	       ,POPUP_BEG_DT
+	       ,POPUP_END_DT
+	       ,POPUP_UPEND_LC
+	       ,POPUP_LEFT_LC
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+           
+		)
+		VALUES
+		(
+	        #{sysNoti.notiSn,jdbcType=NUMERIC}
+	       ,#{sysNoti.notiTpCd,jdbcType=VARCHAR}
+	       ,#{sysNoti.notiSectCd,jdbcType=VARCHAR}
+	       ,#{sysNoti.regAdminId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{sysNoti.dspYn,jdbcType=VARCHAR}
+	       ,#{sysNoti.upendFixYn,jdbcType=VARCHAR}
+	       ,#{sysNoti.sortSeq,jdbcType=NUMERIC}
+	       ,#{langCd,jdbcType=VARCHAR}
+	       ,#{sysNoti.expsrScrinSectCd,jdbcType=VARCHAR}
+	       ,#{sysNoti.notiSj,jdbcType=VARCHAR}	       
+	       ,#{sysNoti.notiContUseSectCd,jdbcType=VARCHAR}
+	       ,#{sysNoti.pcNotiCont,jdbcType=CLOB}
+	       ,#{sysNoti.mobileNotiCont,jdbcType=CLOB}
+	       ,0
+	       ,#{sysNoti.popupYn,jdbcType=VARCHAR}
+	       <!-- ,#{sysNoti.popupBegDt,jdbcType=DATE} -->
+	       <!-- ,#{sysNoti.popupEndDt,jdbcType=DATE} -->
+	       ,TO_DATE(#{popupBegDt2,jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+	       ,TO_DATE(#{popupEndDt2,jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+	       ,#{sysNoti.popupUpendLc,jdbcType=NUMERIC}
+	       ,#{sysNoti.popupLeftLc,jdbcType=NUMERIC}
+	       ,#{sysNoti.regtrId,jdbcType=VARCHAR}
+	       ,#{sysNoti.udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+           
+		)
+    </insert>
+    
+    <resultMap id="resultSysCmmnNotiBoDetail" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<id property="sysNoti.notiSn" column="NOTI_SN" />
+		<result property="sysNoti.notiSj" column="NOTI_SJ" />
+		<result property="sysNoti.expsrScrinSectCd" column="EXPSR_SCRIN_SECT_CD" />
+		<result property="sysNoti.notiSectCd" column="NOTI_SECT_CD" />
+		<result property="mallNm" column="MALL_NM" />
+		<result property="sysNoti.notiTpCd" column="NOTI_TP_CD" />
+		<result property="siteNm" column="SITE_NM" />
+		<result property="adminTpCdNm" column="ADMIN_TP_CD_NM" />
+		<result property="sysNoti.upendFixYn" column="UPEND_FIX_YN" />
+		<result property="sysNoti.sortSeq" column="SORT_SEQ" />
+		<result property="sysNoti.dspYn" column="DSP_YN" />
+		<result property="sysNoti.popupYn" column="POPUP_YN" />
+        <result property="sysNoti.langCd" column="LANG_CD" />
+		<result property="popupBegDtNm" column="POPUP_BEG_DT_NM" />
+		<result property="popupEndDtNm" column="POPUP_END_DT_NM" />		
+		<result property="popupBegDtHour" column="POPUP_BEG_DT_HOUR" />
+		<result property="popupBegDtMinute" column="POPUP_BEG_DT_MINUTE" />
+		<result property="popupEndDtHour" column="POPUP_END_DT_HOUR" />
+		<result property="popupEndDtMinute" column="POPUP_END_DT_MINUTE" />		
+		<result property="sysNoti.notiContUseSectCd" column="NOTI_CONT_USE_SECT_CD" />
+		<result property="sysNoti.pcNotiCont" column="PC_NOTI_CONT" />
+		<result property="sysNoti.popupUpendLc" column="POPUP_UPEND_LC" />
+		<result property="sysNoti.popupLeftLc" column="POPUP_LEFT_LC" />
+		<result property="sysNoti.mobileNotiCont" column="MOBILE_NOTI_CONT" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+		<result property="newYn" column="NEW_YN" />
+		<collection property="sysNotiAtchFileList" ofType="SysNotiAtchFile">
+			<result property="notiAtchFileTurn" column="NOTI_ATCH_FILE_TURN" />
+			<result property="notiAtchFileNm" column="NOTI_ATCH_FILE_NM" />
+			<result property="notiAtchFileUrl" column="NOTI_ATCH_FILE_URL" />
+			<result property="notiAtchFileCpcty" column="NOTI_ATCH_FILE_CPCTY" />
+		</collection>
+	</resultMap>
+	
+    <!-- 시스템공지 상세 -->
+	<select id="selectSysCmmnNotiBoDetail" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysCmmnNotiBoDetail">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoDetail"][시스템공지 상세 조회][Ed] */
+		   	SN.NOTI_SN /* 공지번호 */
+		   	,SN.NOTI_SJ /* 공지제목 */
+		   	,SN.EXPSR_SCRIN_SECT_CD /* 노출 화면 구분 코드 ㅁ. 노출 화면 구분 : EXPSR_SCRIN_SECT    >. 메인 : MAIN    >. 장바구니 : BSK    >. 주문서 : ORDSH */
+		   	,SN.NOTI_SECT_CD /* 공지구분코드 */
+		   	,(
+			   	SELECT
+	   				LISTAGG(SFNM.MALL_ID, ',') WITHIN GROUP(ORDER BY SFNM.NOTI_SN)
+	   			FROM SYS_FO_NOTI_MALL SFNM 
+	   			WHERE 1 = 1
+	   			AND SFNM.NOTI_SN = SN.NOTI_SN
+	   			GROUP BY SFNM.NOTI_SN
+        	) AS MALL_NM /* FO 노출 타겟 */
+			,SN.NOTI_TP_CD /* FO 공지유형 */
+			,(
+			   	SELECT
+       				LISTAGG(SBNS.BO_SITE_ID, ',') WITHIN GROUP(ORDER BY SBNS.NOTI_SN)
+       			FROM SYS_BO_NOTI_SITE SBNS 
+       			WHERE 1 = 1
+       			AND SBNS.NOTI_SN = SN.NOTI_SN
+       			GROUP BY SBNS.NOTI_SN
+        	) AS SITE_NM /* BO 노출 타겟 */
+        	,(
+				SELECT
+       				LISTAGG(SBNT.ADMIN_TP_CD, ',') WITHIN GROUP(ORDER BY SBNT.NOTI_SN)
+       			FROM SYS_BO_NOTI_TGT SBNT 
+       			WHERE SBNT.NOTI_SN = SN.NOTI_SN
+       			GROUP BY SBNT.NOTI_SN
+			 ) AS ADMIN_TP_CD_NM /* 세부타겟 */
+           	,SN.UPEND_FIX_YN /* 상단고정여부 */
+			,SN.SORT_SEQ /* 상단노출순서 */
+		   	,SN.DSP_YN /* 게시여부 */
+		   	,SN.POPUP_YN /* 팝업여부 */
+		    ,TO_CHAR(SN.POPUP_BEG_DT,'YYYY-MM-DD') AS POPUP_BEG_DT_NM /* 공지시작일 */
+		    ,TO_CHAR(SN.POPUP_END_DT,'YYYY-MM-DD') AS POPUP_END_DT_NM /* 공지종료일 */		    
+		    ,TO_CHAR(SN.POPUP_BEG_DT,'HH24') AS POPUP_BEG_DT_HOUR /* 공지기간 시작 시간 */
+		    ,TO_CHAR(SN.POPUP_BEG_DT,'MI') AS POPUP_BEG_DT_MINUTE /* 공지기간 시작 분 */
+		    ,TO_CHAR(SN.POPUP_END_DT,'HH24') AS POPUP_END_DT_HOUR /* 공지기간 끝 시간 */
+		    ,TO_CHAR(SN.POPUP_END_DT,'MI') AS POPUP_END_DT_MINUTE /* 공지기간 끝 분 */		    
+		    ,SN.NOTI_CONT_USE_SECT_CD /* 공지내용사용구분코드 */
+		    ,SN.PC_NOTI_CONT /* PC공지내용 */
+		    ,SN.MOBILE_NOTI_CONT /* 모바일공지내용 */
+		    ,SN.POPUP_UPEND_LC /* 팝업 상단 위치 */
+		    ,SN.POPUP_LEFT_LC /* 팝업 좌측 위치 */
+		   	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+		   	,TO_CHAR(SN.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+	       	,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+	       	,TO_CHAR(SN.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */	
+	       	,SNAF.NOTI_ATCH_FILE_TURN /* 파일순번 */
+	       	,SNAF.NOTI_ATCH_FILE_NM /* 파일명 */
+	       	,SNAF.NOTI_ATCH_FILE_URL /* 파일경로 */
+	       	,SNAF.NOTI_ATCH_FILE_CPCTY /* 파일사이즈 */
+	       	, CASE WHEN ((SYSDATE - SN.REG_DT) <![CDATA[<]]> 7) THEN 'NEW'
+				  ELSE '' END AS NEW_YN
+			,SN.LANG_CD
+		FROM	SYS_NOTI SN
+				, SYS_NOTI_ATCH_FILE SNAF
+		WHERE	1 = 1
+		AND 	SN.NOTI_SN = #{search.notiSn}
+		AND		SN.NOTI_SN = SNAF.NOTI_SN(+)
+	</select>
+	
+	<!-- 시스템공지 첨부파일 1개 -->
+	<select id="selectSysCmmnNotiBoFile" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysCmmnNotiBoDetail">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoFile"][시스템공지 첨부파일 1개][peter] */
+		   	SN.NOTI_SN /* 공지번호 */
+	       	,SNAF.NOTI_ATCH_FILE_TURN /* 파일순번 */
+	       	,SNAF.NOTI_ATCH_FILE_NM /* 파일명 */
+	       	,SNAF.NOTI_ATCH_FILE_URL /* 파일경로 */
+	       	,SNAF.NOTI_ATCH_FILE_CPCTY /* 파일사이즈 */
+		FROM	SYS_NOTI SN
+				, SYS_NOTI_ATCH_FILE SNAF
+		WHERE	1 = 1
+		AND 	SN.NOTI_SN = #{search.notiSn}
+		AND		SN.NOTI_SN = SNAF.NOTI_SN
+		AND		SNAF.NOTI_ATCH_FILE_TURN = #{search.notiFileSn}
+	</select>
+
+	<!-- 공지 수정 -->
+    <update id="updateSysNoti" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO">
+		UPDATE /* [commons.cmmnnoti.xml]["updateSysNoti"][공지 수정][Ed] */  
+		SYS_NOTI SET
+			NOTI_SJ = #{sysNoti.notiSj,jdbcType=VARCHAR}
+			<!-- FO일 경우만 수정 -->
+			<if test='sysNoti.notiSectCd != null and sysNoti.notiSectCd != "" and sysNoti.notiSectCd == "FO_NOTI"'>
+				,NOTI_TP_CD = #{sysNoti.notiTpCd,jdbcType=VARCHAR}
+				,UPEND_FIX_YN = #{sysNoti.upendFixYn,jdbcType=VARCHAR}
+				,SORT_SEQ = #{sysNoti.sortSeq,jdbcType=NUMERIC}
+				,EXPSR_SCRIN_SECT_CD = #{sysNoti.expsrScrinSectCd,jdbcType=VARCHAR}
+				,POPUP_UPEND_LC = #{sysNoti.popupUpendLc,jdbcType=NUMERIC}
+				,POPUP_LEFT_LC = #{sysNoti.popupLeftLc,jdbcType=NUMERIC}
+			</if>
+	        <!-- ,NOTI_SECT_CD = #{sysNoti.notiSectCd,jdbcType=VARCHAR} -->
+	        ,NOTI_CONT_USE_SECT_CD = #{sysNoti.notiContUseSectCd,jdbcType=VARCHAR}
+	        ,PC_NOTI_CONT = #{sysNoti.pcNotiCont,jdbcType=CLOB}
+	        ,MOBILE_NOTI_CONT = #{sysNoti.mobileNotiCont,jdbcType=CLOB}
+	        ,DSP_YN = #{sysNoti.dspYn,jdbcType=VARCHAR}
+	        ,POPUP_YN = #{sysNoti.popupYn,jdbcType=VARCHAR}
+	        <!-- ,POPUP_BEG_DT = #{sysNoti.popupBegDt,jdbcType=DATE} -->
+	        <!-- ,POPUP_END_DT = #{sysNoti.popupEndDt,jdbcType=DATE} -->
+	        ,POPUP_BEG_DT = TO_DATE(#{popupBegDt2,jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+	        ,POPUP_END_DT = TO_DATE(#{popupEndDt2,jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+	        ,UDTER_ID = #{sysNoti.udterId,jdbcType=VARCHAR}
+	        ,UDT_DT = SYSDATE
+		WHERE   1 = 1
+		AND     NOTI_SN = #{sysNoti.notiSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 공지 그리드 수정 -->
+    <update id="updateSysNotiGrid" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysNoti">
+		UPDATE /* [commons.cmmnnoti.xml]["updateSysNotiGrid"][공지 그리드 수정][Ed] */  
+		SYS_NOTI SET
+	        DSP_YN = #{dspYn,jdbcType=VARCHAR}
+	        ,SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+	        ,POPUP_YN = #{popupYn,jdbcType=VARCHAR}
+	        ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+	        ,UDT_DT = SYSDATE
+		WHERE   1 = 1
+		AND     NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+    </update>
+	
+	<!-- BO 공지대상 삭제 -->
+	<delete id="deleteSysBoNotiTgtAll" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO">
+		/* [commons.cmmnnoti.xml]["deleteSysBoNotiTgtAll"][BO 공지대상 삭제][Ed] */
+		DELETE FROM SYS_BO_NOTI_TGT 
+		WHERE 1 = 1
+		AND NOTI_SN = #{sysNoti.notiSn,jdbcType=NUMERIC}
+	</delete>
+	
+	<!-- BO 공지사이트 삭제 -->
+	<delete id="deleteSysBoNotiSiteAll" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO">
+		/* [commons.cmmnnoti.xml]["deleteSysBoNotiSiteAll"][BO 공지사이트 삭제][Ed] */
+		DELETE FROM SYS_BO_NOTI_SITE 
+		WHERE 1 = 1
+		AND NOTI_SN = #{sysNoti.notiSn,jdbcType=NUMERIC}
+	</delete>
+	
+	<!-- FO 공지몰 삭제 -->
+	<delete id="deleteSysFoNotiMallAll" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO">
+		/* [commons.cmmnnoti.xml]["deleteSysFoNotiMallAll"][FO 공지몰 삭제][Ed] */
+		DELETE FROM SYS_FO_NOTI_MALL 
+		WHERE 1 = 1
+		AND NOTI_SN = #{sysNoti.notiSn,jdbcType=NUMERIC}
+	</delete>
+	
+	<!-- 몰 목록 조회 -->
+	<select id="selectSysMallList" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysMall">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysMallList"][몰 조회][Ed] */
+                SM.MALL_ID /* 몰 ID */
+               ,SM.MALL_NM /* 몰 명 */
+        FROM	SYS_MALL SM
+		WHERE	1 = 1
+		AND 	SM.USE_YN = 'Y'
+	</select>
+	
+	<!-- BO 사이트 목록 조회 -->
+	<select id="selectSysBoSiteList" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBoSite">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysBoSiteList"][BO 사이트 조회][Ed] */
+                SBS.BO_SITE_ID /* 사이트 ID */
+               ,SBS.BO_SITE_NM /* 사이트 명 */
+        FROM	SYS_BO_SITE SBS
+		WHERE	1 = 1
+		AND 	SBS.USE_YN = 'Y'
+	</select>
+	
+	<resultMap id="resultDspCtgry" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<result property="dspCtgryNo" column="DSP_CTGRY_NO" />
+		<result property="dspCtgryNm" column="DSP_CTGRY_NM" />
+		<result property="type" column="TYPE" />
+	</resultMap>
+	
+	<!-- 전시영역 조회 -->
+	<select id="selectDspCtgryList" resultMap="resultDspCtgry">
+		SELECT /* [commons.cmmnnoti.xml]["selectDspCtgryList"][전시영역 조회][Ed] */
+			 A.DSP_CTGRY_NO /* 전시 카테고리 번호 */
+             ,A.DSP_CTGRY_NM /* 전시 카테고리 명 */
+             ,A.TYPE /* 전시영역 부분(Main) */
+		FROM (
+			SELECT 
+	                DC.DSP_CTGRY_NO /* 전시 카테고리 번호 */
+	               ,DC.DSP_CTGRY_NM /* 전시 카테고리 명 */
+	               ,DC.SORT_SEQ /* 정렬순서 */
+	               ,'M' AS TYPE /* 전시영역 부분(Main) */
+	        FROM	DSP_CTGRY DC
+			WHERE	1 = 1
+			AND 	DC.UPPER_DSP_CTGRY_NO = 'BDM' 
+			AND 	DC.LEAF_CTGRY_YN = 'N'
+			
+			UNION ALL
+			
+			SELECT 
+	                DC.DSP_CTGRY_NO /* 전시 카테고리 번호 */
+	               ,DC.DSP_CTGRY_NM /* 전시 카테고리 명 */
+	               ,DC.SORT_SEQ /* 정렬순서 */
+	               ,'C' AS TYPE /* 전시영역 구분(Category Main) */
+	        FROM	DSP_CTGRY DC
+			WHERE	1 = 1
+			AND 	DC.UPPER_DSP_CTGRY_NO = 'DXM'
+			AND 	DC.CTGRY_DPTH_CD = '1'
+			
+			UNION ALL
+			
+		   SELECT DC.DSP_CTGRY_NO  /* 전시 카테고리 번호 */
+                  ,DC.DSP_CTGRY_NM /* 전시 카테고리 명 */
+                  ,DC.SORT_SEQ     /* 정렬순서 */
+                  ,'B' AS TYPE     /* 전시영역 구분(Brand Main) */
+            FROM DSP_CTGRY DC
+           WHERE DC.CTGRY_DPTH_CD = 2
+      CONNECT BY PRIOR DC.DSP_CTGRY_NO = DC.UPPER_DSP_CTGRY_NO
+             AND DC.DELETE_YN = 'N'
+             AND DC.CTGRY_TP_CD = 'CTGRY_SHOP'
+       START WITH DC.DSP_CTGRY_NO = 'BDM'
+		) A
+		ORDER BY A.TYPE, A.DSP_CTGRY_NO, A.SORT_SEQ
+	</select>
+	
+	<resultMap id="resultSysPopupNoti" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<result property="sysPopupNoti.popupNotiSn" column="POPUP_NOTI_SN" />
+		<result property="mall" column="MALL" />
+		<result property="dvc" column="DVC" />
+		<result property="sysPopupNoti.notiSj" column="NOTI_SJ" />
+		<result property="dsp" column="DSP" />
+		<result property="mbr" column="MBR" />
+		<result property="dspRegDtNm" column="DSP_REG_DT_NM" />
+		<result property="dspEndDtNm" column="DSP_END_DT_NM" />
+		<result property="sysPopupNoti.dspYn" column="DSP_YN" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+		<result property="sysPopupNoti.notiContSectCd" column="NOTI_CONT_SECT_CD" />
+		<result property="sysPopupNoti.imgFileUrl" column="IMG_FILE_URL" />
+		
+		<!-- 
+		<id property="sysPopupNoti.popupNotiSn" column="POPUP_NOTI_SN" />
+		<result property="sysPopupNoti.notiCont" column="NOTI_CONT" />
+		<result property="sysPopupNoti.dspRegDtNm" column="DSP_REG_DT_NM" />
+		<result property="sysPopupNoti.dspEndDtNm" column="DSP_END_DT_NM" />
+		<result property="sysPopupNoti.dspYn" column="DSP_YN" />
+		<result property="sysPopupNoti.regtrIdNm" column="REGTR_ID_NM" />
+		<result property="sysPopupNoti.regDtNm" column="REG_DT_NM" />
+		<result property="sysPopupNoti.udterIdNm" column="UDTER_ID_NM" />
+		<result property="sysPopupNoti.udtDtNm" column="UDT_DT_NM" />
+		<collection property="popupNotiAplTgt" ofType="com.plgrim.ncp.commons.data.PopupNotiAplTgtDataDTO">
+			<result property="cdNm" column="CD_NM"/>
+			<result property="popupNotiTgtTpCd" column="POPUP_NOTI_TGT_TP_CD" />
+		</collection>
+		<collection property="sysPopupNotiDspCtgryCnnc" ofType="com.plgrim.ncp.commons.data.SysPopupNotiDspCtgryCnncDataDTO">
+			<result property="dspCtgryNm" column="DSP_CTGRY_NM"/>
+		</collection>
+		 -->
+	</resultMap>
+	
+	<!-- 팝업공지 목록 -->
+	<select id="selectSysPopupNotiList" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysPopupNoti">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [commons.cmmnnoti.xml]["selectSysPopupNotiList"][팝업공지 목록 조회][Ed] */
+			 DISTINCT T.POPUP_NOTI_SN
+			,T.MALL
+			,T.DVC
+			,T.NOTI_SJ
+			,CASE
+				WHEN LENGTH(T.DSP) > 20 THEN SUBSTR(T.DSP, 1, 20) || '...'
+				ELSE T.DSP
+			 END AS DSP
+			,CASE 
+				WHEN (T.MBR_TP_CD IS NOT NULL OR T.MBR_ATRB_CD IS NOT NULL) THEN T.MBR_TP_CD || ',' || T.MBR_ATRB_CD
+				ELSE NVL(T.MBR_TP_CD, '') || NVL(T.MBR_ATRB_CD, '') 
+			 END AS MBR /* 값이 모두 존재할 경우만 , 추가 */
+			,T.DSP_REG_DT_NM
+			,T.DSP_END_DT_NM
+			,T.DSP_YN
+			,T.REGTR_ID_NM
+			,T.REG_DT_NM
+			,T.UDTER_ID_NM
+			,T.UDT_DT_NM
+			,T.NOTI_CONT_SECT_CD
+			,T.IMG_FILE_URL
+            ,T.LANG_CD
+		FROM (
+			SELECT 
+	               DISTINCT SPN.POPUP_NOTI_SN /* 팝업공지번호 */
+	              ,(
+	               	SELECT 
+					  LISTAGG((SELECT A.MALL_NM FROM SYS_MALL A WHERE MALL_ID = PNAT.MALL_ID), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+					FROM SYS_POPUP_NOTI_APL_TGT PNAT
+					WHERE 1 = 1
+					AND PNAT.POPUP_NOTI_TGT_TP_CD = 'MALL_ID'
+					AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+					
+					GROUP BY PNAT.POPUP_NOTI_SN
+	              ) AS MALL /* 몰 */
+	              ,(
+	               	SELECT 
+					  LISTAGG((SELECT A.CD_NM FROM MV_SYS_CD A WHERE UPPER_CD = 'DVC' AND LANG_CD = 'KOR' AND CD = PNAT.DVC_CD), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+					FROM SYS_POPUP_NOTI_APL_TGT PNAT
+					WHERE 1 = 1
+					AND PNAT.POPUP_NOTI_TGT_TP_CD = 'DVC'
+					<if test='search.dvcCds != null and search.dvcCds != ""'>
+						AND PNAT.DVC_CD IN
+						<foreach item ="item" index="index" collection="search.dvcCds" open="(" separator="," close=")">
+			         		#{item}
+			   			</foreach>
+			   			/* 디바이스 구분 */
+					</if>
+					AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+					GROUP BY PNAT.POPUP_NOTI_SN
+	              ) AS DVC /* 디바이스 */
+	              ,SPN.NOTI_SJ /* 제목 */
+	              ,(
+	               	SELECT 
+					  LISTAGG((
+					  		CASE
+				              WHEN SPNDCC.DSP_CTGRY_NO = 'DXM' THEN 'PLGRIM 메인' /* TODO : 메인명 결정되면 수정 */
+					          ELSE (SELECT A.DSP_CTGRY_NM FROM DSP_CTGRY A WHERE A.DSP_CTGRY_NO = SPNDCC.DSP_CTGRY_NO)
+				              END
+				            ), ',') WITHIN GROUP(ORDER BY SPNDCC.POPUP_NOTI_SN)
+					FROM SYS_POPUP_NOTI_DSP_CTGRY_CNNC SPNDCC
+					WHERE 1 = 1
+					AND SPNDCC.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+					GROUP BY SPNDCC.POPUP_NOTI_SN
+	              ) AS DSP /* 전시카테고리 명 */
+	              ,(
+	               	SELECT 
+					  LISTAGG((SELECT A.CD_NM FROM MV_SYS_CD A WHERE UPPER_CD = 'TGT_MBR_TP' AND LANG_CD = 'KOR' AND CD = PNAT.TGT_MBR_TP_CD), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+					FROM SYS_POPUP_NOTI_APL_TGT PNAT
+					WHERE 1 = 1
+					AND PNAT.POPUP_NOTI_TGT_TP_CD = 'TGT_MBR_TP'
+					AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+					GROUP BY PNAT.POPUP_NOTI_SN
+	              ) AS MBR_TP_CD /* 대상회원유형 */
+	              ,(
+	               	SELECT 
+					  LISTAGG((SELECT A.CD_NM FROM MV_SYS_CD A WHERE UPPER_CD = 'TGT_MBR_ATRB' AND LANG_CD = 'KOR' AND CD = PNAT.TGT_MBR_ATRB_CD), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+					FROM SYS_POPUP_NOTI_APL_TGT PNAT
+					WHERE 1 = 1
+					AND PNAT.POPUP_NOTI_TGT_TP_CD = 'TGT_MBR_ATRB'
+					AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+					GROUP BY PNAT.POPUP_NOTI_SN
+	              ) AS MBR_ATRB_CD /* 대상회원속성 */
+	              ,TO_CHAR(SPN.DSP_BEG_DT,'YYYY-MM-DD HH24:MI') AS DSP_REG_DT_NM /* 전시시작일 */
+	              ,TO_CHAR(SPN.DSP_END_DT,'YYYY-MM-DD HH24:MI') AS DSP_END_DT_NM /* 전시종료일 */
+	              ,SPN.DSP_YN /* 전시여부 */
+	              ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SPN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+				  ,TO_CHAR(SPN.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+			      ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SPN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+			      ,TO_CHAR(SPN.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+			      ,SPN.NOTI_CONT_SECT_CD /* 공지내용구분 */
+			      ,IMG_FILE_URL /* 이미지경로 */
+                  ,NVL(SPT.LANG_CD , 'KOR') AS LANG_CD
+	        FROM	SYS_POPUP_NOTI SPN
+                 , SYS_POPUP_NOTI_APL_TGT SPT
+			WHERE	1 = 1
+             AND    SPN.POPUP_NOTI_SN = SPT.POPUP_NOTI_SN
+			 AND 	SPT.POPUP_NOTI_TGT_TP_CD = 'LANG'
+			<include refid="selectSysPopupNotiListWhere"/>
+		) T
+		ORDER BY T.POPUP_NOTI_SN DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 팝업공지 목록 개수 -->
+	<select id="selectSysPopupNotiListCount" resultType="long"> 
+        select count(1)
+        from (
+              SELECT DISTINCT SPN.POPUP_NOTI_SN
+                   , NVL(SPT.LANG_CD , 'KOR') AS LANG_CD
+	    FROM	SYS_POPUP_NOTI SPN
+                 , SYS_POPUP_NOTI_APL_TGT SPT
+		WHERE	1 = 1
+	  	AND 	SPN.POPUP_NOTI_SN = SPT.POPUP_NOTI_SN
+		AND 	SPT.POPUP_NOTI_TGT_TP_CD = 'LANG'
+		<include refid="selectSysPopupNotiListWhere"/>
+        )
+	</select>
+	
+	<!-- 팝업공지 엑셀-->
+	<select id="selectSysPopupNotiListExcel" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysPopupNotiListExcel"][팝업공지 목록 조회][Ed] */
+			T.MALL
+			,T.DVC
+			,T.NOTI_SJ
+			,T.DSP
+			,CASE 
+				WHEN (T.MBR_TP_CD IS NOT NULL OR T.MBR_ATRB_CD IS NOT NULL) THEN T.MBR_TP_CD || ',' || T.MBR_ATRB_CD
+				ELSE NVL(T.MBR_TP_CD, '') || NVL(T.MBR_ATRB_CD, '') 
+			 END AS MBR /* 값이 모두 존재할 경우만 , 추가 */
+			,T.DSP_REG_DT_NM
+			,T.DSP_END_DT_NM
+			,T.DSP_YN_NM
+			,T.REGTR_ID_NM
+			,T.REG_DT_NM
+			,T.UDTER_ID_NM
+			,T.UDT_DT_NM
+            ,T.LANG_CD
+		FROM (
+			SELECT 
+               distinct SPN.POPUP_NOTI_SN /* 팝업공지번호 */
+              ,(
+               	SELECT 
+				  LISTAGG((SELECT A.MALL_NM FROM SYS_MALL A WHERE MALL_ID = PNAT.MALL_ID), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'MALL_ID'
+				<if test='search.mallIds != null and search.mallIds != ""'>
+					AND PNAT.MALL_ID IN
+					<foreach item ="item" index="index" collection="search.mallIds" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+		   			/* 몰 구분 */
+				</if>
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS MALL /* 몰 */
+              ,(
+               	SELECT 
+				  LISTAGG((SELECT A.CD_NM FROM MV_SYS_CD A WHERE UPPER_CD = 'DVC' AND LANG_CD = 'KOR' AND CD = PNAT.DVC_CD), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'DVC'
+				<if test='search.dvcCds != null and search.dvcCds != ""'>
+					AND PNAT.DVC_CD IN
+					<foreach item ="item" index="index" collection="search.dvcCds" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+		   			/* 디바이스 구분 */
+				</if>
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS DVC /* 디바이스 */
+              ,SPN.NOTI_SJ /* 제목 */
+              ,(
+               	SELECT 
+				  LISTAGG((
+				  		CASE
+			              WHEN SPNDCC.DSP_CTGRY_NO = 'DXM' THEN 'PLGRIM 메인' /* TODO : 메인명 결정되면 수정 */
+				          ELSE (SELECT A.DSP_CTGRY_NM FROM DSP_CTGRY A WHERE A.DSP_CTGRY_NO = SPNDCC.DSP_CTGRY_NO)
+			              END
+			            ), ',') WITHIN GROUP(ORDER BY SPNDCC.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_DSP_CTGRY_CNNC SPNDCC
+				WHERE 1 = 1
+				AND SPNDCC.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY SPNDCC.POPUP_NOTI_SN
+              ) AS DSP /* 전시카테고리 명 */
+              ,(
+               	SELECT 
+				  LISTAGG((SELECT A.CD_NM FROM MV_SYS_CD A WHERE UPPER_CD = 'TGT_MBR_TP' AND LANG_CD = 'KOR' AND CD = PNAT.TGT_MBR_TP_CD), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'TGT_MBR_TP'
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS MBR_TP_CD /* 대상회원유형 */
+              ,(
+               	SELECT 
+				  LISTAGG((SELECT A.CD_NM FROM MV_SYS_CD A WHERE UPPER_CD = 'TGT_MBR_ATRB' AND LANG_CD = 'KOR' AND CD = PNAT.TGT_MBR_ATRB_CD), ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'TGT_MBR_ATRB'
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS MBR_ATRB_CD /* 대상회원속성 */
+              ,TO_CHAR(SPN.DSP_BEG_DT,'YYYY-MM-DD HH24:MI') AS DSP_REG_DT_NM /* 전시시작일 */
+              ,TO_CHAR(SPN.DSP_END_DT,'YYYY-MM-DD HH24:MI') AS DSP_END_DT_NM /* 전시종료일 */
+              ,DECODE(SPN.DSP_YN, 'Y', '전시', 'N', '미전시') AS DSP_YN_NM
+              ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SPN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+			  ,TO_CHAR(SPN.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+		      ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SPN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+		      ,TO_CHAR(SPN.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+              ,NVL(SPT.LANG_CD , 'KOR') AS LANG_CD
+	        FROM	SYS_POPUP_NOTI SPN
+                 ,  SYS_POPUP_NOTI_APL_TGT SPT
+			WHERE	1 = 1
+            AND    	SPN.POPUP_NOTI_SN = SPT.POPUP_NOTI_SN
+			AND 	SPT.POPUP_NOTI_TGT_TP_CD = 'LANG'
+			<include refid="selectSysPopupNotiListWhere"/>
+			ORDER BY SPN.POPUP_NOTI_SN DESC
+		) T
+	</select>
+	
+	<!-- 팝업공지 조건문 -->
+	<sql id="selectSysPopupNotiListWhere"> 
+        <if test='search.langCd != null and search.langCd != ""'>
+            AND SPT.LANG_CD IN ( SELECT REGEXP_SUBSTR( #{search.langCd} , '[^,]+' , 1 , level) from dual connect by level <![CDATA[ <= ]]> REGEXP_COUNT( #{search.langCd} , '[^,]+') )
+        </if>
+		<if test='search.notiSj != null and search.notiSj != ""'>
+			AND UPPER(SPN.NOTI_SJ) LIKE '%' || UPPER(#{search.notiSj}) || '%' /* 제목 */
+		</if>
+		<if test='search.dspYns != null and search.dspYns != ""'>
+			AND SPN.DSP_YN IN
+			<foreach item ="item" index="index" collection="search.dspYns" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 전시여부 */
+		</if>
+        <if test="'REG_DT'.equals(search.dspTpCd)">
+            AND SPN.REG_DT BETWEEN TO_DATE(#{search.dspBegDt:VARCHAR}, 'YYYY-MM-DD') AND TO_DATE(#{search.dspEndDt:VARCHAR}, 'YYYY-MM-DD')+1-1/86400
+        </if>
+        <if test="'POPUP_BEG_DT'.equals(search.dspTpCd)">
+            AND SPN.DSP_BEG_DT BETWEEN TO_DATE(#{search.dspBegDt:VARCHAR}, 'YYYY-MM-DD') AND TO_DATE(#{search.dspEndDt:VARCHAR}, 'YYYY-MM-DD')+1-1/86400
+        </if>
+        <if test="'POPUP_END_DT'.equals(search.dspTpCd)">
+            AND SPN.DSP_END_DT BETWEEN TO_DATE(#{search.dspBegDt:VARCHAR}, 'YYYY-MM-DD') AND TO_DATE(#{search.dspEndDt:VARCHAR}, 'YYYY-MM-DD')+1-1/86400
+        </if>
+		<if test='search.mallIds != null and search.mallIds != ""'>
+			AND EXISTS	(
+							SELECT 	1 FROM SYS_POPUP_NOTI_APL_TGT
+							WHERE 	POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+							AND 	POPUP_NOTI_TGT_TP_CD = 'MALL_ID'
+							AND 	MALL_ID IN
+							<foreach item ="item" index="index" collection="search.mallIds" open="(" separator="," close=")">
+								#{item}
+							</foreach>
+						)
+		</if>
+	</sql>
+	
+	<!-- 시스템공지 첨부파일 등록 -->
+	<insert id="insertSysNotiAtchFile" parameterType="sysNotiAtchFile">
+	    INSERT /* [commons.cmmnnoti.xml]["insertSysNotiAtchFile"][시스템공지 첨부파일 등록][Ed] */ 
+	    INTO SYS_NOTI_ATCH_FILE
+		(
+	        NOTI_SN
+	       ,NOTI_ATCH_FILE_TURN
+	       ,NOTI_ATCH_FILE_NM
+	       ,NOTI_ATCH_FILE_URL
+	       ,NOTI_ATCH_FILE_CPCTY
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{notiSn,jdbcType=NUMERIC}
+	       ,(SELECT NVL(MAX(NOTI_ATCH_FILE_TURN)+1,1) FROM SYS_NOTI_ATCH_FILE WHERE NOTI_SN = #{notiSn,jdbcType=NUMERIC})
+	       ,#{notiAtchFileNm,jdbcType=VARCHAR}
+	       ,#{notiAtchFileUrl,jdbcType=VARCHAR}
+	       ,#{notiAtchFileCpcty,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 팝업공지 등록 -->
+    <insert id="insertSysPopupNoti" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPopupNoti">
+		<selectKey keyProperty="popupNotiSn" resultType="long" order="BEFORE">
+            SELECT SQ_SYS_POPUP_NOTI.NEXTVAL FROM DUAL
+        </selectKey>
+	    INSERT /* [commons.cmmnnoti.xml]["insertSysPopupNoti"][팝업공지 등록][Ed] */  
+	    INTO SYS_POPUP_NOTI
+		(
+	        POPUP_NOTI_SN
+	       ,REG_ADMIN_ID
+	       ,NOTI_REG_DT
+	       ,DSP_YN
+	       ,DSP_BEG_DT
+	       ,DSP_END_DT
+	       ,DSP_TIME_REPTIT_YN
+	       ,DSP_BEG_HOUR
+	       ,DSP_END_HOUR
+	       ,SIGNL_CRTFC_YN
+	       ,LINK_OUTPT_TGT_CD
+	       ,NOTI_SJ
+	       ,NOTI_CONT_SECT_CD
+	       ,IMG_FILE_NM
+	       ,IMG_FILE_URL
+	       ,IMG_ALTRTV_CONT
+	       ,LINK_URL
+	       ,NOTI_CONT
+	       ,POPUP_SECT_CD
+	       ,TODAY_STP_VIEW_CONFIG_YN
+	       ,CLSE_CONFIG_YN
+	       ,POPUP_UPEND_LC
+	       ,POPUP_LEFT_LC
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{popupNotiSn,jdbcType=NUMERIC}
+	       ,#{regAdminId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{dspYn,jdbcType=VARCHAR}
+	       ,#{dspBegDt,jdbcType=TIMESTAMP}
+	       ,#{dspEndDt,jdbcType=TIMESTAMP}
+	       ,#{dspTimeReptitYn,jdbcType=VARCHAR}
+	       ,#{dspBegHour,jdbcType=VARCHAR}
+	       ,#{dspEndHour,jdbcType=VARCHAR}
+	       ,#{signlCrtfcYn,jdbcType=VARCHAR}
+	       ,#{linkOutptTgtCd,jdbcType=VARCHAR}
+	       ,#{notiSj,jdbcType=VARCHAR}
+	       ,#{notiContSectCd,jdbcType=VARCHAR}
+	       ,#{imgFileNm,jdbcType=VARCHAR}
+	       ,#{imgFileUrl,jdbcType=VARCHAR}
+	       ,#{imgAltrtvCont,jdbcType=VARCHAR}
+	       ,#{linkUrl,jdbcType=VARCHAR}
+	       ,#{notiCont,jdbcType=VARCHAR}
+	       ,#{popupSectCd,jdbcType=VARCHAR}
+	       ,#{todayStpViewConfigYn,jdbcType=VARCHAR}
+	       ,#{clseConfigYn,jdbcType=VARCHAR}
+	       ,#{popupUpendLc,jdbcType=NUMERIC}
+	       ,#{popupLeftLc,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 팝업공지 적용대상 등록 -->
+    <insert id="insertSysPopupNotiAplTgt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPopupNotiAplTgt">
+	    INSERT /* [commons.cmmnnoti.xml]["insertSysPopupNotiAplTgt"][팝업공지 적용대상 등록][Ed] */  
+	    INTO SYS_POPUP_NOTI_APL_TGT
+		(
+	        POPUP_NOTI_SN
+	       ,APL_TURN
+	       ,POPUP_NOTI_TGT_TP_CD
+	       ,MALL_ID
+	       ,LANG_CD
+	       ,DVC_CD
+	       ,TGT_MBR_TP_CD
+	       ,TGT_MBR_ATRB_CD
+	       ,GRPCO_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{popupNotiSn,jdbcType=NUMERIC}
+	       ,(SELECT NVL(MAX(APL_TURN)+1,1) FROM SYS_POPUP_NOTI_APL_TGT WHERE POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC})
+	       ,#{popupNotiTgtTpCd,jdbcType=VARCHAR}
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{langCd,jdbcType=VARCHAR}
+	       ,#{dvcCd,jdbcType=VARCHAR}
+	       ,#{tgtMbrTpCd,jdbcType=VARCHAR}
+	       ,#{tgtMbrAtrbCd,jdbcType=VARCHAR}
+	       ,#{grpcoId,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <resultMap id="resultSysPopupNotiDetail" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<result property="sysPopupNoti.popupNotiSn" column="POPUP_NOTI_SN" />
+		<result property="mall" column="MALL" />
+		<result property="dvc" column="DVC" />
+		<result property="lang" column="LANG" />
+		<result property="mbrTpCd" column="MBR_TP_CD" />
+		<result property="mbrAtrbCd" column="MBR_ATRB_CD" />
+		<result property="dsp" column="DSP" />
+		<result property="sysPopupNoti.notiSj" column="NOTI_SJ" />
+		<result property="dspRegDtNm" column="DSP_REG_DT_NM" />
+		<result property="dspEndDtNm" column="DSP_END_DT_NM" />
+		<result property="sysPopupNoti.dspTimeReptitYn" column="DSP_TIME_REPTIT_YN" />
+		<result property="sysPopupNoti.dspBegHour" column="DSP_BEG_HOUR" />
+		<result property="sysPopupNoti.dspEndHour" column="DSP_END_HOUR" />
+		<result property="sysPopupNoti.notiContSectCd" column="NOTI_CONT_SECT_CD" />
+		<result property="sysPopupNoti.signlCrtfcYn" column="SIGNL_CRTFC_YN" />
+		<result property="sysPopupNoti.linkUrl" column="LINK_URL" />
+		<result property="sysPopupNoti.linkOutptTgtCd" column="LINK_OUTPT_TGT_CD" />
+		<result property="sysPopupNoti.todayStpViewConfigYn" column="TODAY_STP_VIEW_CONFIG_YN" />
+		<result property="sysPopupNoti.clseConfigYn" column="CLSE_CONFIG_YN" />
+		<result property="sysPopupNoti.popupUpendLc" column="POPUP_UPEND_LC" />
+		<result property="sysPopupNoti.popupLeftLc" column="POPUP_LEFT_LC" />
+		<result property="sysPopupNoti.imgFileNm" column="IMG_FILE_NM" />
+		<result property="sysPopupNoti.imgFileUrl" column="IMG_FILE_URL" />
+		<result property="sysPopupNoti.dspYn" column="DSP_YN" />
+		<result property="sysPopupNoti.popupSectCd" column="POPUP_SECT_CD" />
+		<result property="sysPopupNoti.notiCont" column="NOTI_CONT" />
+		<result property="sysPopupNoti.langCd" column="LANG" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+	</resultMap>
+	
+	<!-- 팝업공지 상세조회 -->
+	<select id="selectSysPopupNotiDetail" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysPopupNotiDetail">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysPopupNotiDetail"][팝업공지 상세조회][Ed] */
+               SPN.POPUP_NOTI_SN /* 팝업공지번호 */
+              ,(
+               	SELECT 
+				  LISTAGG(PNAT.MALL_ID, ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'MALL_ID'
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS MALL /* 몰 */
+              ,(
+               	SELECT 
+				  LISTAGG(PNAT.DVC_CD, ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'DVC'
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS DVC /* 디바이스 */
+              ,(
+               	SELECT 
+				  LISTAGG(PNAT.LANG_CD, ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'LANG'
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS LANG /* 언어 */
+              ,(
+               	SELECT 
+				  LISTAGG(PNAT.TGT_MBR_TP_CD, ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'TGT_MBR_TP'
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS MBR_TP_CD /* 대상회원유형 */
+              ,(
+               	SELECT 
+				  LISTAGG(PNAT.TGT_MBR_ATRB_CD, ',') WITHIN GROUP(ORDER BY PNAT.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_APL_TGT PNAT
+				WHERE 1 = 1
+				AND PNAT.POPUP_NOTI_TGT_TP_CD = 'TGT_MBR_ATRB'
+				<!--  AND PNAT.TGT_MBR_ATRB_CD != 'GRPCO_IND' /* 개별 그룹사는 제외 */-->
+				AND PNAT.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY PNAT.POPUP_NOTI_SN
+              ) AS MBR_ATRB_CD /* 대상회원속성 */
+              ,(
+               	SELECT 
+				  LISTAGG(SPNDCC.DSP_CTGRY_NO, ',') WITHIN GROUP(ORDER BY SPNDCC.POPUP_NOTI_SN)
+				FROM SYS_POPUP_NOTI_DSP_CTGRY_CNNC SPNDCC
+				WHERE 1 = 1
+				AND SPNDCC.POPUP_NOTI_SN = SPN.POPUP_NOTI_SN
+				GROUP BY SPNDCC.POPUP_NOTI_SN
+              ) AS DSP /* 전시카테고리 명 */
+              ,SPN.NOTI_SJ /* 제목 */
+              ,TO_CHAR(SPN.DSP_BEG_DT,'YYYY-MM-DD/HH24/MI') AS DSP_REG_DT_NM /* 전시시작일 */
+              ,TO_CHAR(SPN.DSP_END_DT,'YYYY-MM-DD/HH24/MI') AS DSP_END_DT_NM /* 전시종료일 */
+              ,SPN.DSP_TIME_REPTIT_YN /* 시간반복여부 */
+              ,NVL(SUBSTR(SPN.DSP_BEG_HOUR, 1, 2), '') || '/' || NVL(SUBSTR(SPN.DSP_BEG_HOUR, 3, 2), '') AS DSP_BEG_HOUR /* 반복시작시간 */
+              ,NVL(SUBSTR(SPN.DSP_END_HOUR, 1, 2), '') || '/' || NVL(SUBSTR(SPN.DSP_END_HOUR, 3, 2), '') AS DSP_END_HOUR /* 반복종료시간 */
+              ,SPN.NOTI_CONT_SECT_CD /* 공지내용구분코드 */
+              ,SPN.SIGNL_CRTFC_YN /* 싱글인증여부 */
+              ,SPN.LINK_URL /* 링크 URL */
+              ,SPN.LINK_OUTPT_TGT_CD /* 링크출력대상코드 */
+              ,SPN.TODAY_STP_VIEW_CONFIG_YN /* 오늘그만보기 */
+              ,SPN.CLSE_CONFIG_YN /* 팝업닫기 */
+              ,SPN.POPUP_UPEND_LC /* 팝업상단위치 */
+              ,SPN.POPUP_LEFT_LC /* 팝업좌측위치 */
+              ,SPN.POPUP_SECT_CD /* 플로팅팝업 방식코드 */
+              ,SPN.IMG_FILE_NM /* 이미지파일명 */
+              ,SPN.IMG_FILE_URL /* 이미지파일URL */
+              ,SPN.DSP_YN /* 전시여부 */
+              ,SPN.NOTI_CONT /* 내용 */
+              ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SPN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+			  ,TO_CHAR(SPN.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+		      ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SPN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+		      ,TO_CHAR(SPN.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+        FROM	SYS_POPUP_NOTI SPN
+		WHERE	1 = 1
+		AND 	SPN.POPUP_NOTI_SN = #{search.popupNotiSn,jdbcType=NUMERIC}
+	</select>
+	
+	<!-- 팝업공지대상 삭제 -->
+	<delete id="deleteSysPopupNotiAplTgtAll" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO">
+		/* [commons.cmmnnoti.xml]["deleteSysPopupNotiAplTgtAll"][팝업공지대상 삭제][Ed] */
+		DELETE FROM SYS_POPUP_NOTI_APL_TGT 
+		WHERE 1 = 1
+		AND POPUP_NOTI_SN = #{formData.sysPopupNoti.popupNotiSn,jdbcType=NUMERIC}
+	</delete>
+	
+	<!-- 팝업공지카테고리 삭제 -->
+	<delete id="deleteSysPopupNotiDspCtgryCnncAll" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO">
+		/* [commons.cmmnnoti.xml]["deleteSysPopupNotiAplTgtAll"][팝업공지카테고리 삭제][Ed] */
+		DELETE FROM SYS_POPUP_NOTI_DSP_CTGRY_CNNC 
+		WHERE 1 = 1
+		AND POPUP_NOTI_SN = #{formData.sysPopupNoti.popupNotiSn,jdbcType=NUMERIC}
+	</delete>
+	
+	<!-- 팝업공지 수정 -->
+	<update id="updateSysPopupNoti" parameterType="com.plgrim.ncp.commons.data.SysPopupNotiDataDTO">
+        UPDATE /* [commons.cmmnnoti.xml]["updateSysPopupNoti"][팝업공지 수정][Ed] */  
+        SYS_POPUP_NOTI SET
+        	NOTI_SJ = #{sysPopupNoti.notiSj,jdbcType=VARCHAR}
+        	,DSP_BEG_DT = #{sysPopupNoti.dspBegDt,jdbcType=TIMESTAMP}
+	        ,DSP_END_DT = #{sysPopupNoti.dspEndDt,jdbcType=TIMESTAMP}
+	        ,DSP_TIME_REPTIT_YN = #{sysPopupNoti.dspTimeReptitYn,jdbcType=VARCHAR}
+	        ,DSP_BEG_HOUR = #{sysPopupNoti.dspBegHour,jdbcType=VARCHAR}
+	        ,DSP_END_HOUR = #{sysPopupNoti.dspEndHour,jdbcType=VARCHAR}
+	        ,DSP_YN = #{sysPopupNoti.dspYn,jdbcType=VARCHAR}
+	        ,SIGNL_CRTFC_YN = #{sysPopupNoti.signlCrtfcYn,jdbcType=VARCHAR}
+	        ,UDTER_ID = #{sysPopupNoti.udterId,jdbcType=VARCHAR}
+	        ,UDT_DT = SYSDATE
+	        ,POPUP_SECT_CD = #{sysPopupNoti.popupSectCd,jdbcType=VARCHAR}
+	        ,TODAY_STP_VIEW_CONFIG_YN = #{sysPopupNoti.todayStpViewConfigYn,jdbcType=VARCHAR}
+        	,CLSE_CONFIG_YN = #{sysPopupNoti.clseConfigYn,jdbcType=VARCHAR}
+        	,POPUP_UPEND_LC = #{sysPopupNoti.popupUpendLc,jdbcType=NUMERIC}
+        	,POPUP_LEFT_LC = #{sysPopupNoti.popupLeftLc,jdbcType=NUMERIC}
+	        <!--  ,NOTI_CONT_SECT_CD = #{notiContSectCd,jdbcType=VARCHAR}-->
+	        <!-- 이미지맵, 배너일 경우만 수정 -->
+			<if test='sysPopupNoti.notiContSectCd != null and sysPopupNoti.notiContSectCd != "" and (sysPopupNoti.notiContSectCd == "IMG_MAP" or sysPopupNoti.notiContSectCd == "IMG_BANNER")'>
+				,LINK_URL = #{sysPopupNoti.linkUrl,jdbcType=VARCHAR}
+				,LINK_OUTPT_TGT_CD = #{sysPopupNoti.linkOutptTgtCd,jdbcType=VARCHAR}
+	        	<if test='chngImgYn != null and chngImgYn != "" and chngImgYn == "Y"'>
+	        	,IMG_FILE_NM = #{sysPopupNoti.imgFileNm,jdbcType=VARCHAR}
+	        	,IMG_FILE_URL = #{sysPopupNoti.imgFileUrl,jdbcType=VARCHAR}
+	        	</if>
+				<!-- 이미지맵일 경우만 수정 -->
+				<if test='sysPopupNoti.notiContSectCd != null and sysPopupNoti.notiContSectCd != "" and sysPopupNoti.notiContSectCd == "IMG_MAP"'>
+					,NOTI_CONT = #{sysPopupNoti.notiCont,jdbcType=CLOB}
+				</if>
+			</if>
+			<!-- HTML일 경우만 수정 -->
+			<if test='sysPopupNoti.notiContSectCd != null and sysPopupNoti.notiContSectCd != "" and sysPopupNoti.notiContSectCd == "HTML"'>
+				,NOTI_CONT = #{sysPopupNoti.notiCont,jdbcType=CLOB}
+			</if>
+        WHERE   1 = 1
+        AND     POPUP_NOTI_SN = #{sysPopupNoti.popupNotiSn,jdbcType=NUMERIC}
+    </update>
+    
+    <resultMap id="resultSysPopNotiGrpco" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<result property="sysGrpco.grpcoId" column="GRPCO_ID" />
+		<result property="sysGrpco.grpcoNm" column="GRPCO_NM" />
+		<result property="aplTurn" column="APL_TURN" />
+	</resultMap>
+	
+    <!-- 팝업 공지 그룹사 목록 조회 -->
+	<select id="selectSysPopNotiGrpcoList" parameterType="java.lang.Long" resultMap="resultSysPopNotiGrpco">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysPopNotiGrpcoList"][팝업 공지 그룹사 목록 조회][Ed] */
+                SPNAT.GRPCO_ID /* 그룹사ID */
+               ,SG.GRPCO_NM /* 그룹명 */
+               ,SPNAT.APL_TURN /* 적용순번 */
+        FROM	SYS_POPUP_NOTI_APL_TGT SPNAT
+        		, SYS_GRPCO SG
+		WHERE	1 = 1
+		AND		SPNAT.POPUP_NOTI_SN = #{popupNotiSn,jdbcType=NUMERIC}
+		AND		SPNAT.POPUP_NOTI_TGT_TP_CD = 'TGT_MBR_ATRB'
+		AND		SPNAT.TGT_MBR_ATRB_CD = 'GRPCO_IND'
+		AND		SPNAT.GRPCO_ID = SG.GRPCO_ID  	
+		ORDER BY SPNAT.APL_TURN
+	</select>
+	
+	<resultMap id="resultSysGrpco" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<result property="sysGrpco.grpcoId" column="GRPCO_ID" />
+		<result property="sysGrpco.grpcoNm" column="GRPCO_NM" />
+	</resultMap>
+	
+    <!-- 그룹사 목록 조회 -->
+	<select id="selectSysGrpcoList" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysGrpco">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT /* [commons.cmmnnoti.xml]["selectSysGrpcoList"][그룹사 목록 조회][Ed] */
+                SG.GRPCO_ID /* 그룹사ID */
+               ,SG.GRPCO_NM /* 그룹명 */
+        FROM	SYS_GRPCO SG
+		WHERE	1 = 1
+		<include refid="selectSysGrpcoListWhere"/>
+		ORDER BY SG.GRPCO_NM
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 그룹사 목록 조회 건수 -->
+	<select id="selectSysGrpcoListCount" resultType="long">
+		SELECT /* [commons.cmmnnoti.xml]["selectSysGrpcoListCount"][그룹사 목록 조회 건수][Ed] */
+                COUNT(*)
+        FROM	SYS_GRPCO SG
+		WHERE	1 = 1
+		<include refid="selectSysGrpcoListWhere"/>
+		ORDER BY SG.GRPCO_NM
+	</select>
+	
+	<!-- 시스템공지 조건문 -->
+	<sql id="selectSysGrpcoListWhere">
+		<if test='search.grpcoNm != null and search.grpcoNm != ""'>
+			AND UPPER(SG.GRPCO_NM) LIKE '%' || UPPER(#{search.grpcoNm}) || '%' /* 그룹사명 */
+		</if>
+	</sql>
+	
+	<resultMap id="resultSysCmmnNotiMain" type="com.plgrim.ncp.commons.result.SysCmmnNotiResult">
+		<result property="sysNoti.notiSn" column="NOTI_SN" />
+	</resultMap>
+	
+	<!-- 시스템공지 메인 목록 조회 -->
+	<select id="selectMainSysCmmnNotiList" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysCmmnNotiMain">
+		SELECT /* [commons.cmmnnoti.xml]["selectMainSysCmmnNotiList"][시스템공지 메인 목록 조회][Yoon] */
+			SN.NOTI_SN/* 공지번호 */
+		FROM	SYS_NOTI SN
+				,SYS_BO_NOTI_SITE SBNS
+		WHERE	1 = 1 
+		AND (SN.NOTI_SECT_CD = 'BO_NOTI' OR SN.NOTI_SECT_CD = 'PO_NOTI') /* 등록구분 */
+		AND SN.DSP_YN = 'Y' /* 게시여부 */
+		AND	SN.POPUP_YN = 'Y' /* 팝업여부 */
+		AND SYSDATE BETWEEN SN.POPUP_BEG_DT AND SN.POPUP_END_DT
+		AND	SN.NOTI_SN = SBNS.NOTI_SN 
+		AND SBNS.BO_SITE_ID = #{search.boSiteId,jdbcType=VARCHAR}
+        AND SN.NOTI_SN IN (SELECT TGT.NOTI_SN
+                            FROM SYS_BO_NOTI_TGT TGT , SYS_NOTI SYSN
+                            WHERE 1=1
+                            AND  TGT.NOTI_SN = SYSN.NOTI_SN
+                            AND  TGT.ADMIN_TP_CD IN ( SELECT ADMIN_TP_CD
+                                                      FROM sys_admin adm
+                                                      WHERE 1=1
+                                                      AND   adm.ADMIN_ID = #{loginId,jdbcType=VARCHAR}))
+	</select>
+
+	<!-- PO 메인 DASHBOARD 공지 리스트 -->
+	<select id="selectPoDashboardNoticeList" parameterType="com.plgrim.ncp.commons.data.SysCmmnNotiDTO" resultMap="resultSysCmmnNotiBo">
+		SELECT
+			*
+		FROM (
+			SELECT /* [commons.cmmnnoti.xml]["selectSysCmmnNotiBoList"][시스템공지 목록 조회][Ed] */
+				SN.NOTI_SN /* 공지번호 */
+				,CASE
+					WHEN SN.NOTI_SECT_CD = 'BO_NOTI' OR SN.NOTI_SECT_CD = 'PO_NOTI' THEN /* BO */
+					(
+						SELECT
+	        				LISTAGG((SELECT BO_SITE_ID FROM SYS_BO_SITE WHERE BO_SITE_ID = SBNS.BO_SITE_ID), ',') WITHIN GROUP(ORDER BY SBNS.NOTI_SN)
+	        			FROM SYS_BO_NOTI_SITE SBNS
+	        			WHERE 1 = 1
+	        			AND SBNS.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SBNS.NOTI_SN
+					)
+					ELSE /* FO */
+					(
+						SELECT
+	        				LISTAGG((SELECT MALL_NM FROM SYS_MALL WHERE MALL_ID = SFNM.MALL_ID), ',') WITHIN GROUP(ORDER BY SFNM.NOTI_SN)
+	        			FROM SYS_FO_NOTI_MALL SFNM
+	        			WHERE 1 = 1
+	        			AND SFNM.NOTI_SN = SN.NOTI_SN
+	        			GROUP BY SFNM.NOTI_SN
+					)
+				 END AS SITE_NM /* 노출타겟 */
+				,(
+					SELECT
+	       				LISTAGG((SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'ADMIN_TP' AND LANG_CD= 'KOR' AND CD = SBNT.ADMIN_TP_CD), ',') WITHIN GROUP(ORDER BY SBNT.NOTI_SN)
+	       			FROM SYS_BO_NOTI_TGT SBNT
+	       			WHERE SBNT.NOTI_SN = SN.NOTI_SN
+	       			GROUP BY SBNT.NOTI_SN
+				 ) AS ADMIN_TP_CD_NM /* 세부타겟 */
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'NOTI_TP' AND LANG_CD= 'KOR' AND CD = SN.NOTI_TP_CD) AS NOTI_TP_CD_NM /* 공지유형 */
+				,SN.UPEND_FIX_YN /* 상단고정여부 */
+				,SN.SORT_SEQ /* 상단노출순서 */
+				,SN.NOTI_SJ /* 공지제목 */
+				,TO_CHAR(SN.POPUP_BEG_DT, 'YYYY-MM-DD HH24:MI') || ' ~ ' || TO_CHAR(SN.POPUP_END_DT, 'YYYY-MM-DD HH24:MI') AS POPUP_DT_NM /* 공지기간 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+				,TO_CHAR(SN.REG_DT, 'YYYY-MM-DD') AS REG_DT_NM /* 등록일 */
+				,SN.DSP_YN /* 게시여부 */
+				,SN.POPUP_YN /* 팝업여부 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+				,TO_CHAR(SN.UDT_DT,'YYYY-MM-DD') AS UDT_DT_NM /* 수정일 */
+				,SN.INQIRE_NUM /* 조회수 */
+				,SN.NOTI_SECT_CD /* 공지구분코드 */
+				,CASE WHEN SN.REG_DT > SYSDATE-7 THEN 'Y' ELSE 'N' END AS DAY7_IN_YN
+			FROM	SYS_NOTI SN
+			WHERE	1 = 1
+			AND SN.DSP_YN = 'Y'
+			<include refid="selectSysCmmnNotiBoListWhere1"/>
+			<if test="search.notiCont != null and search.notiCont != ''" >
+				AND		SN.PC_NOTI_CONT LIKE '%' || #{search.notiCont} || '%'
+			</if>
+			ORDER BY SN.NOTI_SN DESC
+		) T
+		WHERE 1 = 1
+		<include refid="selectSysCmmnNotiBoListWhere2"/>
+		<if test="targetTpCd == 'PO'">
+		AND	T.SITE_NM LIKE '%' || #{targetTpCd} || '%'
+		</if>
+		AND ROWNUM <![CDATA[<]]> 6
+	</select>
+
+	<!--
+		#33927 BO 배송매장 전용 DashBoard 생성
+			- 배송매장 담당자(Shop Master)대상 공지사항 조회
+	-->
+	<select id="selectDlvShopMainNoticeList" resultMap="resultSysCmmnNotiBo">
+		SELECT
+			noti_sn
+			, noti_sj
+			, reg_dt_nm
+			, day7_in_yn
+		FROM (
+			SELECT /* [commons.cmmnnoti.xml]["selectSmDashboardNoticeList"][배송매장 목록 조회][js279.kim] */
+				sn.noti_sn /* 공지번호 */
+				, sn.noti_sj /* 공지제목 */
+				, TO_CHAR(sn.popup_beg_dt, 'YYYY-MM-DD HH24:MI') || ' ~ ' || TO_CHAR(sn.popup_end_dt, 'YYYY-MM-DD HH24:MI') AS popup_dt_nm /* 공지기간 */
+				, TO_CHAR(sn.reg_dt, 'YYYY.MM.DD') AS reg_dt_nm /* 등록일 */
+				, CASE WHEN sn.reg_dt > SYSDATE-7 THEN 'Y' ELSE 'N' END AS day7_in_yn
+			FROM sys_noti sn
+				INNER JOIN sys_bo_noti_tgt sbnt ON ( sbnt.noti_sn = sn.noti_sn )
+			WHERE 1 = 1
+				AND sn.dsp_yn = 'Y'
+				AND sn.noti_sect_cd = 'BO_NOTI'
+				AND SYSDATE BETWEEN sn.popup_beg_dt AND sn.popup_end_dt /* 공지기간 */
+				AND sbnt.admin_tp_cd = 'SHOP_MASTER'
+			  ORDER BY sn.noti_sn DESC
+		) T
+		WHERE 1 = 1
+			AND ROWNUM <![CDATA[<]]> 6
+	</select>
+
+</mapper>

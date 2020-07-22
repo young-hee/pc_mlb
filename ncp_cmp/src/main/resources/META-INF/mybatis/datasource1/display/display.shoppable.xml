@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display.shoppable">
+<!-- 
+	<resultMap id="DspShoppableQuePoint" type="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableQuePoint">
+		<result property="shoppableQueSn" 		column="SHOPPABLE_QUE_SN" />
+		<result property="shoppableSn" 			column="SHOPPABLE_SN" />
+		<result property="videoId" 				column="VIDEO_ID" />
+		<result property="queTime" 				column="QUE_TIME" />
+		<result property="queX" 				column="QUE_X" />
+		<result property="queY" 				column="QUE_Y" />
+		<result property="goodsCode" 			column="GOODS_CODE" />
+		<result property="goodsBrand" 			column="GOODS_BRAND" />
+		<result property="goodsName" 			column="GOODS_NAME" />
+		<result property="goodsUrl" 			column="GOODS_URL" />
+		<result property="goodsImageDefault" 	column="GOODS_IMAGE_DEFAULT" />
+		<result property="goodsImageOver" 		column="GOODS_IMAGE_OVER" />
+		<result property="useYn" 				column="USE_YN" />
+		<result property="dspFacebook" 			column="DSP_FACEBOOK" />
+		<result property="regtrId" 				column="REGTR_ID" />
+		<result property="regDt" 				column="REG_DT" />
+		<result property="udterId" 				column="UDTER_ID" />
+		<result property="udtDt" 				column="UDT_DT" />
+	</resultMap>
+	
+	ShoppableVideo 목록 조회
+	<select id="selectShoppableVideoList" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableVideo">
+		SELECT /* [display.shoppable.xml][selectShoppableVideoList][ShoppableVideo 목록 조회][kwonoh.kim] */
+		*
+		FROM (
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY SHOPPABLE_SN DESC) AS row_no
+				,SHOPPABLE_SN
+				,VIDEO_ID
+				,VIDEO_FILE_NAME
+				,VIDEO_TITLE
+				,VIDEO_DSCR
+				,VIDEO_WIDTH
+				,VIDEO_HEIGHT
+				,VIDEO_START_IMG_URL
+				,VIDEO_END_IMG_URL
+				,VIDEO_MOBILE_START_IMG_URL
+				,VIDEO_MOBILE_END_IMG_URL
+				,VIDEO_VIEW_COUNT
+				,VIDEO_LIKE_COUNT
+				,VIDEO_PLAY_TIME
+				,SHOPPABLE_TYPE
+				,USE_YN
+				,REGTR_ID
+				,REG_DT
+				,UDTER_ID
+				,UDT_DT
+			FROM
+				INF_SHOPPABLE_VIDEO
+			WHERE
+				1 = 1
+			ORDER BY SHOPPABLE_SN DESC
+		) video_list
+		WHERE
+			row_no >= ((#{page} - 1) * #{page_size}) + 1
+		AND 
+			row_no <![CDATA[<=]]> ((#{page}) * #{page_size})
+        	
+	</select>
+	
+	ShoppableVideo 상세 조회
+	<select id="selectShoppableVideoDetail" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableVideo">
+		SELECT /* [display.shoppable.xml][selectShoppableVideoDetail][ShoppableVideo 상세 조회][kwonoh.kim] */
+			SHOPPABLE_SN
+			,VIDEO_ID
+			,VIDEO_FILE_NAME
+			,VIDEO_TITLE
+			,VIDEO_DSCR
+			,VIDEO_WIDTH
+			,VIDEO_HEIGHT
+			,VIDEO_START_IMG_URL
+			,VIDEO_END_IMG_URL
+			,VIDEO_MOBILE_START_IMG_URL
+			,VIDEO_MOBILE_END_IMG_URL
+			,VIDEO_VIEW_COUNT
+			,VIDEO_LIKE_COUNT
+			,VIDEO_PLAY_TIME
+			,SHOPPABLE_TYPE
+			,USE_YN
+			,REGTR_ID
+			,REG_DT
+			,UDTER_ID
+			,UDT_DT
+		FROM
+			INF_SHOPPABLE_VIDEO
+		WHERE
+			1 = 1
+		<if test="shoppableSn != null">
+		AND
+			SHOPPABLE_SN = #{shoppableSn}
+		</if>
+		<if test="videoId != null">
+		AND
+			VIDEO_ID = #{videoId}
+		</if>
+		ORDER BY
+        	SHOPPABLE_SN DESC
+	</select>
+	ShoppableVideo 목록 총 Count
+	<select id="selectShoppableVideoTotalCount" parameterType="java.util.Map"  resultType="Integer">
+        SELECT /* [display.shoppable.xml][selectShoppableVideoTotalCount][ShoppableVideo 목록 총 Count][kwonoh.kim] */
+			count(*) videoCount
+		FROM (
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY SHOPPABLE_SN DESC) AS row_no
+				,SHOPPABLE_SN
+				,VIDEO_ID
+				,VIDEO_FILE_NAME
+				,VIDEO_TITLE
+				,VIDEO_DSCR
+				,VIDEO_WIDTH
+				,VIDEO_HEIGHT
+				,VIDEO_START_IMG_URL
+				,VIDEO_END_IMG_URL
+				,VIDEO_MOBILE_START_IMG_URL
+				,VIDEO_MOBILE_END_IMG_URL
+				,VIDEO_VIEW_COUNT
+				,VIDEO_LIKE_COUNT
+				,VIDEO_PLAY_TIME
+				,SHOPPABLE_TYPE
+				,USE_YN
+				,REGTR_ID
+				,REG_DT
+				,UDTER_ID
+				,UDT_DT
+			FROM
+				INF_SHOPPABLE_VIDEO
+			WHERE
+				1 = 1
+			ORDER BY SHOPPABLE_SN DESC
+		) video_list
+		WHERE
+			row_no >= ((#{page} - 1) * #{page_size}) + 1
+		AND 
+			row_no <![CDATA[<=]]> ((#{page}) * #{page_size})
+	</select>
+	ShoppableVideo 등록
+	<insert id="addShoppableVideo" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableVideo">
+        /* [display.shoppable.xml][addShoppableVideo][ShoppableVideo 등록][kwonoh.kim] */
+        INSERT INTO INF_SHOPPABLE_VIDEO(
+		    SHOPPABLE_SN
+			,VIDEO_ID
+			,VIDEO_FILE_NAME
+			,VIDEO_TITLE
+			,VIDEO_DSCR
+			,VIDEO_WIDTH
+			,VIDEO_HEIGHT
+			,VIDEO_START_IMG_URL
+			,VIDEO_END_IMG_URL
+			,VIDEO_MOBILE_START_IMG_URL
+			,VIDEO_MOBILE_END_IMG_URL
+			,VIDEO_VIEW_COUNT
+			,VIDEO_LIKE_COUNT
+			,VIDEO_PLAY_TIME
+			,SHOPPABLE_TYPE
+			,USE_YN
+			,REGTR_ID
+			,REG_DT
+		  ) VALUES (
+		    #{shoppableSn}
+			,#{videoId}
+			,#{videoFileName}
+			,#{videoTitle}
+			,#{videoDscr}
+			,#{videoWidth}
+			,#{videoHeight}
+			,#{videoStartImgUrl}
+			,#{videoEndImgUrl}
+			,#{videoMobileStartImgUrl}
+			,#{videoMobileEndImgUrl}
+			,0
+			,0
+			,#{videoPlayTime}
+			,#{shoppableType}
+			,#{useYn}
+			,#{regtrId}
+			,SYSDATE
+		  )
+    </insert>
+	ShoppableVideo 갱신
+    <update id="updateShoppableVideo" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableVideo">
+        /* [display.shoppable.xml][updateShoppableVideo][ShoppableVideo 갱신][kwonoh.kim] */
+        UPDATE INF_SHOPPABLE_VIDEO
+        SET
+		    VIDEO_ID					= #{videoId}
+			,VIDEO_FILE_NAME			= #{videoFileName}
+			,VIDEO_TITLE				= #{videoTitle}
+			,VIDEO_DSCR					= #{videoDscr}
+			,VIDEO_WIDTH				= #{videoWidth}
+			,VIDEO_HEIGHT				= #{videoHeight}
+			,VIDEO_START_IMG_URL		= #{videoStartImgUrl}
+			,VIDEO_END_IMG_URL			= #{videoEndImgUrl}
+			,VIDEO_MOBILE_START_IMG_URL	= #{videoMobileStartImgUrl}
+			,VIDEO_MOBILE_END_IMG_URL	= #{videoMobileEndImgUrl}
+			,VIDEO_PLAY_TIME			= #{videoPlayTime}
+			,SHOPPABLE_TYPE				= #{shoppableType}
+			,USE_YN						= #{useYn}
+			,UDTER_ID					= #{regtrId}
+			,UDT_DT						= SYSDATE
+		WHERE
+			SHOPPABLE_SN = #{shoppableSn}
+    </update>
+	ShoppableQuePoint 등록
+    <insert id="addShoppableQuePoint" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableQuePoint">
+        /* [display.shoppable.xml][addShoppableQuePoint][ShoppableQuePoint 등록][kwonoh.kim] */
+        INSERT INTO INF_SHOPPABLE_QUE_POINT(
+		    SHOPPABLE_QUE_SN
+			,SHOPPABLE_SN
+			,VIDEO_ID
+			,QUE_TIME
+			,QUE_X
+			,QUE_Y
+			,GOODS_CODE
+			,GOODS_BRAND
+			,GOODS_NAME
+			,GOODS_URL
+			,GOODS_IMAGE_DEFAULT
+			,GOODS_IMAGE_OVER
+			,USE_YN
+			,DSP_FACEBOOK
+			,REGTR_ID
+			,REG_DT
+		)VALUES(
+		    #{shoppableQueSn}
+			,#{shoppableSn}
+			,#{videoId}
+			,#{queTime}
+			,#{queX}
+			,#{queY}
+			,#{goodsCode}
+			,#{goodsBrand}
+			,#{goodsName}
+			,#{goodsUrl}
+			,#{goodsImageDefault}
+			,#{goodsImageOver}
+			,#{useYn}
+			,#{dspFacebook}
+			,#{regtrId}
+			,SYSDATE
+		)
+    </insert>
+	ShoppableQuePoint 삭제
+    <delete id="deleteShoppableQuePoint" parameterType="java.util.Map">
+    	/* [display.shoppable.xml][deleteShoppableQuePoint][ShoppableQuePoint 삭제][kwonoh.kim] */
+        DELETE 
+        FROM
+        	INF_SHOPPABLE_QUE_POINT 
+        WHERE   
+        1 = 1
+        AND
+        	SHOPPABLE_QUE_SN = #{shoppableQueSn}
+    </delete>
+	ShoppableQuePoint 삭제
+    <update id="updateShoppableQuePoint" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableQuePoint">
+    	/* [display.shoppable.xml][updateQuePoint][ShoppableQuePoint 갱신][kwonoh.kim] */
+        UPDATE INF_SHOPPABLE_QUE_POINT 
+        SET
+        	SHOPPABLE_SN 			= #{shoppableSn}
+			,VIDEO_ID 				= #{videoId}
+			,QUE_TIME 				= #{queTime}
+			,QUE_X 					= #{queX}
+			,QUE_Y 					= #{queY}
+			,GOODS_CODE				= #{goodsCode}
+			,GOODS_BRAND 			= #{goodsBrand}
+			,GOODS_NAME 			= #{goodsName}
+			,GOODS_URL 				= #{goodsUrl}
+			,GOODS_IMAGE_DEFAULT 	= #{goodsImageDefault}
+			,GOODS_IMAGE_OVER 		= #{goodsImageOver}
+			,USE_YN 				= #{useYn}
+			,DSP_FACEBOOK 			= #{dspFacebook}
+			,UDTER_ID 				= #{udterId}
+			,UDT_DT 				= SYSDATE
+        WHERE   
+	        1 = 1
+        AND
+        	SHOPPABLE_QUE_SN = #{shoppableQueSn}
+    </update>
+    
+	ShoppableQuePoint 목록 조회
+	<select id="selectShoppableQuePointList" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableQuePoint" resultMap="DspShoppableQuePoint">
+		SELECT /* [display.shoppable.xml][selectShoppableQuePointList][ShoppableQuePoint 리스트][kwonoh.kim] */
+			SHOPPABLE_QUE_SN
+			,SHOPPABLE_SN
+			,VIDEO_ID
+			,QUE_TIME
+			,QUE_X
+			,QUE_Y
+			,GOODS_CODE
+			,GOODS_BRAND
+			,GOODS_NAME
+			,GOODS_URL
+			,GOODS_IMAGE_DEFAULT
+			,GOODS_IMAGE_OVER
+			,USE_YN
+			,DSP_FACEBOOK
+			,REGTR_ID
+			,REG_DT
+		    ,UDTER_ID
+		    ,UDT_DT
+		FROM
+			INF_SHOPPABLE_QUE_POINT
+		WHERE
+			1 = 1
+        <if test="shoppableSn != null">
+		AND
+			SHOPPABLE_SN = #{shoppableSn}
+		</if>
+		<if test="videoId != null">
+		AND
+			VIDEO_ID = #{videoId}
+		</if>
+		AND
+			USE_YN = 'Y'
+        ORDER BY
+        	to_number(QUE_TIME)
+	</select>
+	
+	ShoppableQuePoint 목록 총 Count
+	<select id="selectShoppableQuePointTotalCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableQuePoint"  resultType="Integer">
+        SELECT /* [display.shoppable.xml][selectShoppableQuePointTotalCount][큐포인트 목록 총 Count][kwonoh.kim] */
+			  count(*) queCount
+		FROM
+			INF_SHOPPABLE_QUE_POINT
+		WHERE
+			1 = 1
+		<if test="shoppableSn != null">
+		AND
+			SHOPPABLE_SN = #{shoppableSn}
+		</if>
+		<if test="videoId != null">
+		AND
+			VIDEO_ID = #{videoId}
+		</if>
+		AND
+			USE_YN = 'Y'
+	</select>
+	Shoppable 좋아요 
+    <select id="selectShoppableQuePointVideoLike" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike"  resultType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike">
+        SELECT /* [display.shoppable.xml][selectShoppableQuePointVideoLike][Shoppable 좋아요 목록][kwonoh.kim] */
+			SHOPPABLE_LIKE_SN,
+			SHOPPABLE_SN,
+			VIDEO_ID,
+			MBR_NO,
+			DEL,
+			REG_DT,
+			UDT_DT
+		FROM
+			INF_SHOPPABLE_LIKE_HISTORY
+		WHERE
+			1 = 1
+		<if test="mbrNo != null">
+		AND
+        	MBR_No = #{mbrNo}
+        </if>
+		<if test="shoppableSn != null">
+		AND
+        	SHOPPABLE_SN = #{shoppableSn}
+        </if>
+	</select>
+	Shoppable 좋아요 목록 총 Count
+	<select id="selectShoppableLikeTotalCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike"  resultType="Integer">
+        SELECT /* [display.shoppable.xml][selectVideoLikeTotalCount][Shoppable 좋아요 목록 총 Count][kwonoh.kim] */
+			count(*) likeCount
+		FROM
+			INF_SHOPPABLE_LIKE_HISTORY
+		WHERE
+			1 = 1
+		<if test="mbrNo != null">
+		AND
+        	MBR_No = #{mbrNo}
+        </if>
+		<if test="videoSn != null">
+		AND
+        	VIDEO_SN = #{videoSn}
+        </if>
+	</select>
+	Shoppable 좋아요 등록
+    <insert id="addShoppableLike" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike">
+        /* [display.shoppable.xml][addShoppableLike][Shoppable 좋아요 등록][kwonoh.kim] */
+        INSERT INTO INF_SHOPPABLE_LIKE_HISTORY (
+			SHOPPABLE_LIKE_SN,
+			SHOPPABLE_SN,
+			VIDEO_ID,
+			MBR_NO,
+			DEL,
+			REG_DT
+		)VALUES(
+			#{shoppableLikeSn}
+			,#{shoppableSn}
+			,#{videoId}
+			,#{mbrNo}
+			,#{del}
+			,SYSDATE
+		)
+    </insert>
+	Shoppable 좋아요 취소
+    <insert id="addShoppableLikeCancel" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspVideoLike">
+        /* [display.shoppable.xml][addShoppableLikeCancel][Shoppable 좋아요 취소][kwonoh.kim] */
+        UPDATE INF_SHOPPABLE_LIKE_HISTORY 
+        SET	DEL = 'DEL',
+			UDT_DT = SYSDATE
+		WHERE
+			1 = 1
+		<if test="mbrNo != null">
+		AND
+        	MBR_No = #{mbrNo}
+        </if>
+		<if test="videoSn != null">
+		AND
+        	VIDEO_SN = #{videoSn}
+        </if>
+    </insert>
+    ShoppableVideo VIDEO_LIKE_COUNT 갱신
+    <update id="updateShoppableLikeCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableVideo">
+        /* [display.shoppable.xml][updateShoppableLikeCount][ShoppableVideo 갱신][kwonoh.kim] */
+        UPDATE INF_SHOPPABLE_VIDEO
+        SET
+		    VIDEO_LIKE_COUNT		= VIDEO_LIKE_COUNT + 1
+		WHERE
+			SHOPPABLE_SN = #{shoppableSn}
+    </update>
+	ShoppableVideo VIDEO_VIEW_COUNT 갱신
+    <update id="updateShoppableViewCount" parameterType="com.plgrim.ncp.base.entities.datasource1.dsp.DspShoppableVideo">
+        /* [display.shoppable.xml][updateShoppableViewCount][ShoppableVideo 갱신][kwonoh.kim] */
+        UPDATE INF_SHOPPABLE_VIDEO
+        SET
+		    VIDEO_VIEW_COUNT		= VIDEO_VIEW_COUNT + 1
+		WHERE
+			SHOPPABLE_SN = #{shoppableSn}
+    </update>
+    브랜드 전체 목록 조회
+	<select id="selectAllBrand" parameterType="java.util.Map" resultType="String">
+		SELECT /* [display.shoppable.xml][selectAllBrand][브랜드 전체 목록 조회][kwonoh.kim] */
+			trim(GOODS_BRAND) AS GOODS_BRAND 
+		FROM 
+			INF_SHOPPABLE_QUE_POINT
+		GROUP BY trim(GOODS_BRAND)
+		ORDER BY trim(GOODS_BRAND)
+	</select>
+	상품 전체 목록 조회
+	<select id="selectAllGoods" parameterType="java.util.Map" resultMap="DspShoppableQuePoint">
+		SELECT /* [display.shoppable.xml][selectAllGoods][상품 전체 목록 조회][kwonoh.kim] */
+			DISTINCT
+			SHOPPABLE_QUE_SN
+			,SHOPPABLE_SN
+			,VIDEO_ID
+			,QUE_TIME
+			,QUE_X
+			,QUE_Y
+			,GOODS_CODE
+			,GOODS_BRAND
+			,trim(GOODS_NAME) AS GOODS_NAME
+			,GOODS_URL
+			,GOODS_IMAGE_DEFAULT
+			,GOODS_IMAGE_OVER
+			,USE_YN
+			,DSP_FACEBOOK
+			,REGTR_ID
+			,REG_DT
+		    ,UDTER_ID
+		    ,UDT_DT
+		FROM
+			INF_SHOPPABLE_QUE_POINT
+		WHERE
+			1 = 1
+		<if test="goods_brand != null">
+		AND
+        	GOODS_BRAND = #{goods_brand}
+        </if>
+		ORDER BY trim(GOODS_NAME)
+	</select>
+ -->	
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmFeeEventCom" parameterType="prmFeeEventCom" resultType="prmFeeEventCom">
+		SELECT /* com.plgrim.ncp.base.selectPrmFeeEventCom		Generator(Generator)	2018-05-23 */
+			   FEE_EVENT_SN
+			 , COM_ID
+			 , AFF_VRSC_COM_ID
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM_FEE_EVENT_COM
+		 WHERE 1 = 1
+	   	   AND FEE_EVENT_SN = #{feeEventSn,jdbcType=NUMERIC}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updatePrmFeeEventCom" parameterType="prmFeeEventCom">
+		UPDATE /* com.plgrim.ncp.base.updatePrmFeeEventCom		Generator(Generator)	2018-05-23 */
+		PRM_FEE_EVENT_COM SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND FEE_EVENT_SN = #{feeEventSn,jdbcType=NUMERIC}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPrmFeeEventCom" parameterType="prmFeeEventCom">
+		INSERT /* com.plgrim.ncp.base.insertPrmFeeEventCom		Generator(Generator)	2018-05-23 */
+		INTO   PRM_FEE_EVENT_COM (
+			   FEE_EVENT_SN
+			 , COM_ID
+			 , AFF_VRSC_COM_ID
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{feeEventSn,jdbcType=NUMERIC}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{affVrscComId,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrmFeeEventCom" parameterType="prmFeeEventCom">
+		DELETE /* com.plgrim.ncp.base.deletePrmFeeEventCom		Generator(Generator)	2018-05-23 */
+		  FROM PRM_FEE_EVENT_COM
+		 WHERE 1 = 1
+		   AND FEE_EVENT_SN = #{feeEventSn,jdbcType=NUMERIC}
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

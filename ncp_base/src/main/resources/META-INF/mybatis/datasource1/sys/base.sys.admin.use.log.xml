@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminUseLog" parameterType="sysAdminUseLog" resultType="sysAdminUseLog">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminUseLog		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , MENU_SN
+			 , CONECT_DT
+			 , CONECT_IP
+		  FROM SYS_ADMIN_USE_LOG
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateSysAdminUseLog" parameterType="sysAdminUseLog">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminUseLog		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_USE_LOG SET
+			   ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+			 , MENU_SN = #{menuSn,jdbcType=NUMERIC}
+			 , CONECT_DT = #{conectDt,jdbcType=TIMESTAMP}
+			 , CONECT_IP = #{conectIp,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertSysAdminUseLog" parameterType="sysAdminUseLog">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminUseLog		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_USE_LOG (
+			   ADMIN_ID
+			 , MENU_SN
+			 , CONECT_DT
+			 , CONECT_IP
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{menuSn,jdbcType=NUMERIC}
+			 , #{conectDt,jdbcType=TIMESTAMP}
+			 , #{conectIp,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteSysAdminUseLog" parameterType="sysAdminUseLog">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminUseLog		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_USE_LOG
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion">
+   
+   <resultMap type="com.plgrim.ncp.biz.promotion.result.EventApplyGoodBoResult" id="selectEvtAplGodResult">
+      <id column="evt_no" property="evtNo" />
+      <id column="apl_turn" property="aplTurn" />
+      <association property="evtAplGodEx" javaType="com.plgrim.ncp.biz.promotion.data.EvtAplGodExtend">
+         <result column="evt_no"            property="evtNo"/>
+         <result column="apl_turn"          property="aplTurn"/>
+         <result column="apl_god_sect_cd"   property="aplGodSectCd"/>
+         <result column="god_sale_sect_nm"   property="godSaleSectNm"/>
+         
+         <discriminator column="apl_god_sect_cd" javaType="String">
+            <case value="BRND" resultType="com.plgrim.ncp.biz.promotion.data.EvtAplGodExtend">
+               <result column="brnd_id"           property="brndId"/>
+               <result column="brnd_nm"           property="brndNm"/>
+            </case>
+            <case value="DSP_CTGRY" resultType="com.plgrim.ncp.biz.promotion.data.EvtAplGodExtend">
+               <result column="dsp_ctgry_no"      property="dspCtgryNo"/>
+               <result column="dsp_ctgry_nm"      property="dspCtgryNm"/>
+            </case>
+            <case value="GOD" resultType="com.plgrim.ncp.biz.promotion.data.EvtAplGodExtend">
+               <result column="erp_god_no"           property="erpGodNo"/>
+               <result column="god_no"               property="godNo"/>
+               <result column="god_nm"               property="godNm"/>
+               <result column="g_brnd_id"            property="brndId"/>
+               <result column="g_brnd_nm"            property="brndNm"/>
+               <result column="god_sale_sect_cd"     property="godSaleSectCd"/>
+               <result column="pc_god_img_url"       property="pcGodImgUrl"/>
+               <result column="mobile_god_img_url"   property="mobileGodImgUrl"/>
+               <result column="pc_god_img_dscr"      property="pcGodImgDscr"/>
+               <result column="mobile_god_img_dscr"  property="mobileGodImgDscr"/>
+            </case>
+         </discriminator>
+      </association>
+   </resultMap>
+   
+   <select id="selectEvtAplGodList" parameterType="com.plgrim.ncp.biz.promotion.data.EventApplyGoodBoDTO"
+           resultMap="selectEvtAplGodResult">
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+         SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectEvtAplGod  20150504 */
+               p.evt_no
+              ,p.apl_turn
+              ,p.god_apl_yn
+              ,p.apl_god_sect_cd
+              ,p.god_no
+              ,p.brnd_id
+              ,(SELECT brnd_nm FROM sys_brnd b WHERE b.brnd_id = p.brnd_id) AS brnd_nm
+              ,p.dsp_ctgry_no
+              ,(SELECT dsp_ctgry_nm FROM dsp_ctgry c WHERE p.dsp_ctgry_no = c.dsp_ctgry_no) AS dsp_ctgry_nm
+              ,g.erp_god_no
+              ,g.god_nm
+              ,g.brnd_id AS g_brnd_id
+              ,(SELECT brnd_nm FROM sys_brnd b WHERE b.brnd_id = g.brnd_id) AS g_brnd_nm
+              ,g.god_sale_sect_cd
+              ,scGodStat.cd_nm as god_sale_sect_nm
+              ,p.pc_god_img_url
+              ,p.mobile_god_img_url
+              ,p.pc_god_img_dscr
+              ,p.mobile_god_img_dscr
+         FROM  evt_apl_god p
+         LEFT OUTER JOIN  god g
+         ON    p.god_no = g.god_no
+         LEFT OUTER JOIN mv_sys_cd scGodStat 
+            ON (g.god_sale_sect_cd = scGodStat.cd AND scGodStat.upper_cd='GOD_SALE_SECT' AND scGodStat.lang_cd = 'KOR'   )        /*  */ 
+         WHERE 1 = 1
+         AND   p.evt_no = #{evtAplGod.evtNo:VARCHAR}
+         <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(evtAplGod.godAplYn)">
+         AND   p.god_apl_yn = #{evtAplGod.godAplYn:VARCHAR}
+         </if>
+         <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(evtAplGod.aplGodSectCd)">
+         AND   p.apl_god_sect_cd = #{evtAplGod.aplGodSectCd:VARCHAR}
+         </if>
+      <include refid="com.plgrim.ncp.base.endPage"/>
+   </select>
+   
+   <select id="selectEvtAplGodListCount" parameterType="com.plgrim.ncp.biz.promotion.data.EventApplyGoodBoDTO" resultType="java.lang.Long">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectEvtAplGodListCount  20150504 */
+            count(1) as total_count
+      FROM  evt_apl_god p
+      LEFT OUTER JOIN  god g
+      ON    p.god_no = g.god_no
+      WHERE 1 = 1
+      AND   p.evt_no = #{evtAplGod.evtNo:VARCHAR}
+      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(evtAplGod.godAplYn)">
+      AND   p.god_apl_yn = #{evtAplGod.godAplYn:VARCHAR}
+      </if>
+      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(evtAplGod.aplGodSectCd)">
+      AND   p.apl_god_sect_cd = #{evtAplGod.aplGodSectCd:VARCHAR}
+      </if>
+   </select>
+   
+   
+   <select id="selectEvtAplGodInfoList" parameterType="evtAplGod" resultType="evtAplGod">
+      SELECT /* promotion.target.xml - com.plgrim.ncp.biz.promotion.selectEvtAplGodInfoList  20150504 */
+            t.*
+      FROM  ( 
+               SELECT
+                     p.evt_no
+                    ,p.apl_turn
+                    ,p.god_apl_yn
+                    ,p.apl_god_sect_cd
+                    ,ROW_NUMBER() OVER(PARTITION BY evt_no, god_apl_yn ORDER BY apl_turn) AS rcnt
+               FROM  evt_apl_god p
+               LEFT OUTER JOIN  god g
+               ON    p.god_no = g.god_no
+               WHERE 1 = 1
+            ) t
+      WHERE 1 = 1
+      AND   t.rcnt = 1
+      AND   t.evt_no = #{evtAplGod.evtNo:VARCHAR}
+   </select>
+   
+   <delete id="deleteEventApplyGoods" parameterType="evtAplGod">
+      DELETE /* com.plgrim.ncp.base.repository.evt.deleteEvtAplTgt vito 20150601 */  
+      FROM  evt_apl_god
+      WHERE 1 = 1
+      AND   evt_no          =   #{evtNo,jdbcType=VARCHAR}
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(aplTurn)">
+      AND   apl_turn        = #{aplTurn:VARCHAR}
+      </if>
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(aplGodSectCd)">
+      AND   apl_god_sect_cd =   #{aplGodSectCd:VARCHAR}
+      </if>
+      <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(godAplYn)">
+      AND   god_apl_yn      =   #{godAplYn:VARCHAR}
+      </if>
+   </delete>
+   
+   <insert id="insertAplGodUploadExcel" parameterType="evtAplGod">
+	    INSERT /* com.plgrim.ncp.biz.promotion.insertAplGodUploadExcel jackie 20150608 */  
+	    INTO EVT_APL_GOD
+        (
+            EVT_NO
+           ,APL_TURN
+           ,GOD_APL_YN
+           ,APL_GOD_SECT_CD
+           ,GOD_NO
+           ,REGTR_ID
+           ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+        )
+        SELECT
+            #{evtNo,jdbcType=VARCHAR}
+           ,#{aplTurn,jdbcType=NUMERIC}
+           ,#{godAplYn,jdbcType=VARCHAR}
+           ,#{aplGodSectCd,jdbcType=VARCHAR}
+           ,g.GOD_NO
+           ,#{regtrId,jdbcType=VARCHAR}
+           ,#{udterId,jdbcType=VARCHAR}
+           ,SYSDATE
+           ,SYSDATE
+        FROM GOD g
+        WHERE 1=1
+        AND g.GOD_NO = #{godNo,jdbcType=VARCHAR}   
+    </insert>
+    
+    <select id="selectEvtAplGod" parameterType="evtAplGod" resultType="evtAplGod">
+    	SELECT /* com.plgrim.ncp.base.repository.evt.selectEvtAplGod jackie 20150608 */
+                EVT_NO
+               ,APL_TURN
+               ,GOD_APL_YN
+               ,APL_GOD_SECT_CD
+               ,BRND_ID
+               ,DSP_CTGRY_NO
+               ,GOD_NO
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    EVT_APL_GOD t
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND 	APL_GOD_SECT_CD = 'GOD'
+    </select>
+        
+    <delete id="deleteEvtDspTgtDxm" parameterType="evtDspTgt">
+		DELETE /* com.plgrim.ncp.base.deleteEvtDspTgt		Generator(Generator)	2018-05-23 */
+		  FROM EVT_DSP_TGT
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </delete>
+</mapper>

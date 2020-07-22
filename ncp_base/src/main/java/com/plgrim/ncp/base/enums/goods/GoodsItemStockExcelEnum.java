@@ -1,0 +1,87 @@
+package com.plgrim.ncp.base.enums.goods;
+
+public enum GoodsItemStockExcelEnum {
+
+	// CONSTANTS
+	GOODSITMLIST("단품목록")
+	,GOODSITMLIST_01("온라인품번 ")
+	,GOODSITMLIST_02("ERP품번 ")
+	,GOODSITMLIST_03("단품번호 ")
+	,GOODSITMLIST_04("SKUNO ")
+	,GOODSITMLIST_05("구온라인품번 ")
+	,GOODSITMLIST_06("단품명 ")
+	,GOODSITMLIST_07("온라인재고 ")
+	,GOODSITMLIST_08("센터FC01재고 ")
+	,GOODSITMLIST_09("센터FC08재고 ")
+	,GOODSITMLIST_10("배송매장재고 ")
+	,GOODSITMLIST_11("안전재고 ")
+	,GOODSITMLIST_12("주문대기수량 ")
+	,GOODSITMLIST_13("단품판매상태 ")
+	,GOODSITMLIST_14("상품명 ")
+	,GOODSITMLIST_15("상품구분 ")
+	,GOODSITMLIST_16("상품유형 ")
+	,GOODSITMLIST_17("브랜드ID ")
+	,GOODSITMLIST_18("브랜드명 ")
+	,GOODSITMLIST_19("업체 ")
+	,GOODSITMLIST_20("상품승인구분 ")
+	,GOODSITMLIST_21("상품판매구분 ")
+	,GOODSITMLIST_22("상품전시구분 ")
+	,GOODSITMLIST_23("정소가 ")
+	,GOODSITMLIST_24("실소가 ")
+	,GOODSITMLIST_25("현재실소가 ")
+	,GOODSITMLIST_26("임직원가 ")
+	,GOODSITMLIST_27("현재임직원가 ")
+	,GOODSITMLIST_28("SFC가 ")
+	,GOODSITMLIST_29("현재SFC가 ")
+	,GOODSITMLIST_30("블루베리가 ")
+	,GOODSITMLIST_31("현재블루베리가 ")
+	;
+
+	/**
+	 * 단품목록 엑셀
+	 */
+	public enum GoodsItemStockListExcel{
+		GOODSITMLIST_01
+		,GOODSITMLIST_02
+		,GOODSITMLIST_03
+		,GOODSITMLIST_04
+		,GOODSITMLIST_05
+		,GOODSITMLIST_06
+		,GOODSITMLIST_07
+		,GOODSITMLIST_08
+		,GOODSITMLIST_09
+		,GOODSITMLIST_10
+		,GOODSITMLIST_11
+		,GOODSITMLIST_12
+		,GOODSITMLIST_13
+		,GOODSITMLIST_14
+		,GOODSITMLIST_15
+		,GOODSITMLIST_16
+		,GOODSITMLIST_17
+		,GOODSITMLIST_18
+		,GOODSITMLIST_19
+		,GOODSITMLIST_20
+		,GOODSITMLIST_21
+		,GOODSITMLIST_22
+		,GOODSITMLIST_23
+		,GOODSITMLIST_24
+		,GOODSITMLIST_25
+		,GOODSITMLIST_26
+		,GOODSITMLIST_27
+		,GOODSITMLIST_28
+		,GOODSITMLIST_29
+		,GOODSITMLIST_30
+		,GOODSITMLIST_31
+	}
+
+	private final String value;
+
+	private GoodsItemStockExcelEnum(final String value) {
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
+}

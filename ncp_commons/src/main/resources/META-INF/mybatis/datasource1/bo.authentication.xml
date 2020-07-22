@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.bo.authertication">
+	
+	
+	<resultMap id="resultAuthUrlAct" type="com.plgrim.ncp.commons.result.AuthResult">
+		<result property="sysAuthor.authorGrpSn" column="author_grp_sn" />
+		<result property="sysAuthorGrp.authorGrpNm" column="author_grp_nm" />
+		<result property="sysAuthor.authorResrcNm" column="author_resrc_nm" />
+		<result property="sysMenu.menuSn" column="menu_sn" />
+		<result property="sysMenu.menuNm" column="menu_nm" />
+		<result property="sysMenu.menuUrl" column="menu_url" />
+		<result property="sysMenu.authorChkYn" column="AUTHOR_CHK_YN" />
+	</resultMap>
+	
+	<!-- 담당브랜드 결과	 -->
+	<resultMap id="resultAuthBrnd" type="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		<result property="brndId"          column="brnd_id" />
+		<result property="upperBrndId"     column="upper_brnd_id" />
+		<result property="brndNm"          column="brnd_nm" />
+		<result property="brndDscr"        column="brnd_dscr" />
+		<result property="brndGrpYn"       column="brnd_grp_yn" />
+		<result property="partmalComFeeRt" column="partmal_com_fee_rt" />
+		<result property="webpntAccmlYn" column="webpnt_accml_yn" />
+		<result property="webpntAccmlRt" column="webpnt_accml_rt" />
+		<result property="webpntUseYn" column="webpnt_use_yn" />
+		<result property="ovseaDlvPsbYn" column="ovsea_dlv_psb_yn" />
+	</resultMap>
+	
+	<select id="isLoginCheck" parameterType="java.util.Map" resultType="String" >
+	   <![CDATA[
+	   SELECT  /* [bo.authentication.xml][isLoginCheck]][ 관리자 로그인 체크][Tam] */
+		  decode( sa.pw,  #{adminPwdSha256} , '1', '2')  isPw
+	  FROM
+		sys_admin  sa INNER JOIN sys_admin_bo_site_author  sabsa
+		ON
+		    sa.admin_id = sabsa.admin_id
+		    AND
+		    sabsa.conect_psb_yn = 'Y'
+		    AND
+		    sabsa.bo_site_id = #{boSiteId}
+		    AND
+		    sa.admin_id = #{adminId}
+		]]>
+	</select>
+	
+	<select id="isLoginCheckEPSSO" parameterType="java.util.Map" resultType="String" >
+	   <![CDATA[
+		SELECT admin_id FROM (
+			SELECT
+          		sa.admin_id, sa.com_id, sa.shop_id
+        	FROM
+            	sys_admin  sa INNER JOIN sys_admin_bo_site_author  sabsa
+        	ON
+            	sa.admin_id = sabsa.admin_id
+            AND sabsa.conect_psb_yn = 'Y'
+            AND sabsa.bo_site_id = #{boSiteId}
+            AND sa.shop_id = #{shopId}
+            AND sa.admin_stat_cd = 'APRV_COMPT'
+            ORDER BY sa.reg_dt 
+            )
+		WHERE ROWNUM = 1
+            
+		]]>
+	</select>
+	
+
+	<select id="selectRowSysAdmInfo" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin" >
+		<![CDATA[
+		SELECT /* [bo.authentication.xml][selectRowSysAdmInfo]][관리자정보 조회][Tam] */
+			        sa.admin_id                    /* 관리자 ID */
+			      , sa.pw                          /* 비밀번호 */
+			      , sa.admin_tp_cd                 /* 관리자 유형 코드 */
+			      , sa.admin_stat_cd               /* 관리자 상태 코드 */
+			      , sa.aprv_dt                     /* 승인 일시 */
+			      , sa.reject_dt                   /* 거부 일시 */
+			      , sa.layoff_dt                   /* 휴직 일시 */
+			      , sa.drmc_dt                     /* 휴면 일시 */
+			      , sa.secsn_dt                    /* 탈퇴 일시 */
+			      , sa.admin_nm                    /* 관리자 명 */
+			      , sa.admin_emp_no                /* 관리자 사원번호 */
+			      , sa.dept_nm                     /* 부서 명 */
+			      , sa.com_id                      /* 업체 ID */
+			      , sa.shop_id                     /* 매장 ID */
+			      , sa.email                       /* 이메일 */
+			      , sa.pg_intrlck_expsr_yn         /* PG 연동 노출 여부 */
+			      , sa.cc_cntr_sect_cd             /* 고객센터 센터 구분 코드 */
+			      , sa.cc_team_sect_cd             /* 고객센터 팀 구분 코드 */
+			      , sa.mobil_nation_no             /* 휴대전화 국가번호 */
+			      , sa.mobil_area_no               /* 휴대전화 지역번호 */
+			      , sa.mobil_tlof_no               /* 휴대전화 국번호 */
+			      , sa.mobil_tlof_wthn_no          /* 휴대전화 국내번호 */
+			      , sa.tel_nation_no               /* 전화 국가번호 */
+			      , sa.tel_area_no                 /* 전화 지역번호 */
+			      , sa.tel_tlof_no                 /* 전화 국번호 */
+			      , sa.tel_tlof_wthn_no            /* 전화 국내번호 */
+			      , sa.fax_nation_no               /* 팩스 국가번호 */
+			      , sa.fax_area_no                 /* 팩스 지역번호 */
+			      , sa.fax_tlof_no                 /* 팩스 국번호 */
+			      , sa.fax_tlof_wthn_no            /* 팩스 국내번호 */
+			      , sa.last_login_dt               /* 최종 로그인 일시 */
+			      , sa.login_failr_count           /* 로그인 실패 횟수 */
+			      , sa.pw_intz_yn                  /* 비밀번호 초기화 여부 */
+			      , sa.pw_intz_dt                  /* 비밀번호 초기화 일시 */
+			      , sa.login_psb_ip_chk_yn         /* 로그인 가능 IP 체크 여부 */
+			      , sa.login_psb_ip                /* 로그인 가능 IP */
+			      , sa.cti_id                      /* CTI ID */
+			      , sa.cti_exno                    /* CTI 내선번호 */
+			      , sa.cti_recrd_id                /* CTI 녹취 ID */
+			      , nvl(sa.pw_intz_dt, sysdate-91) as pw_intz_dt
+				  , ( SELECT sysGrp.AUTHOR_GRP_SN
+				        FROM SYS_ADMIN_AUTHOR_GRP_MAPNG sysGrp
+				       WHERE sysGrp.ADMIN_ID = sa.ADMIN_ID
+				         AND USE_YN = 'Y'
+				         AND ROWNUM = 1 ) AS AUTHOR_GRP_SN
+				  , sa.SESION_ID                    /* 세션 ID - 중복 로그인 방지를 위해 사용 */
+				  , sac.FIRST_CRTFC_YN               /* 최초 인증 여부 */
+				  , sac.FIRST_CRTFC_DT               /* 최초 인증 일시 */
+				  , sac.LAST_CRTFC_NO                /* 최종 인증 번호 */
+				  , sac.LAST_CRTFC_NO_ISSU_DT        /* 최종 인증 번호 발급 일시 */
+				  , sac.LAST_CRTFC_SUCCES_DT         /* 최종 인증 성공 일시 */
+				  , sac.LAST_CRTFC_SUCCES_YN         /* 최종 인증 성공 여부 */
+				  , sac.LAST_CRTFC_FAILR_DT          /* 최종 인증 실패 일시 */
+				  , nvl(sac.ACMTL_CRTFC_FAILR_COUNT, 0) as ACMTL_CRTFC_FAILR_COUNT      /* 누적 인증 실패 횟수 */
+				  , CASE 
+				      WHEN sac.LAST_CRTFC_NO IS NOT NULL AND sac.LAST_CRTFC_NO_ISSU_DT IS NOT NULL AND (SYSDATE < (sac.LAST_CRTFC_NO_ISSU_DT + 3/24/60)) THEN 'Y'
+				      ELSE 'N'
+				    END CRTFC_NO_VALID_TIME_YN
+				  , CASE 
+				      WHEN sac.LAST_CRTFC_SUCCES_YN = 'Y' AND sac.LAST_CRTFC_SUCCES_DT IS NOT NULL AND (TO_CHAR(SYSDATE, 'YYYYMMDD') = TO_CHAR(sac.LAST_CRTFC_SUCCES_DT, 'YYYYMMDD')) THEN 'Y'
+				      ELSE 'N'
+				    END CRTFC_NO_AUTH_VALID_YN
+		FROM sys_admin sa 
+		    INNER JOIN sys_admin_bo_site_author sabsa ON (sa.admin_id = sabsa.admin_id)
+		    LEFT OUTER JOIN SYS_ADMIN_CRTFC sac ON (sa.admin_id = sac.admin_id)
+		WHERE sabsa.conect_psb_yn = 'Y'
+			AND sabsa.bo_site_id = #{boSiteId}
+			AND sa.admin_id = #{adminId}
+		]]>
+	
+	</select>
+	
+	<select id="selectListAuthAdmBrnd" parameterType="java.util.Map" resultMap="resultAuthBrnd" >
+		<![CDATA[ 
+			SELECT /* [bo.authentication.xml][selectListAuthAdmBrnd]][관리자 브랜드정보 조회][Tam] */
+				sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm, sb.brnd_dscr, sb.brnd_grp_yn
+			FROM sys_admin_brnd sab
+			INNER JOIN sys_brnd sb
+			 ON
+				sab.use_yn ='Y'
+				AND 
+				sab.admin_id = #{adminId}
+				AND
+				sab.brnd_id = sb.brnd_id
+				AND
+				sb.use_yn = 'Y'
+		]]>
+	</select>
+
+	<select id="selectListAuthAdmMall" parameterType="java.util.Map" resultType="sysMall" >
+		<![CDATA[
+			SELECT /* [bo.authentication.xml][selectListAuthAdmMall]][관리자 몰정보 조회][Yoon] */
+				  sm.MALL_ID
+				 , sm.SSO_GRP_CD
+				 , sm.USE_YN
+				 , sm.CAL_USE_YN
+				 , sm.MALL_NM
+				 , sm.MALL_URL
+				 , sm.CPR_NM
+				 , sm.RPRSTIV_NM
+				 , sm.CPR_REG_NO
+				 , sm.BMAN_REG_NO
+				 , sm.MOS_REGNO
+				 , sm.RPRST_EMAIL
+				 , sm.PSNL_INFO_MANAGE_MGR_NM
+				 , sm.SORT_SEQ
+				 , sm.NTCN_TAK_USE_YN
+				 , sm.POST_NO
+				 , sm.BASE_ADDR
+				 , sm.DETAIL_ADDR
+				 , sm.TEL_NATION_NO
+				 , sm.TEL_AREA_NO
+				 , sm.TEL_TLOF_NO
+				 , sm.TEL_TLOF_WTHN_NO
+				 , sm.FAX_NATION_NO
+				 , sm.FAX_AREA_NO
+				 , sm.FAX_TLOF_NO
+				 , sm.FAX_TLOF_WTHN_NO
+				 , sm.CC_EMAIL
+				 , sm.CC_TEL_NATION_NO
+				 , sm.CC_TEL_AREA_NO
+				 , sm.CC_TEL_TLOF_NO
+				 , sm.CC_TEL_TLOF_WTHN_NO
+				 , sm.CC_FAX_NATION_NO
+				 , sm.CC_FAX_AREA_NO
+				 , sm.CC_FAX_TLOF_NO
+				 , sm.CC_FAX_TLOF_WTHN_NO
+			FROM sys_admin_mall sam
+			INNER JOIN sys_mall sm
+					ON sam.mall_id = sm.mall_id
+					AND sam.use_yn ='Y'
+					AND sam.admin_id = #{adminId}
+					AND sm.use_yn = 'Y'
+
+		]]>
+	</select>
+
+	<select id="selectListAdmAuthUrlAct" parameterType="java.util.Map" resultMap="resultAuthUrlAct" >
+		<![CDATA[ 
+		SELECT /* [bo.authentication.xml][selectListAdmAuthUrlAct]][관리자 메뉴URL 및 권한 정보 조회][Tam] */
+			sag.author_grp_sn, sag.author_grp_nm, sa.author_resrc_nm, sm.menu_sn, sm.menu_nm, sm.menu_url, nvl(sm.AUTHOR_CHK_YN, 'N') as AUTHOR_CHK_YN
+		FROM
+			sys_admin_author_grp_mapng saagm
+			INNER JOIN sys_author_grp sag
+			ON
+				saagm.use_yn = 'Y'
+				AND
+				saagm.admin_id = #{adminId}
+				AND
+				saagm.author_grp_sn = sag.author_grp_sn
+			INNER JOIN sys_author sa
+			ON
+				sag.use_yn = 'Y'
+				AND
+				sag.author_grp_sn = sa.author_grp_sn
+			INNER JOIN sys_menu sm
+			ON
+				sm.delete_yn = 'N'
+				AND
+				sa.menu_sn = sm.menu_sn
+				AND
+				sm.use_yn = 'Y'
+				AND
+				sm.bo_site_id = #{boSiteId}
+				AND
+				sm.menu_tp_cd = 'FILE'
+		]]>
+	</select>
+	
+	<select id="selectListAdmDynamicAuthUrlAct" parameterType="java.util.Map" resultMap="resultAuthUrlAct" >
+		<![CDATA[
+		SELECT author_grp_sn,
+			   author_grp_nm,
+			   author_resrc_nm,
+			   menu_sn,
+			   menu_nm,
+			   menu_url,
+               AUTHOR_CHK_YN
+		FROM (
+				SELECT /* [bo.authentication.xml][selectListAdmDynamicAuthUrlAct]][관리자 메뉴URL 및 권한 정보 조회(동적메뉴)][Peter] */
+					sag.author_grp_sn,
+					sag.author_grp_nm,
+					sa.author_resrc_nm,
+					sm.menu_sn,
+					sm.menu_nm,
+					sm.menu_url,
+                    nvl(sm.AUTHOR_CHK_YN, 'N') as AUTHOR_CHK_YN
+				FROM
+					sys_admin_author_grp_mapng saagm
+					INNER JOIN sys_author_grp sag
+					ON
+						saagm.use_yn = 'Y'
+						AND
+						saagm.admin_id = #{adminId}
+						AND
+						saagm.author_grp_sn = sag.author_grp_sn
+					INNER JOIN sys_author sa
+					ON
+						sag.use_yn = 'Y'
+						AND
+						sag.author_grp_sn = sa.author_grp_sn
+					INNER JOIN sys_menu sm
+					ON
+						sm.delete_yn = 'N'
+						AND
+						sa.menu_sn = sm.menu_sn
+						AND
+						sm.use_yn = 'Y'
+						AND
+						sm.bo_site_id = #{boSiteId}
+						AND
+						sm.menu_tp_cd = 'FILE'
+				)
+			WHERE menu_url like '%*%'
+		]]>
+	</select>
+
+	<select id="selectListAuthorGrpMenu" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysMenuExtend">
+		<![CDATA[ 
+		SELECT /* [bo.authentication.xml][selectListAuthorGrpMenu][권한그룹 메뉴조회][Tam] */
+			sm.*,
+			sm.menu_sn id,
+			sm.upper_menu_sn upperKey,
+			( SELECT menu_url FROM sys_menu  WHERE menu_tp_cd = 'FILE' AND first_pge_yn ='Y'  AND upper_menu_sn = sm.menu_sn  AND delete_yn <> 'Y' AND rownum = 1 ) menuUrl
+		FROM
+		(
+			SELECT
+				NVL(sm2.childcount, 0) AS childCount,
+				sm.bo_site_id, sm.menu_sn, sm.upper_menu_sn, sm.menu_nm,
+				sm.menu_img_url, sm.use_yn, sm.sort_seq,      
+				sm.outpt_tp_cd, sm.popup_left_lc , sm.popup_upend_lc, sm.popup_width, sm.popup_hg popupHg
+			FROM 
+				sys_menu sm 
+				INNER JOIN 
+				( SELECT  author_grp_sn, menu_sn FROM SYS_AUTHOR WHERE author_grp_sn =#{authorGrpSn} GROUP BY author_grp_sn, menu_sn) sa
+				ON
+					(sm.menu_nm <> 'BO공통권한' AND sm.menu_nm <> 'PO공통권한' AND sm.menu_nm <> 'CS공통권한')
+					AND
+					sm.delete_yn = 'N'
+					AND
+					sm.bo_site_id = #{boSiteId}
+					AND
+					sm.use_yn = 'Y'
+					AND
+					sm.menu_sn = sa.menu_sn
+					AND
+					sm.menu_tp_cd = 'MENU'
+				LEFT OUTER JOIN 
+				( SELECT upper_menu_sn, COUNT (*) AS childCount FROM sys_menu WHERE delete_yn = 'N' AND use_yn = 'Y' AND menu_tp_cd='MENU' GROUP BY upper_menu_sn ) sm2
+				ON 
+					sm.menu_sn = sm2.upper_menu_sn
+		) sm
+		START WITH  
+		sm.upper_menu_sn is NULL
+		CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+		ORDER SIBLINGS BY sm.sort_seq 
+
+		]]>
+	</select>
+	
+	<select id="selectListAdmAuthgrp" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminAuthorGrpMapng" >
+		<![CDATA[ 
+		SELECT /* [bo.authentication.xml][selectListAdmAuthgrp]][ 관리자 권한그룹정보 조회][Tam] */
+			saagm.author_grp_sn, saagm.admin_id, saagm.use_yn
+		FROM
+			sys_admin_author_grp_mapng saagm
+		WHERE
+			saagm.use_yn = 'Y'
+			AND
+			saagm.admin_id = #{adminId}
+		]]>
+	</select>
+	
+	<select id="selectRowMenuFromUrl" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysMenu" >
+		<![CDATA[ 
+		SELECT /* [bo.authentication.xml][selectRowMenuFromUrl]][ 메뉴정보 조회][Tam] */
+			menu_sn, upper_menu_sn, menu_nm, menu_url, menu_tp_cd
+		FROM
+			sys_menu
+		WHERE
+			bo_site_id = #{boSiteId}
+			AND
+			menu_url = #{menuUrl}
+		]]>
+	</select>
+	
+	<update id="updateLoginFailrCnt" parameterType="String">
+		UPDATE  /* [bo.authentication.xml][updateLoginFailrCnt]][로그인 실패 카운터][Tam] */
+		sys_admin  
+		SET 
+			login_failr_count=login_failr_count+1 
+		WHERE 
+			admin_id =#{adminId}
+	</update>
+	
+	<update id="updateLoginFailrCntInit" parameterType="String">
+		UPDATE  /* [bo.authentication.xml][updateLoginFailrCntInit]][로그인 실패 카운터 초기화][Tam] */
+		sys_admin  
+		SET 
+			login_failr_count=0
+		WHERE 
+			admin_id =#{adminId}
+	</update>
+	
+	<update id="updateFailrCnt5Init" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+		UPDATE  /* [bo.authentication.xml][updateFailrCnt5Init]][로그인 실패 비밀번호 초기화][Peter] */
+		sys_admin
+		SET
+			pw =#{pw},
+            PW_INTZ_YN = #{pwIntzYn},
+            PW_INTZ_DT = SYSDATE,
+            udter_id            = #{regtrId},
+            udt_dt              = SYSDATE
+		WHERE
+			admin_id =#{adminId}
+	</update>
+
+	<update id="updateLastLoginDt" parameterType="java.util.Map">
+		UPDATE  /* [bo.authentication.xml][updateLastLoginDt]][로그인 일시 업데이트][Tam] */
+		sys_admin  
+		SET 
+			last_login_dt=sysdate
+			<if test="sessionId != null and sessionId != '' ">
+	        	, SESION_ID = #{sessionId}
+	        </if>
+		WHERE 
+			admin_id =#{adminId}
+	</update>
+	
+	<select id="selectRowStplatAgrYn" parameterType="java.util.Map" resultType="java.lang.String" >
+		<![CDATA[ 
+		SELECT /* [bo.authentication.xml][selectRowStplatAgrYn]][운영자 개인정보동의여부 조회][Tam] */
+		  decode( ''||sg.cnt, '0', 'N', 'Y') stplat_agr_yn
+		FROM
+		( 
+		    SELECT 
+		        count(*) cnt
+		    FROM sys_admin_stplat_agr
+		    WHERE
+		        stplat_cd = #{stplatCd}
+		        AND
+		        stplat_agr_yn = 'Y'
+		        AND
+		        bo_site_id = #{boSiteId}
+		        AND
+		        admin_id = #{adminId}
+		  ) sg
+		]]>
+	</select>
+	
+	<select id="selectListAuthComBrnd" parameterType="java.util.Map" resultMap="resultAuthBrnd" >
+		<![CDATA[ 
+			SELECT  /* [bo.authentication.xml][selectListAuthComBrnd]][업체 담당브랜드 목록][Tam] */
+				sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm, sb.brnd_dscr, sb.brnd_grp_yn, cb.partmal_com_fee_rt, sb.webpnt_accml_yn,
+				sb.webpnt_accml_rt, sb.webpnt_use_yn, sb.ovsea_dlv_psb_yn
+			FROM  com_brnd cb 
+				INNER JOIN sys_brnd sb
+				ON
+					cb.com_id =#{comId}
+					AND
+					cb.brnd_id = sb.brnd_id
+					AND
+					sb.use_yn = 'Y'
+		]]>
+	</select>
+	
+	
+	<select id="selectListAuthAffBrnd" parameterType="java.util.Map" resultMap="resultAuthBrnd" >
+        <![CDATA[ 
+            SELECT  /* [bo.authentication.xml][selectListAuthAffBrnd]][제휴업체 담당브랜드 목록][ken] */
+               DISTINCT sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm, sb.brnd_dscr, sb.brnd_grp_yn
+             FROM COM_AFF_VRSC_COM_BRND cb
+             JOIN SYS_BRND sb 
+               ON cb.brnd_id = sb.brnd_id
+              AND sb.use_yn = 'Y'
+            WHERE cb.aff_vrsc_com_id = #{comId}
+        ]]>
+    </select>
+    
+    <select id="selectAdmAuthCheckUrlAct" parameterType="java.util.Map" resultMap="resultAuthUrlAct" >
+	    SELECT /* [bo.authentication.xml][selectAdmAuthCheckUrlAct]][full url 권한체크 메뉴 조회][chris] */
+	        0 as author_grp_sn
+	        , '' as author_grp_nm
+	        , '' as author_resrc_nm
+	        , sm.menu_sn
+	        , sm.menu_nm
+	        , sm.menu_url
+	        , nvl(sm.AUTHOR_CHK_YN, 'N') as AUTHOR_CHK_YN
+	    FROM sys_menu sm
+	    where sm.delete_yn = 'N'
+	        AND sm.use_yn = 'Y'
+	        <if test="boSiteId != null and boSiteId == 'PO'">
+	        	AND sm.bo_site_id in('BO', 'PO')
+	        </if>
+	        <if test="boSiteId != null and boSiteId != 'PO'">
+	        	AND sm.bo_site_id = #{boSiteId}
+	        </if>
+	        AND sm.menu_tp_cd = 'FILE'
+	        AND nvl(sm.AUTHOR_CHK_YN, 'N') = 'Y'
+	</select>
+	
+	<update id="mergeSysAdminCrtfc" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminCrtfc">
+	    MERGE INTO SYS_ADMIN_CRTFC /* [bo.authentication.xml][mergeSysAdminCrtfc]][관리자 로그인 SMS 인증정보 merge] */
+	    USING DUAL ON (admin_id = #{adminId})
+	    WHEN MATCHED THEN
+	        UPDATE SET  
+	            UDT_DT = SYSDATE
+				, UDTER_ID  = #{udterId}
+	            <choose>
+					<when test='firstCrtfcYn != null and firstCrtfcYn == "Y" '>
+						, FIRST_CRTFC_YN = #{firstCrtfcYn}
+						, FIRST_CRTFC_DT = SYSDATE
+					</when>
+					<when test='firstCrtfcYn != null and firstCrtfcYn != "Y" '>
+						, FIRST_CRTFC_YN = #{firstCrtfcYn}
+					</when>
+				</choose>
+				<if test='lastCrtfcNo != null and lastCrtfcNo != "" '>
+					, LAST_CRTFC_NO = #{lastCrtfcNo}
+					, LAST_CRTFC_NO_ISSU_DT = SYSDATE
+		        </if>
+		        <choose>
+					<when test='lastCrtfcSuccesYn != null and lastCrtfcSuccesYn == "Y" '>
+						, LAST_CRTFC_SUCCES_YN = #{lastCrtfcSuccesYn}
+						, LAST_CRTFC_SUCCES_DT = SYSDATE
+		        		, ACMTL_CRTFC_FAILR_COUNT = 0
+					</when>
+					<when test='lastCrtfcSuccesYn != null and lastCrtfcSuccesYn != "Y" '>
+						, LAST_CRTFC_SUCCES_YN = #{lastCrtfcSuccesYn}
+						, LAST_CRTFC_FAILR_DT = SYSDATE
+		        		, ACMTL_CRTFC_FAILR_COUNT = nvl(ACMTL_CRTFC_FAILR_COUNT, 0) + 1
+					</when>
+				</choose>
+	    WHEN NOT MATCHED THEN
+	        INSERT  (
+	            ADMIN_ID
+	            <choose>
+		            <when test='firstCrtfcYn != null and firstCrtfcYn == "Y" '>
+						, FIRST_CRTFC_YN
+						, FIRST_CRTFC_DT
+					</when>
+					<when test='firstCrtfcYn != null and firstCrtfcYn != "Y" '>
+						, FIRST_CRTFC_YN
+					</when>
+				</choose>
+	            <if test='lastCrtfcNo != null '>
+	                , LAST_CRTFC_NO
+	            </if>
+	            <if test='lastCrtfcNoIssuDt != null '>
+	                , LAST_CRTFC_NO_ISSU_DT
+	            </if>
+	            <if test='lastCrtfcSuccesYn != null '>
+	                , LAST_CRTFC_SUCCES_YN
+	            </if>
+	            <if test='lastCrtfcSuccesDt != null '>
+	                , LAST_CRTFC_SUCCES_DT
+	            </if>
+	            <if test='lastCrtfcFailrDt != null '>
+	                , LAST_CRTFC_FAILR_DT
+	            </if>
+	            <if test='acmtlCrtfcFailrCount != null '>
+	                , ACMTL_CRTFC_FAILR_COUNT
+	            </if>
+	           , REGTR_ID
+	           , REG_DT
+	           , UDTER_ID
+	           , UDT_DT
+	        ) VALUES (
+	            #{adminId}
+	            <choose>
+		            <when test='firstCrtfcYn != null and firstCrtfcYn == "Y" '>
+						, #{firstCrtfcYn}
+						, SYSDATE
+					</when>
+					<when test='firstCrtfcYn != null and firstCrtfcYn != "Y" '>
+						, #{firstCrtfcYn}
+					</when>
+				</choose>
+	            <if test='lastCrtfcNo != null '>
+	                , #{lastCrtfcNo}
+	            </if>
+	            <if test='lastCrtfcNoIssuDt != null '>
+	                , #{lastCrtfcNoIssuDt}
+	            </if>
+	            <if test='lastCrtfcSuccesYn != null '>
+	                , #{lastCrtfcSuccesYn}
+	            </if>
+	            <if test='lastCrtfcSuccesDt != null '>
+	                , #{lastCrtfcSuccesDt}
+	            </if>
+	            <if test='lastCrtfcFailrDt != null '>
+	                , #{lastCrtfcFailrDt}
+	            </if>
+	            <if test='acmtlCrtfcFailrCount != null '>
+	                , #{acmtlCrtfcFailrCount}
+	            </if>
+	          , #{regtrId}
+	          , SYSDATE
+	          , #{udterId}
+	          , SYSDATE
+	       )
+	</update>
+
+	<update id="updateCrtfcFailCnt" parameterType="String">
+		UPDATE  /* [bo.authentication.xml][updateCrtfcFailCnt]][휴대폰 인증 실패 횟수 초기화] */
+				SYS_ADMIN_CRTFC
+		   SET
+				ACMTL_CRTFC_FAILR_COUNT = 0
+		 WHERE
+				admin_id = #{adminId}
+	</update>
+	
+</mapper>

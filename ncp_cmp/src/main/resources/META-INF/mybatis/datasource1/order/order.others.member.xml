@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.order.other.member">
+	 <sql id="whereBoOrder"> 
+                    AND od.mbr_no =#{pchId}
+                  <if test="startOrdDt != null and startOrdDt != '' ">
+                    AND od.ord_dt BETWEEN  TO_DATE(#{startOrdDt},'yyyy-mm-dd') AND TO_DATE(#{endOrdDt},'yyyy-mm-dd')+1
+                 </if>
+ 	</sql>
+ 	
+ 	<select id="selectOrderCountAndAmtForMember" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="com.plgrim.ncp.biz.order.result.OrderBoResult">
+          SELECT /* [order.others.member.xml][selectOrderCountAndAmtForMember][총주문건수/총주문금액][Mark] */  
+                COUNT(*) AS pchCount, SUM(od.stdr_crncy_sum_amt) AS pchAmt
+           FROM ORD od  
+           JOIN sys_mall sm 
+             ON od.mall_id = sm.mall_id 
+           JOIN LGS_DLVSP lp  
+             ON od.ord_no = lp.ord_no AND lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+           JOIN ( SELECT lp.ord_no 
+                       , max(lp.dlv_pcupsp_turn) AS dlv_pcupsp_turn
+                    FROM LGS_DLVSP lp
+                   WHERE lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+                   GROUP BY lp.ord_no
+                 ) lpv
+            ON lp.ord_no = lpv.ord_no  AND  lp.dlv_pcupsp_turn = lpv.dlv_pcupsp_turn
+         WHERE od.mbr_no =#{pchId}
+	</select>
+
+    <select id="selectOrderListCountForMember" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="long">
+        SELECT /* [mybatis.datasource1.order.order.others.member.xml][selectOrderListCountForMember][주문목록 카운트 ][JESSI] */ 
+               COUNT(*)
+          FROM(
+               SELECT  od.ord_no 
+                FROM ORD od  
+                JOIN sys_mall sm 
+                  ON od.mall_id = sm.mall_id 
+                 AND sm.mall_id = #{mallId, jdbcType=VARCHAR}
+                JOIN LGS_DLVSP lp  
+                  ON od.ord_no = lp.ord_no AND lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+                JOIN ( SELECT lp.ord_no 
+                            , max(lp.dlv_pcupsp_turn) AS dlv_pcupsp_turn
+                         FROM LGS_DLVSP lp
+                        WHERE lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+                        GROUP BY lp.ord_no
+                      ) lpv
+                 ON lp.ord_no = lpv.ord_no  AND  lp.dlv_pcupsp_turn = lpv.dlv_pcupsp_turn
+              WHERE 1=1 
+             <include refid="com.plgrim.ncp.biz.order.other.member.whereBoOrder"/> 
+          )
+	</select>
+
+    <select id="selectOrderListForMember" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="com.plgrim.ncp.biz.order.result.OrderBoResult">
+		/* [order.others.member.xml][selectOrderListForMember][주문목록 조회 ][JESSI] */ 
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+          SELECT  od.ord_no AS ordNo
+                , CASE WHEN od.aff_com_ord_no IS NULL THEN '자사' ELSE '제휴사' END  AS mcomOrAff
+                , sm.mall_nm  AS mallNm
+                , la.cd_nm  AS lang
+                , od.aff_com_ord_no AS affComOrdNo
+                , od.ord_dt AS ordDt
+                , ot.cd_nm AS ordTp
+                , os.cd_nm AS ordStat
+                ,(select decode(clm_tp_cd,'PART_CNCL','취소','ALL_CNCL','취소','GNRL_EXCHG','교환','RTGOD','반품',null) from clm where clm_no = (select max(clm_no) from clm where ord_no = od.ord_no))||' '||(select decode(clm_stat_cd,'REQST','신청','PAY_WAIT','결제대기','RCEPT','접수','COMPT','완료','WTHDRAW','철회',null) from clm where clm_no = (select max(clm_no) from clm where ord_no = od.ord_no)) recentClaim
+                , com.com_nm AS saleAff
+                , ssi.excut_rem_nm AS advrtsCh
+                , od.god_sumry AS godNm
+                , od.stdr_crncy_sum_amt  AS ordAmt
+                , od.dlv_cst_sum_amt
+                , od.lag_qty_ord_dcsn_yn          
+                , NVL(od.god_dc_sum_amt,0)+NVL(od.emp_dc_sum_amt,0)+NVL(od.god_cpn_dc_sum_amt,0)+NVL(od.bsk_cpn_dc_sum_amt,0)+NVL(od.dlv_cst_cpn_dc_sum_amt,0) AS dcAmt
+                , od.bsk_cpn_dc_sum_amt
+                , od.dlv_cst_cpn_dc_sum_amt
+                , od.stdr_crncy_sum_amt AS mainPayAmt
+                , od.unity_pnt_use_sum_amt AS memPntAmt
+                , od.evt_pnt_use_sum_amt AS evtPntAmt
+                , od.webpnt_use_sum_amt AS webPntAmt
+                , od.unity_pnt_accml_sum_amt AS savMemPnt
+                , od.webpnt_accml_sum_amt AS savWebPnt
+                , fn_masking('FLNM' , od.cstmr_nm ,'',#{maskingYn}   )  AS pchNm
+                , od.cstmr_nm  AS pchNmEmail
+                , od.cstmr_email 
+                , od.mbr_no
+                , fn_masking('PHON' , od.cstmr_mobil_nation_no ||'-'|| od.cstmr_mobil_area_no||'-'||od.cstmr_mobil_tlof_no ||'-'||od.cstmr_mobil_tlof_wthn_no,'',#{maskingYn}  ) AS pchTelNo
+                , fn_masking('FLNM' ,lp.addrse_nm  ,'',#{maskingYn}   ) AS rcverNm
+                , fn_masking('PHON' , lp.addrse_mobil_nation_no ||'-'||lp.addrse_mobil_area_no ||'-'|| lp.addrse_mobil_tlof_no||'-'||lp.addrse_mobil_tlof_wthn_no,'',#{maskingYn}  )  AS  rcverTelNo
+                , scRR.cd_nm AS rcptfrReqst
+           FROM ORD od  
+           JOIN sys_mall sm 
+             ON od.mall_id = sm.mall_id 
+            AND sm.mall_id = #{mallId, jdbcType=VARCHAR}
+LEFT OUTER JOIN MV_SYS_CD la 
+             ON od.lang_cd = la.cd AND la.lang_cd =#{lang, jdbcType=VARCHAR}  AND la.upper_cd='LANG'  
+LEFT OUTER JOIN MV_SYS_CD ot 
+             ON od.ord_tp_cd = ot.cd AND ot.lang_cd =#{lang, jdbcType=VARCHAR}  AND ot.upper_cd='ORD_TP'  
+LEFT OUTER JOIN MV_SYS_CD scRR 
+             ON od.rcptfr_reqst_cd = scRR.cd AND scRR.lang_cd =#{lang, jdbcType=VARCHAR}  AND scRR.upper_cd='RCPTFR_REQST'
+LEFT OUTER JOIN MV_SYS_CD os 
+             ON od.ord_stat_cd = os.cd AND os.lang_cd ='KOR'  AND os.upper_cd='ORD_STAT'  
+LEFT OUTER JOIN com com
+             ON od.aff_com_id =com.com_id AND com.com_tp_cd = 'AFF_SELR'   
+LEFT OUTER JOIN SYS_INFLOW ssi
+             ON od.inflow_sn =ssi.inflow_sn   
+           JOIN LGS_DLVSP lp  
+             ON od.ord_no = lp.ord_no AND lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+           JOIN ( SELECT lp.ord_no 
+                       , max(lp.dlv_pcupsp_turn) AS dlv_pcupsp_turn
+                    FROM LGS_DLVSP lp
+                   WHERE lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+                   GROUP BY lp.ord_no
+                 ) lpv
+            ON lp.ord_no = lpv.ord_no  AND  lp.dlv_pcupsp_turn = lpv.dlv_pcupsp_turn
+         WHERE 1=1 
+        <include refid="com.plgrim.ncp.biz.order.other.member.whereBoOrder"/> 
+        ORDER BY od.ord_dt DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    
+    <select id="selectOrderExcelForMember" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="java.util.LinkedHashMap">
+		/* [order.others.member.xml][selectOrderExcelForMember][주문목록 조회 ][JESSI] */ 
+          SELECT
+          		  od.ord_no AS ordNo
+                , od.ord_dt AS ordDt
+                , ot.cd_nm AS ordTp
+                , os.cd_nm AS ordStat
+                , od.stdr_crncy_sum_amt  AS ordAmt
+                , py.pay_crncy_pay_amt AS mainPayAmt
+                , od.bsk_cpn_dc_sum_amt
+                , od.dlv_cst_cpn_dc_sum_amt
+                , od.unity_pnt_use_sum_amt AS memPntAmt
+                , com.com_nm AS saleAff
+                , ssi.excut_rem_nm AS advrtsCh
+                , fn_masking('FLNM' ,lp.addrse_nm  ,'',#{maskingYn}   ) AS rcverNm
+                , scRR.cd_nm AS rcptfrReqst
+           FROM ORD od  
+           JOIN sys_mall sm 
+             ON od.mall_id = sm.mall_id 
+            AND sm.mall_id = #{mallId, jdbcType=VARCHAR}
+LEFT OUTER JOIN MV_SYS_CD la 
+             ON od.lang_cd = la.cd AND la.lang_cd =#{lang, jdbcType=VARCHAR}  AND la.upper_cd='LANG'  
+LEFT OUTER JOIN MV_SYS_CD ot 
+             ON od.ord_tp_cd = ot.cd AND ot.lang_cd =#{lang, jdbcType=VARCHAR}  AND ot.upper_cd='ORD_TP'  
+LEFT OUTER JOIN MV_SYS_CD scRR 
+             ON od.rcptfr_reqst_cd = scRR.cd AND scRR.lang_cd =#{lang, jdbcType=VARCHAR}  AND scRR.upper_cd='RCPTFR_REQST'
+LEFT OUTER JOIN MV_SYS_CD os 
+             ON od.ord_stat_cd = os.cd AND os.lang_cd ='KOR'  AND os.upper_cd='ORD_STAT'  
+LEFT OUTER JOIN com com
+             ON od.aff_com_id =com.com_id AND com.com_tp_cd = 'AFF_SELR'   
+LEFT OUTER JOIN SYS_INFLOW ssi
+             ON od.inflow_sn =ssi.inflow_sn   
+           JOIN LGS_DLVSP lp  
+             ON od.ord_no = lp.ord_no AND lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+           JOIN ( SELECT lp.ord_no 
+                       , max(lp.dlv_pcupsp_turn) AS dlv_pcupsp_turn
+                    FROM LGS_DLVSP lp
+                   WHERE lp.dlv_pcupsp_sect_cd ='ORD_DLVSP'
+                   GROUP BY lp.ord_no
+                 ) lpv
+            ON lp.ord_no = lpv.ord_no  AND  lp.dlv_pcupsp_turn = lpv.dlv_pcupsp_turn
+           JOIN ( 
+                   SELECT tp.ord_no 
+                        , tp.pay_crncy_pay_amt 
+                        , pm.payMn  
+                    FROM (
+                           SELECT p.ord_no
+                                , SUM(p.PAY_CRNCY_PAY_AMT) AS PAY_CRNCY_PAY_AMT 
+                            FROM pay p
+                            JOIN MV_SYS_CD cd 
+                              ON p.pay_mn_cd = cd.CD 
+                             AND cd.lang_cd ='KOR' 
+                             AND cd.upper_cd='MAIN_PAY_MN'
+                           GROUP BY p.ord_no
+ 
+                          )tp   
+                    JOIN (
+                           SELECT ord_no
+                                , LISTAGG( SUBSTR(cd.cd_nm,1,1) , ', ') WITHIN GROUP (ORDER BY p.pay_no) AS payMn 
+                             FROM pay p 
+                             JOIN MV_SYS_CD cd 
+                               ON p.pay_mn_cd = cd.CD 
+                              AND cd.lang_cd ='KOR' 
+                              AND cd.upper_cd='PLC_PAY_MN' 
+                            GROUP BY p.ord_no 
+                          )pm ON tp.ord_no = pm.ord_no
+                  ) py ON od.ord_no = py.ord_no
+                  WHERE 1=1 
+        <include refid="com.plgrim.ncp.biz.order.other.member.whereBoOrder"/> 
+    </select>    
+</mapper>

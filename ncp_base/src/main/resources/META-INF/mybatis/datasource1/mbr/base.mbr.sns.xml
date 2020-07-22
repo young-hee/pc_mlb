@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrSns" parameterType="mbrSns" resultType="mbrSns">
+		SELECT /* com.plgrim.ncp.base.selectMbrSns		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , MBR_SNS_CD
+			 , MBR_SNS_CRTFC_TOKN_ID
+			 , RESULT_URL
+			 , LAST_USE_SNS_YN
+			 , REG_DT
+			 , UDT_DT
+		  FROM MBR_SNS
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SNS_CD = #{mbrSnsCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbrSns" parameterType="mbrSns">
+		UPDATE /* com.plgrim.ncp.base.updateMbrSns		Generator(Generator)	2018-05-23 */
+		MBR_SNS SET
+			   MBR_SNS_CRTFC_TOKN_ID = #{mbrSnsCrtfcToknId,jdbcType=VARCHAR}
+			 , RESULT_URL = #{resultUrl,jdbcType=VARCHAR}
+			 , LAST_USE_SNS_YN = #{lastUseSnsYn,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SNS_CD = #{mbrSnsCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbrSns" parameterType="mbrSns">
+		INSERT /* com.plgrim.ncp.base.insertMbrSns		Generator(Generator)	2018-05-23 */
+		INTO   MBR_SNS (
+			   MBR_NO
+			 , MBR_SNS_CD
+			 , MBR_SNS_CRTFC_TOKN_ID
+			 , RESULT_URL
+			 , LAST_USE_SNS_YN
+			 , REG_DT
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{mbrSnsCd,jdbcType=VARCHAR}
+			 , #{mbrSnsCrtfcToknId,jdbcType=VARCHAR}
+			 , #{resultUrl,jdbcType=VARCHAR}
+			 , #{lastUseSnsYn,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrSns" parameterType="mbrSns">
+		DELETE /* com.plgrim.ncp.base.deleteMbrSns		Generator(Generator)	2018-05-23 */
+		  FROM MBR_SNS
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND MBR_SNS_CD = #{mbrSnsCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

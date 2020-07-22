@@ -1,0 +1,60 @@
+Key,Description,common,local,dev,stg_common,stg,stg2,prod
+ncp_if_internal_server.env,,,local,dev,,stg,,prod
+ncp_if_internal_server.config.test2,,BB,,,,,,
+ncp_if_internal_server.oracle.driver,,oracle.jdbc.driver.OracleDriver,,,,,,
+ncp_if_internal_server.mybatis.mapper.location,,classpath:META-INF/mybatis/base.common.xml,,,,,,
+ncp_if_internal_server.spring.mvc.upload.size,,100000000,,,,,,
+ncp_base.cxf.server.enable,cxf server 사용 여부,true,,,,,,
+####################################,,,,,,,,
+# Database5 Config - WMS/ERP/CRM 등 내부 인터페이스 용,,,,,,,,
+####################################,,,,,,,,
+####################################,,,,,,,,
+# Database6 Config - PEC,,,,,,,,
+####################################,,,,,,,,
+ncp_if_internal_server.datasource6.auto.commit,,false,,,,,,
+ncp_if_internal_server.datasource6.jndi,,,,,,,,
+ncp_if_internal_server.datasource6.mybatis.config.location,,classpath:META-INF/mybatis/datasource6.mybatis.config.xml,,,,,,
+ncp_if_internal_server.datasource6.mybatis.mapper.location,,classpath*:META-INF/mybatis/datasource6/**/*.xml,,,,,,
+ncp_if_internal_server.datasource6.mybatis.type.alias.package,mybatis 타입 엘리어스 스캔 대상 패키지 경로,com.plgrim.ncp.base.entities.datasource6,,,,,,
+ncp_if_internal_server.datasource6.url,,jdbc:oracle:thin:@stg-db-v1.cn441imeayg3.ap-northeast-2.rds.amazonaws.com:1521:ORCL,jdbc:oracle:thin:@dev-db.cn441imeayg3.ap-northeast-2.rds.amazonaws.com:1521:ORCL,jdbc:oracle:thin:@dev-db.cn441imeayg3.ap-northeast-2.rds.amazonaws.com:1521:ORCL,jdbc:oracle:thin:@stg-db-v1.cn441imeayg3.ap-northeast-2.rds.amazonaws.com:1521:ORCL,,,jdbc:oracle:thin:@prd-db.cn441imeayg3.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+ncp_if_internal_server.datasource6.user,,mpush,,,,,,
+ncp_if_internal_server.datasource6.password,,push2018!@,,,,,,
+####################################,,,,,,,,
+# Internal Interface Config,,,,,,,,
+####################################,,,,,,,,
+#ncp_if_internal_server.erp.server.url,ERP Server URL,https://vpce-0d9c20648b7212b40-ruzn2ao2.execute-api.ap-northeast-2.vpce.amazonaws.com/stg/,https://dev.api.fnf.co.kr,https://vpce-0d9c20648b7212b40-ruzn2ao2.execute-api.ap-northeast-2.vpce.amazonaws.com/stg/,https://vpce-0d9c20648b7212b40-ruzn2ao2.execute-api.ap-northeast-2.vpce.amazonaws.com/stg/,,,http://fnf-ifgw-real-cbd2a720884adaf2.elb.ap-northeast-2.amazonaws.com:8080
+#ncp_if_internal_server.erp.x_api_key,ERP Server api key,,BOtVTMLhTUtqjYDvM8ma9ld4apWdHMR1giDj54lc,BOtVTMLhTUtqjYDvM8ma9ld4apWdHMR1giDj54lc,BOtVTMLhTUtqjYDvM8ma9ld4apWdHMR1giDj54lc,,,
+
+#ncp_if_internal_server.erp.server.url,ERP Server URL,https://stg.api.fnf.co.kr,,,,,,
+#ncp_if_internal_server.erp.x_api_key,ERP Server api key,W0GEueraon8HEnik9bNO8xhwKDHJ7KO7Ny0d64Ua,,,,,,
+ncp_if_internal_server.erp.server.url,ERP Server URL,https://prd.api.fnf.co.kr,,,,,,
+ncp_if_internal_server.erp.x_api_key,ERP Server api key,JTW3vERTE19VboDlkqZ7J6o76IoLZRWd5cnMjIj8,,,,,,
+
+ncp_if_internal_server.erp.host,ERP Server host endpoint,lgfsdecgg0.execute-api.ap-northeast-2.amazonaws.com,,,,,,
+
+# Internal Interface Sample URL / connectTimeout / readTimeout Config,,,,,,,,
+ncp_if_internal_server.sample.server.url,Internal Sample Server URL,http://localhost:8082/iif,http://10.10.3.174:8081/iif,http://10.10.2.28:8081/iif,,,http://internal-prd-igw-internal-489427822.ap-northeast-2.elb.amazonaws.com:8080/iif
+ncp_if_internal_server.sample.connection.timeout,Internal Sample Server ConnectionTimeout,100000,,,,,,
+ncp_if_internal_server.sample.read.timeout,Internal Sample Server ReadTimeout,60000,,,,,,
+####################################,,,,,,,,
+# MPush Service Config,,,,,,,,
+####################################,,,,,,,,
+ncp_if_internal_server.mpush.dxm.service.seqno,Discovery-Expedition MPush Service Number,1810018347,,,,,,1810018347
+ncp_if_internal_server.mpush.mbm.service.seqno,Mlb-Korea MPush Service Number,1910025946,,,,,,1910025946
+ncp_if_internal_server.mpush.sam.service.seqno,Stretch-Angels MPush Service Number,1810022981,,,,,,1810022981
+ncp_if_internal_server.mpush.send.defualt.resserve.date,MPush Send Default Date(AM 10시),100000,,,,,,
+####################################,,,,,,,,
+# AWS,,,,,,,,
+####################################,,,,,,,,
+ncp_if_internal_server.cdn.DXM.url,discovery expediton CDN url,http://dev-static.discovery-expedition.com,http://static.discovery-expedition.com,http://dev-static.discovery-expedition.com,http://stg-static.discovery-expedition.com,,,http://static.discovery-expedition.com
+ncp_if_internal_server.cdn.DXM.url.secure,discovery expediton CDN url,https://dev-static.discovery-expedition.com,https://static.discovery-expedition.com,https://dev-static.discovery-expedition.com,https://stg-static.discovery-expedition.com,,,https://static.discovery-expedition.com
+ncp_if_internal_server.cdn.DXM.image.url,discovery expediton CDN image url,${ncp_if_internal_server.cdn.DXM.url}/images,,,,,,
+ncp_if_internal_server.web.content.DXM.path,cloudfront,/webresource/discovery-expedition/content,,,,,,
+ncp_if_internal_server.cdn.MBM.url,mlb-korea CDN url,http://dev-static.mlb-korea.com,http://static.mlb-korea.com,http://dev-static.mlb-korea.com,http://stg-static.mlb-korea.com,,,http://static.mlb-korea.com
+ncp_if_internal_server.cdn.MBM.url.secure,mlb-korea CDN url,https://dev-static.mlb-korea.com,https://static.mlb-korea.com,https://dev-static.mlb-korea.com,https://stg-static.mlb-korea.com,,,https://static.mlb-korea.com
+ncp_if_internal_server.cdn.MBM.image.url,mlb-korea CDN image url,${ncp_if_internal_server.cdn.MBM.url}/images,,,,,,
+ncp_if_internal_server.web.content.MBM.path,cloudfront,/webresource/mlb-korea/content,,,,,,
+ncp_if_internal_server.cdn.SAM.url,stretch-angel CDN url,http://dev-static.stretch-angels.com,http://static.stretch-angels.com,http://dev-static.stretch-angels.com,http://stg-static.stretch-angels.com,,,http://static.stretch-angels.com
+ncp_if_internal_server.cdn.SAM.url.secure,stretch-angel CDN url,https://dev-static.stretch-angels.com,https://static.stretch-angels.com,https://dev-static.stretch-angels.com,https://stg-static.stretch-angels.com,,,https://static.stretch-angels.com
+ncp_if_internal_server.cdn.SAM.image.url,stretch-angel CDN image url,${ncp_if_internal_server.cdn.SAM.url}/images,,,,,,
+ncp_if_internal_server.web.content.SAM.path,cloudfront,/webresource/stretch-angels/content,,,,,,

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysNotiAtchFile" parameterType="sysNotiAtchFile" resultType="sysNotiAtchFile">
+		SELECT /* com.plgrim.ncp.base.selectSysNotiAtchFile		Generator(Generator)	2018-05-23 */
+			   NOTI_SN
+			 , NOTI_ATCH_FILE_TURN
+			 , NOTI_ATCH_FILE_NM
+			 , NOTI_ATCH_FILE_URL
+			 , NOTI_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_NOTI_ATCH_FILE
+		 WHERE 1 = 1
+	   	   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+		   AND NOTI_ATCH_FILE_TURN = #{notiAtchFileTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysNotiAtchFile" parameterType="sysNotiAtchFile">
+		UPDATE /* com.plgrim.ncp.base.updateSysNotiAtchFile		Generator(Generator)	2018-05-23 */
+		SYS_NOTI_ATCH_FILE SET
+			   NOTI_ATCH_FILE_NM = #{notiAtchFileNm,jdbcType=VARCHAR}
+			 , NOTI_ATCH_FILE_URL = #{notiAtchFileUrl,jdbcType=VARCHAR}
+			 , NOTI_ATCH_FILE_CPCTY = #{notiAtchFileCpcty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+		   AND NOTI_ATCH_FILE_TURN = #{notiAtchFileTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysNotiAtchFile" parameterType="sysNotiAtchFile">
+		INSERT /* com.plgrim.ncp.base.insertSysNotiAtchFile		Generator(Generator)	2018-05-23 */
+		INTO   SYS_NOTI_ATCH_FILE (
+			   NOTI_SN
+			 , NOTI_ATCH_FILE_TURN
+			 , NOTI_ATCH_FILE_NM
+			 , NOTI_ATCH_FILE_URL
+			 , NOTI_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{notiSn,jdbcType=NUMERIC}
+			 , #{notiAtchFileTurn,jdbcType=NUMERIC}
+			 , #{notiAtchFileNm,jdbcType=VARCHAR}
+			 , #{notiAtchFileUrl,jdbcType=VARCHAR}
+			 , #{notiAtchFileCpcty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysNotiAtchFile" parameterType="sysNotiAtchFile">
+		DELETE /* com.plgrim.ncp.base.deleteSysNotiAtchFile		Generator(Generator)	2018-05-23 */
+		  FROM SYS_NOTI_ATCH_FILE
+		 WHERE 1 = 1
+		   AND NOTI_SN = #{notiSn,jdbcType=NUMERIC}
+		   AND NOTI_ATCH_FILE_TURN = #{notiAtchFileTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

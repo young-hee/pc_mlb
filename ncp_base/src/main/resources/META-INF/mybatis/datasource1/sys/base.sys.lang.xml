@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysLang" parameterType="sysLang" resultType="sysLang">
+		SELECT /* com.plgrim.ncp.base.selectSysLang		Generator(Generator)	2018-05-23 */
+			   LANG_CD
+			 , LANG_CD_NM
+			 , LANG_CD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_LANG
+		 WHERE 1 = 1
+	   	   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysLang" parameterType="sysLang">
+		UPDATE /* com.plgrim.ncp.base.updateSysLang		Generator(Generator)	2018-05-23 */
+		SYS_LANG SET
+			   LANG_CD_NM = #{langCdNm,jdbcType=VARCHAR}
+			 , LANG_CD_DSCR = #{langCdDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysLang" parameterType="sysLang">
+		INSERT /* com.plgrim.ncp.base.insertSysLang		Generator(Generator)	2018-05-23 */
+		INTO   SYS_LANG (
+			   LANG_CD
+			 , LANG_CD_NM
+			 , LANG_CD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{langCd,jdbcType=VARCHAR}
+			 , #{langCdNm,jdbcType=VARCHAR}
+			 , #{langCdDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysLang" parameterType="sysLang">
+		DELETE /* com.plgrim.ncp.base.deleteSysLang		Generator(Generator)	2018-05-23 */
+		  FROM SYS_LANG
+		 WHERE 1 = 1
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

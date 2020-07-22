@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.tutorial.sample">
+
+	<resultMap id="tutorialSampleResult" type="com.plgrim.ncp.biz.sample.result.TutorialSampleResult">
+		<result property="testAdmin.adminId" column="ADMIN_ID" />
+		<result property="testAdmin.pw" column="PW" />
+		<result property="testAdmin.adminTpCd" column="ADMIN_TP_CD" />
+		<result property="testAdmin.adminStatCd" column="ADMIN_STAT_CD" />
+		<result property="testAdmin.aprvDt" column="APRV_DT" />
+		<result property="testAdmin.secsnDt" column="SECSN_DT" />
+		<result property="testAdmin.adminNm" column="ADMIN_NM" />
+		<result property="testAdmin.adminEmpNo" column="ADMIN_EMP_NO" />
+		<result property="testAdmin.deptNm" column="DEPT_NM" />
+		<result property="testAdmin.comId" column="COM_ID" />
+		<result property="testAdmin.shopId" column="SHOP_ID" />
+		<result property="testAdmin.email" column="EMAIL" />
+		<result property="testAdmin.mobilNationNo" column="MOBIL_NATION_NO" />
+		<result property="testAdmin.mobilAreaNo" column="MOBIL_AREA_NO" />
+		<result property="testAdmin.mobilTlofNo" column="MOBIL_TLOF_NO" />
+		<result property="testAdmin.mobilTlofWthnNo" column="MOBIL_TLOF_WTHN_NO" />
+		<result property="testAdmin.regtrId" column="REGTR_ID" />
+		<result property="testAdmin.regDt" column="REG_DT" />
+		<result property="testAdmin.udterId" column="UDTER_ID" />
+		<result property="testAdmin.udtDt" column="UDT_DT" />
+</resultMap>
+
+<select id="selectTutorialSampleList" parameterType="com.plgrim.ncp.biz.sample.data.TutorialSampleFormDTO" resultMap="tutorialSampleResult">
+<include refid="com.plgrim.ncp.base.beginPage"/>
+	
+		SELECT 	 /* [tutorial.sample.xml][selectTutorialsampleList][테스트관리자 조회][Brandon] */	 			 
+			ADMIN_ID
+			 , ADMIN_TP_CD
+			 , ADMIN_STAT_CD
+			 , APRV_DT
+			 , SECSN_DT
+			 , ADMIN_NM
+			 , ADMIN_EMP_NO
+			 , DEPT_NM
+			 , COM_ID
+			 , SHOP_ID
+			 , EMAIL
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		FROM 
+			TEST_ADMIN 
+		WHERE 
+			1=1		
+		<if test="searchText != null and searchText != '' ">
+			<choose>
+			<when test="searchField != null and searchField == 1 ">
+			AND ADMIN_NM = #{searchText} 
+			</when>
+			<when test="searchField != null and searchField == 2 ">
+			AND ADMIN_ID = #{searchText} 
+			</when>
+			</choose>
+		</if>
+<include refid="com.plgrim.ncp.base.endPage"/>
+</select> 
+
+<select id="selectCountTutorialSampleList" parameterType="com.plgrim.ncp.biz.sample.data.TutorialSampleFormDTO" resultType="long">
+
+		SELECT 	 /* [tutorial.sample.xml][selectCountTutorialsampleList][테스트관리자 개수조회][Brandon] */
+			count(*) AS totalRow
+		FROM 	
+			TEST_ADMIN
+		WHERE      
+			1=1	
+	<if test="searchText != null and searchText != '' ">
+		<choose>
+		<when test="searchField != null and searchField == 1 ">
+			AND  ADMIN_NM = #{searchText} 
+		</when>
+		<when test="searchField != null and searchField == 2 ">
+			AND  ADMIN_ID = #{searchText} 
+		</when>
+		</choose>
+	</if>
+	
+	</select>
+	
+		<select id="selectCountTutorialSampleId"  parameterType="java.lang.String" resultType="long">
+	
+		SELECT  /* [tutorial.sample.xml][selectCountTutorialsampleId][테스트관리자 아이디 중복체크를 위한 개수조회][Brandon] */
+			count(*) 
+		FROM 
+			TEST_ADMIN
+		WHERE 
+			1=1			
+			AND ADMIN_ID =#{adminId}
+   
+	</select>
+	
+	<insert id="insertTutorialSampleInfo" parameterType="testAdmin">
+	INSERT  /* [tutorial.sample.xml][insertTutorialsampleInfo][테스트관리자 정보 등록][Brandon] */
+	  INTO 
+		TEST_ADMIN(ADMIN_ID
+			 , PW
+			 , ADMIN_TP_CD
+			 , ADMIN_STAT_CD
+			 , APRV_DT
+			 , SECSN_DT
+			 , ADMIN_NM
+			 , ADMIN_EMP_NO
+			 , DEPT_NM
+			 , COM_ID
+			 , SHOP_ID
+			 , EMAIL
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT)
+			 VALUES(#{adminId,jdbcType=VARCHAR}
+			 , #{pw,jdbcType=VARCHAR}
+			 , #{adminTpCd,jdbcType=VARCHAR}
+			 , #{adminStatCd,jdbcType=VARCHAR}
+			 , #{aprvDt,jdbcType=DATE}
+			 , #{secsnDt,jdbcType=DATE}
+			 , #{adminNm,jdbcType=VARCHAR}
+			 , #{adminEmpNo,jdbcType=VARCHAR}
+			 , #{deptNm,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{email,jdbcType=VARCHAR}
+			 , #{mobilNationNo,jdbcType=VARCHAR}
+			 , #{mobilAreaNo,jdbcType=VARCHAR}
+			 , #{mobilTlofNo,jdbcType=VARCHAR}
+			 , #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , #{udtDt,jdbcType=DATE})
+	
+	
+	
+	</insert>
+	
+	<delete id="deleteTutorialSampleInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.test.TestAdmin">
+	DELETE  /* [tutorial.sample.xml][deleteTutorialsampleInfo][테스트관리자 정보 삭제][Brandon] */
+	FROM
+		TEST_ADMIN 
+	WHERE 
+		ADMIN_ID=#{adminId,jdbcType=VARCHAR}	
+	</delete>
+	
+	
+	
+	<update id="updateTutorialSampleInfo" parameterType="testadmin">
+	UPDATE 	/* [tutorial.sample.xml][updateTutorialsampleInfo][테스트관리자 정보 수정][Brandon] */
+	TEST_ADMIN SET	
+			   PW = #{pw,jdbcType=VARCHAR}
+			 , ADMIN_TP_CD = #{adminTpCd,jdbcType=VARCHAR}
+			 , ADMIN_STAT_CD = #{adminStatCd,jdbcType=VARCHAR}
+			 , DEPT_NM = #{deptNm,jdbcType=VARCHAR}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , SHOP_ID = #{shopId,jdbcType=VARCHAR}
+			 , EMAIL = #{email,jdbcType=VARCHAR}
+			 , MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+			 , MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , APRV_DT = #{aprvDt,jdbcType=DATE}
+			 , REGTR_ID = #{regtrId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = sysdate
+	WHERE
+		   1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+	
+	
+	
+	</update>
+		
+
+</mapper>

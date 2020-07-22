@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdminChrgJob" parameterType="sysAdminChrgJob" resultType="sysAdminChrgJob">
+		SELECT /* com.plgrim.ncp.base.selectSysAdminChrgJob		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , CHRG_JOB_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_ADMIN_CHRG_JOB
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND CHRG_JOB_TP_CD = #{chrgJobTpCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysAdminChrgJob" parameterType="sysAdminChrgJob">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdminChrgJob		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN_CHRG_JOB SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND CHRG_JOB_TP_CD = #{chrgJobTpCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysAdminChrgJob" parameterType="sysAdminChrgJob">
+		INSERT /* com.plgrim.ncp.base.insertSysAdminChrgJob		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN_CHRG_JOB (
+			   ADMIN_ID
+			 , CHRG_JOB_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{chrgJobTpCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAdminChrgJob" parameterType="sysAdminChrgJob">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdminChrgJob		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN_CHRG_JOB
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+		   AND CHRG_JOB_TP_CD = #{chrgJobTpCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.com.chrger">
+    <!-- 업체 담당자 조회 -->
+    <select id="selectCompanyCharger" parameterType="comChrger" resultType="comChrger">
+		SELECT /* [biz.com.chrger.xml][selectCompanyCharger][업체 담당자 조회][Jessi] */
+				*
+		  FROM (
+				SELECT 
+				        cc.com_id                      /* 업체 ID */
+				      , cc.chrger_job_cd               /* 담당자 업무 코드 */
+				      , cc.chrger_turn                 /* 담당자 순번 */
+				      , cc.brnd_id                     /* 브랜드 ID */
+				      , cc.chrger_nm                   /* 담당자 명 */
+				      , cc.chrger_clsf                 /* 담당자 직급 */
+				      , cc.chrger_email                /* 담당자 이메일 */
+				      , cc.chrger_tel_nation_no        /* 담당자 전화 국가번호 */
+				      , cc.chrger_tel_area_no          /* 담당자 전화 지역번호 */
+				      , cc.chrger_tel_tlof_no          /* 담당자 전화 국번호 */
+				      , cc.chrger_tel_tlof_wthn_no     /* 담당자 전화 국내번호 */
+				      , cc.chrger_mobil_nation_no      /* 담당자 휴대전화 국가번호 */
+				      , cc.chrger_mobil_area_no        /* 담당자 휴대전화 지역번호 */
+				      , cc.chrger_mobil_tlof_no        /* 담당자 휴대전화 국번호 */
+				      , cc.chrger_mobil_tlof_wthn_no   /* 담당자 휴대전화 국내번호 */
+				  FROM com_chrger cc
+				 WHERE cc.com_id = #{comId, jdbcType=VARCHAR}
+				   AND cc.chrger_job_cd = #{chrgerJobCd, jdbcType=VARCHAR}
+				   AND cc.brnd_id = #{brndId, jdbcType=VARCHAR}
+		         ORDER BY cc.chrger_turn DESC
+		       )
+		 WHERE ROWNUM = 1
+    </select>
+    
+    <!-- 업체 담당자 수정 -->
+    <update id="updateCompanyCharger" parameterType="comChrger">
+        UPDATE /* [biz.com.chrger.xml][updateBaseDeliveryLocationSet][업체 담당자 수정][Jessi] */
+                 com_chrger
+		   SET 
+		        chrger_nm = #{chrgerNm, jdbcType=VARCHAR}                           /* 담당자 명 */
+		      , chrger_clsf = #{chrgerClsf, jdbcType=VARCHAR}                       /* 담당자 직급 */
+		      , chrger_email = #{chrgerEmail, jdbcType=VARCHAR}                     /* 담당자 이메일 */
+		      , chrger_tel_nation_no = #{chrgerTelNationNo, jdbcType=VARCHAR}       /* 담당자 전화 국가번호 */
+		      , chrger_tel_area_no = #{chrgerTelAreaNo, jdbcType=VARCHAR}           /* 담당자 전화 지역번호 */
+		      , chrger_tel_tlof_no = #{chrgerTelTlofNo, jdbcType=VARCHAR}           /* 담당자 전화 국번호 */
+		      , chrger_tel_tlof_wthn_no = #{chrgerTelTlofWthnNo, jdbcType=VARCHAR}  /* 담당자 전화 국내번호 */
+		      , chrger_mobil_nation_no = #{chrgerMobilNationNo, jdbcType=VARCHAR}   /* 담당자 휴대전화 국가번호 */
+		      , chrger_mobil_area_no = #{chrgerMobilAreaNo, jdbcType=VARCHAR}       /* 담당자 휴대전화 지역번호 */
+		      , chrger_mobil_tlof_no = #{chrgerMobilTlofNo, jdbcType=VARCHAR}       /* 담당자 휴대전화 국번호 */
+		      , chrger_mobil_tlof_wthn_no = #{chrgerMobilTlofWthnNo, jdbcType=VARCHAR}/* 담당자 휴대전화 국내번호 */
+		      , udter_id = #{udterId, jdbcType=VARCHAR}                             /* 수정자 ID */
+		      , udt_dt = SYSDATE                                                    /* 수정 일시 */
+		 WHERE com_id = #{comId, jdbcType=VARCHAR}
+		   AND chrger_job_cd = #{chrgerJobCd, jdbcType=VARCHAR}
+		   AND chrger_turn = #{chrgerTurn, jdbcType=NUMERIC}
+		   AND brnd_id = #{brndId, jdbcType=VARCHAR}      
+    </update>
+    
+    <!-- 업체 담당자 수정 -->
+    <update id="mergeCompanyCharger" parameterType="comChrger">
+        MERGE /* [biz.com.chrger.xml][mergeCompanyCharger][업체 담당자 저장][Jessi] */
+         INTO com_chrger cc
+        USING (
+                SELECT
+                        #{comId, jdbcType=VARCHAR} AS com_id
+                      , #{chrgerJobCd, jdbcType=VARCHAR} AS chrger_job_cd
+                      , #{chrgerTurn, jdbcType=NUMERIC} AS chrger_turn
+                      , #{brndId, jdbcType=VARCHAR} AS brnd_id
+                  FROM DUAL                
+              ) ch ON (cc.com_id = ch.com_id 
+              			AND cc.chrger_job_cd = ch.chrger_job_cd 
+              			AND cc.chrger_turn = ch.chrger_turn
+              			AND cc.brnd_id = ch.brnd_id 
+              		  )
+        WHEN MATCHED THEN 
+                UPDATE
+                   SET 
+				        chrger_nm = #{chrgerNm, jdbcType=VARCHAR}                           /* 담당자 명 */
+				      , chrger_clsf = #{chrgerClsf, jdbcType=VARCHAR}                       /* 담당자 직급 */
+				      , chrger_email = #{chrgerEmail, jdbcType=VARCHAR}                     /* 담당자 이메일 */
+				      , chrger_tel_nation_no = #{chrgerTelNationNo, jdbcType=VARCHAR}       /* 담당자 전화 국가번호 */
+				      , chrger_tel_area_no = #{chrgerTelAreaNo, jdbcType=VARCHAR}           /* 담당자 전화 지역번호 */
+				      , chrger_tel_tlof_no = #{chrgerTelTlofNo, jdbcType=VARCHAR}           /* 담당자 전화 국번호 */
+				      , chrger_tel_tlof_wthn_no = #{chrgerTelTlofWthnNo, jdbcType=VARCHAR}  /* 담당자 전화 국내번호 */
+				      , chrger_mobil_nation_no = #{chrgerMobilNationNo, jdbcType=VARCHAR}   /* 담당자 휴대전화 국가번호 */
+				      , chrger_mobil_area_no = #{chrgerMobilAreaNo, jdbcType=VARCHAR}       /* 담당자 휴대전화 지역번호 */
+				      , chrger_mobil_tlof_no = #{chrgerMobilTlofNo, jdbcType=VARCHAR}       /* 담당자 휴대전화 국번호 */
+				      , chrger_mobil_tlof_wthn_no = #{chrgerMobilTlofWthnNo, jdbcType=VARCHAR}/* 담당자 휴대전화 국내번호 */
+				      , udter_id = #{udterId, jdbcType=VARCHAR}                             /* 수정자 ID */
+				      , udt_dt = SYSDATE                                                    /* 수정 일시 */
+        WHEN NOT MATCHED THEN 
+                INSERT (
+				         com_id
+				       , chrger_job_cd
+				       , chrger_turn
+				       , brnd_id
+				       , chrger_nm
+				       , chrger_clsf
+				       , chrger_email
+				       , chrger_tel_nation_no
+				       , chrger_tel_area_no
+				       , chrger_tel_tlof_no
+				       , chrger_tel_tlof_wthn_no
+				       , chrger_mobil_nation_no
+				       , chrger_mobil_area_no
+				       , chrger_mobil_tlof_no
+				       , chrger_mobil_tlof_wthn_no
+				       , regtr_id
+				       , reg_dt
+				       , udter_id
+				       , udt_dt
+                ) VALUES (
+				         #{comId, jdbcType=VARCHAR}                   /* 업체 ID */
+				       , #{chrgerJobCd, jdbcType=VARCHAR}             /* 담당자 업무 코드 */
+				       , (
+                         SELECT NVL(MAX(chrger_turn),0)+1 
+                           FROM com_chrger 
+                          WHERE com_id = #{comId, jdbcType=VARCHAR} 
+	              			AND chrger_job_cd = #{chrgerJobCd, jdbcType=VARCHAR}
+                         )                                            /* 담당자 순번 */
+				       , #{brndId, jdbcType=VARCHAR}                  /* 브랜드 ID */
+				       , #{chrgerNm, jdbcType=VARCHAR}                /* 담당자 명 */
+				       , #{chrgerClsf, jdbcType=VARCHAR}              /* 담당자 직급 */
+				       , #{chrgerEmail, jdbcType=VARCHAR}             /* 담당자 이메일 */
+				       , #{chrgerTelNationNo, jdbcType=VARCHAR}       /* 담당자 전화 국가번호 */
+				       , #{chrgerTelAreaNo, jdbcType=VARCHAR}         /* 담당자 전화 지역번호 */
+				       , #{chrgerTelTlofNo, jdbcType=VARCHAR}         /* 담당자 전화 국번호 */
+				       , #{chrgerTelTlofWthnNo, jdbcType=VARCHAR}     /* 담당자 전화 국내번호 */
+				       , #{chrgerMobilNationNo, jdbcType=VARCHAR}     /* 담당자 휴대전화 국가번호 */
+				       , #{chrgerMobilAreaNo, jdbcType=VARCHAR}       /* 담당자 휴대전화 지역번호 */
+				       , #{chrgerMobilTlofNo, jdbcType=VARCHAR}       /* 담당자 휴대전화 국번호 */
+				       , #{chrgerMobilTlofWthnNo, jdbcType=VARCHAR}   /* 담당자 휴대전화 국내번호 */
+				       , #{regtrId, jdbcType=VARCHAR}                 /* 등록자 ID */
+				       , SYSDATE                                      /* 등록 일시 */
+				       , #{udterId, jdbcType=VARCHAR}                 /* 수정자 ID */
+				       , SYSDATE                                      /* 수정 일시 */
+                )   
+    </update>    
+</mapper>

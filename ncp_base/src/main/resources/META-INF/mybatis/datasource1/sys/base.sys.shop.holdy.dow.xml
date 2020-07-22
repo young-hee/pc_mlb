@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysShopHoldyDow" parameterType="sysShopHoldyDow" resultType="sysShopHoldyDow">
+		SELECT /* com.plgrim.ncp.base.selectSysShopHoldyDow		Generator(Generator)	2018-05-23 */
+			   SHOP_ID
+			 , DOW_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_SHOP_HOLDY_DOW
+		 WHERE 1 = 1
+	   	   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND DOW_CD = #{dowCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysShopHoldyDow" parameterType="sysShopHoldyDow">
+		UPDATE /* com.plgrim.ncp.base.updateSysShopHoldyDow		Generator(Generator)	2018-05-23 */
+		SYS_SHOP_HOLDY_DOW SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND DOW_CD = #{dowCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysShopHoldyDow" parameterType="sysShopHoldyDow">
+		INSERT /* com.plgrim.ncp.base.insertSysShopHoldyDow		Generator(Generator)	2018-05-23 */
+		INTO   SYS_SHOP_HOLDY_DOW (
+			   SHOP_ID
+			 , DOW_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{shopId,jdbcType=VARCHAR}
+			 , #{dowCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysShopHoldyDow" parameterType="sysShopHoldyDow">
+		DELETE /* com.plgrim.ncp.base.deleteSysShopHoldyDow		Generator(Generator)	2018-05-23 */
+		  FROM SYS_SHOP_HOLDY_DOW
+		 WHERE 1 = 1
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		   AND DOW_CD = #{dowCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

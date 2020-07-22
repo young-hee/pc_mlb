@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBoSite" parameterType="sysBoSite" resultType="sysBoSite">
+		SELECT /* com.plgrim.ncp.base.selectSysBoSite		Generator(Generator)	2018-05-23 */
+			   BO_SITE_ID
+			 , BO_SITE_NM
+			 , BO_SITE_URL
+			 , BO_SITE_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BO_SITE
+		 WHERE 1 = 1
+	   	   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysBoSite" parameterType="sysBoSite">
+		UPDATE /* com.plgrim.ncp.base.updateSysBoSite		Generator(Generator)	2018-05-23 */
+		SYS_BO_SITE SET
+			   BO_SITE_NM = #{boSiteNm,jdbcType=VARCHAR}
+			 , BO_SITE_URL = #{boSiteUrl,jdbcType=VARCHAR}
+			 , BO_SITE_DSCR = #{boSiteDscr,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysBoSite" parameterType="sysBoSite">
+		INSERT /* com.plgrim.ncp.base.insertSysBoSite		Generator(Generator)	2018-05-23 */
+		INTO   SYS_BO_SITE (
+			   BO_SITE_ID
+			 , BO_SITE_NM
+			 , BO_SITE_URL
+			 , BO_SITE_DSCR
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{boSiteId,jdbcType=VARCHAR}
+			 , #{boSiteNm,jdbcType=VARCHAR}
+			 , #{boSiteUrl,jdbcType=VARCHAR}
+			 , #{boSiteDscr,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBoSite" parameterType="sysBoSite">
+		DELETE /* com.plgrim.ncp.base.deleteSysBoSite		Generator(Generator)	2018-05-23 */
+		  FROM SYS_BO_SITE
+		 WHERE 1 = 1
+		   AND BO_SITE_ID = #{boSiteId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

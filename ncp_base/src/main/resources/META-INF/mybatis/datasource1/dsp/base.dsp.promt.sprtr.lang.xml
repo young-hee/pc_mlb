@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspPromtSprtrLang" parameterType="dspPromtSprtrLang" resultType="dspPromtSprtrLang">
+		SELECT /* com.plgrim.ncp.base.selectDspPromtSprtrLang		Generator(Generator)	2018-05-23 */
+			   PROMT_SN
+			 , SPRTR_TURN
+			 , LANG_CD
+			 , SPRTR_NM
+			 , SPRTR_IMG_FILE_NM
+			 , SPRTR_IMG_FILE_URL
+			 , SPRTR_IMG_ALTRTV_CONT
+			 , SPRTR_ADIT_CONT
+			 , SPRTR_ADIT_URL
+			 , SPRTR_ADIT_CONT_OUTPT_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_PROMT_SPRTR_LANG
+		 WHERE 1 = 1
+	   	   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspPromtSprtrLang" parameterType="dspPromtSprtrLang">
+		UPDATE /* com.plgrim.ncp.base.updateDspPromtSprtrLang		Generator(Generator)	2018-05-23 */
+		DSP_PROMT_SPRTR_LANG SET
+			   SPRTR_NM = #{sprtrNm,jdbcType=VARCHAR}
+			 , SPRTR_IMG_FILE_NM = #{sprtrImgFileNm,jdbcType=VARCHAR}
+			 , SPRTR_IMG_FILE_URL = #{sprtrImgFileUrl,jdbcType=VARCHAR}
+			 , SPRTR_IMG_ALTRTV_CONT = #{sprtrImgAltrtvCont,jdbcType=VARCHAR}
+			 , SPRTR_ADIT_CONT = #{sprtrAditCont,jdbcType=VARCHAR}
+			 , SPRTR_ADIT_URL = #{sprtrAditUrl,jdbcType=VARCHAR}
+			 , SPRTR_ADIT_CONT_OUTPT_TP_CD = #{sprtrAditContOutptTpCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspPromtSprtrLang" parameterType="dspPromtSprtrLang">
+		INSERT /* com.plgrim.ncp.base.insertDspPromtSprtrLang		Generator(Generator)	2018-05-23 */
+		INTO   DSP_PROMT_SPRTR_LANG (
+			   PROMT_SN
+			 , SPRTR_TURN
+			 , LANG_CD
+			 , SPRTR_NM
+			 , SPRTR_IMG_FILE_NM
+			 , SPRTR_IMG_FILE_URL
+			 , SPRTR_IMG_ALTRTV_CONT
+			 , SPRTR_ADIT_CONT
+			 , SPRTR_ADIT_URL
+			 , SPRTR_ADIT_CONT_OUTPT_TP_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{promtSn,jdbcType=NUMERIC}
+			 , #{sprtrTurn,jdbcType=NUMERIC}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{sprtrNm,jdbcType=VARCHAR}
+			 , #{sprtrImgFileNm,jdbcType=VARCHAR}
+			 , #{sprtrImgFileUrl,jdbcType=VARCHAR}
+			 , #{sprtrImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{sprtrAditCont,jdbcType=VARCHAR}
+			 , #{sprtrAditUrl,jdbcType=VARCHAR}
+			 , #{sprtrAditContOutptTpCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspPromtSprtrLang" parameterType="dspPromtSprtrLang">
+		DELETE /* com.plgrim.ncp.base.deleteDspPromtSprtrLang		Generator(Generator)	2018-05-23 */
+		  FROM DSP_PROMT_SPRTR_LANG
+		 WHERE 1 = 1
+		   AND PROMT_SN = #{promtSn,jdbcType=NUMERIC}
+		   AND SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

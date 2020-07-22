@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrPsnlInfoUsefTgt" parameterType="mbrPsnlInfoUsefTgt" resultType="mbrPsnlInfoUsefTgt">
+		SELECT /* com.plgrim.ncp.base.selectMbrPsnlInfoUsefTgt		Generator(Generator)	2018-05-23 */
+			   PSNL_INFO_USEF_SN
+			 , MBR_NO
+			 , USEF_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_PSNL_INFO_USEF_TGT
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateMbrPsnlInfoUsefTgt" parameterType="mbrPsnlInfoUsefTgt">
+		UPDATE /* com.plgrim.ncp.base.updateMbrPsnlInfoUsefTgt		Generator(Generator)	2018-05-23 */
+		MBR_PSNL_INFO_USEF_TGT SET
+			   PSNL_INFO_USEF_SN = #{psnlInfoUsefSn,jdbcType=NUMERIC}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , USEF_DT = #{usefDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertMbrPsnlInfoUsefTgt" parameterType="mbrPsnlInfoUsefTgt">
+		INSERT /* com.plgrim.ncp.base.insertMbrPsnlInfoUsefTgt		Generator(Generator)	2018-05-23 */
+		INTO   MBR_PSNL_INFO_USEF_TGT (
+			   PSNL_INFO_USEF_SN
+			 , MBR_NO
+			 , USEF_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{psnlInfoUsefSn,jdbcType=NUMERIC}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{usefDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrPsnlInfoUsefTgt" parameterType="mbrPsnlInfoUsefTgt">
+		DELETE /* com.plgrim.ncp.base.deleteMbrPsnlInfoUsefTgt		Generator(Generator)	2018-05-23 */
+		  FROM MBR_PSNL_INFO_USEF_TGT
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspTmplat" parameterType="dspTmplat" resultType="dspTmplat">
+		SELECT /* com.plgrim.ncp.base.selectDspTmplat		Generator(Generator)	2018-05-23 */
+			   TMPLAT_SN
+			 , TMPLAT_TP_CD
+			 , DVC_SECT_CD
+			 , TMPLAT_NM
+			 , TMPLAT_DSCR
+			 , TMPLAT_CNNC_URL
+			 , CONTT_REG_GD_IMG_URL
+			 , TMPLAT_USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_TMPLAT
+		 WHERE 1 = 1
+	   	   AND TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspTmplat" parameterType="dspTmplat">
+		UPDATE /* com.plgrim.ncp.base.updateDspTmplat		Generator(Generator)	2018-05-23 */
+		DSP_TMPLAT SET
+			   TMPLAT_TP_CD = #{tmplatTpCd,jdbcType=VARCHAR}
+			 , DVC_SECT_CD = #{dvcSectCd,jdbcType=VARCHAR}
+			 , TMPLAT_NM = #{tmplatNm,jdbcType=VARCHAR}
+			 , TMPLAT_DSCR = #{tmplatDscr,jdbcType=VARCHAR}
+			 , TMPLAT_CNNC_URL = #{tmplatCnncUrl,jdbcType=VARCHAR}
+			 , CONTT_REG_GD_IMG_URL = #{conttRegGdImgUrl,jdbcType=VARCHAR}
+			 , TMPLAT_USE_YN = #{tmplatUseYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspTmplat" parameterType="dspTmplat">
+		INSERT /* com.plgrim.ncp.base.insertDspTmplat		Generator(Generator)	2018-05-23 */
+		INTO   DSP_TMPLAT (
+			   TMPLAT_SN
+			 , TMPLAT_TP_CD
+			 , DVC_SECT_CD
+			 , TMPLAT_NM
+			 , TMPLAT_DSCR
+			 , TMPLAT_CNNC_URL
+			 , CONTT_REG_GD_IMG_URL
+			 , TMPLAT_USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{tmplatSn,jdbcType=NUMERIC}
+			 , #{tmplatTpCd,jdbcType=VARCHAR}
+			 , #{dvcSectCd,jdbcType=VARCHAR}
+			 , #{tmplatNm,jdbcType=VARCHAR}
+			 , #{tmplatDscr,jdbcType=VARCHAR}
+			 , #{tmplatCnncUrl,jdbcType=VARCHAR}
+			 , #{conttRegGdImgUrl,jdbcType=VARCHAR}
+			 , #{tmplatUseYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspTmplat" parameterType="dspTmplat">
+		DELETE /* com.plgrim.ncp.base.deleteDspTmplat		Generator(Generator)	2018-05-23 */
+		  FROM DSP_TMPLAT
+		 WHERE 1 = 1
+		   AND TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

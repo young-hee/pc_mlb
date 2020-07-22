@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPay" parameterType="pay" resultType="pay">
+		SELECT /* com.plgrim.ncp.base.selectPay		Generator(Generator)	2018-05-23 */
+			   PAY_NO
+			 , UPPER_PAY_NO
+			 , PAY_MN_CD
+			 , DEAL_TP_CD
+			 , PAY_DT
+			 , PAY_TMLMT_DT
+			 , PAY_CRNCY_CD
+			 , PAY_EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_PAY_AMT
+			 , PAY_CRNCY_PAY_AMT
+			 , CNCL_ACMTL_AMT
+			 , MPAY_MN_YN
+			 , PART_CNCL_PSB_YN
+			 , CARD_SV_DEAL_YN
+			 , PAY_CARD_NM
+			 , USE_CPN_PRM_NO
+			 , MBR_CPN_NO
+			 , PAY_TP_CD
+			 , ORD_NO
+			 , CLM_NO
+			 , EVT_NO
+			 , PRM_NO
+			 , PG_APRV_NO
+			 , PG_DEAL_NO
+			 , PG_SECT_CD
+			 , PG_STORE_ID
+			 , PG_CRS_KEY
+			 , ESCR_YN
+			 , ACNTHLDR_NM
+			 , BNK_CD
+			 , BNK_NM
+			 , BNK_ACCT_NO
+			 , VIRTL_BNK_ACCT_VALID_DT
+			 , PAY_MOBIL_NATION_NO
+			 , PAY_MOBIL_AREA_NO
+			 , PAY_MOBIL_TLOF_NO
+			 , PAY_MOBIL_TLOF_WTHN_NO
+			 , PKG_CRYPTO.DECRYPT(RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+			 , RFD_BNK_CD
+			 , RFD_ACNTHLDR_NM
+			 , KKO_PAY_TOKN_ID
+			 , PAYPAL_DEAL_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PAY
+		 WHERE 1 = 1
+	   	   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updatePay" parameterType="pay">
+		UPDATE /* com.plgrim.ncp.base.updatePay		Generator(Generator)	2018-05-23 */
+		PAY SET
+			   UPPER_PAY_NO = #{upperPayNo,jdbcType=VARCHAR}
+			 , PAY_MN_CD = #{payMnCd,jdbcType=VARCHAR}
+			 , DEAL_TP_CD = #{dealTpCd,jdbcType=VARCHAR}
+			 , PAY_DT = #{payDt,jdbcType=TIMESTAMP}
+			 , PAY_TMLMT_DT = #{payTmlmtDt,jdbcType=TIMESTAMP}
+			 , PAY_CRNCY_CD = #{payCrncyCd,jdbcType=VARCHAR}
+			 , PAY_EXCHG_RT_APL_BEG_DT = #{payExchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , STDR_CRNCY_PAY_AMT = #{stdrCrncyPayAmt,jdbcType=NUMERIC}
+			 , PAY_CRNCY_PAY_AMT = #{payCrncyPayAmt,jdbcType=NUMERIC}
+			 , CNCL_ACMTL_AMT = #{cnclAcmtlAmt,jdbcType=NUMERIC}
+			 , MPAY_MN_YN = #{mpayMnYn,jdbcType=VARCHAR}
+			 , PART_CNCL_PSB_YN = #{partCnclPsbYn,jdbcType=VARCHAR}
+			 , CARD_SV_DEAL_YN = #{cardSvDealYn,jdbcType=VARCHAR}
+			 , PAY_CARD_NM = #{payCardNm,jdbcType=VARCHAR}
+			 , USE_CPN_PRM_NO = #{useCpnPrmNo,jdbcType=VARCHAR}
+			 , MBR_CPN_NO = #{mbrCpnNo,jdbcType=VARCHAR}
+			 , PAY_TP_CD = #{payTpCd,jdbcType=VARCHAR}
+			 , ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			 , PRM_NO = #{prmNo,jdbcType=VARCHAR}
+			 , PG_APRV_NO = #{pgAprvNo,jdbcType=VARCHAR}
+			 , PG_DEAL_NO = #{pgDealNo,jdbcType=VARCHAR}
+			 , PG_SECT_CD = #{pgSectCd,jdbcType=VARCHAR}
+			 , PG_STORE_ID = #{pgStoreId,jdbcType=VARCHAR}
+			 , PG_CRS_KEY = #{pgCrsKey,jdbcType=VARCHAR}
+			 , ESCR_YN = #{escrYn,jdbcType=VARCHAR}
+			 , ACNTHLDR_NM = #{acnthldrNm,jdbcType=VARCHAR}
+			 , BNK_CD = #{bnkCd,jdbcType=VARCHAR}
+			 , BNK_NM = #{bnkNm,jdbcType=VARCHAR}
+			 , BNK_ACCT_NO = #{bnkAcctNo,jdbcType=VARCHAR}
+			 , VIRTL_BNK_ACCT_VALID_DT = #{virtlBnkAcctValidDt,jdbcType=TIMESTAMP}
+			 , PAY_MOBIL_NATION_NO = #{payMobilNationNo,jdbcType=VARCHAR}
+			 , PAY_MOBIL_AREA_NO = #{payMobilAreaNo,jdbcType=VARCHAR}
+			 , PAY_MOBIL_TLOF_NO = #{payMobilTlofNo,jdbcType=VARCHAR}
+			 , PAY_MOBIL_TLOF_WTHN_NO = #{payMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , RFD_BNK_ACCT_NO = PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , RFD_BNK_CD = #{rfdBnkCd,jdbcType=VARCHAR}
+			 , RFD_ACNTHLDR_NM = #{rfdAcnthldrNm,jdbcType=VARCHAR}
+			 , KKO_PAY_TOKN_ID = #{kkoPayToknId,jdbcType=VARCHAR}
+			 , PAYPAL_DEAL_ID = #{paypalDealId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPay" parameterType="pay">
+		INSERT /* com.plgrim.ncp.base.insertPay		Generator(Generator)	2018-05-23 */
+		INTO   PAY (
+			   PAY_NO
+			 , UPPER_PAY_NO
+			 , PAY_MN_CD
+			 , DEAL_TP_CD
+			 , PAY_DT
+			 , PAY_TMLMT_DT
+			 , PAY_CRNCY_CD
+			 , PAY_EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_PAY_AMT
+			 , PAY_CRNCY_PAY_AMT
+			 , CNCL_ACMTL_AMT
+			 , MPAY_MN_YN
+			 , PART_CNCL_PSB_YN
+			 , CARD_SV_DEAL_YN
+			 , PAY_CARD_NM
+			 , USE_CPN_PRM_NO
+			 , MBR_CPN_NO
+			 , PAY_TP_CD
+			 , ORD_NO
+			 , CLM_NO
+			 , EVT_NO
+			 , PRM_NO
+			 , PG_APRV_NO
+			 , PG_DEAL_NO
+			 , PG_SECT_CD
+			 , PG_STORE_ID
+			 , PG_CRS_KEY
+			 , ESCR_YN
+			 , ACNTHLDR_NM
+			 , BNK_CD
+			 , BNK_NM
+			 , BNK_ACCT_NO
+			 , VIRTL_BNK_ACCT_VALID_DT
+			 , PAY_MOBIL_NATION_NO
+			 , PAY_MOBIL_AREA_NO
+			 , PAY_MOBIL_TLOF_NO
+			 , PAY_MOBIL_TLOF_WTHN_NO
+			 , RFD_BNK_ACCT_NO
+			 , RFD_BNK_CD
+			 , RFD_ACNTHLDR_NM
+			 , KKO_PAY_TOKN_ID
+			 , PAYPAL_DEAL_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{payNo,jdbcType=VARCHAR}
+			 , #{upperPayNo,jdbcType=VARCHAR}
+			 , #{payMnCd,jdbcType=VARCHAR}
+			 , #{dealTpCd,jdbcType=VARCHAR}
+			 , #{payDt,jdbcType=TIMESTAMP}
+			 , #{payTmlmtDt,jdbcType=TIMESTAMP}
+			 , #{payCrncyCd,jdbcType=VARCHAR}
+			 , #{payExchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , #{stdrCrncyPayAmt,jdbcType=NUMERIC}
+			 , #{payCrncyPayAmt,jdbcType=NUMERIC}
+			 , #{cnclAcmtlAmt,jdbcType=NUMERIC}
+			 , #{mpayMnYn,jdbcType=VARCHAR}
+			 , #{partCnclPsbYn,jdbcType=VARCHAR}
+			 , #{cardSvDealYn,jdbcType=VARCHAR}
+			 , #{payCardNm,jdbcType=VARCHAR}
+			 , #{useCpnPrmNo,jdbcType=VARCHAR}
+			 , #{mbrCpnNo,jdbcType=VARCHAR}
+			 , #{payTpCd,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{evtNo,jdbcType=VARCHAR}
+			 , #{prmNo,jdbcType=VARCHAR}
+			 , #{pgAprvNo,jdbcType=VARCHAR}
+			 , #{pgDealNo,jdbcType=VARCHAR}
+			 , #{pgSectCd,jdbcType=VARCHAR}
+			 , #{pgStoreId,jdbcType=VARCHAR}
+			 , #{pgCrsKey,jdbcType=VARCHAR}
+			 , #{escrYn,jdbcType=VARCHAR}
+			 , #{acnthldrNm,jdbcType=VARCHAR}
+			 , #{bnkCd,jdbcType=VARCHAR}
+			 , #{bnkNm,jdbcType=VARCHAR}
+			 , #{bnkAcctNo,jdbcType=VARCHAR}
+			 , #{virtlBnkAcctValidDt,jdbcType=TIMESTAMP}
+			 , #{payMobilNationNo,jdbcType=VARCHAR}
+			 , #{payMobilAreaNo,jdbcType=VARCHAR}
+			 , #{payMobilTlofNo,jdbcType=VARCHAR}
+			 , #{payMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , #{rfdBnkCd,jdbcType=VARCHAR}
+			 , #{rfdAcnthldrNm,jdbcType=VARCHAR}
+			 , #{kkoPayToknId,jdbcType=VARCHAR}
+			 , #{paypalDealId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePay" parameterType="pay">
+		DELETE /* com.plgrim.ncp.base.deletePay		Generator(Generator)	2018-05-23 */
+		  FROM PAY
+		 WHERE 1 = 1
+		   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

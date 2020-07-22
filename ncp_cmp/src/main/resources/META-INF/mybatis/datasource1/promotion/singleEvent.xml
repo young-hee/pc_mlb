@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion.single">
+	 
+    <resultMap id="validEventPartcptnApplcnResultMap2" type="com.plgrim.ncp.biz.promotion.result.EventBoResult">
+        <result property="evt.evtNo"                column="EVT_NO"/>
+        <result property="evt.evtNm"                column="EVT_NM"/>
+        <result property="evt.upperEvtNo"           column="UPPER_EVT_NO"/>
+        <result property="evt.rprstLwprtSectCd"     column="RPRST_LWPRT_SECT_CD"/>
+        <result property="evt.evtTpCd"              column="EVT_TP_CD"/>
+        <result property="evt.evtStatCd"            column="EVT_STAT_CD"/>
+        <result property="evt.applcnBegDt"          column="APPLCN_BEG_DT"/>
+        <result property="evt.applcnEndDt"          column="APPLCN_END_DT"/>
+        <result property="evt.applcnCountSectCd"    column="APPLCN_COUNT_SECT_CD"/>
+        <result property="applcnDateCheck"          column="APPLCN_DATE_CHECK"/>
+        <result property="memberTypeCheck"          column="MEMBER_TYPE_CHECK"/>
+        <result property="deviceCheck"              column="DEVICE_CHECK"/>
+        <result property="deviceCodes"              column="DEVICE_CODES"/>
+        <result property="evtFreeGiftInfo.freeGiftTurn"         column="FREE_GIFT_TURN"/>
+        <result property="evtFreeGiftInfo.freeGiftKndCd"        column="FREE_GIFT_KND_CD"/>
+        <result property="evtFreeGiftInfo.prpareFreeGiftQty"    column="PRPARE_FREE_GIFT_QTY"/>
+        <result property="evtFreeGiftInfo.freeGiftInvQty"             column="FREE_GIFT_INV_QTY"/>
+        <result property="evtFreeGiftInfo.prizeQty"             column="PRIZE_QTY"/>
+        <result property="evtFreeGiftInfo.cpnPrmNo"             column="CPN_PRM_NO"/>
+        <result property="evtFreeGiftInfo.pntAmt"               column="PNT_AMT"/>
+        <result property="evtFreeGiftInfo.webpntAmt"            column="WEBPNT_AMT"/>
+        <result property="evtFreeGiftInfo.webpntUseBegDt"            column="WEBPNT_USE_BEG_DT"/>
+        <result property="evtFreeGiftInfo.webpntUseEndDt"            column="WEBPNT_USE_END_DT"/>
+        <result property="evtFreeGiftInfo.stmpCount"            column="STMP_COUNT"/>
+        <result property="mbrNo"                                column="MBR_NO"/>
+        <result property="applcnCount"                          column="APPLCN_COUNT"/>
+        <result property="applcnCheck"                          column="APPLCN_CHECK"/>
+        <result property="applcnEvtCheck"                          column="APPLCN_EVT_CHECK"/>
+        <result property="prmAplPdCheck"                          column="PRM_APL_PD_CHECK"/>
+        <result property="cpnKndCd"                          column="CPN_KND_CD"/>
+        <result property="mbrCpnNo"                          column="MBR_CPN_NO"/>
+        <result property="applcnDt"                          column="APPLCN_DT"/>
+    </resultMap>
+
+    <select id="validEventApplcn" parameterType="com.plgrim.ncp.biz.promotion.data.EventBoDTO" resultMap="validEventPartcptnApplcnResultMap2">
+        /* [singleEvent.xml][validEventApplcn][투표 이벤트 응모 유효성 체크] */
+        SELECT
+                E.APPLCN_COUNT
+                , E.EVT_NO
+                , E.EVT_NM
+                , E.EVT_TP_CD
+                , E.MBR_NO
+                , E.MBR_ATRB_CD
+                , E.APPLCN_COUNT_SECT_CD
+                , E.APPLCN_CHECK
+                , FG.FREE_GIFT_TURN
+                , FG.FREE_GIFT_KND_CD
+                , FG.PRPARE_FREE_GIFT_QTY
+                , FG.PRIZE_QTY
+                , FG.CPN_PRM_NO
+                , CASE FG.FREE_GIFT_KND_CD
+                  WHEN 'CPN'
+                  THEN
+                    CASE
+                    WHEN EXISTS(SELECT 1 FROM PRM_APL_PD P WHERE FG.CPN_PRM_NO = P.PRM_NO AND P.APL_PD_CD = 'APL_PD' AND SYSDATE BETWEEN P.BEG_DT AND P.END_DT)
+                    THEN 'Y'
+                    ELSE 'N'
+                    END
+                  ELSE 'Y'
+                  END AS PRM_APL_PD_CHECK
+                , FG.PNT_AMT
+                , FG.WEBPNT_AMT
+                , FG.WEBPNT_USE_BEG_DT
+                , FG.WEBPNT_USE_END_DT
+        FROM  (
+                SELECT
+                        A.APPLCN_COUNT
+                        , A.EVT_NO
+                        , (SELECT EVT_NM FROM EVT WHERE EVT_NO = A.EVT_NO) AS EVT_NM
+                        , (SELECT EVT_TP_CD FROM EVT WHERE EVT_NO = A.EVT_NO) AS EVT_TP_CD
+                        , A.MBR_NO
+                        , (SELECT MBR_ATRB_CD FROM MBR WHERE MBR_NO = A.MBR_NO) AS MBR_ATRB_CD
+                        , (SELECT APPLCN_COUNT_SECT_CD FROM EVT WHERE EVT_NO = A.EVT_NO) AS APPLCN_COUNT_SECT_CD
+                        , CASE  (SELECT APPLCN_COUNT_SECT_CD FROM EVT WHERE EVT_NO = A.EVT_NO)
+                        WHEN 'EVT_STDR_1BT'
+                        THEN
+                        CASE
+                        WHEN A.APPLCN_COUNT > 0
+                        THEN 'N'
+                        ELSE 'Y'
+                        END
+                        WHEN '1DAY_1BT'
+                        THEN
+                        CASE
+                        WHEN  EXISTS (SELECT 1 FROM EVT_APPLCN WHERE EVT_NO = A.EVT_NO AND MBR_NO = A.MBR_NO AND TO_CHAR(SYSDATE, 'YYYYMMDD') = TO_CHAR(APPLCN_DT, 'YYYYMMDD'))
+                        THEN 'N'
+                        ELSE 'Y'
+                        END
+                        ELSE 'Y'
+                        END AS APPLCN_CHECK
+                FROM  (
+                        SELECT
+                                COUNT(1) AS APPLCN_COUNT
+                                , #{evtNo:VARCHAR} AS EVT_NO
+                                , #{mbrNo:VARCHAR} AS MBR_NO
+                        FROM  EVT_APPLCN E
+                        WHERE 1 = 1
+                        AND   E.EVT_NO = #{evtNo:VARCHAR}
+                        AND   E.MBR_NO = #{mbrNo:VARCHAR}
+                        ) A
+                ) E
+        LEFT OUTER JOIN EVT_FREE_GIFT_INFO FG
+          ON   E.EVT_NO = FG.EVT_NO AND FG.FREE_GIFT_TURN = #{evtStmp.freeGiftTurn, jdbcType=NUMERIC}
+    </select>
+
+    <update id="insertEvtApplcn" parameterType="evtPrize">
+        /* [singleEvent.xml][insertEvtApplcn][투표 이벤트 응모] */
+        MERGE INTO EVT_APPLCN
+        USING DUAL
+        ON (EVT_NO = #{evtNo,jdbcType=VARCHAR} AND MBR_NO = #{mbrNo,jdbcType=VARCHAR})
+
+        WHEN MATCHED THEN
+          UPDATE SET
+                      EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC},
+                      FREE_GIFT_TURN = #{freeGiftTurn, jdbcType=NUMERIC},
+                      APPLCN_DT = SYSDATE,
+                      UDTER_ID = #{udterId,jdbcType=VARCHAR},
+                      UDT_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+          INSERT
+          (
+             EVT_PARTCPTN_SN
+            ,EVT_NO
+            ,FREE_GIFT_TURN
+            ,APPLCN_MBR_SECT_CD
+            ,MBR_NO
+            ,APPLCN_DT
+            ,ORD_NO
+            ,REGTR_ID
+            ,UDTER_ID
+            ,REG_DT
+            ,UDT_DT
+          )
+          VALUES
+          (
+            #{evtPartcptnSn,jdbcType=NUMERIC}
+            ,#{evtNo,jdbcType=VARCHAR}
+            ,#{freeGiftTurn,jdbcType=NUMERIC}
+            ,#{applcnMbrSectCd,jdbcType=VARCHAR}
+            ,#{mbrNo,jdbcType=VARCHAR}
+            ,SYSDATE
+            ,#{ordNo,jdbcType=VARCHAR}
+            ,#{regtrId,jdbcType=VARCHAR}
+            ,#{udterId,jdbcType=VARCHAR}
+            ,SYSDATE
+            ,SYSDATE
+          )
+    </update>
+
+    <update id="insertEvtStmp" parameterType="evtStmp">
+        /* [singleEvent.xml][insertEvtStmp][스탬프 이벤트 응모] */
+        MERGE INTO EVT_STMP
+        USING DUAL
+        ON (EVT_NO = #{evtNo,jdbcType=VARCHAR} AND MBR_NO = #{mbrNo,jdbcType=VARCHAR})
+
+        WHEN MATCHED THEN
+          UPDATE SET
+                      EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC},
+                      FREE_GIFT_TURN = #{freeGiftTurn, jdbcType=NUMERIC},
+                      STMP_DT = SYSDATE,
+                      UDTER_ID = #{udterId,jdbcType=VARCHAR},
+                      UDT_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+          INSERT
+              (
+                EVT_NO
+               ,FREE_GIFT_TURN
+               ,MBR_NO
+               ,STMP_DT
+               ,EVT_PARTCPTN_SN
+               ,APL_TURN
+               ,PARTCPTN_CONT
+               ,REGTR_ID
+               ,UDTER_ID
+               ,REG_DT
+               ,UDT_DT
+              )
+		  VALUES
+              (
+                #{evtNo,jdbcType=VARCHAR}
+               ,#{freeGiftTurn,jdbcType=NUMERIC}
+               ,#{mbrNo,jdbcType=VARCHAR}
+               ,#{stmpDt,jdbcType=TIMESTAMP}
+               ,#{evtPartcptnSn,jdbcType=NUMERIC}
+               ,#{aplTurn,jdbcType=NUMERIC}
+               ,#{partcptnCont,jdbcType=VARCHAR}
+               ,#{regtrId,jdbcType=VARCHAR}
+               ,#{udterId,jdbcType=VARCHAR}
+               ,SYSDATE
+               ,SYSDATE
+              )
+    </update>
+
+    <update id="insertEvtPrize" parameterType="evtPrize">
+        /* [singleEvent.xml][insertEvtPrize][당첨자 등록] */
+        MERGE INTO EVT_PRIZE
+        USING DUAL
+        ON (EVT_NO = #{evtNo,jdbcType=VARCHAR} AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC})
+
+        WHEN MATCHED THEN
+          UPDATE SET
+                      PRIZE_DT = SYSDATE,
+                      UDTER_ID = #{udterId,jdbcType=VARCHAR},
+                      UDT_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+          INSERT
+                (
+                    EVT_PARTCPTN_SN
+                    ,PRIZE_TURN
+                    ,PRIZE_RANK
+                    ,EVT_NO
+                    ,PRIZE_DT
+                    ,REGTR_ID
+                    ,UDTER_ID
+                    ,REG_DT
+                    ,UDT_DT
+                )
+        VALUES
+                (
+                    #{evtPartcptnSn,jdbcType=NUMERIC}
+                    ,#{prizeTurn,jdbcType=NUMERIC}
+                    ,#{prizeRank,jdbcType=NUMERIC}
+                    ,#{evtNo,jdbcType=VARCHAR}
+                    ,#{prizeDt,jdbcType=TIMESTAMP}
+                    ,#{regtrId,jdbcType=VARCHAR}
+                    ,#{udterId,jdbcType=VARCHAR}
+                    ,SYSDATE
+                    ,SYSDATE
+                )
+    </update>
+
+    <update id="insertEvtPrizeFreeGift" parameterType="evtPrizeFreeGift">
+        /* [singleEvent.xml][insertEvtPrizeFreeGift][당첨자 경품 등록] */
+        MERGE INTO EVT_PRIZE_FREE_GIFT
+        USING DUAL
+        ON (EVT_NO = #{evtNo,jdbcType=VARCHAR} AND EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC})
+
+        WHEN MATCHED THEN
+          UPDATE SET
+                      FREE_GIFT_TURN = #{freeGiftTurn, jdbcType=NUMERIC},
+                      UDTER_ID = #{udterId,jdbcType=VARCHAR},
+                      UDT_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+        INSERT
+            (
+                EVT_PARTCPTN_SN
+                ,PRIZE_TURN
+                ,EVT_NO
+                ,FREE_GIFT_TURN
+                ,REGTR_ID
+                ,UDTER_ID
+                ,REG_DT
+                ,UDT_DT
+            )
+        VALUES
+            (
+                #{evtPartcptnSn,jdbcType=NUMERIC}
+                ,#{prizeTurn,jdbcType=NUMERIC}
+                ,#{evtNo,jdbcType=VARCHAR}
+                ,#{freeGiftTurn,jdbcType=NUMERIC}
+                ,#{regtrId,jdbcType=VARCHAR}
+                ,#{udterId,jdbcType=VARCHAR}
+                ,SYSDATE
+                ,SYSDATE
+            )
+    </update>
+
+	<select id="selectSpecialEventForPvEvent" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="java.lang.String">
+		/* [singleEvent.xml][selectSpecialEvent][화면에 랜덤 노출 이벤트 조회][Id] */
+		SELECT E.EVT_NO
+		  FROM EVT E
+		 WHERE 1=1
+		   AND E.EVT_NO = #{evtNo, jdbcType=VARCHAR}
+		   AND SYSDATE BETWEEN E.EVT_BEG_DT AND E.EVT_END_DT
+		   AND E.EVT_STAT_CD = 'APRV'
+		   AND EXISTS (SELECT 1 FROM EVT_DSP_TGT EDT WHERE EDT.EVT_NO = E.EVT_NO AND EDT.EVT_DSP_TGT_TP_CD = 'MALL_ID' AND EDT.MALL_ID = #{mallId, jdbcType=VARCHAR})
+		   AND EXISTS (SELECT 1 FROM EVT_DSP_TGT EDT WHERE EDT.EVT_NO = E.EVT_NO AND EDT.EVT_DSP_TGT_TP_CD = 'LANG' AND EDT.LANG_CD = #{lang,jdbcType=VARCHAR})
+		   AND EXISTS (SELECT 1 FROM EVT_DSP_TGT EDT WHERE EDT.EVT_NO = E.EVT_NO AND EDT.EVT_DSP_TGT_TP_CD = 'DVC' AND EDT.DVC_CD = #{device,jdbcType=VARCHAR})
+	</select>
+
+	<select id="selectPrizeInfoForPvEvent" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="com.plgrim.ncp.biz.promotion.data.EventFreeGiftTurnExtendsFoDTO">
+		/* [singleEvent.xml][selectPrizeInfoForPvEvent][PV 이벤트 당첨 경품 조회][Id] */
+		SELECT EPFG.FREE_GIFT_TURN
+		  FROM EVT E
+		  JOIN EVT_PRIZE EP ON EP.EVT_NO = E.EVT_NO
+		  JOIN EVT_PRIZE_FREE_GIFT EPFG ON EPFG.EVT_NO = EP.EVT_NO AND EPFG.EVT_PARTCPTN_SN = EP.EVT_PARTCPTN_SN
+		  JOIN EVT_APPLCN EA ON EA.EVT_NO = E.EVT_NO AND EA.EVT_PARTCPTN_SN = EP.EVT_PARTCPTN_SN AND EA.MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		 WHERE 1=1
+		   AND E.EVT_NO = #{evtNo, jdbcType=VARCHAR}
+		   AND ROWNUM = 1
+	</select>
+
+	<select id="selectFreeGiftTurnListForPvEvent" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="com.plgrim.ncp.biz.promotion.data.EventFreeGiftTurnExtendsFoDTO">
+		/* [singleEvent.xml][selectFreeGiftTurnListForPvEvent][PV 이벤트 경품 목록 조회][Id] */
+		SELECT T1.FREE_GIFT_TURN
+			  ,T1.FREE_GIFT_KND_CD
+			  ,PRIZE_RANK
+			  ,T2.DC_AMT
+			  ,T2.DC_RT
+			  ,T2.DC_SECT_CD
+			  ,T2.MAX_DC_PSB_AMT
+			  ,T1.PRPARE_FREE_GIFT_QTY
+			  ,T1.FREE_GIFT_NM
+			  ,(SELECT T1.PRPARE_FREE_GIFT_QTY - COUNT (1)
+				  FROM EVT_PRIZE A, EVT_PRIZE_FREE_GIFT B
+				 WHERE A.EVT_PARTCPTN_SN = B.EVT_PARTCPTN_SN
+				   AND A.PRIZE_TURN = B.PRIZE_TURN
+				   AND B.EVT_NO = T1.EVT_NO
+				   AND B.FREE_GIFT_TURN = T1.FREE_GIFT_TURN
+				   AND TO_CHAR (A.PRIZE_DT, 'YYYYMMDD') = TO_CHAR (SYSDATE, 'YYYYMMDD')
+			   ) AS FREE_GIFT_INV_QTY
+			  ,T1.CPN_PRM_NO
+			  ,T1.PNT_AMT
+			  ,T3.EVT_NM
+			  ,T1.ATEND_DAYCNT
+			  ,T1.PRIZE_QTY
+		  FROM EVT_FREE_GIFT_INFO T1
+		  JOIN EVT T3 ON T3.EVT_NO = T1.EVT_NO
+		  LEFT OUTER JOIN PRM T2 ON T1.CPN_PRM_NO = T2.PRM_NO
+		 WHERE T1.EVT_NO = #{evtNo, jdbcType=VARCHAR}
+		 ORDER BY T1.FREE_GIFT_TURN
+	</select>
+
+	<select id="selectNextvalForPvEvent" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="java.lang.String">
+		/* [singleEvent.xml][selectPrizeRankForPvEvent][PV 이벤트 당첨 순번 조회][Id] */
+		SELECT SQ_EVT_${evtNo}_${freeGiftTurn}.NEXTVAL FROM DUAL
+    </select>
+
+	<select id="selectValidForHappyPoint" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="int">
+		/* [singleEvent.xml][selectValidForHappyPoint][연말정산 Happy 포인트 이벤트 포인트 적립 여부 조회][Id] */
+		SELECT COUNT(1)
+		  FROM MBR_WEBPNT_HIST MWH
+		 WHERE 1=1
+		   AND MWH.WEBPNT_RESN_CD = 'EVT'
+		   AND MWH.MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		   AND MWH.EVT_NO = #{evtNo, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectPchDcsnCnt" parameterType="com.plgrim.ncp.biz.promotion.data.EventBoDTO" resultType="int">
+		/* [singleEvent.xml][selectPchDcsnCnt][룰렛이벤트 구매확정 응모권 조회] */
+		   SELECT COUNT(1) 
+		  	FROM ORD O
+		    JOIN ORD_GOD OG ON O.ORD_NO = OG.ORD_NO
+		   WHERE MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		   AND CSTMR_PCH_DCSN_YN='Y'
+		   AND O.MALL_ID ='DXM'
+		   AND ORD_DT BETWEEN TO_DATE(#{begDt:VARCHAR}, 'yyyyMMdd') AND TO_DATE(#{endDt:VARCHAR}, 'yyyyMMdd')+1-1/86400
+		   AND CSTMR_PCH_DCSN_DT BETWEEN TO_DATE(#{begDt:VARCHAR}, 'yyyyMMdd') AND TO_DATE(#{endDt:VARCHAR}, 'yyyyMMdd')+1-1/86400
+	</select>
+	
+	<select id="selectAtchFileCnt" parameterType="com.plgrim.ncp.biz.promotion.data.EventBoDTO" resultType="int">
+		/* [singleEvent.xml][selectPchDcsnCnt][룰렛이벤트 포토리뷰 작성 응모권 조회] */
+		 SELECT  
+			COUNT(1)
+		FROM ORD O
+			INNER JOIN ORD_GOD OG ON O.ORD_NO = OG.ORD_NO 
+			INNER JOIN GOD_GOD_EVL GG ON GG.MBR_NO = O.MBR_NO
+			INNER JOIN GOD_GOD_EVL_ATCH_FILE FI ON GG.GOD_NO = FI.GOD_NO
+				AND O.ORD_NO = GG.ORD_NO
+				AND GG.GOD_NO = OG.GOD_NO
+				AND GG.ORD_GOD_TURN = OG.ORD_GOD_TURN
+				AND GG.GOD_EVL_TURN = FI.GOD_EVL_TURN
+		WHERE O.MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		AND O.MALL_ID ='DXM'
+		AND GG.NTCE_YN != 'N'
+        AND GG.GOD_EVL_WRITNG_DT BETWEEN TO_DATE(#{begDt:VARCHAR}, 'yyyyMMdd') AND TO_DATE(#{endDt:VARCHAR}, 'yyyyMMdd')+1-1/86400
+        AND ORD_DT BETWEEN TO_DATE(#{begDt:VARCHAR}, 'yyyyMMdd') AND TO_DATE(#{endDt:VARCHAR}, 'yyyyMMdd')+1-1/86400
+	</select>
+	
+	<select id="selectFreeGiftTurnListForRouletteEvent" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="com.plgrim.ncp.biz.promotion.data.EventFreeGiftTurnExtendsFoDTO">
+		/* [singleEvent.xml][selectFreeGiftTurnListForRouletteEvent][룰렛이벤트 이벤트 경품 목록 조회][Id] */
+		SELECT T1.FREE_GIFT_TURN
+			  ,T1.FREE_GIFT_KND_CD
+			  ,PRIZE_RANK
+			  ,T2.DC_AMT
+			  ,T2.DC_RT
+			  ,T2.DC_SECT_CD
+			  ,T2.MAX_DC_PSB_AMT
+			  ,T1.PRPARE_FREE_GIFT_QTY
+			  ,T1.FREE_GIFT_NM
+			  ,T1.WEBPNT_AMT
+			  ,T1.WEBPNT_USE_BEG_DT
+			  ,T1.WEBPNT_USE_END_DT	
+			  ,(SELECT T1.PRPARE_FREE_GIFT_QTY - COUNT (1)
+				  FROM EVT_PRIZE A, EVT_PRIZE_FREE_GIFT B
+				 WHERE A.EVT_PARTCPTN_SN = B.EVT_PARTCPTN_SN
+				   AND A.PRIZE_TURN = B.PRIZE_TURN
+				   AND B.EVT_NO = T1.EVT_NO
+				   AND B.FREE_GIFT_TURN = T1.FREE_GIFT_TURN
+			   ) AS FREE_GIFT_INV_QTY
+			  ,T1.CPN_PRM_NO
+			  ,T1.PNT_AMT
+			  ,T3.EVT_NM
+			  ,T1.ATEND_DAYCNT
+			  ,T1.PRIZE_QTY
+		  FROM EVT_FREE_GIFT_INFO T1
+		  JOIN EVT T3 ON T3.EVT_NO = T1.EVT_NO
+		  LEFT OUTER JOIN PRM T2 ON T1.CPN_PRM_NO = T2.PRM_NO
+		 WHERE T1.EVT_NO = #{evtNo, jdbcType=VARCHAR}
+		 ORDER BY T1.FREE_GIFT_TURN
+	</select>
+	
+	<select id="selectDoubleWinningCheck" parameterType="EvtApplcn"  resultType="int">
+       SELECT COUNT(1)
+        FROM EVT_APPLCN  
+        WHERE EVT_NO = #{evtNo}
+        AND MBR_NO = #{mbrNo}
+    </select> 
+    
+    <select id="selectPrmCpn" parameterType="com.plgrim.ncp.biz.promotion.data.EventBoDTO" resultType="com.plgrim.ncp.base.entities.datasource1.prm.PrmCpn">
+		/* [singleEvent.xml][selectPrmCpn][쿠폰 정보 조회][Id] */
+		SELECT PRM_NO,
+             CPN_USE_PD_BEG_DATE,
+             CPN_USE_PD_END_DATE
+        FROM  PRM_CPN
+        WHERE 1 = 1
+        AND PRM_NO = #{cpnPrmNm, jdbcType=VARCHAR}
+	</select>
+
+</mapper>

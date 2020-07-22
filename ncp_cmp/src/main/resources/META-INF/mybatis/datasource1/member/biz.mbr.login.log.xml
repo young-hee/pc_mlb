@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.login.log">
+    
+	<insert id="insertMbrLoginLog" parameterType="mbrLoginLog">
+	    INSERT /* [biz.mbr.login.log.xml][insertMbrLoginLog][ID] */  
+	    INTO MBR_LOGIN_LOG
+		(
+	        MBR_NO
+	       ,MBR_LOGIN_CD
+	       ,LOG_OCCUR_DT
+	       ,LOGIN_IP
+	       ,LOGIN_NATION_CD
+	       ,INFLOW_URL
+	       ,LANG_CD
+	       ,MALL_ID
+	       ,DVC_CD
+	       ,INFLOW_SN
+	       ,LOGIN_FAILR_PW
+           ,OS_CD
+           ,MOBILE_APP_SECT_CD
+           ,LOGIN_MDUL_SECT_CD
+           ,UTID
+		)
+		VALUES
+		(
+	        #{mbrNo,jdbcType=VARCHAR}
+	       ,#{mbrLoginCd,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{loginIp,jdbcType=VARCHAR}
+	       ,#{loginNationCd,jdbcType=VARCHAR}
+	       ,#{inflowUrl,jdbcType=VARCHAR}
+	       ,#{langCd,jdbcType=VARCHAR}
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{dvcCd,jdbcType=VARCHAR}
+	       ,#{inflowSn,jdbcType=NUMERIC}
+	       ,#{loginFailrPw,jdbcType=VARCHAR}
+           ,#{osCd:VARCHAR}
+           ,#{mobileAppSectCd:VARCHAR}
+           ,#{loginMdulSectCd,jdbcType=VARCHAR}
+           ,#{userTrackingId,jdbcType=VARCHAR}
+		)
+    </insert>
+    
+	<select id="selectMbrLoginLog" parameterType="mbrLoginLog" resultType="String">
+		SELECT TO_CHAR(LOG_OCCUR_DT, 'YYYY-MM-DD HH24:MI:SS')
+		FROM
+		(
+		SELECT /* [biz.mbr.login.log.xml][selectMbrLoginLog][ID] */
+			LOG_OCCUR_DT
+			,ROW_NUMBER() OVER(ORDER BY LOG_OCCUR_DT DESC) AS RN
+		FROM MBR_LOGIN_LOG
+		WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		)
+		WHERE RN = 1
+	</select>
+
+</mapper>

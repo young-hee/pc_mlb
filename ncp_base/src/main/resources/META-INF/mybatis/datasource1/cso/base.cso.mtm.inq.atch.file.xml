@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoMtmInqAtchFile" parameterType="csoMtmInqAtchFile" resultType="csoMtmInqAtchFile">
+		SELECT /* com.plgrim.ncp.base.selectCsoMtmInqAtchFile		Generator(Generator)	2018-05-23 */
+			   MTM_INQ_SN
+			 , MTM_INQ_ATCH_FILE_TURN
+			 , MTM_INQ_ATCH_FILE_NM
+			 , MTM_INQ_ATCH_FILE_URL
+			 , MTM_INQ_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_MTM_INQ_ATCH_FILE
+		 WHERE 1 = 1
+	   	   AND MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+		   AND MTM_INQ_ATCH_FILE_TURN = #{mtmInqAtchFileTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoMtmInqAtchFile" parameterType="csoMtmInqAtchFile">
+		UPDATE /* com.plgrim.ncp.base.updateCsoMtmInqAtchFile		Generator(Generator)	2018-05-23 */
+		CSO_MTM_INQ_ATCH_FILE SET
+			   MTM_INQ_ATCH_FILE_NM = #{mtmInqAtchFileNm,jdbcType=VARCHAR}
+			 , MTM_INQ_ATCH_FILE_URL = #{mtmInqAtchFileUrl,jdbcType=VARCHAR}
+			 , MTM_INQ_ATCH_FILE_CPCTY = #{mtmInqAtchFileCpcty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+		   AND MTM_INQ_ATCH_FILE_TURN = #{mtmInqAtchFileTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoMtmInqAtchFile" parameterType="csoMtmInqAtchFile">
+		INSERT /* com.plgrim.ncp.base.insertCsoMtmInqAtchFile		Generator(Generator)	2018-05-23 */
+		INTO   CSO_MTM_INQ_ATCH_FILE (
+			   MTM_INQ_SN
+			 , MTM_INQ_ATCH_FILE_TURN
+			 , MTM_INQ_ATCH_FILE_NM
+			 , MTM_INQ_ATCH_FILE_URL
+			 , MTM_INQ_ATCH_FILE_CPCTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mtmInqSn,jdbcType=NUMERIC}
+			 , #{mtmInqAtchFileTurn,jdbcType=NUMERIC}
+			 , #{mtmInqAtchFileNm,jdbcType=VARCHAR}
+			 , #{mtmInqAtchFileUrl,jdbcType=VARCHAR}
+			 , #{mtmInqAtchFileCpcty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoMtmInqAtchFile" parameterType="csoMtmInqAtchFile">
+		DELETE /* com.plgrim.ncp.base.deleteCsoMtmInqAtchFile		Generator(Generator)	2018-05-23 */
+		  FROM CSO_MTM_INQ_ATCH_FILE
+		 WHERE 1 = 1
+		   AND MTM_INQ_SN = #{mtmInqSn,jdbcType=NUMERIC}
+		   AND MTM_INQ_ATCH_FILE_TURN = #{mtmInqAtchFileTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

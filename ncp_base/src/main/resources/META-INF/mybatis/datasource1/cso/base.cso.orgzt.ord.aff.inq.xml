@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoOrgztOrdAffInq" parameterType="csoOrgztOrdAffInq" resultType="csoOrgztOrdAffInq">
+		SELECT /* com.plgrim.ncp.base.selectCsoOrgztOrdAffInq		Generator(Generator)	2018-06-04 */
+			   ORGZT_ORD_AFF_INQ_SN
+			 , ORGZT_ORD_AFF_INQ_TP_CD
+			 , ORGZT_ORD_AFF_INQ_DETAIL_TP_CD
+			 , ANS_STAT_CD
+			 , PRCS_COMPT_DT
+			 , INQ_ORGZT_NM
+			 , INQER_NM
+			 , INQ_CONT
+			 , INQER_EMAIL
+			 , INQER_MOBIL_AREA_NO
+			 , INQER_MOBIL_TLOF_NO
+			 , INQER_MOBIL_TLOF_WTHN_NO
+			 , INQER_MOBIL_NATION_NO
+			 , INQER_EMAIL_RECPTN_YN
+			 , INQER_SMS_RECPTN_YN
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_ORGZT_ORD_AFF_INQ
+		 WHERE 1 = 1
+	   	   AND ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoOrgztOrdAffInq" parameterType="csoOrgztOrdAffInq">
+		UPDATE /* com.plgrim.ncp.base.updateCsoOrgztOrdAffInq		Generator(Generator)	2018-06-04 */
+		CSO_ORGZT_ORD_AFF_INQ SET
+			   ORGZT_ORD_AFF_INQ_TP_CD = #{orgztOrdAffInqTpCd,jdbcType=VARCHAR}
+			 , ORGZT_ORD_AFF_INQ_DETAIL_TP_CD = #{orgztOrdAffInqDetailTpCd,jdbcType=VARCHAR}
+			 , ANS_STAT_CD = #{ansStatCd,jdbcType=VARCHAR}
+			 , PRCS_COMPT_DT = #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , INQ_ORGZT_NM = #{inqOrgztNm,jdbcType=VARCHAR}
+			 , INQER_NM = #{inqerNm,jdbcType=VARCHAR}
+			 , INQ_CONT = #{inqCont,jdbcType=CLOB}
+			 , INQER_EMAIL = #{inqerEmail,jdbcType=VARCHAR}
+			 , INQER_MOBIL_AREA_NO = #{inqerMobilAreaNo,jdbcType=VARCHAR}
+			 , INQER_MOBIL_TLOF_NO = #{inqerMobilTlofNo,jdbcType=VARCHAR}
+			 , INQER_MOBIL_TLOF_WTHN_NO = #{inqerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , INQER_MOBIL_NATION_NO = #{inqerMobilNationNo,jdbcType=VARCHAR}
+			 , INQER_EMAIL_RECPTN_YN = #{inqerEmailRecptnYn,jdbcType=VARCHAR}
+			 , INQER_SMS_RECPTN_YN = #{inqerSmsRecptnYn,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoOrgztOrdAffInq" parameterType="csoOrgztOrdAffInq">
+		INSERT /* com.plgrim.ncp.base.insertCsoOrgztOrdAffInq		Generator(Generator)	2018-06-04 */
+		INTO   CSO_ORGZT_ORD_AFF_INQ (
+			   ORGZT_ORD_AFF_INQ_SN
+			 , ORGZT_ORD_AFF_INQ_TP_CD
+			 , ORGZT_ORD_AFF_INQ_DETAIL_TP_CD
+			 , ANS_STAT_CD
+			 , PRCS_COMPT_DT
+			 , INQ_ORGZT_NM
+			 , INQER_NM
+			 , INQ_CONT
+			 , INQER_EMAIL
+			 , INQER_MOBIL_AREA_NO
+			 , INQER_MOBIL_TLOF_NO
+			 , INQER_MOBIL_TLOF_WTHN_NO
+			 , INQER_MOBIL_NATION_NO
+			 , INQER_EMAIL_RECPTN_YN
+			 , INQER_SMS_RECPTN_YN
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+			 , #{orgztOrdAffInqTpCd,jdbcType=VARCHAR}
+			 , #{orgztOrdAffInqDetailTpCd,jdbcType=VARCHAR}
+			 , #{ansStatCd,jdbcType=VARCHAR}
+			 , #{prcsComptDt,jdbcType=TIMESTAMP}
+			 , #{inqOrgztNm,jdbcType=VARCHAR}
+			 , #{inqerNm,jdbcType=VARCHAR}
+			 , #{inqCont,jdbcType=CLOB}
+			 , #{inqerEmail,jdbcType=VARCHAR}
+			 , #{inqerMobilAreaNo,jdbcType=VARCHAR}
+			 , #{inqerMobilTlofNo,jdbcType=VARCHAR}
+			 , #{inqerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{inqerMobilNationNo,jdbcType=VARCHAR}
+			 , #{inqerEmailRecptnYn,jdbcType=VARCHAR}
+			 , #{inqerSmsRecptnYn,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoOrgztOrdAffInq" parameterType="csoOrgztOrdAffInq">
+		DELETE /* com.plgrim.ncp.base.deleteCsoOrgztOrdAffInq		Generator(Generator)	2018-06-04 */
+		  FROM CSO_ORGZT_ORD_AFF_INQ
+		 WHERE 1 = 1
+		   AND ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

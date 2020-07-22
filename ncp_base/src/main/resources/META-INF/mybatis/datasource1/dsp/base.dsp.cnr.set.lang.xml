@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCnrSetLang" parameterType="dspCnrSetLang" resultType="dspCnrSetLang">
+		SELECT /* com.plgrim.ncp.base.selectDspCnrSetLang		Generator(Generator)	2018-05-23 */
+			   REV_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , LANG_CD
+			 , SET_NM
+			 , SET_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CNR_SET_LANG
+		 WHERE 1 = 1
+	   	   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspCnrSetLang" parameterType="dspCnrSetLang">
+		UPDATE /* com.plgrim.ncp.base.updateDspCnrSetLang		Generator(Generator)	2018-05-23 */
+		DSP_CNR_SET_LANG SET
+			   SET_NM = #{setNm,jdbcType=VARCHAR}
+			 , SET_DSCR = #{setDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspCnrSetLang" parameterType="dspCnrSetLang">
+		INSERT /* com.plgrim.ncp.base.insertDspCnrSetLang		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CNR_SET_LANG (
+			   REV_SN
+			 , CNR_SN
+			 , CNR_SET_SN
+			 , LANG_CD
+			 , SET_NM
+			 , SET_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{revSn,jdbcType=NUMERIC}
+			 , #{cnrSn,jdbcType=NUMERIC}
+			 , #{cnrSetSn,jdbcType=NUMERIC}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{setNm,jdbcType=VARCHAR}
+			 , #{setDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCnrSetLang" parameterType="dspCnrSetLang">
+		DELETE /* com.plgrim.ncp.base.deleteDspCnrSetLang		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CNR_SET_LANG
+		 WHERE 1 = 1
+		   AND REV_SN = #{revSn,jdbcType=NUMERIC}
+		   AND CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+		   AND CNR_SET_SN = #{cnrSetSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

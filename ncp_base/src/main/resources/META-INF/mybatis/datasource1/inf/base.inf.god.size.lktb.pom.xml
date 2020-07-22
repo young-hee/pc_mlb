@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfGodSizeLktbPom" parameterType="infGodSizeLktbPom" resultType="infGodSizeLktbPom">
+		SELECT /* com.plgrim.ncp.base.selectInfGodSizeLktbPom		Generator(Generator)	2018-06-26 */
+			   BRND_ID
+			 , POM_CD
+			 , POM_NM
+			 , ENG_POM_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_GOD_SIZE_LKTB_POM
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfGodSizeLktbPom" parameterType="infGodSizeLktbPom">
+		UPDATE /* com.plgrim.ncp.base.updateInfGodSizeLktbPom		Generator(Generator)	2018-06-26 */
+		INF_GOD_SIZE_LKTB_POM SET
+			   BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , POM_CD = #{pomCd,jdbcType=VARCHAR}
+			 , POM_NM = #{pomNm,jdbcType=VARCHAR}
+			 , ENG_POM_NM = #{engPomNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfGodSizeLktbPom" parameterType="infGodSizeLktbPom">
+		INSERT /* com.plgrim.ncp.base.insertInfGodSizeLktbPom		Generator(Generator)	2018-06-26 */
+		INTO   INF_GOD_SIZE_LKTB_POM (
+			   BRND_ID
+			 , POM_CD
+			 , POM_NM
+			 , ENG_POM_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{pomCd,jdbcType=VARCHAR}
+			 , #{pomNm,jdbcType=VARCHAR}
+			 , #{engPomNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfGodSizeLktbPom" parameterType="infGodSizeLktbPom">
+		DELETE /* com.plgrim.ncp.base.deleteInfGodSizeLktbPom		Generator(Generator)	2018-06-26 */
+		  FROM INF_GOD_SIZE_LKTB_POM
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

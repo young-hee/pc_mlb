@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+
+	<resultMap type="com.plgrim.ncp.biz.display.result.GoodsFinderFoResult" id="smpleSntnResultMap">
+		<result property="smpleSntnTurn" column="SMPLE_SNTN_TURN" />
+		<result property="smpleSntnCont" column="SMPLE_SNTN_CONT" />
+		<result property="sntnSortSeq" column="sntnSortSeq"/>
+	</resultMap>
+
+	<resultMap type="com.plgrim.ncp.biz.display.result.GoodsFinderFoResult" id="goodsFinderFoResultMap">
+		<result property="finderNo" column="FINDER_NO" />
+		<result property="finderNm" column="FINDER_NM"/>
+		<result property="finderNmRgbColorCdRgb" column="FINDER_NM_RGB_COLOR_CD"/>
+		<result property="finderAsstnNm" column="FINDER_ASSTN_NM"/>
+		<result property="finderAsstnRgbColorCd" column="FINDER_ASSTN_NM_RGB_COLOR_CD"/>
+		<result property="bannerImgUrl" column="BANNER_IMG_URL"/>
+		<result property="bannerCont" column="BANNER_CONT"/>
+		<result property="finderGodSortStdrCd" column="FINDER_GOD_SORT_STDR_CD" />
+		<result property="upendRgbColorCd" column="UPEND_RGB_COLOR_CD" />
+		<result property="useYn" column="USE_YN" />
+
+		<result property="qestnSortSeq" column="qestnSortSeq"/>
+
+		<result property="regtrId" column="REGTR_ID" />
+		<result property="regDt" column="REG_DT" />
+		<result property="udterId" column="UDTER_ID" />
+		<result property="udtDt" column="UDT_DT" />
+		<result property="godNo" column="GOD_NO" />
+		<result property="qestnTurn" column="QESTN_TURN" />
+		<!--<result property="smpleSntnTurn" column="SMPLE_SNTN_TURN" />-->
+		<result property="qestnCont" column="QESTN_CONT" />
+		<result property="qestnLblNm" column="QESTN_LBL_NM" />
+		<result property="qestnLblUseYn" column="QESTN_LBL_USE_YN" />
+		<result property="pcQestnLblCont" column="PC_QESTN_LBL_CONT" />
+		<result property="mobileQestnLblCont" column="MOBILE_QESTN_LBL_CONT" />
+		<!--<result property="smpleSntnCont" column="SMPLE_SNTN_CONT" />-->
+		<result property="tgtTurn" column="TGT_TURN" />
+		<result property="finderTgtCd" column="FINDER_TGT_CD" />
+		<result property="endpBrndId" column="ENDP_BRND_ID" />
+		<result property="prdlstCd" column="PRDLST_CD" />
+
+		<collection property="smpleSntnList" resultMap="smpleSntnResultMap" />
+	</resultMap>
+
+	<select id="selectGoodsFinderFo" parameterType="com.plgrim.ncp.biz.display.data.GoodsFinderFoDTO" resultMap="goodsFinderFoResultMap">
+		SELECT	FINDER_NO,  /* [display.goodsFinder.xml][selectGoodsFinderFo] [수트 파인더 화면구정 조회]  */
+				FINDER_NM,
+				FINDER_NM_RGB_COLOR_CD,
+				FINDER_ASSTN_NM,
+				FINDER_ASSTN_NM_RGB_COLOR_CD,
+				UPEND_RGB_COLOR_CD,
+				BANNER_IMG_URL,
+				BANNER_CONT,
+				FINDER_GOD_SORT_STDR_CD,
+				USE_YN
+		FROM GOD_FINDER
+		WHERE FINDER_NO=#{finderNo,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectGoodsFinderFoList" parameterType="map" resultMap="goodsFinderFoResultMap">
+		SELECT /* [display.goodsFinder.xml][selectGoodsFinderFoList] [수트 파인더 질문 및 예문 리스트 조회] [Dave] */
+			q.FINDER_NO,
+		  	q.QESTN_TURN,
+		  	q.QESTN_CONT,
+		  	q.QESTN_LBL_NM,
+		  	q.QESTN_LBL_USE_YN,
+		  	q.PC_QESTN_LBL_CONT,
+		  	q.MOBILE_QESTN_LBL_CONT,
+		  	s.SMPLE_SNTN_TURN,
+		  	s.SMPLE_SNTN_CONT,
+		  	q.SORT_SEQ AS qestnSortSeq,
+		  	s.SORT_SEQ AS sntnSortSeq
+		FROM GOD_FINDER_QESTN q
+			JOIN GOD_FINDER_SMPLE_SNTN s
+			ON q.QESTN_TURN = s.QESTN_TURN
+			AND q.FINDER_NO = s.FINDER_NO
+		WHERE
+			q.FINDER_NO = #{finderNo, jdbcType=VARCHAR}
+			AND q.USE_YN ='Y' AND s.USE_YN = 'Y'
+		ORDER BY
+			q.SORT_SEQ ASC, s.SORT_SEQ ASC
+	</select>
+
+	<select id="selectGoodsFinderListCnt" parameterType="com.plgrim.ncp.biz.display.data.GoodsFinderFoDTO" resultType="INTEGER">
+		SELECT /* [display.goodsFinder.xml][selectGoodsFinderListCnt] [수트 파인더 선택한 질문과 예문에 대한 상품 건수 조회] [Dave] */
+			COUNT(DISTINCT g.god_no) AS cnt
+		FROM god g
+		JOIN dsp_god_prc dgp ON g.god_no = dgp.god_no /*전시 상품 가격*/
+		JOIN sys_brnd sb ON g.brnd_grp_id = sb.brnd_id /*시스템 브랜드*/
+		LEFT OUTER JOIN DSP_BST_GOD_EVL dbge On g.GOD_NO = dbge.GOD_NO /*전시 베스트 상품평*/
+		LEFT OUTER JOIN GOD_IMG gi1 ON g.GOD_NO = gi1.GOD_NO AND gi1.IMG_TP_CD = 'THNAIL' AND gi1.IMG_TURN = 2 AND gi1.IMG_SIZE_CD = #{imgSizeCd, jdbcType=VARCHAR} /*이미지 순번, 이미지 사이즈 코드*/
+		LEFT OUTER JOIN GOD_IMG gi2 ON g.GOD_NO = gi2.GOD_NO AND gi2.IMG_TP_CD = 'THNAIL' AND gi2.IMG_TURN = 1 AND gi2.IMG_SIZE_CD = #{imgSizeCd, jdbcType=VARCHAR} /*이미지 순번, 이미지 사이즈 코드*/
+		<if test="lang != 'KOR'">
+			JOIN SYS_BRND_LANG sbl ON (sb.BRND_ID = sbl.BRND_ID AND sbl.LANG_CD = #{lang, jdbcType=VARCHAR})
+			JOIN GOD_LANGBY_GOD_NM glgn ON g.GOD_NO = glgn.GOD_NO AND glgn.LANG_CD = #{lang,jdbcType=VARCHAR} AND glgn.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+		</if>
+
+		<choose>
+			<when test="goodsFinderFoDTOList != null and goodsFinderFoDTOList.size > 0">
+				<foreach item="item" collection="goodsFinderFoDTOList" index="index">
+					JOIN GOD_FINDER_ANS_CNNC f${index} ON g.god_no = f${index}.god_no
+					AND f${index}.finder_no = #{finderNo, jdbcType=VARCHAR}
+					<if test="item.qestnTurn != null and item.qestnTurn != ''">
+						AND f${index}.QESTN_TURN = #{item.qestnTurn, jdbcType=INTEGER}
+					</if>
+					<if test="item.smpleSntnTurn != null and item.smpleSntnTurn != ''">
+						AND f${index}.SMPLE_SNTN_TURN IN (${item.smpleSntnTurn})
+					</if>
+				</foreach>
+			</when>
+			<otherwise>
+				JOIN GOD_FINDER_ANS_CNNC f ON g.god_no = f.god_no
+				AND f.finder_no = #{finderNo, jdbcType=VARCHAR}
+			</otherwise>
+		</choose>
+			/*파인더 기초대상 테이블 사용여부 조건 추가*/
+			JOIN GOD_FINDER_GOD gfg ON gfg.FINDER_NO = #{finderNo, jdbcType=VARCHAR} AND gfg.GOD_NO = g.GOD_NO
+		WHERE 1 = 1
+		AND gfg.USE_YN = 'Y' /*파인더 기초대상 테이블 사용여부 조건 추가*/
+		AND g.GOD_APRV_SECT_CD = 'APRV_COMPT' /*상품 승인 구분 코드. 상품 승인 구분 : GOD_APRV_SECT. 승인 대기 : APRV_WAIT. 승인 거부 : APRV_REJ. 승인 완료 : APRV_COMPT*/
+		AND g.GOD_SALE_SECT_CD IN ('SALE_PROGRS', 'SLDOUT', 'SALE_PROGRS_PKUP') /*상품 판매 구분 코드. 상품 판매 구분 : GOD_SALE_SECT. 판매중 : SALE_PROGRS. 임시 판매 중지 : TMPR_SALE_STPGE. 판매 종료 : SALE_END. 품절 : SLDOUT. 임시 품절 : TMPR_SLDOUT. 판매중(픽업) : SALE_PROGRS_PKUP*/
+		AND g.SPCIFY_URL_DSP_YN = 'N' /*안전 인증 대상 여부*/
+		AND g.DSP_YN = 'Y' /*전시 여부*/
+		AND dgp.mall_id = #{mallId, jdbcType = VARCHAR} /*몰 ID*/
+		AND dgp.lang_cd = #{lang, jdbcType=VARCHAR} /*언어 코드*/
+		<if test='spcPrmTp != null and spcPrmTp != ""'>
+			/*가격 구분 코드. 가격 구분 : PRC_SECT. 일반 : GNRL. 임직원 : EMP. 싱글 : SIGNL > 해당 상품만 입력됨. B2E : B2E 키가 입력됨 > 해당 상품만 입력됨*/
+			AND dgp.prc_sect_cd IN (#{spcPrmTp, jdbcType=VARCHAR}, #{prcSectCd, jdbcType=VARCHAR}) /*spcPrmTp : B2E, SIGNL, prcSectCd : GNRL, EMP */
+			AND dgp.PRC_SECT_CD =
+			CASE WHEN (
+			SELECT 1
+			FROM DSP_GOD_PRC dgp2
+			WHERE dgp2.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND dgp2.GOD_NO = dgp.GOD_NO AND ROWNUM = 1)
+			IS NOT NULL
+			THEN #{spcPrmTp, jdbcType=VARCHAR}
+			ELSE #{prcSectCd, jdbcType=VARCHAR}
+			END
+		</if>
+		<if test='spcPrmTp == null or spcPrmTp == ""'>
+			AND dgp.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+		</if>
+		<if test='empYn == "N"'>
+			AND g.EMP_ONLY_YN = 'N'
+		</if>
+	</select>
+
+	<select id="selectGoodsFinderQestnLblContList" parameterType="map" resultMap="goodsFinderFoResultMap">
+		SELECT /* [display.goodsFinder.xml][selectGoodsFinderQestnLblContList] [수트 파인더 질문 라벨 내용 리스트 조회(전시에서 사용)] [Dave] */
+		QESTN_CONT,
+		QESTN_LBL_NM,
+		PC_QESTN_LBL_CONT,
+		MOBILE_QESTN_LBL_CONT
+		FROM GOD_FINDER_QESTN
+		WHERE 1=1
+		AND FINDER_NO = #{finderNo, jdbcType=VARCHAR}
+		AND QESTN_TURN = #{qestnTurn, jdbcType=INTEGER}
+	</select>
+
+</mapper>

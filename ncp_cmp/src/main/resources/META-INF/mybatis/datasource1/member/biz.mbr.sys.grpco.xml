@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.sys.grpco">
+	<!-- 그룹사 조회를 위한 조건 쿼리 -->
+    <sql id="whereSysGrpco"> 
+		<if test='schGubun != null and schGubun != ""'>
+			<if test='schGubun eq "comNm" and schTxt != null and schTxt != ""'>
+				AND GRPCO_NM LIKE '%'||#{schTxt,jdbcType=VARCHAR}||'%'
+			</if>
+			<if test='schGubun eq "comId" and schTxt != null and schTxt != ""'>
+				AND GRPCO_ID LIKE '%'||#{schTxt,jdbcType=VARCHAR}||'%'
+			</if>		
+		</if>		
+    </sql>
+    
+    <resultMap id="sysGrpcoResultMap" type="com.plgrim.ncp.biz.member.result.MemberSysGrpcoResult">
+       <result property="grpcoId"                            column="GRPCO_ID" />    <!-- 그룹사코드  -->
+	   <result property="grpcoNm"                            column="GRPCO_NM" />    <!-- 그룹사명    -->	   
+	</resultMap>
+	
+	<!-- 그룹사 조회 건수-->
+	<select id="selectSysGrpcoListCount" parameterType="com.plgrim.ncp.biz.member.data.MemberSysGrpcoSearchDTO" resultType="long">
+		SELECT /* [biz.mbr.sys.grpco.xml][selectSysGrpcoListCount][그룹사 조회 건수][Mark] */ 
+               COUNT(*)
+          FROM SYS_GRPCO
+         WHERE 1=1
+            <include refid="com.plgrim.ncp.biz.mbr.sys.grpco.whereSysGrpco"/> 
+	</select>
+    
+    <!-- 그룹사 조회 -->
+    <select id="selectSysGrpcoList" parameterType="com.plgrim.ncp.biz.member.data.MemberSysGrpcoSearchDTO" resultMap="sysGrpcoResultMap">
+      SELECT /* [biz.mbr.sys.grpco.xml][selectSysGrpcoList][그룹사 조회][Mark] */ 
+             B.GRPCO_ID
+             ,B.GRPCO_NM
+    	FROM(
+	    	<include refid="com.plgrim.ncp.base.beginPage"/>
+	    	 SELECT GRPCO_ID, GRPCO_NM
+               FROM SYS_GRPCO
+              WHERE 1=1
+	           <include refid="com.plgrim.ncp.biz.mbr.sys.grpco.whereSysGrpco"/> 
+	          ORDER BY GRPCO_ID
+	    	<include refid="com.plgrim.ncp.base.endPage"/>
+	    	)B
+    </select>
+</mapper>

@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.claim.ordergoodlack">
+
+	<resultMap id="deliveryOrderGoodResult" type="com.plgrim.ncp.biz.claim.result.DeliveryOrderGoodResult">
+        <result property="rowNumber" column="ROWNUMBER" />
+        <result property="totalRow" column="TOTALROW" />
+        
+        <result property="ord.ordNo" column="ordNo" />
+        <result property="ord.cstmrNm" column="cstmrNm" />
+		<result property="cstmrMobilNo" column="cstmrMobilNo" />
+        <result property="ord.ordDt" column="ordDt" />
+        <result property="ord.ordTpCd" column="ordTpCd" />
+        <result property="ord.affComId" column="affComId" />
+        <result property="ord.mbrNo" column="mbrNo" />
+        <result property="ord.mbrTpCd" column="mbrTpCd" />
+        <result property="ord.affComOrdNo" column="affComOrdNo" />
+        
+        <result property="ordGod.ordGodTurn" column="ordGodTurn" />
+        <result property="ordGod.erpGodNo" column="erpGodNo" />
+        <result property="ordGod.brndId" column="brndId" />
+        <result property="ordGod.brndGrpId" column="brndGrpId" />
+        <result property="ordGod.godNo" column="godNo" />
+        <result property="ordGod.itmNo" column="itmNo" />
+        <result property="ordGod.godNm" column="godNm" />
+        <result property="ordGod.itmNm" column="itmNm" />
+        <result property="ordGod.godHistTurn" column="godHistTurn" />
+        <result property="ordGod.itmHistTurn" column="itmHistTurn" />
+        <result property="ordGod.godTpCd" column="godTpCd" />
+        <result property="ordGod.partmalSectCd" column="partmalSectCd" />
+        <result property="ordGod.rtlPrc" column="rtlPrc" />
+        <result property="ordGod.saleAmt" column="saleAmt" />
+        <result property="ordGod.affComOrdGodNo" column="affComOrdGodNo" />
+        
+        <result property="lgsDsp.dlvPcupspTurn" column="dlvPcupspTurn" />
+        <result property="lgsDsp.dlvPcupspSectCd" column="dlvPcupspSectCd" />
+        <result property="lgsDsp.addrseNm" column="addrseNm" />
+        <result property="lgsDsp.pkupShopId" column="pkupShopId" />
+        <result property="lgsDsp.addrseNationCd" column="addrseNationCd" />
+        <result property="lgsDsp.addrsePostNo" column="addrsePostNo" />
+        <result property="lgsDsp.dlvHopeDate" column="dlvHopeDate" />
+
+        <result property="lgsDlv.dlvTurn" column="dlvTurn" />
+        <result property="lgsDlv.dlvComCd" column="dlvComCd" />
+        <result property="lgsDlv.dlvMnCd" column="dlvMnCd" />
+        <result property="lgsDlv.dmstcWaybilNo" column="dmstcWaybilNo" />
+        <result property="lgsDlv.dmstcWaybilNoRegDt" column="dmstcWaybilNoRegDt" />
+        <result property="lgsDlv.ovseaWaybilNo" column="ovseaWaybilNo" />
+        <result property="lgsDlv.ovseaWaybilNoRegDt" column="ovseaWaybilNoRegDt" />
+        <result property="lgsDlv.gdgpStatCd"         column="gdgpStatCd" />
+
+        <result property="lgsDdg.dlivyDrctGodNo" column="dlivyDrctGodNo" />
+        <result property="lgsDdg.dlvShopId" column="dlvShopId" />
+        <result property="lgsDdg.lgsItmYn" column="lgsItmYn" />
+        <result property="lgsDdg.dlivyDrctGrpDgre" column="dlivyDrctGrpDgre" />
+        <result property="lgsDdg.dlivyDrctUserGrpDgre" column="dlivyDrctUserGrpDgre" />
+        <result property="lgsDdg.dlivyDrctTpCd" column="dlivyDrctTpCd" />
+        <result property="lgsDdg.dlivyDrctDt" column="dlivyDrctDt" />
+        <result property="lgsDdg.dlivyDrctQty" column="dlivyDrctQty" />
+        <result property="lgsDdg.dlivyComptDt" column="dlivyComptDt" />
+        <result property="lgsDdg.dlvStatCd" column="dlvStatCd" />
+        <result property="lgsDdg.shtgDt" column="shtgDt" />
+        <result property="lgsDdg.resveRcptfrCreatYn" column="resveRcptfrCreatYn" />
+        <result property="lgsDdg.pckageGodTurn" column="pckageGodTurn" />
+        <result property="lgsDdg.erpResveRcptfrCreatYn" column="erpResveRcptfrCreatYn" />
+        <result property="lgsDdg.dlivyDrctTgtYn" column="dlivyDrctTgtYn" />
+        <result property="lgsDdg.dlivyDrctYn" column="dlivyDrctYn" />
+        
+        <result property="ord.mallId" column="mallId" />
+        <result property="reservationYn" column="reservationYn" />
+        <result property="dlvStatNm" column="dlvStatNm" />
+        <result property="mallNm" column="mallNm" />
+        <result property="dlvMnNm" column="dlvMnNm" />    
+        <result property="lgsDsp.pkupShopVisitDate" column="pkupShopVisitDate" />
+        <result property="delayTerm" column="delayTerm" />
+        
+        <result property="options" column="options" />
+        <result property="ordGod.colorNm" column="colorNm" />
+        <result property="addrseTelNo" column="addrseTelNo" />
+        <result property="lgsDsp.dlvMemo" column="dlvMemo" />
+        <result property="resveOrdDlivyPrearngeDate" column="resveOrdDlivyPrearngeDate" />
+        
+        <result property="ordTpNm" column="ordTpNm" />
+        <result property="imageView" column="imageView" />
+        <result property="dmstcWaybilNoOrg" column="dmstcWaybilNoOrg" />
+        <result property="dmstcWaybilNoView" column="dmstcWaybilNoView" />
+        <result property="dlivyDrctGodMemoCont" column="dlivyDrctGodMemoCont" />
+        <result property="dlvComNm" column="dlvComNm" />
+        <result property="ordGod.skuNo" column="skuNo" />
+        <result property="lgsDdg.gftYn" column="gftYn" />
+        <result property="orgOrdGodTurn" column="orgOrdGodTurn" />
+        <result property="gftViewYn" column="gftViewYn" />
+        <result property="gftGubunNm" column="gftGubunNm" />
+        
+        <result property="clmNo" column="clmNo" />
+        <result property="rtrvlDrctGodNo" column="rtrvlDrctGodNo" />
+        <result property="clmResnNm" column="clmResnNm" />
+        <result property="optValCd" column="optValCd" />
+        
+        <result property="ordGod.comId" column="comId" />
+        <result property="comNm" column="comNm" />
+        <result property="gftGubun" column="gftGubun" />
+        
+        <result property="affGodOrdNo" column="affGodOrdNo" />
+        <result property="affItmOrdNo" column="affItmOrdNo" />
+
+        <result property="onlneGrdNm" column="onlne_grd_nm" />
+    </resultMap>
+
+
+ <sql id="whereClm"> 
+ 		<choose>
+			<when test="searchNoList != null and searchNoList != ''">
+				<if test="nosGubun eq 'SKU'.toString()">
+				AND ordgod.sku_no IN
+				</if>
+				<if test="nosGubun eq 'ORD'.toString()">
+				AND ord.ord_no IN
+				</if>		
+				<if test="nosGubun eq 'AFFORD'.toString()">
+				AND io.AFF_GOD_ORD_NO IN
+				</if>				
+				<foreach collection="searchNoList" item="searchNo" open="(" close=")" separator=",">
+					#{searchNo,jdbcType=VARCHAR}
+				</foreach>				   
+			</when>
+			<otherwise>
+				<if test='partmalSectCd != null and partmalSectCd != ""'>
+					AND ordgod.partmal_sect_cd in
+					<foreach collection="partmalSectCdArr" item="item" separator="," open="(" close=")" index="idx">
+						#{item}
+					</foreach>
+				</if>
+				<if test='mallId != null and mallId != ""'>
+					AND ord.mall_id = #{mallId}
+				</if>
+				<if test='langCd != null and langCd != ""'>
+					AND ord.lang_cd = #{langCd}
+				</if>
+				<if test='comId != null and comId != ""'>
+					AND ordgod.com_id = #{comId}
+				</if>
+				<if test='ordTpCd != null and ordTpCd != ""'>
+					AND ord.ord_tp_cd = #{ordTpCd}
+				</if>
+				<if test="dlvMnCd != null and dlvMnCd != '' ">
+					AND lgsdv.dlv_mn_cd = #{dlvMnCd,jdbcType=VARCHAR}
+				</if>
+				<if test='affVrscComId != null and affVrscComId != ""'>
+					AND ord.aff_vrsc_com_id = #{affVrscComId}
+				</if>
+				<if test='affComId != null and affComId != ""'>
+					AND ord.aff_com_id = #{affComId}
+				</if>
+				<if test='clmDtStart != null and clmDtStart != "" and clmDtEnd != null and clmDtEnd != ""'>
+					AND lgsddg.shtg_dt BETWEEN TO_DATE(#{clmDtStart}, 'YYYY-MM-DD') AND TO_DATE(#{clmDtEnd},'YYYY-MM-DD') + 0.99999
+				</if>
+				<if test="ordNo != '' and ordNo != null">
+					AND ord.ord_no = #{ordNo}
+				</if>
+				<if test="brndIdNewArr != '' and brndIdNewArr != null">
+					AND ordgod.brnd_id in
+					<foreach collection="brndIdNewArr" item="item" separator="," open="(" close=")" index="idx">
+						TRIM(#{item})
+					</foreach>
+				</if>
+				
+				<!-- SR #21177 김병철 비이커 BO 데이터 집계 요청 Start -->
+				<if test="upperBrndId != null and upperBrndId != ''">
+					AND	EXISTS	(	SELECT	1
+									FROM 	(	SELECT	SB.brnd_id
+              									FROM 	SYS_BRND SB 
+              									WHERE	BRND_GRP_YN = 'N'
+              									AND		LEVEL = 3             
+              									CONNECT BY PRIOR	SB.BRND_ID = SB.UPPER_BRND_ID 
+              									AND 	SB.USE_YN = 'Y'
+              									START WITH	SB.BRND_ID = #{upperBrndId,jdbcType=VARCHAR} 
+              								) AA
+              						WHERE  AA.brnd_id = ordgod.brnd_id ) 
+				</if>				
+				<!-- SR #21177 김병철 비이커 BO 데이터 집계 요청 End -->
+				
+			</otherwise>
+		</choose>
+				AND (lgsddg.dlivy_drct_tp_cd = 'SHOP_PKUP'
+						OR  (lgsddg.dlivy_drct_tp_cd <![CDATA[<>]]> 'SHOP_PKUP'
+						AND 'B031' = (CASE WHEN ordgod.partmal_sect_cd = 'PARTMAL' AND lgsddg.dlv_shop_id IS NULL THEN 'B031'
+							ELSE lgsddg.dlv_shop_id END)
+						)
+					)
+         		AND lgsddg.dlv_stat_cd = 'SHTG_RCEPT'
+
+	 	<if test='onlneGrdCd != null and onlneGrdCd != ""'>
+			 AND mbrGrd.onlne_grd_cd = #{onlneGrdCd, jdbcType=VARCHAR} /* 온라인 등급 코드 */
+	 	</if>
+  </sql>
+
+
+	<!-- 결품조회 엑셀 -->
+	<select id="selectOrderGoodLackListForExcel" parameterType="com.plgrim.ncp.biz.claim.data.ClaimListSearchDTO" resultType="com.plgrim.ncp.biz.claim.result.ClaimListResult">
+	/* [claim.ordergoodlack.xml][selectOrderGoodLackListForExcel][결품 조회][] */
+ 	<choose>
+		<when test="searchNoList != null and searchNoList != ''">
+	        SELECT
+		</when>
+		<otherwise>
+	        SELECT /*+ ordered index(lgsddg ix2_lgs_dlivy_drct_god) use_nl(ordgod) use_nl(ord) use_nl(lgsdv) use_nl(lgsdsp) use_nl(io) */
+		</otherwise>
+ 	</choose>	        
+	               TO_CHAR(ord.ord_dt, 'YYYY-MM-DD HH24:MI:SS')        AS ordDt        /* 주문일시 */
+	             , ord.ord_no                       AS ordNo        /* 주문번호 */
+	             , (SELECT com_nm FROM COM WHERE com_id = ord.aff_com_id) AS affComNm
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = lgsdv.dlv_mn_cd)	AS dlvMnNm
+	             , (SELECT mall_nm FROM sys_mall WHERE mall_id = ord.mall_id) AS mallNm /* mall명 */
+	             , (SELECT lang_cd_nm FROM SYS_LANG WHERE lang_cd = ord.lang_cd) AS langCd
+	             , (SELECT shop_nm FROM SYS_SHOP WHERE shop_id = lgsddg.dlv_shop_id) AS dlvShopNm /* 배송매장 */
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = lgsddg.dlv_stat_cd) AS dlvStatNm   /* 배송상태 */
+	             , FN_SYS_DELAY_DAY(lgsddg.dlivy_drct_dt,SYSDATE, lgsddg.dlv_shop_id,ordgod.brnd_id) AS delayTerm
+	             , FN_SYS_DELAY_TIME(lgsddg.dlivy_drct_dt, SYSDATE, lgsddg.dlv_shop_id, ordgod.brnd_id) AS elapsedTime      /* 경과시간 */
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = ord.ord_tp_cd) AS ordTpNm	/* 주문유형 */
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = lgsddg.dlivy_drct_tp_cd) AS dlivyDrctTpNm   /* 출고지시유형 */
+	             , lgsddg.dlivy_drct_qty - NVL(lgsddg.dlivy_drct_cncl_qty,0) AS dlivyDrctQty     /* 출고지시수량 */
+	             , TO_CHAR(lgsddg.shtg_dt, 'YYYY-MM-DD HH24:MI:SS')                   AS shtgDt          /* 결품일시 */
+	             , ordgod.brnd_id                   AS brndId       /* 브랜드ID */
+	             , ordgod.sku_no     				AS skuNo
+	             , ordgod.god_nm                    AS godNm        /* 상품명 */
+	             , ordgod.itm_nm                    AS itmNm        /* 단품명 */
+ 			     , (SELECT cd_nm
+                      FROM SYS_CD
+                     WHERE cd = (SELECT itm_stat_cd
+                                   FROM GOD_ITM
+                                  WHERE itm_no = ordgod.itm_no )) AS itmStatNm
+	             , (SELECT NVL(tot_useful_inv_qty,0) - NVL(sale_prearnge_qty,0) - NVL(safe_inv_qty,0)
+	                  FROM god_itm
+ 					 WHERE itm_no = ordgod.itm_no) AS usefulInvQty
+	             , FN_MASKING('FLNM',ord.cstmr_nm,'','Y')                     AS cstmrNm      /* 고객명 */
+				 , FN_MASKING('PHON' ,ord.cstmr_mobil_nation_no || '-' || ord.cstmr_mobil_area_no || '-' || ord.cstmr_mobil_tlof_no || '-' || ord.cstmr_mobil_tlof_wthn_no,'','Y') AS cstmrMobile /*고객 휴대폰 번호*/
+	             , FN_MASKING('FLNM',lgsdsp.addrse_nm ,'', 'Y')                 AS addrseNm         /* 수취인명 */
+				 , FN_MASKING('PHON' ,lgsdsp.addrse_mobil_nation_no || '-' || lgsdsp.addrse_mobil_area_no || '-' || lgsdsp.addrse_mobil_tlof_no || '-' || lgsdsp.addrse_mobil_tlof_wthn_no,'','Y') AS addrseMobile /* 수취인 휴대폰 번호 */
+                 , io.AFF_GOD_ORD_NO as affGodOrdNo /* 제휴 상품 주문번호 */ 
+                 , io.AFF_ITM_ORD_NO as affItmOrdNo /* 제휴 단품 주문번호 */
+				 , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 상태 */
+	          FROM LGS_DLIVY_DRCT_GOD lgsddg 
+	               JOIN ORD_GOD ordgod 
+	                 ON (ordgod.ord_no = lgsddg.ord_no
+	                 AND ordgod.ord_god_turn = lgsddg.ord_god_turn) 
+	               JOIN ORD ord 
+	                 ON (ord.ord_no = ordgod.ord_no)
+	               JOIN LGS_DLV lgsdv 
+	                 ON (lgsdv.ord_no = lgsddg.ord_no 
+	                 AND lgsdv.dlv_pcupsp_turn = lgsddg.dlv_pcupsp_turn
+	                 AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+	               JOIN LGS_DLVSP lgsdsp 
+	                 ON (lgsdsp.ord_no = lgsdv.ord_no 
+	                 AND lgsdsp.dlv_pcupsp_turn = lgsdv.dlv_pcupsp_turn)      
+	               LEFT OUTER JOIN INF_AFF_ORD io 
+	                 ON (lgsddg.ord_no = io.ord_no 
+	                 AND lgsddg.ord_god_turn = io.ord_god_turn)
+				   LEFT OUTER JOIN mbr_grd mbrGrd
+				   ON ord.mbr_no = mbrGrd.mbr_no
+				   LEFT OUTER JOIN mv_sys_cd sconlnembrgrd
+				   ON (sconlnembrgrd.cd = mbrGrd.onlne_grd_cd AND sconlnembrgrd.upper_cd='ONLNE_GRD' 	AND sconlnembrgrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+	         WHERE 1=1
+	         <include refid="com.plgrim.ncp.biz.claim.ordergoodlack.whereClm"/>
+	           AND lgsddg.dlivy_drct_tp_cd <![CDATA[<>]]> 'DRT_EXCHG'   /* 줄고지시유형 : 맞교환 제외 */
+	           AND lgsddg.gft_yn = 'N'
+	         ORDER BY lgsddg.shtg_dt DESC
+	</select>
+
+
+	<!-- 결품조회 -->
+	<select id="selectOrderGoodLackList" parameterType="com.plgrim.ncp.biz.claim.data.ClaimListSearchDTO" resultMap="deliveryOrderGoodResult">
+		/* [claim.ordergoodlack.xml][selectOrderGoodLackList][결품 조회][] */
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+ 	<choose>
+		<when test="searchNoList != null and searchNoList != ''">
+	        SELECT
+		</when>
+		<otherwise>
+	        SELECT /*+ ordered index(lgsddg ix2_lgs_dlivy_drct_god) use_nl(ordgod) use_nl(ord) use_nl(lgsdv) use_nl(lgsdsp) use_nl(io) */
+		</otherwise>
+ 	</choose>
+	               ord.ord_no                       AS ordNo        /* 주문번호 */
+	             , FN_MASKING('FLNM',ord.cstmr_nm,'','Y')                     AS cstmrNm      /* 고객명 */
+				 , FN_MASKING('PHON' ,ord.cstmr_mobil_nation_no || '-' || ord.cstmr_mobil_area_no || '-' || ord.cstmr_mobil_tlof_no || '-' || ord.cstmr_mobil_tlof_wthn_no,'','Y') AS cstmrMobilNo /*고객 휴대폰 번호*/
+	             , ord.ord_dt        AS ordDt        /* 주문일시 */
+	             , (SELECT mall_nm FROM sys_mall WHERE mall_id = ord.mall_id) AS mallNm /* mall명 */
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = ord.ord_tp_cd) AS ordTpNm	/* 주문유형 */
+	             , (SELECT com_nm FROM COM WHERE com_id = ord.aff_com_id) AS affComNm
+	             , (SELECT lang_cd_nm FROM SYS_LANG WHERE lang_cd = ord.lang_cd) AS langCd
+	             , ordgod.ord_god_turn              AS ordGodTurn   /* 주문상품순번 */
+	             , ordgod.god_no              		AS godNo   /* 주문상품순번 */
+	             , ordgod.erp_god_no                AS erpGodNo     /* ERP상품번호 */
+	             , ordgod.brnd_id                   AS brndId       /* 브랜드ID */
+	             , ordgod.sku_no     				AS skuNo
+	             , ordgod.god_nm                    AS godNm        /* 상품명 */
+	             , ordgod.itm_no                    AS itmNo        /* 단품번호 */
+	             , ordgod.itm_nm                    AS itmNm        /* 단품명 */
+	             , CASE WHEN (SELECT pckage_god_tp_cd
+	                            FROM ORD_CPST_GOD_CNNC
+	                           WHERE ord_no = ord.ord_no
+	                             AND ord_cpst_god_turn = ordgod.ord_god_turn) IS NULL
+	                          THEN (SELECT cd_nm FROM SYS_CD WHERE cd = ordgod.god_tp_cd)
+	                    ELSE (SELECT cd_nm FROM SYS_CD
+	                           WHERE cd = (SELECT pckage_god_tp_cd
+	                                         FROM ORD_CPST_GOD_CNNC
+	                                        WHERE ord_no = ord.ord_no
+	                                          AND ord_cpst_god_turn = ordgod.ord_god_turn))
+	               END AS godTpNm
+	             , lgsdsp.dlv_pcupsp_turn           AS dlvPcupspTurn    /* 배송수거지순번 */
+	             , FN_MASKING('FLNM',lgsdsp.addrse_nm ,'', 'Y')                 AS addrseNm         /* 수취인명 */
+	             , FN_MASKING('PHON' ,lgsdsp.addrse_base_addr ||' '||lgsdsp.addrse_detail_addr,'','Y') AS addrseAddr /* 수취인주소 */
+	             , FN_MASKING('PHON' ,lgsdsp.addrse_mobil_nation_no || '-' || lgsdsp.addrse_mobil_area_no || '-' || lgsdsp.addrse_mobil_tlof_no || '-' || lgsdsp.addrse_mobil_tlof_wthn_no,'','Y') AS addrseMobilNo
+	             , lgsdv.dlv_turn                   AS dlvTurn          /* 배송순번 */
+	             , lgsdv.dlv_mn_cd					AS dlvMnCd
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = lgsdv.dlv_mn_cd)	AS dlvMnNm
+	             , lgsddg.dlivy_drct_god_no         AS dlivyDrctGodNo   /* 출고지시상품번호 */
+	             , lgsddg.pckage_god_turn           AS pckageGodTurn    /* 패키지순번 */
+	             , lgsddg.dlv_shop_id               AS dlvShopId        /* 배송매장ID */
+	             , (CASE WHEN ordgod.partmal_sect_Cd = 'PARTMAL' THEN (SELECT com_nm FROM COM WHERE com_id = ordgod.com_id) ELSE (SELECT shop_nm FROM SYS_SHOP WHERE shop_id = lgsddg.dlv_shop_id) END) AS dlvShopNm /* 배송매장 */
+	             , lgsddg.dlivy_drct_tp_cd AS dlivyDrctTpCd
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = lgsddg.dlivy_drct_tp_cd) AS dlivyDrctTpNm   /* 출고지시유형 */
+	             , lgsddg.dlivy_drct_dt             AS dlivyDrctDt      /* 출고지시일시 */
+	             , lgsddg.dlivy_drct_qty - NVL(lgsddg.dlivy_drct_cncl_qty,0) AS dlivyDrctQty     /* 출고지시수량 */
+	             , (SELECT cd_nm FROM SYS_CD WHERE cd = lgsddg.dlv_stat_cd) AS dlvStatNm   /* 배송상태 */
+	             , lgsddg.shtg_dt                   AS shtgDt          /* 결품일시 */
+	             , NVL(lgsddg.shtg_qty, lgsddg.dlivy_drct_qty - NVL(lgsddg.dlivy_drct_cncl_qty,0))           AS shtgQty          /* 결품수량 */
+	             , FN_SYS_DELAY_DAY(lgsddg.dlivy_drct_dt,SYSDATE, lgsddg.dlv_shop_id,ordgod.brnd_id) AS delayTerm
+	             , FN_SYS_DELAY_TIME(lgsddg.dlivy_drct_dt, SYSDATE, lgsddg.dlv_shop_id, ordgod.brnd_id) AS elapsedTime      /* 경과시간 */
+	             , lgsddg.erp_resve_rcptfr_creat_yn AS erpResveRcptfrCreatYn    /* ERP예약영수증생성여부 */
+	             , lgsddg.dlivy_drct_tgt_yn         AS dlivyDrctTgtYn           /* 출고지시대상여부 */
+	             , lgsddg.dlivy_drct_yn             AS dlivyDrctYn              /* 출고지시여부 */
+	             , '상세보기' AS viewTxt
+	             , (SELECT NVL(tot_useful_inv_qty,0) - NVL(sale_prearnge_qty,0) - NVL(safe_inv_qty,0)
+	                  FROM GOD_ITM
+ 					 WHERE itm_no = ordgod.itm_no) AS usefulInvQty
+ 			     , (SELECT cd_nm
+                      FROM SYS_CD
+                     WHERE cd = (SELECT itm_stat_cd
+                                   FROM GOD_ITM
+                                  WHERE itm_no = ordgod.itm_no )) AS itmStatNm
+                 , io.AFF_GOD_ORD_NO as affGodOrdNo /* 제휴 상품 주문번호 */ 
+                 , io.AFF_ITM_ORD_NO as affItmOrdNo /* 제휴 단품 주문번호 */ 
+                 , ordgod.partmal_sect_cd as partmalSectCd
+                 , (SELECT cd_nm FROM SYS_CD WHERE cd = ordgod.partmal_sect_cd) as partmalSectNm
+                 , (SELECT cdc_inv_only_yn  
+                      FROM GOD 
+                     WHERE god_no = ordgod.god_no) AS cdcInvOnlyYn	/* CDC한정판매여부 */
+				 , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 상태 */
+	          FROM LGS_DLIVY_DRCT_GOD lgsddg
+	               JOIN ORD_GOD ordgod 
+	                 ON (ordgod.ord_no = lgsddg.ord_no
+	                 AND ordgod.ord_god_turn = lgsddg.ord_god_turn) 
+	               JOIN ORD ord 
+	                 ON (ord.ord_no = ordgod.ord_no)
+	               JOIN LGS_DLV lgsdv
+	                 ON (lgsdv.ord_no = lgsddg.ord_no
+	                 AND lgsdv.dlv_pcupsp_turn = lgsddg.dlv_pcupsp_turn
+	                 AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+	               JOIN LGS_DLVSP lgsdsp
+	                 ON (lgsdsp.ord_no = lgsdv.ord_no
+	                 AND lgsdsp.dlv_pcupsp_turn = lgsdv.dlv_pcupsp_turn)
+	               LEFT OUTER JOIN INF_AFF_ORD io
+	                 ON (lgsddg.ord_no = io.ord_no
+	                 AND lgsddg.ord_god_turn = io.ord_god_turn)
+				   LEFT OUTER JOIN mbr_grd mbrGrd
+					 ON ord.mbr_no = mbrGrd.mbr_no
+                   LEFT OUTER JOIN mv_sys_cd sconlnembrgrd
+                     ON (sconlnembrgrd.cd = mbrGrd.onlne_grd_cd AND sconlnembrgrd.upper_cd='ONLNE_GRD' 	AND sconlnembrgrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+	         WHERE 1=1
+	         <include refid="com.plgrim.ncp.biz.claim.ordergoodlack.whereClm"/>
+	           AND lgsddg.dlivy_drct_tp_cd <![CDATA[<>]]> 'DRT_EXCHG'   /* 줄고지시유형 : 맞교환 제외 */
+	           AND lgsddg.gft_yn = 'N'
+	         ORDER BY lgsddg.shtg_dt DESC
+	    	<include refid="com.plgrim.ncp.base.endPage"/>	
+	</select>
+
+
+	<!-- 결품조회 count -->
+	<select id="selectOrderGoodLackListTotal" parameterType="com.plgrim.ncp.biz.claim.data.ClaimListSearchDTO" resultType="long">
+		SELECT count(1)	          
+          FROM LGS_DLIVY_DRCT_GOD lgsddg 
+               JOIN ORD_GOD ordgod 
+                 ON (ordgod.ord_no = lgsddg.ord_no
+                 AND ordgod.ord_god_turn = lgsddg.ord_god_turn) 
+               JOIN ORD ord 
+                 ON (ord.ord_no = ordgod.ord_no)
+               JOIN LGS_DLV lgsdv 
+                 ON (lgsdv.ord_no = lgsddg.ord_no 
+                 AND lgsdv.dlv_pcupsp_turn = lgsddg.dlv_pcupsp_turn
+                 AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+               JOIN LGS_DLVSP lgsdsp 
+                 ON (lgsdsp.ord_no = lgsdv.ord_no 
+                 AND lgsdsp.dlv_pcupsp_turn = lgsdv.dlv_pcupsp_turn)
+	           LEFT OUTER JOIN INF_AFF_ORD io 
+	             ON (lgsddg.ord_no = io.ord_no 
+	             AND lgsddg.ord_god_turn = io.ord_god_turn)
+			   LEFT OUTER JOIN mbr_grd mbrGrd
+				 ON ord.mbr_no = mbrGrd.mbr_no
+	     WHERE 1=1
+	     <include refid="com.plgrim.ncp.biz.claim.ordergoodlack.whereClm"/>
+	       AND lgsddg.dlivy_drct_tp_cd <![CDATA[<>]]> 'DRT_EXCHG'   /* 줄고지시유형 : 맞교환 제외 */
+	       AND lgsddg.gft_yn = 'N'  
+	</select>
+</mapper>

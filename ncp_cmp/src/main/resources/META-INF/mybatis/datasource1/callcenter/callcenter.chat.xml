@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.chat">
+	<resultMap id="chatListResult" type="com.plgrim.ncp.biz.callcenter.result.ChatInquiryResult">
+		<result property="chatInqSn"  column="CHAT_INQ_SN"/>
+		<result property="chatInqTpCdNm" column="INQ_TP_CD_NM"/>
+		<result property="chatInqSj" column="INQ_SJ"/>
+		<result property="mbrId" column="MBR_ID"/>
+		<result property="mbrNm" column="MBR_NM"/>
+		<result property="mbrNo" column="MBR_NO"/>
+		<result property="inqCstmrNm" column="INQ_CSTMR_NM"/>
+
+
+		<result property="chatTicketId" column="CHAT_TICKET_ID"/>
+		<result property="chatTransYn" column="CHAT_TRANS_YN"/>
+
+		<result property="ordNo" column="ORD_NO"/>
+		<result property="godNo" column="GOD_NO"/>
+
+		<result property="cnsltDt" column="CNSLT_DT"/>
+		<result property="cstmrClmCd" column="CSTMR_CLM_CD"/>
+		<result property="cstmrClmCdNm" column="CSTMR_CLM_CD_NM"/>
+		<result property="ansAdminNm" column="ANS_ADMIN_NM"/>
+		<result property="cnsltStatCdNm" column="CNSLT_STAT_CD_NM"/>
+		<result property="prcsComptDt" column="CNSLT_PRCS_COMPT_DT"/>
+		<result property="ansEvlCdNm" column="ANS_EVL_CD_NM" />
+		<result property="ansEvlCd" column="ANS_EVL_CD" />
+
+		<result property="inPathSectCdNm" column="LDIN_PATH_SECT_CD_NM"/>
+		<result property="inMediaTpCdNm" column="LDIN_MEDIA_TP_CD_NM"/>
+		<result property="inScrinSectCdNm" column="LDIN_SCRIN_SECT_CD_NM"/>
+		<result property="chatTpCdNm" column="CHAT_TP_CD_NM"/>
+
+		<result property="mallNm" column="MALL_NM"/>
+		<result property="langCd" column="LANG_CD" />
+		<result property="langCdNm" column="LANG_CD_NM" />
+
+		<result property="regDt" column="REG_DT" />
+		<result property="onlneGrdNm" column="ONLNE_GRD_NM"/>
+
+	</resultMap>
+
+	<select id="getListChat" parameterType="com.plgrim.ncp.biz.callcenter.data.ChatInqSearchDTO" resultMap="chatListResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT grup.CHAT_INQ_SN, /*com.plgrim.ncp.biz.callcenter.chat.getListChat PLGRIM톡 리스트조회 2017/04/14 jenna*/
+				grup.CHAT_TICKET_ID,
+				cd6.CD_NM AS INQ_TP_CD_NM,
+				grup.INQ_SJ,
+				mb.MBR_ID,
+				mb.MBR_NM,
+				mb.MBR_NO,
+				grup.INQ_CSTMR_NM,
+				ccog.ORD_NO,
+				ccog.GOD_NO,
+				grup.REG_DT,
+				cd7.CD_NM AS CSTMR_CLM_CD_NM,
+				cd3.CD_NM AS CNSLT_STAT_CD_NM,
+				grup.CNSLT_PRCS_COMPT_DT,
+				cd5.CD_NM AS ANS_EVL_CD_NM,
+				grup.ANS_EVL_CD,
+				cd1.CD_NM AS LDIN_PATH_SECT_CD_NM,
+				cd8.CD_NM AS LDIN_MEDIA_TP_CD_NM,
+				cd9.CD_NM AS LDIN_SCRIN_SECT_CD_NM,
+				mall.MALL_NM ,
+				cd2.CD_NM AS LANG_CD_NM,
+				sa1.ADMIN_NM AS ANS_ADMIN_NM,
+				CASE WHEN grup.SENARIO_CHAT_YN = 'Y'
+					 THEN '시나리오채팅'
+					 ELSE '일반채팅'
+				 END AS CHAT_TP_CD_NM,
+				 scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 */
+		FROM(	SELECT cci.CHAT_INQ_SN,
+						cci.CHAT_TICKET_ID,
+						cci.INQ_TP_CD,
+						ccd.INQ_DETAIL_TP_CD,
+						cci.INQ_SJ,
+						cci.MBR_NO,
+						cci.INQ_CSTMR_NM,
+						cci.REG_DT,
+						cc.CSTMR_CLM_CD,
+						cc.REGTR_ID ,
+						cc.CNSLT_STAT_CD,
+						cc.CNSLT_PRCS_COMPT_DT,
+						cci.ANS_EVL_CD,
+						cci.LDIN_PATH_SECT_CD,
+						cci.LDIN_MEDIA_TP_CD,
+						cci.LDIN_SCRIN_SECT_CD,
+						cci.MALL_ID,
+						cci.LANG_CD,
+						cc.UDTER_ID,
+						cc.CNSLT_SN,
+						cci.SENARIO_CHAT_YN
+				FROM CSO_CHAT_INQ cci
+				LEFT OUTER JOIN CSO_CNSLT cc ON cci.CHAT_INQ_SN = cc.CHAT_INQ_SN
+				LEFT OUTER JOIN CSO_CNSLT_DETAIL ccd ON ccd.CNSLT_SN = cc.CNSLT_SN
+				GROUP BY  cci.CHAT_INQ_SN,
+							cci.CHAT_TICKET_ID,
+							cci.INQ_TP_CD,
+							ccd.INQ_DETAIL_TP_CD,
+							cci.INQ_SJ,
+							cci.MBR_NO,
+							cci.INQ_CSTMR_NM,
+							cci.REG_DT,
+							cc.CSTMR_CLM_CD,
+							cc.REGTR_ID ,
+							cc.CNSLT_STAT_CD,
+							cc.CNSLT_PRCS_COMPT_DT,
+							cci.ANS_EVL_CD,
+							cci.LDIN_PATH_SECT_CD,
+							cci.LDIN_MEDIA_TP_CD,
+							cci.LDIN_SCRIN_SECT_CD,
+							cci.MALL_ID,
+							cci.LANG_CD,
+							cc.UDTER_ID,
+							cc.CNSLT_SN,
+							cci.SENARIO_CHAT_YN
+		)grup
+		LEFT OUTER JOIN MBR mb ON mb.MBR_NO= grup.MBR_NO
+		LEFT OUTER JOIN SYS_ADMIN sa1 ON (sa1.ADMIN_ID = grup.REGTR_ID)
+		LEFT OUTER JOIN SYS_ADMIN sa2 ON (sa2.ADMIN_ID = grup.UDTER_ID)
+		LEFT OUTER JOIN SYS_CD cd1 ON (cd1.CD = grup.LDIN_PATH_SECT_CD)
+		LEFT OUTER JOIN SYS_CD cd2  ON (cd2.CD = grup.LANG_CD)
+		LEFT OUTER JOIN SYS_MALL mall ON (mall.MALL_ID = grup.MALL_ID)
+		LEFT OUTER JOIN SYS_CD cd3 ON (cd3.CD = grup.CNSLT_STAT_CD)
+		LEFT OUTER JOIN SYS_CD cd4 ON (cd4.CD = grup.INQ_DETAIL_TP_CD)
+		LEFT OUTER JOIN SYS_CD cd5 ON (cd5.CD = grup.ANS_EVL_CD)
+		LEFT OUTER JOIN SYS_CD cd6 ON (cd6.CD = grup.INQ_TP_CD)
+		LEFT OUTER JOIN SYS_CD cd7 ON (cd7.CD = grup.CSTMR_CLM_CD)
+		LEFT OUTER JOIN SYS_CD cd8 ON (cd8.CD = grup.LDIN_MEDIA_TP_CD)
+		LEFT OUTER JOIN SYS_CD cd9 ON (cd9.CD = grup.LDIN_SCRIN_SECT_CD)
+		LEFT OUTER JOIN CSO_CNSLT_ORD_GOD ccog ON (ccog.CNSLT_SN = grup.CNSLT_SN)
+		LEFT OUTER JOIN mbr_grd mbrGrd ON mb.mbr_no = mbrGrd.mbr_no
+		LEFT OUTER JOIN MV_SYS_CD sconlnembrgrd
+			ON (sconlnembrgrd.cd = mbrGrd.onlne_grd_cd AND sconlnembrgrd.upper_cd='ONLNE_GRD' 	AND sconlnembrgrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+		WHERE 1=1
+		<if test=" chatInqSn  != null and chatInqSn != '' ">
+			AND grup.CHAT_INQ_SN=#{chatInqSn}
+		</if>
+		<if test=" chatTicketId != null and chatTicketId != '' ">
+			AND grup.CHAT_TICKET_ID=#{chatTicketId}
+		</if>
+		<if test="mbrNo != null and mbrNo != ''">
+			AND grup.MBR_NO = #{mbrNo}
+		</if>
+		<if test="ordNo !=null and ordNo !='' ">
+			AND ccog.ORD_NO=#{ordNo}
+		</if>
+		<if test=" mallId != null and mallId != '' ">
+			AND grup.MALL_ID=#{mallId}
+		</if>
+		<if test="langCd != null and langCd != ''">
+			AND grup.LANG_CD=#{langCd}
+		</if>
+		<if test=" cnsltStatCd != null and cnsltStatCd !='' ">
+			AND grup.CNSLT_STAT_CD =#{cnsltStatCd}
+		</if>
+		<if test="searchDateType !=null and searchDateType !='' ">
+			<if test="searchDateType == 'cnsltDt'">
+				AND grup.REG_DT BETWEEN to_date(#{chatStartDt},'YYYYMMDDHH24MISS') AND to_date(#{chatEndDt},'YYYYMMDDHH24MISS')
+			</if>
+			<if test="searchDateType == 'cnsltComptDt'">
+				AND grup.CNSLT_PRCS_COMPT_DT BETWEEN to_date(#{chatStartDt},'YYYYMMDDHH24MISS') AND to_date(#{chatEndDt},'YYYYMMDDHH24MISS')
+			</if>
+		</if>
+		<if test="inqTpCd !=null and inqTpCd !='' ">
+			AND grup.INQ_TP_CD=#{inqTpCd}
+		</if>
+		<if test=" inqDetailTpCd !=null and inqDetailTpCd !='' ">
+			AND grup.INQ_DETAIL_TP_CD=#{inqDetailTpCd}
+		</if>
+		<if test=" inPathSectCd !=null and inPathSectCd !='' ">
+			AND grup.LDIN_PATH_SECT_CD=#{inPathSectCd}
+		</if>
+		<if test=" inMediaTpCd !=null and inMediaTpCd !='' ">
+			AND grup.LDIN_MEDIA_TP_CD=#{inMediaTpCd}
+		</if>
+		<if test=" inScrinSectCd !=null and inScrinSectCd !='' ">
+			AND grup.LDIN_SCRIN_SECT_CD=#{inScrinSectCd}
+		</if>
+		<if test=" ansEvlCd !=null and ansEvlCd !=''">
+			AND grup.ANS_EVL_CD  IN (  SELECT REGEXP_SUBSTR(d.param, '[^,]+', 1, level) as param
+			FROM (SELECT #{ansEvlCd, jdbcType=VARCHAR} AS param FROM DUAL) d
+			CONNECT BY LEVEL <![CDATA[<=]]> REGEXP_COUNT(d.param, '[^,]+'))   /* 만족도평가 코드 */
+		</if>
+		<if test=" cnsltChrgerId != null and cnsltChrgerId !='' ">
+			AND grup.REGTR_ID=#{cnsltChrgerId}
+		</if>
+		<if test="inqSj != null and inqSj !='' ">
+			AND grup.INQ_SJ=#{inqSj}
+		</if>
+		<choose>
+			<when test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase( senarioChatYn, 'Y')">
+			AND grup.SENARIO_CHAT_YN = #{senarioChatYn}
+			</when>
+			<when test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase( senarioChatYn, 'N')">
+			AND grup.SENARIO_CHAT_YN = #{senarioChatYn}
+			</when>
+		</choose>
+		<if test='onlneGrdCd != null and onlneGrdCd != ""'>
+			AND mbrGrd.onlne_grd_cd = #{onlneGrdCd, jdbcType=VARCHAR} /* 온라인 등급 코드 */
+		</if>
+			ORDER BY grup.CHAT_INQ_SN DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+
+
+
+	<select id="getListChatTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.ChatInqSearchDTO" resultType="long">
+		SELECT COUNT(*)
+		FROM( SELECT cci.CHAT_INQ_SN,
+					cci.CHAT_TICKET_ID,
+					cci.INQ_TP_CD,
+					ccd.INQ_DETAIL_TP_CD,
+					cci.INQ_SJ,
+					cci.MBR_NO,
+					cci.INQ_CSTMR_NM,
+					cci.REG_DT,
+					cc.CSTMR_CLM_CD,
+					cc.REGTR_ID ,
+					cc.CNSLT_STAT_CD,
+					cc.CNSLT_PRCS_COMPT_DT,
+					cci.ANS_EVL_CD,
+					cci.LDIN_PATH_SECT_CD,
+					cci.LDIN_MEDIA_TP_CD,
+					cci.LDIN_SCRIN_SECT_CD,
+					cci.MALL_ID,
+					cci.LANG_CD,
+					cc.UDTER_ID,
+					cc.CNSLT_SN,
+					cci.SENARIO_CHAT_YN
+					FROM CSO_CHAT_INQ cci
+					LEFT OUTER JOIN CSO_CNSLT cc ON cci.CHAT_INQ_SN = cc.CHAT_INQ_SN
+					LEFT OUTER JOIN CSO_CNSLT_DETAIL ccd ON ccd.CNSLT_SN = cc.CNSLT_SN
+					GROUP BY cci.CHAT_INQ_SN,
+					cci.CHAT_TICKET_ID,
+					cci.INQ_TP_CD,
+					ccd.INQ_DETAIL_TP_CD,
+					cci.INQ_SJ,
+					cci.MBR_NO,
+					cci.INQ_CSTMR_NM,
+					cci.REG_DT,
+					cc.CSTMR_CLM_CD,
+					cc.REGTR_ID ,
+					cc.CNSLT_STAT_CD,
+					cc.CNSLT_PRCS_COMPT_DT,
+					cci.ANS_EVL_CD,
+					cci.LDIN_PATH_SECT_CD,
+					cci.LDIN_MEDIA_TP_CD,
+					cci.LDIN_SCRIN_SECT_CD,
+					cci.MALL_ID,
+					cci.LANG_CD,
+					cc.UDTER_ID,
+					cc.CNSLT_SN,
+					cci.SENARIO_CHAT_YN
+		)grup
+		LEFT OUTER JOIN MBR mb ON mb.MBR_NO= grup.MBR_NO
+		LEFT OUTER JOIN SYS_ADMIN sa1 ON (sa1.ADMIN_ID = grup.REGTR_ID)
+		LEFT OUTER JOIN SYS_ADMIN sa2 ON (sa2.ADMIN_ID = grup.UDTER_ID)
+		LEFT OUTER JOIN SYS_CD cd1 ON (cd1.CD = grup.LDIN_PATH_SECT_CD)
+		LEFT OUTER JOIN SYS_CD cd2 ON (cd2.CD = grup.LANG_CD)
+		LEFT OUTER JOIN SYS_MALL mall ON (mall.MALL_ID = grup.MALL_ID)
+		LEFT OUTER JOIN SYS_CD cd3 ON (cd3.CD = grup.CNSLT_STAT_CD)
+		LEFT OUTER JOIN SYS_CD cd4 ON (cd4.CD = grup.INQ_DETAIL_TP_CD)
+		LEFT OUTER JOIN SYS_CD cd5 ON (cd5.CD = grup.ANS_EVL_CD)
+		LEFT OUTER JOIN SYS_CD cd6 ON (cd6.CD = grup.INQ_TP_CD)
+		LEFT OUTER JOIN SYS_CD cd7 ON (cd7.CD = grup.CSTMR_CLM_CD)
+		LEFT OUTER JOIN SYS_CD cd8 ON (cd8.CD = grup.LDIN_MEDIA_TP_CD)
+		LEFT OUTER JOIN SYS_CD cd9 ON (cd9.CD = grup.LDIN_SCRIN_SECT_CD)
+		LEFT OUTER JOIN CSO_CNSLT_ORD_GOD ccog ON (ccog.CNSLT_SN = grup.CNSLT_SN)
+		LEFT OUTER JOIN mbr_grd mbrGrd ON mb.mbr_no = mbrGrd.mbr_no
+		WHERE 1=1
+		<if test=" chatInqSn  != null and chatInqSn != '' ">
+			AND grup.CHAT_INQ_SN=#{chatInqSn}
+		</if>
+		<if test=" chatTicketId != null and chatTicketId != '' ">
+			AND grup.CHAT_TICKET_ID=#{chatTicketId}
+		</if>
+		<if test="mbrNo != null and mbrNo != ''">
+			AND grup.MBR_NO = #{mbrNo}
+		</if>
+		<if test="ordNo !=null and ordNo !='' ">
+			AND ccog.ORD_NO=#{ordNo}
+		</if>
+		<if test=" mallId != null and mallId != '' ">
+			AND grup.MALL_ID=#{mallId}
+		</if>
+		<if test="langCd != null and langCd != ''">
+			AND grup.LANG_CD=#{langCd}
+		</if>
+		<if test=" cnsltStatCd != null and cnsltStatCd !='' ">
+			AND grup.CNSLT_STAT_CD =#{cnsltStatCd}
+		</if>
+		<if test="searchDateType !=null and searchDateType !='' ">
+			<if test="searchDateType == 'cnsltDt'">
+				AND grup.REG_DT BETWEEN to_date(#{chatStartDt},'YYYYMMDDHH24MISS') AND to_date(#{chatEndDt},'YYYYMMDDHH24MISS')
+			</if>
+			<if test="searchDateType == 'cnsltComptDt'">
+				AND grup.CNSLT_PRCS_COMPT_DT BETWEEN to_date(#{chatStartDt},'YYYYMMDDHH24MISS') AND to_date(#{chatEndDt},'YYYYMMDDHH24MISS')
+			</if>
+		</if>
+		<if test="inqTpCd !=null and inqTpCd !='' ">
+			AND grup.INQ_TP_CD=#{inqTpCd}
+		</if>
+		<if test=" inqDetailTpCd !=null and inqDetailTpCd !='' ">
+			AND grup.INQ_DETAIL_TP_CD=#{inqDetailTpCd}
+		</if>
+		<if test=" inPathSectCd !=null and inPathSectCd !='' ">
+			AND grup.LDIN_PATH_SECT_CD=#{inPathSectCd}
+		</if>
+		<if test=" inMediaTpCd !=null and inMediaTpCd !='' ">
+			AND grup.LDIN_MEDIA_TP_CD=#{inMediaTpCd}
+		</if>
+		<if test=" inScrinSectCd !=null and inScrinSectCd !='' ">
+			AND grup.LDIN_SCRIN_SECT_CD=#{inScrinSectCd}
+		</if>
+		<if test=" ansEvlCd !=null and ansEvlCd !=''">
+			AND grup.ANS_EVL_CD  IN (  SELECT REGEXP_SUBSTR(d.param, '[^,]+', 1, level) as param
+			FROM (SELECT #{ansEvlCd, jdbcType=VARCHAR} AS param FROM DUAL) d
+			CONNECT BY LEVEL <![CDATA[<=]]> REGEXP_COUNT(d.param, '[^,]+'))   /* 만족도평가 코드 */
+		</if>
+		<if test=" cnsltChrgerId != null and cnsltChrgerId !='' ">
+			AND grup.REGTR_ID=#{cnsltChrgerId}
+		</if>
+		<if test="inqSj != null and inqSj !='' ">
+			AND grup.INQ_SJ=#{inqSj}
+		</if>
+		<choose>
+			<when test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase( senarioChatYn, 'Y')">
+				AND grup.SENARIO_CHAT_YN = #{senarioChatYn}
+			</when>
+			<when test="@com.plgrim.ncp.framework.commons.StringService@equalsIgnoreCase( senarioChatYn, 'N')">
+				AND grup.SENARIO_CHAT_YN = #{senarioChatYn}
+			</when>
+		</choose>
+		<if test='onlneGrdCd != null and onlneGrdCd != ""'>
+			AND mbrGrd.onlne_grd_cd = #{onlneGrdCd, jdbcType=VARCHAR} /* 온라인 등급 코드 */
+		</if>
+	</select>
+
+
+	<resultMap id="userInfo" type="com.plgrim.ncp.biz.callcenter.result.MtmUserInfoResult">
+		<result property="inqCstmrNm"  column="INQ_CSTMR_NM"/>
+		<result property="mbrSexSectCd" column="MBR_SEX_SECT_CD" />
+		<result property="mallNm"  column="MALL_NM" />
+		<result property="mbrTpNm"  column="MBR_TP_NM" />
+		<result property="erpGrdCd" column="ERP_GRD_CD" />
+		<result property="mbrId" column="MBR_ID" />
+		<result property="inqMbrNo" column="MBR_NO" />
+		<result property="erpCstmrNo" column="ERP_CSTMR_NO"/>
+		<result property="ordNo" column="ORD_NO"/>
+		<result property="godNo" column="GOD_NO"/>
+		<result property="godNm" column="GOD_NM"/>
+		<result property="ordGodTurn" column="ORD_GOD_TURN"/>
+
+	</resultMap>
+
+<select id="selectChatUserInfo" parameterType="long" resultMap="userInfo">
+	SELECT grup.INQ_CSTMR_NM, /*com.plgrim.ncp.biz.callcenter.chat.selectChatUserInfo 채팅상담 고객정보조회 2017/04/14 jenna*/
+			grup.MBR_SEX_SECT_NM,
+			grup.MALL_NM,
+			grup.MBR_TP_NM,
+			grup.ERP_GRD_CD,
+			grup.MBR_ID,
+			grup.MBR_NO,
+			grup.ERP_CSTMR_NO,
+			ccog.ORD_NO,
+			ccog.GOD_NO,
+			ccog.GOD_NM,
+			ccog.ORD_GOD_TURN
+	FROM (
+		SELECT cci.INQ_CSTMR_NM,
+			cd1.CD_NM AS MBR_SEX_SECT_NM,
+			sm.MALL_NM,
+			cd2.CD_NM AS MBR_TP_NM,
+			mb.ERP_GRD_CD,
+			mb.MBR_ID,
+			mb.MBR_NO,
+			mb.ERP_CSTMR_NO,
+			cc.CNSLT_SN
+		FROM CSO_CHAT_INQ cci
+			LEFT OUTER JOIN MBR mb ON  cci.MBR_NO = mb.MBR_NO
+			LEFT OUTER JOIN SYS_MALL sm ON sm.MALL_ID=mb.JOIN_MALL_ID
+			LEFT OUTER JOIN SYS_CD cd1 ON cd1.CD = mb.MBR_SEX_SECT_CD
+			LEFT OUTER JOIN SYS_CD cd2 ON cd2.CD = mb.MBR_TP_CD
+			LEFT OUTER JOIN CSO_CNSLT cc ON cc.CHAT_INQ_SN = cci.CHAT_INQ_SN
+		WHERE  cci.CHAT_INQ_SN=#{chatInqSn,jdbcType=NUMERIC}
+	)grup
+	LEFT OUTER JOIN CSO_CNSLT_ORD_GOD ccog ON ccog.CNSLT_SN = grup.CNSLT_SN
+
+</select>
+
+
+<select id="selectChatInqInfo" parameterType="long" resultMap="chatListResult">
+	SELECT cci.CHAT_INQ_SN, /*com.plgrim.ncp.biz.callcenter.chat.selectChatInqInfo 채팅상담건조회 2017/04/14 jenna*/
+        cci.REG_DT,
+        cd1.CD_NM AS ANS_EVL_CD_NM,
+        cd2.CD_NM AS LDIN_PATH_SECT_CD_NM,
+        cd3.CD_NM AS LDIN_MEDIA_TP_CD_NM,
+        cd4.CD_NM AS LDIN_SCRIN_SECT_CD_NM,
+        cd5.CD_NM AS INQ_TP_CD_NM,
+        cd6.CD_NM AS CNSLT_STAT_CD_NM,
+        cci.INQ_SJ,
+        cci.CHAT_TRANS_YN,
+        cci.CHAT_TICKET_ID
+	FROM CSO_CHAT_INQ cci
+	LEFT OUTER JOIN CSO_CNSLT cc ON cc.CHAT_INQ_SN = cci.CHAT_INQ_SN
+	LEFT OUTER JOIN SYS_CD  cd1 ON cd1.CD = cci.ANS_EVL_CD
+	LEFT OUTER JOIN SYS_CD cd2 ON cd2.CD = cci.LDIN_PATH_SECT_CD
+	LEFT OUTER JOIN SYS_cd cd3 ON cd3.CD = cci.LDIN_MEDIA_TP_CD
+	LEFT OUTER JOIN SYS_cd cd4 ON cd4.CD = cci.LDIN_SCRIN_SECT_CD
+	LEFT OUTER JOIN SYS_CD cd5 ON cd5.CD = cci.INQ_TP_CD
+	LEFT OUTER JOIN SYS_CD cd6 ON cd6.CD = cc.CNSLT_STAT_CD
+	WHERE cci.CHAT_INQ_SN=#{chatInqSn,jdbcType=NUMERIC}
+</select>
+
+	<resultMap id="detailChatInqResult" type="com.plgrim.ncp.biz.callcenter.result.DetailChatInqResult">
+		<result property="cnsltSn"  column="CNSLT_SN"/>
+		<result property="cnsltDetailTurn" column="CNSLT_DETAIL_TURNv"/>
+
+		<result property="inqTpCd" column="INQ_TP_CD"/>
+		<result property="inqTpNm" column="INQ_TP_NM"/>
+
+		<result property="inqDetailTpCd" column="INQ_DETAIL_TP_CD"/>
+		<result property="inqDetailTpNm" column="INQ_DETAIL_TP_NM"/>
+
+		<result property="cnsltDt" column="CNSLT_DT"/>
+		<result property="adminId" column="ADMIN_ID"/>
+		<result property="ansAdminNm" column="ANS_ADMIN_NM"/>
+
+		<result property="cnsltDetailStatCd" column="CNSLT_DETAIL_STAT_CD"/>
+		<result property="cnsltDetailStatNm" column="CNSLT_DETAIL_STAT_NM"/>
+
+		<result property="regtrId" column="REGTR_ID"/>
+		<result property="cstmrClmCd" column="CSTMR_CLM_CD"/>
+		<result property="cnsltDetailCont" column="CNSLT_DETAIL_CONT"/>
+
+		<result property="cnsltKndCd" column="CNSLT_KND_CD"/>
+		<result property="cnsltKndNm" column="CNSLT_KND_NM"/>
+		<result property="jobcdNm" column="JOBCD_NM"/>
+		<result property="chatInqSn" column="CHAT_INQ_SN"/>
+
+		<result property="deleteYn" column="DELETE_YN"/>
+
+
+	</resultMap>
+
+
+<select id="getDetailChatInqList" parameterType="CsoCnslt" resultMap="detailChatInqResult">
+	SELECT cc.CNSLT_SN ,  /*com.plgrim.ncp.biz.callcenter.chat.getDetailChatInqList 채팅상세조회 2017/04/14 jenna*/
+        ccd.CNSLT_DETAIL_TURN,
+        ccd.INQ_TP_CD,
+        cd1.CD_NM AS INQ_TP_NM,
+        ccd.INQ_DETAIL_TP_CD,
+        cd2.CD_NM AS INQ_DETAIL_TP_NM,
+        ccd.CNSLT_DT,
+        ccd.CNSLT_CHRGER_ID AS ADMIN_ID,
+        sa1.ADMIN_NM AS ANS_ADMIN_NM,
+        ccd.CNSLT_DETAIL_STAT_CD,
+        cd3.CD_NM AS CNSLT_DETAIL_STAT_NM,
+        ccd.REGTR_ID ,
+        ccd.CSTMR_CLM_CD,
+        ccd.CNSLT_DETAIL_CONT,
+        cd5.CD_NM AS CNSLT_KND_NM,
+        ccd.CNSLT_KND_CD,
+        jobtp.JOBCD_NM,
+        cc.CHAT_INQ_SN,
+        ccd.DELETE_YN
+	FROM CSO_CNSLT cc
+		LEFT OUTER JOIN CSO_CNSLT_DETAIL ccd ON ccd.CNSLT_SN= cc.CNSLT_SN
+		LEFT OUTER JOIN SYS_CD cd1 ON cd1.CD = ccd.INQ_TP_CD
+		LEFT OUTER JOIN SYS_CD cd2 ON cd2.CD = ccd.INQ_DETAIL_TP_CD
+		LEFT OUTER JOIN SYS_ADMIN sa1 ON sa1.ADMIN_ID = ccd.CNSLT_CHRGER_ID
+		LEFT OUTER JOIN SYS_CD cd3 ON cd3.CD = ccd.CNSLT_DETAIL_STAT_CD
+		LEFT OUTER JOIN (SELECT    ccdjt.CNSLT_SN,
+								   ccdjt.CNSLT_DETAIL_TURN,
+								   LISTAGG(cd4.CD_NM, ',') WITHIN GROUP (ORDER BY cd4.CD_NM)  AS JOBCD_NM
+								   FROM CSO_CNSLT_DETAIL_JOB_TP ccdjt
+								   LEFT OUTER JOIN SYS_CD cd4 ON cd4.CD = ccdjt.CNSLT_JOB_TP_CD
+								   GROUP BY ccdjt.CNSLT_SN ,ccdjt.CNSLT_DETAIL_TURN) jobtp
+	   ON ccd.CNSLT_SN = jobtp.CNSLT_SN AND jobtp.CNSLT_DETAIL_TURN = ccd.CNSLT_DETAIL_TURN
+	   LEFT OUTER JOIN SYS_CD cd5 ON cd5.CD = ccd.CNSLT_KND_CD
+	WHERE 1=1
+		AND cc.CHAT_INQ_SN=#{chatInqSn,jdbcType=NUMERIC}
+		AND cc.CNSLT_SN=#{cnsltSn,jdbcType=NUMERIC}
+		AND ccd.DELETE_YN ='N'
+	ORDER BY ccd.CNSLT_DETAIL_TURN ASC
+</select>
+
+<select id="selectChatCnsltSn" parameterType="long" resultType="String">
+	  SELECT CNSLT_SN /*com.plgrim.ncp.biz.callcenter.chat.selectChatCnsltSn 채팅문의번호로 상담번호조회 2017/04/14 jenna*/
+	  FROM CSO_CNSLT
+	  WHERE CHAT_INQ_SN = #{chatInqSn,jdbcType=NUMERIC}
+</select>
+
+
+<select id="selectChatSn" parameterType="long" resultType="String">
+	SELECT cci.CHAT_INQ_SN /*com.plgrim.ncp.biz.callcenter.chat.selectChatSn 상담번호로 채팅문의번호조회 2017/04/14 jenna*/
+	FROM CSO_CHAT_INQ cci
+		LEFT OUTER JOIN CSO_CNSLT cc
+		ON cci.CHAT_INQ_SN = cc.CHAT_INQ_SN
+	WHERE cc.CNSLT_SN=#{cnsltSn,jdbcType =NUMERIC}
+</select>
+
+<select id="selectChatInqDetail" parameterType="long" resultMap="chatListResult">
+	SELECT * /*com.plgrim.ncp.biz.callcenter.chat.selectChatInqDetail 채팅문의 테이블조회 2017/04/14 jenna*/
+	FROM CSO_CHAT_INQ
+	WHERE CHAT_INQ_SN=#{chatInqSn,jdbcType=NUMERIC}
+</select>
+</mapper>
+

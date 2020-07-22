@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.order">
+
+    <resultMap id="orderEmailResult" type="com.plgrim.ncp.biz.order.result.OrderBoResult"> 
+     <collection property="lgsDlvspList" column="{ordNo=ordNotemp,dmstcWaybilNo=dmstcWaybilNoTemp}" ofType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend" select="selectEmailOrderDlvspList"/>
+     <collection property="payList" column="{ordNo=ordNotemp}" ofType="com.plgrim.ncp.base.entities.datasource1.pay.Pay" select="selectEmailPayList"/>
+    </resultMap>
+    
+    <resultMap id="EmailLgsDlvspResult" type="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend"> 
+      <collection property="lgsDlvList" column="{ordNo=ordTurn,dlvPcupspTurn=turn,dmstcWaybilNo=dmstcWaybilNoTemp}" ofType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvFoExtend"  select="selectEmaillgsDlvList"/>
+      <collection property="lgsDlvCoList" column="{ordNo=ordTurn,dlvPcupspTurn=turn,dmstcWaybilNo=dmstcWaybilNoTemp}" ofType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvFoExtend"  select="selectEmaillgsDlvCoList"/>
+
+    </resultMap>
+
+    <resultMap id="EmailLgsDlvResult" type="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvFoExtend"> 
+      <collection property="ordGodList" column="{ordNo=ordTurn,dlvPcupspTurn=turn,dlvTurn=dTurn}" ofType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodFoExtend"  select="selectEmailOrdGodList"/>
+    </resultMap>
+    
+    <resultMap id="EmailGodResult" type="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodFoExtend"> 
+      <collection property="godOptList" column="{ordNo=ordTurn,pkGodTurn=pkGodTurn}" ofType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodFoExtend"  select="selectEmailOrdOgCGodList"/> 
+    </resultMap>
+    
+    <select id="selectEmailOrderCompt" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="orderEmailResult">
+        SELECT od.ord_no                   AS ordNo /*주문번호*/
+             , od.ord_no                   AS ordNotemp /*주문번호*/
+             , od.ord_stat_cd              AS ordStatCd
+             , st.cd_nm                    AS ordStat/*주문상태*/
+             , to_char(od.ord_dt,'yyyy-mm-dd hh24:mi:ss') AS startOrdDt /*주문접수일시*/
+             , od.ord_dt /* 주문일자 (2019.02.11: 날짜 포맷형식 문제로 추가) */
+             , od.cstmr_nm        
+             , NVL(od.UNITY_PNT_USE_SUM_AMT,0) AS unityPntUseSumAmt
+             , NVL(od.UNITY_PNT_ACCML_SUM_AMT,0) AS unityPntAccmlSumAmt
+             , NVL(od.PAY_EXCHG_RT_CRNCY_SUM_AMT,0) AS payExchgRtCrncySumAmt
+             , NVL(od.webpnt_use_sum_amt,0) AS webPntUseSumAmt
+             , ALL_DC_SUM_AMT allDcSumAmt
+             , GOD_DC_SUM_AMT godDcSumAmt
+             , BUNDLE_DC_SUM_AMT bundleDcSumAmt
+             , CRS_DC_SUM_AMT crsDcSumAmt
+             , GOD_CPN_DC_SUM_AMT godCpnDcSumAmt
+             , BSK_CPN_DC_SUM_AMT bskCpnDcSumAmt
+             , DLV_CST_CPN_DC_SUM_AMT dlvCstCpnDcSumAmt
+             , DLV_CST_SUM_AMT dlvCstSumAmt
+             , SALE_SUM_AMT saleSumAmt
+             , #{dmstcWaybilNo, jdbcType=VARCHAR} AS dmstcWaybilNoTemp
+             , od.lang_cd                 AS langCdTemp
+             , (SELECT MAX(dlv_mn_cd) from lgs_dlv where ord_no = od.ord_no) dlvMnCd
+             , NVL(od.MILE_ACCML_SUM_AMT, 0) as mileAccmlSumAmt
+          FROM ORD od
+          JOIN MV_SYS_CD st 
+            ON od.ord_stat_cd = st.cd AND  st.lang_cd = od.lang_cd AND st.upper_cd = 'ORD_STAT'
+         WHERE od.ord_no = #{ordNo}
+    
+    </select>
+    
+    <select id="selectEmailOrderDlvspList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="EmailLgsDlvspResult">
+        SELECT ld.ord_no
+             , ld.ord_no AS ordTurn
+             , ld.dlv_pcupsp_turn 
+             , ld.dlv_pcupsp_turn    AS turn
+             , ld.clm_no
+             , ld.dlv_pcupsp_sect_cd
+             , ld.addrse_nm
+             , ld.dlv_sect_cd
+             , (
+                SELECT ld2.dlv_mn_cd
+                  FROM LGS_DLV ld2
+                WHERE ld2.ORD_NO = ld.ord_no 
+                    AND ld2.DLV_PCUPSP_TURN = ld.dlv_pcupsp_turn
+                    AND ROWNUM = 1
+               ) as dlv_mn_cd   /* 2015-12-18 배송수단 코드 위치 이동 수정 : AshA */
+             , ld.pkup_shop_id
+             , ld.pkup_shop_visit_date
+             , ld.addrse_base_addr 
+             , ld.addrse_detail_addr
+             , ld.addrse_nation_cd
+             , ld.addrse_post_no
+             , ld.addrse_cty_nm
+             , ld.addrse_lclty_nm
+             , CASE WHEN ld.addrse_mobil_area_no IS NULL THEN '' ELSE ld.addrse_mobil_area_no||'-'||ld.addrse_mobil_tlof_no ||'-'||ld.ADDRSE_MOBIL_TLOF_WTHN_NO  END AS mobilNo
+             , CASE WHEN ld.addrse_tel_area_no IS NULL THEN '' ELSE ld.addrse_tel_area_no||'-'||ld.addrse_tel_tlof_no ||'-'||ld.ADDRSE_TEL_TLOF_WTHN_NO END AS telNo
+             , ld.dlv_memo
+             ,  #{dmstcWaybilNo, jdbcType=VARCHAR} AS dmstcWaybilNoTemp
+         FROM LGS_DLVSP ld
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(dmstcWaybilNo)">
+            INNER JOIN lgs_dlv dv ON (dv.ord_no = ld.ord_no
+              AND  dv.dlv_pcupsp_turn = ld.dlv_pcupsp_turn )
+        </if>
+        WHERE ld.ord_no = #{ordNo}
+          AND ld.dlv_pcupsp_sect_cd IN('ORD_DLVSP','CLM_DLVSP')
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(dmstcWaybilNo)">
+          AND dv.dmstc_waybil_no = #{dmstcWaybilNo,jdbcType=VARCHAR}
+        </if>
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(dmstcWaybilNo)">
+          AND EXISTS ( SELECT 1 
+                         FROM lgs_dlivy_drct_god l 
+                         JOIN lgs_dlv dv
+                           ON dv.ord_no = l.ord_no
+                         AND  l.dlv_pcupsp_turn = dv.dlv_pcupsp_turn
+                         AND  l.dlv_turn  = dv.dlv_turn
+                        WHERE l.ord_no = ld.ord_no
+                          AND ld.dlv_pcupsp_turn = dv.dlv_pcupsp_turn
+                          AND l.shtg_dcsn_yn ='N'
+                         -- AND dv.mail_snd_yn ='N'
+        )
+        </if>
+     </select>
+    
+     <select id="selectEmailOrdGodList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="EmailGodResult">
+	/* [order.orderBoEmail.xml][selectEmailOrdGodList][][] */
+        SELECT x.* FROM (
+         SELECT DISTINCT  og.ord_no    
+              , og.ord_no AS ordTurn
+              , og.ord_god_turn  
+              , og.ord_god_turn  AS pkGodTurn
+              , og.brnd_grp_id
+              , sb.brnd_nm as brndNm  
+              , og.god_no
+              , og.god_nm
+              , og.itm_nm
+              , og.pay_exchg_rt_crncy_amt AS pay_exchg_rt_crncy_amt
+              , (SELECT img_url FROM god_img WHERE god_no = og.god_no AND IMG_TP_CD = 'THNAIL' AND img_turn = 1) as lst_img_url     /* 상품이미지*/
+              , og.ord_qty
+              , og.god_tp_cd
+              , lg.DLV_STAT_CD AS DLV_STAT_CD
+              , og.color_nm
+              , og.clor_chip_img_url
+              , og.god_wt
+              , og.RESVE_SALE_GOD_YN
+              , TO_CHAR(TO_DATE(og.RESVE_ORD_DLIVY_PREARNGE_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') as RESVE_ORD_DLIVY_PREARNGE_DATE /* 예약배송일 */
+              , g.FREE_REPAIR_PSB_YN
+              , shop.shop_nm
+              , shop.base_addr || ' ' || shop.detail_addr AS SHOP_ADDR
+              , shop.shop_tel_area_no || '-' || shop.shop_tel_tlof_no || '-' || shop.shop_tel_tlof_wthn_no AS SHOP_TEL
+              , SUBSTR(shop.wkdy_oper_beg_hhmm, 1,2) || ':' || SUBSTR(shop.wkdy_oper_beg_hhmm, 3) 
+              || ' ~ ' || SUBSTR(shop.wkdy_oper_end_hhmm, 1,2) || ':' || SUBSTR(shop.wkdy_oper_end_hhmm, 3) AS WKDY_HHMM
+              , shopPhoto.shop_img_url
+              , ( SELECT TO_CHAR(xxx.pickDate, 'YYYY/MM/DD hh24') || '시'
+										  FROM ( SELECT xx.pickDate
+										              , ROWNUM AS no
+										           FROM ( SELECT TO_DATE(cldr.sys_date || x.hh, 'YYYYMMDD hh24:mi') AS pickDate
+										                    FROM SYS_CLDR cldr
+										                         LEFT JOIN (SELECT c.shh + LEVEL - 1 hh
+										                                      FROM (SELECT to_char(to_date(wkdy_oper_beg_hhmm,'HH24:MI'),'HH24') AS shh
+										                                                 , to_char(to_date(wkdy_oper_end_hhmm,'HH24:MI'),'HH24') AS ehh
+										                                              FROM SYS_SHOP
+										                                             WHERE shop_id = lg.DLV_SHOP_ID
+										                                           ) c
+										                                    CONNECT BY LEVEL <![CDATA[<=]]> c.ehh - c.shh + 1
+										                                    ) x
+										                                ON 1=1
+										                   WHERE 1=1
+										                     AND NOT EXISTS( SELECT 1
+										                                       FROM SYS_SHOP_HOLDY shopHoldy
+										                                      WHERE 1=1
+										                                        AND cldr.sys_date = shopHoldy.sys_date
+										                                        AND shopHoldy.use_yn ='Y'
+										                                        AND shopHoldy.shop_id = lg.DLV_SHOP_ID
+										                                    )
+										                    AND TO_CHAR(TO_DATE(cldr.sys_date || x.hh, 'YYYYMMDD hh24'), 'YYYYMMDD hh24') >= TO_CHAR(SYSDATE, 'YYYYMMDD hh24')
+										                    AND cldr.sys_date BETWEEN SYSDATE -1 AND SYSDATE +60
+										                   ORDER BY TO_DATE(cldr.sys_date || x.hh, 'YYYYMMDD hh24:mi')
+										          ) xx
+										 ) xxx
+										 WHERE xxx.no = 36
+									) AS pickDate
+              , (SELECT MAX(p.prm_dtl_tp_cd)
+                   FROM ORD_GOD_APL_PRM p
+                  WHERE p.ord_no = og.ord_no
+                    AND p.ord_god_gft_turn = og.ord_god_turn
+                    AND p.prm_dtl_tp_cd IN('GOD_GFT' , 'ORD_GFT')) AS prm_dtl_tp_cd
+            , NVL((SELECT MAX(p.ord_god_turn)
+                   FROM ORD_GOD_APL_PRM p
+                  WHERE p.ord_no = og.ord_no
+                    AND p.ord_god_gft_turn = og.ord_god_turn
+                    AND p.prm_dtl_tp_cd IN('GOD_GFT' , 'ORD_GFT')), og.ord_god_turn) AS ori_god_turn
+           FROM ORD_GOD og
+           JOIN GOD g on og.god_no = g.god_no
+           JOIN LGS_DLIVY_DRCT_GOD lg
+             ON og.ord_no = lg.ord_no  AND og.ord_god_turn = lg.ord_god_turn 
+           JOIN LGS_DLV lv
+            ON lg.ord_no = lv.ord_no AND lg.dlv_pcupsp_turn = lv.dlv_pcupsp_turn AND lg.dlv_turn = lv.dlv_turn 
+           JOIN LGS_DLVSP lp
+            ON lv.ord_no = lp.ord_no AND lv.dlv_pcupsp_turn = lp.dlv_pcupsp_turn AND lp.dlv_pcupsp_sect_cd IN('ORD_DLVSP','CLM_DLVSP')
+           LEFT OUTER JOIN SYS_BRND sb 
+            ON og.brnd_grp_id = sb.brnd_id
+LEFT OUTER JOIN MV_SYS_CD dc
+            ON lv.dlv_com_cd = dc.cd AND dc.lang_cd ='KOR'  AND dc.upper_cd='DLV_COM'  
+            LEFT JOIN sys_shop shop
+                   ON lg.dlv_shop_id = shop.shop_id
+            LEFT JOIN sys_shop_photo shopPhoto
+                   ON shopPhoto.shop_id = shop.shop_id
+                  AND shopPhoto.use_yn = 'Y'
+               WHERE og.ord_no = #{ordNo}
+                AND og.dlv_pcupsp_turn = #{dlvPcupspTurn}
+                AND lv.dlv_turn = #{dlvTurn}
+                AND NOT EXISTS (
+                                 SELECT 1
+                                  FROM ORD_CPST_GOD_CNNC oc
+                                  WHERE og.ord_god_turn = oc.ord_cpst_god_turn
+                                    AND oc.ord_no = #{ordNo}
+                               )
+                               
+          UNION ALL 
+             
+         SELECT DISTINCT  og.ord_no    
+              , og.ord_no AS ordTurn
+              , og.ord_god_turn  
+              , og.ord_god_turn  AS pkGodTurn
+              , og.brnd_grp_id
+              , sb.brnd_nm as brndNm  
+              , og.god_no
+              , og.god_nm
+              , og.itm_nm
+              , CASE WHEN og.god_tp_cd IN('SET_GOD','PCKAGE_GOD') THEN (SELECT SUM(pay_exchg_rt_crncy_amt) 
+                                                                               FROM ORD_GOD o
+                                                                               JOIN ORD_CPST_GOD_CNNC c
+                                                                                 ON o.ord_no = c.ord_no
+                                                                                AND o.ord_god_turn = c.ord_cpst_god_turn
+                                                                               WHERE c.ord_no = og.ord_no
+                                                                                AND c.ord_god_turn = og.ord_god_turn
+                                                                        )  ELSE og.pay_exchg_rt_crncy_amt END AS pay_exchg_rt_crncy_amt
+              , (SELECT img_url FROM god_img WHERE god_no = og.god_no AND IMG_TP_CD = 'THNAIL' AND img_turn = 1) as lst_img_url     /* 상품이미지*/
+              , og.ord_qty
+              , og.god_tp_cd
+              , CASE WHEN og.god_tp_cd IN('SET_GOD','PCKAGE_GOD') THEN (SELECT MAX(so.DLV_STAT_CD) 
+                                                                               FROM LGS_DLIVY_DRCT_GOD so
+                                                                               WHERE so.ord_no = og.ord_no
+                                                                                 AND so.pckage_god_turn = og.ord_god_turn
+                                                                            GROUP BY so.pckage_god_turn
+                                                                        )  ELSE lg.DLV_STAT_CD END AS DLV_STAT_CD
+              , og.color_nm
+              , og.clor_chip_img_url
+              , og.god_wt
+              , og.RESVE_SALE_GOD_YN
+              , TO_CHAR(TO_DATE(og.RESVE_ORD_DLIVY_PREARNGE_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') as RESVE_ORD_DLIVY_PREARNGE_DATE /* 예약배송일 */
+              , g.FREE_REPAIR_PSB_YN
+              , shop.shop_nm
+              , shop.base_addr || ' ' || shop.detail_addr AS SHOP_ADDR
+              , shop.shop_tel_area_no || '-' || shop.shop_tel_tlof_no || '-' || shop.shop_tel_tlof_wthn_no AS SHOP_TEL
+              , SUBSTR(shop.wkdy_oper_beg_hhmm, 1,2) || ':' || SUBSTR(shop.wkdy_oper_beg_hhmm, 3) 
+              || ' ~ ' || SUBSTR(shop.wkdy_oper_end_hhmm, 1,2) || ':' || SUBSTR(shop.wkdy_oper_end_hhmm, 3) AS WKDY_HHMM
+              , shopPhoto.shop_img_url
+              , ( SELECT TO_CHAR(xxx.pickDate, 'YYYY/MM/DD hh24') || '시'
+										  FROM ( SELECT xx.pickDate
+										              , ROWNUM AS no
+										           FROM ( SELECT TO_DATE(cldr.sys_date || x.hh, 'YYYYMMDD hh24:mi') AS pickDate
+										                    FROM SYS_CLDR cldr
+										                         LEFT JOIN (SELECT c.shh + LEVEL - 1 hh
+										                                      FROM (SELECT to_char(to_date(wkdy_oper_beg_hhmm,'HH24:MI'),'HH24') AS shh
+										                                                 , to_char(to_date(wkdy_oper_end_hhmm,'HH24:MI'),'HH24') AS ehh
+										                                              FROM SYS_SHOP
+										                                             WHERE shop_id = lg.DLV_SHOP_ID
+										                                           ) c
+										                                    CONNECT BY LEVEL <![CDATA[<=]]> c.ehh - c.shh + 1
+										                                    ) x
+										                                ON 1=1
+										                   WHERE 1=1
+										                     AND NOT EXISTS( SELECT 1
+										                                       FROM SYS_SHOP_HOLDY shopHoldy
+										                                      WHERE 1=1
+										                                        AND cldr.sys_date = shopHoldy.sys_date
+										                                        AND shopHoldy.use_yn ='Y'
+										                                        AND shopHoldy.shop_id = lg.DLV_SHOP_ID
+										                                    )
+										                    AND TO_CHAR(TO_DATE(cldr.sys_date || x.hh, 'YYYYMMDD hh24'), 'YYYYMMDD hh24') >= TO_CHAR(SYSDATE, 'YYYYMMDD hh24')
+										                    AND cldr.sys_date BETWEEN SYSDATE -1 AND SYSDATE +60
+										                   ORDER BY TO_DATE(cldr.sys_date || x.hh, 'YYYYMMDD hh24:mi')
+										          ) xx
+										 ) xxx
+										 WHERE xxx.no = 36
+									) AS pickDate
+              , (SELECT MAX(p.prm_dtl_tp_cd)
+                   FROM ORD_GOD_APL_PRM p
+                  WHERE p.ord_no = og.ord_no
+                    AND p.ord_god_gft_turn = og.ord_god_turn
+                    AND p.prm_dtl_tp_cd IN('GOD_GFT' , 'ORD_GFT')) AS prm_dtl_tp_cd
+            , NVL((SELECT MAX(p.ord_god_turn)
+                   FROM ORD_GOD_APL_PRM p
+                  WHERE p.ord_no = og.ord_no
+                    AND p.ord_god_gft_turn = og.ord_god_turn
+                    AND p.prm_dtl_tp_cd IN('GOD_GFT' , 'ORD_GFT')), og.ord_god_turn) AS ori_god_turn
+           FROM ORD_GOD og
+           JOIN GOD g on og.god_no = g.god_no
+           JOIN LGS_DLIVY_DRCT_GOD lg
+            ON og.ord_no = lg.ord_no  AND og.ord_god_turn = lg.pckage_god_turn 
+           JOIN LGS_DLV lv
+            ON lg.ord_no = lv.ord_no AND lg.dlv_pcupsp_turn = lv.dlv_pcupsp_turn AND lg.dlv_turn = lv.dlv_turn 
+           JOIN LGS_DLVSP lp
+            ON lv.ord_no = lp.ord_no AND lv.dlv_pcupsp_turn = lp.dlv_pcupsp_turn AND lp.dlv_pcupsp_sect_cd IN('ORD_DLVSP','CLM_DLVSP')
+           LEFT OUTER JOIN SYS_BRND sb 
+            ON og.brnd_grp_id = sb.brnd_id
+LEFT OUTER JOIN MV_SYS_CD dc
+            ON lv.dlv_com_cd = dc.cd AND dc.lang_cd ='KOR'  AND dc.upper_cd='DLV_COM'  
+            LEFT JOIN sys_shop shop
+                   ON lg.dlv_shop_id = shop.shop_id
+            LEFT JOIN sys_shop_photo shopPhoto
+                   ON shopPhoto.shop_id = shop.shop_id
+                  AND ROWNUM = 1
+               WHERE og.ord_no = #{ordNo}
+                AND  lv.dlv_pcupsp_turn = #{dlvPcupspTurn}
+                AND lv.dlv_turn = #{dlvTurn}
+                AND NOT EXISTS (
+                                 SELECT 1
+                                  FROM ORD_CPST_GOD_CNNC oc
+                                  WHERE og.ord_god_turn = oc.ord_cpst_god_turn
+                                    AND oc.ord_no = #{ordNo}
+                               )                 
+			order by ord_god_turn,pkgodturn
+			) x order  by x.ori_god_turn, x.ord_god_turn, x.pkgodturn
+     </select>
+
+
+     <select id="selectEmailOrdOgCGodList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="com.plgrim.ncp.base.entities.datasource1.ord.OrdGodFoExtend">
+         SELECT og.ord_no    
+              , og.ord_god_turn  
+              , og.ord_god_turn  
+              , og.brnd_grp_id  
+              , og.god_no
+              , og.god_nm
+              , og.itm_nm
+              , og.pay_exchg_rt_crncy_amt
+              , og.lst_img_url
+              , og.ord_qty
+              , og.god_tp_cd
+              , lg.dlv_stat_cd
+              , og.color_nm
+              , og.clor_chip_img_url
+              , og.god_wt
+              , g.free_repair_psb_yn
+              , oc.pckage_god_tp_cd
+           FROM ORD_GOD og
+           JOIN GOD g on og.GOD_NO = g.GOD_NO
+           JOIN LGS_DLIVY_DRCT_GOD lg
+            ON og.ord_no = lg.ord_no  AND og.ord_god_turn = lg.ord_god_turn 
+           JOIN LGS_DLV lv
+            ON lg.ord_no = lv.ord_no AND lg.dlv_pcupsp_turn = lv.dlv_pcupsp_turn AND lg.dlv_turn = lv.dlv_turn 
+           JOIN LGS_DLVSP lp
+            ON lv.ord_no = lp.ord_no AND lv.dlv_pcupsp_turn = lp.dlv_pcupsp_turn AND lp.dlv_pcupsp_sect_cd IN('ORD_DLVSP','CLM_DLVSP')
+LEFT OUTER JOIN MV_SYS_CD dc
+            ON lv.dlv_com_cd = dc.cd AND dc.lang_cd ='KOR'  AND dc.upper_cd='DLV_COM'
+            JOIN  ORD_CPST_GOD_CNNC oc
+               ON   og.ord_god_turn = oc.ord_cpst_god_turn
+               AND og.ord_no = oc.ord_no
+               AND oc.ord_god_turn = 1              
+               WHERE og.ord_no = #{ordNo}
+                -- AND lv.mail_snd_yn ='N'
+                <!--  AND  EXISTS (
+                                 SELECT 1
+                                  FROM ORD_CPST_GOD_CNNC oc
+                                  WHERE og.ord_god_turn = oc.ord_cpst_god_turn
+                                    AND oc.ord_no = #{ordNo}
+                                    AND oc.ord_god_turn = #{pkGodTurn}
+                               ) -->
+     </select>
+     
+    <select id="selectEmaillgsDlvCoList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlv">
+         SELECT dc.cd_nm AS dlvComCd
+              , lv.dmstc_waybil_no
+              , lv.dmstc_waybil_no_reg_dt
+              , lv.ovsea_waybil_no
+              , lv.ovsea_waybil_no_reg_dt
+              , lv.cvnstor_hdry_aprv_no
+              , (SELECT TO_CHAR(MAX(so.dlivy_compt_dt), 'YYYY-MM-DD') 
+                   FROM LGS_DLIVY_DRCT_GOD so
+                   WHERE so.ord_no = lv.ord_no
+                     AND so.dlv_pcupsp_turn = lv.dlv_pcupsp_turn
+                     AND so.dlv_turn = lv.dlv_turn
+                     AND so.DLV_STAT_CD ='DLIVY_COMPT'
+                 GROUP BY so.dlv_pcupsp_turn  ,so.dlv_turn 
+                ) AS regtrId
+              , (SELECT TO_CHAR(MAX(so.dlivy_compt_dt+2), 'YYYY-MM-DD') 
+                   FROM LGS_DLIVY_DRCT_GOD so
+                   WHERE so.ord_no = lv.ord_no
+                     AND so.dlv_pcupsp_turn = lv.dlv_pcupsp_turn
+                     AND so.dlv_turn = lv.dlv_turn
+                     AND so.DLV_STAT_CD ='DLIVY_COMPT'
+                 GROUP BY so.dlv_pcupsp_turn  ,so.dlv_turn 
+                ) AS udterId
+           FROM LGS_DLV lv
+LEFT OUTER JOIN MV_SYS_CD dc 
+             ON lv.dlv_com_cd   = dc.cd 
+            AND dc.lang_cd = 'KOR' 
+            AND dc.upper_cd = 'DLV_COM'
+          WHERE lv.ord_no = #{ordNo}
+            AND lv.dlv_pcupsp_turn = #{dlvPcupspTurn}
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(dmstcWaybilNo)">
+            AND lv.dmstc_waybil_no = #{dmstcWaybilNo,jdbcType=VARCHAR}
+        </if>
+        <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(dmstcWaybilNo)">
+            -- AND lv.mail_snd_yn ='N'
+        </if>
+     </select> 
+     
+     
+     <select id="selectEmaillgsDlvList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="EmailLgsDlvResult">
+         SELECT lv.ord_no                AS ordTurn
+              , lv.dlv_pcupsp_turn       AS turn
+              , lv.dlv_turn              AS dTurn
+              , SUM(lv.reality_dlv_cst)  AS realityDlvCst
+              , lv.ord_no 
+              , lv.dlv_pcupsp_turn
+              , lv.dlv_turn  
+           FROM LGS_DLV lv
+LEFT OUTER JOIN MV_SYS_CD dc 
+             ON lv.dlv_com_cd   = dc.cd 
+            AND dc.lang_cd = 'KOR' 
+            AND dc.upper_cd = 'DLV_COM'
+          WHERE lv.ord_no = #{ordNo}
+            AND lv.dlv_pcupsp_turn = #{dlvPcupspTurn}
+         <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(dmstcWaybilNo)">
+            -- AND lv.mail_snd_yn ='N'
+         </if>
+         <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(dmstcWaybilNo)">
+            AND lv.dmstc_waybil_no = #{dmstcWaybilNo,jdbcType=VARCHAR}
+         </if>
+       GROUP BY lv.ord_no, lv.dlv_pcupsp_turn ,lv.dlv_turn
+       
+     </select> 
+     
+     <select id="selectEmailPayList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultType="com.plgrim.ncp.base.entities.datasource1.pay.PayExtend">
+ 
+       SELECT
+              cd.cd_nm           AS payMnCd
+            , stdr_crncy_pay_amt
+            , pg_aprv_no
+            , p.deal_tp_cd           AS dealTpCd
+            , pay_dt             AS regDt
+            , acnthldr_nm
+            , bnk_nm
+            , bnk_acct_no
+            , p.mpay_mn_yn  
+            , p.pay_tmlmt_dt AS virtlBnkAcctValidDtStr
+         FROM pay p
+         JOIN MV_SYS_CD cd 
+           ON p.pay_mn_cd = cd.CD 
+          AND cd.lang_cd ='KOR' 
+          AND cd.upper_cd='PLC_PAY_MN' 
+        WHERE p.PAY_TP_CD ='ORD'
+          AND p.ord_no = #{ordNo}
+     </select> 
+     
+    <update id="lgsDlvMailSnd" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlv">
+        UPDATE 
+            lgs_dlv lgsDlv
+        SET lgsDlv.mail_snd_yn = 'Y'
+            , udter_id = 'DLV_MAIL_SND'
+			, udt_dt = SYSDATE
+        WHERE lgsDlv.ord_no =  #{ordNo, jdbcType=VARCHAR}
+            AND lgsDlv.dlv_pcupsp_turn =  #{dlvPcupspTurn, jdbcType=VARCHAR}
+            AND lgsDlv.dlv_turn =  #{dlvTurn, jdbcType=VARCHAR}
+    </update>    
+    <insert id="lgsDlvMailSndHist" parameterType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlv">
+        INSERT INTO 
+            lgs_dlv_hist 
+        (
+           ord_no
+            , dlv_pcupsp_turn
+            , dlv_turn
+            , hist_dt
+            , clm_no
+            , dmstc_dlv_cst_plc_sn
+            , ovsea_dlv_dmstc_dlv_cst_plc_sn
+            , ovsea_dlv_cst_plc_sn
+            , dlv_cst_bnd_mbd_cd
+            , dlv_com_cd
+            , dmstc_waybil_no
+            , dmstc_waybil_no_reg_dt
+            , ovsea_waybil_no
+            , ovsea_waybil_no_reg_dt
+            , cvnstor_hdry_aprv_no
+            , crncy_cd
+            , stdr_crncy_amt
+            , pay_exchg_rt_crncy_amt
+            , reality_dlv_cst
+            , plc_dlv_cst
+            , cncl_dlv_cst
+            , rtgod_dlv_cst
+            , exchg_dlv_cst
+            , dlv_cst_cpn_dc_amt
+            , dlv_cst_cpn_no
+            , waybil_no_erp_trnsmis_cd
+            , waybil_no_erp_trnsmis_err_cont
+            , waybil_no_erp_trnsmis_dt
+            , dlv_com_trnsmis_tgt_yn
+            , dlv_com_trnsmis_yn
+            , dlv_com_trnsmis_dt
+            , mail_snd_yn
+            , regtr_id
+            , reg_dt
+            , udter_id
+            , udt_dt
+        ) 
+        SELECT 
+            ord_no
+            , dlv_pcupsp_turn
+            , dlv_turn
+            , SYSDATE
+            , clm_no
+            , dmstc_dlv_cst_plc_sn
+            , ovsea_dlv_dmstc_dlv_cst_plc_sn
+            , ovsea_dlv_cst_plc_sn
+            , dlv_cst_bnd_mbd_cd
+            , dlv_com_cd
+            , dmstc_waybil_no
+            , dmstc_waybil_no_reg_dt
+            , ovsea_waybil_no
+            , ovsea_waybil_no_reg_dt
+            , cvnstor_hdry_aprv_no
+            , crncy_cd
+            , stdr_crncy_amt
+            , pay_exchg_rt_crncy_amt
+            , reality_dlv_cst
+            , plc_dlv_cst
+            , cncl_dlv_cst
+            , rtgod_dlv_cst
+            , exchg_dlv_cst
+            , dlv_cst_cpn_dc_amt
+            , dlv_cst_cpn_no
+            , waybil_no_erp_trnsmis_cd
+            , waybil_no_erp_trnsmis_err_cont
+            , waybil_no_erp_trnsmis_dt
+            , dlv_com_trnsmis_tgt_yn
+            , dlv_com_trnsmis_yn
+            , dlv_com_trnsmis_dt
+            , mail_snd_yn
+            , #{regtrId, jdbcType=VARCHAR}
+            , SYSDATE
+            , #{udterId, jdbcType=VARCHAR}
+            , SYSDATE
+        FROM lgs_dlv
+        WHERE ord_no = #{ordNo, jdbcType=VARCHAR}
+            AND dlv_pcupsp_turn =  #{dlvPcupspTurn, jdbcType=VARCHAR}
+            AND dlv_turn =  #{dlvTurn, jdbcType=VARCHAR}
+    </insert>
+    
+    <resultMap id="orderEmailGlobalResult" type="com.plgrim.ncp.biz.order.result.OrderBoResult">
+    	<collection property="lgsDlvspList" column="{ordNo=ordNotemp,dmstcWaybilNo=dmstcWaybilNoTemp}" ofType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend" select="selectEmailOrderDlvspGlobalList"/>
+    	<collection property="payList" column="{ordNo=ordNotemp}" ofType="com.plgrim.ncp.base.entities.datasource1.pay.Pay" select="selectEmailPayList"/>
+    </resultMap>
+    
+    <resultMap id="EmailLgsDlvspGlobalResult" type="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvspExtend"> 
+      <collection property="lgsDlvList" column="{ordNo=ordTurn,dlvPcupspTurn=turn,dmstcWaybilNo=dmstcWaybilNoTemp}" ofType="com.plgrim.ncp.base.entities.datasource1.lgs.LgsDlvFoExtend"  select="selectEmaillgsDlvGlobalList"/>
+    </resultMap>
+    
+    <select id="selectEmailOrderComptGlobal" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="orderEmailGlobalResult">
+        SELECT od.ord_no                   AS ordNo /*주문번호*/
+             , od.ord_no                   AS ordNotemp /*주문번호*/
+             , od.ord_stat_cd              AS ordStatCd
+             , st.cd_nm                    AS ordStat/*주문상태*/
+             , to_char(od.ord_dt,'yyyy-mm-dd hh24:mi:ss') AS startOrdDt /*주문접수일시*/ 
+             , od.cstmr_nm        
+             , NVL(od.UNITY_PNT_USE_SUM_AMT,0) AS unityPntUseSumAmt
+             , NVL(od.UNITY_PNT_ACCML_SUM_AMT,0) AS unityPntAccmlSumAmt
+             , NVL(od.PAY_EXCHG_RT_CRNCY_SUM_AMT,0) AS payExchgRtCrncySumAmt
+             , #{dmstcWaybilNo, jdbcType=VARCHAR} AS dmstcWaybilNoTemp
+             , od.lang_cd                 AS langCdTemp
+          FROM ORD od
+          JOIN MV_SYS_CD st 
+            ON od.ord_stat_cd = st.cd AND  st.lang_cd = od.lang_cd AND st.upper_cd = 'ORD_STAT'
+         WHERE od.ord_no = #{ordNo}
+    </select>
+    
+    <select id="selectEmailOrderDlvspGlobalList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="EmailLgsDlvspGlobalResult">
+        SELECT ld.ord_no
+             , ld.ord_no AS ordTurn
+             , ld.dlv_pcupsp_turn 
+             , ld.dlv_pcupsp_turn    AS turn
+             , ld.clm_no
+             , ld.dlv_pcupsp_sect_cd
+             , ld.addrse_nm
+             , ld.dlv_sect_cd
+             , (
+                SELECT ld2.dlv_mn_cd
+                  FROM LGS_DLV ld2
+                WHERE ld2.ORD_NO = ld.ord_no 
+                    AND ld2.DLV_PCUPSP_TURN = ld.dlv_pcupsp_turn
+                    AND ROWNUM = 1
+               ) as dlv_mn_cd   /* 2015-12-18 배송수단 코드 위치 이동 수정 : AshA */ 
+             , ld.pkup_shop_id
+             , ld.pkup_shop_visit_date
+             , ld.addrse_base_addr
+             , ld.addrse_detail_addr
+             , ld.addrse_nation_cd
+             , ld.addrse_post_no
+             , ld.addrse_cty_nm
+             , ld.addrse_lclty_nm
+             , CASE WHEN ld.addrse_mobil_nation_no IS NULL THEN '' ELSE ld.addrse_mobil_nation_no ||'-' END || ld.addrse_mobil_area_no||'-'||ld.addrse_mobil_tlof_no ||'-'||ld.addrse_mobil_tlof_wthn_no AS mobilNo
+             , CASE WHEN ld.addrse_tel_nation_no IS NULL THEN '' ELSE ld.addrse_tel_nation_no ||'-' END || ld.addrse_tel_area_no||'-'||ld.addrse_tel_tlof_no ||'-'||ld.addrse_tel_tlof_wthn_no AS telNo
+             , ld.dlv_memo
+             ,  #{dmstcWaybilNo, jdbcType=VARCHAR} AS dmstcWaybilNoTemp
+         FROM LGS_DLVSP ld
+            INNER JOIN lgs_dlv dv ON (dv.ord_no = ld.ord_no
+              AND  dv.dlv_pcupsp_turn = ld.dlv_pcupsp_turn )
+        WHERE ld.ord_no = #{ordNo}
+          AND ld.dlv_pcupsp_sect_cd IN('ORD_DLVSP','CLM_DLVSP')
+          AND dv.hbl_no = #{dmstcWaybilNo,jdbcType=VARCHAR}
+     </select>
+     
+     <select id="selectEmaillgsDlvGlobalList" parameterType="com.plgrim.ncp.biz.order.data.OrderBoDTO" resultMap="EmailLgsDlvResult">
+         SELECT lv.ord_no                AS ordTurn
+              , lv.dlv_pcupsp_turn       AS turn
+              , lv.dlv_turn              AS dTurn
+              , SUM(lv.reality_dlv_cst)  AS realityDlvCst
+              , lv.ord_no 
+              , lv.dlv_pcupsp_turn
+              , lv.dlv_turn  
+           FROM LGS_DLV lv
+LEFT OUTER JOIN MV_SYS_CD dc 
+             ON lv.dlv_com_cd   = dc.cd 
+            AND dc.lang_cd = 'KOR' 
+            AND dc.upper_cd = 'DLV_COM'
+          WHERE lv.ord_no = #{ordNo}
+            AND lv.dlv_pcupsp_turn = #{dlvPcupspTurn}
+            AND lv.hbl_no = #{dmstcWaybilNo,jdbcType=VARCHAR}
+       GROUP BY lv.ord_no, lv.dlv_pcupsp_turn ,lv.dlv_turn
+     </select>
+     
+</mapper>

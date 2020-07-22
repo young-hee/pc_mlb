@@ -1,0 +1,171 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>		
+						<tr>
+							<td>
+								<table cellspacing="0" cellpadding="0" width="100%">	
+									<tr>
+										<td align="left" style="font:bold 14px/18px '돋움', dotum, sans-serif;">주문상품</td>
+									</tr>
+									<tr>
+										<td height="18"></td> 
+									</tr>
+									<tr><td style="background:#000" height="1"></td></tr>	
+									<c:forEach var="listDlvsp" varStatus="status" items="${info.lgsDlvspList}">
+										<c:forEach var="lgsDlv" varStatus="lgsDlvStatus" items="${listDlvsp.lgsDlvList}">
+											<c:forEach var="ordGod" varStatus="ordGodstatus" items="${lgsDlv.ordGodList}">												
+												<c:choose>
+													<c:when test="${ordGod.godTpCd eq 'SET_GOD'}">
+														<c:set var="addYn" value="N" />
+														<tr>
+															<!-- type1 : 기본 리스트 -->
+															<td style="padding:30px 0">											
+																<table cellspacing="0" cellpadding="0" width="100%">	
+																	<tr>
+																		<td width="100" style="vertical-align:top;">
+																			<span style="width:100px; height:100px; background:#f0f0f0; display:block; overflow:hidden;">
+																				<span style="display:table; height:100px">
+																					<span style="display:table-cell; vertical-align:middle"><img src="${_image }${ordGod.lstImgUrl }/dims/resize/100x100" alt="" width="100" border="0"></span><!-- 상품이미지 -->
+																				</span>
+																			</span>
+																		</td>
+																		<td style="padding:0 20px; vertical-align:top; font:normal 12px/18px '돋움', dotum, sans-serif;">																			
+																			${ordGod.godNm }
+																			<p style="margin:0; padding:3px 0 10px 0"></p>
+																			
+																				<c:forEach var="godOptList" varStatus="status" items="${ordGod.godOptList}">
+																					<c:choose>
+																						<c:when test='${godOptList.pckageGodTpCd eq "SET_GOD"}'>
+																							<c:out value='${godOptList.godNm}'/> / <c:out value='${godOptList.colorNm}'/> / <c:out value='${godOptList.itmNm}'/>
+																							<br/>	
+																						</c:when>
+																						<c:otherwise>
+																							<c:set var="addYn" value="Y" />
+																						</c:otherwise>		
+																					</c:choose>																																																									
+																				</c:forEach>
+																		</td>
+																		<td width="50px" align="center" style="font:normal 12px/14px '돋움', dotum, sans-serif;""><c:out value='${ordGod.ordQty}'/>개</td>																		
+																	</tr>												
+																</table>
+															</td>
+															<!-- // type1 : 기본 리스트 -->
+														</tr>						
+														<tr><td style="background:#ddd" height="1"></td></tr>
+														
+														<c:if test='${addYn eq "Y"}'>
+															<c:forEach var="godOptList" varStatus="status" items="${ordGod.godOptList}">
+															<c:if test='${godOptList.pckageGodTpCd eq "ADIT_CPST_GOD"}'>
+															<tr>
+																<!-- type2 : 추가구성 -->
+																<td style="background:#f8f8f8; padding:30px 0">											
+																	<table cellspacing="0" cellpadding="0" width="100%">	
+																		<tr>
+																			<td width="46" style="vertical-align:top">
+																				<span style="padding:0 10px 0 20px;"><img src="${_resourceURL }static/images/mail/icon_shape.png" width="16" height="16" alt=""></span>
+																			</td>
+																			<td width="100" style="vertical-align:top;">
+																				<span style="width:100px; height:100px; background:#f0f0f0; display:block; overflow:hidden;">
+																					<span style="display:table; height:100px">
+																						<span style="display:table-cell; vertical-align:middle"><img src="${_image }${godOptList.lstImgUrl }/dims/resize/100x100" alt="" width="100" border="0"></span><!-- 상품이미지 -->
+																					</span>
+																				</span>
+																			</td>
+																			<td style="padding:0 20px; vertical-align:top; font:normal 12px/18px '돋움', dotum, sans-serif;">
+																				<span style="color:#ff3600">[추가구성]</span><br>
+																				${godOptList.godNm}
+																				<p></p>
+																				<%-- <p style="margin:0; padding:3px 0 10px 0"><strong style="font-weight:bold;"><fmt:formatNumber value="${godOptList.payExchgRtCrncyAmt}" pattern="#,###"/></strong>원</p> --%>
+																				<c:out value='${godOptList.colorNm}'/> / <c:out value='${godOptList.itmNm}'/> / <c:out value='${godOptList.ordQty}'/>개
+																			</td>																			
+																		</tr>
+																	</table>
+																</td>
+																<!-- // type2 : 추가구성 -->
+															</tr>
+															<tr><td style="background:#ddd" height="1"></td></tr>	
+															</c:if>
+															</c:forEach>
+														</c:if>
+													</c:when>
+													<c:when test="${ordGod.godTpCd eq 'PCHS_GFT' || ordGod.godTpCd eq 'CNVRS_GFT'}">
+														<tr>
+															<!-- type3 : 주문사은품/상품사은품 -->
+															<td style="background:#f8f8f8; padding:30px 0">											
+																<table cellspacing="0" cellpadding="0" width="100%">	
+																	<tr>
+																		<td width="46" style="vertical-align:top"></td>
+																		<td width="100" style="vertical-align:top;">
+																			<span style="width:100px; height:100px; background:#f0f0f0; display:block; overflow:hidden;">
+																				<span style="display:table; height:100px">
+																					<span style="display:table-cell; vertical-align:middle"><img src="${_image }${ordGod.lstImgUrl }/dims/resize/100x100" alt="" width="100" border="0"></span><!-- 상품이미지 -->
+																				</span>
+																			</span>
+																		</td>
+																		<td style="padding:0 20px; vertical-align:top; font:normal 12px/18px '돋움', dotum, sans-serif;">
+																			<span style="color:#ff3600">[상품사은품]</span><br>
+																			${ordGod.godNm }
+																			<p style="margin:0; padding:3px 0 10px 0"></p>
+																			<c:choose>
+																				<c:when test="${ordGod.godTpCd ne 'SET_GOD' && ordGod.godTpCd ne 'PCKAGE_GOD'}">
+																					<c:out value='${ordGod.colorNm}'/> / <c:out value='${ordGod.itmNm}'/> 
+																				</c:when>
+																				<c:otherwise>
+																					<c:forEach var="godOptList" varStatus="status" items="${ordGod.godOptList}">
+																						<c:out value='${godOptList.godNm}'/> / <c:out value='${godOptList.colorNm}'/> / <c:out value='${godOptList.itmNm}'/> 
+																						<br/>																		
+																					</c:forEach>
+																				</c:otherwise>
+																			</c:choose>			
+																		</td>	
+																		<td width="50px" align="center" style="font:normal 12px/14px '돋움', dotum, sans-serif;""><c:out value='${ordGod.ordQty}'/>개</td>																	
+																	</tr>
+																</table>
+															</td>
+															<!-- // type3 : 추가구성 -->
+														</tr>
+														<tr><td style="background:#ddd" height="1"></td></tr>
+													</c:when>
+													<c:otherwise>
+														<tr>
+															<!-- type1 : 기본 리스트 -->
+															<td style="padding:30px 0">											
+																<table cellspacing="0" cellpadding="0" width="100%">	
+																	<tr>
+																		<td width="100" style="vertical-align:top;">
+																			<span style="width:100px; height:100px; background:#f0f0f0; display:block; overflow:hidden;">
+																				<span style="display:table; height:100px">
+																					<span style="display:table-cell; vertical-align:middle"><img src="${_image }${ordGod.lstImgUrl }/dims/resize/100x100" alt="" width="100" border="0"></span><!-- 상품이미지 -->
+																				</span>
+																			</span>
+																		</td>
+																		<td style="padding:0 20px; vertical-align:top; font:normal 12px/18px '돋움', dotum, sans-serif;">																			
+																			${ordGod.godNm }
+																			<p style="margin:0; padding:3px 0 10px 0"></p>
+																			
+																			<c:choose>
+																				<c:when test="${ordGod.godTpCd ne 'SET_GOD' && ordGod.godTpCd ne 'PCKAGE_GOD'}">
+																					<c:out value='${ordGod.colorNm}'/> / <c:out value='${ordGod.itmNm}'/> 
+																				</c:when>
+																				<c:otherwise>
+																					<c:forEach var="godOptList" varStatus="status" items="${ordGod.godOptList}">
+																						<c:out value='${godOptList.godNm}'/> / <c:out value='${godOptList.colorNm}'/> / <c:out value='${godOptList.itmNm}'/> 
+																						<br/>																		
+																					</c:forEach>
+																				</c:otherwise>
+																			</c:choose>															
+																		</td>	
+																		<td width="50px" align="center" style="font:normal 12px/14px '돋움', dotum, sans-serif;""><c:out value='${ordGod.ordQty}'/>개</td>																	
+																	</tr>												
+																</table>
+															</td>
+															<!-- // type1 : 기본 리스트 -->
+														</tr>						
+														<tr><td style="background:#ddd" height="1"></td></tr>
+													</c:otherwise>
+												</c:choose>	
+											</c:forEach>
+										</c:forEach>
+									</c:forEach>
+								</table>
+							</td> 
+						</tr>

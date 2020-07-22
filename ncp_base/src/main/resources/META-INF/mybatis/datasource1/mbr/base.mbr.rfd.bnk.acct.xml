@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrRfdBnkAcct" parameterType="mbrRfdBnkAcct" resultType="mbrRfdBnkAcct">
+		SELECT /* com.plgrim.ncp.base.selectMbrRfdBnkAcct		Generator(Generator)	2018-05-23 */
+			   MBR_NO
+			 , RFD_BNK_ACCT_TURN
+			 , RFD_BNK_ACCT_NM
+			 , PKG_CRYPTO.DECRYPT(RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+			 , RFD_BNK_ACCT_BNK_CD
+			 , RFD_BNK_ACCT_ACNTHLDR_NM
+			 , RPRST_RFD_BNK_ACCT_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_RFD_BNK_ACCT
+		 WHERE 1 = 1
+	   	   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND RFD_BNK_ACCT_TURN = #{rfdBnkAcctTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrRfdBnkAcct" parameterType="mbrRfdBnkAcct">
+		UPDATE /* com.plgrim.ncp.base.updateMbrRfdBnkAcct		Generator(Generator)	2018-05-23 */
+		MBR_RFD_BNK_ACCT SET
+			   RFD_BNK_ACCT_NM = #{rfdBnkAcctNm,jdbcType=VARCHAR}
+			 , RFD_BNK_ACCT_NO = PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , RFD_BNK_ACCT_BNK_CD = #{rfdBnkAcctBnkCd,jdbcType=VARCHAR}
+			 , RFD_BNK_ACCT_ACNTHLDR_NM = #{rfdBnkAcctAcnthldrNm,jdbcType=VARCHAR}
+			 , RPRST_RFD_BNK_ACCT_YN = #{rprstRfdBnkAcctYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND RFD_BNK_ACCT_TURN = #{rfdBnkAcctTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrRfdBnkAcct" parameterType="mbrRfdBnkAcct">
+		INSERT /* com.plgrim.ncp.base.insertMbrRfdBnkAcct		Generator(Generator)	2018-05-23 */
+		INTO   MBR_RFD_BNK_ACCT (
+			   MBR_NO
+			 , RFD_BNK_ACCT_TURN
+			 , RFD_BNK_ACCT_NM
+			 , RFD_BNK_ACCT_NO
+			 , RFD_BNK_ACCT_BNK_CD
+			 , RFD_BNK_ACCT_ACNTHLDR_NM
+			 , RPRST_RFD_BNK_ACCT_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrNo,jdbcType=VARCHAR}
+			 , #{rfdBnkAcctTurn,jdbcType=NUMERIC}
+			 , #{rfdBnkAcctNm,jdbcType=VARCHAR}
+			 , PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , #{rfdBnkAcctBnkCd,jdbcType=VARCHAR}
+			 , #{rfdBnkAcctAcnthldrNm,jdbcType=VARCHAR}
+			 , #{rprstRfdBnkAcctYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrRfdBnkAcct" parameterType="mbrRfdBnkAcct">
+		DELETE /* com.plgrim.ncp.base.deleteMbrRfdBnkAcct		Generator(Generator)	2018-05-23 */
+		  FROM MBR_RFD_BNK_ACCT
+		 WHERE 1 = 1
+		   AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+		   AND RFD_BNK_ACCT_TURN = #{rfdBnkAcctTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPayEscr" parameterType="payEscr" resultType="payEscr">
+		SELECT /* com.plgrim.ncp.base.selectPayEscr		Generator(Generator)	2018-05-23 */
+			   PAY_NO
+			 , ESCR_STAT_CD
+			 , ESCR_DLV_REG_DT
+			 , ESCR_PCH_DCSN_DT
+			 , ESCR_PCH_REJECT_DT
+			 , ESCR_AUTO_PCH_DCSN_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PAY_ESCR
+		 WHERE 1 = 1
+	   	   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updatePayEscr" parameterType="payEscr">
+		UPDATE /* com.plgrim.ncp.base.updatePayEscr		Generator(Generator)	2018-05-23 */
+		PAY_ESCR SET
+			   ESCR_STAT_CD = #{escrStatCd,jdbcType=VARCHAR}
+			 , ESCR_DLV_REG_DT = #{escrDlvRegDt,jdbcType=TIMESTAMP}
+			 , ESCR_PCH_DCSN_DT = #{escrPchDcsnDt,jdbcType=TIMESTAMP}
+			 , ESCR_PCH_REJECT_DT = #{escrPchRejectDt,jdbcType=TIMESTAMP}
+			 , ESCR_AUTO_PCH_DCSN_DT = #{escrAutoPchDcsnDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPayEscr" parameterType="payEscr">
+		INSERT /* com.plgrim.ncp.base.insertPayEscr		Generator(Generator)	2018-05-23 */
+		INTO   PAY_ESCR (
+			   PAY_NO
+			 , ESCR_STAT_CD
+			 , ESCR_DLV_REG_DT
+			 , ESCR_PCH_DCSN_DT
+			 , ESCR_PCH_REJECT_DT
+			 , ESCR_AUTO_PCH_DCSN_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{payNo,jdbcType=VARCHAR}
+			 , #{escrStatCd,jdbcType=VARCHAR}
+			 , #{escrDlvRegDt,jdbcType=TIMESTAMP}
+			 , #{escrPchDcsnDt,jdbcType=TIMESTAMP}
+			 , #{escrPchRejectDt,jdbcType=TIMESTAMP}
+			 , #{escrPchRejectAprvDt,jdbcType=TIMESTAMP}
+			 , #{escrAutoPchDcsnDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePayEscr" parameterType="payEscr">
+		DELETE /* com.plgrim.ncp.base.deletePayEscr		Generator(Generator)	2018-05-23 */
+		  FROM PAY_ESCR
+		 WHERE 1 = 1
+		   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

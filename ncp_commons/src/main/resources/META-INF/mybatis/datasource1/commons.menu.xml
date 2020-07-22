@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.menu">
+	
+	<resultMap id="resultMenu" type="com.plgrim.ncp.commons.result.MenuResult">
+		<result property="sysMenu.menuSn" column="menu_sn" />
+		<result property="sysMenu.upperMenuSn" column="upper_menu_sn" />
+		<result property="sysMenu.boSiteId" column="bo_site_id" />
+		<result property="sysMenu.menuNm" column="menu_nm" />
+		<result property="sysMenu.menuDscr" column="menu_dscr" />
+		<result property="sysMenu.menuImgUrl" column="menu_img_url" />
+		<result property="sysMenu.menuUrl" column="menu_url" />
+		<result property="sysMenu.sortSeq" column="sort_seq" />
+		<result property="sysMenu.menuTpCd" column="menu_tp_cd" />
+		<result property="sysMenu.firstPgeYn" column="first_pge_yn" />
+		<result property="menuDepth" column="menu_depth" />
+		<result property="upperMenuNm" column="upper_menu_nm" />
+		<result property="naMenuNm" column="na_menu_nm" />
+		<result property="sysMenu.regtrId" column="regtr_id" />
+		<result property="sysMenu.regDt" column="reg_dt" />
+		<result property="sysMenu.udterId" column="udter_id" />
+		<result property="sysMenu.udtDt" column="udt_dt" />
+		<result property="sysMenu.useYn" column="use_yn" />
+		<result property="regtrNm" column="regtr_nm" />
+		<result property="udterNm" column="udter_nm" />
+		<result property="sysMenu.outptTpCd" column="outpt_tp_cd" />
+		<result property="sysMenu.popupLeftLc" column="popup_left_lc" />
+		<result property="sysMenu.popupUpendLc" column="popup_upend_lc" />
+		<result property="sysMenu.popupWidth" column="popup_width" />
+		<result property="sysMenu.popupHg" column="popup_hg" />
+		<result property="sysMenu.psnlInfoUsefPgeYn" column="psnl_info_usef_pge_yn" />
+		<result property="radioFirstPgeYn" column="radio_first_pge_yn" />
+	</resultMap>
+	
+	
+	<select id="selectListMenu" parameterType="com.plgrim.ncp.commons.data.FormSysMenuDTO" resultMap="resultMenu"> 
+       <include refid="com.plgrim.ncp.base.beginPage"/>
+       <![CDATA[
+		/* [commons.menu.xml][selectListMenu]][메뉴관리 목록 조회][Tam] */ 
+		
+		SELECT 
+			sm.*  , sar.admin_nm regtr_nm, sau.admin_nm udter_nm
+		FROM
+		(
+			
+			SELECT
+			    sm.menu_sn, sm.upper_menu_sn, sm.bo_site_id, sm.menu_nm, sm.menu_img_url
+			    , sm.menu_url, sm.sort_seq, sm.menu_tp_cd, sm.outpt_tp_cd, sm.first_pge_yn
+			    , sm.regtr_id, sm.reg_dt, sm.udter_id, sm.udt_dt, sm.use_yn
+			    , LEVEL menu_depth 
+			     , LPAD(' ', 2*LEVEL-1)||PRIOR sm.menu_nm  upper_menu_nm
+			      , SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_menu_nm
+			FROM 
+			    SYS_MENU sm
+			WHERE 
+				sm.menu_tp_cd = 'MENU'
+				AND
+				sm.delete_yn = 'N'
+			]]>
+				
+				<if test = "searchListUseYn != null">
+					AND sm.use_yn  in  
+					<foreach item ="item" index="index" collection="searchListUseYn" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</if>
+				<if test = "searchListBoSite != null">
+					AND sm.bo_site_id  in  
+					<foreach item ="item" index="index" collection="searchListBoSite" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</if>   
+							
+			START WITH  
+				<choose>
+					<when test="searchField != null and searchField == 1 and searchText != null and searchText != ''.toString()">
+						sm.menu_nm like #{searchText}||'%'
+					</when>
+					<when test="searchField != null and searchField == 2 and searchText != null and searchText != ''.toString()">
+						sm.menu_sn = #{searchText}
+					</when>
+					<otherwise>
+						sm.upper_menu_sn is NULL 
+					</otherwise>
+				</choose>
+			 CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+			 ORDER SIBLINGS BY sm.bo_site_id, sm.sort_seq
+		) sm
+		LEFT OUTER JOIN  SYS_ADMIN sar ON sm.regtr_id = sar.admin_id 
+ 		LEFT OUTER JOIN  SYS_ADMIN sau ON sm.udter_id = sau.admin_id
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectCountMenu" parameterType="com.plgrim.ncp.commons.data.FormSysMenuDTO" resultType="long"> 
+       <![CDATA[
+		/* [commons.menu.xml][selectCountMenu]][메뉴 총 갯수][Tam] */ 
+			SELECT
+			    COUNT(*) cnt
+			FROM 
+			    SYS_MENU sm
+			WHERE 
+				sm.menu_tp_cd = 'MENU'
+				AND
+				sm.delete_yn = 'N'
+			]]>
+				
+				<if test = "searchListUseYn != null">
+					AND sm.use_yn  in  
+					<foreach item ="item" index="index" collection="searchListUseYn" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</if>
+				<if test = "searchListBoSite != null">
+					AND sm.bo_site_id  in  
+					<foreach item ="item" index="index" collection="searchListBoSite" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</if>   
+							
+			START WITH  
+				<choose>
+					<when test="searchField != null and searchField == 1 and searchText != null and searchText != ''.toString()">
+						sm.menu_nm like #{searchText}||'%'
+					</when>
+					<when test="searchField != null and searchField == 2 and searchText != null and searchText != ''.toString()">
+						sm.menu_sn = #{searchText}
+					</when>
+					<otherwise>
+						sm.upper_menu_sn is NULL 
+					</otherwise>
+				</choose>
+			 CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+			 ORDER SIBLINGS BY sm.bo_site_id, sm.sort_seq
+		
+	</select>
+	
+	<select id="selectRowMenu" parameterType="java.util.Map" resultMap="resultMenu">
+        <![CDATA[
+		 SELECT /* [commons.menu.xml][selectRowMenu][메뉴관리 메뉴정보 조회][Tam] */
+		     sm.menu_sn, sm.upper_menu_sn, sm.bo_site_id, sm.menu_nm, sm.menu_dscr,
+		     sm.menu_img_url, sm.menu_url, sm.sort_seq, sm.menu_tp_cd, sm.outpt_tp_cd, sm.first_pge_yn,
+		    sm.regtr_id, sm.reg_dt, sm.udter_id, sm.udt_dt, sm.use_yn,
+		    (SELECT  menu_nm FROM sys_menu WHERE menu_sn = sm.upper_menu_sn ) upper_menu_nm,
+		    sm.popup_left_lc, sm.popup_upend_lc, sm.popup_width, sm.popup_hg, sm.psnl_info_usef_pge_yn
+		FROM sys_menu sm
+		WHERE
+			sm.delete_yn = 'N'
+			AND
+		    sm.menu_tp_cd = 'MENU' 
+			AND
+			sm.menu_sn = ${menuSn}
+		]]>
+	</select>
+	
+	<select id="selectListFile" parameterType="java.util.Map" resultMap="resultMenu">
+        <![CDATA[
+		 SELECT  /* [commons.menu.xml][selectListFile][메뉴관리 메뉴 FILE 조회][Tam] */
+			  sm.menu_sn, sm.upper_menu_sn, sm.bo_site_id, sm.menu_nm, sm.menu_dscr, sm.menu_img_url
+		    , sm.menu_url, sm.sort_seq, sm.menu_tp_cd, sm.outpt_tp_cd, sm.first_pge_yn
+		    , sm.regtr_id, sm.reg_dt, sm.udter_id, sm.udt_dt, sm.use_yn, sm.psnl_info_usef_pge_yn
+		    , decode(sm.first_pge_yn, 'Y', '1','0') radio_first_pge_yn
+		FROM sys_menu sm
+		WHERE
+			sm.delete_yn = 'N'
+			AND
+			sm.menu_tp_cd = 'FILE'
+			AND
+			sm.use_yn = 'Y'
+			AND
+			sm.upper_menu_sn = #{menuSn}
+		ORDER BY
+			sm.sort_seq, sm.menu_sn
+		]]>
+	</select>
+	
+	
+	<!-- /* 메뉴조회 임시*/ -->
+	<select id="getMenuList" parameterType="com.plgrim.ncp.commons.result.MenuViewResult" resultType="com.plgrim.ncp.commons.result.MenuViewResult">
+        <![CDATA[
+		SELECT /* [commons.menu.xml][MenuViewRepository.getMenuList][메뉴조회][Tam] */
+		    LEVEL AS lvl,
+		    (  SELECT menu_url FROM sys_menu  WHERE menu_tp_cd = 'FILE' AND first_pge_yn ='Y'  AND upper_menu_sn = sm.menu_sn  and rownum = 1 ) menuUrl,
+		    sm.menu_sn AS id,
+		    sm.menu_sn AS menuSn,
+		    sm.upper_menu_sn AS upperMenuSn,
+		    sm.menu_nm AS menuNm,
+		    sm.menu_img_url AS menuImgUrl,
+		    sm.use_yn AS useYn,
+		    sm.sort_seq AS sortSeq,
+		    sm.bo_site_id AS boSiteId,
+		    sm.outpt_tp_cd outptTpCd, sm.popup_left_lc popupLeftLc, sm.popup_upend_lc popupUpendLc, sm.popup_width popupWidth, sm.popup_hg popupHg,
+		    sm.childCount
+		FROM
+		(     
+		    SELECT 
+		        sm.menu_sn,
+		        sm.upper_menu_sn,
+		        sm.menu_nm,
+		        sm.menu_img_url,
+		        sm.use_yn,
+		        sm.sort_seq,
+		        sm.bo_site_id,
+		        NVL(sm1.childcount, 0) AS childCount,
+		        sm.outpt_tp_cd , sm.popup_left_lc , sm.popup_upend_lc , sm.popup_width , sm.popup_hg
+		    FROM sys_menu sm  
+		        LEFT OUTER JOIN 
+		        (  SELECT upper_menu_sn, COUNT (*) AS childCount FROM sys_menu WHERE use_yn = 'Y' AND menu_tp_cd='MENU' GROUP BY upper_menu_sn ) sm1
+		        ON sm.menu_sn = sm1.upper_menu_sn
+		    WHERE 
+		        sm.delete_yn = 'N'
+		        AND sm.bo_site_id = #{boSiteId, jdbcType=VARCHAR}
+		        AND sm.use_yn = 'Y'  
+		        AND sm.menu_tp_cd = 'MENU'
+		)  sm                      
+		START WITH sm.upper_menu_sn is null
+		CONNECT BY PRIOR sm.menu_sn = sm.upper_menu_sn
+		ORDER SIBLINGS BY sm.sort_seq
+		
+		]]>
+		
+	</select>
+	
+	<select id="getTempTopMenuList" parameterType="com.plgrim.ncp.commons.result.MenuViewResult" resultType="com.plgrim.ncp.commons.result.MenuViewResult">
+        
+        <![CDATA[
+        SELECT /* [commons.menu.xml][MenuViewRepository.getTempTopMenuList][임시 상단 메뉴조회][Tam] */
+                LEVEL AS lvl,
+                a.menu_sn AS id,
+                a.menu_sn AS menuSn,
+                a.upper_menu_sn AS upperMenuSn,
+                a.menu_nm AS menuNm,
+                a.menu_img_url AS menuImgUrl,
+                a.use_yn AS useYn,
+                a.sort_seq AS sortSeq,
+                a.bo_site_id AS boSiteId,
+                NVL(b.childcount, 0) AS childCount,
+                c.menu_url,
+                c.outpt_tp_cd outptTpCd, c.popup_left_lc popupLeftLc, c.popup_upend_lc popupUpendLc, c.popup_width popupWidth, c.popup_hg popupHg
+           FROM sys_menu a  
+           LEFT OUTER JOIN 
+           (  SELECT upper_menu_sn, COUNT (*) AS childCount FROM sys_menu WHERE use_yn = 'Y' AND menu_tp_cd='MENU' GROUP BY upper_menu_sn ) b
+            ON a.menu_sn = b.upper_menu_sn
+          LEFT OUTER JOIN
+          sys_menu  c
+          ON
+           c.menu_tp_cd = 'FILE' AND c.first_pge_yn ='Y'  AND c.upper_menu_sn = a.menu_sn 
+          WHERE a.bo_site_id = #{boSiteId, jdbcType=VARCHAR}
+            AND a.use_yn = 'Y' 
+            AND a.menu_tp_cd = 'MENU'
+            AND a.delete_yn = 'N'
+            START WITH a.upper_menu_sn IS NULL
+            CONNECT BY PRIOR a.menu_sn = a.upper_menu_sn
+            ORDER SIBLINGS BY a.sort_seq
+		]]>
+		
+	</select>
+	
+	<insert id="insertMenu" parameterType="com.plgrim.ncp.commons.data.SysMenuDTO">
+		INSERT into sys_menu ( /* [commons.menu.xml][insertMenu][메뉴정보 등록][Tam] */
+		   menu_sn, upper_menu_sn, bo_site_id, 
+		   menu_nm, menu_dscr, menu_img_url, menu_url, 
+		   use_yn, sort_seq, menu_tp_cd, 
+		   first_pge_yn, outpt_tp_cd, popup_left_lc, 
+		   popup_upend_lc, popup_width, popup_hg, 
+		   regtr_id, reg_dt, psnl_info_usef_pge_yn, delete_yn
+		)SELECT
+		   #{sysMenu.menuSn}, #{sysMenu.upperMenuSn}, #{sysMenu.boSiteId}, 
+		   #{sysMenu.menuNm}, #{sysMenu.menuDscr},#{sysMenu.menuImgUrl}, #{sysMenu.menuUrl}, 
+		   #{sysMenu.useYn},
+		   (	
+		   	  SELECT NVL(max(sort_seq),0)+1 FROM sys_menu WHERE  use_yn = 'Y' 
+		   		<choose>
+					<when test = "sysMenu.upperMenuSn != null">
+						and upper_menu_sn = #{sysMenu.upperMenuSn}
+					</when>
+					<otherwise>
+						and upper_menu_sn is null 
+					</otherwise>
+				</choose>
+		   ) as sortSeq,
+		   #{sysMenu.menuTpCd}, 
+		   #{sysMenu.firstPgeYn}, #{sysMenu.outptTpCd}, #{sysMenu.popupLeftLc}, 
+		   #{sysMenu.popupUpendLc}, #{sysMenu.popupWidth}, #{sysMenu.popupHg}, 
+		   #{regtrId}, SYSDATE , 'N','N'
+		 FROM dual
+	</insert>
+	
+	<select id="selectUseCntMenu" parameterType="com.plgrim.ncp.commons.data.SysMenuDTO" resultType="long">
+		/* [commons.menu.xml][selectUseCntMenu]][메뉴 사용횟수 조회][Tam] */
+		SELECT count(*) cnt  FROM sys_author WHERE delete_yn = 'N' AND menu_sn = #{sysMenu.menuSn}
+	</select>
+
+	<select id="selectUseCntMenuList" parameterType="java.util.Map" resultType="long">
+		/* [commons.menu.xml][selectUseCntMenu]][메뉴목록 사용횟수 조회][Tam] */
+		SELECT SUM(cnt) cnt FROM
+		(
+			SELECT COUNT(*) cnt FROM sys_author  WHERE menu_sn in <foreach item ="item" index="index" collection="listMenu" open="(" separator="," close=")">#{item.sysMenu.menuSn}</foreach>
+		union all
+			SELECT COUNT(*) cnt  FROM sys_menu WHERE delete_yn = 'N' AND menu_tp_cd = 'MENU' AND upper_menu_sn in <foreach item ="item" index="index" collection="listMenu" open="(" separator="," close=")">#{item.sysMenu.menuSn}</foreach>
+		)
+	</select>
+	
+	<delete id="deleteMenu" parameterType="com.plgrim.ncp.commons.data.SysMenuDTO">
+		/* [commons.menu.xml][deleteMenu][메뉴정보 삭제][Tam] */
+		UPDATE sys_menu set delete_yn = 'Y' ,  use_yn ='N' ,  udter_id = #{regtrId},   udt_dt = SYSDATE  WHERE menu_sn = ${sysMenu.menuSn}
+	</delete>
+	
+	<delete id="deleteFileUpMenu" parameterType="com.plgrim.ncp.commons.data.SysMenuDTO">
+		/* [commons.menu.xml][deleteFileMenu][자식 File URL정보 삭제][Tam] */
+		UPDATE sys_menu set delete_yn = 'Y',  use_yn ='N', udter_id = #{regtrId},   udt_dt = SYSDATE  WHERE menu_tp_cd = 'FILE' AND upper_menu_sn = ${sysMenu.menuSn}
+	</delete>
+	
+	<delete id="deleteFileMenu" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysMenu">
+		/* [commons.menu.xml][deleteFileMenu][파일 메뉴정보 삭제][Tam] */
+		UPDATE sys_menu set delete_yn = 'Y' , use_yn ='N', udter_id = #{regtrId},   udt_dt = SYSDATE  WHERE menu_tp_cd = 'FILE' AND upper_menu_sn = ${upperMenuSn} AND menu_sn = ${menuSn}
+	</delete>
+	
+	<update id="updateMenu" parameterType="com.plgrim.ncp.commons.data.SysMenuDTO">
+		UPDATE sys_menu /* [commons.menu.xml][updateMenu][메뉴 수정 처리][Tam] */
+			SET
+				use_yn = #{sysMenu.useYn} ,
+				menu_nm = #{sysMenu.menuNm}, menu_dscr = #{sysMenu.menuDscr},
+				outpt_tp_cd = #{sysMenu.outptTpCd} , popup_left_lc = #{sysMenu.popupLeftLc}, popup_upend_lc = #{sysMenu.popupUpendLc}, popup_width =#{sysMenu.popupWidth},
+				popup_hg = #{sysMenu.popupHg},
+				udter_id = #{regtrId},   udt_dt = SYSDATE
+				<if test = "sysMenu.psnlInfoUsefPgeYn != null"> , psnl_info_usef_pge_yn = #{sysMenu.psnlInfoUsefPgeYn} </if>
+		WHERE
+			menu_sn = #{sysMenu.menuSn} AND menu_tp_cd = 'MENU'
+	</update>
+	
+	<update id="updateMenuUseYn" parameterType="com.plgrim.ncp.commons.data.SysMenuDTO">
+		UPDATE sys_menu /* [commons.menu.xml][updateMenuUseYn][메뉴 사용/미사용여부 수정 처리][Tam] */
+			SET
+				use_yn = #{sysMenu.useYn} ,
+				udter_id = #{regtrId},   udt_dt = SYSDATE
+				<if test="sysMenu.sortSeq != null"> , sort_seq = #{sysMenu.sortSeq} </if>
+		WHERE
+			menu_sn = #{sysMenu.menuSn} AND menu_tp_cd = 'MENU'
+	</update>
+	
+	<update id="mergeMenuFile" parameterType="com.plgrim.ncp.commons.data.SysMenuDTO">
+		
+		<selectKey keyProperty="maxSortSeq" resultType="int" order="BEFORE">
+       		SELECT NVL(max(sort_seq),0)+1 sortSeq FROM sys_menu WHERE upper_menu_sn = #{sysMenu.upperMenuSn} 
+   		</selectKey>
+   		
+		MERGE INTO sys_menu sm   /* [commons.menu.xml][mergeMenuFile][메뉴파일 저장처리][Tam] */
+		 USING ( select 0 menu_sn FROM dual ) wsag
+			ON (  sm.menu_sn = #{sysMenu.menuSn,jdbcType=NUMERIC} AND sm.menu_tp_cd = 'FILE' )
+		WHEN MATCHED
+		THEN
+		   UPDATE SET  
+				menu_nm = #{sysMenu.menuNm} , use_yn = #{sysMenu.useYn}, menu_url = #{sysMenu.menuUrl},
+				first_pge_yn = #{sysMenu.firstPgeYn},
+				udter_id = #{regtrId},   udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		   INSERT  (
+			   menu_sn, upper_menu_sn, bo_site_id, 
+			   menu_nm, menu_img_url, menu_url, 
+			   use_yn, sort_seq, menu_tp_cd, 
+			   first_pge_yn, outpt_tp_cd, popup_left_lc, 
+			   popup_upend_lc, popup_width, popup_hg, 
+			   regtr_id, reg_dt, psnl_info_usef_pge_yn, delete_yn
+		   ) VALUES( 
+			   SQ_SYS_MENU.nextval, #{sysMenu.upperMenuSn}, #{sysMenu.boSiteId}, 
+			   #{sysMenu.menuNm}, #{sysMenu.menuImgUrl}, #{sysMenu.menuUrl}, 
+			   #{sysMenu.useYn}, 
+			   #{maxSortSeq},
+			   #{sysMenu.menuTpCd}, 
+			   #{sysMenu.firstPgeYn}, #{sysMenu.outptTpCd}, #{sysMenu.popupLeftLc}, 
+			   #{sysMenu.popupUpendLc}, #{sysMenu.popupWidth}, #{sysMenu.popupHg}, 
+			   #{regtrId}, SYSDATE, 'N', 'N'
+		  )
+	</update>
+	
+	<resultMap id="resultMenuPopup" type="com.plgrim.ncp.commons.result.SysMenuPopupResult">
+		<result property="sysMenu.menuSn" column="MENU_SN" />
+		<result property="sysMenu.upperMenuSn" column="UPPER_MENU_SN" />
+		<result property="sysMenu.boSiteId" column="BO_SITE_ID" />
+		<result property="sysMenu.menuNm" column="MENU_NM" />
+		<result property="sysMenu.menuDscr" column="MENU_DSCR" />
+		<result property="naMenuNm" column="na_menu_nm" />
+	</resultMap>
+	
+	<select id="selectListMenuPopupList" parameterType="com.plgrim.ncp.commons.data.FormSysMenuDTO" resultMap="resultMenuPopup">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		<![CDATA[
+			SELECT   /* [commons.com.xml][selectListMenuPopupList][메뉴 팝업 조회][Yoon] */
+				SM.MENU_SN
+				, SM.UPPER_MENU_SN
+				, SM.BO_SITE_ID
+				, SM.MENU_NM
+				, SM.MENU_DSCR
+				FROM 
+					SYS_MENU SM	
+				WHERE 
+				sm.menu_tp_cd = 'MENU'
+				AND
+				sm.delete_yn = 'N'
+			]]>
+				<if test = "searchListBoSite != null">
+					AND sm.bo_site_id  in  
+					<foreach item ="item" index="index" collection="searchListBoSite" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</if>   
+							
+			START WITH  
+				<choose>
+					<when test="searchField != null and searchField == 1 and searchText != null and searchText != ''.toString()">
+						sm.menu_nm like #{searchText}||'%'
+					</when>
+					<when test="searchField != null and searchField == 2 and searchText != null and searchText != ''.toString()">
+						sm.menu_sn = #{searchText}
+					</when>
+					<otherwise>
+						sm.upper_menu_sn is NULL 
+					</otherwise>
+				</choose>
+			 CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+			 ORDER SIBLINGS BY sm.bo_site_id, sm.sort_seq
+ 		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectListMenuPopupCount" parameterType="com.plgrim.ncp.commons.data.FormSysMenuDTO" resultType="long"> 
+       <![CDATA[
+		/* [commons.menu.xml][selectListMenuPopupCount]][메뉴 팝업 총 갯수][Yoon] */ 
+			SELECT
+			    COUNT(*) cnt
+			FROM 
+			    SYS_MENU sm
+			WHERE 
+				sm.menu_tp_cd = 'MENU'
+				AND
+				sm.delete_yn = 'N'
+			]]>
+				<if test = "searchListBoSite != null">
+					AND sm.bo_site_id  in  
+					<foreach item ="item" index="index" collection="searchListBoSite" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</if>   
+							
+			START WITH  
+				<choose>
+					<when test="searchField != null and searchField == 1 and searchText != null and searchText != ''.toString()">
+						sm.menu_nm like #{searchText}||'%'
+					</when>
+					<when test="searchField != null and searchField == 2 and searchText != null and searchText != ''.toString()">
+						sm.menu_sn = #{searchText}
+					</when>
+					<otherwise>
+						sm.upper_menu_sn is NULL 
+					</otherwise>
+				</choose>
+			 CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+			 ORDER SIBLINGS BY sm.bo_site_id, sm.sort_seq
+	</select>
+	
+</mapper>

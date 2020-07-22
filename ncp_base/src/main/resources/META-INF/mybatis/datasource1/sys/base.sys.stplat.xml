@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysStplat" parameterType="sysStplat" resultType="sysStplat">
+		SELECT /* com.plgrim.ncp.base.selectSysStplat		Generator(Generator)	2018-05-23 */
+			   STPLAT_CD
+			 , STPLAT_DSCR
+			 , STPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_STPLAT
+		 WHERE 1 = 1
+	   	   AND STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysStplat" parameterType="sysStplat">
+		UPDATE /* com.plgrim.ncp.base.updateSysStplat		Generator(Generator)	2018-05-23 */
+		SYS_STPLAT SET
+			   STPLAT_DSCR = #{stplatDscr,jdbcType=VARCHAR}
+			 , STPLAT_CONT = #{stplatCont,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysStplat" parameterType="sysStplat">
+		INSERT /* com.plgrim.ncp.base.insertSysStplat		Generator(Generator)	2018-05-23 */
+		INTO   SYS_STPLAT (
+			   STPLAT_CD
+			 , STPLAT_DSCR
+			 , STPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stplatCd,jdbcType=VARCHAR}
+			 , #{stplatDscr,jdbcType=VARCHAR}
+			 , #{stplatCont,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysStplat" parameterType="sysStplat">
+		DELETE /* com.plgrim.ncp.base.deleteSysStplat		Generator(Generator)	2018-05-23 */
+		  FROM SYS_STPLAT
+		 WHERE 1 = 1
+		   AND STPLAT_CD = #{stplatCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

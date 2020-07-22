@@ -1,0 +1,79 @@
+// 이클립스 IDE  설정
+eclipse {
+	classpath {
+		
+		
+		/*
+		 Default JRE  대신  Execution Environment 를 사용하게 하는 설정 . 끝 부분의 버전을  다음중에서 골라 넣는다. ( 참조 https://issues.gradle.org/browse/GRADLE-3100 )   
+			JRE-1.1
+			J2SE-1.2
+			J2SE-1.3
+			J2SE-1.4
+			J2SE-1.5
+			JavaSE-1.6
+			JavaSE-1.7
+			JavaSE-1.8
+		*/
+		containers -= 'org.eclipse.jdt.launching.JRE_CONTAINER'
+		containers -= 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+		//containers   'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
+		
+		// Eclipse 에서  Project  의존성을 처리 못해  'Project' will not publish/export  오류가 나오는 것을 수정
+		file.withXml { provider ->
+		
+			//target/build 디렉토리 derived로 만들기
+			ignoreDerivedResources(provider.asNode())
+			
+			
+			provider.asNode().classpathentry.findAll {
+				it.@kind == 'src' && 
+				it.@exported == true
+			}.each { cpe ->
+				def attributes = cpe.children()[0];
+				if (attributes == null) { 
+					attributes = new groovy.util.Node(cpe, "attributes");
+				}
+				def componentDependency = attributes.children().find { attr -> attr.@name == 'org.eclipse.jst.component.dependency'}
+				if (componentDependency != null) { return }
+				attributes.appendNode( "attribute",['name':'org.eclipse.jst.component.dependency', 'value':'/WEB-INF/lib'])
+			}
+		}
+	}
+}
+
+// For the Eclipse STS plugin
+task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
+  ext.srcFile = file(".project")
+  inputs.file srcFile
+  outputs.dir srcFile
+  onlyIf { srcFile.exists() }
+  doLast {
+	def projectDescription = new XmlParser().parse(srcFile)
+	ignoreDerivedResources(projectDescription)
+	def writer = new FileWriter(srcFile)
+	def printer = new XmlNodePrinter(new PrintWriter(writer))
+	printer.setPreserveWhitespace(true)
+	printer.print(projectDescription)
+  }
+}
+def ignoreDerivedResources(projectDescription, directories = ["build", "target", "test-output"]) {
+  def count = directories.count { file(it).exists() }
+  if (count > 0) {
+	def filter = projectDescription
+	  .appendNode("filteredResources")
+	  .appendNode("filter")
+	filter.appendNode("id", System.currentTimeMillis().toString().trim())
+	filter.appendNode("type", "26")
+	filter.appendNode("name")
+	def matcher = filter.appendNode("matcher")
+	matcher.appendNode("id", "org.eclipse.ui.ide.orFilterMatcher")
+	def arguments = matcher.appendNode("arguments")
+	directories.each {
+	  if (file(it).exists()) {
+		def dirMatcher = arguments.appendNode("matcher")
+		dirMatcher.appendNode("id", "org.eclipse.ui.ide.multiFilter")
+		dirMatcher.appendNode("arguments", "1.0-projectRelativePath-matches-false-false-${it}")
+	  }
+	}
+  }
+}

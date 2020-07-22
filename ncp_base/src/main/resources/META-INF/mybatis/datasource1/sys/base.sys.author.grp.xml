@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAuthorGrp" parameterType="sysAuthorGrp" resultType="sysAuthorGrp">
+		SELECT /* com.plgrim.ncp.base.selectSysAuthorGrp		Generator(Generator)	2018-05-23 */
+			   AUTHOR_GRP_SN
+			 , AUTHOR_GRP_NM
+			 , AUTHOR_GRP_DSCR
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_AUTHOR_GRP
+		 WHERE 1 = 1
+	   	   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysAuthorGrp" parameterType="sysAuthorGrp">
+		UPDATE /* com.plgrim.ncp.base.updateSysAuthorGrp		Generator(Generator)	2018-05-23 */
+		SYS_AUTHOR_GRP SET
+			   AUTHOR_GRP_NM = #{authorGrpNm,jdbcType=VARCHAR}
+			 , AUTHOR_GRP_DSCR = #{authorGrpDscr,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysAuthorGrp" parameterType="sysAuthorGrp">
+		INSERT /* com.plgrim.ncp.base.insertSysAuthorGrp		Generator(Generator)	2018-05-23 */
+		INTO   SYS_AUTHOR_GRP (
+			   AUTHOR_GRP_SN
+			 , AUTHOR_GRP_NM
+			 , AUTHOR_GRP_DSCR
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{authorGrpSn,jdbcType=NUMERIC}
+			 , #{authorGrpNm,jdbcType=VARCHAR}
+			 , #{authorGrpDscr,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAuthorGrp" parameterType="sysAuthorGrp">
+		DELETE /* com.plgrim.ncp.base.deleteSysAuthorGrp		Generator(Generator)	2018-05-23 */
+		  FROM SYS_AUTHOR_GRP
+		 WHERE 1 = 1
+		   AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

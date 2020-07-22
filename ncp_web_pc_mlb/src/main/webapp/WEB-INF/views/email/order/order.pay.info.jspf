@@ -1,0 +1,122 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/include/jsp-header.jspf"%>
+
+
+
+						<tr>
+							<td>
+								<table cellspacing="0" cellpadding="0" width="100%">
+									<tr>
+										<td colspan="2" align="left" style="font:bold 14px/18px '돋움', dotum, sans-serif;">결제정보</td>
+									</tr>
+									<tr>
+										<td colspan="2" height="18"></td> 
+									</tr>
+									<tr>
+										<td colspan="2" style="border-top:1px solid #000" height="28"></td>
+									</tr>
+									<tr>
+										<th align="left" style="font:bold 12px/14px '돋움', dotum, sans-serif;">상품가격</th>
+										<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif;"><fmt:formatNumber value="${info.saleSumAmt}" pattern="#,###"/>원</td>
+									</tr>
+									<tr>
+										<td colspan="2" height="18"></td> 
+									</tr>
+									<tr>
+										<th align="left" style="font:bold 12px/14px '돋움', dotum, sans-serif;">할인적용</th>
+										<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif; color:#ff3600">-<fmt:formatNumber value="${info.bundleDcSumAmt+info.crsDcSumAmt+info.godCpnDcSumAmt+info.bskCpnDcSumAmt+info.dlvCstCpnDcSumAmt+info.godDcSumAmt}" pattern="#,###"/>원</td>
+									</tr>
+									<tr>
+										<td colspan="2" height="18"></td> 
+									</tr>
+									<tr>
+										<th align="left" style="font:bold 12px/14px '돋움', dotum, sans-serif;">배송비</th>
+										<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif;"><fmt:formatNumber value="${info.dlvCstSumAmt}" pattern="#,###"/>원</td>
+									</tr>
+									<tr>
+										<td colspan="2" height="28"></td>
+									</tr>
+									<tr>
+										<td colspan="2" height="1" style="background:#ddd"></td>
+									</tr>
+									<tr>
+										<td colspan="2" height="28"></td>
+									</tr>
+									<tr>
+										<td  colspan="2">											
+											<table cellspacing="0" cellpadding="0" width="100%">
+												<tr>
+													<th rowspan="7" width="100" align="left" style="font:bold 14px/18px '돋움', dotum, sans-serif; vertical-align:top">총 결제금액</th>
+													<th align="left"  width="130" style="font:bold 12px/18px '돋움', dotum, sans-serif;">마일리지</th>
+													<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif;"><fmt:formatNumber value="${info.unityPntUseSumAmt}" pattern="#,###"/>원</td>
+												</tr>
+												<tr>
+													<td colspan="3" height="16"></td>
+												</tr>
+												<tr>													
+													<th align="left" width="130" style="font:bold 12px/18px '돋움', dotum, sans-serif;">포인트</th>
+													<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif;"><fmt:formatNumber value="${info.webPntUseSumAmt}" pattern="#,###"/>원</td>
+												</tr>
+											<c:forEach var="payItem" items="${info.payList }">
+												<c:if test="${payItem.mpayMnYn == 'Y' and payItem.dealTpCd != 'DEPST_WAIT'}">
+													<tr>
+														<td colspan="3" height="16"></td>
+													</tr>
+													<tr>
+														<th align="left" width="130" style="font:bold 12px/18px '돋움', dotum, sans-serif; vertical-align:top"><c:out value="${payItem.payMnCd}"/></th>														
+														<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif;"><c:out value="${payItem.bnkNm}"/><strong style="font-size:14px; color:#ff3600; padding-left:10px"><fmt:formatNumber value="${info.payExchgRtCrncySumAmt}" pattern="#,###"/>원</strong></td>
+													</tr>
+													<c:if test="${not empty payItem.bnkAcctNo and payItem.bnkAcctNo != ''}">
+														<tr>
+															<td colspan="3" height="16"></td>
+														</tr>
+														<tr>													
+															<th align="left" width="130" style="font:bold 12px/18px '돋움', dotum, sans-serif; vertical-align:top">입금계좌</th>
+															<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif; word-break:keep-all"><c:out value="${payItem.bnkAcctNo}"/> (주)에프앤에프   입금일   <fmt:formatDate value="${payItem.regDt}" pattern="yyyy.MM.dd HH:mm:ss" /></td>
+														</tr>
+													</c:if>
+												</c:if>
+												<c:if test="${payItem.mpayMnYn == 'Y' and payItem.dealTpCd == 'DEPST_WAIT'}">	
+													<tr>
+														<td colspan="3" height="16"></td>
+													</tr>
+													<tr>													
+														<th align="left" width="130" style="font:bold 12px/18px '돋움', dotum, sans-serif; vertical-align:top"><c:out value="${payItem.payMnCd}"/></th>
+														<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif; vertical-align:top;">${payItem.bnkNm }<strong style="font-size:14px; color:#ff3600; padding-left:10px"><fmt:formatNumber value="${payItem.stdrCrncyPayAmt}" pattern="#,###"/>원</strong></td>
+													</tr>	
+													<tr>
+														<td colspan="3" height="16"></td>
+													</tr>
+													<tr>													
+														<th align="left" width="130" style="font:bold 12px/18px '돋움', dotum, sans-serif; vertical-align:top">입금계좌</th>
+														<td align="right" style="font:normal 12px/18px '돋움', dotum, sans-serif; word-break:keep-all">${payItem.bnkAcctNo } (주)에프앤에프   입금 마감일시   ${payItem.virtlBnkAcctValidDtStr }</td>
+													</tr>		
+												</c:if>	
+											</c:forEach>								
+											</table>
+										</td>
+									</tr>									
+									<tr>
+										<td colspan="2" height="28"></td>
+									</tr>
+									<tr>
+										<td colspan="2" height="1" style="background:#eee"></td>
+									</tr>
+									<tr>
+										<td colspan="2" height="18"></td>
+									</tr>
+									<tr>
+										<th align="left" style="font:bold 12px/14px '돋움', dotum, sans-serif;">적립예정 마일리지</th>
+										<td align="right" style="font:normal 12px/14px '돋움', dotum, sans-serif;"><fmt:formatNumber value="${info.unityPntAccmlSumAmt}" pattern="#,###"/>원</td>
+									</tr>
+									<tr>
+										<td colspan="2" height="18"></td>
+									</tr>
+									<tr>
+										<td colspan="2" height="1" style="background:#ddd"></td>
+									</tr>
+									
+								</table>
+							</td>
+						</tr>
+

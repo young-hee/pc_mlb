@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCtgryDspAplBrnd" parameterType="dspCtgryDspAplBrnd" resultType="dspCtgryDspAplBrnd">
+		SELECT /* com.plgrim.ncp.base.selectDspCtgryDspAplBrnd		Generator(Generator)	2018-05-23 */
+			   DSP_CTGRY_NO
+			 , LANG_CD
+			 , DSP_MBR_SECT_CD
+			 , DSP_BRND_ID
+			 , DSP_YN
+			 , BRND_DSP_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CTGRY_DSP_APL_BRND
+		 WHERE 1 = 1
+	   	   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND DSP_MBR_SECT_CD = #{dspMbrSectCd,jdbcType=VARCHAR}
+		   AND DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspCtgryDspAplBrnd" parameterType="dspCtgryDspAplBrnd">
+		UPDATE /* com.plgrim.ncp.base.updateDspCtgryDspAplBrnd		Generator(Generator)	2018-05-23 */
+		DSP_CTGRY_DSP_APL_BRND SET
+			   DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , BRND_DSP_YN = #{brndDspYn,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND DSP_MBR_SECT_CD = #{dspMbrSectCd,jdbcType=VARCHAR}
+		   AND DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspCtgryDspAplBrnd" parameterType="dspCtgryDspAplBrnd">
+		INSERT /* com.plgrim.ncp.base.insertDspCtgryDspAplBrnd		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CTGRY_DSP_APL_BRND (
+			   DSP_CTGRY_NO
+			 , LANG_CD
+			 , DSP_MBR_SECT_CD
+			 , DSP_BRND_ID
+			 , DSP_YN
+			 , BRND_DSP_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dspMbrSectCd,jdbcType=VARCHAR}
+			 , #{dspBrndId,jdbcType=VARCHAR}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{brndDspYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCtgryDspAplBrnd" parameterType="dspCtgryDspAplBrnd">
+		DELETE /* com.plgrim.ncp.base.deleteDspCtgryDspAplBrnd		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CTGRY_DSP_APL_BRND
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND DSP_MBR_SECT_CD = #{dspMbrSectCd,jdbcType=VARCHAR}
+		   AND DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

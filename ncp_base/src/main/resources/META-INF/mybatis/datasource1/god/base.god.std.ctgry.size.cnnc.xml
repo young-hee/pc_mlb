@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodStdCtgrySizeCnnc" parameterType="godStdCtgrySizeCnnc" resultType="godStdCtgrySizeCnnc">
+		SELECT /* com.plgrim.ncp.base.selectGodStdCtgrySizeCnnc		Generator(Generator)	2018-04-19 */
+			   STD_CTGRY_NO
+			 , STD_SIZE_SECT_CD
+			 , STD_SIZE_CD
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_STD_CTGRY_SIZE_CNNC
+		 WHERE 1 = 1
+	   	   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodStdCtgrySizeCnnc" parameterType="godStdCtgrySizeCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateGodStdCtgrySizeCnnc		Generator(Generator)	2018-04-19 */
+		GOD_STD_CTGRY_SIZE_CNNC SET
+			   USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , REGTR_ID = #{regtrId,jdbcType=VARCHAR}
+			 , REG_DT = #{regDt,jdbcType=DATE}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = #{udtDt,jdbcType=DATE}
+		 WHERE 1 = 1
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodStdCtgrySizeCnnc" parameterType="godStdCtgrySizeCnnc">
+		INSERT /* com.plgrim.ncp.base.insertGodStdCtgrySizeCnnc		Generator(Generator)	2018-04-19 */
+		INTO   GOD_STD_CTGRY_SIZE_CNNC (
+			   STD_CTGRY_NO
+			 , STD_SIZE_SECT_CD
+			 , STD_SIZE_CD
+			 , USE_YN
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stdCtgryNo,jdbcType=VARCHAR}
+			 , #{stdSizeSectCd,jdbcType=VARCHAR}
+			 , #{stdSizeCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , #{regDt,jdbcType=DATE}
+			 , #{udterId,jdbcType=VARCHAR}
+			 , #{udtDt,jdbcType=DATE}
+        )
+    </insert>
+
+    <delete id="deleteGodStdCtgrySizeCnnc" parameterType="godStdCtgrySizeCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteGodStdCtgrySizeCnnc		Generator(Generator)	2018-04-19 */
+		  FROM GOD_STD_CTGRY_SIZE_CNNC
+		 WHERE 1 = 1
+		   AND STD_CTGRY_NO = #{stdCtgryNo,jdbcType=VARCHAR}
+		   AND STD_SIZE_SECT_CD = #{stdSizeSectCd,jdbcType=VARCHAR}
+		   AND STD_SIZE_CD = #{stdSizeCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

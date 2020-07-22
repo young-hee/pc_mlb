@@ -1,0 +1,1301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.brand">
+
+
+	<resultMap type="com.plgrim.ncp.commons.result.SysBrandResult" id="sysBrandRateResultMap">
+		<result column="NO" 				property="rowNumber" />
+		<result column="BRND_ID"			property="sysBrnd.brndId" />
+		<result column="UPPER_BRND_ID"		property="sysBrnd.upperBrndId" />
+		<result column="BRND_NM"			property="sysBrnd.brndNm" />
+		<result column="BRND_DSCR"			property="sysBrnd.brndDscr" />
+		<result column="BRND_IMG_URL"		property="sysBrnd.brndImgUrl" />
+		<result column="USE_YN"				property="sysBrnd.useYn" />
+		<result column="BRND_GRP_YN"		property="sysBrnd.brndGrpYn" />
+		<result column="SORT_SEQ"			property="sysBrnd.sortSeq" />
+		<result column="REGTR_ID"			property="sysBrnd.regtrId" />
+		<result column="REG_DT"				property="sysBrnd.regDt" />
+		<result column="UDTER_ID"			property="sysBrnd.udterId" />
+		<result column="UDT_DT"				property="sysBrnd.udtDt" />
+		<result column="ERP_BRND_ID"			property="sysBrnd.erpBrndId" />
+		<result column="EMP_ONLY_YN"			property="sysBrnd.empOnlyYn" />
+		<result column="CSMR_PRC_DC_RT"			property="sysBrnd.csmrPrcDcRt" />
+		<result column="EMP_PRC_DC_RT"			property="sysBrnd.empPrcDcRt" />
+		<result column="PNT_ACCML_YN"			property="sysBrnd.pntAccmlYn" />
+		<result column="PNT_ACCML_RT"			property="sysBrnd.pntAccmlRt" />
+		<result column="PNT_USE_YN"				property="sysBrnd.pntUseYn" />
+		<result column="WEBPNT_ACCML_YN"		property="sysBrnd.webpntAccmlYn" />
+		<result column="WEBPNT_ACCML_RT"		property="sysBrnd.webpntAccmlRt" />
+		<result column="WEBPNT_USE_YN"			property="sysBrnd.webpntUseYn" />
+		<result column="IMDTL_DC_YN"			property="sysBrnd.imdtlDcYn" />
+		<result column="IMDTL_DC_RT"			property="sysBrnd.imdtlDcRt" />
+		<result column="batch_end_dt"			property="batchEndDt" />
+	</resultMap>
+	
+	
+	<resultMap type="com.plgrim.ncp.commons.result.SysBrandResult" id="sysBrndListResultMap">
+		<result column="brnd_depth"			property="brndDepth" />
+		<result column="id"				property="id" />
+		<result column="upper_id"			property="upperId" />
+		<result column="text"			property="text" />
+		<result column="child_count"			property="childCount" />
+		<result column="brnd_id"			property="sysBrnd.brndId" />
+		<result column="upper_brnd_id"		property="sysBrnd.upperBrndId" />
+		<result column="brnd_nm"			property="sysBrnd.brndNm" />
+		<result column="img_rsize_grp_cd"	property="sysBrnd.imgRsizeGrpCd" />
+		<result column="brnd_dscr"			property="sysBrnd.brndDscr" />
+		<result column="brnd_img_url"		property="sysBrnd.brndImgUrl" />
+		<result column="use_yn"				property="sysBrnd.useYn" />
+		<result column="brnd_grp_yn"		property="sysBrnd.brndGrpYn" />
+		<result column="ovsea_dlv_psb_yn"	property="sysBrnd.ovseaDlvPsbYn" />
+		<result column="sort_seq"			property="sysBrnd.sortSeq" />
+		<result column="regtr_id"			property="sysBrnd.regtrId" />
+		<result column="reg_dt"				property="sysBrnd.regDt" />
+		<result column="udter_id"			property="sysBrnd.udterId" />
+		<result column="udt_dt"				property="sysBrnd.udtDt" />
+	</resultMap>
+	
+	<resultMap type="com.plgrim.ncp.commons.result.SysBrandResult" id="sysBrndResultMap">
+		<result column="eng_brnd_nm"		property="sysBrnd.engBrndNm" />
+		<result column="chi_brnd_nm"		property="sysBrnd.chiBrndNm" />
+		<!-- <result column="eng_mlang_sn"		property="sysBrnd.engMlangSn" />
+		<result column="eng_mlang_idx_id"	property="sysBrnd.engMlangIdxId" />
+		<result column="chi_mlang_sn"		property="sysBrnd.chiMlangSn" /> 
+		<result column="chi_mlang_idx_id"	property="sysBrnd.chiMlangIdxId" />-->
+		<result column="TOP_BRND_ID"		property="topBrndId" />
+		<result column="brnd_id"			property="sysBrnd.brndId" />
+		<result column="upper_brnd_id"		property="sysBrnd.upperBrndId" />
+		<result column="brnd_nm"			property="sysBrnd.brndNm" />
+		<result column="img_rsize_grp_cd"	property="sysBrnd.imgRsizeGrpCd" />
+		<result column="brnd_dscr"			property="sysBrnd.brndDscr" />
+		<result column="brnd_story_intrcn_cont"		property="sysBrnd.brndStoryIntrcnCont" />
+		<result column="eng_brnd_story_intrcn_cont"		property="sysBrnd.engBrndStoryIntrcnCont" />
+		<result column="chi_brnd_story_intrcn_cont"		property="sysBrnd.chiBrndStoryIntrcnCont" />
+		<result column="brnd_img_url"		property="sysBrnd.brndImgUrl" />
+		<result column="model_size_img_url"		property="sysBrnd.modelSizeImgUrl" />
+		<result column="model_size_mobile_img_url"	property="sysBrnd.modelSizeMobileImgUrl" />
+		<result column="size_gd_html"		property="sysBrnd.sizeGdHtml" />
+		<result column="size_gd_mobile_html"		property="sysBrnd.sizeGdMobileHtml" />		
+		<result column="use_yn"				property="sysBrnd.useYn" />
+		<result column="org_use_yn"				property="sysBrnd.orgUseYn" />
+		<result column="on_sale_expsr_stdr_dc_rt"	property="sysBrnd.onSaleExpsrStdrDcRt" />
+		<result column="brnd_grp_yn"		property="sysBrnd.brndGrpYn" />
+		<result column="ovsea_dlv_psb_yn"	property="sysBrnd.ovseaDlvPsbYn" />
+		<result column="sort_seq"			property="sysBrnd.sortSeq" />
+		<result column="ovsea_brnd_yn"		property="sysBrnd.ovseaBrndYn" />
+		<result column="emp_only_yn"		property="sysBrnd.empOnlyYn" />
+		<result column="csmr_prc_dc_rt"		property="sysBrnd.csmrPrcDcRt" />
+		<result column="emp_prc_dc_rt"		property="sysBrnd.empPrcDcRt" />
+		<result column="pnt_accml_yn"		property="sysBrnd.pntAccmlYn" />
+		<result column="pnt_accml_rt"		property="sysBrnd.pntAccmlRt" />
+		<result column="pnt_use_yn"			property="sysBrnd.pntUseYn" />
+		<result column="webpnt_accml_yn"	property="sysBrnd.webpntAccmlYn" />
+		<result column="webpnt_accml_rt"	property="sysBrnd.webpntAccmlRt" />
+		<result column="webpnt_use_yn"		property="sysBrnd.webpntUseYn" />
+		<result column="imdtl_dc_yn"		property="sysBrnd.imdtlDcYn" />
+		<result column="imdtl_dc_rt"		property="sysBrnd.imdtlDcRt" />
+		<result column="regtr_id"			property="sysBrnd.regtrId" />
+		<result column="reg_dt"				property="sysBrnd.regDt" />
+		<result column="udter_id"			property="sysBrnd.udterId" />
+		<result column="udt_dt"				property="sysBrnd.udtDt" />
+		<result column="regtr_nm" 			property="sysBrnd.regtrNm"  />
+		<result column="udter_nm"			property="sysBrnd.udterNm"  />
+		<result column="erp_brnd_id"		property="sysBrnd.erpBrndId"  />
+		<result column="brnd_tag_cd"			property="sysBrnd.brndTagCd"  />
+		<result column="brnd_tag_nm"			property="sysBrnd.brndTagNm"  />
+		
+	</resultMap>
+
+	<!-- 시스템 브랜드 이미지 Map -->
+	<resultMap type="com.plgrim.ncp.commons.result.SysBrandResult" id="sysBrndImgResultMap">
+		<result column="brnd_id"				property="sysBrndImgList.brndId"  />
+		<result column="brnd_img_sect_cd"		property="sysBrndImgList.brndImgSectCd"  />
+		<result column="brnd_img_file_nm"		property="sysBrndImgList.brndImgFileNm"  />
+		<result column="brnd_img_file_url"		property="sysBrndImgList.brndImgFileUrl"  />
+		<result column="brnd_img_altrtv_cont"	property="sysBrndImgList.brndImgAltrtvCont"  />
+	</resultMap>
+	
+	<!-- 인터페이스 erp brnd id Map -->
+	<resultMap type="com.plgrim.ncp.commons.result.ErpBrndIdResult" id="erpBrndIdResultMap">
+		<result column="brnd_grp"		property="brndGrp" />
+		<result column="brnd_cd"		property="brndCd" />
+		<result column="brnd_nm"	property="brndNm" />
+	</resultMap>
+	<!-- 인터페이스 브랜드 tag 코드 Map -->
+	<resultMap type="com.plgrim.ncp.commons.result.BrndTagCdResult" id="brndTagCdResultMap">
+		<result column="brnd_cd"		property="brndCd" />
+		<result column="zztag_info"		property="zztagInfo" />
+		<result column="zztag_info_nm"	property="zztagInfoNm" />
+	</resultMap>
+	
+	<sql id="sysBrandIlmoRateWhere" >
+		WHERE 1= 1
+		<choose>
+		<when test="scBrndId != null and scBrndId.size() > 0 ">
+		<foreach collection="scBrndId" item="item" open="AND sb.brnd_id IN (" close=")" separator=",">#{item}</foreach>
+		</when>
+		<otherwise>
+      	<if test="sysBrnd.brndNm != null and sysBrnd.brndNm != ''">
+        AND sb.brnd_nm like '%'||#{sysBrnd.brndNm, jdbcType=VARCHAR}||'%'  
+      	</if>
+        <if test='scIlmoAplYn != null'>
+      		<foreach collection="scIlmoAplYn" item="item" open="AND sb.ILMO_APL_YN IN (" close=")" separator=",">#{item}</foreach>
+        </if>
+        <if test='scEmpOnlyYn != null'>
+      		<foreach collection="scEmpOnlyYn" item="item" open="AND sb.EMP_ONLY_YN IN (" close=")" separator=",">#{item}</foreach>
+        </if>
+		</otherwise>
+		</choose>
+    </sql>
+	   
+	<!-- 시스템 브랜드 일모 할인률 조회 -->
+    <select id="selectSysBrandIlmoRateList" parameterType="com.plgrim.ncp.commons.data.SysBrandDTO" resultMap="sysBrandRateResultMap">
+    	/* [common.brand.xml][selectSysBrandIlmoRateList][시스템 브랜드 일모 할인률 조회][Leo] */
+    	<include refid="com.plgrim.ncp.base.beginPage"/>
+    	SELECT 
+    		sb.*
+    		, nvl(sbh.ILMO_CARD_DC_RT,0) as ILMO_CARD_DC_RT_HIST 
+		    , (
+		    	select max(batch_end_dt) as batch_end_dt 
+		    	from sys_batch_hist 
+				where batch_class_id = 'com.plgrim.ncp.batch.server.job.system.ilmodiscountratesync.IlmoDiscountRateSyncJob'
+		    ) as batch_end_dt
+		FROM (
+            SELECT 
+                  s.BRND_ID 
+                , s.UPPER_BRND_ID 
+                , s.ERP_BRND_ID
+                , s.BRND_NM 
+                , s.BRND_DSCR 
+                , s.BRND_IMG_URL 
+                , s.USE_YN 
+                , s.BRND_GRP_YN 
+                , s.SORT_SEQ 
+                , s.ILMO_APL_YN 
+                , s.EMP_ONLY_YN 
+                , s.ILMO_CARD_DC_RT 
+                , s.CSMR_PRC_DC_RT 
+                , s.EMP_PRC_DC_RT 
+                , s.PNT_ACCML_YN 
+                , s.PNT_ACCML_RT 
+                , s.PNT_USE_YN 
+                , s.IMDTL_DC_YN 
+                , s.IMDTL_DC_RT 
+                , s.REGTR_ID 
+                , s.REG_DT 
+                , s.UDTER_ID 
+                , s.UDT_DT
+            FROM SYS_BRND s
+            WHERE CONNECT_BY_ISLEAF = 1
+              and length(brnd_id) in(2,4)
+              and use_yn = 'Y'
+            connect by prior s.brnd_id = s.upper_brnd_id 
+            start with s.upper_brnd_id is null
+		) sb
+    	left outer join (
+            select 
+                  h.hist_turn
+                , h.BRND_ID 
+                , h.ILMO_APL_YN 
+                , h.EMP_ONLY_YN 
+                , h.ILMO_CARD_DC_RT 
+                , h.EMP_PRC_DC_RT 
+            from sys_brnd_hist h
+            join (
+                select brnd_id, 
+                max(hist_turn)-1 as hist_turn
+                from sys_brnd_hist
+                where ILMO_CARD_DC_RT_MOD_YN = 'Y'
+                group by brnd_id 
+            ) sh
+            on h.brnd_id = sh.brnd_id
+            and h.hist_turn = sh.hist_turn
+		) sbh
+		on sb.brnd_id = sbh.brnd_id
+		<include refid="com.plgrim.ncp.commons.brand.sysBrandIlmoRateWhere"/>
+		order by sb.upper_brnd_id asc, sb.brnd_id asc
+		<include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    
+	<!-- 브랜드별 일모 할인률 목록 TotalCount -->
+    <select id="selectSysBrandIlmoRateTotalCount" parameterType="com.plgrim.ncp.commons.data.SysBrandDTO" resultType="Integer">
+    	/* [common.brand.xml][selectSysBrandIlmoRateTotalCount][시스템 브랜드 일모 할인률 조회][Leo] */
+        SELECT COUNT(sb.BRND_ID) AS CNT
+        FROM  (
+            SELECT 
+                  s.BRND_ID 
+                , s.UPPER_BRND_ID 
+                , s.ERP_BRND_ID
+                , s.BRND_NM 
+                , s.BRND_DSCR
+                , s.BRND_IMG_URL 
+                , s.USE_YN 
+                , s.BRND_GRP_YN 
+                , s.SORT_SEQ 
+                , s.ILMO_APL_YN 
+                , s.EMP_ONLY_YN 
+                , s.ILMO_CARD_DC_RT 
+                , s.CSMR_PRC_DC_RT 
+                , s.EMP_PRC_DC_RT 
+                , s.PNT_ACCML_YN 
+                , s.PNT_ACCML_RT 
+                , s.PNT_USE_YN 
+                , s.IMDTL_DC_YN 
+                , s.IMDTL_DC_RT 
+                , s.REGTR_ID 
+                , s.REG_DT 
+                , s.UDTER_ID 
+                , s.UDT_DT
+            FROM SYS_BRND s
+            WHERE CONNECT_BY_ISLEAF = 1
+              and length(brnd_id) in(2,4)
+              and use_yn = 'Y'
+            connect by prior s.brnd_id = s.upper_brnd_id 
+            start with s.upper_brnd_id is null
+		) sb
+    	left outer join (
+            select 
+                  h.hist_turn
+                , h.BRND_ID 
+                , h.ILMO_APL_YN 
+                , h.EMP_ONLY_YN 
+                , h.ILMO_CARD_DC_RT 
+                , h.EMP_PRC_DC_RT 
+            from sys_brnd_hist h
+            join (
+                select brnd_id, 
+                max(hist_turn)-1 as hist_turn
+                from sys_brnd_hist
+                where ILMO_CARD_DC_RT_MOD_YN = 'Y'
+                group by brnd_id 
+            ) sh
+            on h.brnd_id = sh.brnd_id
+            and h.hist_turn = sh.hist_turn
+		) sbh
+		on sb.brnd_id = sbh.brnd_id
+		<include refid="com.plgrim.ncp.commons.brand.sysBrandIlmoRateWhere"/>
+    </select>
+    
+    <!-- 시스템 브랜드 일모 할인률 엑셀다운로드 -->
+    <select id="selectSysBrandIlmoRateListByAll" parameterType="com.plgrim.ncp.commons.data.SysBrandDTO" resultType="java.util.LinkedHashMap">
+    	/* [common.brand.xml][selectSysBrandIlmoRateListByAll][시스템 브랜드 일모 할인률 엑셀다운로드][Dian] */
+    	SELECT 
+		      sb.BRND_ID 
+		    , sb.BRND_NM 
+		    , sb.ILMO_APL_YN 
+		    , sb.EMP_ONLY_YN 
+		    , sb.EMP_PRC_DC_RT
+		    , sb.ILMO_CARD_DC_RT 
+		    , nvl(sbh.ILMO_CARD_DC_RT,0) as ILMO_CARD_DC_RT_HIST 
+		    , sb.UDT_DT
+		    , (
+		    	select max(batch_end_dt) as batch_end_dt 
+		    	from sys_batch_hist 
+				where batch_class_id = 'com.plgrim.ncp.batch.server.job.system.ilmodiscountratesync.IlmoDiscountRateSyncJob'
+		    ) as batch_end_dt
+		FROM  (
+            SELECT 
+                  s.BRND_ID 
+                , s.UPPER_BRND_ID 
+                , s.ERP_BRND_ID
+                , s.BRND_NM 
+                , s.BRND_DSCR 
+                , s.BRND_IMG_URL 
+                , s.USE_YN 
+                , s.BRND_GRP_YN 
+                , s.SORT_SEQ 
+                , s.ILMO_APL_YN 
+                , s.EMP_ONLY_YN 
+                , s.ILMO_CARD_DC_RT 
+                , s.CSMR_PRC_DC_RT 
+                , s.EMP_PRC_DC_RT 
+                , s.PNT_ACCML_YN 
+                , s.PNT_ACCML_RT 
+                , s.PNT_USE_YN 
+                , s.IMDTL_DC_YN 
+                , s.IMDTL_DC_RT 
+                , s.REGTR_ID 
+                , s.REG_DT 
+                , s.UDTER_ID 
+                , s.UDT_DT
+            FROM SYS_BRND s
+            WHERE CONNECT_BY_ISLEAF = 1
+              and length(brnd_id) in(2,4)
+              and use_yn = 'Y'
+            connect by prior s.brnd_id = s.upper_brnd_id 
+            start with s.upper_brnd_id is null
+		) sb
+    	left outer join (
+            select 
+                  h.hist_turn
+                , h.BRND_ID 
+                , h.ILMO_APL_YN 
+                , h.EMP_ONLY_YN 
+                , h.ILMO_CARD_DC_RT 
+                , h.EMP_PRC_DC_RT 
+            from sys_brnd_hist h
+            join (
+                select brnd_id, 
+                max(hist_turn)-1 as hist_turn
+                from sys_brnd_hist
+                where ILMO_CARD_DC_RT_MOD_YN = 'Y'
+                group by brnd_id 
+            ) sh
+            on h.brnd_id = sh.brnd_id
+            and h.hist_turn = sh.hist_turn
+		) sbh
+		on sb.brnd_id = sbh.brnd_id
+		<include refid="com.plgrim.ncp.commons.brand.sysBrandIlmoRateWhere"/>
+		order by sb.upper_brnd_id asc, sb.brnd_id asc	
+    </select>
+    
+    <update id="updateSysBrndIlmo" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		<![CDATA[
+		/* [common.brand.xml][updateSysBrndIlmo][일모적용임직원적용수정][Dian] */
+		UPDATE sys_brnd
+		SET    
+		       ilmo_apl_yn     = #{ilmoAplYn},
+		       emp_only_yn     = #{empOnlyYn},
+		       udter_id        = #{regtrId},
+		       udt_dt          = SYSDATE
+		WHERE  
+			brnd_id            = #{brndId}
+		]]>
+	</update>
+	
+	<update id="updateIlmoGod" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		<![CDATA[
+		/* [common.brand.xml][updateIlmoGod][시스템 브랜드 일모적용,임직원적용수정 시 상품정보 update][Dian] */
+		UPDATE god
+		SET    
+		       ilmo_apl_yn     = #{ilmoAplYn},
+		       emp_only_yn     = #{empOnlyYn},
+		       udter_id        = #{regtrId},
+		       udt_dt          = SYSDATE
+		WHERE  
+			brnd_id            = #{brndId}
+		]]>
+	</update>
+	
+	<select id="selectEmpPrcDcRt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd" resultType="java.math.BigDecimal">
+    	SELECT /* [common.brand.xml][selectEmpPrcDcRt][시스템 브랜드 임직원가 할인율][Dian] */
+    		EMP_PRC_DC_RT
+    	FROM sys_brnd
+    	WHERE brnd_id = #{brndId}
+    </select>
+    
+	<update id="updateSysBrndEmpDcRt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		<![CDATA[
+		/* [common.brand.xml][updateSysBrndEmpDcRt][임직원 할인율 수정][Dian] */
+		UPDATE sys_brnd
+		SET    
+		       EMP_PRC_DC_RT   = #{empPrcDcRt},
+		       udter_id        = #{regtrId},
+		       udt_dt          = SYSDATE
+		WHERE  
+			   brnd_id            = #{brndId}
+		]]>
+	</update>
+	
+	
+	<sql id="sysBrandPntAccmlWhere" >
+		WHERE 1= 1
+		<choose>
+			<when test="scBrndId != null and scBrndId.size() > 0 ">
+				<foreach collection="scBrndId" item="item" open="AND sb.brnd_id IN (" close=")" separator=",">#{item}</foreach>
+			</when>
+			<otherwise>
+      			<if test="sysBrnd.brndNm != null and sysBrnd.brndNm != ''">
+        			AND sb.brnd_nm like '%'||#{sysBrnd.brndNm, jdbcType=VARCHAR}||'%'
+				</if>
+				<if test='scPntAccmlYn != null'>
+					<foreach collection="scPntAccmlYn" item="item" open="AND sb.PNT_ACCML_YN IN (" close=")" separator=",">#{item}</foreach>
+				</if>
+				<if test='scPntUseYn != null'>
+					<foreach collection="scPntUseYn" item="item" open="AND sb.PNT_USE_YN IN (" close=")" separator=",">#{item}</foreach>
+				</if>
+				<if test='scWebpntAccmlYn != null'>
+					<foreach collection="scWebpntAccmlYn" item="item" open="AND sb.WEBPNT_ACCML_YN IN (" close=")" separator=",">#{item}</foreach>
+				</if>
+				<if test='scWebpntUseYn != null'>
+					<foreach collection="scWebpntUseYn" item="item" open="AND sb.WEBPNT_USE_YN IN (" close=")" separator=",">#{item}</foreach>
+				</if>
+				<if test='scImdtlDcYn != null'>
+					<foreach collection="scImdtlDcYn" item="item" open="AND sb.IMDTL_DC_YN IN (" close=")" separator=",">#{item}</foreach>
+				</if>
+				<choose>
+					<when test="scPntTp != null and scPntTp != '' ">
+						<if test="scPntTp == 'MBSH_PNT' ">
+							<if test='scAccmlYn != null'>
+								<foreach collection="scAccmlYn" item="item" open="AND sb.PNT_ACCML_YN IN (" close=")" separator=",">#{item}</foreach>
+							</if>
+							<if test='scUseYn != null'>
+								<foreach collection="scUseYn" item="item" open="AND sb.PNT_USE_YN IN (" close=")" separator=",">#{item}</foreach>
+							</if>
+						</if>
+						<if test="scPntTp == 'WEBPNT' ">
+							<if test='scAccmlYn != null'>
+								<foreach collection="scAccmlYn" item="item" open="AND sb.WEBPNT_ACCML_YN IN (" close=")" separator=",">#{item}</foreach>
+							</if>
+							<if test='scUseYn != null'>
+								<foreach collection="scUseYn" item="item" open="AND sb.WEBPNT_USE_YN IN (" close=")" separator=",">#{item}</foreach>
+							</if>
+						</if>
+					</when>
+					<otherwise>
+						<if test='scAccmlYn != null'>
+							AND ( sb.PNT_ACCML_YN <foreach collection="scAccmlYn" item="item" open=" IN (" close=")" separator=",">#{item}</foreach>
+									OR sb.WEBPNT_ACCML_YN <foreach collection="scAccmlYn" item="item" open=" IN (" close=")" separator=",">#{item}</foreach> )
+						</if>
+						<if test='scUseYn != null'>
+							AND ( sb.PNT_USE_YN <foreach collection="scUseYn" item="item" open=" IN (" close=")" separator=",">#{item}</foreach>
+									OR sb.WEBPNT_USE_YN <foreach collection="scUseYn" item="item" open=" IN (" close=")" separator=",">#{item}</foreach> )
+						</if>
+					</otherwise>
+				</choose>
+				<if test="upperBrndId != null">
+					AND sb.upper_brnd_id IN(	SELECT brnd_id
+												  FROM (SELECT	SB.brnd_id
+																, SB.UPPER_BRND_ID
+														  FROM SYS_BRND SB CONNECT BY PRIOR SB.BRND_ID = SB.UPPER_BRND_ID
+														   AND SB.USE_YN = 'Y'
+														   AND SB.BRND_GRP_YN = 'Y' START WITH SB.BRND_ID = #{upperBrndId, jdbcType=VARCHAR}
+														 ORDER SIBLINGS BY SB.SORT_SEQ ) BB
+														 WHERE bb.UPPER_BRND_ID is not null)
+				</if>
+			</otherwise>
+		</choose>
+    </sql>
+	   
+	<!-- 시스템 브랜드 포인트적립율 조회 -->
+    <select id="selectSysBrandPntAccmlList" parameterType="com.plgrim.ncp.commons.data.SysBrandDTO" resultMap="sysBrandRateResultMap">
+    	/* [common.brand.xml][selectSysBrandPntAccmlList][시스템 브랜드 포인트 적립율 조회][Dian] */
+    	<include refid="com.plgrim.ncp.base.beginPage"/>
+    	SELECT
+    		  sb.BRND_ID 
+		    , sb.UPPER_BRND_ID 
+		    , sb.ERP_BRND_ID
+		    , sb.BRND_NM 
+		    , sb.BRND_DSCR 
+		    , sb.BRND_IMG_URL 
+		    , sb.USE_YN 
+		    , sb.BRND_GRP_YN 
+		    , sb.SORT_SEQ  
+		    , sb.EMP_ONLY_YN  
+		    , sb.CSMR_PRC_DC_RT 
+		    , sb.EMP_PRC_DC_RT 
+		    , sb.PNT_ACCML_YN 
+		    , sb.PNT_ACCML_RT 
+		    , sb.PNT_USE_YN 
+			, sb.WEBPNT_ACCML_YN
+		    , sb.WEBPNT_ACCML_RT
+		    , sb.WEBPNT_USE_YN
+		    , sb.IMDTL_DC_YN
+		    , sb.IMDTL_DC_RT 
+		    , sb.REGTR_ID 
+		    , sb.REG_DT 
+		    , sb.UDTER_ID 
+		    , sb.UDT_DT
+    	FROM 
+    		sys_brnd sb
+    	inner join (
+		    SELECT 
+			      s.BRND_ID 
+			    , s.UPPER_BRND_ID 
+			FROM SYS_BRND s
+			where CONNECT_BY_ISLEAF = 1
+              and length(brnd_id) in(2,4)
+              and use_yn = 'Y'
+			connect by prior s.brnd_id = s.upper_brnd_id 
+			start with s.upper_brnd_id is null
+		) sc
+		on sb.brnd_id = sc.brnd_id
+        <include refid="com.plgrim.ncp.commons.brand.sysBrandPntAccmlWhere"/>	
+        order by sb.upper_brnd_id asc, sb.brnd_id ASC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+    
+	<!-- 브랜드별 포인트적립율 목록 TotalCount -->
+    <select id="selectSysBrandPntAccmlTotalCount" parameterType="com.plgrim.ncp.commons.data.SysBrandDTO" resultType="Integer">
+    	/* [common.brand.xml][selectSysBrandPntAccmlTotalCount][시스템 브랜드 포인트적립율 목록 Total count][Dian] */
+        <![CDATA[
+        SELECT COUNT(sb.BRND_ID) AS CNT
+        FROM 
+    		sys_brnd sb
+    	inner join (
+		    SELECT 
+			      s.BRND_ID 
+			    , s.UPPER_BRND_ID
+			FROM SYS_BRND s
+			where CONNECT_BY_ISLEAF = 1
+              and length(brnd_id) in(2,4)
+              and use_yn = 'Y'
+			connect by prior s.brnd_id = s.upper_brnd_id 
+			start with s.upper_brnd_id is null
+		) sc
+		on sb.brnd_id = sc.brnd_id
+        ]]>
+		<include refid="com.plgrim.ncp.commons.brand.sysBrandPntAccmlWhere"/>
+    </select>
+    
+    <!-- 브랜드별 포인트적립율 엑셀다운로드 -->
+    <select id="selectSysBrandPntAccmlListByAll" parameterType="com.plgrim.ncp.commons.data.SysBrandDTO" resultType="java.util.LinkedHashMap">
+    	/* [common.brand.xml][selectSysBrandPntAccmlListByAll][시스템 브랜드 포인트 적립율 엑셀다운로드][Dian] */
+    	SELECT 
+		      sb.BRND_ID 
+		    , sb.BRND_NM 
+		    , sb.PNT_ACCML_YN 
+		    , sb.PNT_ACCML_RT 
+		    , sb.PNT_USE_YN 
+			, sb.WEBPNT_ACCML_YN
+			, sb.WEBPNT_ACCML_RT
+			, sb.WEBPNT_USE_YN
+		    , sb.IMDTL_DC_YN
+		    , sb.IMDTL_DC_RT
+		    , (select adr.admin_nm from sys_admin adr where adr.admin_id = sb.UDTER_ID)||'('||sb.UDTER_ID||')' as udter_id
+		    ,to_char(sb.UDT_DT,'YYYY-MM-DD HH:MI:SS') as udt_dt
+		FROM 
+    		sys_brnd sb
+    	inner join (
+		    SELECT 
+			      s.BRND_ID 
+			    , s.UPPER_BRND_ID 
+			FROM SYS_BRND s
+			where CONNECT_BY_ISLEAF = 1
+              and length(brnd_id) in(2,4)
+              and use_yn = 'Y'
+			connect by prior s.brnd_id = s.upper_brnd_id 
+			start with s.upper_brnd_id is null
+		) sc
+		on sb.brnd_id = sc.brnd_id
+        <include refid="com.plgrim.ncp.commons.brand.sysBrandPntAccmlWhere"/>		
+		order by sb.upper_brnd_id asc, sb.brnd_id ASC
+    </select>
+    
+    <update id="updateSysBrndPntAccml" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		<![CDATA[
+		/* [common.brand.xml][updateSysBrndPntAccml][포인트적립율수정][Dian] */
+		UPDATE sys_brnd
+		SET    
+		       pnt_accml_yn     = #{pntAccmlYn},
+		       pnt_accml_rt     = #{pntAccmlRt},
+		       pnt_use_yn       = #{pntUseYn},
+		       webpnt_accml_yn  = #{webpntAccmlYn},
+		       webpnt_accml_rt  = #{webpntAccmlRt},
+		       webpnt_use_yn    = #{webpntUseYn},
+		       imdtl_dc_yn      = #{imdtlDcYn},
+		       imdtl_dc_rt      = #{imdtlDcRt},
+		       udter_id        = #{regtrId},
+		       udt_dt          = SYSDATE
+		WHERE  
+			brnd_id            = #{brndId}
+		]]>
+	</update>
+	
+	<!-- 시스템브랜드 포인트적립율 변경 시 상품정보 update -->
+	<update id="updatePntAccmlGod" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		<![CDATA[
+		/* [common.brand.xml][updatePntAccmlGod][시스템브랜드 포인트적립율 변경 시 상품정보 update][Dian] */
+		UPDATE god
+		SET    
+		       pnt_accml_yn     = #{pntAccmlYn},
+		       pnt_accml_rt     = #{pntAccmlRt},
+		       pnt_use_yn       = #{pntUseYn},
+		       webpnt_accml_yn  = #{webpntAccmlYn},
+		       webpnt_accml_rt  = #{webpntAccmlRt},
+		       webpnt_use_yn    = #{webpntUseYn},
+		       imdtl_dc_yn      = #{imdtlDcYn},
+		       imdtl_dc_rt      = #{imdtlDcRt},
+		       udter_id        = #{regtrId},
+		       udt_dt          = SYSDATE
+		WHERE  
+			brnd_id            = #{brndId}
+		]]>
+	</update>
+    
+    <select id="selectListSysBrnd" parameterType="com.plgrim.ncp.commons.data.FormSysBrndDTO" resultMap="sysBrndListResultMap">
+	    <![CDATA[
+	    /* [common.brand.xml][selectListSysBrnd][시스템 브랜드 목록 조회][tam] */
+	    SELECT
+			level brnd_depth , 
+			brnd_id id,
+			upper_brnd_id upper_id, brnd_nm text,
+			( SELECT count(*) FROM sys_brnd where upper_brnd_id = sb.brnd_id ) child_count,
+			brnd_id, upper_brnd_id, brnd_nm, img_rsize_grp_cd, 
+			brnd_dscr, brnd_img_url, use_yn, 
+			brnd_grp_yn, ovsea_dlv_psb_yn, sort_seq,
+			csmr_prc_dc_rt, emp_prc_dc_rt, regtr_id, 
+			reg_dt, udter_id, udt_dt
+		FROM 
+			sys_brnd sb
+		START WITH  
+			sb.upper_brnd_id is null
+		CONNECT BY PRIOR  sb.brnd_id = sb.upper_brnd_id
+		ORDER SIBLINGS BY sb.sort_seq , CONVERT(sb.brnd_nm, 'US8ICL')
+		]]>
+	</select>
+	
+	<select id="selectListChildSysBrnd" parameterType="com.plgrim.ncp.commons.data.FormSysBrndDTO" resultMap="sysBrndResultMap">
+	    <![CDATA[
+	    /* [common.brand.xml][selectListChildSysBrnd][시스템 자식 브랜드 목록 조회][Yoon] */
+		SELECT
+			NVL(sble.brnd_nm, sb.brnd_nm)   as eng_brnd_nm,
+			NVL(sblc.brnd_nm, sb.brnd_nm)  as chi_brnd_nm,
+			sareg.admin_nm regtr_nm, 
+			saud.admin_nm udter_nm,
+			sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm, sb.img_rsize_grp_cd,
+			sb.erp_brnd_id, sb.brnd_tag_cd,
+			sb.brnd_dscr, sb.brnd_img_url, sb.use_yn, sb.use_yn AS org_use_yn,
+			sb.brnd_grp_yn, sb.ovsea_dlv_psb_yn, sb.sort_seq,
+			sb.size_gd_html, sb.size_gd_mobile_html,
+		 	sb.emp_only_yn,
+			sb.csmr_prc_dc_rt, sb.emp_prc_dc_rt,
+			sb.pnt_accml_yn, sb.pnt_accml_rt, sb.pnt_use_yn,
+			sb.webpnt_accml_yn, sb.webpnt_accml_rt, sb.webpnt_use_yn,
+			sb.imdtl_dc_yn, sb.imdtl_dc_rt,
+			sb.regtr_id, sb.udter_id,
+			TO_DATE( TO_CHAR( sb.reg_dt , 'YYYY-MM-DD HH:MI'), 'YYYY-MM-DD HH:MI') reg_dt,
+			TO_DATE( TO_CHAR( sb.udt_dt , 'YYYY-MM-DD HH:MI'), 'YYYY-MM-DD HH:MI') udt_dt
+		FROM sys_brnd sb
+			LEFT OUTER JOIN sys_brnd_lang sble
+			ON sble.LANG_CD = 'ENG' AND sb.brnd_id = sble.brnd_id
+			LEFT OUTER JOIN sys_brnd_lang sblc
+			ON sblc.LANG_CD = 'CHI' AND sb.brnd_id = sblc.brnd_id
+			LEFT OUTER JOIN  sys_admin  sareg
+			ON  sareg.admin_id = sb.regtr_id
+			LEFT OUTER JOIN  sys_admin  saud
+			ON  saud.admin_id = sb.udter_id
+		WHERE
+			sb.upper_brnd_id = #{selBrndId}
+		ORDER BY 
+			sb.sort_seq, CONVERT(sb.brnd_nm, 'US8ICL')
+		]]>
+	</select>
+	
+	<select id="selectRowSysBrnd" parameterType="com.plgrim.ncp.commons.data.FormSysBrndDTO" resultMap="sysBrndResultMap">
+	    <![CDATA[
+	    /* [common.brand.xml][selectRowSysBrnd][시스템 브랜드 정보 조회][Yoon] */
+		SELECT 
+			NVL(sble.brnd_nm, sb.brnd_nm)   as eng_brnd_nm,
+			NVL( sblc.brnd_nm, sb.brnd_nm)  as chi_brnd_nm,
+			sareg.admin_nm regtr_nm, 
+			saud.admin_nm udter_nm,
+			(SELECT MAX(BRND_ID)KEEP(dense_rank first ORDER BY T_LEVEL DESC) BRND_ID 
+           	FROM (
+                SELECT sst.BRND_ID, LEVEL T_LEVEL
+                FROM sys_brnd sst
+                START WITH sst.BRND_ID = #{selBrndId}
+                CONNECT BY PRIOR sst.UPPER_BRND_ID = sst.BRND_ID
+                )
+     		) AS TOP_BRND_ID,
+			sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm, sb.img_rsize_grp_cd, sb.erp_brnd_id, sb.brnd_tag_cd, sb.brnd_tag_nm,
+			sb.brnd_dscr, sb.brnd_story_intrcn_cont, sb.brnd_img_url, sb.use_yn, sb.use_yn AS org_use_yn,
+			NVL(sb.on_sale_expsr_stdr_dc_rt, 0) as on_sale_expsr_stdr_dc_rt,
+			sb.model_size_img_url,
+      		sb.model_size_mobile_img_url,
+      		sb.size_gd_html,
+      		sb.size_gd_mobile_html,
+			sb.brnd_grp_yn, sb.ovsea_dlv_psb_yn, sb.sort_seq,
+			sb.ovsea_brnd_yn, sb.emp_only_yn,
+			NVL(sb.csmr_prc_dc_rt, 0) as csmr_prc_dc_rt,
+			NVL(sb.emp_prc_dc_rt, 0) as emp_prc_dc_rt,
+			NVL(sb.pnt_accml_rt, 0) as pnt_accml_rt,
+			NVL(sb.webpnt_accml_rt, 0) as webpnt_accml_rt,
+			NVL(sb.imdtl_dc_rt, 0) as imdtl_dc_rt,
+			sb.pnt_accml_yn,
+			sb.pnt_use_yn, sb.webpnt_accml_yn, sb.webpnt_use_yn,
+			sb.imdtl_dc_yn, sb.regtr_id,  sb.udter_id,
+			TO_DATE( TO_CHAR( sb.reg_dt , 'YYYY-MM-DD HH:MI'), 'YYYY-MM-DD HH:MI') reg_dt,
+			TO_DATE( TO_CHAR( sb.udt_dt , 'YYYY-MM-DD HH:MI'), 'YYYY-MM-DD HH:MI') udt_dt,
+			sble.brnd_story_intrcn_cont   as eng_brnd_story_intrcn_cont,
+			sblc.brnd_story_intrcn_cont  as chi_brnd_story_intrcn_cont
+		FROM 
+			sys_brnd sb
+			LEFT OUTER JOIN sys_brnd_lang sble
+			ON sble.lang_cd = 'ENG' AND sb.brnd_id = sble.brnd_id
+			LEFT OUTER JOIN sys_brnd_lang sblc
+			ON sblc.lang_cd = 'CHI' AND sb.brnd_id = sblc.brnd_id
+			LEFT OUTER JOIN  sys_admin  sareg
+			ON  
+			sareg.admin_id = sb.regtr_id
+			LEFT OUTER JOIN  sys_admin  saud
+			ON  
+			saud.admin_id = sb.udter_id
+		WHERE 
+			sb.brnd_id = #{selBrndId}
+		]]>
+	</select>
+	
+	<select id="checkUseCntFromBrndId" parameterType="com.plgrim.ncp.commons.data.FormSysBrndDTO" resultType="Integer">
+		<![CDATA[
+		/* [common.brand.xml][checkUseCntFromBrndId][브랜드코드 사용횟수 조회][tam] */
+		SELECT 
+			count(*)
+		FROM
+			sys_brnd sb 
+		WHERE 
+			sb.brnd_id = #{selBrndId}
+		]]>
+	</select>
+	<!-- 
+	<select id="getMlangIdxId" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysMlangIdx" resultType="String">
+		<![CDATA[
+		/* [common.brand.xml][getMlangIdxId][다국어 인덱스 아이디 조회][tam] */
+		SELECT 
+		    mlang_idx_id
+		FROM 
+		    sys_mlang_idx
+		WHERE
+		    table_nm = #{tableNm}
+		    AND
+		    col_nm = #{colNm}
+		    AND
+		    lang_cd = #{langCd}
+		    AND
+		    rownum = 1
+		]]>
+	</select>
+    -->
+	
+	<insert id="insertSysBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		/* [common.brand.xml][insertSysBrnd][시스템 브랜드 등록][tam] */
+		
+		<selectKey keyProperty="maxSortSeq" resultType="int" order="BEFORE">
+       		SELECT NVL(max(sort_seq),0)+1 sortSeq FROM sys_brnd_hist WHERE upper_brnd_id =  #{upperBrndId}
+   		</selectKey>
+   		
+   		<![CDATA[
+			INSERT INTO sys_brnd (
+			   brnd_id
+			   ,upper_brnd_id
+			   , erp_brnd_id
+			   , brnd_tag_cd
+			   , brnd_tag_nm
+			   , brnd_nm
+			   , img_rsize_grp_cd
+			   , brnd_dscr
+			   , brnd_story_intrcn_cont
+			   , brnd_img_url
+               , model_size_img_url
+               , model_size_mobile_img_url
+               , size_gd_html
+               , size_gd_mobile_html
+			   , use_yn
+			   , on_sale_expsr_stdr_dc_rt
+			   , brnd_grp_yn
+			   , ovsea_brnd_yn
+			   , ovsea_dlv_psb_yn
+			   , sort_seq
+			   , emp_only_yn
+			   , csmr_prc_dc_rt
+			   , emp_prc_dc_rt
+			   , pnt_accml_yn
+			   , pnt_accml_rt
+			   , pnt_use_yn
+			   , webpnt_accml_yn
+			   , webpnt_accml_rt
+			   , webpnt_use_yn
+			   , imdtl_dc_yn
+			   , imdtl_dc_rt
+			   , regtr_id, reg_dt
+			   , udter_id, udt_dt
+			   , erp_brnd_grp_id
+			) VALUES ( 
+				 #{brndId} /* brnd_id */,
+				 #{upperBrndId} /* upper_brnd_id */,
+				 #{erpBrndId} /* erp_brnd_id */,
+				 #{brndTagCd} /* brnd_tag_cd */,
+				 #{brndTagNm} /* brnd_tag_nm */,
+				 #{brndNm} /* brnd_nm */,
+				 #{imgRsizeGrpCd} /* img_rsize_grp_cd */,
+				 #{brndDscr} /* brnd_dscr */,
+				 #{brndStoryIntrcnCont} /* brnd_story_intrcn_cont */,
+				 #{brndImgUrl} /* brnd_img_url */,
+				 #{modelSizeImgUrl} /* model_size_img_url */,
+				 #{modelSizeMobileImgUrl} /* model_size_mobile_img_url */,
+				 #{sizeGdHtml} /* size_gd_html */,
+				 #{sizeGdMobileHtml} /* size_gd_mobile_html */,
+				 #{useYn} /* use_yn */,
+				 #{onSaleExpsrStdrDcRt} /* on_sale_expsr_stdr_dc_rt */,
+				 #{brndGrpYn} /* brnd_grp_yn */,
+				 #{ovseaBrndYn} /* ovsea_brnd_yn */,
+				 #{ovseaDlvPsbYn}	/* ovsea_dlv_psb_yn */,
+				 #{sortSeq} /* sort_seq */,
+				 #{empOnlyYn} /* emp_only_yn */,
+				 #{csmrPrcDcRt} /* csmr_prc_dc_rt */,
+				 #{empPrcDcRt} /* emp_prc_dc_rt */,
+				 #{pntAccmlYn} /* pnt_accml_yn */,
+				 #{pntAccmlRt} /* pnt_accml_rt */,
+				 #{pntUseYn} /* pnt_use_yn */,
+				 #{webpntAccmlYn} /* webpnt_accml_yn */,
+				 #{webpntAccmlRt} /* webpnt_accml_rt */,
+				 #{webpntUseYn} /* webpnt_use_yn */,
+				 #{imdtlDcYn} /* imdtl_dc_yn */,
+				 #{imdtlDcRt} /* imdtl_dc_rt */,
+				 #{regtrId},
+				 SYSDATE,
+				 #{regtrId},
+				 SYSDATE,
+				 (SELECT erp_brnd_grp_id
+				    FROM sys_brnd
+				   WHERE brnd_id = #{erpBrndId})
+			)
+		]]>
+	</insert>	
+	
+	<insert id="insertSysBrndHist" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		/* [common.brand.xml][insertSysBrndHist][시스템 브랜드내역 등록][tam] */
+		<selectKey keyProperty="maxHistTurn" resultType="int" order="BEFORE">
+       		SELECT NVL(max(hist_turn),0)+1 histTurn FROM sys_brnd_hist WHERE brnd_id =  #{brndId}
+   		</selectKey>
+   		<![CDATA[
+		INSERT INTO sys_brnd_hist (
+		   brnd_id, hist_turn, upper_brnd_id, 
+		   brnd_nm, img_rsize_grp_cd, brnd_dscr, brnd_story_intrcn_cont, brnd_img_url,
+		   use_yn, on_sale_expsr_stdr_dc_rt, brnd_grp_yn, ovsea_brnd_yn, brnd_sale_idex, sort_seq,
+		   csmr_prc_dc_rt, emp_prc_dc_rt, 
+		   regtr_id, reg_dt
+		) SELECT
+		   brnd_id, #{maxHistTurn}, upper_brnd_id, 
+		   brnd_nm, img_rsize_grp_cd, brnd_dscr, brnd_story_intrcn_cont, brnd_img_url,
+		   use_yn, on_sale_expsr_stdr_dc_rt, brnd_grp_yn, ovsea_brnd_yn, brnd_sale_idex, sort_seq,
+		   csmr_prc_dc_rt, emp_prc_dc_rt, 
+		   #{regtrId}, SYSDATE
+		  FROM 
+		  	sys_brnd
+		  WHERE
+		  	brnd_id = #{brndId}
+		 ]]>
+	</insert>
+	
+	<update id="updateSysBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		/* [commons.brand.xml][updateSysBrnd][시스템 브랜드 수정][Yoon] */
+		UPDATE sys_brnd
+		SET    
+			brnd_nm = #{brndNm},
+			<if test="imgRsizeGrpCd != null">
+				img_rsize_grp_cd = #{imgRsizeGrpCd},
+			</if>
+			brnd_dscr = #{brndDscr},
+			brnd_story_intrcn_cont = #{brndStoryIntrcnCont},
+			<if test="useYn != null">
+				use_yn = #{useYn},
+			</if>
+			on_sale_expsr_stdr_dc_rt = #{onSaleExpsrStdrDcRt},
+			<if test="brndGrpYn != null">
+				brnd_grp_yn = #{brndGrpYn},
+			</if>
+			<if test="ovseaBrndYn != null">
+				ovsea_brnd_yn = #{ovseaBrndYn},
+			</if>
+			<if test="ovseaDlvPsbYn != null">
+				ovsea_dlv_psb_yn = #{ovseaDlvPsbYn},
+			</if>
+			brnd_img_url = #{brndImgUrl},
+			model_size_img_url = #{modelSizeImgUrl},
+			model_size_mobile_img_url = #{modelSizeMobileImgUrl},
+			size_gd_html =  #{sizeGdHtml},
+			size_gd_mobile_html =  #{sizeGdMobileHtml},               			   
+			sort_seq = #{sortSeq} ,
+			<if test="empOnlyYn != null">
+			emp_only_yn = #{empOnlyYn},
+			</if>
+			<if test="csmrPrcDcRt != null">
+				csmr_prc_dc_rt = #{csmrPrcDcRt},
+			</if>
+			<if test="empPrcDcRt != null">
+				emp_prc_dc_rt = #{empPrcDcRt},
+			</if>
+			<if test="pntAccmlYn != null">
+				pnt_accml_yn = #{pntAccmlYn},
+			</if>
+			pnt_accml_rt = #{pntAccmlRt},
+			pnt_use_yn = #{pntUseYn},
+			<if test="webpntAccmlYn != null">
+				webpnt_accml_yn = #{webpntAccmlYn},
+			</if>
+			webpnt_accml_rt = #{webpntAccmlRt},
+			<if test="webpntUseYn != null">
+				webpnt_use_yn = #{webpntUseYn},
+			</if>
+			<if test="imdtlDcYn != null">
+				imdtl_dc_yn = #{imdtlDcYn},
+			</if>
+			imdtl_dc_rt = #{imdtlDcRt},
+			<if test="erpBrndId != null">
+				erp_brnd_id = #{erpBrndId} ,
+			</if>
+			<if test="brndTagCd != null">
+				brnd_tag_cd = #{brndTagCd} ,
+			</if>
+			<if test="brndTagNm != null">
+				brnd_tag_nm = #{brndTagNm} ,
+			</if>
+			udter_id        = #{udterId},
+			udt_dt          = SYSDATE
+		WHERE 1 = 1  
+		AND brnd_id = #{brndId}
+	</update>
+	
+	<update id="mergeBlangBrndNm" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndLang">
+		<![CDATA[
+		/* [common.brand.xml][mergeBlangBrndNm][시스템 브랜드 다국어 머지][Yoon] */
+		MERGE INTO sys_brnd_lang sbl  
+			USING ( select 0 as sys_brnd_lang FROM dual ) wsm
+			ON ( 
+		]]> 
+				<choose>
+					<when test = "brndId != null">
+						sbl.brnd_id = #{brndId} 
+						<if test='langCd != null'>
+							AND sbl.lang_cd = #{langCd}
+						</if>						
+					</when>
+					<otherwise>
+						1=2
+					</otherwise>   
+				</choose>
+		<![CDATA[
+			)
+		WHEN MATCHED
+		THEN
+			UPDATE SET  
+				BRND_TAG_NM = #{brndTagNm}
+				, BRND_NM = #{brndNm}
+				, BRND_DSCR = #{brndDscr}
+				, BRND_IMG_URL = #{brndImgUrl}
+				, BRND_STORY_INTRCN_CONT = #{brndStoryIntrcnCont}
+				, udter_id = #{regtrId},   udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+			INSERT  (
+				BRND_ID, LANG_CD
+				, BRND_TAG_NM, BRND_NM
+				, BRND_DSCR, BRND_IMG_URL
+				, BRND_STORY_INTRCN_CONT
+				, regtr_id, reg_dt
+			) VALUES ( 
+				#{brndId}, #{langCd}
+				, #{brndTagNm}, #{brndNm}
+				, #{brndDscr}, #{brndImgUrl}
+				, #{brndStoryIntrcnCont}
+				, #{regtrId}, SYSDATE
+			)
+		]]>
+	</update>
+	
+	<select id="checkBeakerBrndCount" parameterType="com.plgrim.ncp.commons.data.FormSysBrndDTO" resultType="Integer">
+	<![CDATA[
+		/* [common.brand.xml][checkBeakerBrndCount][beaker 브랜드인지 체크한다.][tam] */
+		SELECT count(*)  FROM 
+		( 
+			SELECT sb.brnd_id  FROM sys_brnd sb
+			START WITH  
+			sb.brnd_id = #{selBrndId}
+			CONNECT BY PRIOR  sb.upper_brnd_id = sb.brnd_id
+		) sb
+		WHERE  
+			sb.brnd_id = 'MCBR'  /* BEAKER 브랜드코드이면 */
+    ]]>
+	</select>
+
+	<update id="updateSysBrndPntAccmlByType" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		/* [common.brand.xml][updateSysBrndPntAccml][포인트종류별 적립율 수정][Nana] */
+		UPDATE sys_brnd
+		SET
+			<if test="pntTp != null and pntTp != '' and pntTp eq 'MBSH_PNT' ">
+		       pnt_accml_yn     = #{pntAccmlYn},
+		       pnt_accml_rt     = #{pntAccmlRt},
+		       pnt_use_yn       = #{pntUseYn},
+		    </if>
+			<if test="pntTp != null and pntTp != '' and pntTp eq 'WEBPNT' ">
+		       webpnt_accml_yn  = #{webpntAccmlYn},
+		       webpnt_accml_rt  = #{webpntAccmlRt},
+		       webpnt_use_yn    = #{webpntUseYn},
+			</if>
+			<if test="pntTp != null and pntTp != '' and pntTp eq 'IMDTL_DC' ">
+		       imdtl_dc_yn      = #{imdtlDcYn},
+		       imdtl_dc_rt      = #{imdtlDcRt},
+		    </if>
+			   udter_id        = #{regtrId},
+		       udt_dt          = SYSDATE
+		WHERE
+			brnd_id            = #{brndId}
+	</update>
+
+	<update id="updatePntAccmlGodByType" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+			/* [common.brand.xml][updatePntAccmlGod][시스템브랜드 포인트종류별 적립율 변경 시 상품정보 update][Nana] */
+			UPDATE god
+			SET
+			<if test="pntTp != null and pntTp != '' and pntTp eq 'MBSH_PNT' ">
+				pnt_accml_yn     = #{pntAccmlYn},
+				pnt_accml_rt     = #{pntAccmlRt},
+				pnt_use_yn       = #{pntUseYn},
+			</if>
+			<if test="pntTp != null and pntTp != '' and pntTp eq 'WEBPNT' ">
+				webpnt_accml_yn  = #{webpntAccmlYn},
+				webpnt_accml_rt  = #{webpntAccmlRt},
+				webpnt_use_yn    = #{webpntUseYn},
+			</if>
+			<if test="pntTp != null and pntTp != '' and pntTp eq 'IMDTL_DC' ">
+				imdtl_dc_yn      = #{imdtlDcYn},
+				imdtl_dc_rt      = #{imdtlDcRt},
+			</if>
+				udter_id        = #{regtrId},
+				udt_dt          = SYSDATE
+			WHERE
+				brnd_id            = #{brndId}
+	</update>
+	
+	<!-- SMS개선 by cannon : 2016.07.17  -->
+	<select id="selectBrndNm4Sms" parameterType="String" resultType="String">
+		/* [common.brand.xml][selectBrndNm4Sms][SMS 발송용 브랜드명 구하기 (BEAKER 최상위, 이외 2레벨)][cannon] */
+		    SELECT SB.BRND_NM
+		      FROM SYS_BRND SB
+		     WHERE LEVEL = (    SELECT DECODE (SB.BRND_ID, 'MCBR', 3, 2)
+		                          FROM SYS_BRND SB
+		                         WHERE UPPER_BRND_ID IS NULL
+		                    START WITH SB.BRND_ID = #{brndId,jdbcType=VARCHAR}
+		                    CONNECT BY PRIOR SB.UPPER_BRND_ID = SB.BRND_ID)
+		START WITH SB.BRND_ID = #{brndId,jdbcType=VARCHAR}
+		CONNECT BY PRIOR SB.UPPER_BRND_ID = SB.BRND_ID
+	</select>
+	
+	<!-- SMS개선 by cannon : 2016.07.17  -->
+	<select id="selectBrndNm4SmsByOrdNo" parameterType="String" resultType="String">
+		/* [common.brand.xml][selectBrndNm4SmsByOrdNo][SMS 발송용 브랜드명 구하기 (BEAKER 최상위, 이외 2레벨)][cannon] */
+		    SELECT SB.BRND_NM
+		      FROM SYS_BRND SB
+		     WHERE LEVEL = (    SELECT DECODE (SB.BRND_ID, 'MCBR', 3, 2)
+		                          FROM SYS_BRND SB
+		                         WHERE UPPER_BRND_ID IS NULL
+		                    START WITH SB.BRND_ID = (select brnd_id from ORD_GOD where ord_no = #{ordNo,jdbcType=VARCHAR} and ord_god_turn = 1)
+		                    CONNECT BY PRIOR SB.UPPER_BRND_ID = SB.BRND_ID)
+		START WITH SB.BRND_ID =  (select brnd_id from ORD_GOD where ord_no = #{ordNo,jdbcType=VARCHAR} and ord_god_turn = 1)
+		CONNECT BY PRIOR SB.UPPER_BRND_ID = SB.BRND_ID
+	</select>
+
+	<!-- SMS개선 by cannon : 2016.07.17  -->
+	<select id="selectBrndNm4SmsByClmNo" parameterType="String" resultType="String">
+		/* [common.brand.xml][selectBrndNm4SmsByClmNo][SMS 발송용 브랜드명 구하기 (BEAKER 최상위, 이외 2레벨)][cannon] */
+		    SELECT SB.BRND_NM
+		      FROM SYS_BRND SB
+		     WHERE LEVEL = (    SELECT DECODE (SB.BRND_ID, 'MCBR', 3, 2)
+		                          FROM SYS_BRND SB
+		                         WHERE UPPER_BRND_ID IS NULL
+		                    START WITH SB.BRND_ID =  (select brnd_id from CLM_WRHS_GOD where clm_no = #{clmNo,jdbcType=VARCHAR} and clm_wrhs_god_turn = 1)
+		                    CONNECT BY PRIOR SB.UPPER_BRND_ID = SB.BRND_ID)
+		START WITH SB.BRND_ID =  (select brnd_id from CLM_WRHS_GOD where clm_no = #{clmNo,jdbcType=VARCHAR} and clm_wrhs_god_turn = 1)
+		CONNECT BY PRIOR SB.UPPER_BRND_ID = SB.BRND_ID
+	</select>
+
+    <!-- 브랜드 이미지 MERGE -->
+    <update id="mergeSysBrndImg" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndImg">
+		/* [common.brand.xml][mergeSysBrndImg][시스템 브랜드 이미지 머지] */
+		MERGE INTO sys_brnd_img sbi
+			USING DUAL
+			ON (
+                    sbi.brnd_id = #{brndId,jdbcType=VARCHAR}
+                AND sbi.brnd_img_sect_cd = #{brndImgSectCd,jdbcType=VARCHAR}
+                AND sbi.lang_cd = #{langCd,jdbcType=VARCHAR}
+			 )
+		WHEN MATCHED THEN
+            UPDATE SET
+                    BRND_IMG_FILE_NM = #{brndImgFileNm,jdbcType=VARCHAR}
+                   ,BRND_IMG_FILE_URL = #{brndImgFileUrl,jdbcType=VARCHAR}
+                   ,BRND_IMG_ALTRTV_CONT = #{brndImgAltrtvCont,jdbcType=VARCHAR}
+                   ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                   ,UDT_DT = SYSDATE
+		WHEN NOT MATCHED THEN
+            INSERT
+            (
+                BRND_ID
+               ,BRND_IMG_SECT_CD
+               ,LANG_CD
+               ,BRND_IMG_FILE_NM
+               ,BRND_IMG_FILE_URL
+               ,BRND_IMG_ALTRTV_CONT
+               ,REGTR_ID
+               ,UDTER_ID
+               ,REG_DT
+               ,UDT_DT
+            )
+            VALUES
+            (
+                #{brndId,jdbcType=VARCHAR}
+               ,#{brndImgSectCd,jdbcType=VARCHAR}
+               ,#{langCd,jdbcType=VARCHAR}
+               ,#{brndImgFileNm,jdbcType=VARCHAR}
+               ,#{brndImgFileUrl,jdbcType=VARCHAR}
+               ,#{brndImgAltrtvCont,jdbcType=VARCHAR}
+               ,#{regtrId,jdbcType=VARCHAR}
+               ,#{udterId,jdbcType=VARCHAR}
+               ,SYSDATE
+               ,SYSDATE
+            )
+    </update>
+
+	<select id="selectSysBrndImgList" parameterType="String" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndImg">
+		SELECT 		/* [common.brand.xml][selectSysBrndImgList][시스템 브랜드 이미지 리스트 조회] */
+			brnd_id
+			,brnd_img_sect_cd
+			,lang_cd
+			,brnd_img_file_nm
+			,brnd_img_file_url
+			,brnd_img_altrtv_cont
+		FROM    sys_brnd_img t
+		WHERE   1 = 1
+		  AND   brnd_id = #{brndId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectListErpBrndIdSplit" parameterType="com.plgrim.ncp.commons.data.FormSysBrndDTO" resultMap="erpBrndIdResultMap">
+		/* [common.brand.xml][selectListErpBrndIdSplit][브랜드ID 조회][jskim] */
+		SELECT ERP_BRND_GRP_ID AS brnd_grp
+		     , BRND_ID AS brnd_cd
+		     , BRND_NM AS brnd_nm
+		  FROM SYS_BRND
+		 WHERE ERP_BRND_ID IS NOT NULL
+		   AND LENGTH(ERP_BRND_ID) = 2
+	<choose>
+		<when test="searchField != null and searchField == 1 and !''.equals(searchText) ">
+		   AND BRND_NM LIKE #{searchText}||'%'
+		</when>
+		<when test="searchField != null and searchField == 2 and !''.equals(searchText)" >
+		   AND BRND_ID = #{searchText}
+		</when>
+	</choose>		
+		 ORDER BY BRND_GRP, SORT_SEQ
+	</select>
+
+	<select id="selectSysBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		/* [commons.brand.xml][selectSysBrnd][시스템 브랜드 조회][Owen] */
+		SELECT
+			brnd_id
+			, upper_brnd_id
+			, erp_brnd_id
+			, erp_brnd_grp_id
+			, brnd_tag_cd
+			, brnd_tag_nm
+			, brnd_nm
+			, brnd_dscr
+			, brnd_story_intrcn_cont
+			, brnd_img_url
+			, model_size_img_url
+			, model_size_mobile_img_url
+			, size_gd_html
+			, size_gd_mobile_html
+			, use_yn
+			, on_sale_expsr_stdr_dc_rt
+			, brnd_grp_yn
+			, ovsea_brnd_yn
+			, brnd_sale_idex
+			, sort_seq
+			, ovsea_dlv_psb_yn
+			, emp_only_yn
+			, csmr_prc_dc_rt
+			, emp_prc_dc_rt
+			, pnt_accml_yn
+			, pnt_accml_rt
+			, pnt_use_yn
+			, webpnt_accml_yn
+			, webpnt_accml_rt
+			, webpnt_use_yn
+			, imdtl_dc_yn
+			, imdtl_dc_rt
+			, img_rsize_grp_cd
+			, regtr_id
+			, reg_dt
+			, udter_id
+			, udt_dt
+		FROM sys_brnd
+		WHERE 1 = 1
+		AND brnd_id = #{brndId,jdbcType=VARCHAR}
+	</select>
+
+	<update id="mergeSysBrndModifyFlag" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrnd">
+		/* [commons.brand.xml][mergeSysBrndModifyFlag][시스템 브랜드 수정 시 재고연동대상 처리를 위한 정보 삽입][Owen] */
+		MERGE INTO Inf_inv_hub_hist A
+		USING (
+			SELECT 
+				g.god_no
+				, gi.itm_no
+				, gi.sku_no
+				, ssb.shop_id
+				, sb.brnd_id
+				, sb.erp_brnd_id
+				, ss.use_yn as shop_use_yn
+				, ssb.use_yn as brnd_shop_use_yn
+				, ssb.dlv_shop_yn as dlv_shop_yn
+				, ssb.pkup_shop_yn as pkup_shop_yn
+			FROM god g
+			INNER JOIN god_itm gi
+			ON g.god_no = gi.god_no
+			INNER JOIN sys_brnd sb
+			ON g.brnd_id = sb.brnd_id
+			INNER JOIN sys_shop_brnd ssb
+			ON sb.erp_brnd_id = ssb.erp_brnd_id
+			INNER JOIN sys_shop ss
+			ON ssb.shop_id = ss.shop_id
+			WHERE 1 = 1
+			AND g.erp_god_no IS NOT NULL
+			AND g.partmal_sect_cd = 'MCOM'				/* 입점구분 : 자사 */
+			AND g.god_aprv_sect_cd = 'APRV_COMPT'		/* 상품승인구분 : 승인완료 */
+			AND g.god_tp_cd = 'GNRL_GOD'				/* 상품유형 : 일반상품 */
+			AND g.lmtt_inv_yn = 'N'						/* 한정재고여부 */
+			AND g.erp_inv_intrlck_yn = 'Y'				/* ERP재고연동여부 */
+			AND gi.itm_stat_cd in ('SALE_PROGRS', 'SLDOUT', 'TMPR_SALE_STPGE')		/* 단품판매상태 : 판매중, 품절, 임시판매중지 */
+			AND gi.opt_val_cd_1 IS NOT NULL
+			AND sb.brnd_id = #{brndId}
+			AND ssb.use_yn = 'Y'
+			AND (ssb.dlv_shop_yn = 'Y' or ssb.pkup_shop_yn = 'Y')		/* 배송매장여부, 픽업매장여부 */
+			AND ss.use_yn = 'Y'
+			AND ss.shop_tp_cd IS NOT NULL
+		) B
+		ON (
+			A.god_no = B.god_no
+			AND A.itm_no = B.itm_no
+			AND A.sku_no = B.sku_no
+			AND A.shop_id = B.shop_id
+		)
+		WHEN MATCHED THEN
+		UPDATE
+		SET
+			A.brnd_use_yn = #{useYn}
+			, A.shop_use_yn = B.shop_use_yn
+			, A.brnd_shop_use_yn = B.brnd_shop_use_yn
+			, A.dlv_shop_yn = B.dlv_shop_yn
+			, A.pkup_shop_yn = B.pkup_shop_yn
+			, A.udt_dt = SYSDATE
+		WHEN NOT MATCHED THEN
+		INSERT (
+			god_no
+			, itm_no
+			, sku_no
+			, shop_id
+			, brnd_id
+			, erp_brnd_id
+			, brnd_use_yn
+			, shop_use_yn
+			, brnd_shop_use_yn
+			, dlv_shop_yn
+			, pkup_shop_yn
+			, udt_dt
+		) VALUES (
+			B.god_no
+			, B.itm_no
+			, B.sku_no
+			, B.shop_id
+			, B.brnd_id
+			, B.erp_brnd_id
+			, #{useYn}
+			, B.shop_use_yn
+			, B.brnd_shop_use_yn
+			, B.dlv_shop_yn
+			, B.pkup_shop_yn
+			, SYSDATE 
+		)
+	</update> 
+
+</mapper>

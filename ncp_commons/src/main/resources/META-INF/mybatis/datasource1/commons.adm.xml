@@ -1,0 +1,1391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.adm">
+	<resultMap id="resultAdm" type="com.plgrim.ncp.commons.result.AdmResult">
+		<result property="sysAdmin.adminId" column="admin_id" />
+		<result property="sysAdmin.adminTpCd" column="admin_tp_cd" />
+		<result property="sysAdmin.adminStatCd" column="admin_stat_cd" />
+		<result property="sysAdmin.aprvDt" column="aprv_dt" />
+		<result property="sysAdmin.adminNm" column="admin_nm" />
+		<result property="sysAdmin.adminEmpNo" column="admin_emp_no" />
+		<result property="sysAdmin.deptNm" column="dept_nm" />
+		<result property="sysAdmin.comId" column="com_id" />
+		<result property="sysAdmin.shopId" column="shop_id" />
+		<result property="sysAdmin.email" column="email" />
+		<result property="sysAdmin.ccCntrSectCd" column="cc_cntr_sect_cd" />
+		<result property="sysAdmin.ccTeamSectCd" column="cc_team_sect_cd" />
+		<result property="sysAdmin.mobilNationNo" column="mobil_nation_no" />
+		<result property="sysAdmin.mobilAreaNo" column="mobil_area_no" />
+		<result property="sysAdmin.mobilTlofNo" column="mobil_tlof_no" />
+		<result property="sysAdmin.mobilTlofWthnNo" column="mobil_tlof_wthn_no" />
+		<result property="sysAdmin.telNationNo" column="tel_nation_no" />
+		<result property="sysAdmin.telAreaNo" column="tel_area_no" />
+		<result property="sysAdmin.telTlofNo" column="tel_tlof_no" />
+		<result property="sysAdmin.telTlofWthnNo" column="tel_tlof_wthn_no" />
+		<result property="sysAdmin.faxNationNo" column="fax_nation_no" />
+		<result property="sysAdmin.faxAreaNo" column="fax_area_no" />
+		<result property="sysAdmin.faxTlofNo" column="fax_tlof_no" />
+		<result property="sysAdmin.faxTlofWthnNo" column="fax_tlof_wthn_no" />
+		<result property="sysAdmin.lastLoginDt" column="last_login_dt" />
+		<result property="sysAdmin.loginPsbIpChkYn" column="login_psb_ip_chk_yn" />
+		<result property="sysAdmin.loginPsbIp" column="login_psb_ip" />
+		<result property="sysAdmin.ctiId" column="cti_id" />
+		<result property="sysAdmin.ctiExno" column="cti_exno" />
+		<result property="sysAdmin.ctiRecrdId" column="cti_recrd_id" />
+		<result property="sysAdmin.ctiGrpId" column="cti_grp_id" />
+		<result property="sysAdmin.regtrId" column="regtr_id" />
+		<result property="sysAdmin.regDt" column="reg_dt" />
+		<result property="sysAdmin.udterId" column="udter_id" />
+		<result property="sysAdmin.udtDt" column="udt_dt" />
+		<result property="adminTpNm" column="admin_tp_nm" />
+		<result property="adminStatNm" column="admin_stat_nm" />
+		<result property="shopNm" column="shop_nm" />
+		<result property="comNm" column="com_nm" />
+		<result property="sysAuthorGrp.authorGrpSn" column="author_grp_sn" />
+		<result property="sysAuthorGrp.authorGrpNm" column="author_grp_nm" />
+		<result property="regtrNm" column="regtr_nm" />
+		<result property="udterNm" column="udter_nm" />
+		<result property="sysAdmin.pgIntrlckExpsrYn" column="pg_intrlck_expsr_yn" />
+		<result property="sysAdmin.pgIntrlckExpsrYn" column="pg_intrlck_expsr_yn" />
+		<result property="stplatAgrDt" column="stplat_agr_dt" />
+		<result property="makAdminId" column="mak_admin_id" />
+		<result property="makEmail" column="mak_email" />
+		<result property="mobilNo" column="mobil_no" />
+		<result property="telNo" column="tel_no" />
+	</resultMap>
+	
+	<resultMap id="resultAuthMenu" type="com.plgrim.ncp.commons.result.AuthResult">
+		<result property="sysMenu.menuSn" column="menu_sn" />
+		<result property="sysMenu.upperMenuSn" column="upper_menu_sn" />
+		<result property="sysMenu.boSiteId" column="bo_site_id" />
+		<result property="sysMenu.menuNm" column="menu_nm" />
+		<result property="sysMenu.menuImgUrl" column="menu_img_url" />
+		<result property="sysMenu.menuUrl" column="menu_url" />
+		<result property="sysMenu.sortSeq" column="sort_seq" />
+		<result property="sysMenu.menuTpCd" column="menu_tp_cd" />
+		<result property="sysMenu.firstPgeYn" column="first_pge_yn" />
+		<result property="menuDepth" column="menu_depth" />
+		<result property="upperMenuNm" column="upper_menu_nm" />
+		<result property="naMenuNm" column="na_menu_nm" />
+		<result property="sysAuthor.authorGrpSn" column="author_grp_sn" />
+		<result property="sysAuthor.authorTurn" column="author_turn" />
+		<result property="sysAuthor.authorResrcNm" column="author_resrc_nm" />
+	</resultMap>
+	
+	<select id="selectListAdm" parameterType="com.plgrim.ncp.commons.data.FormSysAdmDTO" resultMap="resultAdm"> 
+	
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		<![CDATA[
+		
+		SELECT  /* [commons.adm.xml][selectListAdm][운영자  목록 조회][Tam] */
+		   FN_MASKING('ID',sa.admin_id,'',#{dbMarkingYn}) mak_admin_id, sa.admin_id, sa.admin_tp_cd, sa.admin_stat_cd, sa.aprv_dt,
+		   FN_MASKING('FLNM',sa.admin_nm,'',#{dbMarkingYn}) admin_nm, sa.admin_emp_no,
+		   sa.dept_nm, sa.com_id, sa.shop_id, 
+		   FN_MASKING('EMAIL',sa.email,'',#{dbMarkingYn}) mak_email, sa.email, sa.cc_cntr_sect_cd,
+		   sa.cc_team_sect_cd, sa.mobil_nation_no, sa.mobil_area_no, sa.mobil_tlof_no, sa.mobil_tlof_wthn_no, 
+		   FN_MASKING('PHON' , sa.mobil_area_no||NVL2(sa.mobil_area_no, '-', '')||sa.mobil_tlof_no||NVL2(sa.mobil_tlof_no, '-', '')||sa.mobil_tlof_wthn_no, '', #{dbMarkingYn, jdbcType=VARCHAR}) AS mobil_no,
+		   FN_MASKING('PHON' , sa.tel_area_no||NVL2(sa.tel_area_no, '-', '')||sa.tel_tlof_no||NVL2(sa.tel_tlof_no, '-', '')||sa.tel_tlof_wthn_no, '', #{dbMarkingYn, jdbcType=VARCHAR}) AS tel_no,
+		   sa.tel_nation_no, sa.tel_area_no, sa.tel_tlof_no, sa.tel_tlof_wthn_no, sa.fax_nation_no,
+		   sa.fax_area_no, sa.fax_tlof_no, sa.fax_tlof_wthn_no, sa.last_login_dt, sa.login_psb_ip_chk_yn,
+		   sa.login_psb_ip, sa.cti_id, sa.cti_exno, sa.cti_recrd_id, sa.cti_grp_id,
+		   sa.regtr_id, sa.reg_dt, msc1.cd_nm admin_tp_nm, msc2.cd_nm admin_stat_nm, shop_nm, c.com_nm,
+		   saagm.author_grp_sn, sag.author_grp_nm
+		FROM sys_admin sa 
+		INNER JOIN (
+		    SELECT admin_id  FROM sys_admin_bo_site_author
+		]]>
+		<if test="(selAdminTpCd == '' or selAdminTpCd == null) and (searchText== null or searchText == '')">
+		    <choose>
+				<when test = "searchListBoSite != null">
+					WHERE bo_site_id  in  
+					<foreach item ="item" index="index" collection="searchListBoSite" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</when>   
+			</choose>
+		</if>
+		<![CDATA[
+		    GROUP BY admin_id
+		) sabsa 
+			ON
+		    sabsa.admin_id = sa.admin_id
+		INNER JOIN sys_admin_author_grp_mapng saagm
+			ON 
+		    saagm.admin_id = sa.admin_id
+		INNER JOIN sys_author_grp sag
+			ON
+			saagm.author_grp_sn = sag.author_grp_sn
+		LEFT OUTER JOIN  mv_sys_cd  msc1
+			 ON  
+			    msc1.upper_cd ='ADMIN_TP' AND msc1.LANG_CD = 'KOR' AND msc1.cd = sa.admin_tp_cd
+		LEFT OUTER JOIN  mv_sys_cd  msc2
+		 ON  
+		    msc2.upper_cd ='ADMIN_STAT' AND msc2.LANG_CD = 'KOR' AND msc2.cd = sa.admin_stat_cd
+		 
+		LEFT OUTER JOIN  sys_shop  ss
+		 ON 
+		    ss.shop_id = sa.shop_id
+		 
+		 LEFT OUTER JOIN  com  c
+		 ON 
+		    c.com_id = sa.com_id
+		]]>
+		WHERE 1=1
+		<choose>
+			<when test="(selAdminTpCd == '' or selAdminTpCd == null) and (searchText== null or searchText == '')">
+				<choose>
+					<when test = "searchListAdminStatCd != null">
+						AND sa.admin_stat_cd  in  
+						<foreach item ="item" index="index" collection="searchListAdminStatCd" open="(" separator="," close=")">
+			         		#{item}
+			   			</foreach>
+					</when>   
+				</choose>
+				
+				<if test="selAuthorGrpSn != null and selAuthorGrpSn != ''">
+					AND saagm.author_grp_sn = #{selAuthorGrpSn}
+				</if>
+					
+				<if test="searchComId != null and !''.equals(searchComId)">
+					AND sa.com_id = #{searchComId}
+				</if>
+				
+				<if test="searchShopId != null and !''.equals(searchShopId)">
+					AND sa.shop_id = #{searchShopId}
+				</if>
+				
+				<if test="searchRegDtFrom != null and searchRegDtTo != null and !''.equals(searchRegDtFrom) and !''.equals(searchRegDtTo)">
+					AND sa.reg_dt BETWEEN TO_DATE(#{searchRegDtFrom}, 'YYYY-MM-DD') AND TO_DATE(#{searchRegDtTo}, 'YYYY-MM-DD') + 0.99999
+				</if>
+			</when>
+	    	<otherwise>
+	    		AND 1 = 0
+				<if test="selAdminTpCd != null and !''.equals(selAdminTpCd)">
+					OR sa.admin_tp_cd = #{selAdminTpCd}
+				</if>
+				
+				<choose>
+					<when test="searchField != null and searchField == 1 and !''.equals(searchText) ">
+						OR sa.admin_nm = #{searchText}
+					</when>
+					<when test="searchField != null and searchField == 2 and !''.equals(searchText)" >
+						OR sa.admin_id = #{searchText} 
+					</when>
+				</choose>
+			</otherwise>
+		</choose>
+		
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectCountAdmList" parameterType="com.plgrim.ncp.commons.data.FormSysAdmDTO" resultType="long">
+		<![CDATA[
+		SELECT  /* [commons.adm.xml][selectCountAdmList][운영자  목록 총 횟수 조회][Tam] */
+		   	count(*) AS totalRow
+		FROM sys_admin sa 
+		INNER JOIN (
+		    SELECT admin_id  FROM sys_admin_bo_site_author  
+		]]>
+		<if test="(selAdminTpCd == '' or selAdminTpCd == null) and (searchText== null or searchText == '')">
+		    <choose>
+				<when test = "searchListBoSite != null">
+					WHERE bo_site_id  in  
+					<foreach item ="item" index="index" collection="searchListBoSite" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</when>   
+			</choose>
+		</if>
+		<![CDATA[    
+		    
+		    GROUP BY admin_id
+		) sabsa
+			ON
+		    sabsa.admin_id = sa.admin_id
+		INNER JOIN sys_admin_author_grp_mapng saagm
+			ON 
+		    saagm.admin_id = sa.admin_id
+		INNER JOIN sys_author_grp sag
+			ON
+			saagm.author_grp_sn = sag.author_grp_sn
+		]]>
+		WHERE 1=1
+		<choose>
+			<when test="(selAdminTpCd == '' or selAdminTpCd == null) and (searchText== null or searchText == '')">
+				<choose>
+					<when test = "searchListAdminStatCd != null">
+						AND sa.admin_stat_cd  in  
+						<foreach item ="item" index="index" collection="searchListAdminStatCd" open="(" separator="," close=")">
+			         		#{item}
+			   			</foreach>
+					</when>   
+				</choose>
+				<if test="selAuthorGrpSn != null and selAuthorGrpSn != ''">
+					AND saagm.author_grp_sn = #{selAuthorGrpSn}
+				</if>
+				<if test="searchComId != null and !''.equals(searchComId)">
+					AND sa.com_id = #{searchComId}
+				</if>
+				
+				<if test="searchShopId != null and !''.equals(searchShopId)">
+					AND sa.shop_id = #{searchShopId}
+				</if>
+				
+				<if test="searchRegDtFrom != null and searchRegDtTo != null and !''.equals(searchRegDtFrom) and !''.equals(searchRegDtTo)">
+					AND sa.reg_dt BETWEEN TO_DATE(#{searchRegDtFrom}, 'YYYY-MM-DD') AND TO_DATE(#{searchRegDtTo}, 'YYYY-MM-DD') + 0.99999
+				</if>
+			</when>
+	    	<otherwise>
+	    		AND 1 = 0
+				<if test="selAdminTpCd != null and !''.equals(selAdminTpCd)">
+					OR sa.admin_tp_cd = #{selAdminTpCd}
+				</if>
+				
+				<choose>
+					<when test="searchField != null and searchField == 1 and !''.equals(searchText) ">
+						OR sa.admin_nm = #{searchText}
+					</when>
+					<when test="searchField != null and searchField == 2 and !''.equals(searchText)" >
+						OR sa.admin_id = #{searchText} 
+					</when>
+				</choose>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="selectListBoSiteId" parameterType="com.plgrim.ncp.commons.data.FormSysAdmDTO" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBoSite"> 
+	 <![CDATA[
+		SELECT   /* [commons.adm.xml][selectListBoSiteId][운영자  접근가능 사이트 아이디 조회][Tam] */
+			sbs.bo_site_id, sbs.bo_site_nm  , sbs.use_yn
+		FROM 
+			sys_admin_bo_site_author  sabsa 
+		INNER JOIN sys_bo_site sbs
+			ON 
+				sabsa.admin_id = #{selAdminId} 
+				AND 
+				sabsa.bo_site_id = sbs.bo_site_id
+     ]]>
+	</select>
+	
+	<select id="selectListAuthorGrpAdm" parameterType="com.plgrim.ncp.commons.data.FormSysAdmDTO" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAuthorGrp"> 
+	 <![CDATA[
+	    SELECT /* [commons.adm.xml][selectListAuthorGrpAdm][운영자 권한그룹 조회][Tam] */
+			sag.author_grp_sn, sag.author_grp_nm, sag.use_yn
+		FROM
+			sys_admin_author_grp_mapng saagm
+		INNER JOIN sys_author_grp sag
+		ON
+			saagm.admin_id = #{selAdminId}
+			AND
+			saagm.author_grp_sn = sag.author_grp_sn
+     ]]>
+	</select>
+	
+	<select id="selectListAuthorGrp" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAuthorGrp"> 
+	 <![CDATA[
+		SELECT /* [commons.adm.xml][selectListAuthorGrp][권한그룹 목록 조회][Tam] */
+			author_grp_sn,  author_grp_nm, author_grp_dscr
+		FROM sys_author_grp 
+		WHERE 
+			use_yn = 'Y'  
+		ORDER BY sort_seq, author_grp_sn
+     ]]>
+	</select>
+	<select id="selectRowAdminIdCnt"  parameterType="java.util.Map" resultType="long">
+	 <![CDATA[
+		SELECT /* [commons.adm.xml][selectRowAdminIdCnt][운영자ID 카운터][Tam] */
+			count(*) 
+		FROM 
+			sys_admin 
+		WHERE 
+			admin_id =#{adminId}
+     ]]>
+	</select>
+	
+	<select id="selectRowAdminInfo" parameterType="java.util.Map" resultMap="resultAdm">
+	 <![CDATA[
+	  SELECT  /* [commons.adm.xml][selectRowAdminInfo][운영자정보 조회][Tam] */
+           FN_MASKING('ID',sa.admin_id,'',#{dbMarkingYn})  mak_admin_id , sa.admin_id admin_id, sa.admin_tp_cd, sa.admin_stat_cd, sa.aprv_dt,
+           FN_MASKING('FLNM',sa.admin_nm,'',#{dbMarkingYn}) admin_nm, sa.admin_emp_no,
+           sa.dept_nm, sa.com_id, sa.shop_id,
+           FN_MASKING('EMAIL',sa.email,'',#{dbMarkingYn}) mak_email, sa.email,sa.cc_cntr_sect_cd,
+           sa.cc_team_sect_cd, 
+           sa.mobil_nation_no, sa.mobil_area_no, sa.mobil_tlof_no, sa.mobil_tlof_wthn_no, 
+           FN_MASKING('PHON' , sa.mobil_area_no||NVL2(sa.mobil_area_no, '-', '')||sa.mobil_tlof_no||NVL2(sa.mobil_tlof_no, '-', '')||sa.mobil_tlof_wthn_no, '', #{dbMarkingYn, jdbcType=VARCHAR}) AS mobil_no,
+           sa.tel_nation_no, sa.tel_area_no, sa.tel_tlof_no, sa.tel_tlof_wthn_no, 
+           FN_MASKING('PHON' , sa.tel_area_no||NVL2(sa.tel_area_no, '-', '')||sa.tel_tlof_no||NVL2(sa.tel_tlof_no, '-', '')||sa.tel_tlof_wthn_no, '', #{dbMarkingYn, jdbcType=VARCHAR}) AS tel_no,
+           sa.fax_nation_no, sa.fax_area_no, sa.fax_tlof_no, sa.fax_tlof_wthn_no,
+           sa.last_login_dt, sa.login_psb_ip_chk_yn,
+           sa.login_psb_ip, sa.cti_id, sa.cti_exno, sa.cti_recrd_id, sa.cti_grp_id,
+           sa.regtr_id, TO_DATE(  TO_CHAR(sa.reg_dt , 'YYYY-MM-DD HH24:MI'  ) , 'YYYY-MM-DD HH24:MI'  ) reg_dt,
+           sa.udter_id, TO_DATE(  TO_CHAR(sa.udt_dt , 'YYYY-MM-DD HH24:MI'  ) , 'YYYY-MM-DD HH24:MI'  ) udt_dt,
+           saagm.author_grp_sn, msc1.cd_nm admin_tp_nm, msc2.cd_nm admin_stat_nm, shop_nm, c.com_nm,
+           sareg.admin_nm regtr_nm, saud.admin_nm udter_nm , sag.author_grp_nm,
+           sa.pg_intrlck_expsr_yn,
+           sasa.udt_dt  stplat_agr_dt
+        FROM sys_admin sa
+        INNER JOIN (
+            SELECT admin_id   FROM sys_admin_bo_site_author  GROUP BY admin_id
+        ) sabsa
+            ON
+                sa.admin_id = #{adminId}
+                AND
+                sa.admin_id = sabsa.admin_id 
+        INNER JOIN sys_admin_author_grp_mapng saagm
+            ON 
+               sa.admin_id = saagm.admin_id
+        INNER JOIN sys_author_grp sag
+            ON
+            saagm.author_grp_sn = sag.author_grp_sn
+        LEFT OUTER JOIN  mv_sys_cd  msc1
+             ON  
+                msc1.upper_cd ='ADMIN_TP' AND msc1.LANG_CD = 'KOR' AND msc1.cd = sa.admin_tp_cd
+        LEFT OUTER JOIN  mv_sys_cd  msc2
+         ON  
+            msc2.upper_cd ='ADMIN_STAT' AND msc2.LANG_CD = 'KOR' AND msc2.cd = sa.admin_stat_cd
+         
+        LEFT OUTER JOIN  sys_shop  ss
+         ON 
+            ss.shop_id = sa.shop_id
+         
+         LEFT OUTER JOIN  com  c
+         ON 
+            c.com_id = sa.com_id
+            
+        LEFT OUTER JOIN  sys_admin  sareg
+         ON  
+            sareg.admin_id = sa.regtr_id
+        LEFT OUTER JOIN  sys_admin  saud
+         ON  
+            saud.admin_id = sa.udter_id
+        LEFT OUTER JOIN    sys_admin_stplat_agr sasa
+         ON
+             sasa.stplat_cd = 'PSNL_INFO_TRTMNT_CNSGN_AGR_CS'
+            AND
+            sasa.stplat_agr_yn = 'Y'
+            AND
+            sasa.bo_site_id = 'CS'
+            AND
+            sasa.admin_id = sa.admin_id
+     ]]>
+	</select>
+	
+	<insert id="insertAdminInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+		<![CDATA[
+		INSERT INTO sys_admin ( /* [commons.adm.xml][insertAdminInfo][운영자정보 등록][Tam] */
+			admin_id, pw, admin_tp_cd, admin_stat_cd, aprv_dt,
+			reject_dt, layoff_dt, drmc_dt, secsn_dt, admin_nm,
+			admin_emp_no, dept_nm, com_id, shop_id, email, pg_intrlck_expsr_yn,
+			cc_cntr_sect_cd, cc_team_sect_cd, mobil_nation_no, mobil_area_no, mobil_tlof_no, 
+			mobil_tlof_wthn_no, tel_nation_no, tel_area_no, tel_tlof_no, tel_tlof_wthn_no,
+			fax_nation_no, fax_area_no, fax_tlof_no, fax_tlof_wthn_no, last_login_dt, 
+			login_failr_count, pw_intz_yn, login_psb_ip_chk_yn, login_psb_ip,
+			cti_id, cti_exno, cti_recrd_id, cti_grp_id,
+			regtr_id, reg_dt
+		)VALUES ( 
+			trim(#{adminId}), #{pw}, #{adminTpCd}, #{adminStatCd}, #{aprvDt},
+			#{rejectDt}, #{layoffDt}, #{drmcDt}, #{secsnDt}, #{adminNm},
+			#{adminEmpNo}, #{deptNm}, #{comId}, #{shopId}, #{email}, #{pgIntrlckExpsrYn},
+			#{ccCntrSectCd}, #{ccTeamSectCd}, #{mobilNationNo}, #{mobilAreaNo}, #{mobilTlofNo}, 
+			#{mobilTlofWthnNo}, #{telNationNo}, #{telAreaNo}, #{telTlofNo}, #{telTlofWthnNo},
+			#{faxNationNo}, #{faxAreaNo}, #{faxTlofNo}, #{faxTlofWthnNo}, #{lastLoginDt}, 
+			#{loginFailrCount}, 'N', #{loginPsbIpChkYn}, #{loginPsbIp},
+			#{ctiId}, #{ctiExno}, #{ctiRecrdId}, #{ctiGrpId},
+			#{regtrId}, SYSDATE 
+		)
+		]]>
+	
+	</insert>
+	
+	<update id="updateAdminInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+		UPDATE sys_admin   /* [commons.adm.xml][updateAdminInfo][운영자정보 수정][Tam] */
+		SET
+			admin_tp_cd         = #{adminTpCd},
+			admin_stat_cd       = #{adminStatCd},
+			aprv_dt             = #{aprvDt},
+			reject_dt           = #{rejectDt},
+			layoff_dt           = #{layoffDt},
+			drmc_dt             = #{drmcDt},
+			secsn_dt            = #{secsnDt},
+			<!-- admin_nm            = #{adminNm}, -->
+			<!-- admin_emp_no        = #{adminEmpNo}, -->
+			dept_nm             = #{deptNm},
+			com_id              = #{comId},
+			shop_id             = #{shopId},
+			email               = #{email},
+			pg_intrlck_expsr_yn = #{pgIntrlckExpsrYn},
+			cc_cntr_sect_cd     = #{ccCntrSectCd},
+			cc_team_sect_cd     = #{ccTeamSectCd},
+			mobil_nation_no     = #{mobilNationNo},
+			mobil_area_no       = #{mobilAreaNo},
+			mobil_tlof_no       = #{mobilTlofNo},
+			mobil_tlof_wthn_no  = #{mobilTlofWthnNo},
+			tel_nation_no       = #{telNationNo},
+			tel_area_no         = #{telAreaNo},
+			tel_tlof_no         = #{telTlofNo},
+			tel_tlof_wthn_no    = #{telTlofWthnNo},
+			<!-- fax_nation_no       = #{faxNationNo},
+			fax_area_no         = #{faxAreaNo},
+			fax_tlof_no         = #{faxTlofNo},
+			fax_tlof_wthn_no    = #{faxTlofWthnNo}, -->
+			login_psb_ip_chk_yn = #{loginPsbIpChkYn},
+			login_psb_ip        = #{loginPsbIp},
+			cti_id              = #{ctiId},
+			cti_exno            = #{ctiExno},
+			cti_recrd_id        = #{ctiRecrdId},
+			cti_grp_id          = #{ctiGrpId},
+			udter_id            = #{regtrId},
+			udt_dt              = SYSDATE
+		WHERE  
+			admin_id            = #{adminId}
+	</update>
+	
+	<insert id="insertAuthorBoSite" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminBoSiteAuthor">
+		INSERT /* [commons.adm.xml][insertAuthorBoSite][site 접근권한 등록 ][Tam] */
+		INTO sys_admin_bo_site_author ( 
+		   admin_id, bo_site_id, conect_psb_yn, regtr_id, reg_dt
+		)VALUES ( 
+		   trim(#{adminId}), #{boSiteId}, 'Y', #{regtrId}, SYSDATE 
+		)
+	</insert>
+	<delete id="deleteAuthorBoSite" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminBoSiteAuthor">
+		DELETE /* [commons.adm.xml][deleteAuthorBoSite][ site 접근권한 삭제][Tam] */
+			FROM sys_admin_bo_site_author 
+		WHERE admin_id = #{adminId} 
+		
+		<if test="boSiteId != null and !''.equals(boSiteId)">
+				AND bo_site_id = #{boSiteId}
+		</if>
+		
+	</delete>
+	
+	<select id="selectAuthorBoSiteList" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminBoSiteAuthor" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminBoSiteAuthor">
+		SELECT /* [commons.adm.xml][selectAuthorBoSiteList][ site접근권한 목록 조회][Tam] */
+			 admin_id, bo_site_id
+		FROM
+			sys_admin_bo_site_author
+		WHERE
+			admin_id = #{adminId}
+	</select>
+
+	<insert id="insertAuthorMapng" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminAuthorGrpMapng">
+		INSERT /* [commons.adm.xml][insertAuthorMapng][운영자 권한그룹 등록 ][Tam] */
+		INTO sys_admin_author_grp_mapng (
+		   admin_id, author_grp_sn, use_yn, regtr_id, reg_dt
+		) VALUES (
+			trim(#{adminId}), #{authorGrpSn}, 'Y', #{regtrId}, SYSDATE
+		)
+	</insert>
+
+	<insert id="insertAuthorMapngHist" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminAuthorGrpMapng">
+		INSERT /* [commons.adm.xml][insertAuthorMapngHist][운영자 권한그룹 등록 이력등록][Tam] */
+		INTO SYS_ADMIN_AUTHOR_GRP_MAPNG_HIS (
+		   admin_id, author_grp_sn,AUTHOR_GRP_MAPNG_HIST_DT ,use_yn, regtr_id, reg_dt
+		) VALUES (
+			trim(#{adminId}), #{authorGrpSn},SYSTIMESTAMP, 'Y', #{regtrId}, SYSDATE
+		)
+	</insert>
+    <delete id="deleteAuthorMapngHist" parameterType="sysAdminAuthorGrpMapngHis">
+		DELETE /* [commons.adm.xml][deleteAuthorMapngHist][운영자 권한그룹 등록 이력 삭제][muba] */
+		  FROM SYS_ADMIN_AUTHOR_GRP_MAPNG_HIS
+		 WHERE 1 = 1
+		 	AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+			<if test="authorGrpSn != null and !''.equals(authorGrpSn)">
+				AND AUTHOR_GRP_SN = #{authorGrpSn,jdbcType=NUMERIC}
+			</if>
+    </delete>
+	<delete id="deleteAuthorMapng" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminAuthorGrpMapng">
+		DELETE /* [commons.adm.xml][deleteAuthorMapng][운영자 권한그룹 삭제 ][Tam] */
+		FROM 
+			sys_admin_author_grp_mapng 
+		WHERE 
+			admin_id = #{adminId}
+			<if test="authorGrpSn != null and !''.equals(authorGrpSn)">
+				AND author_grp_sn = #{authorGrpSn}
+			</if>
+	</delete>
+	<select id="selectRowAuthorMapng" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminAuthorGrpMapng">
+		SELECT /* [commons.adm.xml][selectRowAuthorMapng][운영자 권한그룹 조회 ][Tam] */
+			admin_id, author_grp_sn
+		FROM
+			sys_admin_author_grp_mapng
+		WHERE
+			admin_id = #{adminId}
+	</select>
+	
+	<insert id="insertAdminBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminBrnd">
+		
+		MERGE INTO sys_admin_brnd sab   /* [commons.adm.xml][insertAdminBrnd][운영자 브랜드 등록][Tam] */
+		     USING ( select 0 k FROM dual ) wsag
+		        ON (  sab.admin_id = #{adminId} AND sab.brnd_id = #{brndId} )
+		WHEN MATCHED
+		THEN
+		   UPDATE SET  
+		       use_yn ='Y' , udter_id = #{regtrId},   udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		   INSERT  (
+		       admin_id, brnd_id, use_yn,  regtr_id, reg_dt
+		   ) VALUES ( 
+		     trim(#{adminId}), #{brndId}, 'Y', #{regtrId}, SYSDATE
+		   )
+		
+	</insert>
+	<delete id="deleteAdminBrnd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminBrnd">
+		DELETE /* [commons.adm.xml][deleteAdminBrnd][운영자 브랜드 삭제][Tam] */
+		FROM 
+			sys_admin_brnd 
+		WHERE 
+			admin_id = #{adminId} 
+		<if test="brndId != null and !''.equals(brndId)">
+			AND brnd_id = #{brndId}
+		</if>
+			
+	</delete>
+	
+	<select id="selectAdminBrndList" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndExtend">
+		<![CDATA[		
+			SELECT  /* [commons.adm.xml][selectAdminBrndList][운영자 브랜드 목록 조회][Tam] */
+				sb.*  
+			FROM
+				sys_admin_brnd sab
+				INNER JOIN
+				(
+					SELECT 
+					sb.BRND_ID, sb.UPPER_BRND_ID, sb.BRND_NM, 
+					SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_brnd_nm
+					FROM SYS_BRND sb
+					WHERE
+					sb.use_yn = 'Y' 
+					START WITH sb.upper_brnd_id is null
+					CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id
+				) sb
+			on
+				sab.admin_id = #{adminId}
+				AND
+				sab.brnd_id = sb.brnd_id
+		]]>
+	</select>	
+
+	<insert id="insertAdminChrgJob" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminChrgJob">
+		INSERT /* [commons.adm.xml][insertAdminChrgJob][운영자 담당업무 등록][Tam] */
+		INTO sys_admin_chrg_job (
+		   admin_id, chrg_job_tp_cd, regtr_id, reg_dt
+		) VALUES ( 
+			trim(#{adminId}), #{chrgJobTpCd}, #{regtrId}, SYSDATE
+		)
+	</insert>
+	<delete id="deleteAdminChrgJob" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminChrgJob">
+		DELETE /* [commons.adm.xml][deleteAdminChrgJob][운영자 담당업무 삭제][Tam] */ 
+		FROM 
+			sys_admin_chrg_job 
+		WHERE 
+			admin_id = #{adminId} 
+			<if test="chrgJobTpCd != null and !''.equals(chrgJobTpCd)">
+				AND chrg_job_tp_cd = #{chrgJobTpCd}
+			</if>
+	</delete>
+	
+	<select id="selectAdminChrgJobList" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminChrgJob">
+		SELECT  /* [commons.adm.xml][selectAdminChrgJobList][운영자 담당업무 목록 조회][Tam] */ 
+			admin_id, chrg_job_tp_cd
+		FROM
+			sys_admin_chrg_job
+		WHERE
+			admin_id = #{adminId}
+	</select>
+	
+	<insert id="insertCcJobTp" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysCcJobTp">
+		INSERT /* [commons.adm.xml][insertCcJobTp][고객센터 업무유형 등록][Tam] */
+		INTO sys_cc_job_tp (
+		   admin_id, cc_job_tp_cd, regtr_id, reg_dt
+		) VALUES ( 
+			trim(#{adminId}), #{ccJobTpCd}, #{regtrId}, SYSDATE
+		)
+	</insert>
+	<delete id="deleteCcJobTp" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysCcJobTp">
+		DELETE /* [commons.adm.xml][deleteCcJobTp][고객센터 업무유형 삭제][Tam] */
+		FROM
+			sys_cc_job_tp
+		WHERE
+			admin_id = #{adminId} 
+			<if test="ccJobTpCd != null and !''.equals(ccJobTpCd)">
+				AND cc_job_tp_cd = #{ccJobTpCd}
+			</if>
+			
+	</delete>
+	<select id="selectCcJobTpList" parameterType="java.util.Map" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysCcJobTp">
+		SELECT /* [commons.adm.xml][selectCcJobTpList][고객센터 업무유형 목록 조회][Tam] */ 
+			admin_id, cc_job_tp_cd
+		FROM
+			sys_cc_job_tp
+		WHERE
+			admin_id = #{adminId}
+	</select>
+	
+	<select id="selectListAuthMenu" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAuthor" resultMap="resultAuthMenu">
+		<![CDATA[  
+		SELECT  /* [commons.auth.xml][selectListAuthMenu]][메뉴권한 목록 조회][Tam]*/
+            sm.menu_sn, sm.upper_menu_sn, sm.bo_site_id, sm.menu_nm, sm.menu_img_url,
+            sm.menu_url, sm.sort_seq, sm.menu_tp_cd, sm.outpt_tp_cd, sm.first_pge_yn,
+            LEVEL menu_depth,
+            CASE  WHEN  PRIOR sm.menu_nm is null  and sm.upper_menu_sn is not null THEN  ( select menu_nm from  SYS_MENU  WHERE menu_sn = sm.upper_menu_sn ) 
+                ELSE  LPAD (' ', 2 * LEVEL - 1) || PRIOR sm.menu_nm
+            END upper_menu_nm,
+            SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_menu_nm,
+            sa.author_grp_sn
+        FROM 
+            SYS_MENU sm INNER JOIN 
+            ( SELECT  author_grp_sn, menu_sn FROM SYS_AUTHOR WHERE author_grp_sn = #{authorGrpSn} GROUP BY author_grp_sn, menu_sn) sa
+            ON
+                sm.use_yn = 'Y'
+                AND
+                sm.menu_sn = sa.menu_sn
+                AND
+                sa.author_grp_sn = #{authorGrpSn}
+
+             START WITH 
+                 sm.MENU_TP_CD = 'MENU'
+               
+                        AND sm.upper_menu_sn is NULL 
+               
+             CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+             ORDER SIBLINGS BY sm.bo_site_id, sm.sort_seq
+		 ]]>
+	</select>
+	
+	<select id="selectListAuthFile" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAuthor" resultMap="resultAuthMenu">
+		<![CDATA[
+		SELECT /* [commons.adm.xml][selectListAuthMenu]][권한그룹 FILE 목록 조회][Tam]*/
+		*
+		FROM
+		(  
+		      SELECT
+		                sm.menu_sn, sm.upper_menu_sn, sm.bo_site_id, sm.menu_nm, sm.menu_img_url
+		                , sm.menu_url, sm.sort_seq, sm.menu_tp_cd, sm.outpt_tp_cd, sm.first_pge_yn
+		                , LEVEL menu_depth 
+		                 , LPAD(' ', 2*LEVEL-1)||PRIOR sm.menu_nm  upper_menu_nm
+		                 , SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_menu_nm
+		                 , sa.author_grp_sn
+		                 , sa.author_turn
+		                 , sa.author_resrc_nm
+		            FROM 
+		                sys_author sa 
+		                INNER JOIN sys_menu sm 
+		                on
+		                    sa.author_grp_sn =  #{authorGrpSn}
+		                    AND
+		                    sm.use_yn = 'Y'
+		                    AND
+		                    sm.menu_sn = sa.menu_sn
+		            START WITH  
+		                sm.upper_menu_sn is NULL
+		            CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+		             ORDER SIBLINGS BY sm.sort_seq, sm.menu_sn
+		 ) sm            
+         WHERE  
+         	sm.menu_tp_cd = 'FILE' 
+        ]]>
+	</select>
+	
+	<!-- PO 비밀번호 분실 - 아이디 리스트 -->
+    <select id="poSelectLostPasswordList" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+        SELECT /* [biz.com.xml][poSelectLostPasswordList][ PO 비밀번호 분실 - 아이디 존재여부 체크][peter] */
+               admin_id,
+               mobil_nation_no,
+               mobil_area_no,
+               mobil_tlof_no,
+               mobil_tlof_wthn_no
+          FROM SYS_ADMIN
+         WHERE ADMIN_iD = #{adminId,jdbcType=VARCHAR}
+           AND ADMIN_NM = #{adminNm,jdbcType=VARCHAR}
+           AND EMAIL = #{email,jdbcType=VARCHAR}
+    </select>
+
+    <!-- PO 비밀번호 분실 - 로그인 검증 -->
+    <select id="poSelectLostInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+        SELECT /* [biz.com.xml][poSelectLostInfo][ PO 비밀번호 분실 - 로그인 검증][peter] */
+               (select count (*) from SYS_ADMIN where ADMIN_iD = #{adminId,jdbcType=VARCHAR}) as idExistCnt,
+               (select count (*) from SYS_ADMIN where ADMIN_iD = #{adminId,jdbcType=VARCHAR} AND ADMIN_NM = #{adminNm,jdbcType=VARCHAR}) as nmExistCnt
+          FROM dual
+    </select>
+
+	<update id="updateAdminPassword" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+		UPDATE sys_admin   /* [commons.adm.xml][updateAdminPassword][운영자정보 비밀번호 초기화][Tam] */
+		SET
+			pw = #{pw},
+			PW_INTZ_YN = #{pwIntzYn},
+			PW_INTZ_DT = SYSDATE,
+			udter_id            = #{regtrId},
+			udt_dt              = SYSDATE
+		WHERE  
+			admin_id            = #{adminId}
+	</update>
+	
+	<update id="updateAdminPwIntzDt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+		UPDATE sys_admin   /* [commons.adm.xml][updateAdminPwIntzDt][운영자정보 비밀번호 초기화 날짜 변경][Mark] */
+		SET
+			PW_INTZ_DT = SYSDATE-60,
+			udter_id            = #{regtrId},
+			udt_dt              = SYSDATE
+		WHERE  
+			admin_id            = #{adminId}
+	</update>
+	
+	
+	<update id="updateMyInfo" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin">
+		UPDATE sys_admin   /* [commons.adm.xml][updateMyInfo][My정보 수정][Tam] */
+		SET
+		<if test='deptNm != null and deptNm != "" '>
+			dept_nm             = #{deptNm},
+		</if>
+		<if test='email != null and email != "" '>
+			email               = #{email},
+		</if>
+		<if test='mobilNationNo != null and mobilNationNo != "" '>
+			mobil_nation_no     = #{mobilNationNo},
+		</if>
+		<if test='mobilAreaNo != null and mobilAreaNo != "" '>
+			mobil_area_no       = #{mobilAreaNo},
+		</if>
+		<if test='mobilTlofNo != null and mobilTlofNo != "" '>
+			mobil_tlof_no       = #{mobilTlofNo},
+		</if>
+		<if test='mobilTlofWthnNo != null and mobilTlofWthnNo != "" '>
+			mobil_tlof_wthn_no  = #{mobilTlofWthnNo},
+		</if>
+		<if test='telNationNo != null and telNationNo != "" '>
+			tel_nation_no       = #{telNationNo},
+		</if>
+		<if test='telAreaNo != null and telAreaNo != "" '>
+			tel_area_no         = #{telAreaNo},
+		</if>
+		<if test='telTlofNo != null and telTlofNo != "" '>
+			tel_tlof_no         = #{telTlofNo},
+		</if>
+		<if test='telTlofWthnNo != null and telTlofWthnNo != "" '>
+			tel_tlof_wthn_no    = #{telTlofWthnNo},
+		</if>
+		<if test="pw != null and pw != ''.toString()">
+			pw = #{pw},
+		</if>
+			udter_id            = #{regtrId},
+			udt_dt              = SYSDATE
+		WHERE
+			admin_id            = #{regtrId}
+	</update>
+	
+
+	<select id="getComBrndList" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdmin" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndExtend">
+		SELECT /* [commons.adm.xml][getComBrndList][해당 업체 all 브랜드 list][Peter] */
+			'N' AS comChecked,
+			a.brnd_id,
+			b.brnd_nm,
+			d.na_brnd_nm
+		FROM
+			com_brnd a,
+			sys_brnd b,
+			(SELECT
+                    sb.BRND_ID, sb.UPPER_BRND_ID, sb.BRND_NM,
+                    SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_brnd_nm
+             FROM SYS_BRND sb
+             WHERE
+                    sb.use_yn = 'Y'
+             START WITH sb.upper_brnd_id is null
+             CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id) d
+		WHERE 1=1
+		AND	a.com_id = #{comId}
+		AND a.brnd_id = b.brnd_id
+		AND b.use_yn = 'Y'
+		AND a.brnd_id = d.brnd_id(+)
+		ORDER BY b.brnd_nm
+	</select>
+
+	<select id="getUserComBrndList" parameterType="com.plgrim.ncp.commons.data.FormSysAdmDTO" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysBrndExtend">
+		SELECT /* [commons.adm.xml][getUserComBrndList][해당 사용자의 선택 업체 브랜드 list][Peter] */
+            case when c.brnd_id is null then 'N' else 'Y' end AS comChecked,
+            a.brnd_id,
+            b.brnd_nm,
+            d.na_brnd_nm
+        FROM
+            com_brnd a,
+            sys_brnd b,
+            (select brnd_id, use_yn from sys_admin_brnd where admin_id = #{selAdminId}) c,
+            (SELECT
+                    sb.BRND_ID, sb.UPPER_BRND_ID, sb.BRND_NM,
+                    SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sb.brnd_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_brnd_nm
+             FROM SYS_BRND sb
+             WHERE
+                    sb.use_yn = 'Y'
+             START WITH sb.upper_brnd_id is null
+             CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id) d
+        WHERE 1=1
+        AND a.com_id = (select com_id from sys_admin where admin_id = #{selAdminId})
+        AND a.brnd_id = b.brnd_id
+        AND b.use_yn = 'Y'
+        AND a.brnd_id = c.brnd_id(+)
+        AND a.brnd_id = d.brnd_id(+)
+        ORDER BY b.brnd_nm
+	</select>
+
+	<select id="selectDashboardSumInfo" parameterType="com.plgrim.ncp.commons.data.FormSysAdmDTO" resultType="com.plgrim.ncp.commons.result.DashboardSumResult">
+		SELECT /* [commons.adm.xml][selectDashboardSumInfo][dashboard 현황 값][Peter] */
+			(
+			 /* [1] ========================================================================================= */
+			 SELECT COUNT(*)
+             FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+             WHERE 1 = 1
+             AND ord.ord_dt <![CDATA[>=]]> trunc(SYSDATE-1)
+             AND lgsddg.dlv_stat_cd = 'DLV_WAIT'        /* 배송 상태 코드 : 배정 대기 */
+             AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /*업체 */
+             AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+             AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+             AND ord.ord_stat_cd <![CDATA[<>]]> 'DEPST_WAIT'
+			) AS beforeNewOrderNewCnt,											/* 발송 전 / 신규주문 / 신규 */
+																				/* =========== 주문결제일 기준 =========== */
+																				/* 주문확인을 해야 하는 주문을 표시 */
+																				/* - 신규 : 배정대기 건수 */
+																				/* - 전체 : 전체 베정대기 건수 */
+																				/* 숫자 클릭 시, 데이타 추출 기준으로 해서 주문확인 리스트 페이지[PODL010000)로 이동 */
+		    (
+			 SELECT COUNT(*)
+             FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+             WHERE 1 = 1
+             AND ord.ord_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND trunc(SYSDATE+1)
+             AND lgsddg.dlv_stat_cd = 'DLV_WAIT'        /* 배송 상태 코드 : 배정 대기 */
+             AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /*업체 */
+             AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+             AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+             AND ord.ord_stat_cd <![CDATA[<>]]> 'DEPST_WAIT'
+			) AS beforeNewOrderAllCnt,											/* 발송 전 / 신규주문 / 전체 */
+			/* [2] ========================================================================================= */
+		    (
+		     SELECT COUNT(*)
+		     FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+            WHERE 1 = 1
+                  AND lgsddg.dlivy_prearnge_dt <![CDATA[>=]]> trunc(SYSDATE-1)
+                  AND lgsddg.dlv_stat_cd = 'DLIVY_DRCT'      /* 배송 상태 코드 : 출고지시 */
+                  AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                  AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+                  /* AND c.DLIVY_PREARNGE_DT <![CDATA[<]]> trunc(SYSDATE) */ /* 출고예정일시지난 경우 */
+                  AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+			) AS beforeDelevDelayNewCnt,										/* 발송 전 / 배송지연 / 신규 */
+																				/* =========== 주문확인일 기준 =========== */
+																				/* 상태에 따른 배송지연 기준 : 출고에정일이 지난 주문 */
+																				/* - 신규 : 배송지연 건수 */
+																				/* - 전체 : 전체 배송지연 건수 */
+																				/* 숫자 클릭 시, 데이타 추출 기준으로 해서 배송조회 리스트 페이지[PODL020000)로 이동 */
+		    (
+			 SELECT COUNT(*)
+		     FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+            WHERE 1 = 1
+                  AND lgsddg.dlivy_prearnge_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND trunc(SYSDATE+1)
+                  AND lgsddg.dlv_stat_cd = 'DLIVY_DRCT'      /* 배송 상태 코드 : 출고지시 */
+                  AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                  AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+                  /* AND c.DLIVY_PREARNGE_DT <![CDATA[<]]> trunc(SYSDATE) */ /* 출고예정일시지난 경우 */
+                  AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+			) AS beforeDelevDelayAllCnt,										/* 발송 전 / 배송지연 / 전체 */
+			/* [3] ========================================================================================= */
+		    (
+		     SELECT count(*)
+             FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+            WHERE 1 = 1
+                  AND ord.ord_dt <![CDATA[>=]]> trunc(SYSDATE-1)
+                  AND lgsddg.dlv_stat_cd = 'SHTG_RCEPT'      /* 배송 상태 코드 : 결품접수 */
+                  AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                  AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+                  AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+			) AS beforeEmptyNewCnt,												/* 발송 전 / 결품현황 / 신규 */
+																				/* =========== 결품요청일 기준 =========== */
+																				/* 재고 부족으로 결품요청(접수)한 주문상품 건수 */
+																				/* 숫자를 클릭하면 결품조회 리스트 페이지[POCL010000)로 이동 */
+		    (
+			 SELECT count(*)
+             FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+            WHERE 1 = 1
+                  AND ord.ord_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND trunc(SYSDATE+1)
+                  AND lgsddg.dlv_stat_cd = 'SHTG_RCEPT'      /* 배송 상태 코드 : 결품접수 */
+                  AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                  AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+                  AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+			) AS beforeEmptyAllCnt,												/* 발송 전 / 결품현황 / 전체 */
+		    /* [4] ========================================================================================= */
+		    (
+		     SELECT  COUNT(*)
+             FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN CLM clm ON (ord.ord_no = clm.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+            WHERE 1 = 1
+                  AND ord.ord_dt <![CDATA[>=]]> trunc(SYSDATE-1)
+                  AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                  AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+                  AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+                  AND clm.clm_stat_cd = 'COMPT'				 /* 클래임 상태 코드 : 완료 */
+                  AND (   clm.clm_tp_cd = 'ALL_CNCL'		 /* 클래임 유형 코드 : 부분취소, 전체취소 */
+                       OR clm.clm_tp_cd = 'PART_CNCL')
+			) AS beforeOrderCancelNewCnt,										/* 발송 전 / 주문취소 / 신규 */
+																				/* =========== 고객의 주문취소요청일 기준 =========== */
+																				/* 고객이 취소요청한 주문취소 건수 */
+																				/* 숫자를 클릭하면 주문취소조회 리스트 페이지[POCL020000)로 이동 */
+		    (
+			 SELECT  COUNT(*)
+             FROM ORD ord
+                  JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                  JOIN CLM clm ON (ord.ord_no = clm.ord_no)
+                  JOIN
+                  LGS_DLIVY_DRCT_GOD lgsddg
+                     ON (    ordgod.ord_no = lgsddg.ord_no
+                         AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                  JOIN
+                  LGS_DLV lgsdv
+                     ON (    lgsdv.ord_no = lgsddg.ord_no
+                         AND lgsdv.dlv_pcupsp_turn =
+                                lgsddg.dlv_pcupsp_turn
+                         AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                  JOIN
+                  LGS_DLVSP lgsdsp
+                     ON (    lgsdsp.ord_no = lgsdv.ord_no
+                         AND lgsdsp.dlv_pcupsp_turn =
+                                lgsdv.dlv_pcupsp_turn)
+            WHERE 1 = 1
+                  AND ord.ord_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND trunc(SYSDATE+1)
+                  AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                  AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+                  AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+                  AND clm.clm_stat_cd = 'COMPT'				 /* 클래임 상태 코드 : 완료 */
+                  AND (   clm.clm_tp_cd = 'ALL_CNCL'		 /* 클래임 유형 코드 : 부분취소, 전체취소 */
+                       OR clm.clm_tp_cd = 'PART_CNCL')
+			) AS beforeOrderCancelAllCnt,										/* 발송 전 / 주문취소 / 전체 */
+			/* [5] ========================================================================================= */
+		    (
+		       SELECT COUNT(*)
+               FROM ORD ord
+                   JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                   JOIN
+                   LGS_DLIVY_DRCT_GOD lgsddg
+                      ON (    ordgod.ord_no = lgsddg.ord_no
+                          AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                   JOIN
+                   LGS_DLV lgsdv
+                      ON (    lgsdv.ord_no = lgsddg.ord_no
+                          AND lgsdv.dlv_pcupsp_turn =
+                                 lgsddg.dlv_pcupsp_turn
+                          AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                   JOIN
+                   LGS_DLVSP lgsdsp
+                      ON (    lgsdsp.ord_no = lgsdv.ord_no
+                          AND lgsdsp.dlv_pcupsp_turn =
+                                 lgsdv.dlv_pcupsp_turn)
+              WHERE 1 = 1
+                   AND lgsddg.dlivy_compt_dt <![CDATA[>=]]> trunc(SYSDATE-1)
+                   AND lgsddg.dlv_stat_cd = 'DLIVY_COMPT'     /* 배송 상태 코드 : 출고 완료 */
+                   AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                   AND ordgod.partmal_sect_cd = 'PARTMAL'     /* 입점업체 */
+                   AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+			) AS afterDelevIngNewCnt,											/* 발송 후 / 배송중 / 신규 */
+																				/* =========== 출고완료처리일 기준 =========== */
+																				/* 클레임에 해당하지 않고, 배송중인 상태(상품단위) */
+																				/* - 신규 : 배송중인 건수 */
+																				/* - 전체 : 배송중인 전체 건수 */
+																				/* 숫자를 클릭하면 배송 Status = '출고완료' 검색조건으로 해서 */
+																				/* 배송조회 리스트 페이지[PODL020000)로 이동 */
+		    (
+			 SELECT COUNT(*)
+               FROM ORD ord
+                   JOIN ORD_GOD ordgod ON (ord.ord_no = ordgod.ord_no)
+                   JOIN
+                   LGS_DLIVY_DRCT_GOD lgsddg
+                      ON (    ordgod.ord_no = lgsddg.ord_no
+                          AND ordgod.ord_god_turn = lgsddg.ord_god_turn)
+                   JOIN
+                   LGS_DLV lgsdv
+                      ON (    lgsdv.ord_no = lgsddg.ord_no
+                          AND lgsdv.dlv_pcupsp_turn =
+                                 lgsddg.dlv_pcupsp_turn
+                          AND lgsdv.dlv_turn = lgsddg.dlv_turn)
+                   JOIN
+                   LGS_DLVSP lgsdsp
+                      ON (    lgsdsp.ord_no = lgsdv.ord_no
+                          AND lgsdsp.dlv_pcupsp_turn =
+                                 lgsdv.dlv_pcupsp_turn)
+              WHERE 1 = 1
+                   AND lgsddg.dlivy_compt_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND trunc(SYSDATE+1)
+                   AND lgsddg.dlv_stat_cd = 'DLIVY_COMPT'     /* 배송 상태 코드 : 출고 완료 */
+                   AND ordgod.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+                   AND ordgod.partmal_sect_cd = 'PARTMAL'     					/* 입점업체 */
+                   AND lgsddg.dlivy_drct_tgt_yn = lgsddg.dlivy_drct_yn
+			) AS afterDelevIngAllCnt,											/* 발송 후 / 배송중 / 전체 */
+			/* [6] ========================================================================================= */
+		    (
+			 SELECT COUNT(*)
+			 FROM ORD ord
+			       JOIN CLM clm ON (ord.ord_no = clm.ord_no)
+			       JOIN LGS_DLVSP lgsdsp
+			          ON (lgsdsp.ord_no = clm.ord_no AND lgsdsp.clm_no = clm.clm_no)
+			       JOIN
+			       CLM_WRHS_GOD clmwg
+			          ON (    clmwg.clm_no = lgsdsp.clm_no
+			              AND clmwg.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			       JOIN
+			       LGS_DLV lgsdv
+			          ON (    lgsdv.ord_no = lgsdsp.ord_no
+			              AND lgsdv.clm_no = lgsdsp.clm_no
+			              AND lgsdv.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			       JOIN
+			       LGS_RTRVL_DRCT_GOD lgsrdg
+			          ON (    lgsrdg.clm_no = clmwg.clm_no
+			              AND lgsrdg.clm_wrhs_god_turn = clmwg.clm_wrhs_god_turn
+			              AND lgsrdg.ord_no = clmwg.ord_no
+			              AND lgsrdg.dlv_pcupsp_turn = lgsdv.dlv_pcupsp_turn
+			              AND lgsrdg.dlv_turn = lgsdv.dlv_turn)
+			       JOIN
+			       LGS_DLIVY_DRCT_GOD lgsddg
+			          ON (    lgsddg.ord_no = lgsrdg.ord_no
+			              AND lgsddg.dlivy_drct_god_no = lgsrdg.dlivy_drct_god_no)
+			 WHERE 1 = 1
+			       AND lgsrdg.rtrvl_drct_dt <![CDATA[>=]]> trunc(SYSDATE-1)
+			       AND clmwg.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+			       AND lgsrdg.rtrvl_stat_cd = 'RTRVL_DRCT'              /* 회수 상태 코드 : 회수지시 */
+			       AND lgsrdg.rtrvl_drct_tp_cd IN ('RTGOD')             /* 클래임 유형 코드 : 반품 */
+			       AND clmwg.partmal_sect_cd = 'PARTMAL'       			/* 자사상품구분 : 입점사(PARTMAL) */
+			       AND clmwg.god_tp_cd <![CDATA[<>]]> 'GFCT'            /* 상품유형 : 상품권제외 */
+			) AS afterReturnNewCnt,												/* 발송 후 / 반품처리 / 신규 */
+																				/* =========== 회수지시일 기준 =========== */
+																				/* 반품 쿨레임 처리 현황 */
+																				/* - 신규 : 반품회수지시 건수 */
+																				/* - 전체 : 미회수처리 건수 */
+																				/* 숫자를 클릭하면 회수지수 Status = '회수지시'  */
+																				/* 검색조건으로 해서 반품관리 리스트 페이지[POCL030000)로 이동 */
+			(
+			 SELECT COUNT(*)
+			 FROM ORD ord
+			       JOIN CLM clm ON (ord.ord_no = clm.ord_no)
+			       JOIN LGS_DLVSP lgsdsp
+			          ON (lgsdsp.ord_no = clm.ord_no AND lgsdsp.clm_no = clm.clm_no)
+			       JOIN
+			       CLM_WRHS_GOD clmwg
+			          ON (    clmwg.clm_no = lgsdsp.clm_no
+			              AND clmwg.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			       JOIN
+			       LGS_DLV lgsdv
+			          ON (    lgsdv.ord_no = lgsdsp.ord_no
+			              AND lgsdv.clm_no = lgsdsp.clm_no
+			              AND lgsdv.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			       JOIN
+			       LGS_RTRVL_DRCT_GOD lgsrdg
+			          ON (    lgsrdg.clm_no = clmwg.clm_no
+			              AND lgsrdg.clm_wrhs_god_turn = clmwg.clm_wrhs_god_turn
+			              AND lgsrdg.ord_no = clmwg.ord_no
+			              AND lgsrdg.dlv_pcupsp_turn = lgsdv.dlv_pcupsp_turn
+			              AND lgsrdg.dlv_turn = lgsdv.dlv_turn)
+			       JOIN
+			       LGS_DLIVY_DRCT_GOD lgsddg
+			          ON (    lgsddg.ord_no = lgsrdg.ord_no
+			              AND lgsddg.dlivy_drct_god_no = lgsrdg.dlivy_drct_god_no)
+			 WHERE 1 = 1
+			       AND lgsrdg.rtrvl_drct_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND trunc(SYSDATE+1)
+			       AND clmwg.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+			       AND lgsrdg.rtrvl_stat_cd = 'RTRVL_DRCT'              /* 회수 상태 코드 : 회수지시 */
+			       AND lgsrdg.rtrvl_drct_tp_cd IN ('RTGOD')             /* 클래임 유형 코드 : 반품 */
+			       AND clmwg.partmal_sect_cd = 'PARTMAL'       			/* 자사상품구분 : 입점사(PARTMAL) */
+			       AND clmwg.god_tp_cd <![CDATA[<>]]> 'GFCT'            /* 상품유형 : 상품권제외 */
+			) AS afterReturnAllCnt,												/* 발송 후 / 반품처리 / 전체 */
+		    /* [7] ========================================================================================= */
+		    (
+		     SELECT COUNT (*)
+			    FROM ORD ord
+			         JOIN CLM clm ON (ord.ord_no = clm.ord_no)
+			         JOIN LGS_DLVSP lgsdsp
+			            ON (lgsdsp.ord_no = clm.ord_no AND lgsdsp.clm_no = clm.clm_no)
+			         JOIN
+			         CLM_WRHS_GOD clmwg
+			            ON (    clmwg.clm_no = lgsdsp.clm_no
+			                AND clmwg.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			         JOIN
+			         LGS_DLV lgsdv
+			            ON (    lgsdv.ord_no = lgsdsp.ord_no
+			                AND lgsdv.clm_no = lgsdsp.clm_no
+			                AND lgsdv.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			         JOIN
+			         LGS_RTRVL_DRCT_GOD lgsrdg
+			            ON (    lgsrdg.clm_no = clmwg.clm_no
+			                AND lgsrdg.clm_wrhs_god_turn = clmwg.clm_wrhs_god_turn
+			                AND lgsrdg.ord_no = clmwg.ord_no
+			                AND lgsrdg.dlv_pcupsp_turn = lgsdv.dlv_pcupsp_turn
+			                AND lgsrdg.dlv_turn = lgsdv.dlv_turn)
+			         JOIN
+			         LGS_DLIVY_DRCT_GOD lgsddg
+			            ON (    lgsddg.ord_no = lgsrdg.ord_no
+			                AND lgsddg.dlivy_drct_god_no = lgsrdg.dlivy_drct_god_no)
+			   WHERE     1 = 1
+			         AND lgsrdg.rtrvl_drct_dt <![CDATA[>=]]> trunc(SYSDATE-1)
+			         AND clmwg.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+			         AND lgsrdg.rtrvl_stat_cd = 'RTRVL_DRCT'                /* 회수 상태 코드 : 회수지시 */
+			         AND lgsrdg.rtrvl_drct_tp_cd IN ('EXCHG')               /* 클래임 유형 코드 : 일반교환 */
+			         AND clmwg.partmal_sect_cd = 'PARTMAL'     				/* 자사상품구분 : 입점사(PARTMAL) */
+			         AND clmwg.god_tp_cd <![CDATA[<>]]> 'GFCT'              /* 상품유형 : 상품권제외 */
+			) AS afterExchgProcNewCnt,											/* 발송 후 / 교환처리 / 신규 */
+																				/* =========== 회수지시일 기준 =========== */
+																				/* 교환 클레임 처리 현황 */
+																				/* - 신규 : 교환회수지시 건수 */
+																				/* - 전체 : 미회수지시 건수 */
+																				/* 숫자를 클릭하면 회수지수 Status = '회수지시'  */
+																				/* 검색조건으로 해서 교환관리 리스트 페이지[POCL040000)로 이동 */
+			(
+			 SELECT COUNT (*)
+			    FROM ORD ord
+			         JOIN CLM clm ON (ord.ord_no = clm.ord_no)
+			         JOIN LGS_DLVSP lgsdsp
+			            ON (lgsdsp.ord_no = clm.ord_no AND lgsdsp.clm_no = clm.clm_no)
+			         JOIN
+			         CLM_WRHS_GOD clmwg
+			            ON (    clmwg.clm_no = lgsdsp.clm_no
+			                AND clmwg.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			         JOIN
+			         LGS_DLV lgsdv
+			            ON (    lgsdv.ord_no = lgsdsp.ord_no
+			                AND lgsdv.clm_no = lgsdsp.clm_no
+			                AND lgsdv.dlv_pcupsp_turn = lgsdsp.dlv_pcupsp_turn)
+			         JOIN
+			         LGS_RTRVL_DRCT_GOD lgsrdg
+			            ON (    lgsrdg.clm_no = clmwg.clm_no
+			                AND lgsrdg.clm_wrhs_god_turn = clmwg.clm_wrhs_god_turn
+			                AND lgsrdg.ord_no = clmwg.ord_no
+			                AND lgsrdg.dlv_pcupsp_turn = lgsdv.dlv_pcupsp_turn
+			                AND lgsrdg.dlv_turn = lgsdv.dlv_turn)
+			         JOIN
+			         LGS_DLIVY_DRCT_GOD lgsddg
+			            ON (    lgsddg.ord_no = lgsrdg.ord_no
+			                AND lgsddg.dlivy_drct_god_no = lgsrdg.dlivy_drct_god_no)
+			   WHERE     1 = 1
+			         AND lgsrdg.rtrvl_drct_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND trunc(SYSDATE+1)
+			         AND clmwg.com_id = (select com_id from sys_admin where admin_id = #{selAdminId}) /* 업체 */
+			         AND lgsrdg.rtrvl_stat_cd = 'RTRVL_DRCT'                /* 회수 상태 코드 : 회수지시 */
+			         AND lgsrdg.rtrvl_drct_tp_cd IN ('EXCHG')               /* 클래임 유형 코드 : 일반교환 */
+			         AND clmwg.partmal_sect_cd = 'PARTMAL'     				/* 자사상품구분 : 입점사(PARTMAL) */
+			         AND clmwg.god_tp_cd <![CDATA[<>]]> 'GFCT'              /* 상품유형 : 상품권제외 */
+			) AS afterExchgProcAllCnt,											/* 발송 후 / 교환처리 / 전체 */
+		    /* [8] ========================================================================================= */
+		    (
+		     SELECT count(*)
+             FROM god
+             WHERE GOD_APRV_SECT_CD = 'APRV_WAIT' 								/* 승인 대기 */
+             AND 1=1
+             AND reg_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD'), 'yyyyMMdd')+1-1/86400
+             AND com_id = (SELECT com_id FROM SYS_ADMIN WHERE admin_id = #{selAdminId})
+            ) AS approveIngCnt,													/* 승인요청상품 */
+		    (
+		     SELECT count(*)
+             FROM god
+             WHERE 1=1
+             AND reg_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD'), 'yyyyMMdd')+1-1/86400
+             AND GOD_SALE_SECT_CD IN ('SLDOUT','TMP_SLDOUT') 					/* 품절, 임시 품절 */
+             AND com_id = (SELECT com_id FROM SYS_ADMIN WHERE admin_id = #{selAdminId})
+            ) AS emptyProdCnt,													/* 품절상품 */
+		    (
+		     SELECT count(*)
+             FROM god
+             WHERE 1=1
+             AND reg_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD'), 'yyyyMMdd')+1-1/86400
+             AND GOD_SALE_SECT_CD IN ('SALE_PROGRS','SLDOUT') 				/* 판매중, 품절 */
+             AND com_id = (SELECT com_id FROM SYS_ADMIN WHERE admin_id = #{selAdminId})
+            ) AS salesProdCnt,													/* 판매중상품 */
+		    (
+		     SELECT count(*)
+             FROM cso_god_inq
+             WHERE ANS_STAT_CD IN ('ANS_BF','ANS_WAIT') 						/* 답변 전, 답변 대기 */
+             AND REGTR_ID IN (SELECT admin_id
+                              FROM SYS_ADMIN
+                              WHERE com_id = (SELECT com_id FROM SYS_ADMIN WHERE admin_id = #{selAdminId}))
+             AND REG_DT <![CDATA[>]]> trunc(SYSDATE-1)
+		    ) AS prodQnaNewCnt,													/* 상품qna(신규) */
+		    (
+		     SELECT count(*)
+             FROM god
+             WHERE 1=1
+             AND reg_dt BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD'), 'yyyyMMdd')+1-1/86400
+             AND GOD_SALE_SECT_CD NOT IN ('SALE_PROGRS','SLDOUT') 			/* 판매중,품절이 아닌 상태 */
+             AND com_id = (SELECT com_id FROM SYS_ADMIN WHERE admin_id = #{selAdminId})
+            ) AS noSalesProdCnt,												/* 미판매중상품 */
+		    (
+		     SELECT count(*)
+             FROM cso_god_inq
+             WHERE ANS_STAT_CD IN ('ANS_BF','ANS_WAIT')
+             AND REGTR_ID IN (SELECT admin_id
+                              FROM SYS_ADMIN
+                              WHERE com_id = (SELECT com_id FROM SYS_ADMIN WHERE admin_id = #{selAdminId}))
+             AND REG_DT BETWEEN trunc(ADD_MONTHS(SYSDATE, -3)) AND TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD'), 'yyyyMMdd')+1-1/86400
+		    ) AS prodQnaNoprocCnt												/* 상품qna(미처리) */
+		FROM DUAL
+	</select>
+
+	<insert id="insertAdminMall" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysMall">
+		MERGE INTO /* [commons.adm.xml][insertAdminMall][운영자 담당 몰 등록][YOON] */
+		sys_admin_mall sam
+		     USING ( select 0 k FROM dual ) wsag
+		        ON ( sam.admin_id = #{adminId,jdbcType=VARCHAR} AND sam.mall_id = #{mallId,jdbcType=VARCHAR} )
+		WHEN MATCHED
+		THEN
+			UPDATE SET
+				use_yn = 'Y'
+				, udter_id = #{regtrId,jdbcType=VARCHAR}
+				, udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		   INSERT (
+				admin_id
+				, mall_id
+				, use_yn
+				, regtr_id
+				, reg_dt
+				, udter_id
+				, udt_dt
+		   ) VALUES (
+				trim(#{adminId,jdbcType=VARCHAR})
+				, #{mallId,jdbcType=VARCHAR}
+				, 'Y'
+				, #{regtrId,jdbcType=VARCHAR}
+				, SYSDATE
+				, #{regtrId,jdbcType=VARCHAR}
+				, SYSDATE
+		   )
+	</insert>
+
+	<delete id="deleteAdminMall" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminMall">
+		DELETE /* [commons.adm.xml][deleteAdminMall][운영자 몰 삭제][YOON] */
+		FROM sys_admin_mall
+		WHERE admin_id = #{adminId}
+		<if test="mallId != null and !''.equals(mallId)">
+		  AND mall_id = #{mallId}
+		</if>
+	</delete>
+
+	<select id="selectAdminMall" parameterType="com.plgrim.ncp.commons.data.FormSysAdmDTO" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysAdminMallExtend">
+		SELECT /* [commons.adm.xml][selectAdminMall][운영자 담당 몰 조회][YOON] */
+			sam.ADMIN_ID
+			, sam.MALL_ID
+			, sm.mall_nm
+			, mall_url
+		FROM sys_admin_mall sam
+		JOIN sys_mall sm on sam.mall_id = sm.mall_id
+		WHERE sam.admin_id = #{selAdminId}
+		<if test="mallId != null and !''.equals(mallId)">
+		  AND sam.mall_id = #{mallId}
+		</if>
+	</select>
+
+</mapper>

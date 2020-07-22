@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrLike" parameterType="mbrLike" resultType="mbrLike">
+		SELECT /* com.plgrim.ncp.base.selectMbrLike		Generator(Generator)	2018-05-23 */
+			   MBR_LIKE_SN
+			 , MBR_NO
+			 , LIKE_DATE
+			 , LIKE_TP_CD
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_LIKE
+		 WHERE 1 = 1
+	   	   AND MBR_LIKE_SN = #{mbrLikeSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateMbrLike" parameterType="mbrLike">
+		UPDATE /* com.plgrim.ncp.base.updateMbrLike		Generator(Generator)	2018-05-23 */
+		MBR_LIKE SET
+			   MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , LIKE_DATE = #{likeDate,jdbcType=TIMESTAMP}
+			 , LIKE_TP_CD = #{likeTpCd,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MBR_LIKE_SN = #{mbrLikeSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertMbrLike" parameterType="mbrLike">
+		INSERT /* com.plgrim.ncp.base.insertMbrLike		Generator(Generator)	2018-05-23 */
+		INTO   MBR_LIKE (
+			   MBR_LIKE_SN
+			 , MBR_NO
+			 , LIKE_DATE
+			 , LIKE_TP_CD
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mbrLikeSn,jdbcType=NUMERIC}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{likeDate,jdbcType=TIMESTAMP}
+			 , #{likeTpCd,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrLike" parameterType="mbrLike">
+		DELETE /* com.plgrim.ncp.base.deleteMbrLike		Generator(Generator)	2018-05-23 */
+		  FROM MBR_LIKE
+		 WHERE 1 = 1
+		   AND MBR_LIKE_SN = #{mbrLikeSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmAplGod" parameterType="prmAplGod" resultType="prmAplGod">
+		SELECT /* com.plgrim.ncp.base.selectPrmAplGod		Generator(Generator)	2018-05-23 */
+			   PRM_NO
+			 , APL_TURN
+			 , GOD_APL_YN
+			 , APL_GOD_SECT_CD
+			 , BRND_ID
+			 , DSP_CTGRY_NO
+			 , GOD_NO
+			 , SESON_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM_APL_GOD
+		 WHERE 1 = 1
+	   	   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updatePrmAplGod" parameterType="prmAplGod">
+		UPDATE /* com.plgrim.ncp.base.updatePrmAplGod		Generator(Generator)	2018-05-23 */
+		PRM_APL_GOD SET
+			   GOD_APL_YN = #{godAplYn,jdbcType=VARCHAR}
+			 , APL_GOD_SECT_CD = #{aplGodSectCd,jdbcType=VARCHAR}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertPrmAplGod" parameterType="prmAplGod">
+		INSERT /* com.plgrim.ncp.base.insertPrmAplGod		Generator(Generator)	2018-05-23 */
+		INTO   PRM_APL_GOD (
+			   PRM_NO
+			 , APL_TURN
+			 , GOD_APL_YN
+			 , APL_GOD_SECT_CD
+			 , BRND_ID
+			 , DSP_CTGRY_NO
+			 , GOD_NO
+			 , SESON_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{prmNo,jdbcType=VARCHAR}
+			 , #{aplTurn,jdbcType=NUMERIC}
+			 , #{godAplYn,jdbcType=VARCHAR}
+			 , #{aplGodSectCd,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{sesonCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrmAplGod" parameterType="prmAplGod">
+		DELETE /* com.plgrim.ncp.base.deletePrmAplGod		Generator(Generator)	2018-05-23 */
+		  FROM PRM_APL_GOD
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

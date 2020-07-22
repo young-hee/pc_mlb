@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectLgsDlvInfoTrnsmis" parameterType="lgsDlvInfoTrnsmis" resultType="lgsDlvInfoTrnsmis">
+		SELECT /* com.plgrim.ncp.base.selectLgsDlvInfoTrnsmis		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , LGS_INFO_TRNSMIS_CD
+			 , TRNSMIS_TGT_YN
+			 , TRNSMIS_YN
+			 , TRNSMIS_DT
+			 , TRNSMIS_ERR_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM LGS_DLV_INFO_TRNSMIS
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+		   AND DLV_TURN = #{dlvTurn,jdbcType=NUMERIC}
+		   AND LGS_INFO_TRNSMIS_CD = #{lgsInfoTrnsmisCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateLgsDlvInfoTrnsmis" parameterType="lgsDlvInfoTrnsmis">
+		UPDATE /* com.plgrim.ncp.base.updateLgsDlvInfoTrnsmis		Generator(Generator)	2018-05-23 */
+		LGS_DLV_INFO_TRNSMIS SET
+			   TRNSMIS_TGT_YN = #{trnsmisTgtYn,jdbcType=VARCHAR}
+			 , TRNSMIS_YN = #{trnsmisYn,jdbcType=VARCHAR}
+			 , TRNSMIS_DT = #{trnsmisDt,jdbcType=TIMESTAMP}
+			 , TRNSMIS_ERR_CONT = #{trnsmisErrCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+		   AND DLV_TURN = #{dlvTurn,jdbcType=NUMERIC}
+		   AND LGS_INFO_TRNSMIS_CD = #{lgsInfoTrnsmisCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertLgsDlvInfoTrnsmis" parameterType="lgsDlvInfoTrnsmis">
+		INSERT /* com.plgrim.ncp.base.insertLgsDlvInfoTrnsmis		Generator(Generator)	2018-05-23 */
+		INTO   LGS_DLV_INFO_TRNSMIS (
+			   ORD_NO
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , LGS_INFO_TRNSMIS_CD
+			 , TRNSMIS_TGT_YN
+			 , TRNSMIS_YN
+			 , TRNSMIS_DT
+			 , TRNSMIS_ERR_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , #{dlvTurn,jdbcType=NUMERIC}
+			 , #{lgsInfoTrnsmisCd,jdbcType=VARCHAR}
+			 , #{trnsmisTgtYn,jdbcType=VARCHAR}
+			 , #{trnsmisYn,jdbcType=VARCHAR}
+			 , #{trnsmisDt,jdbcType=TIMESTAMP}
+			 , #{trnsmisErrCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteLgsDlvInfoTrnsmis" parameterType="lgsDlvInfoTrnsmis">
+		DELETE /* com.plgrim.ncp.base.deleteLgsDlvInfoTrnsmis		Generator(Generator)	2018-05-23 */
+		  FROM LGS_DLV_INFO_TRNSMIS
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+		   AND DLV_TURN = #{dlvTurn,jdbcType=NUMERIC}
+		   AND LGS_INFO_TRNSMIS_CD = #{lgsInfoTrnsmisCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

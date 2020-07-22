@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.callback">
+
+	<resultMap id="callbackResult" type="com.plgrim.ncp.biz.callcenter.result.CallbackResult">
+		<result property="clbcId" 				column="CLBC_ID" />
+		<result property="clbcRegDt" 			column="CLBC_REG_DT" />
+		<result property="clbcDstbDt" 			column="CLBC_DSTB_DT" />
+		<result property="clbcPhon"     		column="CLBC_PHON" />
+		<result property="clbcRecptnPhon"		column="CLBC_RECPTN_PHON" />
+		<result property="clbcPrcsStatCd" 		column="CLBC_PRCS_STAT_CD" />
+		<result property="clbcPrcsStatNm" 		column="CLBC_PRCS_STAT_NM" />
+		<result property="clbcComptDt" 			column="CLBC_COMPT_DT" />
+		<result property="cnsltAdminId" 		column="CNSLT_ADMIN_ID" />
+		<result property="regtrId" 				column="REGTR_ID" />
+		<result property="regDt" 				column="REG_DT" />
+		<result property="udterId" 				column="UDTER_ID" />
+		<result property="udtDt" 				column="UDT_DT" />
+	</resultMap>
+	
+	<select id="selectCallbackList" parameterType="com.plgrim.ncp.biz.callcenter.data.CallbackSearchDTO" resultMap="callbackResult">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT	/* [callcenter.callback.xml][selectCallbackList][콜백 조회 CS][Henry] */ 
+			   CLBC_ID
+	    	 , CLBC_REG_DT
+	         , CLBC_DSTB_DT
+	         , CLBC_PHON
+	         , CLBC_RECPTN_PHON
+	         , CLBC_PRCS_STAT_CD
+	         , CLBC_PRCS_STAT_NM
+	         , CLBC_COMPT_DT
+	         , CNSLT_ADMIN_ID
+	         , REGTR_ID
+	         , REG_DT
+	         , UDTER_ID
+	         , UDT_DT
+		  FROM CSO_CLBC
+		 WHERE 1 = 1
+		   AND CNSLT_ADMIN_ID = (SELECT CTI_RECRD_ID FROM SYS_ADMIN WHERE ADMIN_ID = #{loginId})
+		<if test="searchDateType != null and searchDateType != '' and searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != ''">
+			<if test="searchDateType == 'clbcRegDt'">
+				AND CLBC_REG_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+			</if>
+			<if test="searchDateType == 'clbcDstbDt'">
+				AND CLBC_DSTB_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+			</if>
+			<if test="searchDateType == 'clbcComptDt'">
+				AND CLBC_COMPT_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+			</if>
+		</if>
+		<if test="clbcPrcsStatCd != null and clbcPrcsStatCd !=''">
+			AND CLBC_PRCS_STAT_CD = #{clbcPrcsStatCd}
+		</if>
+		<!-- <if test="adminId != null and adminId != ''">
+			AND CNSLT_ADMIN_ID = #{adminId}
+		</if> -->
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	<select id="selectCallbackListTotal" parameterType="com.plgrim.ncp.biz.callcenter.data.CallbackSearchDTO" resultType="long">
+		SELECT	COUNT(*)
+		FROM CSO_CLBC
+		WHERE 1 = 1
+		AND CNSLT_ADMIN_ID = (SELECT CTI_RECRD_ID FROM SYS_ADMIN WHERE ADMIN_ID = #{loginId})
+		<if test="searchDateType != null and searchDateType != '' and searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != ''">
+			<if test="searchDateType == 'clbcRegDt'">
+				AND CLBC_REG_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+			</if>
+			<if test="searchDateType == 'clbcDstbDt'">
+				AND CLBC_DSTB_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+			</if>
+			<if test="searchDateType == 'clbcComptDt'">
+				AND CLBC_COMPT_DT BETWEEN TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') AND TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + 0.99999
+			</if>
+		</if>
+		<if test="clbcPrcsStatCd != null and clbcPrcsStatCd !=''">
+			AND CLBC_PRCS_STAT_CD = #{clbcPrcsStatCd}
+		</if>
+		<!-- <if test="adminId != null and adminId != ''">
+			AND CNSLT_ADMIN_ID = #{adminId}
+		</if> -->
+	</select>
+
+	<update id="updateCallbackGrid" parameterType="com.plgrim.ncp.biz.callcenter.data.CallbackGridDTO">
+		UPDATE CSO_CLBC
+		SET CLBC_PRCS_STAT_CD = #{clbcPrcsStatCd,jdbcType=VARCHAR}
+		     , CLBC_PRCS_STAT_NM = (SELECT cd_nm FROM SYS_CD WHERE cd = #{clbcPrcsStatNm})
+		     <if test='clbcPrcsStatNm == "142" or clbcPrcsStatNm == "141"'>
+		     , CLBC_COMPT_DT = sysdate
+		     </if>
+		     , UDTER_ID = #{loginId}
+		 WHERE 1 = 1
+		   AND CLBC_ID = #{clbcId,jdbcType=NUMERIC}
+	</update>
+
+	<insert id="insertCallback" parameterType="com.plgrim.ncp.biz.callcenter.data.InfCallBackDTO">
+		MERGE INTO CSO_CLBC cc
+			 USING (SELECT #{regtime,jdbcType=TIMESTAMP} 				AS regtime
+		                 , #{callbackid,jdbcType=VARCHAR} 				AS callbackid
+		                 , #{customertelnumber,jdbcType=NUMERIC} 		AS customertelnumber
+		                 , #{customercalbacktelnumber,jdbcType=NUMERIC} AS customercalbacktelnumber
+		                 , #{agentid,jdbcType=NUMERIC} 					AS agentid
+		                 , #{callbackstatuscode,jdbcType=NUMERIC} 		AS callbackstatuscode
+		                 , #{callbackstatusname,jdbcType=NUMERIC} 		AS callbackstatusname
+		              FROM dual) tmp
+				ON (cc.clbc_id = tmp.callbackid)
+			  
+		      WHEN matched THEN 
+		    UPDATE 
+		       SET udt_dt = sysdate
+               , CNSLT_ADMIN_ID = tmp.agentid
+		      WHEN NOT matched THEN
+		    INSERT(CLBC_ID
+		    	 , CLBC_REG_DT
+		         , CLBC_DSTB_DT
+		         , CLBC_PHON
+		         , CLBC_RECPTN_PHON
+		         , CLBC_PRCS_STAT_CD
+		         , CLBC_PRCS_STAT_NM
+		         , CLBC_COMPT_DT
+		         , CNSLT_ADMIN_ID
+		         , REGTR_ID
+		         , REG_DT
+		         , UDTER_ID
+		         , UDT_DT)
+		    VALUES(tmp.callbackid
+		    	 , tmp.regtime
+		         , null
+		         , tmp.customertelnumber
+		         , tmp.customercalbacktelnumber
+		         , tmp.callbackstatuscode
+		         , tmp.callbackstatusname
+		         , NULL
+		         , tmp.agentid
+		         , 'system'
+		         , SYSDATE
+		         , 'system'
+		         , sysdate)
+	</insert>
+</mapper>

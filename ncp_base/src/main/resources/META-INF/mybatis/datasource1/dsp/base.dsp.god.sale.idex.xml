@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspGodSaleIdex" parameterType="dspGodSaleIdex" resultType="dspGodSaleIdex">
+		SELECT /* com.plgrim.ncp.base.selectDspGodSaleIdex		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , SALE_IDEX
+			 , BST_GOD_SALE_IDEX
+			 , NEW_GOD_IDEX
+			 , NEW_GOD_RECENT_IDEX
+			 , SALE_IDEX_SORT_SEQ
+			 , NEW_GOD_SORT_SEQ
+			 , UDT_DT
+		  FROM DSP_GOD_SALE_IDEX
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspGodSaleIdex" parameterType="dspGodSaleIdex">
+		UPDATE /* com.plgrim.ncp.base.updateDspGodSaleIdex		Generator(Generator)	2018-05-23 */
+		DSP_GOD_SALE_IDEX SET
+			   SALE_IDEX = #{saleIdex,jdbcType=NUMERIC}
+			 , BST_GOD_SALE_IDEX = #{bstGodSaleIdex,jdbcType=NUMERIC}
+			 , NEW_GOD_IDEX = #{newGodIdex,jdbcType=NUMERIC}
+			 , NEW_GOD_RECENT_IDEX = #{newGodRecentIdex,jdbcType=NUMERIC}
+			 , SALE_IDEX_SORT_SEQ = #{saleIdexSortSeq,jdbcType=NUMERIC}
+			 , NEW_GOD_SORT_SEQ = #{newGodSortSeq,jdbcType=NUMERIC}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspGodSaleIdex" parameterType="dspGodSaleIdex">
+		INSERT /* com.plgrim.ncp.base.insertDspGodSaleIdex		Generator(Generator)	2018-05-23 */
+		INTO   DSP_GOD_SALE_IDEX (
+			   GOD_NO
+			 , SALE_IDEX
+			 , BST_GOD_SALE_IDEX
+			 , NEW_GOD_IDEX
+			 , NEW_GOD_RECENT_IDEX
+			 , SALE_IDEX_SORT_SEQ
+			 , NEW_GOD_SORT_SEQ
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{saleIdex,jdbcType=NUMERIC}
+			 , #{bstGodSaleIdex,jdbcType=NUMERIC}
+			 , #{newGodIdex,jdbcType=NUMERIC}
+			 , #{newGodRecentIdex,jdbcType=NUMERIC}
+			 , #{saleIdexSortSeq,jdbcType=NUMERIC}
+			 , #{newGodSortSeq,jdbcType=NUMERIC}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspGodSaleIdex" parameterType="dspGodSaleIdex">
+		DELETE /* com.plgrim.ncp.base.deleteDspGodSaleIdex		Generator(Generator)	2018-05-23 */
+		  FROM DSP_GOD_SALE_IDEX
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

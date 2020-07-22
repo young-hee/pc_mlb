@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectBskWishlstGod" parameterType="bskWishlstGod" resultType="bskWishlstGod">
+		SELECT /* com.plgrim.ncp.base.selectBskWishlstGod		Generator(Generator)	2018-05-23 */
+			   WISHLST_SN
+			 , GOD_TURN
+			 , GOD_NO
+			 , ITM_NO
+			 , ITM_QTY
+			 , WISHLST_REG_DT
+			 , PCKAGE_GOD_YN
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM BSK_WISHLST_GOD
+		 WHERE 1 = 1
+	   	   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateBskWishlstGod" parameterType="bskWishlstGod">
+		UPDATE /* com.plgrim.ncp.base.updateBskWishlstGod		Generator(Generator)	2018-05-23 */
+		BSK_WISHLST_GOD SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ITM_NO = #{itmNo,jdbcType=VARCHAR}
+			 , ITM_QTY = #{itmQty,jdbcType=NUMERIC}
+			 , WISHLST_REG_DT = #{wishlstRegDt,jdbcType=TIMESTAMP}
+			 , PCKAGE_GOD_YN = #{pckageGodYn,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertBskWishlstGod" parameterType="bskWishlstGod">
+		INSERT /* com.plgrim.ncp.base.insertBskWishlstGod		Generator(Generator)	2018-05-23 */
+		INTO   BSK_WISHLST_GOD (
+			   WISHLST_SN
+			 , GOD_TURN
+			 , GOD_NO
+			 , ITM_NO
+			 , ITM_QTY
+			 , WISHLST_REG_DT
+			 , PCKAGE_GOD_YN
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{wishlstSn,jdbcType=NUMERIC}
+			 , #{godTurn,jdbcType=NUMERIC}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{itmNo,jdbcType=VARCHAR}
+			 , #{itmQty,jdbcType=NUMERIC}
+			 , #{wishlstRegDt,jdbcType=TIMESTAMP}
+			 , #{pckageGodYn,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteBskWishlstGod" parameterType="bskWishlstGod">
+		DELETE /* com.plgrim.ncp.base.deleteBskWishlstGod		Generator(Generator)	2018-05-23 */
+		  FROM BSK_WISHLST_GOD
+		 WHERE 1 = 1
+		   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

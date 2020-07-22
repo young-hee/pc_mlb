@@ -1,0 +1,153 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<button type="button" class="btn-open d_toggle_select"><span>Open</span></button>
+<div class="order-detail-content d_toggle_cont">
+	<div class="board-write">
+		<table>
+			<caption><spring:message code="order.js.txt.dlv.caption1" /></caption>
+			<colgroup>
+				<col style="width:200px;">
+				<col>
+			</colgroup>
+			<tbody>
+				<tr>
+					<th scope="row"><label for="ordererName"><spring:message code="order.js.txt.receiver" /></label> <span class="required">*</span></th>
+					<td>
+						<input type="text" id="ordererName" class="input-style01 input_required textOnly" alt="<spring:message code="order.js.txt.apply.delivery.desc" />" value="" style="width:255px;"  maxlength="20">
+						<span class="btnTdArea">
+							<a href="#layerPopupAddress" class="btn d_layer_open info_mem info_not_pickup" id="btnLoadDelivery"><spring:message code="order.js.txt.select.delivery.location" /></a>
+						</span>
+						<p class="txtSub01">
+	                        <span class="check-skin" style="">
+						  	    <input type="checkbox" id="checkOrderToNoMemberInfo">
+							    <span><spring:message code="order.js.txt.select" /></span>
+						    </span>
+						    <label for="addSelect"><spring:message code="order.js.txt.dlv.caption3" /></label>
+	                    </p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ordMobile1" ><spring:message code="order.js.txt.mobile.no" /></label> <span class="required">*</span></th>
+					<td>
+						<input type="text" id="ordMobile1" class="input-style01 numberOnly input_required" value="" style="width:65px;" alt="<spring:message code="order.js.txt.mobile.no" />" maxlength="3" minlength="3"/>
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 numberOnly input_required" id="ordMobile2" value="" style="width:75px;" alt="<spring:message code="order.js.txt.mobile.no" />" maxlength="4" minlength="3"/>
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 numberOnly input_required" id="ordMobile3" value="" style="width:75px;" alt="<spring:message code="order.js.txt.mobile.no" />" maxlength="4" minlength="4"/>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ordTel1"><spring:message code="order.js.txt.tel.no" /></label></th>
+					<td>
+						<input type="text" id="ordTel1" class="input-style01 numberOnly" value="" style="width:65px;" maxlength="3"/>
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 numberOnly" id="ordTel2" value="" style="width:75px;" maxlength="4"/>
+						<span class="hyphen">-</span>
+						<input type="text" class="input-style01 numberOnly" id="ordTel3" value="" style="width:75px;" maxlength="4"/>
+					</td>
+				</tr>
+				<tr class="info_not_pickup">
+					<th scope="row"><label for="labelAddress"><spring:message code="order.js.txt.delivery.location.addr" /></label> <span class="required">*</span></th>
+					<td>
+						<div class="board-gap">
+							<input type="text" class="input-style01 input_required" alt="<spring:message code="order.js.txt.post.no" />" id="postAddr" value="" style="width:373px;" readonly="readonly">
+							<span class="btnTdArea"><a href="#" class="btn-style04" onclick="openZipcodePopup(); return false;"><spring:message code="order.js.txt.post.no" /></a></span>
+						</div>
+						<div class="board-gap">
+							<input type="text" class="input-style01 input_required" alt="<spring:message code="order.js.txt.addr" />" id="baseAddr" value="" style="width:520px;" maxlength="200" readonly="readonly">
+						</div>
+						<div class="board-gap">
+							<input type="text" class="input-style01 input_required" id="detailAddr" alt="<spring:message code="order.js.txt.addr.detail" text="상세주소" />" value="" style="width:520px;" maxlength="200">
+							<input type="hidden" class="input-style01" id="dlvAddrSectCd" value="">
+						</div>
+						<div class="board-gap info_mem">
+							<span class="check-skin">
+								<input type="checkbox" id="checkBaseAddress">
+								<span><spring:message code="order.js.txt.select" /></span>
+							</span>
+							<label for="chkAddr"><spring:message code="order.js.txt.dlv.caption6" /></label>
+	
+							<span class="check-skin">
+								<input type="checkbox" id="checkRegistAddress">
+								<span><spring:message code="order.js.txt.select" /></span>
+							</span>
+							<label for="chkAddr02"><spring:message code="order.js.txt.dlv.caption7" /></label>
+						</div>
+					</td>
+				</tr>
+				<tr class="info_not_pickup">
+					<th scope="row"><label for="labelComment"><spring:message code="order.js.txt.dlv.caption4" /></label></th>
+					<td>
+						<div class="board-gap">
+							<!-- select -->
+							<div class="select-style01 d_select">
+								<button type="button" class="d_select_sel" id="memo_title" style="width:520px;"><spring:message code="order.js.txt.just.input" /></button>
+								<ul id="memo_region">
+									<li><a href="#" onclick="orderform.setMemo('')"><spring:message code="order.js.txt.just.input" /></a></li>
+									<li><a href="#" onclick="orderform.setMemo(this.innerHTML)"><spring:message code="order.js.txt.dlv.memo.msg1" /></a></li>
+									<li><a href="#" onclick="orderform.setMemo(this.innerHTML)"><spring:message code="order.js.txt.dlv.memo.msg2" /></a></li>
+									<li><a href="#" onclick="orderform.setMemo(this.innerHTML)"><spring:message code="order.js.txt.dlv.memo.msg3" /></a></li>
+									<!-- <li><a href="#" onclick="orderform.setMemo(this.innerHTML)"><spring:message code="order.js.txt.dlv.memo.msg4" /></a></li> -->
+									<!-- <li><a href="#" onclick="orderform.setMemo(this.innerHTML)"><spring:message code="order.js.txt.dlv.memo.msg5" /></a></li> -->
+									<li><a href="#" onclick="orderform.setMemo(this.innerHTML)"><spring:message code="order.js.txt.dlv.memo.msg6" /></a></li>
+								</ul>
+							</div>
+							<!-- //select -->
+						</div>
+						<div class="board-gap">
+							<input type="text" class="input-style01" value="" id="dlvMemo" style="width:520px;" maxlength="200"/>
+						</div>
+					</td>
+				</tr>
+				
+				
+				<tr class="info_pickup">
+					<th scope="row"><spring:message code="order.js.txt.dlv.caption8" /></th>
+					<td class="storeInfoSel">
+						<p class="StoreInfo" id="info_pickup_shop">
+                       	</p>
+                        <p class="checkMg"><spring:message code="order.js.txt.dlv.caption9" /></p>
+					</td>
+				</tr>
+
+			</tbody>	
+		</table>
+	</div>
+</div>
+<button type="button" class="btn-close d_toggle_select"><span>Close</span></button>
+
+<script>
+//우편번호 팝업
+function openZipcodePopup() {
+	    layerPopup.popupOpenNow("#layerPopupZipcode");
+	    
+	    var inHtml = "";
+		
+		inHtml = "<div class='addressFindInner' id='zipView1'> \
+			<ul class='text-list02'> \
+		<li><spring:message code='common.popup.zipcode.lbl.txt2'/></li> <%-- 도로명 + 건물번호 예)옥신타워 --%> \
+		<li><spring:message code='common.popup.zipcode.lbl.txt3'/></li> <%-- 읍/면/동/리 + 지번 예) 도곡로 117 --%>  \
+		<li><spring:message code='common.popup.zipcode.lbl.txt4'/></li> <%-- 건물명 예) 서오구 00아파트 --%> \
+		<li><spring:message code='common.popup.zipcode.lbl.txt5'/></li> <%-- 사서함+사서함번호 예) 광화문 우체국 사서함 45 --%> \
+	</ul> \
+	<div class='board-list'> \
+		<table summary='우편번호 찾기'> \
+			<caption>우편번호 찾기</caption> \
+			<colgroup> \
+				<col width='70px'> \
+				<col> \
+			</colgroup> \
+			<tbody>	 \
+				<tr> \
+					<td colspan='2' class='no-result'><spring:message code='common.popup.zipcode.lbl.txt6'/></td> <%-- 검색결과가 없습니다. --%> \
+				</tr> \
+			</tbody> \
+		</table> \
+	</div> \
+</div>";
+			
+		$("#zipView1").remove();
+		$("#zipView2").remove();	
+		$('#zipSearchBefore').append(inHtml);
+		$("#srchKeyword").val("");
+	}
+</script>

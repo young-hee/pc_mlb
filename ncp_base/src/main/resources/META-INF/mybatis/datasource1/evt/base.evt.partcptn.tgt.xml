@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvtPartcptnTgt" parameterType="evtPartcptnTgt" resultType="evtPartcptnTgt">
+		SELECT /* com.plgrim.ncp.base.selectEvtPartcptnTgt		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , APL_TURN
+			 , PARTCPTN_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT_PARTCPTN_TGT
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateEvtPartcptnTgt" parameterType="evtPartcptnTgt">
+		UPDATE /* com.plgrim.ncp.base.updateEvtPartcptnTgt		Generator(Generator)	2018-05-23 */
+		EVT_PARTCPTN_TGT SET
+			   PARTCPTN_TGT_TP_CD = #{partcptnTgtTpCd,jdbcType=VARCHAR}
+			 , MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , DVC_CD = #{dvcCd,jdbcType=VARCHAR}
+			 , TGT_MBR_TP_CD = #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , TGT_MBR_ATRB_CD = #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertEvtPartcptnTgt" parameterType="evtPartcptnTgt">
+		INSERT /* com.plgrim.ncp.base.insertEvtPartcptnTgt		Generator(Generator)	2018-05-23 */
+		INTO   EVT_PARTCPTN_TGT (
+			   EVT_NO
+			 , APL_TURN
+			 , PARTCPTN_TGT_TP_CD
+			 , MALL_ID
+			 , LANG_CD
+			 , DVC_CD
+			 , TGT_MBR_TP_CD
+			 , TGT_MBR_ATRB_CD
+			 , GRPCO_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{aplTurn,jdbcType=NUMERIC}
+			 , #{partcptnTgtTpCd,jdbcType=VARCHAR}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{dvcCd,jdbcType=VARCHAR}
+			 , #{tgtMbrTpCd,jdbcType=VARCHAR}
+			 , #{tgtMbrAtrbCd,jdbcType=VARCHAR}
+			 , #{grpcoId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvtPartcptnTgt" parameterType="evtPartcptnTgt">
+		DELETE /* com.plgrim.ncp.base.deleteEvtPartcptnTgt		Generator(Generator)	2018-05-23 */
+		  FROM EVT_PARTCPTN_TGT
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+		   AND APL_TURN = #{aplTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

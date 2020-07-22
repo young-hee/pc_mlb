@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysMall" parameterType="sysMall" resultType="sysMall">
+		SELECT /* com.plgrim.ncp.base.selectSysMall		Generator(Generator)	2018-05-23 */
+			   MALL_ID
+			 , SSO_GRP_CD
+			 , USE_YN
+			 , CAL_USE_YN
+			 , MALL_NM
+			 , MALL_URL
+			 , CPR_NM
+			 , RPRSTIV_NM
+			 , CPR_REG_NO
+			 , BMAN_REG_NO
+			 , MOS_REGNO
+			 , RPRST_EMAIL
+			 , PSNL_INFO_MANAGE_MGR_NM
+			 , SORT_SEQ
+			 , NTCN_TAK_USE_YN
+			 , POST_NO
+			 , BASE_ADDR
+			 , DETAIL_ADDR
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , FAX_NATION_NO
+			 , FAX_AREA_NO
+			 , FAX_TLOF_NO
+			 , FAX_TLOF_WTHN_NO
+			 , CC_EMAIL
+			 , CC_TEL_NATION_NO
+			 , CC_TEL_AREA_NO
+			 , CC_TEL_TLOF_NO
+			 , CC_TEL_TLOF_WTHN_NO
+			 , CC_FAX_NATION_NO
+			 , CC_FAX_AREA_NO
+			 , CC_FAX_TLOF_NO
+			 , CC_FAX_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_MALL
+		 WHERE 1 = 1
+	   	   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysMall" parameterType="sysMall">
+		UPDATE /* com.plgrim.ncp.base.updateSysMall		Generator(Generator)	2018-05-23 */
+		SYS_MALL SET
+			   SSO_GRP_CD = #{ssoGrpCd,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , CAL_USE_YN = #{calUseYn,jdbcType=VARCHAR}
+			 , MALL_NM = #{mallNm,jdbcType=VARCHAR}
+			 , MALL_URL = #{mallUrl,jdbcType=VARCHAR}
+			 , CPR_NM = #{cprNm,jdbcType=VARCHAR}
+			 , RPRSTIV_NM = #{rprstivNm,jdbcType=VARCHAR}
+			 , CPR_REG_NO = #{cprRegNo,jdbcType=VARCHAR}
+			 , BMAN_REG_NO = #{bmanRegNo,jdbcType=VARCHAR}
+			 , MOS_REGNO = #{mosRegno,jdbcType=VARCHAR}
+			 , RPRST_EMAIL = #{rprstEmail,jdbcType=VARCHAR}
+			 , PSNL_INFO_MANAGE_MGR_NM = #{psnlInfoManageMgrNm,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , NTCN_TAK_USE_YN = #{ntcnTakUseYn,jdbcType=VARCHAR}
+			 , POST_NO = #{postNo,jdbcType=VARCHAR}
+			 , BASE_ADDR = #{baseAddr,jdbcType=VARCHAR}
+			 , DETAIL_ADDR = #{detailAddr,jdbcType=VARCHAR}
+			 , TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+			 , TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , FAX_NATION_NO = #{faxNationNo,jdbcType=VARCHAR}
+			 , FAX_AREA_NO = #{faxAreaNo,jdbcType=VARCHAR}
+			 , FAX_TLOF_NO = #{faxTlofNo,jdbcType=VARCHAR}
+			 , FAX_TLOF_WTHN_NO = #{faxTlofWthnNo,jdbcType=VARCHAR}
+			 , CC_EMAIL = #{ccEmail,jdbcType=VARCHAR}
+			 , CC_TEL_NATION_NO = #{ccTelNationNo,jdbcType=VARCHAR}
+			 , CC_TEL_AREA_NO = #{ccTelAreaNo,jdbcType=VARCHAR}
+			 , CC_TEL_TLOF_NO = #{ccTelTlofNo,jdbcType=VARCHAR}
+			 , CC_TEL_TLOF_WTHN_NO = #{ccTelTlofWthnNo,jdbcType=VARCHAR}
+			 , CC_FAX_NATION_NO = #{ccFaxNationNo,jdbcType=VARCHAR}
+			 , CC_FAX_AREA_NO = #{ccFaxAreaNo,jdbcType=VARCHAR}
+			 , CC_FAX_TLOF_NO = #{ccFaxTlofNo,jdbcType=VARCHAR}
+			 , CC_FAX_TLOF_WTHN_NO = #{ccFaxTlofWthnNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysMall" parameterType="sysMall">
+		INSERT /* com.plgrim.ncp.base.insertSysMall		Generator(Generator)	2018-05-23 */
+		INTO   SYS_MALL (
+			   MALL_ID
+			 , SSO_GRP_CD
+			 , USE_YN
+			 , CAL_USE_YN
+			 , MALL_NM
+			 , MALL_URL
+			 , CPR_NM
+			 , RPRSTIV_NM
+			 , CPR_REG_NO
+			 , BMAN_REG_NO
+			 , MOS_REGNO
+			 , RPRST_EMAIL
+			 , PSNL_INFO_MANAGE_MGR_NM
+			 , SORT_SEQ
+			 , NTCN_TAK_USE_YN
+			 , POST_NO
+			 , BASE_ADDR
+			 , DETAIL_ADDR
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , FAX_NATION_NO
+			 , FAX_AREA_NO
+			 , FAX_TLOF_NO
+			 , FAX_TLOF_WTHN_NO
+			 , CC_EMAIL
+			 , CC_TEL_NATION_NO
+			 , CC_TEL_AREA_NO
+			 , CC_TEL_TLOF_NO
+			 , CC_TEL_TLOF_WTHN_NO
+			 , CC_FAX_NATION_NO
+			 , CC_FAX_AREA_NO
+			 , CC_FAX_TLOF_NO
+			 , CC_FAX_TLOF_WTHN_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{mallId,jdbcType=VARCHAR}
+			 , #{ssoGrpCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{calUseYn,jdbcType=VARCHAR}
+			 , #{mallNm,jdbcType=VARCHAR}
+			 , #{mallUrl,jdbcType=VARCHAR}
+			 , #{cprNm,jdbcType=VARCHAR}
+			 , #{rprstivNm,jdbcType=VARCHAR}
+			 , #{cprRegNo,jdbcType=VARCHAR}
+			 , #{bmanRegNo,jdbcType=VARCHAR}
+			 , #{mosRegno,jdbcType=VARCHAR}
+			 , #{rprstEmail,jdbcType=VARCHAR}
+			 , #{psnlInfoManageMgrNm,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{ntcnTakUseYn,jdbcType=VARCHAR}
+			 , #{postNo,jdbcType=VARCHAR}
+			 , #{baseAddr,jdbcType=VARCHAR}
+			 , #{detailAddr,jdbcType=VARCHAR}
+			 , #{telNationNo,jdbcType=VARCHAR}
+			 , #{telAreaNo,jdbcType=VARCHAR}
+			 , #{telTlofNo,jdbcType=VARCHAR}
+			 , #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , #{faxNationNo,jdbcType=VARCHAR}
+			 , #{faxAreaNo,jdbcType=VARCHAR}
+			 , #{faxTlofNo,jdbcType=VARCHAR}
+			 , #{faxTlofWthnNo,jdbcType=VARCHAR}
+			 , #{ccEmail,jdbcType=VARCHAR}
+			 , #{ccTelNationNo,jdbcType=VARCHAR}
+			 , #{ccTelAreaNo,jdbcType=VARCHAR}
+			 , #{ccTelTlofNo,jdbcType=VARCHAR}
+			 , #{ccTelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{ccFaxNationNo,jdbcType=VARCHAR}
+			 , #{ccFaxAreaNo,jdbcType=VARCHAR}
+			 , #{ccFaxTlofNo,jdbcType=VARCHAR}
+			 , #{ccFaxTlofWthnNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysMall" parameterType="sysMall">
+		DELETE /* com.plgrim.ncp.base.deleteSysMall		Generator(Generator)	2018-05-23 */
+		  FROM SYS_MALL
+		 WHERE 1 = 1
+		   AND MALL_ID = #{mallId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

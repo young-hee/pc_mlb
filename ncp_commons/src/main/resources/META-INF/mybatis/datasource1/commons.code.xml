@@ -1,0 +1,1138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.code">
+				
+	<resultMap id="resultGrpCd" type="com.plgrim.ncp.commons.result.SysCodeResult">
+		<result property="sysGrpCd.grpCd" column="grp_cd" />
+		<result property="sysGrpCd.upperGrpCd" column="upper_grp_cd" />
+		<result property="sysGrpCd.useYn" column="use_yn" />
+		<result property="sysGrpCd.sortSeq" column="sort_seq" />
+		<result property="sysGrpCd.asstnCd1" column="asstn_cd_1" />
+		<result property="sysGrpCd.asstnCd2" column="asstn_cd_2" />
+		<result property="sysGrpCd.udterId" column="udter_id" />
+		<result property="sysGrpCd.udtDt" column="udt_dt" />
+		<result property="sysGrpCd.grpNm" column="grp_nm" />
+		<result property="sysGrpCd.upperGrpNm" column="upper_grp_nm" />
+		<result property="sysGrpCd.engGrpNm" column="eng_grp_nm" />
+		<result property="sysGrpCd.chiGrpNm" column="chi_grp_nm" />
+		<result property="sysGrpCd.udterNm" column="udter_nm" />
+		<result property="sysGrpCd.cdDscr" column="cd_dscr" />
+	</resultMap>
+			    
+	<resultMap id="resultGrpCdDetail" type="com.plgrim.ncp.commons.result.SysCodeResult">
+		<result property="sysGrpCdCdCnnc.grpCd" column="grp_cd" />
+		<result property="sysGrpCdCdCnnc.cd" column="cd" />
+		<result property="sysGrpCdCdCnnc.useYn" column="use_yn" />
+		<result property="sysGrpCdCdCnnc.sortSeq" column="sort_seq" />
+		<result property="sysGrpCdCdCnnc.asstnCd1" column="asstn_cd_1" />
+		<result property="sysGrpCdCdCnnc.asstnCd2" column="asstn_cd_2" />
+		<result property="sysGrpCdCdCnnc.udterId" column="udter_id" />
+		<result property="sysGrpCdCdCnnc.udtDt" column="udt_dt" />
+		<result property="sysGrpCdCdCnnc.cdNm" column="cd_nm" />
+		<result property="sysGrpCdCdCnnc.engCdNm" column="eng_cd_nm" />
+		<result property="sysGrpCdCdCnnc.chiCdNm" column="chi_cd_nm" />
+		<result property="sysGrpCdCdCnnc.udterNm" column="udter_nm" />
+		<result property="sysGrpCdCdCnnc.cdDscr" column="cd_dscr" />
+	</resultMap>
+	
+	<!-- /* 품목코드 resultMap */ -->
+	<resultMap id="resultPrudCdList" type="com.plgrim.ncp.commons.result.SysPrudResult">
+		<result property="sysPrdlstCd.prdlstCd" column="prdlst_cd" />
+		<result property="prdlstBrndNm" column="brnd_prdlst_nm" />
+		<result property="prdlstBrndId" column="brnd_id" />
+		<result property="sysPrdlstCd.useYn" column="use_yn" />
+		<result property="sysPrdlstCd.prdlstDscr" column="prdlst_dscr" />
+		<result property="sysPrdlstCd.regtrId" column="regtr_id" />
+		<result property="sysPrdlstCd.regDt" column="reg_dt" />
+		<result property="sysPrdlstCd.udterId" column="udter_id" />
+		<result property="sysPrdlstCd.udtDt" column="udt_dt" />
+		<result property="prdlstNmEng" column="prdlst_nm_eng" />
+		<result property="prdlstNmChi" column="prdlst_nm_chi" />
+		<result property="engMlangSn" column="eng_mlang_sn" />
+		<result property="chiMlangSn" column="chi_mlang_sn" />
+		<result property="sysPrdlstCd.godWt" column="god_wt" />
+		<result property="sysPrdlstCd.prdlstSectCd" column="prdlst_sect_cd" />
+	</resultMap>
+	
+	<!-- /* 품목별 무게관리 resultMap */ -->
+	<resultMap id="resultPrudWtCdList" type="com.plgrim.ncp.commons.result.SysPrudWtResult">
+		<result property="sysPrdlstWt.prdlstCd" column="prdlst_cd" />
+		<result property="prdlstBrndNm" column="brnd_prdlst_nm" />
+		<result property="prdlstBrndId" column="brnd_id" />
+		<result property="useYnNm" column="use_yn_nm" />
+		<result property="sysPrdlstWt.useYn" column="use_yn" />
+		<result property="sysPrdlstWt.regtrId" column="regtr_id" />
+		<result property="sysPrdlstWt.regDt" column="reg_dt" />
+		<result property="sysPrdlstWt.udterId" column="udter_id" />
+		<result property="sysPrdlstWt.udtDt" column="udt_dt" />
+		<result property="sysPrdlstWt.godWt" column="god_wt" />
+		<result property="sysPrdlstWt.sesonGrpCd" column="seson_grp_cd" />
+	</resultMap>
+	
+	<!-- /* 환율정보 resultMap */ -->
+	<resultMap id="resultExchgList" type="com.plgrim.ncp.commons.result.SysExchgResult">
+		<result property="sysExchgRt.crncyCd" column="crncy_cd" />
+		<result property="sysExchgRt.exchgRtAplBegDt" column="EXCHG_RT_APL_BEG_DT" />
+		<result property="sysExchgRt.exchgRtAplEndDt" column="EXCHG_RT_APL_END_DT" />
+		<result property="sysExchgRt.stdrCrncyAmt" column="stdr_crncy_amt" />
+		<result property="exchgRtCrncyAmtNm" column="exchg_rt_crncy_amt_nm" />
+		<result property="sysExchgRt.regtrId" column="regtr_id" />
+		<result property="sysExchgRt.regDt" column="reg_dt" />
+		<result property="sysExchgRt.udterId" column="odter_id" />
+		<result property="sysExchgRt.udtDt" column="udt_dt" />
+	</resultMap>
+
+
+	<!-- /* 공통코드리스트조회 다국어 */ -->
+	<select id="getLocalizedCodeList" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+	 SELECT /* [commons.code.xml][CodeViewRepository.getLocalizedCodeList][타언어공통코드조회][tam] */
+		   a.cd,
+		   a.upper_cd AS upperCd,
+	       a.cd_nm AS cdNm,
+	       a.cd_dscr AS cdDscr,
+	       a.asstn_cd_1 AS asstnCd1,
+	       a.asstn_cd_2 AS asstnCd2,
+	       DECODE(A.USE_YN, 'Y', 1, 0) AS USE,
+	       DECODE(A.LEAF_YN, 'Y', 1, 0) AS LEAF,
+	       A.SORT_SEQ   AS SORT_SEQ
+	 FROM mv_sys_cd a
+	 WHERE upper_cd = #{upperCd, jdbcType=VARCHAR}
+	 		AND a.lang_cd = #{langCd}
+	 ORDER BY a.SORT_SEQ ASC
+	 
+	</select>
+
+	<!-- /* [사용안함]공통코드리스트 조회 */ -->
+	<select id="getCodeList" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+	SELECT /* [commons.code.xml][CodeViewRepository.getCodeList][한국어공통코드조회][박성준] */
+		   a.cd,
+		   a.upper_cd AS upperCd,
+	       a.cd_nm AS cdNm,
+	       a.cd_dscr AS cdDscr,
+	       a.asstn_cd_1 AS asstnCd1,
+	       a.asstn_cd_2 AS asstnCd2,
+	       DECODE(A.USE_YN, 'Y', 1, 0) AS USE,
+	       DECODE(A.LEAF_YN, 'Y', 1, 0) AS LEAF,
+	       A.SORT_SEQ   AS SORT_SEQ
+	  FROM mv_sys_cd a
+	 WHERE upper_cd = #{upperCd, jdbcType=VARCHAR}
+	   AND lang_cd = 'KOR'
+	 ORDER BY sort_seq
+	</select>
+
+	<!-- /* 공통코드 조회 다국어*/ -->
+	<select id="getLocalizedCode" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+	SELECT /* [commons.code.xml][CodeViewRepository.getLocalizedCode][한국어공통코드조회][tam] */
+		   a.cd,
+		   a.upper_cd AS upperCd,
+	       a.cd_nm AS cdNm,
+	       a.cd_dscr AS cdDscr,
+	       a.asstn_cd_1 AS asstnCd1,
+	       a.asstn_cd_2 AS asstnCd2
+	      ,DECODE(A.USE_YN, 'Y', 1, 0) AS USE
+	      ,DECODE(A.LEAF_YN, 'Y', 1, 0) AS LEAF
+	      ,A.SORT_SEQ   AS SORT_SEQ
+	  FROM mv_sys_cd a
+	 WHERE a.upper_cd = #{upperCd, jdbcType=VARCHAR}
+	   AND a.cd = #{cd, jdbcType=VARCHAR} 
+		AND a.lang_cd= #{langCd}
+	</select>
+
+	<!-- /* 공통코드 조회 */ -->
+	<select id="getCode" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+	SELECT /* [commons.code.xml][CodeViewRepository.getCode][한국어공통코드조회][tam] */
+		   a.cd,
+		   a.upper_cd AS upperCd,
+	       a.cd_nm AS cdNm,
+	       a.cd_dscr AS cdDscr,
+	       a.asstn_cd_1 AS asstnCd1,
+	       a.asstn_cd_2 AS asstnCd2
+	      ,DECODE(A.USE_YN, 'Y', 1, 0) AS USE
+	      ,DECODE(A.LEAF_YN, 'Y', 1, 0) AS LEAF
+	      ,A.SORT_SEQ   AS SORT_SEQ
+	  FROM mv_sys_cd a
+	 WHERE a.upper_cd = #{upperCd, jdbcType=VARCHAR}
+	   AND a.cd = #{cd, jdbcType=VARCHAR}
+	</select>
+	<!-- /* 공통코드 조회(그룹코드/언어별 전체 코드) */ -->
+	<select id="getAllCodeList" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+	SELECT /* [commons.code.xml][CodeViewRepository.getAllCodeList][그룹코드/언어별 전체 코드 조회][mason] */
+	       A.UPPER_CD   AS UPPER_CD
+	      ,A.LANG_CD    AS LANG
+	      ,A.CD
+	      ,A.CD_NM      AS CD_NM
+	      ,A.CD_DSCR    AS CD_DSCR
+	      ,A.ASSTN_CD_1 AS ASSTN_CD1
+	      ,A.ASSTN_CD_2 AS ASSTN_CD2
+	      ,DECODE(A.USE_YN, 'Y', 1, 0) AS USE
+	      ,DECODE(A.LEAF_YN, 'Y', 1, 0) AS LEAF
+		  ,0          AS CAL_USE_YN      
+	      ,A.SORT_SEQ   AS SORT_SEQ
+	FROM   MV_SYS_CD A
+	UNION ALL
+	SELECT 'MALL'    AS UPPER_CD
+	      ,L.LANG_CD AS LANG
+	      ,M.MALL_ID AS CD
+	      ,M.MALL_NM AS CD_NM
+	      ,M.CPR_NM  AS CD_DSCR
+	      ,''        AS ASSTN_CD1
+	      ,''        AS ASSTN_CD2
+	      ,DECODE(M.USE_YN, 'Y', 1, 0) AS USE
+	      ,1         AS LEAF
+	      ,DECODE(M.CAL_USE_YN, 'Y', 1, 0) AS CAL_USE_YN
+	      ,SORT_SEQ
+	FROM   SYS_MALL M
+	      ,SYS_LANG L
+	ORDER  BY UPPER_CD
+	         ,LANG
+	         ,SORT_SEQ ASC
+	</select>
+	<!-- /* 공통코드 조회(언어별 전체 코드) */ -->
+	<select id="getAllRawCodeList" resultType="com.plgrim.ncp.commons.result.CodeViewResult">
+	SELECT /* [commons.code.xml][CodeViewRepository.getAllRawCodeList][언어별 전체 코드 조회][mason] */
+	       CD.CD
+	      ,CD.LANG_CD AS LANG
+	      ,NVL(CL.LANGBY_CD_NM, CD.CD_NM) cdNm
+	FROM   (SELECT CD.CD
+	              ,LNG.LANG_CD
+	              ,CD.CD_NM
+	        FROM   SYS_CD   CD
+	              ,SYS_LANG LNG) CD
+	LEFT   OUTER JOIN SYS_CD_LANG CL
+	ON     CL.CD = CD.CD
+	AND    CL.LANG_CD = CD.LANG_CD
+	</select>
+	
+	<!-- /* 공통코드 그룹 리스트 조회 */ -->
+	<select id="selectListCdGrp" parameterType="com.plgrim.ncp.commons.data.FormSysCodeDTO" resultMap="resultGrpCd">
+		<![CDATA[
+			SELECT 	/* [commons.code.xml][SysCodeRepository.selectListCdGrp][공통코드그룹조회][tam] */
+				sgc.*
+			FROM
+			(	     
+		    	SELECT 
+					sgc.grp_cd, sgc.upper_grp_cd, sgc.use_yn, sgc.sort_seq, sgc.asstn_cd_1 , sgc.asstn_cd_2,
+					sgc.udter_id, sgc.udt_dt, sc.cd_nm as grp_nm, usc.cd_nm as upper_grp_nm,
+					scle.langby_cd_nm as eng_grp_nm ,  sclc.langby_cd_nm as chi_grp_nm,
+					sa.admin_nm as udter_nm, sgc.cd_dscr cd_dscr
+				FROM 
+					sys_grp_cd sgc 
+				INNER JOIN  sys_cd sc
+					ON
+						sgc.grp_cd = sc.cd
+				LEFT OUTER JOIN	sys_cd usc
+					ON
+						sgc.upper_grp_cd = usc.cd
+				LEFT OUTER JOIN	sys_cd_lang scle 
+					ON
+						scle.lang_cd = 'ENG' AND scle.cd = sc.cd 
+				LEFT OUTER JOIN	sys_cd_lang sclc
+					ON
+						sclc.lang_cd = 'CHI' AND sclc.cd = sc.cd
+				LEFT OUTER JOIN	sys_admin sa
+					ON
+						sa.admin_id = sgc.udter_id
+			) sgc
+			WHERE
+				1 = 1 
+		]]>
+	  	<if test="searchField != null">
+	  		<choose>
+		  		<when test="searchField eq '1'.toString()">
+		  			AND sgc.grp_cd = #{searchText, jdbcType=VARCHAR}
+		  		</when>
+		  		<when test="searchField eq '2'.toString()">
+		  			AND sgc.grp_nm like  #{searchText, jdbcType=VARCHAR}||'%'
+		  		</when>
+		  		<when test="( searchField eq '3'.toString() or searchField eq '4'.toString()) and searchListGrpCd != null">
+		  			AND sgc.grp_cd  in  
+					<foreach item ="item" index="index" collection="searchListGrpCd" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach> 
+		  		</when>
+		  	</choose>
+	  	</if>
+	  	
+	  	<if test = "searchListUseYn != null" >
+			AND sgc.use_yn in
+			<foreach item ="item" index="index" collection="searchListUseYn" open="(" separator="," close=")">
+         		#{item}
+   			</foreach> 
+		</if> 
+				
+		<![CDATA[	
+	 		ORDER BY sgc.sort_seq ASC
+	  	]]>
+	  	
+	</select>
+	
+	<!-- /* 공통상세코드 목록조회 */ -->
+	<select id="selectListCdGrpDetail" parameterType="com.plgrim.ncp.commons.data.FormSysCodeDTO" resultMap="resultGrpCdDetail">
+		<![CDATA[
+			SELECT /* [commons.code.xml][SysCodeRepository.selectListCdGrpDetail][공통상세코드조회][Yoon] */
+			    sgccc.grp_cd, sgccc.cd, sgccc.use_yn, sgccc.sort_seq, sgccc.asstn_cd_1,
+			    sgccc.asstn_cd_2, sgccc.udter_id, sgccc.udt_dt,
+			    sc.cd_nm, scle.langby_cd_nm as eng_cd_nm , sclc.langby_cd_nm as chi_cd_nm,
+			    sa.admin_nm as udter_nm , sgccc.cd_dscr
+			FROM 
+			    sys_grp_cd_cd_cnnc sgccc
+			INNER JOIN  sys_cd sc
+			    ON
+			    	sgccc.grp_cd = #{selGrpCd}
+			    	AND
+			        sgccc.cd = sc.cd
+			LEFT OUTER JOIN    sys_cd_lang scle 
+			    ON
+			        scle.lang_cd = 'ENG' AND scle.cd = sc.cd 
+			LEFT OUTER JOIN    sys_cd_lang sclc
+			    ON
+			        sclc.lang_cd = 'CHI' AND sclc.cd = sc.cd
+			LEFT OUTER JOIN    sys_admin sa
+			    ON
+			        sa.admin_id = sgccc.udter_id
+	 		ORDER BY sgccc.sort_seq
+	  	]]>
+	</select>
+	
+	<select id="selectGrpCds" parameterType="com.plgrim.ncp.commons.data.FormSysCodeDTO" resultType="java.lang.String">
+	  	<![CDATA[
+		  	SELECT /* [commons.code.xml][SysCodeRepository.selectGrpCds][공통그룹코드를 조회한다.][tam] */
+				sgccc.grp_cd
+			FROM
+			(
+				SELECT 
+					sgccc.grp_cd, sgccc.cd, sc.cd_nm
+				FROM 
+					sys_grp_cd_cd_cnnc sgccc
+				INNER JOIN  sys_cd sc
+					ON
+						sc.cd = sgccc.grp_cd
+			)  sgccc
+			WHERE 1=1
+		]]>
+		<if test="searchField != null">
+	  		<choose>
+		  		<when test="searchField eq '3'.toString()">
+		  			AND sgccc.cd = #{searchText, jdbcType=VARCHAR}
+		  		</when>
+		  		<when test="searchField eq '4'.toString()">
+		  			AND sgccc.cd_nm like  #{searchText, jdbcType=VARCHAR}||'%'
+		  		</when>
+		  	</choose>
+	  	</if>
+		<![CDATA[
+			GROUP BY  
+				sgccc.grp_cd
+		]]>
+	</select>
+	
+	<!-- 공통코드 존재유/무 체크 -->
+	<select id="checkYnFromSysCd" parameterType="java.util.Map" resultType="java.lang.String">
+		<![CDATA[ 
+			SELECT  /* [commons.code.xml][checkYnFromSysCd][공통코드 존재여부][Tam] */
+				DECODE(  SIGN(count(*))  , 1,'Y', 'N' )  as is_yn
+			FROM sys_cd 
+			WHERE 
+				cd = #{cd} 
+		]]>
+	</select>
+	
+	<!-- /* 공통코드 그룹 조회 */ -->
+	<select id="selectRowGrpCd" parameterType="java.util.Map" resultMap="resultGrpCd">
+
+		<![CDATA[
+		    	SELECT /* [commons.code.xml][SysCodeRepository.selectRowGrpCd][공통코드그룹조회][Yoon] */
+					sgc.grp_cd, sgc.upper_grp_cd, sgc.use_yn, sgc.sort_seq, sgc.asstn_cd_1 , sgc.asstn_cd_2,
+					sgc.udter_id, sgc.udt_dt, sc.cd_nm as grp_nm, usc.cd_nm as upper_grp_nm,
+					scle.langby_cd_nm as eng_grp_nm ,  sclc.langby_cd_nm as chi_grp_nm,
+					sa.admin_nm as udter_nm, sgc.cd_dscr cd_dscr
+				FROM 
+					sys_grp_cd sgc 
+				INNER JOIN  sys_cd sc
+					ON
+						sgc.grp_cd = sc.cd
+						AND
+						sgc.grp_cd = #{grpCd}
+				LEFT OUTER JOIN	sys_cd usc
+					ON
+						sgc.upper_grp_cd = usc.cd
+				LEFT OUTER JOIN	sys_cd_lang scle 
+					ON
+						scle.lang_cd = 'ENG' AND scle.cd = sc.cd 
+				LEFT OUTER JOIN	sys_cd_lang sclc
+					ON
+						sclc.lang_cd = 'CHI' AND sclc.cd = sc.cd
+				LEFT OUTER JOIN	sys_admin sa
+					ON
+						sa.admin_id = sgc.udter_id
+		]]>
+	  	
+	</select>
+	
+	<!-- /* 공통상세코드조회 */ -->
+	<select id="selectRowCdGrpDetail" parameterType="java.util.Map" resultMap="resultGrpCdDetail">
+		<![CDATA[
+			SELECT /* [commons.code.xml][SysCodeRepository.selectListCdGrpDetail][공통상세코드조회][Yoon] */
+			    sgccc.grp_cd, sgccc.cd, sgccc.use_yn, sgccc.sort_seq, sgccc.asstn_cd_1,
+			    sgccc.asstn_cd_2, sgccc.udter_id, sgccc.udt_dt,
+			    sc.cd_nm, scle.langby_cd_nm as eng_cd_nm , sclc.langby_cd_nm as chi_cd_nm,
+			    sa.admin_nm as udter_nm , sgccc.cd_dscr
+			FROM 
+			    sys_grp_cd_cd_cnnc sgccc
+			INNER JOIN  sys_cd sc
+			    ON
+			    	sgccc.grp_cd = #{grpCd}
+			    	AND
+			    	sgccc.cd = #{cd}
+			    	AND
+			        sgccc.cd = sc.cd
+			LEFT OUTER JOIN    sys_cd_lang scle 
+			    ON
+			        scle.lang_cd = 'ENG' AND scle.cd = sc.cd 
+			LEFT OUTER JOIN    sys_cd_lang sclc
+			    ON
+			        sclc.lang_cd = 'CHI' AND sclc.cd = sc.cd
+			LEFT OUTER JOIN    sys_admin sa
+			    ON
+			        sa.admin_id = sgccc.udter_id
+	 		ORDER BY sgccc.sort_seq
+	  	]]>
+	</select>	
+	
+	<update id="refreshMview" parameterType="java.util.Map">
+		<![CDATA[
+			/* [commons.code.xml]["refreshMview"]["refresh Mview"][Tam] */
+			call DBMS_MVIEW.refresh('MV_SYS_CD')
+		]]>
+	</update>
+	
+	<!-- 공통 코드명/설명 수정 or 공통코드 추가 -->
+	<update id="mergeSysCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysCd">
+		<![CDATA[
+			MERGE INTO sys_cd sc   /* [commons.code.xml][mergeSysCd][공통코드 merge][Yoon] */
+			     USING ( select 0 as baseKey FROM dual ) bk
+			        ON (  sc.cd = #{cd} )
+			WHEN MATCHED
+			THEN
+			   UPDATE SET  
+			   	cd_nm    = #{cdNm},  udter_id = #{regtrId}, udt_dt   = SYSDATE
+			WHEN NOT MATCHED
+			THEN
+			   INSERT  (
+			       cd, cd_nm,  regtr_id, reg_dt, udter_id, udt_dt
+			   ) VALUES (
+			   		#{cd}, #{cdNm}, #{regtrId}, SYSDATE, #{regtrId}, SYSDATE
+			   )
+		]]>
+	</update>
+	
+	<!-- 다국어 공통 코드명/설명 수정 or 다국어 공통코드명 추가 -->
+	<update id="mergeSysCdLang" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysCdLang">
+		<![CDATA[
+			MERGE INTO sys_cd_lang scl   /* [commons.code.xml][mergeSysCd][공통코드 merge][Tam] */
+			     USING ( select 0 as baseKey FROM dual ) bk
+			        ON (  scl.cd = #{cd} AND scl.lang_cd = #{langCd})
+			WHEN MATCHED
+			THEN
+			   UPDATE SET  
+			   	langby_cd_nm    = #{langbyCdNm},  udter_id = #{regtrId}, udt_dt   = SYSDATE
+			WHEN NOT MATCHED
+			THEN
+			   INSERT  (
+			      cd, lang_cd, langby_cd_nm, regtr_id, reg_dt, udter_id, udt_dt
+			   ) VALUES (
+			   		 #{cd}, #{langCd}, #{langbyCdNm}, #{regtrId}, SYSDATE, #{regtrId}, SYSDATE
+			   )
+		]]>
+	</update>
+	
+	<!-- 공통그룹코드 등록 -->
+	<insert id="insertSysGrpCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysGrpCd">
+		<![CDATA[
+			/* [commons.code.xml][insertSysGrpCd][공통그룹코드 등록][Yoon] */
+			INSERT INTO sys_grp_cd 
+			(
+				grp_cd, upper_grp_cd, use_yn, cd_dscr,
+				sort_seq, asstn_cd_1, asstn_cd_2, 
+				regtr_id, reg_dt, udter_id, udt_dt
+			)VALUES (
+				#{grpCd}, #{upperGrpCd}, #{useYn}, #{cdDscr,}
+				#{sortSeq}, #{asstnCd1}, #{asstnCd2}, 
+				#{regtrId}, SYSDATE, #{regtrId}, SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<!-- 공통그룹코드 순서/사용여부 수정 -->
+	<update id="updateSysGrpCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysGrpCd">
+		<![CDATA[
+			UPDATE /* [commons.code.xml][updateSysGrpCd][공통그룹코드 수정][Yoon] */
+			sys_grp_cd
+			SET
+				use_yn       = #{useYn},
+				cd_dscr		 = #{cdDscr},
+				sort_seq     = #{sortSeq},
+				cd_dscr 	 = #{cdDscr},
+				udter_id     = #{regtrId},
+				udt_dt       = SYSDATE
+			WHERE  
+				grp_cd       = #{grpCd}
+		]]>
+	</update>
+	
+	<!-- 공통그룹 상세코드 등록 -->
+	<insert id="insertSysGrpCdCdCnnc" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysGrpCdCdCnnc">
+		<![CDATA[ 
+			/* [commons.code.xml][insertSysGrpCdCdCnnc][공통그룹 상세코드 등록][Yoon] */
+			INSERT INTO sys_grp_cd_cd_cnnc (
+			   grp_cd, cd, use_yn, cd_dscr,
+			   sort_seq, asstn_cd_1, asstn_cd_2, 
+			   regtr_id, reg_dt, udter_id, udt_dt
+			) VALUES ( 
+			   #{grpCd}, #{cd}, #{useYn}, #{cdDscr},
+			   #{sortSeq}, #{asstnCd1}, #{asstnCd2},
+			   #{regtrId}, SYSDATE, #{regtrId}, SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<!-- 공통그룹코드 순서/사용여부 수정 -->
+	<update id="updateSysGrpCdCdCnnc" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysGrpCdCdCnnc">
+		<![CDATA[
+			UPDATE /* [commons.code.xml][updateSysGrpCdCdCnnc][공통그룹 상세코드 수정][Yoon] */
+			sys_grp_cd_cd_cnnc
+			SET
+				use_yn       = #{useYn},
+				cd_dscr		 = #{cdDscr},
+				sort_seq     = #{sortSeq},
+				udter_id     = #{regtrId},
+				udt_dt       = SYSDATE
+			WHERE  
+				grp_cd       = #{grpCd}
+				AND
+				cd 			 = #{cd}
+		]]>
+	</update>
+	
+	<!-- 품목코드 시작 -->
+	
+	<!-- /* 품목코드 리스트 조회 */ -->
+	<select id="getSysPrudCdList" parameterType="com.plgrim.ncp.commons.data.FormSysPrudDTO" resultMap="resultPrudCdList">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		<![CDATA[
+		    SELECT  /* [commons.code.xml][SysPrudRepository.selectSysPrudCdList][공통품목코드 조회][Dennis] */
+			  sp.prdlst_cd,			  
+              brnd.brnd_prdlst_nm, 
+              brnd.brnd_id,			  
+			  sple.prdlst_nm AS prdlst_nm_eng,
+			  /*
+              sme.mlang_sn as eng_mlang_sn,
+			  smc.mlang_sn as chi_mlang_sn,
+			  */
+              sp.use_yn,
+			  sp.sort_seq,
+			  sp.prdlst_dscr,
+			  -- (select god_wt from SYS_PRDLST_CD where prdlst_cd = sp.prdlst_cd) as god_wt,
+			  (select prdlst_sect_cd from SYS_PRDLST_CD where prdlst_cd = sp.prdlst_cd) as prdlst_sect_cd,
+			  (SELECT admin_nm FROM sys_admin WHERE admin_id = sp.regtr_id) AS regtr_id, /*등록자명*/
+			  sp.reg_dt,
+			  (SELECT admin_nm FROM sys_admin WHERE admin_id = sp.udter_id) AS udter_id, /*수정자명*/
+			  sp.udt_dt
+			FROM sys_prdlst_cd sp
+			   LEFT OUTER JOIN sys_brnd_prdlst brnd
+				   ON sp.prdlst_cd = brnd.prdlst_cd			
+			   LEFT OUTER JOIN sys_prdlst_cd_lang sple
+				   ON sp.prdlst_cd = sple.prdlst_cd AND sple.lang_cd = 'ENG'
+			WHERE 1=1
+		 ]]>
+		 	<include refid="getSysPrudCdListWhere"/>
+		<![CDATA[	
+	 		 ORDER BY sp.sort_seq ,  CONVERT( brnd.brnd_prdlst_nm, 'US8ICL')
+	  	]]>
+	  	
+	  	<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 품목코드 총 갯수 -->
+	<select id="selectCountSysPrudCd" parameterType="com.plgrim.ncp.commons.data.FormSysPrudDTO" resultType="long">
+		<![CDATA[
+		    SELECT  /* [commons.code.xml][SysPrudRepository.selectCountSysPrudCd][공통품목코드 총 갯수][tam] */
+		     count(*) cnt
+			FROM sys_prdlst_cd sp
+			LEFT OUTER JOIN sys_brnd_prdlst brnd 
+				ON sp.prdlst_cd = brnd.prdlst_cd
+		  	WHERE 1=1
+		 ]]>
+		 <include refid="getSysPrudCdListWhere"/>
+	</select>
+	
+	<!-- 품목코드 목록 엑셀-->
+	<select id="getSysPrudCdListExcel" parameterType="com.plgrim.ncp.commons.data.FormSysPrudDTO" resultType="java.util.LinkedHashMap">
+		SELECT /* [commons.code.xml]["getSysPrudCdListExcel"][품목코드 목록 엑셀][Ed] */
+		   sp.prdlst_cd
+          ,brnd.brnd_prdlst_nm
+          ,brnd.brnd_id
+		  ,DECODE(sp.USE_YN, 'Y', '사용', 'N', '미사용') AS USE_YN_NM /* 사용여부 */
+		  ,sple.prdlst_nm AS prdlst_nm_eng
+		  ,sp.prdlst_dscr
+		  ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = sp.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+	   	  ,TO_CHAR(sp.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 시작일 */
+       	  ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = sp.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+       	  ,TO_CHAR(sp.UDT_DT,'YYYY-MM-DD HH24:MI') AS UDT_DT_NM /* 수정일 */
+		FROM sys_prdlst_cd sp
+		   LEFT OUTER JOIN sys_brnd_prdlst brnd 
+		   	   ON sp.prdlst_cd = brnd.prdlst_cd	
+		   LEFT OUTER JOIN sys_prdlst_cd_lang sple
+			   ON sp.prdlst_cd = sple.prdlst_cd AND sple.lang_cd = 'ENG'		   
+		WHERE 1=1
+		<include refid="getSysPrudCdListWhere"/>
+ 		ORDER BY sp.sort_seq ,  CONVERT( brnd.brnd_prdlst_nm, 'US8ICL')
+	</select>
+	
+	<!-- 품목코드 목록 조건문 -->
+	<sql id="getSysPrudCdListWhere"> 
+		<if test='searchField != null and searchField != "" and searchText != null and searchText != ""'>
+			<choose>
+				<when test='searchField == "name"'>
+					AND UPPER(brnd.brnd_prdlst_nm) LIKE '%' || UPPER(#{searchText}) || '%' /* 품목명 */
+				</when>
+				<when test='searchField == "brndId"'>
+					AND UPPER(brnd.brnd_id) LIKE '%' || UPPER(#{searchText}) || '%' /* 브랜드 ID */
+				</when>				
+				<otherwise>
+					AND UPPER(sp.prdlst_cd) LIKE '%' || UPPER(#{searchText}) || '%' /* 품목코드 */
+				</otherwise>
+			</choose>
+		</if>
+		<if test="searchListUseYn != null">
+			AND sp.use_yn IN  
+			<foreach item ="item" index="index" collection="searchListUseYn" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+		</if>
+	</sql>
+	
+	<!-- /* 품목코드 insert, update */ -->
+	<update id="mergePrudCd" parameterType="com.plgrim.ncp.commons.data.SysPrudDTO">
+		merge into sys_prdlst_cd spc  /* [commons.code.xml][mergePrudCd][mergePrudCd Update][Dennis] */
+		using ( select 0 as sys_prdlst_cd_lang from dual) sm
+			on ( spc.prdlst_cd = #{sysPrdlstCd.prdlstCd, jdbcType=VARCHAR})
+		when matched then
+			update set 
+				prdlst_nm = #{sysPrdlstCd.prdlstNm,  jdbcType=VARCHAR},                
+				use_yn = #{sysPrdlstCd.useYn,  jdbcType=VARCHAR},
+                <!-- god_wt = #{sysPrdlstCd.godWt,jdbcType=NUMERIC},-->
+                prdlst_sect_cd = #{sysPrdlstCd.prdlstSectCd , jdbcType=VARCHAR},
+				<!--  sort_seq = #{sysPrdlstCd.sortSeq, jdbcType= NUMERIC},-->
+				prdlst_dscr = #{sysPrdlstCd.prdlstDscr,  jdbcType=VARCHAR},
+				udter_id = #{sysPrdlstCd.udterId,  jdbcType=VARCHAR},
+	 			udt_dt = SYSDATE
+		when not matched then
+			insert (
+				prdlst_cd,
+				prdlst_nm,
+				use_yn,
+                <!-- god_wt,-->
+                prdlst_sect_cd,
+				sort_seq,
+				prdlst_dscr,
+				regtr_id,
+				reg_dt,
+				udter_id,
+				udt_dt
+				) values (
+					#{sysPrdlstCd.prdlstCd,  jdbcType=VARCHAR}, 
+					#{sysPrdlstCd.prdlstNm,  jdbcType=VARCHAR},                                       
+					#{sysPrdlstCd.useYn,  jdbcType=VARCHAR},
+                    <!-- #{sysPrdlstCd.godWt,jdbcType=NUMERIC},-->
+                    #{sysPrdlstCd.prdlstSectCd , jdbcType=VARCHAR},
+					#{sysPrdlstCd.sortSeq,  jdbcType=NUMERIC},
+					#{sysPrdlstCd.prdlstDscr,  jdbcType=VARCHAR},
+					#{sysPrdlstCd.regtrId,  jdbcType=VARCHAR},
+					SYSDATE,
+					#{sysPrdlstCd.udterId,  jdbcType=VARCHAR},
+					SYSDATE
+				)
+	</update>
+
+    <!-- /* 품목코드 insert, update */ -->
+    <update id="mergeGodWt" parameterType="com.plgrim.ncp.commons.data.SysPrudDTO">
+        merge into INF_TMALL_GOD_WT_MAPNG a  /* [commons.code.xml][mergePrudCd][mergePrudCd Update][Dennis] */
+        using ( select count(1) as cnt from INF_TMALL_GOD_WT_MAPNG  where prdlst_cd = #{sysPrdlstCd.prdlstCd,  jdbcType=VARCHAR} ) b
+        on ( b.cnt > 0 and a.prdlst_cd = #{sysPrdlstCd.prdlstCd, jdbcType=VARCHAR})
+
+        when matched then
+        update set
+        god_wt = #{sysPrdlstCd.godWt,jdbcType=NUMERIC},
+        prdlst_sect_cd = #{sysPrdlstCd.prdlstSectCd , jdbcType=VARCHAR},
+        udter_id = #{sysPrdlstCd.udterId,  jdbcType=VARCHAR},
+        udt_dt = SYSDATE
+
+        when not matched then
+
+        insert (prdlst_cd,god_wt,prdlst_sect_cd,regtr_id,reg_dt,udter_id,udt_dt)
+        values ( #{sysPrdlstCd.prdlstCd,  jdbcType=VARCHAR}
+               , #{sysPrdlstCd.godWt,jdbcType=NUMERIC}
+               , #{sysPrdlstCd.prdlstSectCd , jdbcType=VARCHAR}
+               , #{sysPrdlstCd.udterId,  jdbcType=VARCHAR}
+               , SYSDATE
+               , #{sysPrdlstCd.udterId,  jdbcType=VARCHAR}
+               , SYSDATE
+               )
+    </update>
+
+    <!-- /* 품목코드 insert, update */ -->
+    <delete id="deleteGodWt" parameterType="com.plgrim.ncp.commons.data.SysPrudDTO">
+        delete from inf_tmall_god_wt_mapng where prdlst_cd = #{sysPrdlstCd.prdlstCd,  jdbcType=VARCHAR}
+    </delete>
+
+	<!-- 품목코드 다국어 처리 -->
+	<!-- 
+	<update id="mergeMlangBrndNm" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysMlang">
+		<![CDATA[
+		/* [common.code.xml][mergeMlangBrndNm][코드 다국어 등록/수정][tam] */
+		MERGE INTO sys_mlang sm  
+		  USING ( select 0 as sys_mlang FROM dual ) wsm
+			ON ( 
+		]]> 
+				<choose>
+					<when test = "mlangSn != null">
+						sm.mlang_sn = #{mlangSn} 
+					</when>
+					<otherwise>
+						1=2
+					</otherwise>   
+				</choose>
+		<![CDATA[
+			)
+		WHEN MATCHED
+		THEN
+			UPDATE SET  
+				mlang_shrt_data_nm = #{mlangShrtDataNm}, udter_id = #{udterId}, udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+			INSERT  (
+				mlang_sn, mlang_idx_id, mlang_pk_no, 
+				use_yn, mlang_shrt_data_nm, 
+				regtr_id, reg_dt, udter_id, udt_dt
+			) VALUES ( 
+				SQ_SYS_MLANG.nextval, #{mlangIdxId}, #{mlangPkNo},
+				'Y', #{mlangShrtDataNm}, 
+				#{regtrId}, SYSDATE, #{udterId}, SYSDATE
+			)
+		]]>
+	</update>
+	-->
+	
+    <update id="mergePrudCdLang" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPrdlstCdLang">
+        /* [common.code.xml][mergePrudCdLang][코드 다국어 등록/수정][Neps] */
+        MERGE INTO sys_prdlst_cd_lang spcl
+        USING dual    
+        ON (spcl.prdlst_cd = #{prdlstCd,  jdbcType=VARCHAR} AND lang_cd = #{langCd,  jdbcType=VARCHAR})
+        WHEN MATCHED THEN
+            UPDATE SET
+                spcl.prdlst_nm = #{prdlstNm, jdbcType=VARCHAR}
+              , spcl.udter_id = #{udterId, jdbcType=VARCHAR}
+              , spcl.udt_dt = SYSDATE
+        WHEN NOT MATCHED THEN
+            INSERT
+            (
+                prdlst_cd
+               ,lang_cd
+               ,prdlst_nm
+               ,regtr_id
+               ,udter_id
+               ,reg_dt
+               ,udt_dt
+            )
+            VALUES
+            (
+                #{prdlstCd, jdbcType=VARCHAR}
+              , #{langCd, jdbcType=VARCHAR}
+              , #{prdlstNm, jdbcType=VARCHAR}
+              , #{regtrId, jdbcType=VARCHAR}
+              , #{udterId, jdbcType=VARCHAR}
+              , SYSDATE
+              , SYSDATE
+            ) 
+    
+    </update>           
+	<!-- 품목코드 끝 -->
+	
+	<!-- 품목별 무게관리 시작 -->
+	<!-- /* 품목별 무게관리 리스트 조회 */ -->
+	<select id="getSysPrudWtCdList" parameterType="com.plgrim.ncp.commons.data.SysPrudWtDTO" resultMap="resultPrudWtCdList">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		<![CDATA[
+			SELECT  /* [commons.code.xml][SysPrudRepository.selectSysPrudWtCdList][품목별 무게관리 조회][Myun] */
+			    spw.prdlst_cd
+			    , brnd.brnd_prdlst_nm
+			    , DECODE(sp.USE_YN, 'Y', '사용', 'N', '미사용') AS USE_YN_NM
+			    , spw.seson_grp_cd
+			    , spw.god_wt
+			    ,(SELECT admin_nm FROM sys_admin WHERE admin_id = spw.regtr_id) AS regtr_id /*등록자명*/
+			    ,spw.reg_dt
+			    ,(SELECT admin_nm FROM sys_admin WHERE admin_id = spw.udter_id) AS udter_id /*수정자명*/
+			    ,spw.udt_dt
+			from
+			    sys_prdlst_wt spw
+			    , sys_prdlst_cd sp
+			    LEFT OUTER JOIN sys_brnd_prdlst brnd
+				    ON sp.prdlst_cd = brnd.prdlst_cd				    
+			    LEFT OUTER JOIN sys_prdlst_cd_lang sple
+			        ON sp.prdlst_cd = sple.prdlst_cd AND sple.lang_cd = 'ENG'
+			WHERE 1=1
+			    and spw.prdlst_cd = sp.prdlst_cd
+		 ]]>
+		 	<include refid="getSysPrudWtCdListWhere"/>
+		<![CDATA[	
+	 		 ORDER BY CONVERT( brnd.brnd_prdlst_nm, 'US8ICL')
+	  	]]>
+	  	
+	  	<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 품목별 무게관리 총 갯수 -->
+	<select id="selectCountSysPrudWtCd" parameterType="com.plgrim.ncp.commons.data.SysPrudWtDTO" resultType="long">
+		<![CDATA[
+			SELECT  /* [commons.code.xml][SysPrudRepository.selectCountSysPrudWtCd][품목별 무게관리 총 갯수][Myun] */
+				count(*) cnt
+			FROM sys_prdlst_wt spw
+				,sys_prdlst_cd sp
+  				 LEFT OUTER JOIN sys_brnd_prdlst brnd
+				 	ON sp.prdlst_cd = brnd.prdlst_cd					
+			WHERE 1=1
+				and spw.prdlst_cd = sp.prdlst_cd
+		 ]]>
+		 <include refid="getSysPrudWtCdListWhere"/>
+	</select>
+	
+	<!-- 품목코드 목록 엑셀-->
+	<select id="getSysPrudWtCdListExcel" parameterType="com.plgrim.ncp.commons.data.FormSysPrudDTO" resultType="java.util.LinkedHashMap">
+			SELECT  /* [commons.code.xml][SysPrudRepository.selectSysPrudWtCdList][품목별 무게관리 조회][Myun] */
+			    spw.prdlst_cd
+			    , brnd.brnd_prdlst_nm
+			    , DECODE(sp.USE_YN, 'Y', '사용', 'N', '미사용') AS USE_YN_NM /* 사용여부 */
+			    , spw.seson_grp_cd
+			    , spw.god_wt			     
+			    ,(SELECT admin_nm FROM sys_admin WHERE admin_id = spw.regtr_id) AS regtr_id /*등록자명*/
+			    ,spw.reg_dt
+			    ,(SELECT admin_nm FROM sys_admin WHERE admin_id = spw.udter_id) AS udter_id /*수정자명*/
+			    ,spw.udt_dt
+			from
+			    sys_prdlst_wt spw
+			    , sys_prdlst_cd sp
+			    LEFT OUTER JOIN sys_brnd_prdlst brnd
+				    ON sp.prdlst_cd = brnd.prdlst_cd			    
+			    LEFT OUTER JOIN sys_prdlst_cd_lang sple
+			        ON sp.prdlst_cd = sple.prdlst_cd AND sple.lang_cd = 'ENG'
+			WHERE 1=1
+			    and spw.prdlst_cd = sp.prdlst_cd
+		<include refid="getSysPrudWtCdListWhere"/>
+ 		ORDER BY CONVERT( brnd.brnd_prdlst_nm, 'US8ICL')
+	</select>
+	
+	<!-- 품목코드 등록 화면 품목 select box-->	
+	<select id="selectSysPrdlstCd" resultMap="resultPrudCdList">
+		SELECT 
+		     sp.PRDLST_CD
+			,brnd.brnd_prdlst_nm
+		FROM SYS_PRDLST_CD sp
+			 LEFT OUTER JOIN sys_brnd_prdlst brnd
+			 	ON sp.prdlst_cd = brnd.prdlst_cd	
+		WHERE 1 = 1
+			AND sp.use_yn = 'Y'
+			AND brnd.brnd_prdlst_nm IS NOT NULL
+	</select>
+	
+	<!-- 품목별 무게관리 목록 조건문 -->
+	<sql id="getSysPrudWtCdListWhere"> 
+		<if test='searchField != null and searchField != "" and searchText != null and searchText != ""'>
+			<choose>
+				<when test='searchField == "name"'>
+					AND UPPER(brnd.brnd_prdlst_nm) LIKE '%' || UPPER(#{searchText}) || '%' /* 품목명 */
+				</when>
+				<otherwise>
+					AND UPPER(spw.prdlst_cd) LIKE '%' || UPPER(#{searchText}) || '%' /* 품목코드 */
+				</otherwise>
+			</choose>
+		</if>
+		<if test='searchListUseYn != null'>
+			AND sp.use_yn IN  
+			<foreach item ="item" index="index" collection="searchListUseYn" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+		</if>
+		<if test='searchPrudSeason != null and searchPrudSeason != "" '>
+			AND spw.seson_grp_cd  = #{searchPrudSeason,jdbcType=VARCHAR}
+		</if>
+	</sql>
+	
+    <!-- 품목별 무게관리 등록 -->
+    <insert id="insertPrudWtCd" parameterType="com.plgrim.ncp.commons.data.SysPrudWtDTO">
+	    INSERT /* [commons.code.xml]["insertPrudWtCd"][품목별 무게관리 등록][MYUN] */  
+	    INTO SYS_PRDLST_WT (
+	        PRDLST_CD
+			, SESON_GRP_CD
+			, GOD_WT
+			, REGTR_ID
+			, REG_DT
+			, UDTER_ID
+			, UDT_DT
+		) VALUES (
+	        #{sysPrdlstWt.prdlstCd, jdbcType=VARCHAR}
+	       ,#{sysPrdlstWt.sesonGrpCd,jdbcType=VARCHAR}
+	       ,#{sysPrdlstWt.godWt,jdbcType=NUMERIC}
+	       ,#{sysPrdlstWt.regtrId,jdbcType=VARCHAR}
+		   ,SYSDATE
+	       ,#{sysPrdlstWt.udterId,jdbcType=VARCHAR}	       
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 품목별 무게관리 수정 -->
+    <update id="updatePrudWtCd" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysPrdlstWt">
+        UPDATE /* [commons.code.xml]["updatePrudWtCd"][품목별 무게관리 수정][MYUN] */  
+        	SYS_PRDLST_WT
+		SET
+			 GOD_WT = #{godWt,jdbcType=NUMERIC}
+			, UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			, UDT_DT = SYSDATE
+        WHERE   1 = 1
+        	AND	PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+        	AND	SESON_GRP_CD  = #{sesonGrpCd,jdbcType=VARCHAR}
+    </update>
+    
+        <!-- 품목별 무게관리 merge -->
+    <update id="mergePrudWtCd" parameterType="com.plgrim.ncp.commons.data.SysPrudWtDTO">
+        MERGE INTO SYS_PRDLST_WT /* [commons.code.xml]["mergePrudWtCd"][품목별 무게관리 merge][MYUN] */  
+        	USING DUAL 	ON (PRDLST_CD = #{sysPrdlstWt.prdlstCd, jdbcType=VARCHAR} AND  SESON_GRP_CD  = #{sysPrdlstWt.sesonGrpCd,jdbcType=VARCHAR})
+		WHEN MATCHED THEN
+			UPDATE SET
+				GOD_WT = #{sysPrdlstWt.godWt,jdbcType=NUMERIC}
+				, UDTER_ID = #{sysPrdlstWt.udterId,jdbcType=VARCHAR}
+				, UDT_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+        	INSERT (
+		        PRDLST_CD
+				, SESON_GRP_CD
+				, GOD_WT
+				, REGTR_ID
+				, REG_DT
+				, UDTER_ID
+				, UDT_DT
+			) VALUES (
+		        #{sysPrdlstWt.prdlstCd, jdbcType=VARCHAR}
+		       ,#{sysPrdlstWt.sesonGrpCd,jdbcType=VARCHAR}
+		       ,#{sysPrdlstWt.godWt,jdbcType=NUMERIC}
+		       ,#{sysPrdlstWt.regtrId,jdbcType=VARCHAR}
+			   ,SYSDATE
+		       ,#{sysPrdlstWt.udterId,jdbcType=VARCHAR}	       
+		       ,SYSDATE
+			) 
+        		
+    </update>
+	
+	<!-- 품목별 무게관리 끝 -->
+	
+	<!-- 환율관리 목록 리스트 -->
+	<select id="getSysExchgList" parameterType="com.plgrim.ncp.commons.data.FormSysExchgDTO" resultMap="resultExchgList">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT  /* [commons.code.xml][SysExchgRepository.selectSysExchgList][공통환율관리 조회][steven] 160316 글로벌 반영으로 인한 컬럼명 변경  */
+	      SER.crncy_cd
+	      ,SER.EXCHG_RT_APL_BEG_DT
+	      ,SER.EXCHG_RT_APL_END_DT
+	      ,SER.stdr_crncy_amt
+	      ,CASE 
+	      	WHEN SER.crncy_cd = 'USD' THEN SER.exchg_rt_crncy_amt || '달러'
+	      	ELSE SER.exchg_rt_crncy_amt || '위안'
+	       END AS exchg_rt_crncy_amt_nm
+	      ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SER.REGTR_ID) AS regtr_id /*등록자명*/
+		  ,SER.reg_dt
+		  ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SER.UDTER_ID) AS udter_id /*수정자명*/
+	      ,SER.udt_dt
+	  	FROM SYS_EXCHG_RT SER
+		WHERE 1=1
+	  	<if test='exchgs != null and exchgs != ""'>
+			AND SER.CRNCY_CD IN
+			<foreach item ="item" index="index" collection="exchgs" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 통화코드 */
+		</if>
+		<if test='searchStDt != null and searchStDt != "" and searchEdDt != null and searchEdDt != ""'>
+			AND TO_DATE(SER.EXCHG_RT_APL_BEG_DT, 'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{searchStDt}, 'YYYY-MM-DD') AND SER.EXCHG_RT_APL_END_DT <![CDATA[>=]]> TO_DATE(#{searchEdDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 환율적용일 */
+		</if>
+ 		ORDER BY SER.REG_DT DESC
+ 		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 환율관리 목록 개수 -->
+	<select id="selectSysExchgListCount" parameterType="com.plgrim.ncp.commons.data.FormSysExchgDTO" resultType="long">
+		SELECT  /* [commons.code.xml][selectSysExchgListCount][공통환율관리 조회 개수][ed] */
+	    	COUNT(*)
+	  	FROM SYS_EXCHG_RT SER
+		WHERE 1=1
+	  	<if test='exchgs != null and exchgs != ""'>
+			AND SER.CRNCY_CD IN
+			<foreach item ="item" index="index" collection="exchgs" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 통화코드 */
+		</if>
+		<if test='searchStDt != null and searchStDt != "" and searchEdDt != null and searchEdDt != ""'>
+			AND TO_DATE(SER.EXCHG_RT_APL_BEG_DT, 'YYYY-MM-DD') <![CDATA[<=]]>TO_DATE(#{searchStDt}, 'YYYY-MM-DD') AND SER.EXCHG_RT_APL_END_DT <![CDATA[>=]]> TO_DATE(#{searchEdDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 환율적용일 */
+		</if>
+	</select>
+	
+	<!-- 환율관리 목록 엑셀 -->
+	<select id="selectSysExchgListExcel" parameterType="com.plgrim.ncp.commons.data.FormSysExchgDTO" resultType="java.util.LinkedHashMap">
+		SELECT  /* [COMMONS.CODE.XML][SELECTSYSEXCHGLISTEXCEL][공통환율관리 엑셀][ED] */
+	      CASE 
+	      	WHEN SER.CRNCY_CD = 'USD' THEN '달러화'
+	      	ELSE '위안화'
+	       END AS CRNCY_CD /* 적용화폐 */
+	      ,CASE 
+	      	WHEN SER.CRNCY_CD = 'USD' THEN SER.EXCHG_RT_CRNCY_AMT || '달러'
+	      	ELSE SER.EXCHG_RT_CRNCY_AMT || '위안'
+	       END AS EXCHG_RT_CRNCY_AMT_NM /* 적용환율 */
+	      ,SER.STDR_CRNCY_AMT /* 기준 금액 */
+	      ,TO_CHAR(SER.EXCHG_RT_APL_BEG_DT,'YYYY-MM-DD HH24:MI') AS APL_BEG_DT_NM /* 환율적용시작일 */
+	      ,TO_CHAR(SER.EXCHG_RT_APL_END_DT,'YYYY-MM-DD HH24:MI') AS APL_END_DT_NM /* 환율적용종료일 */
+	      ,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SER.REGTR_ID) AS REGTR_ID /*등록자명*/
+	      ,TO_CHAR(SER.REG_DT,'YYYY-MM-DD HH24:MI') AS REG_DT_NM /* 등록일시 */
+	  	FROM SYS_EXCHG_RT SER
+		WHERE 1=1
+	  	<if test='exchgs != null and exchgs != ""'>
+			AND SER.CRNCY_CD IN
+			<foreach item ="item" index="index" collection="exchgs" open="(" separator="," close=")">
+         		#{item}
+   			</foreach>
+   			/* 통화코드 */
+		</if>
+		<if test='searchStDt != null and searchStDt != "" and searchEdDt != null and searchEdDt != ""'>
+			AND TO_DATE(SER.EXCHG_RT_APL_BEG_DT, 'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{searchStDt}, 'YYYY-MM-DD')
+			AND SER.EXCHG_RT_APL_END_DT <![CDATA[>=]]> TO_DATE(#{searchEdDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 환율적용일 */
+		</if>
+ 		ORDER BY SER.REG_DT DESC
+	</select>
+	
+	<!-- 환율 기존 적용건 종료처리 -->
+	<update id="updateAplEndDt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysExchgRt">
+        UPDATE /* [commons.code.xml]["updateAplEndDt"][환율 기존 적용건 종료처리][Ed] */  
+        SYS_EXCHG_RT SET
+                 EXCHG_RT_APL_END_DT = #{exchgRtAplEndDt,jdbcType=TIMESTAMP}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+        AND     EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+    </update>
+    
+    <!-- 환율 등록 -->
+    <insert id="insertSysExchgRt" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysExchgRt">
+	    INSERT /* [commons.code.xml]["insertSysExchgRt"][환율 등록][Ed] */  
+	    INTO SYS_EXCHG_RT
+		(
+	        CRNCY_CD
+	       ,EXCHG_RT_APL_BEG_DT
+	       ,EXCHG_RT_APL_END_DT
+	       ,STDR_CRNCY_AMT
+	       ,EXCHG_RT_CRNCY_AMT
+	       ,EXCHG_RT_DSCR
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{crncyCd,jdbcType=VARCHAR}
+	       ,#{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+	       ,#{exchgRtAplEndDt,jdbcType=TIMESTAMP}
+	       ,#{stdrCrncyAmt,jdbcType=NUMERIC}
+	       ,#{exchgRtCrncyAmt,jdbcType=NUMERIC}
+	       ,#{exchgRtDscr,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <!-- 환율관리 중복 개수 -->
+	<select id="selectSysExchgDupCount" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysExchgRt" resultType="long">
+		SELECT  /* [commons.code.xml][selectSysExchgDupCount][환율관리 중복 개수][ed] */
+	    	COUNT(*)
+	  	FROM SYS_EXCHG_RT SER
+		WHERE 1=1
+		AND SER.CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+		AND SER.EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+	</select>
+
+    <!-- 현재 적용 통화코드 조회 -->
+	<select id="selectSysExchgCrncyCd" parameterType="String" resultType="com.plgrim.ncp.base.entities.datasource1.sys.SysExchgRt">
+		SELECT  /* [commons.code.xml][selectSysExchgDupCount][현재 적용 통화코드 조회][Yoon] */
+	    	 CRNCY_CD
+			,EXCHG_RT_APL_BEG_DT
+			,EXCHG_RT_APL_END_DT
+			,STDR_CRNCY_AMT
+			,EXCHG_RT_CRNCY_AMT
+			,EXCHG_RT_DSCR
+			,REGTR_ID
+			,UDTER_ID
+			,REG_DT
+			,UDT_DT
+	  	FROM SYS_EXCHG_RT SER
+		WHERE 1=1
+		AND SER.CRNCY_CD = #{crncyCd,jdbcType=VARCHAR}
+		AND SER.EXCHG_RT_APL_BEG_DT <![CDATA[<=]]> SYSDATE
+		AND SER.EXCHG_RT_APL_END_DT <![CDATA[>=]]> SYSDATE
+	</select>
+
+	<!-- 프로모션 적용 상품 가격 (배치)프로시져 수동 실행 -->
+	<update id="updateDspGoodsPriceProcedure" statementType="CALLABLE" >
+		/* [commons.code.xml][updateDspGoodsPriceProcedure][환율 적용 후 전시상품가격 (배치)프로시져 수동 실행][Yoon] */
+		DECLARE
+		  IC_SECT VARCHAR2(32767);
+		  IC_GOD_NO VARCHAR2(20);
+		  IC_PRM_NO VARCHAR2(20);
+		  OC_RESULT_CD VARCHAR2(32767);
+		  OC_RESULT_CONT VARCHAR2(32767);
+		BEGIN
+		  IC_SECT := 'ALL';
+		  IC_GOD_NO := NULL;
+		  IC_PRM_NO := NULL;
+		  OC_RESULT_CD := NULL;
+		  OC_RESULT_CONT := NULL;
+		  PKG_DSP_GOD_PRC.PC_DSP_GOD_PRC_MAIN ( IC_SECT, IC_GOD_NO, IC_PRM_NO, OC_RESULT_CD, OC_RESULT_CONT );
+		  COMMIT;
+		END;
+	</update>
+
+
+
+
+	<!-- /* SR[22287] 상품상세 페이지 내 상품 추가정보 노출 */ -->
+	<!-- <select id="getAddInfoCodeList"  resultType="com.plgrim.ncp.commons.result.CodeViewResult"> -->
+	<select id="getAddInfoCodeList"  resultType="com.plgrim.ncp.base.entities.datasource1.god.GodAditDetailExtend">
+		SELECT /* [commons.code.xml][getAddInfoCodeList][SR[22287] 상품상세 페이지 내 상품 추가정보 조회][seozzu] */
+			MSC_MAIN.CD,
+            MSC_MAIN.CD_NM AS cdNm
+		FROM MV_SYS_CD MSC_MAIN
+		WHERE 1=1
+        AND MSC_MAIN.LANG_CD 	= #{langCd}
+		AND MSC_MAIN.UPPER_CD 	= #{upperCd, jdbcType=VARCHAR}
+		AND MSC_MAIN.USE_YN 	= 'Y'
+		AND MSC_MAIN.CD IN (  SELECT GOD_ADIT_DETAIL_CD
+                               FROM GOD_ADIT_DETAIL  GAD
+                               WHERE 1=1
+                               AND GAD.GOD_NO = #{godNo}
+                               GROUP BY GOD_ADIT_DETAIL_CD
+                           )
+		ORDER BY MSC_MAIN.SORT_SEQ ASC
+	</select>
+
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodPrcResveReg" parameterType="godPrcResveReg" resultType="godPrcResveReg">
+		SELECT /* com.plgrim.ncp.base.selectGodPrcResveReg		Generator(Generator)	2018-05-23 */
+			   RESVE_REG_SN
+			 , GOD_NO
+			 , PRC_RESVE_SECT_CD
+			 , RESVE_BEG_DT
+			 , RESVE_END_DT
+			 , REG_ADMIN_ID
+			 , APRV_YN
+			 , APRV_DT
+			 , APRV_ADMIN_ID
+			 , APL_YN
+			 , APL_DT
+			 , APL_ADMIN_ID
+			 , RESVE_RTL_PRC
+			 , RESVE_CSMR_PRC
+			 , RESVE_EMP_PRC
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_PRC_RESVE_REG
+		 WHERE 1 = 1
+	   	   AND RESVE_REG_SN = #{resveRegSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateGodPrcResveReg" parameterType="godPrcResveReg">
+		UPDATE /* com.plgrim.ncp.base.updateGodPrcResveReg		Generator(Generator)	2018-05-23 */
+		GOD_PRC_RESVE_REG SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , PRC_RESVE_SECT_CD = #{prcResveSectCd,jdbcType=VARCHAR}
+			 , RESVE_BEG_DT = #{resveBegDt,jdbcType=TIMESTAMP}
+			 , RESVE_END_DT = #{resveEndDt,jdbcType=TIMESTAMP}
+			 , REG_ADMIN_ID = #{regAdminId,jdbcType=VARCHAR}
+			 , APRV_YN = #{aprvYn,jdbcType=VARCHAR}
+			 , APRV_DT = #{aprvDt,jdbcType=TIMESTAMP}
+			 , APRV_ADMIN_ID = #{aprvAdminId,jdbcType=VARCHAR}
+			 , APL_YN = #{aplYn,jdbcType=VARCHAR}
+			 , APL_DT = #{aplDt,jdbcType=TIMESTAMP}
+			 , APL_ADMIN_ID = #{aplAdminId,jdbcType=VARCHAR}
+			 , RESVE_RTL_PRC = #{resveRtlPrc,jdbcType=NUMERIC}
+			 , RESVE_CSMR_PRC = #{resveCsmrPrc,jdbcType=NUMERIC}
+			 , RESVE_EMP_PRC = #{resveEmpPrc,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND RESVE_REG_SN = #{resveRegSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertGodPrcResveReg" parameterType="godPrcResveReg">
+		INSERT /* com.plgrim.ncp.base.insertGodPrcResveReg		Generator(Generator)	2018-05-23 */
+		INTO   GOD_PRC_RESVE_REG (
+			   RESVE_REG_SN
+			 , GOD_NO
+			 , PRC_RESVE_SECT_CD
+			 , RESVE_BEG_DT
+			 , RESVE_END_DT
+			 , REG_ADMIN_ID
+			 , APRV_YN
+			 , APRV_DT
+			 , APRV_ADMIN_ID
+			 , APL_YN
+			 , APL_DT
+			 , APL_ADMIN_ID
+			 , RESVE_RTL_PRC
+			 , RESVE_CSMR_PRC
+			 , RESVE_EMP_PRC
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{resveRegSn,jdbcType=NUMERIC}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{prcResveSectCd,jdbcType=VARCHAR}
+			 , #{resveBegDt,jdbcType=TIMESTAMP}
+			 , #{resveEndDt,jdbcType=TIMESTAMP}
+			 , #{regAdminId,jdbcType=VARCHAR}
+			 , #{aprvYn,jdbcType=VARCHAR}
+			 , #{aprvDt,jdbcType=TIMESTAMP}
+			 , #{aprvAdminId,jdbcType=VARCHAR}
+			 , #{aplYn,jdbcType=VARCHAR}
+			 , #{aplDt,jdbcType=TIMESTAMP}
+			 , #{aplAdminId,jdbcType=VARCHAR}
+			 , #{resveRtlPrc,jdbcType=NUMERIC}
+			 , #{resveCsmrPrc,jdbcType=NUMERIC}
+			 , #{resveEmpPrc,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodPrcResveReg" parameterType="godPrcResveReg">
+		DELETE /* com.plgrim.ncp.base.deleteGodPrcResveReg		Generator(Generator)	2018-05-23 */
+		  FROM GOD_PRC_RESVE_REG
+		 WHERE 1 = 1
+		   AND RESVE_REG_SN = #{resveRegSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

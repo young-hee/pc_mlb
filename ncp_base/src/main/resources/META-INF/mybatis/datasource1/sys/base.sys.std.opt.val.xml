@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysStdOptVal" parameterType="sysStdOptVal" resultType="sysStdOptVal">
+		SELECT /* com.plgrim.ncp.base.selectSysStdOptVal		Generator(Generator)	2018-05-23 */
+			   STD_OPT_CD
+			 , STD_OPT_VAL_CD
+			 , OPT_VAL_NM
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_STD_OPT_VAL
+		 WHERE 1 = 1
+	   	   AND STD_OPT_CD = #{stdOptCd,jdbcType=VARCHAR}
+		   AND STD_OPT_VAL_CD = #{stdOptValCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysStdOptVal" parameterType="sysStdOptVal">
+		UPDATE /* com.plgrim.ncp.base.updateSysStdOptVal		Generator(Generator)	2018-05-23 */
+		SYS_STD_OPT_VAL SET
+			   OPT_VAL_NM = #{optValNm,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND STD_OPT_CD = #{stdOptCd,jdbcType=VARCHAR}
+		   AND STD_OPT_VAL_CD = #{stdOptValCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysStdOptVal" parameterType="sysStdOptVal">
+		INSERT /* com.plgrim.ncp.base.insertSysStdOptVal		Generator(Generator)	2018-05-23 */
+		INTO   SYS_STD_OPT_VAL (
+			   STD_OPT_CD
+			 , STD_OPT_VAL_CD
+			 , OPT_VAL_NM
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{stdOptCd,jdbcType=VARCHAR}
+			 , #{stdOptValCd,jdbcType=VARCHAR}
+			 , #{optValNm,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysStdOptVal" parameterType="sysStdOptVal">
+		DELETE /* com.plgrim.ncp.base.deleteSysStdOptVal		Generator(Generator)	2018-05-23 */
+		  FROM SYS_STD_OPT_VAL
+		 WHERE 1 = 1
+		   AND STD_OPT_CD = #{stdOptCd,jdbcType=VARCHAR}
+		   AND STD_OPT_VAL_CD = #{stdOptValCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

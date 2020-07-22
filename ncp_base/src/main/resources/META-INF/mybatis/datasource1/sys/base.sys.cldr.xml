@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysCldr" parameterType="sysCldr" resultType="sysCldr">
+		SELECT /* com.plgrim.ncp.base.selectSysCldr		Generator(Generator)	2018-05-23 */
+			   SYS_DATE
+			 , LRRDATE
+			 , YEAR
+			 , QU
+			 , MT
+			 , WEEK
+			 , DAY
+			 , DOW_CD
+			 , HLDY_YN
+			 , DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_CLDR
+		 WHERE 1 = 1
+	   	   AND SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysCldr" parameterType="sysCldr">
+		UPDATE /* com.plgrim.ncp.base.updateSysCldr		Generator(Generator)	2018-05-23 */
+		SYS_CLDR SET
+			   LRRDATE = #{lrrdate,jdbcType=VARCHAR}
+			 , YEAR = #{year,jdbcType=VARCHAR}
+			 , QU = #{qu,jdbcType=VARCHAR}
+			 , MT = #{mt,jdbcType=VARCHAR}
+			 , WEEK = #{week,jdbcType=VARCHAR}
+			 , DAY = #{day,jdbcType=VARCHAR}
+			 , DOW_CD = #{dowCd,jdbcType=VARCHAR}
+			 , HLDY_YN = #{hldyYn,jdbcType=VARCHAR}
+			 , DSCR = #{dscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysCldr" parameterType="sysCldr">
+		INSERT /* com.plgrim.ncp.base.insertSysCldr		Generator(Generator)	2018-05-23 */
+		INTO   SYS_CLDR (
+			   SYS_DATE
+			 , LRRDATE
+			 , YEAR
+			 , QU
+			 , MT
+			 , WEEK
+			 , DAY
+			 , DOW_CD
+			 , HLDY_YN
+			 , DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{sysDate,jdbcType=VARCHAR}
+			 , #{lrrdate,jdbcType=VARCHAR}
+			 , #{year,jdbcType=VARCHAR}
+			 , #{qu,jdbcType=VARCHAR}
+			 , #{mt,jdbcType=VARCHAR}
+			 , #{week,jdbcType=VARCHAR}
+			 , #{day,jdbcType=VARCHAR}
+			 , #{dowCd,jdbcType=VARCHAR}
+			 , #{hldyYn,jdbcType=VARCHAR}
+			 , #{dscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysCldr" parameterType="sysCldr">
+		DELETE /* com.plgrim.ncp.base.deleteSysCldr		Generator(Generator)	2018-05-23 */
+		  FROM SYS_CLDR
+		 WHERE 1 = 1
+		   AND SYS_DATE = #{sysDate,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

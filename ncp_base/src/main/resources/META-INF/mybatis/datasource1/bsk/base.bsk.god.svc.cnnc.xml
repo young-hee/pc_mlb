@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectBskGodSvcCnnc" parameterType="bskGodSvcCnnc" resultType="bskGodSvcCnnc">
+		SELECT /* com.plgrim.ncp.base.selectBskGodSvcCnnc		Generator(Generator)	2018-05-23 */
+			   BSK_NO
+			 , GOD_TURN
+			 , SVC_AMT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM BSK_GOD_SVC_CNNC
+		 WHERE 1 = 1
+	   	   AND BSK_NO = #{bskNo,jdbcType=VARCHAR}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateBskGodSvcCnnc" parameterType="bskGodSvcCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateBskGodSvcCnnc		Generator(Generator)	2018-05-23 */
+		BSK_GOD_SVC_CNNC SET
+			   SVC_AMT = #{svcAmt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BSK_NO = #{bskNo,jdbcType=VARCHAR}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertBskGodSvcCnnc" parameterType="bskGodSvcCnnc">
+		INSERT /* com.plgrim.ncp.base.insertBskGodSvcCnnc		Generator(Generator)	2018-05-23 */
+		INTO   BSK_GOD_SVC_CNNC (
+			   BSK_NO
+			 , GOD_TURN
+			 , SVC_AMT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{bskNo,jdbcType=VARCHAR}
+			 , #{godTurn,jdbcType=NUMERIC}
+			 , #{svcAmt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteBskGodSvcCnnc" parameterType="bskGodSvcCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteBskGodSvcCnnc		Generator(Generator)	2018-05-23 */
+		  FROM BSK_GOD_SVC_CNNC
+		 WHERE 1 = 1
+		   AND BSK_NO = #{bskNo,jdbcType=VARCHAR}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

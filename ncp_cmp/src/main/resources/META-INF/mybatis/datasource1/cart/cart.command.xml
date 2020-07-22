@@ -1,0 +1,879 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.cart.command">
+	
+	<insert id="insertBskMst" parameterType="bsk">
+	  	INSERT /* [cart.command.xml][insertBskMst][카트마스터추가on카트추가][박문철] */  
+	    INTO BSK
+		(   
+		    BSK_NO
+		   ,MALL_ID
+		   ,LANG_CD
+	       ,BSK_TP_CD
+	       ,MBR_SECT_CD
+	       ,MBR_NO
+	       ,SESION_ID
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID
+           ,UDT_DT
+		)
+		VALUES
+		(
+		    #{bskNo,jdbcType=VARCHAR}
+		   ,#{mallId,jdbcType=VARCHAR}
+		   ,#{langCd,jdbcType=VARCHAR}
+	       ,#{bskTpCd,jdbcType=VARCHAR}
+	       ,#{mbrSectCd,jdbcType=VARCHAR}
+	       ,#{mbrNo,jdbcType=VARCHAR}
+	       ,#{sesionId,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)   
+		
+	</insert>
+	
+	<insert id="insertBskGod" parameterType="bskGod">
+		INSERT /* [cart.command.xml][insertBskGod][카트상품추가on카트추가][박문철] */ 
+	    INTO bsk_god
+		(
+	        BSK_NO
+	       ,GOD_TURN
+	       ,GOD_NO
+	       ,ITM_NO
+	       ,ITM_QTY
+	       ,BSK_REG_DT
+	       ,PCKAGE_GOD_YN
+	       ,DLV_SECT_CD
+	       ,PKUP_SHOP_SN
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID
+           ,UDT_DT
+           ,RECOMEND_COM_CD
+		)
+		VALUES
+		(
+	        #{bskNo,jdbcType=VARCHAR}
+	       ,#{godTurn,jdbcType=NUMERIC}
+	       ,#{godNo,jdbcType=VARCHAR}
+	       ,#{itmNo,jdbcType=VARCHAR}
+	       ,#{itmQty,jdbcType=NUMERIC}
+	       ,SYSDATE
+	       ,#{pckageGodYn,jdbcType=VARCHAR}
+	       ,#{dlvSectCd,jdbcType=VARCHAR}
+	       ,#{pkupShopSn,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{recomendComCd,jdbcType=VARCHAR}
+		) 
+	</insert>
+	
+	<insert id="insertCartCpstGod" parameterType="bskCpstGodCnnc">
+	    INSERT /* [cart.command.xml][insertCartCpstGod][카트구성상품추가on카트추가][박문철] */
+	    INTO bsk_cpst_god_cnnc  
+		(
+	        BSK_NO
+	       ,GOD_TURN
+	       ,CPST_GOD_TURN
+	       ,PCKAGE_GOD_TP_CD
+	       ,CPST_GOD_QTY
+	       ,SORT_SEQ
+	       ,REGTR_ID
+           ,REG_DT
+           ,UDTER_ID
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{bskNo,jdbcType=VARCHAR}
+	       ,#{godTurn,jdbcType=NUMERIC}
+	       ,#{cpstGodTurn,jdbcType=NUMERIC}
+	       ,#{pckageGodTpCd,jdbcType=VARCHAR}
+	       ,#{cpstGodQty,jdbcType=NUMERIC}
+	       ,#{sortSeq,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+		)
+    </insert>
+
+	<update id="updateBskGodQty" parameterType="bskGod">
+		UPDATE bsk_god /* [cart.command.xml][updateBskGodQty][카트상품수량변경][박문철] */ 
+		   SET itm_qty  = #{itmQty,jdbcType=NUMERIC}
+		      ,udter_id = #{udterId,jdbcType=VARCHAR}
+              ,udt_dt   = SYSDATE
+         WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+           AND god_turn = #{godTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<update id="updateItmQtyIncrease" parameterType="bskGod">
+		UPDATE bsk_god /* [cart.command.xml][updateItmQtyIncrease][카트상품수량증가][박문철] */ 
+		   SET itm_qty  = itm_qty + #{itmQty,jdbcType=NUMERIC}
+		      ,udter_id = #{udterId,jdbcType=VARCHAR}
+              ,udt_dt   = SYSDATE
+         WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+           AND god_turn = #{godTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<delete id="deleteBskCpst" parameterType="bskGod">
+		DELETE /* [cart.command.xml][deleteBskCpst][카트구성상품삭제on카트삭제][김성엽] */  
+		  FROM bsk_cpst_god_cnnc 
+		 WHERE bsk_no = #{bskNo,jdbcType=VARCHAR}
+		   AND cpst_god_turn = #{godTurn,jdbcType=NUMERIC}
+	</delete>
+	
+	<delete id="deleteBskCpstByGodTurn" parameterType="bskGod">
+		DELETE /* [cart.command.xml][deleteBskCpstByGodTurn][카트구성상품삭제on카트삭제][박문철] */  
+		  FROM bsk_cpst_god_cnnc 
+		 WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+		   AND god_turn = #{godTurn,jdbcType=NUMERIC}
+	</delete>
+
+	<delete id="deleteBskGod" parameterType="bskGod">
+		DELETE /* [cart.command.xml][deleteBskGod][카트상품삭제on카트삭제][김성엽] */  
+		  FROM bsk_god 
+		 WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+		   AND god_turn = #{godTurn,jdbcType=NUMERIC}
+	</delete>
+	
+	<delete id="deleteBskByBskNo" parameterType="String">
+		DELETE /* [cart.command.xml][deleteBskByBskNo][카트마스트삭제on카트삭제][김성엽] */  
+		  FROM bsk 
+		 WHERE bsk_no = #{bskNo,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteBskGodByBskNo" parameterType="String">
+		DELETE /* [cart.command.xml][deleteBskByBskNo][장바구니 상품 삭제][박문철] */  
+		  FROM bsk_god
+		 WHERE bsk_no = #{bskNo,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteBskCpstGodByBskNo" parameterType="String">
+		DELETE /* [cart.command.xml][deleteBskByBskNo][장바구니 구성 상품 연결 삭제][박문철] */  
+		  FROM bsk_cpst_god_cnnc
+		 WHERE bsk_no = #{bskNo,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteBskByMbrNo" parameterType="String">
+		DELETE /* [cart.command.xml][deleteBskByBskNo][카트마스트삭제on카트삭제][김성엽] */  
+		  FROM bsk 
+		 WHERE MBR_NO     = #{mbrNo,jdbcType=VARCHAR}
+		 AND   BSK_TP_CD  = 'DIRT'
+	</delete>
+	
+	<delete id="deleteBskGodByMbrNo" parameterType="String">
+		DELETE /* [cart.command.xml][deleteBskByBskNo][장바구니 상품 삭제][박문철] */  
+		  FROM bsk_god
+		WHERE bsk_no IN (
+		 					SELECT BSK_NO FROM BSK
+		 					WHERE  MBR_NO    = #{mbrNo,jdbcType=VARCHAR}
+		 					AND    BSK_TP_CD = 'DIRT'
+		                 )
+	</delete>
+	
+	<delete id="deleteBskCpstGodByMbrNo" parameterType="String">
+		DELETE /* [cart.command.xml][deleteBskByBskNo][장바구니 구성 상품 연결 삭제][박문철] */  
+		  FROM bsk_cpst_god_cnnc
+		 WHERE bsk_no IN (
+		 					SELECT BSK_NO FROM BSK
+		 					WHERE  MBR_NO    = #{mbrNo,jdbcType=VARCHAR}
+		 					AND    BSK_TP_CD = 'DIRT'
+		                  )
+	</delete>
+	
+	
+	<update id="updateBskGodOption" parameterType="bskGod">
+		UPDATE /* [cart.command.xml][updateBskGodOption][카트구성상품갱신][박문철] */
+		BSK_GOD SET
+			 	 GOD_NO   = #{godNo,jdbcType=VARCHAR}
+			 	,ITM_NO   = #{itmNo,jdbcType=VARCHAR}
+			    ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT   = SYSDATE
+        WHERE   BSK_NO    = #{bskNo,jdbcType=VARCHAR}
+        AND     GOD_TURN  = #{godTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<update id="updateMbBskGodOption" parameterType="bskGod">
+		UPDATE /* [cart.command.xml][updateMbBskGodOption][카트구성상품갱신][박문철] */
+		BSK_GOD SET
+			 	 GOD_NO   = #{godNo,jdbcType=VARCHAR}
+			 	,ITM_NO   = #{itmNo,jdbcType=VARCHAR}
+			 	,ITM_QTY  = #{itmQty,jdbcType=NUMERIC}
+			    ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT   = SYSDATE
+        WHERE   BSK_NO    = #{bskNo,jdbcType=VARCHAR}
+        AND     GOD_TURN  = #{godTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<insert id="mergeBskGod" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+		   INSERT /* [cart.command.xml][mergeBskGod][카트상품병합on카트병합][박문철] */
+		   INTO BSK_GOD   (
+		   			   bsk_no
+		             , god_turn
+		             , god_no
+		             , itm_no
+		             , itm_qty
+		             , bsk_reg_dt
+		             , pckage_god_yn
+		             , dlv_sect_cd
+		             , pkup_shop_sn
+		             , pkup_shop_visit_date
+		             , regtr_id
+		             , reg_dt
+		             , udter_id
+		             , udt_dt
+		             , recomend_com_cd
+		             )
+		   SELECT
+		             #{targetBsk.bskNo,jdbcType=VARCHAR}
+		           , god_turn + #{maxGodTurn,jdbcType=NUMERIC}
+		   		   , god_no
+		           , itm_no
+		           , itm_qty
+		           , bsk_reg_dt
+		           , pckage_god_yn
+		           , dlv_sect_cd
+		           , pkup_shop_sn
+		           , pkup_shop_visit_date
+		           , #{bsk.regtrId,jdbcType=VARCHAR}
+		           , reg_dt
+		           , #{bsk.udterId,jdbcType=VARCHAR}
+		           , udt_dt
+		           , recomend_com_cd
+		   FROM    BSK_GOD
+		   WHERE   BSK_NO = #{bsk.bskNo,jdbcType=VARCHAR}
+	</insert>
+	
+	<insert id="mergeBskCpstGodCnnc" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+	    INSERT /* [cart.command.xml][mergeBskCpstGodCnnc][카트구성상품추가on카트병합][김성엽] */
+	    INTO BSK_CPST_GOD_CNNC
+		(
+	        bsk_no
+	       ,god_turn
+	       ,cpst_god_turn
+	       ,pckage_god_tp_cd
+	       ,cpst_god_qty
+	       ,sort_seq
+	       ,regtr_id
+           ,reg_dt
+           ,udter_id
+           ,udt_dt
+		)
+		SELECT 
+			   #{targetBsk.bskNo,jdbcType=VARCHAR}
+		     , god_turn + #{maxGodTurn,jdbcType=NUMERIC}
+		     , cpst_god_turn + #{maxGodTurn,jdbcType=NUMERIC}
+		     , pckage_god_tp_cd
+		     , cpst_god_qty
+		     , sort_seq
+		     , #{bsk.regtrId,jdbcType=VARCHAR}
+			 , reg_dt
+			 , #{bsk.udterId,jdbcType=VARCHAR}
+			 , udt_dt
+		FROM   BSK_CPST_GOD_CNNC
+		WHERE  BSK_NO = #{bsk.bskNo,jdbcType=VARCHAR}
+	</insert>	
+	
+	<delete id="deleteBskCpstBySessionId" parameterType="bsk">
+		DELETE /* [cart.command.xml][deleteBskCpstBySessionId][카트삭제on카트병합][김성엽] */ 
+		  FROM bsk_cpst_god_cnnc 
+		WHERE  bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteBskGodBySessionId" parameterType="bsk">
+		DELETE /* [cart.command.xml][deleteBskGodBySessionId][카트삭제on카트병합][김성엽] */ 
+		  FROM bsk_god 
+		 WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteBskBySessionId" parameterType="bsk">
+		DELETE /* [cart.command.xml][deleteBskBySessionId][카트삭제on카트병합][김성엽] */ 
+		FROM bsk 
+        WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="updateBskBySessionId" parameterType="bsk">
+		UPDATE bsk /* [cart.command.xml][updateBskBySessionId][카트갱신on카트병합][김성엽] */ 
+		   SET mbr_no      = #{mbrNo,jdbcType=VARCHAR}
+		     , mbr_sect_cd = 'MBR'
+		     , sesion_id   = ''
+		     , udter_id    = #{udterId,jdbcType=VARCHAR}
+		     , udt_dt      = SYSDATE
+         WHERE sesion_id   = #{sesionId,jdbcType=VARCHAR}
+           AND bsk_tp_cd   = #{bskTpCd,jdbcType=VARCHAR}
+
+		<if test='langCd != null and langCd != ""'>
+	       AND lang_cd     = #{langCd,jdbcType=VARCHAR}
+		</if>
+
+	</update>
+	
+	<update id="updateBskGodBySessionId" parameterType="bsk">
+		UPDATE bsk_god /* [cart.command.xml][updateBskGodBySessionId][카트갱신on카트병합][김성엽] */ 
+		   SET udt_dt   = SYSDATE
+		      ,udter_id = #{udterId,jdbcType=VARCHAR}
+         WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateBskCpstGodBySessionId" parameterType="bsk">
+		UPDATE bsk_cpst_god_cnnc /* [cart.command.xml][updateBskCpstGodBySessionId][카트갱신on카트병합][김성엽] */ 
+		   SET udt_dt   = SYSDATE
+		      ,udter_id = #{udterId,jdbcType=VARCHAR}
+         WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateBskByMbrNo" parameterType="bsk">
+		UPDATE bsk /* [cart.command.xml][updateBskByMbrNo][카트갱신on카트병합][김성엽] */ 
+		   SET udt_dt    = SYSDATE
+	          ,udter_id  = #{udterId,jdbcType=VARCHAR}
+         WHERE mbr_no    = #{mbrNo,jdbcType=VARCHAR}
+           AND bsk_tp_cd = #{bskTpCd,jdbcType=VARCHAR}
+           AND mall_id   = #{mallId,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="insertMergeCartGod" parameterType="bskGod">
+	MERGE INTO BSK_GOD base /* [cart.command.xml][insertMergeCartGod][카트갱신,등록][박문철] */ 
+      USING (
+               SELECT
+                      #{bskNo,jdbcType=VARCHAR}  AS bsk_no,
+                      #{godNo,jdbcType=VARCHAR}  AS god_no,
+				      #{itmNo,jdbcType=VARCHAR}  AS itm_no,
+				      #{itmQty,jdbcType=NUMERIC} AS itm_qty,
+				      #{pckageGodYn,jdbcType=VARCHAR} AS pckage_god_yn,
+				      #{dlvSectCd,jdbcType=VARCHAR}   AS dlv_sect_cd
+				      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)">
+				      ,#{pkupShopSn,jdbcType=NUMERIC}  AS pkup_shop_sn
+				      </if>        
+				      , (
+				        SELECT GOD_TURN
+				         FROM BSK_GOD BG
+			            WHERE bsk_no = #{bskNo,jdbcType=VARCHAR}
+			               AND god_no = #{godNo,jdbcType=VARCHAR}
+						   AND itm_no = #{itmNo,jdbcType=VARCHAR}
+						   AND dlv_sect_cd = #{dlvSectCd,jdbcType=VARCHAR}
+					      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)">
+					       AND pkup_shop_sn = #{pkupShopSn,jdbcType=NUMERIC} /*#45965 로 수정 같은상품이 여러매장에 담겨있으면 쿼리오류발생 해당매장상품에 머지할수 있도록 수정*/
+					      </if>        						   						   
+						   AND NOT EXISTS (
+						          SELECT 1
+						            FROM BSK_CPST_GOD_CNNC BCGC
+						          WHERE BCGC.BSK_NO =  BG.BSK_NO
+						             AND BCGC.CPST_GOD_TURN = BG.GOD_TURN
+						          )
+				        ) AS GOD_TURN
+               FROM  DUAL
+            ) target
+     ON (base.bsk_no = target.bsk_no
+     AND base.god_no = target.god_no 
+     AND base.itm_no = target.itm_no 
+     AND base.dlv_sect_cd = target.dlv_sect_cd 
+     AND base.GOD_TURN = target.GOD_TURN
+    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)">
+	 AND NVL(base.pkup_shop_sn,'1') = NVL(target.pkup_shop_sn,'1')
+	</if>
+     )
+	WHEN MATCHED THEN         
+			UPDATE SET  
+		        base.itm_qty  = base.itm_qty + target.itm_qty,
+		        base.udter_id = #{udterId,jdbcType=VARCHAR},
+		        base.udt_dt   = SYSDATE
+	WHEN NOT MATCHED THEN 
+	        INSERT (
+	              base.bsk_no,
+	              base.god_turn,
+	              base.god_no,
+	              base.itm_no,
+	              base.itm_qty,
+	              base.bsk_reg_dt,
+	              base.pckage_god_yn,
+	              base.dlv_sect_cd,
+	             <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)">
+	              base.pkup_shop_sn,
+	             </if>
+	              base.regtr_id,
+	              base.reg_dt,
+	              base.udter_id,
+	              base.udt_dt,
+	              base.recomend_com_cd
+	             ) 
+	        VALUES (  target.bsk_no,
+	                  <!-- 장바구니 데이터 적재 
+	                  NVL((SELECT MAX(NVL(GOD_TURN,0))+1  FROM BSK_GOD WHERE bsk_no = #{bskNo,jdbcType=VARCHAR}),1),
+	                  -->
+	                  #{godTurn,jdbcType=NUMERIC},
+	                  target.god_no,
+	                  target.itm_no,
+	                  target.itm_qty,
+	                  sysdate,
+	                  target.pckage_god_yn,
+	                  target.dlv_sect_cd,
+	                  <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)">
+	                  target.pkup_shop_sn,
+	                  </if>
+	                  #{regtrId,jdbcType=VARCHAR},
+	                  SYSDATE,
+	                  #{udterId,jdbcType=VARCHAR},
+	                  SYSDATE,
+	                  #{recomendComCd,jdbcType=VARCHAR}
+	                )
+	</update>
+	
+	<update id="updateCartDlv" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+		UPDATE BSK_GOD /* [cart.command.xml][updateCartDlvPckage][장바구니상품 배송정보 변경(매장-> 일반)]][박문철] */ 
+		  SET
+		      DLV_SECT_CD = 'GNRL_DLV',
+		      PKUP_SHOP_SN = '',
+		      UDTER_ID = #{udterId,jdbcType=VARCHAR},
+		      UDT_DT = SYSDATE
+	   WHERE  BSK_NO = #{bsk.bskNo,jdbcType=VARCHAR}
+	   AND    GOD_TURN IN 
+			  <foreach collection="bskGodList" item="bskGod" open="(" separator="," close=")">
+			  #{bskGod.godTurn,jdbcType=NUMERIC}
+			  </foreach>
+	</update>
+	
+	<update id="updateCartDlvPckage" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+		UPDATE BSK_GOD /* [cart.command.xml][updateCartDlvPckage][장바구니 패키지형 상품 배송정보 변경(매장-> 일반)]][박문철] */ 
+		  SET
+		      DLV_SECT_CD = 'GNRL_DLV',
+		      PKUP_SHOP_SN = '',
+		      UDTER_ID = #{udterId,jdbcType=VARCHAR},
+		      UDT_DT = SYSDATE
+	   WHERE  BSK_NO = #{bsk.bskNo,jdbcType=VARCHAR}
+	   AND    GOD_TURN IN (
+							SELECT CPST_GOD_TURN
+							FROM   BSK_CPST_GOD_CNNC
+							WHERE  BSK_NO = #{bsk.bskNo,jdbcType=VARCHAR}
+							AND    GOD_TURN IN
+							<foreach collection="bskGodList" item="bskGod" open="(" separator="," close=")">
+							#{bskGod.godTurn,jdbcType=NUMERIC}
+						    </foreach>
+                           )
+	</update>
+	
+	<insert id="insertWishListGod" parameterType="com.plgrim.ncp.biz.cart.data.WishListSearchDTO">
+	
+		MERGE INTO /* [cart.command.xml][insertWishListGod][위시리스트 상품 등록][박문철] */ 
+		           bsk_wishlst_god base
+		   USING ( 
+		   			<foreach collection="bskWishlstGod" item="wishList" index="idx"  separator="UNION ALL" >
+		   			 SELECT  #{wishList.wishlstSn,jdbcType=NUMERIC} AS wishlst_sn
+		   			        ,#{idx,jdbcType=NUMERIC}+1 AS god_turn
+		   			        ,#{wishList.godNo,jdbcType=VARCHAR} AS god_no
+		   			        ,#{wishList.itmNo,jdbcType=VARCHAR} AS itm_no 
+		   			        ,#{wishList.pckageGodYn,jdbcType=VARCHAR} AS pckage_god_yn 
+		   			 FROM DUAL
+		   			</foreach>
+		          ) target
+		   ON (base.wishlst_sn = target.wishlst_sn
+		       AND base.god_no = target.god_no 
+		     )
+		WHEN NOT MATCHED THEN 
+			INSERT (
+				wishlst_sn
+               ,god_turn
+               ,god_no
+               ,itm_no
+               ,itm_qty
+               ,wishlst_reg_dt
+               ,pckage_god_yn
+               ,utid
+               ,regtr_id
+               ,reg_dt
+               ,udter_id
+               ,udt_dt
+			) VALUES (
+				target.wishlst_sn
+		       ,(SELECT NVL(MAX(god_turn),0) FROM  bsk_wishlst_god where wishlst_sn = #{bskWishlst.wishlstSn,jdbcType=NUMERIC})+ target.god_turn
+		       ,target.god_no
+		       ,target.itm_no
+		       ,1
+		       ,sysdate
+		       ,target.pckage_god_yn
+		       ,#{userTrackingId,jdbcType=VARCHAR}	
+		       ,#{bskWishlst.regtrId,jdbcType=VARCHAR}
+		       ,sysdate
+		       ,#{bskWishlst.udterId,jdbcType=VARCHAR}
+		       ,sysdate
+			) 
+		WHEN MATCHED THEN
+		    UPDATE SET 
+                UDTER_ID = #{bskWishlst.udterId,jdbcType=VARCHAR},
+                UDT_DT = SYSDATE
+	</insert>
+	
+	
+	<insert id="insertInvAlrm" parameterType="godReWhsgNtcn">
+	MERGE INTO /* [cart.command.xml][insertInvAlrm][재입고 알림 신청 등록][박문철] */ 
+	           GOD_RE_WHSG_NTCN bas
+	      USING (
+	              SELECT
+	                     #{godNo,jdbcType=VARCHAR} AS god_no,
+	                     #{itmNo,jdbcType=VARCHAR} AS itm_no,
+	                     #{setGodNo,jdbcType=VARCHAR} AS set_god_no,
+	                     #{mobilAreaNo,jdbcType=VARCHAR} AS mobil_area_no,
+	                     #{mobilTlofNo,jdbcType=VARCHAR} AS mobil_tlof_no,
+	                     #{mobilTlofWthnNo,jdbcType=VARCHAR} AS mobil_tlof_wthn_no,
+	                     #{mobilNationNo,jdbcType=VARCHAR} AS mobil_nation_no
+	              FROM  DUAL
+	            ) target
+	      ON (
+	                bas.god_no = target.god_no
+	            AND bas.itm_no = target.itm_no
+	            AND bas.mobil_area_no =  target.mobil_area_no
+	            AND bas.mobil_tlof_no =  target.mobil_tlof_no
+	            AND bas.mobil_tlof_wthn_no = target.mobil_tlof_wthn_no
+	            AND bas.mobil_nation_no = target.mobil_nation_no
+	            AND bas.ntcn_compt_yn = 'N'
+	            AND bas.delete_yn = 'N'
+	         )
+	WHEN MATCHED THEN 
+	      UPDATE SET 
+	                 UDTER_ID = #{udterId,jdbcType=VARCHAR},
+	                 UDT_DT = SYSDATE
+	WHEN NOT MATCHED THEN 
+	     INSERT (
+	               RE_WHSG_NTCN_SN,
+	               GOD_NO,
+	               ITM_NO,
+	               SET_GOD_NO,
+	               <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNo)">
+	               MBR_NO,
+	               </if>
+
+	               <!-- ncp 3차 -->
+                   NTCN_SECT_CD,
+                   MBR_EMAIL,
+	               <!-- ncp 3차 -->
+
+	               MOBIL_AREA_NO,
+	               MOBIL_TLOF_NO,
+	               MOBIL_TLOF_WTHN_NO,
+	               MOBIL_NATION_NO,
+	               NTCN_COMPT_YN,
+	               DELETE_YN,
+	               STPLAT_IEM_AGR_YN,
+	               STPLAT_CD,
+	               REGTR_ID,
+	               REG_DT,
+	               UDTER_ID,
+	               UDT_DT
+	            ) VALUES (
+	              SQ_GOD_RE_WHSG_NTCN.nextval,
+	              target.god_no,
+	              target.itm_no,
+	              target.set_god_no,
+	              <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNo)">
+	              #{mbrNo,jdbcType=VARCHAR},
+	              </if>
+
+               	  <!-- ncp 3차 -->
+	              #{ntcnSectCd,jdbcType=VARCHAR},
+	              #{mbrEmail,jdbcType=VARCHAR},
+               	  <!-- ncp 3차 -->
+
+	              target.mobil_area_no,
+	              target.mobil_tlof_no,
+	              target.mobil_tlof_wthn_no,
+	              target.mobil_nation_no,
+	              'N',
+	              'N',
+	              'Y',
+	              #{stplatCd,jdbcType=VARCHAR},
+	              #{regtrId,jdbcType=VARCHAR},
+	              SYSDATE,
+	              #{udterId,jdbcType=VARCHAR},
+	              SYSDATE
+	            )
+	</insert>
+	
+	<update id="updatePkupShop" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+	UPDATE /* [cart.command.xml][updatePkupShop][픽업 매장 변경 등록][박문철] */ 
+	       BSK_GOD SET 
+		   PKUP_SHOP_SN = #{shopId,jdbcType=VARCHAR},
+		   UDTER_ID = #{udterId,jdbcType=VARCHAR},
+		   UDT_DT = SYSDATE
+	WHERE (bsk_no,god_turn) IN (
+	                            SELECT
+	                                  bsk_no,
+	                                  god_turn
+	                            FROM  BSK_GOD 
+	                            WHERE (bsk_no,god_turn) IN 
+	                            <foreach collection="bskGodList" item="bskGod" open="(" separator="," close=")">
+								  (#{bskGod.bskNo,jdbcType=VARCHAR},#{bskGod.godTurn,jdbcType=NUMERIC})
+							    </foreach>
+								
+	                            UNION ALL
+	
+	                            SELECT
+	                                  bsk_no,
+	                                  cpst_god_turn as god_turn
+	                            FROM  BSK_CPST_GOD_CNNC 
+	                            WHERE (bsk_no,god_turn) IN
+	                             <foreach collection="bskGodList" item="bskGod" open="(" separator="," close=")">
+								  (#{bskGod.bskNo,jdbcType=VARCHAR},#{bskGod.godTurn,jdbcType=NUMERIC})
+							    </foreach>
+	                          )
+	</update>
+	
+	<delete id="deleteBskGodCnncByOptChange" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+		DELETE /* [cart.command.xml][deleteBskGodCnncByOptChange][장바구니 구성 상품 연결 삭제(옵션변경병합)][박문철] */ 
+		FROM BSK_CPST_GOD_CNNC
+		WHERE  (BSK_NO,GOD_TURN) IN 
+	    <foreach collection="bskgodExtendList" item="bskgodExtend" open="(" separator="," close=")">
+		  (#{bskgodExtend.bskNo,jdbcType=VARCHAR},#{bskgodExtend.parentGodTurn,jdbcType=NUMERIC})
+	    </foreach>
+	</delete>
+	
+	<delete id="deleteBskGodByOptChange" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+		DELETE /* [cart.command.xml][deleteBskGodByOptChange][장바구니 상품 삭제(옵션변경병합)][박문철] */ 
+		FROM BSK_GOD
+		WHERE  (BSK_NO,GOD_TURN) IN 
+	    <foreach collection="bskgodExtendList" item="bskgodExtend" open="(" separator="," close=")">
+		  (#{bskgodExtend.bskNo,jdbcType=VARCHAR},#{bskgodExtend.godTurn,jdbcType=NUMERIC})
+	    </foreach>
+	</delete>
+	
+	<delete id="deleteBskGodMasterByOptChange" parameterType="com.plgrim.ncp.biz.cart.data.CartSearchDTO">
+		DELETE /* [cart.command.xml][deleteBskGodByOptChange][장바구니 상품 삭제(옵션변경병합)][박문철] */ 
+		FROM BSK_GOD
+		WHERE  (BSK_NO,GOD_TURN) IN 
+	    <foreach collection="bskgodExtendList" item="bskgodExtend" open="(" separator="," close=")">
+		  (#{bskgodExtend.bskNo,jdbcType=VARCHAR},#{bskgodExtend.parentGodTurn,jdbcType=NUMERIC})
+	    </foreach>
+	</delete>
+	
+	<update id="updateGodItmQty" parameterType="bskGodExtend">
+		UPDATE bsk_god /* [cart.command.xml][updateItmQtyIncrease][카트상품수량증가][박문철] */ 
+		   SET itm_qty  = #{itmQty,jdbcType=NUMERIC}
+              ,udt_dt   = SYSDATE
+         WHERE bsk_no   = #{bskNo,jdbcType=VARCHAR}
+           AND god_turn = #{parentGodTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<update id="updateSetGodItmQty" parameterType="bskGodExtend">
+	 UPDATE BSK_GOD /* [cart.command.xml][updateSetGodItmQty][카트 세트상품수량증가][박문철] */ 
+	        SET ITM_QTY = (#{itmQty,jdbcType=NUMERIC} * (SELECT 
+	                                                            CPST_GOD_QTY 
+	                                                    FROM BSK_CPST_GOD_CNNC
+	                                                    WHERE BSK_NO   = #{bskNo,jdbcType=VARCHAR}
+	                                                    AND   GOD_TURN = #{parentGodTurn,jdbcType=NUMERIC}
+	                                                    AND   CPST_GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+	                                                    ))
+	 WHERE BSK_NO   = #{bskNo,jdbcType=VARCHAR}
+	 AND   GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+	</update>
+	
+	<update id="mergeBskGodItmQty" parameterType="bskGod">
+	
+		 MERGE INTO BSK_GOD bas  /* [cart.command.xml][mergeBskGodItmQty][장바구니 동일 상품 병합][박문철] */ 
+		 USING (           SELECT
+		                          bsk_no,
+		                          parent_god_turn as god_turn,
+		                          itm_qty
+		                    FROM (
+		                            SELECT
+		                                   bsk_no,
+		                                   parent_god_turn,
+		                                   sum(itm_qty) over (partition by god_no,itm_no) as itm_qty,
+		                                   count(1) over(partition by god_no,itm_no) as rcnt,
+		                                   row_number() over(partition by god_no,itm_no order by udt_dt desc) as rnum
+		                            FROM (
+		                                        SELECT
+		                                                bsk_no,
+		                                                parent_god_turn,
+		                                                sum(decode(god_turn,parent_god_turn,itm_qty,0)) as itm_qty,
+		                                                listagg(god_no,',') within group(order by sort_seq) as god_no,
+		                                                listagg(itm_no,',') within group(order by sort_seq) as itm_no,
+		                                                max(udt_dt) as udt_dt
+		                                        FROM (       
+		                                                SELECT 
+		                                                        * 
+		                                                FROM (
+		                                                       SELECT 
+		                                                           bskgod.bsk_no,
+		                                                           bskgod.god_turn,
+		                                                           bskgod.god_no,
+		                                                           bskgod.itm_no,
+		                                                           bskgod.itm_qty,
+		                                                           bskgod.udt_dt,
+		                                                           NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+		                                                           NVL(t1.sort_seq,0) as sort_seq
+		                                                      FROM BSK_GOD bskgod
+		                                                      LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+		                                                                   ON bskgod.bsk_no   = t1.bsk_no
+		                                                                  AND bskgod.god_turn = t1.cpst_god_turn
+		                                                      WHERE bskgod.bsk_no = #{bskNo,jdbcType=VARCHAR}
+		                                                      AND   bskgod.dlv_sect_cd = #{dlvSectCd,jdbcType=VARCHAR}
+		                                                      <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)'>
+										                      AND   bskgod.pkup_shop_sn = #{pkupShopSn,jdbcType=VARCHAR}
+										                      </if>
+		                                                      
+		                                                     ) bas
+		                                                WHERE NOT EXISTS (
+		                                                                     SELECT 'Y' 
+		                                                                     FROM   BSK_CPST_GOD_CNNC st1
+		                                                                     WHERE  st1.bsk_no = bas.bsk_no
+		                                                                     AND    st1.god_turn = bas.parent_god_turn
+		                                                                     AND    st1.pckage_god_tp_cd = 'ADIT_CPST_GOD'
+		                                                                  )
+		                                                ORDER BY parent_god_turn,sort_seq
+		                                                )
+		                                                GROUP BY bsk_no,parent_god_turn
+		                                 )
+		                    )                 
+		                    WHERE   rcnt > 1 
+		                    AND     rnum = 1           
+			            
+			           UNION ALL
+			           
+			           SELECT
+			                  t1.bsk_no,
+			                  t2.cpst_god_turn as god_turn,
+			                  t1.itm_qty * t2.cpst_god_qty as itm_qty
+			            FROM (
+			                    SELECT
+			                          bsk_no,
+			                          parent_god_turn,
+			                          itm_qty,
+			                          rnum
+			                    FROM (
+			                            SELECT
+			                                   bsk_no,
+			                                   parent_god_turn,
+			                                   sum(itm_qty) over (partition by god_no,itm_no) as itm_qty,
+			                                   count(1) over(partition by god_no,itm_no) as rcnt,
+			                                   row_number() over(partition by god_no,itm_no order by udt_dt desc) as rnum
+			                            FROM (
+			                                        SELECT
+			                                                bsk_no,
+			                                                parent_god_turn,
+			                                                sum(decode(god_turn,parent_god_turn,itm_qty,0)) as itm_qty,
+			                                                listagg(god_no,',') within group(order by sort_seq) as god_no,
+			                                                listagg(itm_no,',') within group(order by sort_seq) as itm_no,
+			                                                max(udt_dt) as udt_dt
+			                                        FROM (       
+			                                                SELECT 
+			                                                        * 
+			                                                FROM (
+			                                                       SELECT 
+			                                                           bskgod.bsk_no,
+			                                                           bskgod.god_turn,
+			                                                           bskgod.god_no,
+			                                                           bskgod.itm_no,
+			                                                           bskgod.itm_qty,
+			                                                           bskgod.udt_dt,
+			                                                           NVL(t1.god_turn,bskgod.god_turn) AS parent_god_turn,
+			                                                           NVL(t1.sort_seq,0) as sort_seq
+			                                                      FROM BSK_GOD bskgod
+			                                                      LEFT OUTER JOIN BSK_CPST_GOD_CNNC t1
+			                                                                   ON bskgod.bsk_no   = t1.bsk_no
+			                                                                  AND bskgod.god_turn = t1.cpst_god_turn
+			                                                      WHERE bskgod.bsk_no = #{bskNo,jdbcType=VARCHAR}
+			                                                      AND   bskgod.pckage_god_yn = 'Y'
+			                                                      AND   bskgod.dlv_sect_cd = #{dlvSectCd,jdbcType=VARCHAR}
+			                                                      <if test='!@com.plgrim.ncp.framework.commons.StringService@isEmpty(pkupShopSn)'>
+											                      AND   bskgod.pkup_shop_sn = #{pkupShopSn,jdbcType=VARCHAR}
+											                      </if>
+			                                                     ) bas
+			                                                WHERE NOT EXISTS (
+			                                                                     SELECT 'Y' 
+			                                                                     FROM   BSK_CPST_GOD_CNNC st1
+			                                                                     WHERE  st1.bsk_no = bas.bsk_no
+			                                                                     AND    st1.god_turn = bas.parent_god_turn
+			                                                                     AND    st1.pckage_god_tp_cd = 'ADIT_CPST_GOD'
+			                                                                  )
+			                                                ORDER BY parent_god_turn,sort_seq
+			                                                )
+			                                                GROUP BY bsk_no,parent_god_turn
+			                                 )
+			                    )                 
+			                    WHERE   rcnt > 1 
+			                    AND     rnum = 1           
+			            ) t1 
+			             JOIN  BSK_CPST_GOD_CNNC t2
+			                          ON  t1.bsk_no = t2.bsk_no 
+			                         AND  t1.parent_god_turn  = t2.god_turn
+			            ) target on (bas.bsk_no = target.bsk_no AND bas.god_turn = target.god_turn)
+			WHEN MATCHED THEN
+			      UPDATE SET itm_qty = target.itm_qty
+	</update>
+	
+	<delete id="deleteWishList" parameterType="bskWishlstGod">
+		DELETE FROM BSK_WISHLST_GOD /* [cart.command.xml][deleteWishList][위시리스트 삭제][박문철] */ 
+		WHERE  WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+		AND    GOD_NO     = #{godNo,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 장바구니 데이터 적재 -->
+	<insert id="insertCartBskGodHist" parameterType="com.plgrim.ncp.biz.cart.data.CartGodHistDTO">
+    	<selectKey keyProperty="bskGodHistSn" resultType="long" order="BEFORE"> 
+			SELECT SQ_BSK_GOD_HIST.NEXTVAL FROM DUAL
+		</selectKey> 
+	    
+	    INSERT /* [cart.command.xml][insertCartBskGodHist][장바구니이력 등록][이종복] */  
+	    INTO BSK_GOD_HIST
+		(
+		   BSK_GOD_HIST_SN,
+		   BSK_NO,
+		   MBR_NO, 
+		   GOD_NO,
+		   ITM_NO,
+		   BSK_REG_DT, 
+		   PCKAGE_GOD_YN,
+		   PCKAGE_GOD_TP_CD,
+		   UPPER_BSK_GOD_HIST_SN, 
+		   DLV_SECT_CD,
+		   PKUP_SHOP_SN,
+		   PKUP_SHOP_VISIT_DATE, 
+		   TRNSC_TP_CD,
+		   UTID,
+		   REGTR_ID,
+		   REG_DT, 
+		   UDTER_ID,
+		   UDT_DT
+		) 
+		VALUES
+		(
+		   #{bskGodHistSn, jdbcType=NUMERIC},
+		   #{bskNo, jdbcType=VARCHAR},
+		   #{mbrNo, jdbcType=VARCHAR}, 
+		   #{godNo, jdbcType=VARCHAR},
+		   #{itmNo, jdbcType=VARCHAR},
+		   #{bskRegDt, jdbcType=TIMESTAMP}, 
+		   #{pckageGodYn, jdbcType=VARCHAR},
+		   #{pckageGodTpCd, jdbcType=VARCHAR},
+		   #{upperBskGodHistSn, jdbcType=NUMERIC}, 
+		   #{dlvSectCd, jdbcType=VARCHAR},
+		   #{pkupShopSn, jdbcType=VARCHAR},
+		   #{pkupShopVisitDate, jdbcType=VARCHAR}, 
+		   #{trnscTpCd, jdbcType=VARCHAR},
+		   #{userTrackingId,jdbcType=VARCHAR},
+		   #{regtrId, jdbcType=VARCHAR},
+		   SYSDATE, 
+		   #{udterId, jdbcType=VARCHAR},
+		   SYSDATE
+		)   
+    </insert>
+    
+    <update id="updateCartCpstGod" parameterType="bskCpstGodCnnc">
+	    UPDATE /* [cart.command.xml][updateCartCpstGod][카트구성상품변경][박문철] */
+	    	bsk_cpst_god_cnnc
+	    SET  
+	    	GOD_TURN = #{cpstGodTurn,jdbcType=NUMERIC}
+	    	,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+           	,UDT_DT = sysdate
+	    WHERE	
+	    	BSK_NO = #{bskNo,jdbcType=VARCHAR}
+	    	AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+	    	AND PCKAGE_GOD_TP_CD = #{pckageGodTpCd,jdbcType=VARCHAR}
+    </update>	
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodOptVal" parameterType="godOptVal" resultType="godOptVal">
+		SELECT /* com.plgrim.ncp.base.selectGodOptVal		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , OPT_CD
+			 , OPT_VAL_CD
+			 , OPT_VAL_NM
+			 , USE_YN
+			 , SORT_SEQ
+			 , COM_ID
+			 , STD_OPT_CD
+			 , STD_OPT_VAL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_OPT_VAL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+		   AND OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodOptVal" parameterType="godOptVal">
+		UPDATE /* com.plgrim.ncp.base.updateGodOptVal		Generator(Generator)	2018-05-23 */
+		GOD_OPT_VAL SET
+			   OPT_VAL_NM = #{optValNm,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , STD_OPT_CD = #{stdOptCd,jdbcType=VARCHAR}
+			 , STD_OPT_VAL_CD = #{stdOptValCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+		   AND OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodOptVal" parameterType="godOptVal">
+		INSERT /* com.plgrim.ncp.base.insertGodOptVal		Generator(Generator)	2018-05-23 */
+		INTO   GOD_OPT_VAL (
+			   GOD_NO
+			 , OPT_CD
+			 , OPT_VAL_CD
+			 , OPT_VAL_NM
+			 , USE_YN
+			 , SORT_SEQ
+			 , COM_ID
+			 , STD_OPT_CD
+			 , STD_OPT_VAL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{optCd,jdbcType=VARCHAR}
+			 , #{optValCd,jdbcType=VARCHAR}
+			 , #{optValNm,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{stdOptCd,jdbcType=VARCHAR}
+			 , #{stdOptValCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodOptVal" parameterType="godOptVal">
+		DELETE /* com.plgrim.ncp.base.deleteGodOptVal		Generator(Generator)	2018-05-23 */
+		  FROM GOD_OPT_VAL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+		   AND OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

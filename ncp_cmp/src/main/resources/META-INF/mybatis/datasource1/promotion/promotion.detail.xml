@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion">
+
+   <resultMap type="com.plgrim.ncp.biz.promotion.result.CouponPromotionResult" id="couponPromotionResultMap">
+      <id column="prm_no" property="prmNo" />
+      <result column="mall_id"        property="mallId"/>
+      <result column="mall_nm"        property="mallNm"/>
+      <association property="prmEx" javaType="com.plgrim.ncp.biz.promotion.data.PrmExtend">
+         <id column="prm_no" property="prmNo" />
+         <result column="prm_no"        property="prmNo"/>
+         <result column="prm_nm"        property="prmNm"/>
+         <result column="prm_dtl_tp_cd" property="prmDtlTpCd"/>
+         <result column="prm_stat_cd"   property="prmStatCd"/>
+         <result column="prm_cncl_dscr" property="prmCnclDscr"/>
+         <result column="prm_beg_date"  property="prmBegDate"/>
+         <result column="prm_end_date"  property="prmEndDate"/>
+         <result column="prm_lang_cd"   property="prmLangCd"/>
+         <result column="reg_dt"        property="regDt"/>
+         <result column="regtr_id"      property="regtrId"/>
+         <result column="regtr_nm"      property="regtrNm"/>
+         <result column="udt_dt"        property="udtDt"/>
+         <result column="udter_id"      property="udterId"/>
+         <result column="udter_nm"      property="udterNm"/>
+      </association>
+      <association property="prmCpnEx" javaType="com.plgrim.ncp.biz.promotion.data.PrmCpnExtend">
+         <id column="prm_no" property="prmNo" />
+         <result column="cpn_knd_cd"                property="cpnKndCd"/>
+         <result column="onoflne_cpn_ofr_tp_cd"     property="onoflneCpnOfrTpCd"/>
+         <result column="cpn_issu_mthd_cd"          property="cpnIssuMthdCd"/>
+         <result column="cpn_use_pd_cd"             property="cpnUsePdCd"/>
+         <result column="cpn_use_pd_beg_date"       property="cpnUsePdBegDate"/>
+         <result column="cpn_use_pd_end_date"       property="cpnUsePdEndDate"/>
+         <result column="dateby_use_psb_beg_hour"   property="datebyUsePsbBegHour"/>
+         <result column="dateby_use_psb_end_hour"   property="datebyUsePsbEndHour"/>
+         <result column="all_publi_qty"             property="allPubliQty"/>
+         <result column="all_issu_inv_qty"          property="allIssuInvQty"/>
+         <result column="cpn_used_qty"              property="cpnUsedQty"/>
+      </association>
+   </resultMap>
+
+   <!-- 쿠폰 목록조회 -->
+   <select id="selectCouponPromotionList" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO"
+           resultMap="couponPromotionResultMap">
+      <include refid="com.plgrim.ncp.base.beginPage"/>
+         <![CDATA[
+         SELECT /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.selectCouponPromotionList  20150504 */
+         	   tgt.mall_id
+         	  ,(select m.mall_nm from sys_mall m where m.mall_id = tgt.mall_id) AS MALL_NM
+              ,p.prm_no
+              ,p.prm_nm
+              ,p.prm_dtl_tp_cd
+              ,p.prm_stat_cd
+              ,p.prm_cncl_dscr
+              ,p.prm_beg_date
+              ,p.prm_end_date
+              ,pc.onoflne_cpn_ofr_tp_cd
+              ,pc.cpn_knd_cd
+              ,pc.cpn_issu_mthd_cd
+              ,pc.cpn_use_pd_cd
+              ,pc.cpn_use_pd_beg_date
+              ,pc.cpn_use_pd_end_date
+              ,pc.dateby_use_psb_beg_hour
+              ,pc.dateby_use_psb_end_hour
+              ,pc.all_publi_qty
+              ,pc.all_issu_inv_qty
+              ,(SELECT count(1) FROM mbr_issu_cpn c WHERE p.prm_no = c.prm_no AND cpn_stat_cd = 'USE') AS cpn_used_qty
+              ,p.reg_dt
+              ,p.regtr_id
+              ,(SELECT s.admin_nm FROM sys_admin s WHERE s.admin_id = p.regtr_id) AS regtr_nm
+              ,CASE
+                   WHEN   p.udt_dt >= pc.udt_dt
+                   THEN   p.udt_dt
+                   ELSE   pc.udt_dt
+               END AS udt_dt
+              ,CASE
+                   WHEN   p.udt_dt >= pc.udt_dt
+                   THEN   p.udter_id
+                   ELSE   pc.udter_id
+               END AS udter_id
+              ,CASE
+                   WHEN   p.udt_dt >= pc.udt_dt
+                   THEN   (SELECT s.admin_nm FROM sys_admin s WHERE s.admin_id = p.udter_id)
+                   ELSE   (SELECT s.admin_nm FROM sys_admin s WHERE s.admin_id = pc.udter_id)
+               END  AS udter_nm
+              ,(SELECT
+                      SUBSTR(XMLAGG(XMLELEMENT(COL,',', tgt.lang_cd) ORDER BY gcc.sort_seq).EXTRACT('//text()').GETSTRINGVAL(), 2) as prm_lang_cd
+                FROM  prm_apl_tgt tgt
+                JOIN  sys_grp_cd_cd_cnnc gcc
+                ON    gcc.grp_cd = 'LANG'
+                AND   tgt.lang_cd = gcc.cd
+                WHERE 1 = 1
+                AND   tgt.prm_tgt_tp_cd = 'LANG'
+                AND   tgt.prm_no = p.prm_no) as prm_lang_cd
+         FROM  prm p
+         JOIN  prm_cpn pc
+         ON    p.prm_no = pc.prm_no
+         JOIN  prm_apl_tgt tgt on (p.prm_no = tgt.prm_no and tgt.prm_tgt_tp_cd  = 'MALL_ID' 
+         							AND tgt.MALL_ID = #{searchMallId, jdbcType=VARCHAR})
+         ]]>
+         <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmEx)">
+         <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmEx.prmLangCd)">
+         JOIN (
+                   SELECT distinct
+                         tgt.prm_no
+                   FROM  prm_apl_tgt tgt
+                   WHERE 1 = 1
+                   AND   tgt.prm_tgt_tp_cd = 'LANG'
+                   AND   tgt.lang_cd  IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                                            FROM    (SELECT #{prmEx.prmLangCd:VARCHAR} AS param FROM dual) d
+                                            CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+              ) tgt
+         ON    p.prm_no = tgt.prm_no
+         </if>
+         </if>
+         <include refid="couponPromtionInclude"/>
+         ORDER BY p.reg_dt DESC, p.prm_no DESC
+      <include refid="com.plgrim.ncp.base.endPage"/>
+   </select>
+
+   <!-- 쿠폰 목록조회 total count -->
+   <select id="selectCouponPromotionListCount" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO" resultType="java.lang.Long">
+      SELECT /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.selectCouponPromotionListCount  20150504 */
+            sum(c.cnt) as total_count
+      FROM  (
+               SELECT
+                     count(1) as cnt
+               FROM  prm_cpn pc
+               JOIN  prm p
+               ON    pc.prm_no = p.prm_no
+               JOIN  prm_apl_tgt tgt on (p.prm_no = tgt.prm_no and tgt.prm_tgt_tp_cd  = 'MALL_ID'
+               							AND tgt.MALL_ID = #{searchMallId, jdbcType=VARCHAR})
+               <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmEx)">
+			   <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmEx.prmLangCd)">
+			   JOIN (
+			             SELECT distinct
+			                   tgt.prm_no
+			             FROM  prm_apl_tgt tgt
+			             WHERE 1 = 1
+			             AND   tgt.prm_tgt_tp_cd = 'LANG'
+			             AND   tgt.lang_cd  IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+			                                      FROM    (SELECT #{prmEx.prmLangCd:VARCHAR} AS param FROM dual) d
+			                                      CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+			        ) tgt
+			   ON    p.prm_no = tgt.prm_no
+			   </if>
+			   </if>
+               <include refid="couponPromtionInclude"/>
+            ) c
+   </select>
+
+   <sql id="couponPromtionInclude">
+      <choose>
+         <when test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(prm.prmNo)">
+         <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(godNo) or
+                   @com.plgrim.ncp.framework.commons.StringService@isNotEmpty(erpGodNo) ">
+            <include refid="com.plgrim.ncp.biz.promotion.promotionFromTargetGoodInclude"/>
+         </if>
+         <where>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prm.prmStatCd)">
+            AND   p.prm_stat_cd     IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                                          FROM    (SELECT #{prm.prmStatCd:VARCHAR} AS param FROM dual) d
+                                          CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prm.partmalComId)">
+            AND P.PARTMAL_COM_ID = #{prm.partmalComId:VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prm.prmTpCd)">
+            AND   p.prm_tp_cd       IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                                          FROM    (SELECT #{prm.prmTpCd:VARCHAR} AS param FROM dual) d
+                                          CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prm.prmDtlTpCd)">
+            AND   p.prm_dtl_tp_cd   IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                                          FROM    (SELECT #{prm.prmDtlTpCd:VARCHAR} AS param FROM dual) d
+                                          CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmCpn)">
+               <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmCpn.cpnKndCd)">
+               AND   pc.cpn_knd_cd          IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                                                  FROM    (SELECT #{prmCpn.cpnKndCd:VARCHAR} AS param FROM dual) d
+                                                  CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+               </if>
+               <if test=" @com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmCpn.cpnIssuMthdCd)">
+               AND   pc.cpn_issu_mthd_cd    IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                                                  FROM    (SELECT #{prmCpn.cpnIssuMthdCd:VARCHAR} AS param FROM dual) d
+                                                  CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+               </if>
+               <if test="prmCpn != null and @com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmCpn.ccRewardCpnYn)">
+               AND   pc.cc_reward_cpn_yn    = #{prmCpn.ccRewardCpnYn:VARCHAR}
+               AND   p.prm_stat_cd = 'APRV'
+               AND   SYSDATE BETWEEN TO_DATE(p.prm_beg_date, 'yyyyMMdd') AND TO_DATE(p.prm_end_date, 'yyyyMMdd')+1-1/86400
+               </if>
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prm.prmNm)">
+            AND   p.prm_nm LIKE ('%'||#{prm.prmNm:VARCHAR}||'%')
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prm.aplComSectCd)">
+            AND   p.APL_COM_SECT_CD IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                                          FROM    (SELECT #{prm.aplComSectCd:VARCHAR} AS param FROM dual) d
+                                          CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+            </if>
+            <if test="searchPdCnd == 'REG_DT'">
+            AND   p.reg_dt BETWEEN TO_DATE(#{searchBegDate:VARCHAR}, 'yyyyMMdd') AND TO_DATE(#{searchEndDate:VARCHAR}, 'yyyyMMdd')+1-1/86400
+            </if>
+            <if test="searchPdCnd == 'ISSU_BEG_DATE'">
+            AND   p.prm_beg_date BETWEEN #{searchBegDate:VARCHAR} AND #{searchEndDate:VARCHAR}
+            </if>
+            <if test="searchPdCnd == 'ISSU_END_DATE'">
+            AND   p.prm_end_date BETWEEN #{searchBegDate:VARCHAR} AND #{searchEndDate:VARCHAR}
+            </if>
+            <if test="searchPdCnd == 'CPN_USE_PD_BEG_DATE'">
+            AND   pc.cpn_use_pd_beg_date BETWEEN #{searchBegDate:VARCHAR} AND #{searchEndDate:VARCHAR}
+            </if>
+            <if test="searchPdCnd == 'CPN_USE_PD_END_DATE'">
+            AND   pc.cpn_use_pd_end_date BETWEEN #{searchBegDate:VARCHAR} AND #{searchEndDate:VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(searchMallId)">
+            AND   tgt.mall_id = #{searchMallId:VARCHAR}
+            </if>
+            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmCpn.cpnIssuMthdCd)">
+	            <if test='@com.plgrim.ncp.framework.commons.StringService@contains(prmCpn.cpnIssuMthdCd,"DWLD")'>
+		            <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(srchNaverEp)">
+		            	<choose>
+		            		<when test='@com.plgrim.ncp.framework.commons.StringService@contains(srchNaverEp,"NAVER") and !@com.plgrim.ncp.framework.commons.StringService@contains(srchNaverEp,"NORMAL")'>
+		            			AND pc.NAVER_EP_CPN_YN = 'Y'
+		            		</when>
+		            		<when test='!@com.plgrim.ncp.framework.commons.StringService@contains(srchNaverEp,"NAVER") and @com.plgrim.ncp.framework.commons.StringService@contains(srchNaverEp,"NORMAL")'>
+		            			AND pc.NAVER_EP_CPN_YN = 'N'
+		            		</when>
+		            	</choose>
+		            </if>
+		        </if>
+            </if>
+
+         </where>
+         </when>
+         <otherwise>
+            JOIN  (  SELECT DISTINCT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                     FROM    (SELECT #{prm.prmNo:VARCHAR} AS param FROM dual) d
+                     CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+')
+                  ) D
+            ON    pc.prm_no = d.param
+            <where>
+            AND   p.prm_tp_cd = #{prmTpCd:VARCHAR}
+            </where>
+         </otherwise>
+      </choose>
+   </sql>
+
+   <select id="selectPrmBundleDcCndInfoList" parameterType="prmBundleDcCnd" resultType="prmBundleDcCnd">
+      SELECT /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.selectPrmBundleDcCndInfoList  20150504 */
+            t.*
+      FROM  (
+               SELECT
+                     p.prm_no
+                    ,b.bundle_dc_sect_cd
+                    ,ROW_NUMBER() OVER(PARTITION BY b.prm_no, bundle_dc_sect_cd ORDER BY bundle_dc_cnd_min_qty) AS rcnt
+               FROM  prm_bundle_dc_cnd b
+               LEFT OUTER JOIN  prm p
+               ON    b.prm_no = p.prm_no
+               WHERE 1 = 1
+            ) t
+      WHERE 1 = 1
+      AND   t.rcnt = 1
+      AND   t.prm_no = #{prmBundleDcCnd.prmNo:VARCHAR}
+   </select>
+
+   <update id="updatePromotionCoupon" parameterType="prmCpn">
+      UPDATE   prm_cpn /* com.plgrim.ncp.biz.promotion.updatePromotionCoupon  20150417 */
+      SET
+               cpn_knd_cd           = nvl(#{cpnKndCd:VARCHAR},         cpn_knd_cd)
+             , cpn_issu_mthd_cd     = nvl(#{cpnIssuMthdCd:VARCHAR}, cpn_issu_mthd_cd)
+             , cpn_use_pd_cd        = nvl(#{cpnUsePdCd:VARCHAR}, cpn_use_pd_cd)
+             , cpn_use_pd_cd        = nvl(#{cpnUsePdCd:VARCHAR}, cpn_use_pd_cd)
+             , publi_qty_lmit_cd    = nvl(#{publiQtyLmitCd:VARCHAR}, publi_qty_lmit_cd)
+             , dplct_issu_lmit_cd   = nvl(#{dplctIssuLmitCd:VARCHAR}, dplct_issu_lmit_cd)
+             , all_publi_qty        = nvl(#{allPubliQty:NUMERIC}, all_publi_qty)
+             , udter_id             = nvl(#{udterId:VARCHAR},      udter_id)
+             , udt_dt               = SYSDATE
+      WHERE    1 = 1
+      AND      prm_no               = #{prmNo}
+   </update>
+
+   <delete id="deletePrmBundleDcCnd" parameterType="prmBundleDcCnd">
+      DELETE /* com.plgrim.ncp.biz.promotion.deletePrmBundleDcCnd vito 20150601 */
+      FROM  prm_bundle_dc_cnd
+      WHERE 1 = 1
+      AND   prm_no = #{prmNo:VARCHAR}
+   </delete>
+
+   <!-- 제공 사은품 유효성 체크 -->
+   <select id="selectValidPrmOfferGft" parameterType="prmOfferGft" resultType="com.plgrim.ncp.biz.promotion.data.PrmOfferGftExtend">
+      /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.selectValidPrmOfferGft  20150504 */
+      SELECT
+            COUNT(1) AS offer_gift_count
+      FROM  prm_offer_gft g
+      WHERE g.prm_no = #{prmNo}
+      AND   g.god_no = #{godNo}
+   </select>
+
+   <!-- 사용가능한 사은품교환권(offline) 조회 -->
+   <select id="selectUsablePrmCpnGftExchg" parameterType="prmCpnGftExchg" resultType="com.plgrim.ncp.biz.promotion.data.PrmCpnGftExchgExtend">
+      /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.selectUsablePrmCpnGftExchg  20160112 */
+      SELECT
+            e.exchgbil_no
+          , e.stdr_amt
+          , e.mbr_no
+          , e.beg_dt
+          , e.end_dt
+          , e.issu_dt
+          , e.use_yn
+          , e.regtr_id
+          , e.reg_dt
+          , e.udter_id
+          , e.udt_dt
+          , (
+               CASE
+                   WHEN EXISTS (SELECT 1 FROM prm_cpn_gft_exchg t WHERE t.mbr_no = #{mbrNo:VARCHAR})
+                   THEN 'N'
+                   ELSE 'Y'
+               end
+            ) as usable_check
+      FROM  prm_cpn_gft_exchg e
+      WHERE 1 = 1
+      AND   e.mbr_no IS NULL
+      AND   e.use_yn = 'Y'
+      AND   SYSDATE BETWEEN e.beg_dt AND e.end_dt
+      AND   e.evt_no IS NULL
+      AND   ROWNUM = 1
+   </select>
+
+   <!-- 사은품교환권(offline) 발급 -->
+   <update id="updateIssuePrmCpnGftExchg" parameterType="prmCpnGftExchg">
+      /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.updateIssuePrmCpnGftExchg  20160112 */
+      UPDATE prm_cpn_gft_exchg
+      SET
+             mbr_no      = #{mbrNo}
+           , issu_dt     = SYSDATE
+           , udter_id    = #{mbrNo}
+           , udt_dt      = SYSDATE
+      WHERE  1 = 1
+      AND    exchgbil_no = #{exchgbilNo}
+      AND    use_yn      = 'Y'
+      AND    NOT EXISTS (SELECT 1 FROM prm_cpn_gft_exchg WHERE mbr_no = #{mbrNo})
+   </update>
+
+   <!-- 앱다운로드 이벤트 오프라인 쿠폰 조회 -->
+	<select id="selectPrmCpnGftExchgAppDownload" parameterType="prmCpnGftExchg" resultType="com.plgrim.ncp.biz.promotion.data.PrmCpnGftExchgExtend">
+		SELECT /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.selectPrmCpnGftExchgAppDownload  20160429 */
+			e.exchgbil_no
+			, e.stdr_amt
+			, e.mbr_no
+			, e.beg_dt
+			, e.end_dt
+			, e.issu_dt
+			, e.use_yn
+			, e.regtr_id
+			, e.reg_dt
+			, e.udter_id
+			, e.udt_dt
+			, (
+			     CASE
+			         WHEN use_yn = 'N'
+			         THEN 'Y'
+			         ELSE 'N'
+			     end
+			  ) as usable_check
+		FROM  prm_cpn_gft_exchg e
+		WHERE 1 = 1
+			AND   SYSDATE BETWEEN e.beg_dt AND e.end_dt
+			AND   e.evt_no = #{evtNo:VARCHAR}
+    		<if test="deviceId == null">
+				AND   e.DEVICE_ID IS NULL
+    		</if>
+    		<if test="deviceId != null">
+    			AND   e.DEVICE_ID = #{deviceId:VARCHAR}
+    		</if>
+    		<if test="useYn != null">
+    			AND   e.use_yn = #{useYn:VARCHAR}
+    		</if>
+    		AND   ROWNUM = 1
+	</select>
+
+	<!-- 앱다운로드 이벤트 오프라인 쿠폰 발급 -->
+	<update id="updatePrmCpnGftExchgAppDownloadMapping" parameterType="prmCpnGftExchg">
+		UPDATE prm_cpn_gft_exchg /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.updatePrmCpnGftExchgAppDownloadMapping  20160429 */
+		SET
+			DEVICE_ID   = #{deviceId}
+			<if test="mbrNo != null">
+				, udter_id    = #{udterId}
+			</if>
+			, udt_dt      = SYSDATE
+		WHERE  1 = 1
+			AND    exchgbil_no = #{exchgbilNo}
+			AND    use_yn      = 'N'
+			AND    evt_no = #{evtNo}
+	</update>
+
+	<!-- 앱다운로드 이벤트 오프라인 쿠폰 사용 -->
+	<update id="updatePrmCpnGftExchgAppDownloadUse" parameterType="prmCpnGftExchg">
+		UPDATE prm_cpn_gft_exchg /* promotion.detail.xml - com.plgrim.ncp.biz.promotion.updatePrmCpnGftExchgAppDownloadUse  20160429 */
+		SET
+			  use_yn      = 'Y'
+			, issu_dt     = SYSDATE
+			<if test="shopId != null and shopId != '' ">
+				, shop_id     = #{shopId:VARCHAR}
+			</if>
+
+			<if test="mbrNo != null">
+				, udter_id    = #{udterId}
+				, mbr_no    = #{mbrNo}
+			</if>
+			, udt_dt      = SYSDATE
+		WHERE  1 = 1
+			AND    exchgbil_no = #{exchgbilNo}
+			AND    DEVICE_ID = #{deviceId}
+			AND    use_yn      = 'N'
+			AND    evt_no = #{evtNo}
+	</update>
+
+   <resultMap type="com.plgrim.ncp.biz.promotion.result.CouponPromotionResult" id="onOffCouponPromotionDetailResultMap">
+		<result column="PRM_NO"					property="prmNo" />
+		<result column="PRM_NO"					property="prm.prmNo" />
+		<result column="PRM_NO"					property="prmCpn.prmNo" />
+		<result column="PRM_NO"					property="mbrIssuCpn.prmNo" />
+		<result column="PRM_STAT_CD"			property="prm.prmStatCd" />
+		<result column="ERP_CMPG_ID"			property="prm.erpCmpgId" />
+		<result column="ERP_CPN_ID"				property="prm.erpCpnId" />
+		<result column="PRM_DTL_TP_CD"			property="prm.prmDtlTpCd" />
+		<result column="PRM_BEG_DATE"			property="prm.prmBegDate" />
+		<result column="PRM_END_DATE"			property="prm.prmEndDate" />
+		<result column="ONOFLNE_CPN_PUBLI_SECT_CD"	property="prmCpn.onoflneCpnPubliSectCd" />
+		<result column="CPN_KND_CD"				property="prmCpn.cpnKndCd" />
+		<result column="CPN_USE_PD_CD"			property="prmCpn.cpnUsePdCd" />
+		<result column="ISSU_STDR_VALID_DAYCNT"	property="prmCpn.issuStdrValidDaycnt" />
+		<result column="CPN_USE_PD_BEG_DATE"	property="prmCpn.cpnUsePdBegDate" />
+		<result column="CPN_USE_PD_END_DATE"	property="prmCpn.cpnUsePdEndDate" />
+		<result column="VALID_BEG_DATE"			property="mbrIssuCpn.validBegDate" />
+		<result column="VALID_END_DATE"			property="mbrIssuCpn.validEndDate" />
+   </resultMap>
+
+    <select id="selectFirstAppCpnInfo" parameterType="prmCpn" resultMap="onOffCouponPromotionDetailResultMap">
+    	/* [promotion.detail.xml][selectFirstAppCpnInfo][첫 앱다운로드 쿠폰 정보] */
+    	SELECT p.prm_no,
+		       p.prm_dtl_tp_cd,
+		       p.erp_cmpg_id,
+		       p.erp_cpn_id,
+		       p.prm_beg_date,
+		       p.prm_end_date,
+		       pc.cpn_knd_cd,
+		       pc.onoflne_cpn_publi_sect_cd,
+		       pc.cpn_use_pd_cd,
+		       pc.issu_stdr_valid_daycnt,
+		       pc.cpn_use_pd_beg_date,
+		       pc.cpn_use_pd_end_date,
+		       CASE
+		          WHEN PC.CPN_USE_PD_CD = 'PD_APPN'
+		          THEN PC.CPN_USE_PD_BEG_DATE
+		          ELSE TO_CHAR (SYSDATE, 'YYYYMMDD')
+		       END valid_beg_date,
+		       CASE
+		          WHEN PC.CPN_USE_PD_CD = 'PD_APPN'
+		          THEN PC.CPN_USE_PD_END_DATE
+		          ELSE TO_CHAR (SYSDATE + TO_NUMBER (PC.ISSU_STDR_VALID_DAYCNT),'YYYYMMDD')
+		       END valid_end_date
+		  FROM prm p
+		       JOIN prm_cpn pc ON p.prm_no = pc.prm_no
+		       JOIN prm_apl_pd pap
+		          ON p.prm_no = pap.prm_no AND pc.prm_no = pap.prm_no
+		 WHERE     p.prm_no = #{prmNo ,jdbcType=VARCHAR}
+		       AND p.prm_stat_cd = 'APRV'
+		       AND p.prm_beg_date <![CDATA[<=]]> TO_CHAR (SYSDATE, 'YYYYMMDD')
+		       AND p.prm_end_date <![CDATA[>=]]>  TO_CHAR (SYSDATE, 'YYYYMMDD')
+		       AND pap.apl_pd_cd = 'APL_PD'
+		       AND pap.beg_dt <![CDATA[<=]]> SYSDATE
+		       AND pap.end_dt <![CDATA[>=]]> SYSDATE
+    </select>
+
+</mapper>

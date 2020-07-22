@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodFlterVal" parameterType="godFlterVal" resultType="godFlterVal">
+		SELECT /* com.plgrim.ncp.base.selectGodFlterVal		Generator(Generator)	2018-04-19 */
+			   GOD_NO
+			 , FLTER_CD
+			 , FLTER_CD_VAL_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_FLTER_VAL
+		 WHERE 1 = 1
+	   	   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND FLTER_CD = #{flterCd,jdbcType=VARCHAR}
+		   AND FLTER_CD_VAL_NM = #{flterCdValNm,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodFlterVal" parameterType="godFlterVal">
+		UPDATE /* com.plgrim.ncp.base.updateGodFlterVal		Generator(Generator)	2018-04-19 */
+		GOD_FLTER_VAL SET
+			   REGTR_ID = #{regtrId,jdbcType=VARCHAR}
+			 , REG_DT = #{regDt,jdbcType=DATE}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = #{udtDt,jdbcType=DATE}
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND FLTER_CD = #{flterCd,jdbcType=VARCHAR}
+		   AND FLTER_CD_VAL_NM = #{flterCdValNm,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodFlterVal" parameterType="godFlterVal">
+		INSERT /* com.plgrim.ncp.base.insertGodFlterVal		Generator(Generator)	2018-04-19 */
+		INTO   GOD_FLTER_VAL (
+			   GOD_NO
+			 , FLTER_CD
+			 , FLTER_CD_VAL_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{flterCd,jdbcType=VARCHAR}
+			 , #{flterCdValNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , #{regDt,jdbcType=DATE}
+			 , #{udterId,jdbcType=VARCHAR}
+			 , #{udtDt,jdbcType=DATE}
+        )
+    </insert>
+
+    <delete id="deleteGodFlterVal" parameterType="godFlterVal">
+		DELETE /* com.plgrim.ncp.base.deleteGodFlterVal		Generator(Generator)	2018-04-19 */
+		  FROM GOD_FLTER_VAL
+		 WHERE 1 = 1
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+		   AND FLTER_CD = #{flterCd,jdbcType=VARCHAR}
+		   AND FLTER_CD_VAL_NM = #{flterCdValNm,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

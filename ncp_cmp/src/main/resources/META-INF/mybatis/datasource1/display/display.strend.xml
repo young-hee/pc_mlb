@@ -1,0 +1,1151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+	<mapper namespace="com.plgrim.ncp.biz.display">
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspStrendFoResult" id="StrendResult">
+		<result property="rowNo" column="NO" />
+		<result property="dspStrnd.strndSn" column="STRND_SN" />
+		<result property="dspStrnd.strndTpCd" column="STRND_TP_CD" />
+		<result property="dspStrnd.strndNm" column="STRND_NM" />
+		<result property="dspStrnd.dspBegDt" column="DSP_BEG_DT" />
+		<result property="dspStrnd.dspEndDt" column="DSP_END_DT" />
+		<result property="dspStrnd.dspYn" column="DSP_YN" />
+		<result property="dspStrnd.sortSeq" column="SORT_SEQ" />
+		<result property="dspStrnd.brndId" column="BRND_ID" />
+		<result property="dspStrnd.sesonCd" column="SESON_CD" />
+		<result property="sesonNm" column="SESON_NM" />
+		<result property="dspStrnd.rprstImgFileNm" column="RPRST_IMG_FILE_NM" />
+		<result property="dspStrnd.rprstImgFileUrl" column="RPRST_IMG_FILE_URL" />
+		<result property="dspStrnd.rprstImgAltrtvCont" column="RPRST_IMG_ALTRTV_CONT" />
+		<result property="dspStrnd.regDt" column="REG_DT" />
+		
+		
+		<result property="dspStrndLang.strndNm" column="LSTRND_NM" />
+		<result property="dspStrndLang.rprstImgFileNm" column="LRPRST_IMG_FILE_NM" />
+		<result property="dspStrndLang.rprstImgFileUrl" column="LRPRST_IMG_FILE_URL" />
+		<result property="dspStrndLang.rprstImgAltrtvCont" column="LRPRST_IMG_ALTRTV_CONT" />
+		
+		<result property="dspTmplat.tmplatTpCd" column="TMPLAT_TP_CD" />
+		<result property="dspTmplat.dvcSectCd" column="DVC_SECT_CD" />
+		<result property="dspTmplat.tmplatNm" column="TMPLAT_NM" />
+		<result property="dspTmplat.tmplatDscr" column="TMPLAT_DSCR" />
+		<result property="dspTmplat.tmplatCnncUrl" column="TMPLAT_CNNC_URL" />
+		<result property="dspTmplat.tmplatUseYn" column="TMPLAT_USE_YN" />
+		<result property="sysBrnd.brndNm" column="BRND_NM" />
+		<result property="dspCtgry.dspCtgryNo" column="DSP_CTGRY_NO" />
+	</resultMap>
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspStrendFoResult" id="StrendSelectResult">
+		<result property="dspStrnd.brndId" column="BRND_ID" />
+		<result property="sysBrnd.brndNm" column="BRND_NM" />
+		<result property="dspStrnd.sesonCd" column="SESON_CD" />
+	</resultMap>
+	
+	<sql id="stDspTgt"> <!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+		<if test="lang != null">
+		AND EXISTS (
+			SELECT 1
+	 			FROM DSP_STRND_DSP_TGT t4
+					WHERE 
+		            S.STRND_SN = t4.STRND_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'LANG'
+		        	AND t4.LANG_CD = #{lang,jdbcType=VARCHAR}
+		        )
+			)
+		</if>	
+		<if test="mallId != null">	
+		AND EXISTS (
+			SELECT 1
+	 			FROM DSP_STRND_DSP_TGT t4
+					WHERE 
+		            S.STRND_SN = t4.STRND_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'MALL_ID'
+		        	AND t4.MALL_ID = #{mallId,jdbcType=VARCHAR}
+		        )
+			)
+		</if>	
+		<if test="device != null">		
+		AND EXISTS (
+			SELECT 1
+  			FROM DSP_STRND_DSP_TGT t4
+ 				WHERE 
+		            S.STRND_SN = t4.STRND_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'DVC'
+		        	AND t4.DVC_CD = #{device,jdbcType=VARCHAR}
+		        )
+			)
+		</if>
+	    	<!--			
+		<if test="aplMbrAtrb != null">
+		AND 
+			<if test="aplMbrAtrb != 'GRPCO'">
+			EXISTS (
+			SELECT 1
+  			FROM DSP_STRND_DSP_TGT t4
+ 				WHERE 
+		            S.STRND_SN = t4.STRND_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+		        	AND t4.TGT_MBR_ATRB_CD = #{aplMbrAtrb,jdbcType=VARCHAR}
+		        )
+			)
+	    	</if>
+	    	<if test="aplMbrAtrb == 'GRPCO'">
+	        (
+		    	EXISTS (
+		        	SELECT 1
+		    	FROM DSP_STRND_DSP_TGT t4
+		    		WHERE 
+		        		S.STRND_SN = t4.STRND_SN
+		                AND (
+		                        t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+		        			AND t4.TGT_MBR_ATRB_CD = 'GRPCO_IND'
+		                    AND T4.GRPCO_ID = #{psitnGrpcoId,jdbcType=VARCHAR}
+		                 )
+		            )
+		        OR
+		        EXISTS (
+		            SELECT 1
+		    	FROM DSP_STRND_DSP_TGT t4
+		    		WHERE 
+		        		S.STRND_SN = t4.STRND_SN
+		                AND (
+		                        t4.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+		                    AND T4.TGT_MBR_ATRB_CD = 'GRPCO_ALL'
+		                 )
+		            )
+	        )
+	    	</if>
+	    </if>
+	     -->
+	    <if test="aplMbrTp != null">
+		AND 
+			EXISTS (
+			SELECT 1
+  			FROM DSP_STRND_DSP_TGT t4
+ 				WHERE 
+		            S.STRND_SN = t4.STRND_SN
+		        AND (
+		        	t4.DSP_TGT_TP_CD = 'TGT_MBR_TP'
+		        	AND t4.TGT_MBR_TP_CD = #{aplMbrTp,jdbcType=VARCHAR}
+		        )
+			)
+		</if>	
+	</sql>
+	
+	<select id="selectGetTheStylePreNextList"  resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectGetTheStylePreNextList][박해선] */
+		WITH TEMP AS (
+		      	SELECT   ROW_NUMBER() OVER(ORDER BY S.SORT_SEQ ASC,S.DSP_BEG_DT ,S.REG_DT ) AS NB
+		      	  ,		 S.STRND_SN              	
+		      	  ,		 NVL(S1.STRND_NM              ,S.STRND_NM              ) AS STRND_NM              	
+		      	  ,		 NVL(S1.RPRST_IMG_FILE_NM     ,S.RPRST_IMG_FILE_NM     ) AS RPRST_IMG_FILE_NM     	
+		      	  ,		 NVL(S1.RPRST_IMG_FILE_URL    ,S.RPRST_IMG_FILE_URL    ) AS RPRST_IMG_FILE_URL    	
+		      	  ,		 NVL(S1.RPRST_IMG_ALTRTV_CONT ,S.RPRST_IMG_ALTRTV_CONT ) AS RPRST_IMG_ALTRTV_CONT 	
+		      	  ,		 NVL(S1.RPRST_IMG2_FILE_NM    ,S.RPRST_IMG2_FILE_NM    ) AS RPRST_IMG2_FILE_NM    	
+		      	  ,		 NVL(S1.RPRST_IMG2_FILE_URL   ,S.RPRST_IMG2_FILE_URL   ) AS RPRST_IMG2_FILE_URL   	
+		      	  ,		 NVL(S1.RPRST_IMG2_ALTRTV_CONT,S.RPRST_IMG2_ALTRTV_CONT) AS RPRST_IMG2_ALTRTV_CONT
+			      FROM  DSP_STRND S
+			      LEFT OUTER JOIN DSP_STRND_LANG S1
+			        ON S.STRND_SN = S1.STRND_SN AND S1.LANG_CD=#{lang,jdbcType=VARCHAR}
+			      WHERE S.STRND_TP_CD =#{strndTpCd,jdbcType=VARCHAR}
+			        AND S.DSP_YN='Y'
+			        AND SYSDATE BETWEEN S.DSP_BEG_DT AND  ADD_MONTHS(S.DSP_BEG_DT,6)		
+			        <include refid="stDspTgt"/>
+		) 
+		SELECT  SUM( CASE WHEN X.NB > Y.NB THEN 1 ELSE 0 END ) OVER()  AS NO
+		,       X.*
+		FROM  TEMP X,
+		      (SELECT T.NB
+		       FROM TEMP T
+		       WHERE T.STRND_SN = #{strndSn,jdbcType=NUMERIC}) Y
+		WHERE X.NB -5 &lt; Y.NB
+		AND X.NB +5 &gt; Y.NB
+		AND X.STRND_SN != #{strndSn,jdbcType=NUMERIC}
+		ORDER BY X.NB 
+	</select>
+	
+	<sql id="getTheStyleList">
+		SELECT   S.STRND_SN              	
+		      	  ,		 NVL(S1.STRND_NM              ,S.STRND_NM              ) AS STRND_NM              	
+		      	  ,		 NVL(S1.RPRST_IMG_FILE_NM     ,S.RPRST_IMG_FILE_NM     ) AS RPRST_IMG_FILE_NM     	
+		      	  ,		 NVL(S1.RPRST_IMG_FILE_URL    ,S.RPRST_IMG_FILE_URL    ) AS RPRST_IMG_FILE_URL    	
+		      	  ,		 NVL(S1.RPRST_IMG_ALTRTV_CONT ,S.RPRST_IMG_ALTRTV_CONT ) AS RPRST_IMG_ALTRTV_CONT 	
+		      	  ,		 NVL(S1.RPRST_IMG2_FILE_NM    ,S.RPRST_IMG2_FILE_NM    ) AS RPRST_IMG2_FILE_NM    	
+		      	  ,		 NVL(S1.RPRST_IMG2_FILE_URL   ,S.RPRST_IMG2_FILE_URL   ) AS RPRST_IMG2_FILE_URL   	
+		      	  ,		 NVL(S1.RPRST_IMG2_ALTRTV_CONT,S.RPRST_IMG2_ALTRTV_CONT) AS RPRST_IMG2_ALTRTV_CONT
+	      FROM  DSP_STRND S
+	      LEFT OUTER JOIN DSP_STRND_LANG S1
+	        ON S.STRND_SN = S1.STRND_SN AND S1.LANG_CD=#{lang,jdbcType=VARCHAR}
+	      WHERE S.STRND_TP_CD =#{strndTpCd,jdbcType=VARCHAR}
+	        AND S.DSP_YN='Y'
+	        AND SYSDATE BETWEEN S.DSP_BEG_DT AND  ADD_MONTHS(S.DSP_BEG_DT,6)
+	        <include refid="stDspTgt"/>
+	      ORDER BY S.SORT_SEQ ASC,S.DSP_BEG_DT DESC,S.STRND_SN DESC
+	</sql>
+	
+	<select id="selectGetTheStyleLNBList"  resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectGetTheStyleLNBList][박해선] */
+		 <include refid="getTheStyleList"></include>
+	</select>
+	<select id="selectGetTheStyleList"  resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectGetTheStyleList][박해선] */
+		 <include refid="com.plgrim.ncp.base.beginPage"/>
+		 <include refid="getTheStyleList"/>
+		 <include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	<select id="selectLatestStrndSnOfGetTheStyle"  resultType="int" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectLatestStrndSnOfGetTheStyle][박해선] */
+		SELECT STRND_SN
+		FROM  (
+		      SELECT  S.STRND_SN
+		      ,       S.DSP_BEG_DT
+		      ,       ROW_NUMBER() OVER(ORDER BY S.SORT_SEQ ASC,S.DSP_BEG_DT DESC , S.STRND_SN DESC) AS NUM
+			      FROM  DSP_STRND S
+			      WHERE S.STRND_TP_CD =#{strndTpCd,jdbcType=VARCHAR}
+			        AND S.DSP_YN='Y'
+			        AND SYSDATE BETWEEN S.DSP_BEG_DT AND  ADD_MONTHS(S.DSP_BEG_DT,6)
+			         <include refid="stDspTgt"/>
+		      )
+		WHERE NUM = 1   
+	</select>
+	<select id="selectGetTheStyleCount"  resultType="int" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectGetTheStyleCount][박해선] */
+		 SELECT   COUNT(1) CNT
+	      FROM  DSP_STRND S
+	      WHERE S.STRND_TP_CD =#{strndTpCd,jdbcType=VARCHAR}
+	        AND S.DSP_YN='Y'
+	        AND SYSDATE BETWEEN S.DSP_BEG_DT AND  ADD_MONTHS(S.DSP_BEG_DT,6)
+	        <include refid="stDspTgt"/>
+	</select>
+	<select id="selectGetTheStyleDetail"  resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectGetTheStyleDetail][박해선] */
+		 SELECT    S.STRND_SN
+		 <choose>
+	      <when test="lang == null || lang== '' || lang == 'KOR'">
+	      ,       S.STRND_NM
+	      ,       S.RPRST_IMG_FILE_NM
+	      ,       S.RPRST_IMG_FILE_URL
+	      ,       S.RPRST_IMG_ALTRTV_CONT
+	      ,       S.RPRST_IMG2_FILE_NM
+	      ,       S.RPRST_IMG2_FILE_URL
+	      ,       S.RPRST_IMG2_ALTRTV_CONT
+	      </when>
+	      <otherwise>
+	      ,       S1.STRND_NM AS STRND_NM
+	      ,       S1.RPRST_IMG_FILE_NM  AS RPRST_IMG_FILE_NM
+	      ,       S1.RPRST_IMG_FILE_URL AS RPRST_IMG_FILE_URL
+	      ,       S1.RPRST_IMG_ALTRTV_CONT AS RPRST_IMG_ALTRTV_CONT
+	      ,       S1.RPRST_IMG2_FILE_NM AS RPRST_IMG2_FILE_NM
+	      ,       S1.RPRST_IMG2_FILE_URL AS RPRST_IMG2_FILE_URL
+	      ,       S1.RPRST_IMG2_ALTRTV_CONT AS RPRST_IMG2_ALTRTV_CONT
+	      </otherwise>
+	      </choose>
+	      FROM  DSP_STRND S
+	      LEFT OUTER JOIN DSP_STRND_LANG S1
+	        ON S.STRND_SN = S1.STRND_SN AND S1.LANG_CD=#{lang,jdbcType=VARCHAR}
+	      WHERE S.STRND_TP_CD =#{strndTpCd,jdbcType=VARCHAR}
+	        AND S.DSP_YN='Y'
+	        AND SYSDATE BETWEEN S.DSP_BEG_DT AND  ADD_MONTHS(S.DSP_BEG_DT,6)
+	        AND S.STRND_SN = #{strndSn,jdbcType=NUMERIC}
+	        <include refid="stDspTgt"/>
+	</select>
+	
+	<select id="selectStrendList"  resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		 /* [display.strend.xml][selectStrendList][strend 리스트][이한솔] */ 
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT * FROM (SELECT S.STRND_SN
+		     , S.STRND_TP_CD
+		     , S.STRND_NM
+		     , S.DSP_BEG_DT
+		     , S.DSP_END_DT
+		     , S.DSP_YN
+		     , S.SORT_SEQ
+		     , S.BRND_ID
+		     , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = S.BRND_ID) AS BRND_NM
+		     , S.SESON_CD
+		     , (SELECT CD_NM FROM SYS_CD WHERE CD = S.SESON_CD) AS SESON_NM
+		     , S.RPRST_IMG_FILE_NM
+		     , S.RPRST_IMG_FILE_URL
+		     , S.RPRST_IMG_ALTRTV_CONT
+		     , S.REGTR_ID
+		     , S.REG_DT
+		     , S.UDTER_ID
+		     , S.UDT_DT
+		     , S1.STRND_NM AS LSTRND_NM
+		     , S1.RPRST_IMG_FILE_NM AS LRPRST_IMG_FILE_NM
+		     , S1.RPRST_IMG_FILE_URL AS LRPRST_IMG_FILE_URL
+		     , S1.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT
+		     , T.TMPLAT_TP_CD
+		     , T.DVC_SECT_CD
+		     , T.TMPLAT_NM
+		     , T.TMPLAT_DSCR
+		     , T.TMPLAT_CNNC_URL
+		     , T.TMPLAT_USE_YN
+		     , T1.CNR_SN
+		     , T1.DSP_CNR_USE_YN
+		     , ROW_NUMBER () OVER (PARTITION BY S.STRND_SN  ORDER BY  T1.SORT_SEQ ASC) AS RNUM
+		FROM DSP_STRND S
+		JOIN DSP_REV_CPST drc ON S.STRND_SN = drc.STRND_SN
+		LEFT OUTER JOIN DSP_STRND_LANG S1 ON S.STRND_SN  = S1.STRND_SN AND S1.LANG_CD = #{lang}
+		LEFT OUTER JOIN DSP_TMPLAT T ON 
+		<choose>
+		  <when test="device == 'PC'">	
+		    drc.PC_TMPLAT_SN = T.TMPLAT_SN
+		  </when>
+		  <when test="device == 'MOBILE_WEB' or device == 'MOBILE_APP'">
+		    drc.MOBILE_TMPLAT_SN = T.TMPLAT_SN
+		  </when>
+		</choose>
+		AND T.TMPLAT_USE_YN = 'Y'
+    	LEFT OUTER JOIN DSP_CNR_TMPLAT_INFO_CNNC T1
+    	ON
+    	<choose>
+		  <when test="device == 'PC'">	
+		    drc.PC_TMPLAT_SN = T1.TMPLAT_SN
+		  </when>
+		  <when test="device == 'MOBILE_WEB' or device == 'MOBILE_APP'">
+		    drc.MOBILE_TMPLAT_SN = T1.TMPLAT_SN
+		  </when>
+		</choose>
+        AND drc.REV_SN = T1.REV_SN
+		AND T1.DSP_CNR_USE_YN = 'Y'
+		<if test="lang != 'KOR' ">
+			JOIN SYS_BRND SB ON SB.BRND_ID = S.BRND_ID AND SB.OVSEA_DLV_PSB_YN = 'Y'
+		</if>
+		WHERE drc.REV_SN = #{revSn, jdbcType=NUMERIC}
+		AND S.DSP_YN = 'Y'
+		<include refid="stDspTgt"/> <!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+		<if test="strndTpCd != null and strndTpCd != ''">
+			AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+		</if>
+		<if test="brndId != 'all'">
+			<if test="brndId != null and brndId != ''">
+				AND S.BRND_ID = #{brndId,jdbcType=VARCHAR}
+			</if>	
+		</if>
+		<if test="sesonCd != 'all'">
+			<if test="sesonCd != null and sesonCd != ''">
+				AND S.SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			</if>	
+		</if>
+		<![CDATA[
+		AND S.DSP_BEG_DT <= SYSDATE
+    	AND S.DSP_END_DT >= SYSDATE
+    	]]>
+    	<if test="upBrndId != null and upBrndId != ''">
+    	AND S.BRND_ID IN (
+            SELECT
+			    brnd_id
+			FROM (
+			    SELECT
+			        SS.brnd_id, SS.UPPER_BRND_ID
+			    FROM SYS_BRND SS
+			    CONNECT BY PRIOR SS.BRND_ID = SS.UPPER_BRND_ID
+			    AND SS.USE_YN = 'Y'
+			    AND SS.BRND_GRP_YN = 'Y'
+			    START WITH SS.BRND_ID = #{upBrndId,jdbcType=VARCHAR}
+			    ORDER SIBLINGS BY SS.SORT_SEQ
+			) BB
+			where bb.UPPER_BRND_ID is not null
+   		)
+    	</if>
+    	)
+    	WHERE RNUM = 1
+    	ORDER BY SORT_SEQ ASC, REG_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<select id="selectStrendCount" resultType="java.lang.Long" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		 /* [display.strend.xml][selectStrendCount][strend 리스트 카운트][이한솔] */ 
+		SELECT COUNT(*) FROM (SELECT * FROM (SELECT S.STRND_SN
+		     , S.STRND_TP_CD
+		     , S.STRND_NM
+		     , S.DSP_BEG_DT
+		     , S.DSP_END_DT
+		     , S.DSP_YN
+		     , S.SORT_SEQ
+		     , S.BRND_ID
+		     , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = S.BRND_ID) AS BRND_NM
+		     , S.SESON_CD
+		     , (SELECT CD_NM FROM SYS_CD WHERE CD = S.SESON_CD) AS SESON_NM
+		     , S.RPRST_IMG_FILE_NM
+		     , S.RPRST_IMG_FILE_URL
+		     , S.RPRST_IMG_ALTRTV_CONT
+		     , S.REGTR_ID
+		     , S.REG_DT
+		     , S.UDTER_ID
+		     , S.UDT_DT
+		     , S1.STRND_NM AS LSTRND_NM
+		     , S1.RPRST_IMG_FILE_NM AS LRPRST_IMG_FILE_NM
+		     , S1.RPRST_IMG_FILE_URL AS LRPRST_IMG_FILE_URL
+		     , S1.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT
+		     , T.TMPLAT_TP_CD
+		     , T.DVC_SECT_CD
+		     , T.TMPLAT_NM
+		     , T.TMPLAT_DSCR
+		     , T.TMPLAT_CNNC_URL
+		     , T.TMPLAT_USE_YN
+		     , T1.CNR_SN
+		     , T1.DSP_CNR_USE_YN
+		     , ROW_NUMBER () OVER (PARTITION BY S.STRND_SN  ORDER BY  T1.SORT_SEQ ASC) AS RNUM
+		FROM DSP_STRND S
+		JOIN DSP_REV_CPST drc ON S.STRND_SN = drc.STRND_SN
+		LEFT OUTER JOIN DSP_STRND_LANG S1 ON S.STRND_SN  = S1.STRND_SN AND S1.LANG_CD = #{lang}
+		LEFT OUTER JOIN DSP_TMPLAT T ON 
+		<choose>
+		  <when test="device == 'PC'">	
+		    drc.PC_TMPLAT_SN = T.TMPLAT_SN
+		  </when>
+		  <when test="device == 'MOBILE_WEB' or device == 'MOBILE_APP'">
+			drc.MOBILE_TMPLAT_SN = T.TMPLAT_SN
+		  </when>
+		</choose>
+		AND T.TMPLAT_USE_YN = 'Y'
+    	LEFT OUTER JOIN DSP_CNR_TMPLAT_INFO_CNNC T1
+    	ON 
+    	<choose>
+		  <when test="device == 'PC'">	
+		    drc.PC_TMPLAT_SN = T1.TMPLAT_SN
+		  </when>
+		  <when test="device == 'MOBILE_WEB' or device == 'MOBILE_APP'">
+		    drc.MOBILE_TMPLAT_SN = T1.TMPLAT_SN
+		  </when>
+		</choose>
+        AND drc.REV_SN = T1.REV_SN
+		AND T1.DSP_CNR_USE_YN = 'Y'
+        WHERE drc.REV_SN = #{revSn, jdbcType=NUMERIC}
+		AND S.DSP_YN = 'Y'
+		<include refid="stDspTgt"/>	<!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+		<if test="strndTpCd != null and strndTpCd != ''">
+			AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+		</if>
+		<if test="brndId != 'all'">
+			<if test="brndId != null and brndId != ''">
+				AND S.BRND_ID = #{brndId,jdbcType=VARCHAR}
+			</if>	
+		</if>
+		<if test="sesonCd != 'all'">
+			<if test="sesonCd != null and sesonCd != ''">
+				AND S.SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			</if>	
+		</if>
+		<![CDATA[
+		AND S.DSP_BEG_DT <= SYSDATE
+    	AND S.DSP_END_DT >= SYSDATE
+    	]]>
+    	<if test="upBrndId != null and upBrndId != ''">
+    	AND S.BRND_ID IN (
+            SELECT
+			    brnd_id
+			FROM (
+			    SELECT
+			        SS.brnd_id, SS.UPPER_BRND_ID
+			    FROM SYS_BRND SS
+			    CONNECT BY PRIOR SS.BRND_ID = SS.UPPER_BRND_ID
+			    AND SS.USE_YN = 'Y'
+			    AND SS.BRND_GRP_YN = 'Y'
+			    START WITH SS.BRND_ID = #{upBrndId,jdbcType=VARCHAR}
+			    ORDER SIBLINGS BY SS.SORT_SEQ
+			) BB
+			where bb.UPPER_BRND_ID is not null
+   		)
+    	</if>
+    	)
+    	WHERE RNUM = 1
+    	ORDER BY SORT_SEQ ASC, REG_DT DESC)
+	</select>
+	
+<!-- 	<select id="selectStrendList" resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO"> -->
+<!-- 		/*selectStrendList*/ -->
+<!-- 		<include refid="com.plgrim.ncp.base.beginPage"/> -->
+<!--     	SELECT S.STRND_SN -->
+<!-- 		     , S.STRND_TP_CD -->
+<!-- 		     , S.STRND_NM -->
+<!-- 		     , S.DSP_BEG_DT -->
+<!-- 		     , S.DSP_END_DT -->
+<!-- 		     , S.DSP_YN -->
+<!-- 		     , S.SORT_SEQ -->
+<!-- 		     , S.BRND_ID -->
+<!-- 		     , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = S.BRND_ID) AS BRND_NM -->
+<!-- 		     , S.SESON_CD -->
+<!-- 		     , (SELECT CD_NM FROM SYS_CD WHERE CD = S.SESON_CD) AS SESON_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_URL -->
+<!-- 		     , S.RPRST_IMG_ALTRTV_CONT -->
+<!-- 		     , S.PC_MOBILE_TMPLAT_IND_USE_YN -->
+<!-- 		     , S.PC_TMPLAT_SN -->
+<!-- 		     , S.MOBILE_TMPLAT_SN -->
+<!-- 		     , S.REGTR_ID -->
+<!-- 		     , S.REG_DT -->
+<!-- 		     , S.UDTER_ID -->
+<!-- 		     , S.UDT_DT -->
+<!-- 		     , S1.STRND_NM AS LSTRND_NM -->
+<!-- 		     , S1.RPRST_IMG_FILE_NM AS LRPRST_IMG_FILE_NM -->
+<!-- 		     , S1.RPRST_IMG_FILE_URL AS LRPRST_IMG_FILE_URL -->
+<!-- 		     , S1.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT -->
+<!-- 		FROM DSP_STRND S -->
+<!-- 		LEFT OUTER JOIN DSP_STRND_LANG S1 ON S.STRND_SN  = S1.STRND_SN AND S1.LANG_CD = #{lang,jdbcType=VARCHAR} -->
+<!-- 		WHERE 1=1 -->
+<!-- 		AND S.DSP_YN = 'Y' -->
+<!-- 		<if test="strndTpCd != null and strndTpCd != ''"> -->
+<!-- 			AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR} -->
+<!-- 		</if> -->
+<!-- 		<if test="brndId != 'all'"> -->
+<!-- 			<if test="brndId != null and brndId != ''"> -->
+<!-- 				AND S.BRND_ID = #{brndId,jdbcType=VARCHAR} -->
+<!-- 			</if>	 -->
+<!-- 		</if> -->
+<!-- 		<if test="sesonCd != 'all'"> -->
+<!-- 			<if test="sesonCd != null and sesonCd != ''"> -->
+<!-- 				AND S.SESON_CD = #{sesonCd,jdbcType=VARCHAR} -->
+<!-- 			</if>	 -->
+<!-- 		</if> -->
+<!-- 		<![CDATA[ -->
+<!-- 		AND S.DSP_BEG_DT <= SYSDATE -->
+<!--     	AND S.DSP_END_DT >= SYSDATE -->
+<!--     	]]> -->
+<!--     	ORDER BY S.SORT_SEQ ASC, S.UDT_DT DESC -->
+<!-- 		<include refid="com.plgrim.ncp.base.endPage"/> -->
+<!-- 	</select> -->
+	
+	
+<!-- 	<select id="selectStrendCount" resultType="java.lang.Long" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO"> -->
+<!-- 		/*selectStrendCount*/ -->
+<!-- 		SELECT COUNT(*) FROM (SELECT S.STRND_SN -->
+<!-- 		     , S.STRND_TP_CD -->
+<!-- 		     , S.STRND_NM -->
+<!-- 		     , S.DSP_BEG_DT -->
+<!-- 		     , S.DSP_END_DT -->
+<!-- 		     , S.DSP_YN -->
+<!-- 		     , S.SORT_SEQ -->
+<!-- 		     , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = S.BRND_ID) AS BRND_NM -->
+<!-- 		     , S.SESON_CD -->
+<!-- 		     , (SELECT CD_NM FROM SYS_CD WHERE CD = S.SESON_CD) AS SESON_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_URL -->
+<!-- 		     , S.RPRST_IMG_ALTRTV_CONT -->
+<!-- 		     , S.PC_MOBILE_TMPLAT_IND_USE_YN -->
+<!-- 		     , S.PC_TMPLAT_SN -->
+<!-- 		     , S.MOBILE_TMPLAT_SN -->
+<!-- 		     , S.REGTR_ID -->
+<!-- 		     , S.REG_DT -->
+<!-- 		     , S.UDTER_ID -->
+<!-- 		     , S.UDT_DT -->
+<!-- 		FROM DSP_STRND S -->
+<!-- 		LEFT OUTER JOIN DSP_STRND_LANG S1 ON S.STRND_SN  = S1.STRND_SN AND S1.LANG_CD = #{lang,jdbcType=VARCHAR} -->
+<!-- 		WHERE 1=1 -->
+<!-- 		AND S.DSP_YN = 'Y' -->
+<!-- 		<if test="strndTpCd != null and strndTpCd != ''"> -->
+<!-- 			AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR} -->
+<!-- 		</if> -->
+<!-- 		<if test="brndId != 'all'"> -->
+<!-- 			<if test="brndId != null and brndId != ''"> -->
+<!-- 				AND S.BRND_ID = #{brndId,jdbcType=VARCHAR} -->
+<!-- 			</if>	 -->
+<!-- 		</if> -->
+<!-- 		<if test="sesonCd != 'all'"> -->
+<!-- 		<if test="sesonCd != null and sesonCd != ''"> -->
+<!-- 			AND S.SESON_CD = #{sesonCd,jdbcType=VARCHAR} -->
+<!-- 		</if>	 -->
+<!-- 		</if> -->
+<!-- 		<![CDATA[ -->
+<!-- 		AND S.DSP_BEG_DT <= SYSDATE -->
+<!--     	AND S.DSP_END_DT >= SYSDATE -->
+<!--     	]]> -->
+<!--     	ORDER BY S.SORT_SEQ ASC , S.UDT_DT DESC -->
+<!--     	) -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectMagazineList" resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO"> -->
+<!-- 		/*selectMagazineList*/ -->
+<!-- 		<include refid="com.plgrim.ncp.base.beginPage"/> -->
+<!--     	SELECT S.STRND_SN -->
+<!-- 		     , S.STRND_TP_CD -->
+<!-- 		     , S.STRND_NM -->
+<!-- 		     , S.DSP_BEG_DT -->
+<!-- 		     , S.DSP_END_DT -->
+<!-- 		     , S.DSP_YN -->
+<!-- 		     , S.SORT_SEQ -->
+<!-- 		     , S.BRND_ID -->
+<!-- 		     , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = S.BRND_ID) AS BRND_NM -->
+<!-- 		     , S.SESON_CD -->
+<!-- 		     , (SELECT CD_NM FROM SYS_CD WHERE CD = S.SESON_CD) AS SESON_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_URL -->
+<!-- 		     , S.RPRST_IMG_ALTRTV_CONT -->
+<!-- 		     , S.PC_MOBILE_TMPLAT_IND_USE_YN -->
+<!-- 		     , S.PC_TMPLAT_SN -->
+<!-- 		     , S.MOBILE_TMPLAT_SN -->
+<!-- 		     , S.REGTR_ID -->
+<!-- 		     , S.REG_DT -->
+<!-- 		     , S.UDTER_ID -->
+<!-- 		     , S.UDT_DT -->
+<!-- 		     , S1.STRND_NM AS LSTRND_NM -->
+<!-- 		     , S1.RPRST_IMG_FILE_NM AS LRPRST_IMG_FILE_NM -->
+<!-- 		     , S1.RPRST_IMG_FILE_URL AS LRPRST_IMG_FILE_URL -->
+<!-- 		     , S1.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT -->
+<!-- 		     , DT.TMPLAT_TP_CD -->
+<!-- 		     , DT.DVC_SECT_CD -->
+<!-- 		     , DT.TMPLAT_NM -->
+<!-- 		     , DT.TMPLAT_DSCR -->
+<!-- 		     , DT.TMPLAT_CNNC_URL -->
+<!-- 		     , DT.TMPLAT_USE_YN -->
+<!-- 		     , DC.CNR_SN -->
+<!-- 		     , DC.DSP_CNR_USE_YN -->
+<!-- 		FROM DSP_STRND S -->
+<!-- 		LEFT OUTER JOIN DSP_STRND_LANG S1 ON S.STRND_SN  = S1.STRND_SN AND S1.LANG_CD = #{lang} -->
+<!-- 		, DSP_TMPLAT DT, DSP_CNR_TMPLAT_INFO DC -->
+<!-- 		WHERE 1=1 -->
+<!-- 		<choose> -->
+<!-- 			<when test="device == 'PC'">	 -->
+<!-- 				AND S.PC_TMPLAT_SN = DT.TMPLAT_SN -->
+<!-- 			</when> -->
+<!-- 			<when test="device == 'MOBILE'"> -->
+<!-- 				AND S.MOBILE_TMPLAT_SN = DT.TMPLAT_SN -->
+<!-- 			</when> -->
+<!-- 			<when test ="device == 'PC_MOBILE'"> -->
+<!-- 				AND S.PC_TMPLAT_SN = DT.TMPLAT_SN -->
+<!-- 			</when> -->
+<!-- 		</choose> -->
+<!-- 		AND DT.TMPLAT_SN = DC.TMPLAT_SN -->
+<!-- 		AND S.DSP_YN = 'Y' -->
+<!-- 		AND DT.DVC_SECT_CD LIKE '%'||#{device,jdbcType=VARCHAR}||'%' -->
+<!-- 		<if test="brndId != 'all'"> -->
+<!-- 		<if test="brndId != null and brndId != ''"> -->
+<!-- 			AND S.BRND_ID = #{brndId,jdbcType=VARCHAR} -->
+<!-- 		</if>	 -->
+<!-- 		</if> -->
+<!-- 		<if test="sesonCd != 'all'"> -->
+<!-- 		<if test="sesonCd != null and sesonCd != ''"> -->
+<!-- 			AND S.SESON_CD = #{sesonCd,jdbcType=VARCHAR} -->
+<!-- 		</if> -->
+<!-- 		</if> -->
+<!-- 		AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR} -->
+<!-- 		<![CDATA[ -->
+<!-- 		AND S.DSP_BEG_DT <= SYSDATE -->
+<!--     	AND S.DSP_END_DT >= SYSDATE -->
+<!--     	]]> -->
+<!--     	ORDER BY S.SORT_SEQ ASC -->
+<!-- 		<include refid="com.plgrim.ncp.base.endPage"/> -->
+<!-- 	</select> -->
+	
+	
+<!-- 	<select id="selectMagazineCount" resultType="java.lang.Long" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO"> -->
+<!-- 		/*selectMagazineCount*/ -->
+<!-- 		SELECT COUNT(*) FROM (SELECT S.STRND_SN -->
+<!-- 		     , S.STRND_TP_CD -->
+<!-- 		     , S.STRND_NM -->
+<!-- 		     , S.DSP_BEG_DT -->
+<!-- 		     , S.DSP_END_DT -->
+<!-- 		     , S.DSP_YN -->
+<!-- 		     , S.SORT_SEQ -->
+<!-- 		     , S.BRND_ID -->
+<!-- 		     , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = S.BRND_ID) AS BRND_NM -->
+<!-- 		     , S.SESON_CD -->
+<!-- 		     , (SELECT CD_NM FROM SYS_CD WHERE CD = S.SESON_CD) AS SESON_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_NM -->
+<!-- 		     , S.RPRST_IMG_FILE_URL -->
+<!-- 		     , S.RPRST_IMG_ALTRTV_CONT -->
+<!-- 		     , S.PC_MOBILE_TMPLAT_IND_USE_YN -->
+<!-- 		     , S.PC_TMPLAT_SN -->
+<!-- 		     , S.MOBILE_TMPLAT_SN -->
+<!-- 		     , S.REGTR_ID -->
+<!-- 		     , S.REG_DT -->
+<!-- 		     , S.UDTER_ID -->
+<!-- 		     , S.UDT_DT -->
+<!-- 		     , S1.STRND_NM AS LSTRND_NM -->
+<!-- 		     , S1.RPRST_IMG_FILE_NM AS LRPRST_IMG_FILE_NM -->
+<!-- 		     , S1.RPRST_IMG_FILE_URL AS LRPRST_IMG_FILE_URL -->
+<!-- 		     , S1.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT -->
+<!-- 		     , DT.TMPLAT_TP_CD -->
+<!-- 		     , DT.DVC_SECT_CD -->
+<!-- 		     , DT.TMPLAT_NM -->
+<!-- 		     , DT.TMPLAT_DSCR -->
+<!-- 		     , DT.TMPLAT_CNNC_URL -->
+<!-- 		     , DT.TMPLAT_USE_YN -->
+<!-- 		     , DC.CNR_SN -->
+<!-- 		     , DC.DSP_CNR_USE_YN -->
+<!-- 		FROM DSP_STRND S -->
+<!-- 		LEFT OUTER JOIN DSP_STRND_LANG S1 ON S.STRND_SN  = S1.STRND_SN AND S1.LANG_CD = #{lang} -->
+<!-- 		, DSP_TMPLAT DT, DSP_CNR_TMPLAT_INFO DC -->
+<!-- 		WHERE 1=1 -->
+<!-- 		<choose> -->
+<!-- 			<when test="device == 'PC'">	 -->
+<!-- 				AND S.PC_TMPLAT_SN = DT.TMPLAT_SN -->
+<!-- 			</when> -->
+<!-- 			<when test="device == 'MOBILE'"> -->
+<!-- 				AND S.MOBILE_TMPLAT_SN = DT.TMPLAT_SN -->
+<!-- 			</when> -->
+<!-- 			<when test ="device == 'PC_MOBILE'"> -->
+<!-- 				AND S.PC_TMPLAT_SN = DT.TMPLAT_SN -->
+<!-- 			</when> -->
+<!-- 		</choose> -->
+<!-- 		AND DT.TMPLAT_SN = DC.TMPLAT_SN -->
+<!-- 		AND S.DSP_YN = 'Y' -->
+<!-- 		AND DT.DVC_SECT_CD LIKE '%'||#{device,jdbcType=VARCHAR}||'%' -->
+<!-- 		<if test="brndId != 'all'"> -->
+<!-- 		<if test="brndId != null and brndId != ''"> -->
+<!-- 			AND S.BRND_ID = #{brndId,jdbcType=VARCHAR} -->
+<!-- 		</if>	 -->
+<!-- 		</if> -->
+<!-- 		<if test="sesonCd != 'all'"> -->
+<!-- 		<if test="sesonCd != null and sesonCd != ''"> -->
+<!-- 			AND S.SESON_CD = #{sesonCd,jdbcType=VARCHAR} -->
+<!-- 		</if> -->
+<!-- 		</if> -->
+<!-- 		AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR} -->
+<!-- 		<![CDATA[ -->
+<!-- 		AND S.DSP_BEG_DT <= SYSDATE -->
+<!--     	AND S.DSP_END_DT >= SYSDATE -->
+<!--     	]]>) -->
+<!-- 	</select> -->
+	
+	<select id="selectStrendSeason" resultMap="StrendSelectResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectStrendSeason][strend 룩북 시즌 리스트][김성환] */ 
+		SELECT 	S.SESON_CD
+		,		B.CD_NM AS SESON_NM
+		FROM 	DSP_STRND S
+    	, 		MV_SYS_CD B
+    	WHERE 	S.DSP_YN = 'Y'
+    	AND 	S.STRND_TP_CD = 'LKBUK'
+    	AND 	S.DSP_BEG_DT &lt;= SYSDATE
+    	AND 	S.DSP_END_DT &gt;= SYSDATE   
+      	AND 	S.SESON_CD = B.CD
+      	<include refid="stDspTgt"/>
+      	GROUP BY SESON_CD, B.CD_NM
+      	ORDER BY MAX(B.SORT_SEQ)
+	</select>
+	
+	<select id="selectStrendBrand" resultMap="StrendSelectResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectStrendBrand][strend 룩북 비이커 브랜드 리스트][김성환] */ 
+ 		SELECT 	S.BRND_ID
+		, 		B.BRND_NM
+		FROM 	DSP_STRND S
+    	,     	SYS_BRND B
+    	WHERE 	S.BRND_ID = B.BRND_ID
+		AND 	S.DSP_YN = 'Y'
+    	AND 	S.STRND_TP_CD = 'LKBUK'
+    	AND 	B.UPPER_BRND_ID = 'MCBR'
+    	AND 	B.USE_YN = 'Y'
+    	AND 	S.DSP_BEG_DT &lt;= SYSDATE
+    	AND 	S.DSP_END_DT &gt;= SYSDATE   
+		<if test="lang != 'KOR' ">
+		AND 	B.OVSEA_DLV_PSB_YN = 'Y'
+		</if>
+		<include refid="stDspTgt"/>
+    	GROUP BY S.BRND_ID, B.BRND_NM
+    	ORDER BY B.BRND_NM    	
+	</select>
+	
+	<select id="selectStrendBrand_bak" resultMap="StrendSelectResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectStrendBrand][strend 브랜드 리스트][이한솔] */ 
+		SELECT S.BRND_ID , SB.BRND_NM
+		FROM DSP_STRND S
+		, SYS_BRND SB
+		WHERE S.BRND_ID = SB.BRND_ID
+		AND S.DSP_YN = 'Y'
+		<include refid="stDspTgt"/> <!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+		<if test="strndTpCd != null and strndTpCd != ''">
+			AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+		</if>	
+		<![CDATA[
+		AND S.DSP_BEG_DT <= SYSDATE
+    	AND S.DSP_END_DT >= SYSDATE
+    	]]>
+		<if test="lang != 'KOR' ">
+		AND SB.OVSEA_DLV_PSB_YN = 'Y'
+		</if>
+    	<if test="upBrndId != null and upBrndId != ''">
+    	<choose>
+    	<when test="brndNotInYn != null and brndNotInYn != '' and brndNotInYn == 'Y'.toString()">
+    	AND SB.BRND_ID NOT IN (
+    	</when>
+    	<otherwise>
+    	AND SB.BRND_ID IN (
+    	</otherwise>
+    	</choose>
+    	   SELECT
+			    brnd_id
+			FROM (
+			    SELECT
+			        SS.brnd_id, SS.UPPER_BRND_ID
+			    FROM SYS_BRND SS
+			    CONNECT BY PRIOR SS.BRND_ID = SS.UPPER_BRND_ID
+			    AND SS.USE_YN = 'Y'
+			    AND SS.BRND_GRP_YN = 'Y'
+			    START WITH SS.BRND_ID = #{upBrndId,jdbcType=VARCHAR}
+			    ORDER SIBLINGS BY SS.SORT_SEQ
+			) BB
+			where bb.UPPER_BRND_ID is not null
+   		)
+   		</if>
+    	GROUP BY S.BRND_ID , SB.BRND_NM
+    	<if test="brndNotInYn != null and brndNotInYn != '' and brndNotInYn == 'Y'.toString()">
+    	union all
+		select decode(b_cnt,0,null,#{upBrndId,jdbcType=VARCHAR}) brnd_id,
+		       decode(b_cnt,0,null,'BEAKER') brnd_nm
+		from (
+		     SELECT count(S.BRND_ID) as b_cnt
+		     FROM DSP_STRND S ,
+		           SYS_BRND SB
+		     WHERE S.BRND_ID = SB.BRND_ID
+		       AND S.DSP_YN = 'Y'
+		       <include refid="stDspTgt"/> <!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+		       <if test="strndTpCd != null and strndTpCd != ''">
+			   AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+			   </if>
+		       <![CDATA[
+				AND S.DSP_BEG_DT <= SYSDATE
+		    	AND S.DSP_END_DT >= SYSDATE
+		       ]]>
+			   <if test="lang != 'KOR' ">
+				 AND SB.OVSEA_DLV_PSB_YN = 'Y'
+			   </if>
+		       AND SB.BRND_ID IN (
+		          SELECT brnd_id
+		          FROM (SELECT SS.brnd_id,
+		                       SS.UPPER_BRND_ID
+		                  FROM SYS_BRND SS CONNECT BY PRIOR SS.BRND_ID = SS.UPPER_BRND_ID
+		                   AND SS.USE_YN = 'Y'
+		                   AND SS.BRND_GRP_YN = 'Y'
+		                   START WITH SS.BRND_ID = #{upBrndId,jdbcType=VARCHAR}
+		                 ORDER SIBLINGS BY SS.SORT_SEQ ) BB
+		         where bb.UPPER_BRND_ID is not null )
+		 )
+		 where b_cnt > 0
+		 </if>
+	</select>
+	
+	<select id="selectStrendCorner" resultMap="StrendResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectStrendCorner][strend 상세정보][이한솔] */ 
+		SELECT S.STRND_SN
+		     , S.STRND_TP_CD
+		     , S.STRND_NM
+		     , S.DSP_BEG_DT
+		     , S.DSP_END_DT
+		     , S.DSP_YN
+		     , S.SORT_SEQ
+		     , S.BRND_ID
+		     , (SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = S.BRND_ID) AS BRND_NM
+		     , (SELECT DSP_CTGRY_NO FROM DSP_CTGRY WHERE DSP_BRND_ID = S.BRND_ID AND DSP_YN = 'Y' AND DELETE_YN = 'N' AND SPCIFY_URL_DSP_YN = 'N') AS DSP_CTGRY_NO  
+		     , S.SESON_CD
+		     , (SELECT CD_NM FROM SYS_CD WHERE CD = S.SESON_CD) AS SESON_NM
+		     , S.RPRST_IMG_FILE_URL
+		     , S.RPRST_IMG_FILE_NM
+		     , S.RPRST_IMG_ALTRTV_CONT
+		     , drc.PC_MOBILE_TMPLAT_IND_USE_YN
+		     , drc.PC_TMPLAT_SN
+		     , drc.MOBILE_TMPLAT_SN
+		     , S.REGTR_ID
+		     , S.REG_DT
+		     , S.UDTER_ID
+		     , S.UDT_DT
+		     , S1.STRND_NM AS LSTRND_NM
+		     , S1.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT
+		     , DT.TMPLAT_TP_CD
+		     , DT.DVC_SECT_CD
+		     , DT.TMPLAT_NM
+		     , DT.TMPLAT_DSCR
+		     , DT.TMPLAT_CNNC_URL
+		     , DT.TMPLAT_USE_YN
+		     , DC.CNR_SN
+		     , DC.SORT_SEQ
+		     , DC.DSP_CNR_USE_YN
+		FROM DSP_STRND S
+        JOIN DSP_REV_CPST drc ON S.STRND_SN = drc.STRND_SN
+		LEFT OUTER JOIN DSP_STRND_LANG S1 ON S.STRND_SN  = S1.STRND_SN AND S1.LANG_CD = #{lang}
+        JOIN DSP_TMPLAT DT ON
+            <choose>
+                <when test="device == 'PC'">
+                    drc.PC_TMPLAT_SN = DT.TMPLAT_SN
+                </when>
+                <when test="device == 'MOBILE_WEB' or device == 'MOBILE_APP'">
+                    drc.MOBILE_TMPLAT_SN = DT.TMPLAT_SN
+                </when>
+            </choose>
+            AND DT.TMPLAT_USE_YN = 'Y'
+        JOIN DSP_CNR_TMPLAT_INFO_CNNC DC
+            ON
+            <choose>
+                <when test="device == 'PC'">
+                    drc.PC_TMPLAT_SN = DC.TMPLAT_SN
+                </when>
+                <when test="device == 'MOBILE_WEB' or device == 'MOBILE_APP'">
+                    drc.MOBILE_TMPLAT_SN = DC.TMPLAT_SN
+                </when>
+            </choose>
+            AND drc.REV_SN = DC.REV_SN
+            AND DC.DSP_CNR_USE_YN = 'Y'
+		WHERE drc.REV_SN = #{revSn, jdbcType=NUMERIC}
+		AND S.DSP_YN = 'Y'
+		AND S.STRND_SN = #{strndSn,jdbcType=NUMERIC}
+		AND S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+		<![CDATA[
+		AND S.DSP_BEG_DT <= SYSDATE
+    	AND S.DSP_END_DT >= SYSDATE
+    	]]>
+	</select>
+	
+	<select id="selectNextStrend" resultType="int" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+		/* [display.strend.xml][selectNextStrend][다음 strend 정보][이한솔] */ 
+		SELECT 
+		NVL((SELECT A.STRND_SN 
+		FROM 
+			(SELECT 
+				B.STRND_SN, ROWNUM AS RNUM 
+				FROM (SELECT 
+						S.STRND_SN, 
+						ROWNUM AS RNUM 
+						FROM DSP_STRND C
+						WHERE S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR} 
+							<include refid="stDspTgt"/> <!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+				            AND S.DSP_YN = 'Y'
+				            AND S.BRND_ID = #{brndId,jdbcType=VARCHAR}
+				            <![CDATA[
+				            AND S.DSP_BEG_DT <= SYSDATE
+				          	AND S.DSP_END_DT >= SYSDATE
+				          	]]>
+						ORDER BY S.SORT_SEQ) B
+						) A
+		WHERE A.RNUM = (SELECT 
+						D.RNUM+1 FROM (SELECT E.STRND_SN, ROWNUM AS RNUM 
+									FROM (SELECT S.STRND_SN, ROWNUM AS RNUM 
+											FROM DSP_STRND F 
+											WHERE S.STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR} 
+							                      AND S.DSP_YN = 'Y'
+							                      <include refid="stDspTgt"/> <!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+							                      AND S.BRND_ID = #{brndId,jdbcType=VARCHAR}
+							                      <![CDATA[
+							                      AND S.DSP_BEG_DT <= SYSDATE
+							                      AND S.DSP_END_DT >= SYSDATE
+							                      ]]>
+											ORDER BY S.SORT_SEQ) E ) D
+						WHERE D.STRND_SN = #{strndSn,jdbcType=NUMERIC})),0) AS NEXTSTRND
+		FROM DUAL
+	</select>
+	
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspStrendFoResult" id="RecommendGoodsResult">
+		<result property="recommendGoods.god.godNo" 			column="GOD_NO" />
+		<result property="recommendGoods.god.godNm" 			column="GOD_NM" />
+		<result property="recommendGoods.sysBrnd.brndNm" 		column="BRND_NM" />
+		<result property="recommendGoods.sysBrnd.upperBrndId" 	column="UPPER_BRND_ID" />
+		<result property="recommendGoods.imgFrontUrl" 			column="IMG_FRONT_URL" />
+		<result property="recommendGoods.imgBackUrl" 			column="IMG_BACK_URL" />
+	</resultMap>
+	<select id="selectRecommendGodMoreOfGTS" resultMap="RecommendGoodsResult" parameterType="com.plgrim.ncp.biz.display.data.DspStrendSearchFoDTO">
+	/* [display.strend.xml][selectRecommendGodMoreOfGTS][GET THE STYLE 추천상품 더보기][박해선 -> 임대림 최종 수정] */
+			  SELECT T1.GOD_NO,
+			         T2.GOD_NM,
+			         T1.BRND_NM,
+			         T1.UPPER_BRND_ID,
+			         T1.DSGN_GRP_NO,
+			         A1.IMG_URL AS IMG_FRONT_URL,
+			         A2.IMG_URL AS IMG_BACK_URL
+		       FROM (
+				      SELECT MAX (A.GOD_NO) AS GOD_NO,
+		                     MAX (A.BRND_NM) AS BRND_NM,
+		                     MAX (A.UPPER_BRND_ID) AS UPPER_BRND_ID,
+		                     A.DSGN_GRP_NO,
+		                     MAX (A.SORT_SEQ) AS SORT_SEQ
+				      FROM  (      
+				              SELECT  A.STRND_SN
+                              ,       A.REV_SN
+				              ,       A.TMPLAT_SN
+				              ,       A.CNR_SN
+				              ,       A.CNR_SET_SN
+				              ,       A.CONTT_GOD_NO
+				              ,       A.GOD_NO
+				              ,       A.SORT_SEQ
+				              ,		  B.DSGN_GRP_NO
+				              ,		  B.BRND_NM
+				              ,       B.GOD_NM
+				              ,		  B.UPPER_BRND_ID
+				              ,       ROW_NUMBER() OVER(PARTITION BY A.CNR_SN, A.CNR_SET_SN, A.CONTT_GOD_NO ORDER BY A.SORT_SEQ) AS CONTT_GOD_SN
+				              FROM    DSP_STRND_CNR_RELATE_GOD A
+				              INNER JOIN (
+				               	SELECT	t1.GOD_NO
+				               		   ,t5.UPPER_BRND_ID
+				               		   ,t1.DSGN_GRP_NO
+									<choose>
+									   <when test="lang != 'KOR' ">
+									   /* 상품명 다국어 변환 */
+									   ,t3.GOD_NM
+									   /* 브랜드명 다국어 변환 */
+									   ,t55.BRND_NM
+									   </when>
+									   <otherwise>
+						               ,t1.GOD_NM
+						               ,t5.BRND_NM
+									   </otherwise>
+									</choose>
+								FROM GOD t1 
+									JOIN DSP_GOD_PRC t6 ON (
+						        		t1.GOD_NO = t6.GOD_NO 
+						        		AND t6.MALL_ID = #{mallId,jdbcType=VARCHAR}
+						        		<if test='spcPrmTp != null and spcPrmTp != ""'>
+										  AND t6.PRC_SECT_CD = CASE
+															   WHEN (SELECT 1
+																	   FROM DSP_GOD_PRC
+																	  WHERE PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND GOD_NO = t1.GOD_NO AND ROWNUM = 1)
+																	   IS NOT NULL
+															   THEN #{spcPrmTp, jdbcType=VARCHAR} ELSE #{prcSectCd, jdbcType=VARCHAR} END		          
+										  </if>
+										  <if test='spcPrmTp == null or spcPrmTp == ""'>
+										  AND t6.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}	          
+										  </if>
+						        		AND t6.LANG_CD = #{lang,jdbcType=VARCHAR}
+						        	)
+									JOIN SYS_BRND t5 ON T1.BRND_GRP_ID = T5.BRND_ID
+								<if test="lang != 'KOR' ">
+									/* 브랜드명 다국어 변환 */
+									JOIN SYS_BRND_LANG t55 ON  T5.BRND_ID = T55.BRND_ID AND T55.LANG_CD = #{lang,jdbcType=VARCHAR}
+									/* 해외판매여부 체크 */
+									JOIN GOD_LANGBY_GOD_NM t3 ON t1.GOD_NO=T3.GOD_NO AND T3.LANG_CD = #{lang,jdbcType=VARCHAR} AND t3.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+								</if>
+								WHERE 1 = 1 
+								  AND t1.GOD_APRV_SECT_CD = 'APRV_COMPT'
+
+				     			<choose>
+								    <when test="lang != 'KOR' ">
+								  AND t1.GOD_SALE_SECT_CD = 'SALE_PROGRS'
+								   	</when>
+									<otherwise>
+										AND t1.GOD_SALE_SECT_CD IN ('SALE_PROGRS', 'SALE_PROGRS_PKUP')
+									</otherwise>
+								</choose>
+
+								  AND t1.DSP_YN = 'Y'
+								<if test='empYn == "N"'>
+								  AND t1.EMP_ONLY_YN = 'N'
+								</if>	           
+						          AND t1.SPCIFY_URL_DSP_YN = 'N'
+								<if test="lang != 'KOR' ">
+									/* 해외판매여부 체크 */
+									AND t1.OVSEA_DLV_PSB_YN = 'Y'
+								</if>
+				              )B ON A.GOD_NO = B.GOD_NO
+				              WHERE A.STRND_SN = #{strndSn, jdbcType=NUMERIC}
+				                AND A.TMPLAT_SN = #{tmplatSn, jdbcType=NUMERIC}  
+                                AND A.REV_SN = #{revSn, jdbcType=NUMERIC}
+				                AND NOT EXISTS(
+		                             SELECT DCC.GOD_NO
+		                              FROM DSP_CNR_CONTT DCC
+		                              JOIN DSP_CNR_SET DCS ON (DCC.REV_SN = DCS.REV_SN AND DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+		                              JOIN DSP_CNR_TMPLAT_INFO_CNNC DCTI ON (DCC.REV_SN = DCTI.REV_SN AND DCC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+		                              JOIN DSP_CNR DC ON (DCC.REV_SN = DC.REV_SN AND DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+		                              WHERE 1 = 1
+                                      AND DCC.REV_SN = A.REV_SN
+		                              AND DCC.DSP_YN = 'Y'
+		                              AND DCC.CONTT_TP_CD  ='GOD'
+		                              AND DCC.DSP_BEG_DT &lt;= SYSDATE
+		                              AND add_months(DCC.DSP_BEG_DT, 6) &gt;= SYSDATE
+		                              AND DCS.STRND_SN = DCTI.STRND_SN
+		                              AND DCTI.TMPLAT_SN = A.TMPLAT_SN
+		                              AND DCS.STRND_SN = A.STRND_SN
+		                              AND DCC.GOD_NO=A.GOD_NO
+		                 		 )
+				                  
+				      ) A 
+				      WHERE A.CNR_SN = #{cnrSn, jdbcType=NUMERIC}
+				        AND A.CNR_SET_SN = #{cnrSetSn, jdbcType=NUMERIC}
+				        AND A.CONTT_GOD_SN &lt; 3
+		                   AND A.DSGN_GRP_NO NOT IN
+		                          (
+		                          <![CDATA[
+		                            SELECT TT2.DSGN_GRP_NO
+		                              FROM (
+		                                    SELECT DCC.GOD_NO
+		                                         FROM DSP_CNR_CONTT DCC
+		                                              JOIN
+		                                              DSP_CNR_SET DCS
+		                                                 ON (    DCC.CNR_SN = DCS.CNR_SN
+		                                                     AND DCC.REV_SN = DCS.REV_SN
+		                                                     AND DCC.CNR_SET_SN = DCS.CNR_SET_SN
+		                                                     AND DCS.DSP_YN = 'Y')
+		                                              JOIN
+		                                              DSP_CNR_TMPLAT_INFO_CNNC DCTI
+		                                                 ON (    DCC.CNR_SN = DCTI.CNR_SN
+		                                                     AND DCS.REV_SN = DCTI.REV_SN
+		                                                     AND DCS.CNR_SN = DCTI.CNR_SN
+		                                                     AND DCTI.DSP_CNR_USE_YN = 'Y')
+		                                        WHERE     1 = 1
+		                                              AND DCC.REV_SN = #{revSn, jdbcType=NUMERIC}
+		                                              AND DCC.DSP_YN = 'Y'
+		                                              AND DCC.CONTT_TP_CD = 'GOD'
+		                                              AND DCC.DSP_BEG_DT <= SYSDATE
+		                                              AND ADD_MONTHS (DCC.DSP_BEG_DT, 6) >= SYSDATE
+		                                              AND DCTI.TMPLAT_SN = #{tmplatSn, jdbcType=NUMERIC}  
+		                                              AND DCS.STRND_SN = #{strndSn, jdbcType=NUMERIC}
+		                                              AND DCS.STRND_SN = DCTI.STRND_SN
+		                                              AND EXISTS
+		                                                     (SELECT 1
+		                                                        FROM DSP_CNR_CONTT_DSP_TGT TGT
+		                                                       WHERE     DCC.CNR_SN = TGT.CNR_SN
+		                                                             AND DCC.REV_SN = TGT.REV_SN
+		                                                             AND DCC.CNR_SET_SN =
+		                                                                    TGT.CNR_SET_SN
+		                                                             AND DCC.CONTT_TURN =
+		                                                                    TGT.CONTT_TURN
+		                                                             AND (    TGT.DSP_TGT_TP_CD =
+		                                                                         'MALL_ID'
+		                                                                  AND TGT.MALL_ID = #{mallId,jdbcType=VARCHAR}))
+		                                              AND EXISTS
+		                                                     (SELECT 1
+		                                                        FROM DSP_CNR_CONTT_DSP_TGT TGT
+		                                                       WHERE     DCC.CNR_SN = TGT.CNR_SN
+		                                                             AND DCC.REV_SN = TGT.REV_SN
+		                                                             AND DCC.CNR_SET_SN =
+		                                                                    TGT.CNR_SET_SN
+		                                                             AND DCC.CONTT_TURN =
+		                                                                    TGT.CONTT_TURN
+		                                                             AND (    TGT.DSP_TGT_TP_CD =
+		                                                                         'LANG'
+		                                                                  AND TGT.LANG_CD = #{lang,jdbcType=VARCHAR}))
+		                                              AND EXISTS
+		                                                     (SELECT 1
+		                                                        FROM DSP_CNR_CONTT_DSP_TGT TGT
+		                                                       WHERE     DCC.CNR_SN = TGT.CNR_SN
+		                                                             AND DCC.REV_SN = TGT.REV_SN
+		                                                             AND DCC.CNR_SET_SN =
+		                                                                    TGT.CNR_SET_SN
+		                                                             AND DCC.CONTT_TURN =
+		                                                                    TGT.CONTT_TURN
+		                                                             AND (    TGT.DSP_TGT_TP_CD =
+		                                                                         'DVC'
+		                                                                  AND TGT.DVC_CD = #{device,jdbcType=VARCHAR}))
+		                                              AND EXISTS
+		                                                     (SELECT 1
+		                                                        FROM DSP_CNR_CONTT_DSP_TGT TGT
+		                                                       WHERE     DCC.CNR_SN = TGT.CNR_SN
+		                                                             AND DCC.REV_SN = TGT.REV_SN
+		                                                             AND DCC.CNR_SET_SN =
+		                                                                    TGT.CNR_SET_SN
+		                                                             AND DCC.CONTT_TURN =
+		                                                                    TGT.CONTT_TURN
+		                                                             AND (    TGT.DSP_TGT_TP_CD =
+		                                                                         'TGT_MBR_TP'
+		                                                                  AND TGT.TGT_MBR_TP_CD =
+		                                                                         #{aplMbrTp,jdbcType=VARCHAR}))  
+		                              ) TT1
+		                               ,GOD TT2
+		                             WHERE 1=1
+		                               AND TT1.GOD_NO = TT2.GOD_NO
+		                                ]]>                          			        				        						    											      
+				        )
+				   GROUP BY A.DSGN_GRP_NO
+				    ) T1
+				    INNER JOIN GOD T2 ON T1.GOD_NO = T2.GOD_NO
+				    LEFT OUTER JOIN	GOD_IMG A1 ON	T1.GOD_NO = A1.GOD_NO AND A1.IMG_TP_CD = 'THNAIL' AND A1.IMG_TURN = 0 AND A1.IMG_SIZE_CD = #{imgSizeCd}
+				    LEFT OUTER JOIN	GOD_IMG A2 ON	T1.GOD_NO = A2.GOD_NO AND A2.IMG_TP_CD = 'THNAIL' AND A2.IMG_TURN = 1 AND A2.IMG_SIZE_CD = #{imgSizeCd}				    
+				    ORDER BY T1.SORT_SEQ ASC 		   
+	</select>
+	
+	
+
+</mapper>

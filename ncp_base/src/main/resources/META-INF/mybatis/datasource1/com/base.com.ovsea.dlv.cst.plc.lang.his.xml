@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComOvseaDlvCstPlcLangHis" parameterType="comOvseaDlvCstPlcLangHis" resultType="comOvseaDlvCstPlcLangHis">
+		SELECT /* com.plgrim.ncp.base.selectComOvseaDlvCstPlcLangHis		Generator(Generator)	2018-05-23 */
+			   OVSEA_DLV_CST_PLC_SN
+			 , LANG_CD
+			 , HIST_DT
+			 , DLV_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_OVSEA_DLV_CST_PLC_LANG_HIS
+		 WHERE 1 = 1
+	   	   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateComOvseaDlvCstPlcLangHis" parameterType="comOvseaDlvCstPlcLangHis">
+		UPDATE /* com.plgrim.ncp.base.updateComOvseaDlvCstPlcLangHis		Generator(Generator)	2018-05-23 */
+		COM_OVSEA_DLV_CST_PLC_LANG_HIS SET
+			   DLV_MTHD_DSCR = #{dlvMthdDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertComOvseaDlvCstPlcLangHis" parameterType="comOvseaDlvCstPlcLangHis">
+		INSERT /* com.plgrim.ncp.base.insertComOvseaDlvCstPlcLangHis		Generator(Generator)	2018-05-23 */
+		INTO   COM_OVSEA_DLV_CST_PLC_LANG_HIS (
+			   OVSEA_DLV_CST_PLC_SN
+			 , LANG_CD
+			 , HIST_DT
+			 , DLV_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{dlvMthdDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComOvseaDlvCstPlcLangHis" parameterType="comOvseaDlvCstPlcLangHis">
+		DELETE /* com.plgrim.ncp.base.deleteComOvseaDlvCstPlcLangHis		Generator(Generator)	2018-05-23 */
+		  FROM COM_OVSEA_DLV_CST_PLC_LANG_HIS
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND LANG_CD = #{langCd,jdbcType=VARCHAR}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

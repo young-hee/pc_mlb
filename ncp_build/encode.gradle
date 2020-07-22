@@ -1,0 +1,40 @@
+import groovy.json.StringEscapeUtils
+
+def list = []
+def displayIt
+
+displayIt = { node ->
+    File[] files = node.listFiles()
+    for (File file : files) {
+        if (file.isDirectory()) {
+            System.out.println("directory:" + file.getCanonicalPath())
+            displayIt(new File(file.getCanonicalPath()))
+        } else {
+            System.out.println("     file:" + file.getCanonicalPath())
+            list.add(file)
+        }
+    }
+}
+
+/**
+ * 유니코드로 된 properties 파일을 utf-8 로 encode
+ */
+task encode_task << {
+    rootProject.subprojects.each { cfg ->
+        def f = cfg.file("/src/main/resources/META-INF/messages/");
+        displayIt(new File(f.getAbsolutePath()))
+
+        list = list.findAll() { file ->
+            file.getName().endsWith(".properties");
+        }
+
+        list.each { file ->
+            def str = StringEscapeUtils.unescapeJava(file.getText());
+
+            file.write(str, "UTF-8")
+            println file.getText()
+        }
+    }
+
+
+}

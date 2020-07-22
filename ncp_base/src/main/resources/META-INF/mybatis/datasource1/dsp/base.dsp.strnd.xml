@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspStrnd" parameterType="dspStrnd" resultType="dspStrnd">
+		SELECT /* com.plgrim.ncp.base.selectDspStrnd		Generator(Generator)	2018-05-23 */
+			   STRND_SN
+			 , STRND_TP_CD
+			 , STRND_NM
+			 , STRND_DSCR
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , DSP_YN
+			 , SORT_SEQ
+			 , BRND_ID
+			 , SESON_CD
+			 , RPRST_IMG_FILE_NM
+			 , RPRST_IMG_FILE_URL
+			 , RPRST_IMG_ALTRTV_CONT
+			 , RPRST_IMG2_FILE_NM
+			 , RPRST_IMG2_FILE_URL
+			 , RPRST_IMG2_ALTRTV_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_STRND
+		 WHERE 1 = 1
+	   	   AND STRND_SN = #{strndSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspStrnd" parameterType="dspStrnd">
+		UPDATE /* com.plgrim.ncp.base.updateDspStrnd		Generator(Generator)	2018-05-23 */
+		DSP_STRND SET
+			   STRND_TP_CD = #{strndTpCd,jdbcType=VARCHAR}
+			 , STRND_NM = #{strndNm,jdbcType=VARCHAR}
+			 , STRND_DSCR = #{strndDscr,jdbcType=VARCHAR}
+			 , DSP_BEG_DT = #{dspBegDt,jdbcType=TIMESTAMP}
+			 , DSP_END_DT = #{dspEndDt,jdbcType=TIMESTAMP}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			 , RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+			 , RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+			 , RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+			 , RPRST_IMG2_FILE_NM = #{rprstImg2FileNm,jdbcType=VARCHAR}
+			 , RPRST_IMG2_FILE_URL = #{rprstImg2FileUrl,jdbcType=VARCHAR}
+			 , RPRST_IMG2_ALTRTV_CONT = #{rprstImg2AltrtvCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND STRND_SN = #{strndSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspStrnd" parameterType="dspStrnd">
+		INSERT /* com.plgrim.ncp.base.insertDspStrnd		Generator(Generator)	2018-05-23 */
+		INTO   DSP_STRND (
+			   STRND_SN
+			 , STRND_TP_CD
+			 , STRND_NM
+			 , STRND_DSCR
+			 , DSP_BEG_DT
+			 , DSP_END_DT
+			 , DSP_YN
+			 , SORT_SEQ
+			 , BRND_ID
+			 , SESON_CD
+			 , RPRST_IMG_FILE_NM
+			 , RPRST_IMG_FILE_URL
+			 , RPRST_IMG_ALTRTV_CONT
+			 , RPRST_IMG2_FILE_NM
+			 , RPRST_IMG2_FILE_URL
+			 , RPRST_IMG2_ALTRTV_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{strndSn,jdbcType=NUMERIC}
+			 , #{strndTpCd,jdbcType=VARCHAR}
+			 , #{strndNm,jdbcType=VARCHAR}
+			 , #{strndDscr,jdbcType=VARCHAR}
+			 , #{dspBegDt,jdbcType=TIMESTAMP}
+			 , #{dspEndDt,jdbcType=TIMESTAMP}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{sesonCd,jdbcType=VARCHAR}
+			 , #{rprstImgFileNm,jdbcType=VARCHAR}
+			 , #{rprstImgFileUrl,jdbcType=VARCHAR}
+			 , #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{rprstImg2FileNm,jdbcType=VARCHAR}
+			 , #{rprstImg2FileUrl,jdbcType=VARCHAR}
+			 , #{rprstImg2AltrtvCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspStrnd" parameterType="dspStrnd">
+		DELETE /* com.plgrim.ncp.base.deleteDspStrnd		Generator(Generator)	2018-05-23 */
+		  FROM DSP_STRND
+		 WHERE 1 = 1
+		   AND STRND_SN = #{strndSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

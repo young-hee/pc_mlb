@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoOrgztOrdAffInqAtchmnfl" parameterType="csoOrgztOrdAffInqAtchmnfl" resultType="csoOrgztOrdAffInqAtchmnfl">
+		SELECT /* com.plgrim.ncp.base.selectCsoOrgztOrdAffInqAtchmnfl		Generator(Generator)	2018-06-11 */
+			   ORGZT_ORD_AFF_INQ_SN
+			 , ORGZT_ORD_AFF_INQ_ATCHMNFL_TUR
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_NM
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_UR
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_CP
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_ORGZT_ORD_AFF_INQ_ATCHMNFL
+		 WHERE 1 = 1
+	   	   AND ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+		   AND ORGZT_ORD_AFF_INQ_ATCHMNFL_TUR = #{orgztOrdAffInqAtchmnflTur,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoOrgztOrdAffInqAtchmnfl" parameterType="csoOrgztOrdAffInqAtchmnfl">
+		UPDATE /* com.plgrim.ncp.base.updateCsoOrgztOrdAffInqAtchmnfl		Generator(Generator)	2018-06-11 */
+		CSO_ORGZT_ORD_AFF_INQ_ATCHMNFL SET
+			   ORGZT_ORD_AFF_INQ_ATCH_FILE_NM = #{orgztOrdAffInqAtchFileNm,jdbcType=VARCHAR}
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_UR = #{orgztOrdAffInqAtchFileUr,jdbcType=VARCHAR}
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_CP = #{orgztOrdAffInqAtchFileCp,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+		   AND ORGZT_ORD_AFF_INQ_ATCHMNFL_TUR = #{orgztOrdAffInqAtchmnflTur,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoOrgztOrdAffInqAtchmnfl" parameterType="csoOrgztOrdAffInqAtchmnfl">
+		INSERT /* com.plgrim.ncp.base.insertCsoOrgztOrdAffInqAtchmnfl		Generator(Generator)	2018-06-11 */
+		INTO   CSO_ORGZT_ORD_AFF_INQ_ATCHMNFL (
+			   ORGZT_ORD_AFF_INQ_SN
+			 , ORGZT_ORD_AFF_INQ_ATCHMNFL_TUR
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_NM
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_UR
+			 , ORGZT_ORD_AFF_INQ_ATCH_FILE_CP
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+			 , #{orgztOrdAffInqAtchmnflTur,jdbcType=NUMERIC}
+			 , #{orgztOrdAffInqAtchFileNm,jdbcType=VARCHAR}
+			 , #{orgztOrdAffInqAtchFileUr,jdbcType=VARCHAR}
+			 , #{orgztOrdAffInqAtchFileCp,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoOrgztOrdAffInqAtchmnfl" parameterType="csoOrgztOrdAffInqAtchmnfl">
+		DELETE /* com.plgrim.ncp.base.deleteCsoOrgztOrdAffInqAtchmnfl		Generator(Generator)	2018-06-11 */
+		  FROM CSO_ORGZT_ORD_AFF_INQ_ATCHMNFL
+		 WHERE 1 = 1
+		   AND ORGZT_ORD_AFF_INQ_SN = #{orgztOrdAffInqSn,jdbcType=NUMERIC}
+		   AND ORGZT_ORD_AFF_INQ_ATCHMNFL_TUR = #{orgztOrdAffInqAtchmnflTur,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

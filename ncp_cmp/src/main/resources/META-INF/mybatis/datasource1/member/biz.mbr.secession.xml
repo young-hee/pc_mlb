@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.secession">
+
+    <!-- 회원 조회 FOR Secession -->
+    <select id="selectMemberForSecession"  parameterType="com.plgrim.ncp.biz.member.data.MbrExtendDTO" resultType="com.plgrim.ncp.biz.member.result.MbrExtendResult">
+        SELECT /* [biz.mbr.secession.xml][selectMemberForTerminate][회원 탈퇴 조건 조회][Jessi] */
+                mbr_no                          /* 회원 번호 */
+              , erp_cstmr_no
+              , mbr.mbr_tp_cd                   /* 회원 유형 코드 */
+              , fn_masking('ID'   , mbr_id   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbrId      /* 회원 ID */
+              , fn_masking('FLNM' , mbr_nm   , '', #{maskingYn, jdbcType=VARCHAR}) AS mbrNm      /* 회원 명 */
+              , (
+                 SELECT COUNT(*)
+                   FROM mbr_issu_cpn
+                  WHERE mbr_no = mbr.mbr_no
+                    AND cpn_stat_cd = 'NO_USE'
+                    AND valid_beg_date >= TO_CHAR(SYSDATE, 'YYYYMMDD')
+                    AND valid_end_date <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+                ) usableCpnCnt                                                                   /* 사용가능한 쿠폰 발급 갯수*/
+              , (
+                SELECT COUNT(*)
+                  FROM ord
+                 WHERE mbr_no = mbr.mbr_no
+                   AND ord_stat_cd NOT IN ('ALL_CNCL', 'DLV_COMPT')
+                   ) ordCnt                                                                      /* 진행 중인 주문 건수*/
+              , (
+                SELECT COUNT(*)
+                  FROM ord
+                  JOIN clm ON clm.ord_no = ord.ord_no
+                 WHERE ord.mbr_no = mbr.mbr_no
+                   AND clm.clm_stat_cd NOT IN ('COMPT', 'WTHDRAW')
+                   ) clmCnt                                                                      /* 진행 중인 클레임 건수*/
+                 , (
+                SELECT COUNT (*)
+                  FROM bsk_wishlst wish
+                  					INNER JOIN bsk_wishlst_god bwg
+                                    ON     wish.wishlst_sn = bwg.wishlst_sn
+                                       AND wish.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+                 WHERE wish.mbr_no = mbr.mbr_no
+                 ) AS wishCnt                                                                     /* wish list 수*/
+               , TO_CHAR(secsn_date, 'YYYY-MM-DD HH24:MI:SS') AS secsn_date_str /* 탈퇴 일자 */
+          FROM mbr
+         WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}                       /* 회원 번호 */
+    </select>
+
+    <!-- 회원 탈퇴 -->
+    <update id="updateMemberSecession" parameterType="mbr">
+        UPDATE /* [biz.mbr.secession.xml][updateMemberSecession][회원 탈퇴][Jessi] */
+                mbr
+           SET
+			<choose>
+			<when test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(secsnDate)">
+				secsn_date = #{secsnDate, jdbcType=TIMESTAMP}          				/* 탈퇴 일자 */
+			</when>
+			<otherwise>
+				secsn_date = SYSDATE                                 				/* 탈퇴 일자 */
+			</otherwise>
+			</choose>
+              , mbr_stat_cd = #{mbrStatCd, jdbcType=VARCHAR}                        /* 회원 상태 코드 */
+              , secsn_sect_cd = #{secsnSectCd, jdbcType=VARCHAR}                    /* 탈퇴 구분 코드 */
+              , secsn_resn_cd = #{secsnResnCd, jdbcType=VARCHAR}                    /* 탈퇴 사유 코드 */
+              , secsn_resn_detail_cont = #{secsnResnDetailCont, jdbcType=VARCHAR}   /* 탈퇴 사유 상세 내용 */
+              , enfrcsecsn_dsps_id = #{enfrcsecsnDspsId, jdbcType=VARCHAR}          /* 강제탈퇴 처리자 ID */
+              , udt_dt = SYSDATE                                     				/* 수정 일시 */
+              , udter_id = #{udterId, jdbcType=VARCHAR}                             /* 수정자 ID */
+		      , mbr_nm = null                        /* 회원 명 */
+		      , mbr_brthdy_slrcld_yn = null          /* 회원 생년월일 양력 여부 */
+		      , mbr_brthdy = null                    /* 회원 생년월일 */
+		      , mbr_sex_sect_cd = null               /* 회원 성별 구분 코드 */
+		      , mbr_id = null                        /* 회원 ID */
+		      , join_mbr_ip = null                   /* 가입 회원 IP */
+		      , mbr_pw = null                        /* 회원 비밀번호 */
+		      , mbr_erp_pw = null                    /* 회원 ERP 비밀번호 */
+		      , mbr_login_last_failr_count = null    /* 회원 로그인 최종 실패 횟수 */
+		      , mbr_pw_last_udt_dt = null            /* 회원 비밀번호 최종 수정 일시 */
+		      , mbr_email = null                     /* 회원 이메일 */
+		      , mobil_nation_no = null               /* 휴대전화 국가번호 */
+		      , mobil_area_no = null                 /* 휴대전화 지역번호 */
+		      , mobil_tlof_no = null                 /* 휴대전화 국번호 */
+		      , mobil_tlof_wthn_no = null            /* 휴대전화 국내번호 */
+		      , otel_nation_no = null                /* 회사전화 국가번호 */
+		      , otel_area_no = null                  /* 회사전화 지역번호 */
+		      , otel_tlof_no = null                  /* 회사전화 국번호 */
+		      , otel_tlof_wthn_no = null             /* 회사전화 국내번호 */
+		      , tel_nation_no = null                 /* 전화 국가번호 */
+		      , tel_area_no = null                   /* 전화 지역번호 */
+		      , tel_tlof_no = null                   /* 전화 국번호 */
+		      , tel_tlof_wthn_no = null              /* 전화 국내번호 */
+		      , mbr_addr_sect_cd = null              /* 회원 주소 구분 코드 */
+		      , mbr_post_no = null                   /* 회원 우편번호 */
+		      , mbr_base_addr = null                 /* 회원 기본주소 */
+		      , mbr_detail_addr = null               /* 회원 상세주소 */
+		      , cpr_nm = null                        /* 법인 명 */
+		      , cpr_rprstiv_nm = null                /* 법인 대표자명 */
+		      , bman_reg_no = null                   /* 사업자등록번호 */
+		      , cprtel_nation_no = null              /* 법인전화 국가번호 */
+		      , cprtel_area_no = null                /* 법인전화 지역번호 */
+		      , cprtel_tlof_no = null                /* 법인전화 국번호 */
+		      , cprtel_tlof_wthn_no = null           /* 법인전화 국내번호 */
+		      , cpr_tax_bill_chrger_email = null     /* 법인 세금계산서 담당자 이메일 */
+		      , cpr_reg_no = null                    /* 법인등록번호 */
+		      , email_recptn_agr_yn = 'N'            /* 이메일 수신 동의 여부 */
+		      , last_email_recptn_agr_dt = null      /* 최종 이메일 수신 동의 일시 */
+		      , sms_recptn_agr_yn = 'N'              /* SMS 수신 동의 여부 */
+		      , last_sms_recptn_agr_dt = null        /* 최종 SMS 수신 동의 일시 */
+		      , SSO_GRP_CD = null
+         WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </update>
+
+   <!-- 탈퇴 - 회원 기념일 -->
+    <delete id="deleteMbrAnnvrsry" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 기념일 삭제][Jessi] */
+		  FROM mbr_annvrsry
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 인증 -->
+    <delete id="deleteMbrCrtfc" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 인증 삭제][Jessi] */
+		  FROM mbr_crtfc
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 배송지 -->
+    <delete id="deleteMbrDlvsp" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 배송지 삭제][Jessi] */
+		  FROM mbr_dlvsp
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 로그인 로그 -->
+    <delete id="deleteMbrLoginLog" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 로그인 로그 삭제][Jessi] */
+		  FROM mbr_login_log
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 구매 매장 -->
+    <delete id="deleteMbrPchShop" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 구매 매장 삭제][Jessi] */
+		  FROM mbr_pch_shop
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 포인트 연동 이력 -->
+    <delete id="deleteMbrPntIntrlckHist" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 포인트 연동 이력 삭제][Jessi] */
+		  FROM mbr_pnt_intrlck_hist
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 개인정보 변경 이력 -->
+    <delete id="deleteMbrPsnlInfoModHist" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 개인정보 변경 이력 삭제][Jessi] */
+		  FROM mbr_psnl_info_mod_hist
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 환불 계좌 -->
+    <delete id="deleteMbrRfdBnkAcct" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 환불 계좌 삭제][Jessi] */
+		  FROM mbr_rfd_bnk_acct
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 적립금 이력 -->
+    <delete id="deleteMbrSavMnyHist" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 적립금 이력 삭제][Jessi] */
+		  FROM mbr_sav_mny_hist
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 SNS공유이력 -->
+    <delete id="deleteMbrSnscnrshist" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 SNS공유이력 삭제][Jessi] */
+		  FROM MBR_SNS_CNRS_HIST
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 약관 동의 -->
+    <delete id="deleteMbrStplatAgr" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 약관 동의 삭제][Jessi] */
+		  FROM mbr_stplat_agr
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+   <!-- 탈퇴 - 회원 오늘본상품 -->
+    <delete id="deleteMbrTodayGod" parameterType="String">
+		DELETE /* [biz.mbr.secession.xml][updateMemberTerminate][탈퇴 - 회원 오늘본상품 삭제][Jessi] */
+		  FROM mbr_today_god
+		 WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </delete>
+
+    <!-- 회원 탈퇴를 위한 인증값 조회 -->
+    <select id="selectMbrCrtfc"  parameterType="String" resultType="mbrSecsnCrtfc">
+        SELECT /* [biz.mbr.crt.xml][selectMbrCrtfc][회원 탈퇴를 위한 인증값 조회][Vito] */
+                MC.MBR_NO
+              , MC.MBR_CRTFC_TURN
+              , MC.MBR_CRTFC_TP_CD
+              , MC.MBR_CRTFC_YN
+              , MC.MBR_CRTFC_DATE
+              , MC.RLNM_CRTFC_RESULT_CD
+              , MC.RLNM_CRTFC_DI
+              , MC.RLNM_CRTFC_CI
+              , MC.RLNM_CRTFC_VER
+              , MC.RLNM_CRTFC_IPIN
+        FROM    MBR_CRTFC MC
+        WHERE   1 = 1
+        AND     MC.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+        AND     (MC.RLNM_CRTFC_DI IS NOT NULL OR MC.RLNM_CRTFC_CI IS NOT NULL)
+    </select>
+
+    <!-- 회원 휴면 처리 -->
+    <update id="updateMemberDormancy" parameterType="mbr">
+        UPDATE /* [biz.mbr.secession.xml][updateMemberDormancy][회원 휴면 처리][Id] */
+                mbr
+           SET
+                mbr_stat_cd = #{mbrStatCd, jdbcType=VARCHAR}                        /* 회원 상태 코드 */
+              , drmc_resn_cont = #{drmcResnCont, jdbcType=VARCHAR}                  /* 휴면 사유 내용 */
+              , drmc_dt = #{drmcDt, jdbcType=VARCHAR}                               /* 휴면 일시 */
+              , udt_dt = SYSDATE                                     				/* 수정 일시 */
+              , udter_id = #{udterId, jdbcType=VARCHAR}                             /* 수정자 ID */
+		      , mbr_nm = null                        /* 회원 명 */
+		      , mbr_brthdy_slrcld_yn = null          /* 회원 생년월일 양력 여부 */
+		      , mbr_brthdy = null                    /* 회원 생년월일 */
+		      , mbr_sex_sect_cd = null               /* 회원 성별 구분 코드 */
+<!-- 		      , mbr_id = null                        /* 회원 ID */ -->
+		      , join_mbr_ip = null                   /* 가입 회원 IP */
+		      , mbr_pw = null                        /* 회원 비밀번호 */
+		      , mbr_erp_pw = null                    /* 회원 ERP 비밀번호 */
+		      , mbr_login_last_failr_count = null    /* 회원 로그인 최종 실패 횟수 */
+		      , mbr_pw_last_udt_dt = null            /* 회원 비밀번호 최종 수정 일시 */
+		      , mbr_email = null                     /* 회원 이메일 */
+		      , mobil_nation_no = null               /* 휴대전화 국가번호 */
+		      , mobil_area_no = null                 /* 휴대전화 지역번호 */
+		      , mobil_tlof_no = null                 /* 휴대전화 국번호 */
+		      , mobil_tlof_wthn_no = null            /* 휴대전화 국내번호 */
+		      , otel_nation_no = null                /* 회사전화 국가번호 */
+		      , otel_area_no = null                  /* 회사전화 지역번호 */
+		      , otel_tlof_no = null                  /* 회사전화 국번호 */
+		      , otel_tlof_wthn_no = null             /* 회사전화 국내번호 */
+		      , tel_nation_no = null                 /* 전화 국가번호 */
+		      , tel_area_no = null                   /* 전화 지역번호 */
+		      , tel_tlof_no = null                   /* 전화 국번호 */
+		      , tel_tlof_wthn_no = null              /* 전화 국내번호 */
+		      , mbr_addr_sect_cd = null              /* 회원 주소 구분 코드 */
+		      , mbr_post_no = null                   /* 회원 우편번호 */
+		      , mbr_base_addr = null                 /* 회원 기본주소 */
+		      , mbr_detail_addr = null               /* 회원 상세주소 */
+		      , cpr_nm = null                        /* 법인 명 */
+		      , cpr_rprstiv_nm = null                /* 법인 대표자명 */
+		      , bman_reg_no = null                   /* 사업자등록번호 */
+		      , cprtel_nation_no = null              /* 법인전화 국가번호 */
+		      , cprtel_area_no = null                /* 법인전화 지역번호 */
+		      , cprtel_tlof_no = null                /* 법인전화 국번호 */
+		      , cprtel_tlof_wthn_no = null           /* 법인전화 국내번호 */
+		      , cpr_tax_bill_chrger_email = null     /* 법인 세금계산서 담당자 이메일 */
+		      , cpr_reg_no = null                    /* 법인등록번호 */
+		      , email_recptn_agr_yn = 'N'            /* 이메일 수신 동의 여부 */
+		      , last_email_recptn_agr_dt = null      /* 최종 이메일 수신 동의 일시 */
+		      , sms_recptn_agr_yn = 'N'              /* SMS 수신 동의 여부 */
+		      , last_sms_recptn_agr_dt = null        /* 최종 SMS 수신 동의 일시 */
+<!-- 		      , SSO_GRP_CD = null -->
+         WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+    </update>
+
+</mapper>

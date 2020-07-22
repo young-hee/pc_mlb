@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.goods.category">
+	
+	<resultMap id="displayCategoryResult" type="com.plgrim.ncp.base.entities.datasource1.god.GodDspCtgryExtend">
+		<result property="dspCtgryNo"  				column="DSP_CTGRY_NO" />
+		<result property="dspCtgryNm"  				column="DSP_CTGRY_NM" />
+		<result property="upperDspCtgryNo"  		column="UPPER_DSP_CTGRY_NO" />
+		<result property="ctgryDpthCd"  			column="CTGRY_DPTH_CD" />
+		<result property="leafCtgryYn"  			column="LEAF_CTGRY_YN" />
+		<result property="godNo"  					column="GOD_NO" />
+		<result property="dspCtgryPath"  			column="DSP_CTGRY_PATH" />
+		<result property="dspYn"  					column="DSP_YN" />
+		<result property="godSortSeq"  				column="SORT_SEQ" />
+	</resultMap>
+
+	<select id="selectDisplayCategoryList" parameterType="String" resultMap="displayCategoryResult">
+		SELECT /* [goods.category.xml][selectDisplayCategoryList][전시 카테고리 조회][Neps] */ 
+                  DC.*
+                , DCCG.GOD_NO
+                , DCCG.DSP_YN
+                , DCCG.SORT_SEQ
+         FROM (
+                SELECT 
+                      DSP_CTGRY_NO
+                    , UPPER_DSP_CTGRY_NO
+                    , DSP_CTGRY_NM
+                    , SUBSTR(SYS_CONNECT_BY_PATH(DSP_CTGRY_NM, '>'), 2) AS DSP_CTGRY_PATH
+                    , CTGRY_DPTH_CD
+                    , LEAF_CTGRY_YN
+                 FROM DSP_CTGRY   
+                WHERE 1 = 1  
+                  AND DELETE_YN = 'N' 
+                  AND CTGRY_TP_CD = 'CTGRY_SHOP'                
+                START WITH UPPER_DSP_CTGRY_NO IS NULL
+                CONNECT BY PRIOR DSP_CTGRY_NO = UPPER_DSP_CTGRY_NO
+               ) DC
+        JOIN (SELECT DSP_CTGRY_NO, GOD_NO, DSP_YN, SORT_SEQ FROM DSP_CTGRY_CNNC_GOD  WHERE GOD_NO = #{godNo, jdbcType=VARCHAR} ) DCCG
+        ON DC.DSP_CTGRY_NO = DCCG.DSP_CTGRY_NO
+        ORDER BY DC.DSP_CTGRY_NO	
+	</select>
+
+	<delete id="deleteDisplayCategoryConnectionGoods" parameterType="String">
+		DELETE  /* [goods.category.xml][deleteDisplayCategoryConnectionGoods][상품 전시 카테고리 연결 상품 삭제][Neps] */ 
+		 FROM DSP_CTGRY_CNNC_GOD WHERE GOD_NO = #{godNo, jdbcType=VARCHAR}
+	</delete>	
+	
+</mapper>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComAffVrscComBrnd" parameterType="comAffVrscComBrnd" resultType="comAffVrscComBrnd">
+		SELECT /* com.plgrim.ncp.base.selectComAffVrscComBrnd		Generator(Generator)	2018-05-23 */
+			   AFF_VRSC_COM_ID
+			 , AFF_COM_ID
+			 , BRND_ID
+			 , AFF_VRSC_COM_OFFER_YN
+			 , AFF_VRSC_COM_FEE_RT
+			 , AFF_COM_FEE_RT
+			 , SALE_SHOP_CD
+			 , DIRT_CNTC_YN
+			 , AFF_COM_INV_APL_YN
+			 , AFF_COM_INV_DSTB_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_AFF_VRSC_COM_BRND
+		 WHERE 1 = 1
+	   	   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComAffVrscComBrnd" parameterType="comAffVrscComBrnd">
+		UPDATE /* com.plgrim.ncp.base.updateComAffVrscComBrnd		Generator(Generator)	2018-05-23 */
+		COM_AFF_VRSC_COM_BRND SET
+			   AFF_VRSC_COM_OFFER_YN = #{affVrscComOfferYn,jdbcType=VARCHAR}
+			 , AFF_VRSC_COM_FEE_RT = #{affVrscComFeeRt,jdbcType=NUMERIC}
+			 , AFF_COM_FEE_RT = #{affComFeeRt,jdbcType=NUMERIC}
+			 , SALE_SHOP_CD = #{saleShopCd,jdbcType=VARCHAR}
+			 , DIRT_CNTC_YN = #{dirtCntcYn,jdbcType=VARCHAR}
+			 , AFF_COM_INV_APL_YN = #{affComInvAplYn,jdbcType=VARCHAR}
+			 , AFF_COM_INV_DSTB_RT = #{affComInvDstbRt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComAffVrscComBrnd" parameterType="comAffVrscComBrnd">
+		INSERT /* com.plgrim.ncp.base.insertComAffVrscComBrnd		Generator(Generator)	2018-05-23 */
+		INTO   COM_AFF_VRSC_COM_BRND (
+			   AFF_VRSC_COM_ID
+			 , AFF_COM_ID
+			 , BRND_ID
+			 , AFF_VRSC_COM_OFFER_YN
+			 , AFF_VRSC_COM_FEE_RT
+			 , AFF_COM_FEE_RT
+			 , SALE_SHOP_CD
+			 , DIRT_CNTC_YN
+			 , AFF_COM_INV_APL_YN
+			 , AFF_COM_INV_DSTB_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{affVrscComId,jdbcType=VARCHAR}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{brndId,jdbcType=VARCHAR}
+			 , #{affVrscComOfferYn,jdbcType=VARCHAR}
+			 , #{affVrscComFeeRt,jdbcType=NUMERIC}
+			 , #{affComFeeRt,jdbcType=NUMERIC}
+			 , #{saleShopCd,jdbcType=VARCHAR}
+			 , #{dirtCntcYn,jdbcType=VARCHAR}
+			 , #{affComInvAplYn,jdbcType=VARCHAR}
+			 , #{affComInvDstbRt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComAffVrscComBrnd" parameterType="comAffVrscComBrnd">
+		DELETE /* com.plgrim.ncp.base.deleteComAffVrscComBrnd		Generator(Generator)	2018-05-23 */
+		  FROM COM_AFF_VRSC_COM_BRND
+		 WHERE 1 = 1
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND BRND_ID = #{brndId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

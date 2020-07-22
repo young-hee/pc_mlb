@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmCpnCrtfcCd" parameterType="prmCpnCrtfcCd" resultType="prmCpnCrtfcCd">
+		SELECT /* com.plgrim.ncp.base.selectPrmCpnCrtfcCd		Generator(Generator)	2018-05-23 */
+			   PRM_NO
+			 , CPN_CRTFC_CD
+			 , CHK_NUM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM_CPN_CRTFC_CD
+		 WHERE 1 = 1
+	   	   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND CPN_CRTFC_CD = #{cpnCrtfcCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updatePrmCpnCrtfcCd" parameterType="prmCpnCrtfcCd">
+		UPDATE /* com.plgrim.ncp.base.updatePrmCpnCrtfcCd		Generator(Generator)	2018-05-23 */
+		PRM_CPN_CRTFC_CD SET
+			   CHK_NUM = #{chkNum,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND CPN_CRTFC_CD = #{cpnCrtfcCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPrmCpnCrtfcCd" parameterType="prmCpnCrtfcCd">
+		INSERT /* com.plgrim.ncp.base.insertPrmCpnCrtfcCd		Generator(Generator)	2018-05-23 */
+		INTO   PRM_CPN_CRTFC_CD (
+			   PRM_NO
+			 , CPN_CRTFC_CD
+			 , CHK_NUM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{prmNo,jdbcType=VARCHAR}
+			 , #{cpnCrtfcCd,jdbcType=VARCHAR}
+			 , #{chkNum,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrmCpnCrtfcCd" parameterType="prmCpnCrtfcCd">
+		DELETE /* com.plgrim.ncp.base.deletePrmCpnCrtfcCd		Generator(Generator)	2018-05-23 */
+		  FROM PRM_CPN_CRTFC_CD
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND CPN_CRTFC_CD = #{cpnCrtfcCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

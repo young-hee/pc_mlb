@@ -1,0 +1,760 @@
+// Table 2 Java Source Generator
+buildscript {
+    repositories {
+        maven {
+            url "http://dev-web-297670832.ap-northeast-2.elb.amazonaws.com:9081/repository/maven-public/"
+        }
+    }
+
+    def SPRING_RELEASE_VERSION = '4.1.6.RELEASE'
+
+    dependencies {
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
+        classpath group: 'ojdbc6', name: 'ojdbc6', version: '1.1'
+        classpath group: 'org.springframework', name: 'spring-jdbc', version: SPRING_RELEASE_VERSION
+        classpath group: "org.apache.commons", name: "commons-lang3", version: "3.3.2"
+        classpath group: "io.swagger", name: "swagger-codegen-cli", version: "2.3.1"
+    }
+}
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import javax.sql.DataSource;
+
+import oracle.jdbc.pool.OracleDataSource;
+import org.apache.commons.lang3.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*
+
+//generate_ui
+// 사용자 ID(SVN)/이름
+def userId = "Generator";
+def userName = "Generator";
+
+
+def oracleDS = new OracleDataSource();
+oracleDS.URL = "jdbc:oracle:thin:@localhost:9012:ORCL";
+oracleDS.user = "fec";
+oracleDS.password = "sfec2018!@";
+def jdbcTemplate = new JdbcTemplate(oracleDS);
+
+def tables_query = { owner, tablePrefix ->
+    return """
+select 
+	t.table_name, 
+	tc.comments table_comment, 
+	case when instr(t.table_name, '_') > 1 then substr(t.table_name, 1, instr(t.table_name, '_')-1) else t.table_name end  domain 
+from 
+	all_tables t
+	left outer join 
+		all_tab_comments tc
+		on 
+			tc.owner(+) = t.owner
+		and 
+			tc.table_name(+) = t.table_name 
+where   t.owner = nvl(upper('${owner}'), user)
+	and t.table_name like upper('${tablePrefix}')||'%'
+--    and t.global_stats='YES' 
+order by 
+	t.table_name	
+"""
+}
+
+
+
+def columns_sql = { owner, objectName ->
+    """
+select 
+	tc.column_name,
+	case tc.nullable when 'Y' then 1 else 0 end nullable,
+	case tc.data_type
+		when 'NUMBER' then
+			case
+				when tc.data_precision is null then 'float'
+				when tc.data_scale = 0 then
+					case when tc.data_precision < 10 then 'int'
+						else 'long'
+					end
+				when tc.data_scale > 0 then
+					case when tc.data_precision < 10 then 'float'
+						else 'double'
+				  	end
+				else ''
+			end
+		when 'RAW' then 'byte[]'
+		when 'DATE' then 'java.sql.Date'
+		else 'String'
+	end as field_type,
+	tc.data_type,
+	case when tc.data_type = 'VARCHAR2' then 'VARCHAR'
+		   when tc.data_type = 'NUMBER' or tc.data_type = 'LONG' then 'NUMERIC'
+		   when tc.data_type = 'DATE' then 'TIMESTAMP'
+		   when tc.data_type like 'TIMESTAMP%' then 'TIMESTAMP'
+		   else tc.data_type
+	  end as jdbc_type,
+	tc.data_precision,
+	tc.data_scale,
+	case when cc.column_name is null then 0 else 1 end as pk, 
+	cct.comments 
+from (
+      select t.owner, t.object_name table_name, cs.constraint_name
+      from all_objects t
+           left outer join all_constraints cs
+                 on cs.owner = t.owner
+                and cs.table_name = t.object_name
+                and cs.constraint_type = 'P'
+                and cs.status = 'ENABLED'
+      where t.owner = nvl(upper('${owner}'), user)
+      and t.object_name = '${objectName}'
+      and t.subobject_name is null
+      and t.object_type = 'TABLE') t
+     left join all_tab_cols tc
+           on tc.owner = t.owner
+          and tc.table_name = t.table_name
+          and tc.hidden_column = 'NO'
+     left outer join all_cons_columns cc
+           on cc.owner = t.owner
+          and cc.constraint_name = t.constraint_name
+          and cc.table_name = t.table_name
+          and cc.column_name = tc.column_name 
+     left outer join all_col_comments cct
+           on cct.owner = t.owner
+          and cct.table_name = t.table_name
+          and cct.column_name = tc.column_name 
+order by tc.column_id
+
+"""
+}
+
+
+
+def coumns_commens = { owner, columnName ->
+    """
+	select cc.comments from all_col_comments cc where cc.owner = nvl(upper('${owner}'), user) and cc.column_name = '${
+        columnName
+    }' and cc.comments is not null and rownum < 2
+"""
+
+}
+
+
+def colType = { col ->
+    if (col.dataType == "NUMBER") {
+        if (col.precision == 0) {
+            return "java.math.BigInteger"
+        } else if (col.scale == 0) {
+            if (col.precision < 10) {
+                return "java.lang.Integer"
+            } else {
+                return "java.lang.Long"
+            }
+        } else {
+            return "java.math.BigDecimal"
+        }
+    } else if (col.dataType == "DATE") {
+        return "java.util.Date"
+    } else if (col.dataType == "RAW") {
+        return "byte[]"
+    } else {
+        return "String"
+    }
+}
+
+def colComment = { comment ->
+    comment == null ? "" : comment.split("\n").collect {
+        def temp = ""
+        def stop = false;
+        for (int i = 0; i < it.length(); i++) {
+            if (!stop && it.charAt(i) == ' ') {
+                temp += " "
+
+            } else {
+                stop = true
+//				if (it.charAt(i) == '>'){
+//					temp += '&gt;'
+//				}
+//				else if (it.charAt(i) == '<'){
+//					temp += "&lt;"
+//				}
+//				else {
+                temp += it.charAt(i)
+//				}
+
+
+            }
+        }
+        return temp
+    }.join("\n\t * ")
+}
+
+def entity_template = { m ->
+    """/**
+ * @author : ${m.userId}(${m.userName})
+ * @date : ${m.currentDate}
+ * @version : 1.0
+ * @desc :  generated by gradle
+ */
+
+package com.plgrim.ncp.base.entities.datasource${m.dsNum}.${m.domain};
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import org.apache.ibatis.type.Alias;
+
+import com.plgrim.ncp.base.abstracts.AbstractEntity;
+
+/**
+ * ${m.comments}
+ */
+@Data
+@EqualsAndHashCode(callSuper=false)
+@Alias("${m.modelName}")
+public class ${m.model} extends AbstractEntity {
+
+	private static final long serialVersionUID = 1L;
+""" + (m.cols.collect { col ->
+        """
+	/**
+	 * ${colComment(col.comments)}	 
+	 */
+	private ${colType(col)} ${col.fieldName};
+"""
+    }.join("\n")) + """
+	
+}
+"""
+}
+
+
+
+def repository_template = { m ->
+    """
+/* Copyright (c) 2015 plgrim, Inc.
+ * All right reserved.
+ * http://www.plgrim.com
+ * This software is the confidential and proprietary information of plgrim
+ * , Inc. You shall not disclose such Confidential Information and
+ * shall use it only in accordance with the terms of the license agreement
+ * you entered into with plgrim.
+ *
+ * Revision History
+ * Author              			Date                         	Description
+ * ------------------   		--------------                  ------------------
+ * ${m.userId}(${m.userName})		${m.currentDate}                      
+ */
+package com.plgrim.ncp.base.repository.${m.domain};
+
+import java.sql.SQLException;
+import org.springframework.stereotype.Repository;
+
+import com.plgrim.ncp.base.abstracts.AbstractRepository;
+import com.plgrim.ncp.base.entities.datasource${m.dsNum}.${m.domain}.${m.model};
+
+/**
+ * The Class ${m.model}Repository.
+ */
+@Repository
+public class ${m.model}Repository extends AbstractRepository {
+	
+
+	/*
+	 * ---------------------------------------------------------------------
+	 * Instance fields.
+	 * ---------------------------------------------------------------------
+	 */
+	/*
+	 * ---------------------------------------------------------------------
+	 * Constructors.
+	 * ---------------------------------------------------------------------
+	 */
+	/*
+	 * ---------------------------------------------------------------------
+	 * public & interface method.
+	 * ---------------------------------------------------------------------
+	 */
+
+	/**
+	 * ${m.comments} 상세 조회.
+	 *
+	 * @param ${m.smodel} the ${m.model}
+	 * @return the ${m.model}
+	 * @throws SQLException the SQL exception
+	 */
+	public ${m.model} select${m.model}(${m.model} ${m.smodel}) {
+		return getSession${m.dsNum}().selectOne("com.plgrim.ncp.base.select${m.model}", ${m.smodel});
+	}
+	
+	/**
+	 * ${m.comments} 등록.
+	 *
+	 * @param ${m.smodel} the ${m.model}
+	 * @throws SQLException the SQL exception
+	 */
+	public void insert${m.model}(${m.model} ${m.smodel}) {
+		getSession${m.dsNum}().insert("com.plgrim.ncp.base.insert${m.model}", ${m.smodel});
+	}
+	
+	/**
+	 * ${m.comments} 수정.
+	 *
+	 * @param ${m.smodel} the ${m.model}
+	 * @throws SQLException the SQL exception
+	 */
+	public int update${m.model}(${m.model} ${m.smodel}) {
+		return getSession${m.dsNum}().update("com.plgrim.ncp.base.update${m.model}", ${m.smodel});
+	}
+	
+	/**
+	 * ${m.comments} 삭제.
+	 *
+	 * @param ${m.smodel} the ${m.model}
+	 * @return the ${m.model}
+	 * @throws SQLException the SQL exception
+	 */
+	public int delete${m.model}(${m.model} ${m.smodel}) {
+		return getSession${m.dsNum}().delete("com.plgrim.ncp.base.delete${m.model}", ${m.smodel});
+	}
+	
+	/*
+	 * ---------------------------------------------------------------------
+	 * private method.
+	 * ---------------------------------------------------------------------
+	 */
+}
+
+"""
+}
+
+
+def mybatis_template = { m ->
+    """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="select${m.model}" parameterType="${m.modelName}" resultType="${m.modelName}">
+		SELECT /* com.plgrim.ncp.base.select${m.model}\t\t${m.userId}(${m.userName})\t${m.currentDate} */
+			   """ + (m.cols.collect { col ->
+        """${col.columnName}"""
+    }.join("\n\t\t\t , ")) + """
+		  FROM ${m.tableName}
+		 WHERE 1 = 1
+	   	   """ + (m.cols.findAll { it.pk == 1 }.collect { col ->
+        """AND ${col.columnName} = #{${col.fieldName},jdbcType=${col.jdbcType}}"""
+    }.join("\n\t\t   ")) + """
+    </select>
+
+    <update id="update${m.model}" parameterType="${m.modelName}">
+		UPDATE /* com.plgrim.ncp.base.update${m.model}\t\t${m.userId}(${m.userName})\t${m.currentDate} */
+		${m.tableName} SET
+			   """ + (m.cols.findAll { it.pk == 0 && it.columnName != 'REG_DT' && it.columnName != 'REGTR_ID'}.collect { col ->
+        if (col.columnName == 'UDT_DT') {
+            """${col.columnName} = SYSDATE"""
+        } else {
+            """${col.columnName} = #{${col.fieldName},jdbcType=${col.jdbcType}}"""
+        }
+    }.join("\n\t\t\t , ")) + """
+		 WHERE 1 = 1
+		   """ + (m.cols.findAll { it.pk == 1 }.collect { col ->
+        """AND ${col.columnName} = #{${col.fieldName},jdbcType=${col.jdbcType}}"""
+    }.join("\n\t\t   ")) + """
+    </update>
+
+	<insert id="insert${m.model}" parameterType="${m.modelName}">
+		INSERT /* com.plgrim.ncp.base.insert${m.model}\t\t${m.userId}(${m.userName})\t${m.currentDate} */
+		INTO   ${m.tableName} (
+			   """ + (m.cols.collect { col ->
+        """${col.columnName}"""
+    }.join("\n\t\t\t , ")) + """
+		)
+		VALUES (
+			   """ + (m.cols.collect { col ->
+        if (col.fieldName == 'regDt' || col.fieldName == 'udtDt') {
+            """SYSDATE"""
+        } else {
+            """#{${col.fieldName},jdbcType=${col.jdbcType}}"""
+        }
+    }.join("\n\t\t\t , ")) + """
+        )
+    </insert>
+
+    <delete id="delete${m.model}" parameterType="${m.modelName}">
+		DELETE /* com.plgrim.ncp.base.delete${m.model}\t\t${m.userId}(${m.userName})\t${m.currentDate} */
+		  FROM ${m.tableName}
+		 WHERE 1 = 1
+		   """ + (m.cols.findAll { it.pk == 1 }.collect { col ->
+        """AND ${col.columnName} = #{${col.fieldName},jdbcType=${col.jdbcType}}"""
+    }.join("\n\t\t   ")) + """
+    </delete>
+
+</mapper>
+"""
+}
+
+
+
+
+def modelName = { tableName ->
+    return tableName.toLowerCase().split("_").collect {
+        token ->
+            if (token.length() > 1) {
+                "" + Character.toUpperCase(token.charAt(0)) + token[1..-1]
+            } else {
+                "" + Character.toUpperCase(token.charAt(0))
+            }
+    }.join("")
+}
+
+def xmlName = { tableName ->
+
+    return tableName.toLowerCase().replaceAll("_", ".")
+}
+
+def modelAliasName = { tableName ->
+    def mName = modelName(tableName)
+    def rName = ""
+
+    if (mName.length() > 1) {
+        rName = "" + Character.toLowerCase(mName.charAt(0)) + mName[1..-1]
+    } else {
+        rName "" + Character.toLowerCase(mName.charAt(0))
+    }
+
+    return rName
+
+}
+
+def generateEntity = { m ->
+    project('' + gradle.ext.PREFIX + ':ncp_base')
+    def generatedSource = entity_template(m)
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/java/com/plgrim/ncp/base/entities/datasource${m.dsNum}").mkdir()
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/java/com/plgrim/ncp/base/entities/datasource${m.dsNum}/${m.domain}").mkdir()
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/java/com/plgrim/ncp/base/entities/datasource${m.dsNum}/${m.domain}/${m.model}.java").write(generatedSource, "UTF-8")
+
+}
+
+def generateRepository = { m ->
+    project('' + gradle.ext.PREFIX + ':ncp_base')
+    def generatedSource = repository_template(m)
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/java/com/plgrim/ncp/base/repository/${m.domain}").mkdir()
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/java/com/plgrim/ncp/base/repository/${m.domain}/${m.model}Repository.java").write(generatedSource, "UTF-8")
+}
+
+def generateMybatis = { m ->
+    project('' + gradle.ext.PREFIX + ':ncp_base')
+    def generatedSource = mybatis_template(m)
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/resources/META-INF/mybatis/datasource${m.dsNum}").mkdir()
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/resources/META-INF/mybatis/datasource${m.dsNum}/${m.domain}").mkdir()
+    project('' + gradle.ext.PREFIX + ':ncp_base').file("src/main/resources/META-INF/mybatis/datasource${m.dsNum}/${m.domain}/base.${m.xmlName}.xml").write(generatedSource, "UTF-8")
+}
+
+
+task generate_ui << {
+
+    JOptionPane pane = new JOptionPane();
+    def ui = new CodeGen();
+
+    def listModel = new AbstractListModel() {
+        def values = []
+
+        public int getSize() {
+            return values.size();
+        }
+
+        public Object getElementAt(int index) {
+            return "${values[index]['DOMAIN']}:${values[index]['TABLE_NAME']}(${values[index]['TABLE_COMMENT']})";
+        }
+
+        public void update(def data) {
+            this.values = data;
+            fireContentsChanged(this, 0, values.size());
+        }
+    }
+    ui.searchedTableList.model = listModel
+    ui.cb = [
+            ok    : { ui.hide() },
+            cancel: { ui.hide() },
+            search: { keyword -> listModel.update(jdbcTemplate.queryForList(tables_query(oracleDS.user, keyword))) }
+
+    ]
+    ui.modal = true
+    ui.show();
+    println "Closed"
+
+    def selectedIndices = ui.searchedTableList.getSelectedIndices()
+    if (selectedIndices == null) {
+        println "No table selected."
+        return
+    }
+
+    def enableEntity = ui.entityCheckBox.selected
+    def enableRepository = ui.repositoryCheckBox.selected
+    def dsNo = [ui.ds1RadioButton, ui.ds2RadioButton, ui.ds3RadioButton].find { it.selected }.text
+
+
+    def selected = selectedIndices.collect { index ->
+        listModel.values[index]
+    }
+
+    selected.each { table ->
+
+        def cols = jdbcTemplate.queryForList(columns_sql(oracleDS.user, table['TABLE_NAME'])).collect { col ->
+            return [
+                    comments  : col['COMMENTS'],
+                    precision : col['DATA_PRECISION'],
+                    scale     : col['DATA_SCALE'],
+                    dataType  : col['DATA_TYPE'],
+                    jdbcType  : col['JDBC_TYPE'],
+                    fieldType : col['FIELD_TYPE'],
+                    nullable  : col['NULLABLE'],
+                    columnName: col['COLUMN_NAME'],
+                    fieldName : modelAliasName(col['COLUMN_NAME']),
+                    pk        : col['PK']
+            ]
+        }
+
+        if (enableEntity) generateEntity([
+                domain     : table['DOMAIN'].toLowerCase(),
+                userId     : userId,
+                userName   : userName,
+                currentDate: new Date().format("yyyy-MM-dd"),
+                dsNum      : dsNo,
+                comments   : table['TABLE_COMMENT'],
+                modelName  : modelAliasName(table['TABLE_NAME']),
+                model      : modelName(table['TABLE_NAME']),
+                cols       : cols
+        ])
+
+
+        if (enableRepository) generateRepository([
+                domain     : table['DOMAIN'].toLowerCase(),
+                userId     : userId,
+                userName   : userName,
+                currentDate: new Date().format("yyyy-MM-dd"),
+                dsNum      : dsNo,
+                comments   : table['TABLE_COMMENT'],
+                modelName  : modelAliasName(table['TABLE_NAME']),
+                model      : modelName(table['TABLE_NAME']),
+                smodel     : modelAliasName(table['TABLE_NAME']),
+        ])
+
+        if (enableRepository) generateMybatis([
+                domain     : table['DOMAIN'].toLowerCase(),
+                tableName  : table['TABLE_NAME'].toUpperCase(),
+                userId     : userId,
+                userName   : userName,
+                currentDate: new Date().format("yyyy-MM-dd"),
+                dsNum      : dsNo,
+                comments   : table['TABLE_COMMENT'],
+                modelName  : modelAliasName(table['TABLE_NAME']),
+                model      : modelName(table['TABLE_NAME']),
+                smodel     : modelAliasName(table['TABLE_NAME']),
+                xmlName    : xmlName(table['TABLE_NAME']),
+                cols       : cols
+        ])
+    }
+
+
+}
+
+
+import javax.swing.border.*;
+
+public class CodeGen extends JDialog {
+
+    def cb;
+    def searchedTableList;
+    def repositoryCheckBox
+    def entityCheckBox
+
+    def ds1RadioButton
+    def ds2RadioButton
+    def ds3RadioButton
+
+
+    private final JPanel contentPanel = new JPanel();
+    private JTextField tableSeatchTextField;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        try {
+            CodeGen dialog = new CodeGen();
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Create the dialog.
+     */
+    public CodeGen() {
+        setBounds(100, 100, 659, 495);
+        getContentPane().setLayout(new BorderLayout());
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        GridBagLayout gbl_contentPanel = new GridBagLayout();
+        gbl_contentPanel.columnWidths = [0, 0, 0, 0];
+        gbl_contentPanel.rowHeights = [0, 0, 0, 0, 0];
+        gbl_contentPanel.columnWeights = [0.0, 1.0, 0.0, Double.MIN_VALUE];
+        gbl_contentPanel.rowWeights = [0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE];
+        contentPanel.setLayout(gbl_contentPanel);
+
+        JLabel lblNewLabel = new JLabel("Gen");
+        GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+        gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_lblNewLabel.gridx = 0;
+        gbc_lblNewLabel.gridy = 0;
+        contentPanel.add(lblNewLabel, gbc_lblNewLabel);
+
+        JPanel panel1 = new JPanel();
+        FlowLayout fl_panel1 = (FlowLayout) panel1.getLayout();
+        fl_panel1.setAlignment(FlowLayout.LEFT);
+        GridBagConstraints gbc_panel1 = new GridBagConstraints();
+        gbc_panel1.gridwidth = 2;
+        gbc_panel1.insets = new Insets(0, 0, 5, 0);
+        gbc_panel1.fill = GridBagConstraints.BOTH;
+        gbc_panel1.gridx = 1;
+        gbc_panel1.gridy = 0;
+        contentPanel.add(panel1, gbc_panel1);
+
+        entityCheckBox = new JCheckBox("Entity");
+        entityCheckBox.setSelected(true);
+        panel1.add(entityCheckBox);
+
+
+        repositoryCheckBox = new JCheckBox("Repository");
+        repositoryCheckBox.setSelected(true);
+        panel1.add(repositoryCheckBox);
+
+
+        JLabel lblDs = new JLabel("DS");
+        GridBagConstraints gbc_lblDs = new GridBagConstraints();
+        gbc_lblDs.insets = new Insets(0, 0, 5, 5);
+        gbc_lblDs.gridx = 0;
+        gbc_lblDs.gridy = 1;
+        contentPanel.add(lblDs, gbc_lblDs);
+
+        JPanel dsPanel = new JPanel();
+        FlowLayout fl_dsPanel = (FlowLayout) dsPanel.getLayout();
+        fl_dsPanel.setAlignment(FlowLayout.LEFT);
+        GridBagConstraints gbc_dsPanel = new GridBagConstraints();
+        gbc_dsPanel.insets = new Insets(0, 0, 5, 5);
+        gbc_dsPanel.fill = GridBagConstraints.BOTH;
+        gbc_dsPanel.gridx = 1;
+        gbc_dsPanel.gridy = 1;
+        contentPanel.add(dsPanel, gbc_dsPanel);
+
+        ds1RadioButton = new JRadioButton("1");
+        ds1RadioButton.setSelected(true);
+        dsPanel.add(ds1RadioButton);
+
+        ds2RadioButton = new JRadioButton("2");
+        dsPanel.add(ds2RadioButton);
+
+        ds3RadioButton = new JRadioButton("3");
+        dsPanel.add(ds3RadioButton);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(ds1RadioButton);
+        group.add(ds2RadioButton);
+        group.add(ds3RadioButton);
+
+
+        JLabel lblNewLabel_1 = new JLabel("Search");
+        GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+        gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
+        gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+        gbc_lblNewLabel_1.gridx = 0;
+        gbc_lblNewLabel_1.gridy = 2;
+        contentPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
+
+
+        tableSeatchTextField = new JTextField();
+        tableSeatchTextField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                cb.search(tableSeatchTextField.text)
+            }
+        });
+        GridBagConstraints gbc_tableSeatchTextField = new GridBagConstraints();
+        gbc_tableSeatchTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_tableSeatchTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_tableSeatchTextField.gridx = 1;
+        gbc_tableSeatchTextField.gridy = 2;
+        contentPanel.add(tableSeatchTextField, gbc_tableSeatchTextField);
+        tableSeatchTextField.setColumns(10);
+
+
+        JButton tableSearchButton = new JButton("SEARCH");
+        tableSearchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                cb.search(tableSeatchTextField.text)
+            }
+        });
+        GridBagConstraints gbc_tableSearchButton = new GridBagConstraints();
+        gbc_tableSearchButton.insets = new Insets(0, 0, 5, 0);
+        gbc_tableSearchButton.gridx = 2;
+        gbc_tableSearchButton.gridy = 2;
+        contentPanel.add(tableSearchButton, gbc_tableSearchButton);
+
+
+        JLabel lblNewLabel_2 = new JLabel("Tables");
+        GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+        gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
+        gbc_lblNewLabel_2.gridx = 0;
+        gbc_lblNewLabel_2.gridy = 3;
+        contentPanel.add(lblNewLabel_2, gbc_lblNewLabel_2);
+
+
+        JPanel panel2 = new JPanel();
+        GridBagConstraints gbc_panel2 = new GridBagConstraints();
+        gbc_panel2.gridwidth = 2;
+        gbc_panel2.gridheight = 2;
+        gbc_panel2.insets = new Insets(0, 0, 5, 5);
+        gbc_panel2.fill = GridBagConstraints.BOTH;
+        gbc_panel2.gridx = 1;
+        gbc_panel2.gridy = 3;
+        contentPanel.add(panel2, gbc_panel2);
+        panel2.setLayout(new BorderLayout(0, 0));
+
+        JScrollPane scrollPane = new JScrollPane();
+        panel2.add(scrollPane, BorderLayout.CENTER);
+
+        searchedTableList = new JList();
+        scrollPane.setViewportView(searchedTableList);
+
+
+
+        JPanel buttonPane = new JPanel();
+        buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        getContentPane().add(buttonPane, BorderLayout.SOUTH);
+
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                cb.ok()
+            }
+        });
+        okButton.setActionCommand("OK");
+        buttonPane.add(okButton);
+        getRootPane().setDefaultButton(okButton);
+
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                cb.cancel()
+            }
+        });
+        cancelButton.setActionCommand("Cancel");
+        buttonPane.add(cancelButton);
+
+
+    }
+
+}
+

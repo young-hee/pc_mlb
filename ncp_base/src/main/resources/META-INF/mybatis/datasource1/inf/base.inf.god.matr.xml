@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfGodMatr" parameterType="infGodMatr" resultType="infGodMatr">
+		SELECT /* com.plgrim.ncp.base.selectInfGodMatr		Generator(Generator)	2018-06-26 */
+			   BRND_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , ERP_GOD_NO
+			 , COLOR_CD
+			 , EXPSR_SEQ
+			 , SECT_NM
+			 , ENG_SECT_NM
+			 , CHI_SECT_NM
+			 , MATR_NM
+			 , ENG_MATR_NM
+			 , CHI_MATR_NM
+			 , MIX_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_GOD_MATR
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfGodMatr" parameterType="infGodMatr">
+		UPDATE /* com.plgrim.ncp.base.updateInfGodMatr		Generator(Generator)	2018-06-26 */
+		INF_GOD_MATR SET
+			   BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , SESON_CD = #{sesonCd,jdbcType=VARCHAR}
+			 , DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+			 , EXPSR_SEQ = #{expsrSeq,jdbcType=NUMERIC}
+			 , SECT_NM = #{sectNm,jdbcType=VARCHAR}
+			 , ENG_SECT_NM = #{engSectNm,jdbcType=VARCHAR}
+			 , CHI_SECT_NM = #{chiSectNm,jdbcType=VARCHAR}
+			 , MATR_NM = #{matrNm,jdbcType=VARCHAR}
+			 , ENG_MATR_NM = #{engMatrNm,jdbcType=VARCHAR}
+			 , CHI_MATR_NM = #{chiMatrNm,jdbcType=VARCHAR}
+			 , MIX_RT = #{mixRt,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfGodMatr" parameterType="infGodMatr">
+		INSERT /* com.plgrim.ncp.base.insertInfGodMatr		Generator(Generator)	2018-06-26 */
+		INTO   INF_GOD_MATR (
+			   BRND_ID
+			 , SESON_CD
+			 , DSGN_GRP_NO
+			 , ERP_GOD_NO
+			 , COLOR_CD
+			 , EXPSR_SEQ
+			 , SECT_NM
+			 , ENG_SECT_NM
+			 , CHI_SECT_NM
+			 , MATR_NM
+			 , ENG_MATR_NM
+			 , CHI_MATR_NM
+			 , MIX_RT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{sesonCd,jdbcType=VARCHAR}
+			 , #{dsgnGrpNo,jdbcType=VARCHAR}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{colorCd,jdbcType=VARCHAR}
+			 , #{expsrSeq,jdbcType=NUMERIC}
+			 , #{sectNm,jdbcType=VARCHAR}
+			 , #{engSectNm,jdbcType=VARCHAR}
+			 , #{chiSectNm,jdbcType=VARCHAR}
+			 , #{matrNm,jdbcType=VARCHAR}
+			 , #{engMatrNm,jdbcType=VARCHAR}
+			 , #{chiMatrNm,jdbcType=VARCHAR}
+			 , #{mixRt,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfGodMatr" parameterType="infGodMatr">
+		DELETE /* com.plgrim.ncp.base.deleteInfGodMatr		Generator(Generator)	2018-06-26 */
+		  FROM INF_GOD_MATR
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

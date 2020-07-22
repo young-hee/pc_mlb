@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion">
+
+   <update id="updateEvent" parameterType="com.plgrim.ncp.biz.promotion.data.EventBoDTO">
+      UPDATE   /* event.xml - com.plgrim.ncp.biz.promotion.updateEvent  20150430 */
+      EVT SET
+               evt_stat_cd = #{evt.evtStatCd,jdbcType=VARCHAR}
+      <if test="evt.evtCnclDscr != null">         
+             , evt_cncl_dscr    = #{evt.evtCnclDscr,jdbcType=VARCHAR}
+      </if>
+             , udter_id    = #{evt.udterId,jdbcType=VARCHAR}
+             , udt_dt      = SYSDATE
+      WHERE    1 = 1
+      <if test="rowEvtNo != null and rowEvtNo.length > 0 ">
+        <foreach collection="rowEvtNo" item="item" open="AND evt_no IN (" close=")" separator=",">#{item}</foreach>
+      </if>
+   </update>
+   
+   <!-- 이벤트 수정 승인상태용 -->
+   <update id="updateEventAprv" parameterType="evt">
+      UPDATE   evt /* event.xml - com.plgrim.ncp.biz.promotion.updateEventAprv  20150417 */
+      SET      
+               evt_nm                 = nvl(#{evtNm,jdbcType=VARCHAR}, evt_nm)
+             , evt_beg_dt             = nvl(#{evtBegDt,jdbcType=TIMESTAMP}, evt_beg_dt)
+             , evt_end_dt             = nvl(#{evtEndDt,jdbcType=TIMESTAMP}, evt_end_dt)
+             , applcn_beg_dt          = nvl(#{applcnBegDt,jdbcType=TIMESTAMP}, applcn_beg_dt)
+             , applcn_end_dt          = nvl(#{applcnEndDt,jdbcType=TIMESTAMP}, applcn_end_dt)
+             , dateby_applcn_beg_hour = #{datebyApplcnBegHour,jdbcType=VARCHAR}
+             , dateby_applcn_end_hour = #{datebyApplcnEndHour,jdbcType=VARCHAR}
+             , drwt_date              = #{drwtDate,jdbcType=VARCHAR}
+             , prize_presnatn_date    = #{prizePresnatnDate,jdbcType=VARCHAR}
+             , free_gift_snd_date     = #{freeGiftSndDate,jdbcType=VARCHAR}
+             , EVT_DETAIL_TP_CD       = #{evtDetailTpCd,jdbcType=VARCHAR}
+             , PC_URL                 = #{pcUrl,jdbcType=VARCHAR}
+             , MOBILE_URL             = #{mobileUrl,jdbcType=VARCHAR}
+             , PC_HTML                = #{pcHtml,jdbcType=VARCHAR}
+             , MOBILE_HTML            = #{mobileHtml,jdbcType=VARCHAR}
+             , EVT_GOD_SORT_STDR_CD   = #{evtGodSortStdrCd,jdbcType=VARCHAR}
+             , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+             , GNB_UPEND_BANNER_EXPSR_YN = #{gnbUpendBannerExpsrYn,jdbcType=VARCHAR}
+             , PC_MOBILE_RPRST_IMG_IND_USE_YN = #{pcMobileRprstImgIndUseYn,jdbcType=VARCHAR}
+             , PC_MOBILE_BCRN_IMG_IND_USE_YN = #{pcMobileBcrnImgIndUseYn,jdbcType=VARCHAR}
+             , udter_id               = nvl(#{udterId:VARCHAR}, udter_id)
+             , udt_dt                 = SYSDATE
+      WHERE    1 = 1
+      AND      evt_no      = #{evtNo}
+   </update>
+   
+   <insert id="insertEvent" parameterType="evt">
+     /* event.xml - com.plgrim.ncp.biz.promotion.insertEvent  20150506 */
+	    INSERT 
+	    INTO EVT
+		(
+	        EVT_NO
+	       ,TMPLAT_SN
+	       ,EVT_NM
+	       ,EVT_DSCR
+	       ,EVT_TP_CD
+	       ,EVT_STAT_CD
+	       ,EVT_DSP_YN
+	       ,EVT_DSP_BEGDT
+	       ,EVT_DSP_ENDDT
+	       ,APPLCN_TP_CD
+	       ,APPLCN_UNIT_SECT_CD
+	       ,MAX_APPLCN_PSB_COUNT
+	       ,APPLCN_BEG_DT
+	       ,APPLCN_END_DT
+	       ,PRIZE_PRESNATN_DAY
+	       ,WNR_NOTI_HTML
+	       ,EVT_RPRST_IMG_URL
+	       ,EVT_RPRST_IMG_TAG_NM
+	       ,EVT_BANNER_URL
+	       ,EVT_BANNER_TAG_NM
+	       ,EVT_MOVI_URL
+	       ,EVT_MOVI_SUBTTL_CONT
+	       ,QUSTNR_PURPS_CD
+	       ,QUSTNR_TP
+	       ,QUSTNR_NM
+	       ,REGTR_ID
+	       ,REG_DATE
+	       ,UDTER_ID
+	       ,UDT_DATE
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{evtNo}
+	       ,#{tmplatSn}
+	       ,#{evtNm}
+	       ,#{evtDscr}
+	       ,#{evtTpCd}
+	       ,#{evtStatCd}
+	       ,#{evtDspYn}
+	       ,#{evtDspBegdt}
+	       ,#{evtDspEnddt}
+	       ,#{applcnTpCd}
+	       ,#{applcnUnitSectCd}
+	       ,#{maxApplcnPsbCount}
+	       ,#{applcnBegDt}
+	       ,#{applcnEndDt}
+	       ,#{prizePresnatnDay}
+	       ,#{wnrNotiHtml}
+	       ,#{evtRprstImgUrl}
+	       ,#{evtRprstImgTagNm}
+	       ,#{evtBannerUrl}
+	       ,#{evtBannerTagNm}
+	       ,#{evtMoviUrl}
+	       ,#{evtMoviSubttlCont}
+	       ,#{qustnrPurpsCd}
+	       ,#{qustnrTp}
+	       ,#{qustnrNm}
+	       ,#{regtrId}
+	       ,#{regDate}
+	       ,#{udterId}
+	       ,#{udtDate}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    <update id="updateEvtImg" parameterType="evtImg">
+        UPDATE /* event.xml - com.plgrim.ncp.base.repository.evt.updateEvtImg vito 20150515 */  
+        EVT_IMG SET
+                 IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+                ,IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+                ,DVC_SECT_CD = #{dvcSectCd,jdbcType=VARCHAR}
+                ,IMG_ALTRTV_CONT = #{imgAltrtvCont,jdbcType=VARCHAR}
+                ,IMG_EXPSR_TXT1_CONT = #{imgExpsrTxt1Cont,jdbcType=VARCHAR}
+                ,IMG_EXPSR_TXT2_CONT = #{imgExpsrTxt2Cont,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     IMG_TURN = #{imgTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <delete id="deleteEvtImg" parameterType="evtImg">
+        DELETE /* event.xml - com.plgrim.ncp.base.repository.evt.deleteEvtImg vito 20150515 */  
+        FROM EVT_IMG 
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     IMG_TURN = #{imgTurn,jdbcType=NUMERIC}
+    </delete>
+    
+    <select id="selectFreeGiftInfo" parameterType="evtFreeGiftInfo" resultType="evtFreeGiftInfo">
+        SELECT /* event.xml - com.plgrim.ncp.base.repository.evt.selectFreeGiftInfo vito 20150515 */
+                EVT_NO
+               ,FREE_GIFT_TURN
+               ,PRIZE_RANK
+               ,FREE_GIFT_KND_CD
+               ,FREE_GIFT_NM
+               ,CPN_PRM_NO
+               ,PNT_AMT
+               ,WEBPNT_AMT
+               ,WEBPNT_USE_BEG_DT
+               ,WEBPNT_USE_END_DT
+               ,PRPARE_FREE_GIFT_QTY
+               ,FREE_GIFT_INV_QTY
+               ,PRIZE_QTY
+               ,BRND_ID
+               ,STMP_COUNT
+               ,ATEND_DAYCNT
+        FROM    EVT_FREE_GIFT_INFO efg
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        <if test='freeGiftTurn != null and freeGiftTurn != "" and freeGiftTurn != 0'>
+        AND     FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+        </if>
+    </select>
+    
+    <update id="updateFreeGiftInfo" parameterType="evtFreeGiftInfo">
+        UPDATE /* event.xml - com.plgrim.ncp.base.repository.evt.updateEvtFreeGiftInfo vito 20150515 */  
+        EVT_FREE_GIFT_INFO SET
+                 PRIZE_RANK = #{prizeRank,jdbcType=NUMERIC}
+                ,FREE_GIFT_KND_CD = #{freeGiftKndCd,jdbcType=VARCHAR}
+                ,FREE_GIFT_NM = #{freeGiftNm,jdbcType=VARCHAR}
+                ,CPN_PRM_NO = #{cpnPrmNo,jdbcType=VARCHAR}
+                ,WEBPNT_AMT = NVL(#{webpntAmt,jdbcType=NUMERIC}, WEBPNT_AMT)
+                ,WEBPNT_USE_BEG_DT = #{webpntUseBegDt,jdbcType=TIMESTAMP}
+                ,WEBPNT_USE_END_DT = #{webpntUseEndDt,jdbcType=TIMESTAMP}
+                ,PRIZE_QTY = #{prizeQty,jdbcType=NUMERIC}
+                ,PRPARE_FREE_GIFT_QTY = #{prpareFreeGiftQty,jdbcType=NUMERIC}
+                ,FREE_GIFT_INV_QTY = #{freeGiftInvQty,jdbcType=NUMERIC}
+                ,PNT_AMT  = NVL(#{pntAmt:NUMERIC}, PNT_AMT)
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <select id="selectMaxFreeGift" parameterType="String" resultType="int">
+        SELECT /* event.xml - com.plgrim.ncp.base.repository.evt.selectMaxFreeGift vito 20150515 */
+                nvl(max(FREE_GIFT_TURN), 0) cnt
+        FROM    EVT_FREE_GIFT_INFO efg
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </select>
+    
+    <delete id="deleteEvtPartcptnTgt" parameterType="evtPartcptnTgt">
+        DELETE /* event.xml - com.plgrim.ncp.base.repository.evt.deleteEvtPartcptnTgt jackie 20150523 */  
+        FROM EVT_PARTCPTN_TGT 
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </delete>
+    
+    <update id="updateEvtRelateGod" parameterType="evtRelateGod">
+        UPDATE /* event.xml - com.plgrim.ncp.base.repository.evt.updateEvtRelateGod vito 20150529 */  
+        EVT_RELATE_GOD SET
+                 SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateRelateGodSortSeq" parameterType="evtRelateGod">
+        MERGE INTO EVT_RELATE_GOD g  
+			USING (                  
+				select rownum cnt, eg.*  
+				from (          
+					select 
+						  e.god_no
+						, e.evt_no
+						, e.sprtr_turn
+						, nvl(sum(ord_qty), 0) as ord_cnt
+					from EVT_RELATE_GOD e
+					LEFT OUTER JOIN ORD_GOD o
+						on o.god_no = e.god_no
+					WHERE   1 = 1
+			        	AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+			        	AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+					group by e.god_no, e.evt_no, e.sprtr_turn
+					order by ord_cnt desc, god_no
+					) eg			
+				) U      
+			ON (u.god_no=g.god_no and u.evt_no=g.evt_no and u.sprtr_turn=g.sprtr_turn)  
+			WHEN MATCHED 
+			THEN UPDATE SET 
+				g.sort_seq = cnt
+			  , g.udt_dt = sysdate
+			  , g.udter_id = #{udterId,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateRelateGodSortSeqExcel" parameterType="evtRelateGod">
+        UPDATE  /* event.xml - com.plgrim.ncp.base.repository.evt.updateEvtSprtr vito 20150529 */
+                EVT_RELATE_GOD SET
+                 SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+        <choose>
+            <when test=" erpGodNo != null and erpGodNo != '' ">
+                AND GOD_NO = (SELECT GOD_NO FROM GOD WHERE ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR} AND  GOD_TP_CD != 'CNVRS_GFT')
+            </when>
+            <otherwise>
+                AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+            </otherwise>
+        </choose>
+    </update>
+    
+    <delete id="deleteEvtRelateGod" parameterType="evtRelateGod">
+        DELETE /* event.xml - com.plgrim.ncp.base.repository.evt.deleteEvtRelateGod vito 20150529 */  
+        FROM EVT_RELATE_GOD 
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+        AND     GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+    
+    <select id="selectMaxEvtSprtrTurn" parameterType="String" resultType="int">
+        SELECT /* event.xml - com.plgrim.ncp.base.repository.evt.selectMaxEvtSprtrTurn vito 20150515 */
+                nvl(max(SPRTR_TURN), 0) cnt
+        FROM    EVT_SPRTR spr
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </select>
+        
+	<select id="selectEvtSprtrLangList" parameterType="evtSprtrLang" resultType="evtSprtrLang">
+        SELECT /* event.xml - com.plgrim.ncp.base.repository.evt.selectEvtSprtrLang vito 20150529 */
+                EVT_NO
+               ,SPRTR_TURN
+               ,LANG_CD
+               ,SPRTR_NM
+               ,SPRTR_IMG_FILE_NM
+               ,SPRTR_IMG_FILE_URL
+               ,SPRTR_IMG_ALTRTV_CONT
+               ,REGTR_ID
+               ,REG_DT
+               ,UDTER_ID
+               ,UDT_DT
+        FROM    EVT_SPRTR_LANG t
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </select>
+    
+    <update id="updateEvtSprtrTurn" parameterType="EvtSprtr">
+        UPDATE /* event.xml - com.plgrim.ncp.base.repository.evt.updateEvtSprtr vito 20150529 */  
+        EVT_SPRTR SET
+                SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+                ,DSP_YN = #{dspYn,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                <if test="rprstSprtrYn != null and rprstSprtrYn != ''">
+                    ,RPRST_SPRTR_YN = #{rprstSprtrYn,jdbcType=VARCHAR}
+                </if>
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <delete id="deleteEvtSprtrLang" parameterType="EvtSprtr">
+        DELETE /* event.xml - com.plgrim.ncp.base.repository.evt.deleteEvtSprtr vito 20150529 */  
+        FROM EVT_SPRTR_LANG 
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+    </delete>
+    
+    <insert id="insertEvtPrize" parameterType="evtPrize">
+	    INSERT /* event.xml - com.plgrim.ncp.base.repository.evt.insertEvtPrize vito 20150529 */  
+	    INTO EVT_PRIZE
+		(
+	        EVT_PARTCPTN_SN
+	       ,PRIZE_TURN
+	       ,PRIZE_RANK
+	       ,EVT_NO
+	       ,PRIZE_DT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{evtPartcptnSn,jdbcType=NUMERIC}
+	       ,#{prizeTurn,jdbcType=NUMERIC}
+	       ,#{prizeRank,jdbcType=NUMERIC}
+	       ,#{evtNo,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    
+    <update id="updatePrizeWinnerRank" parameterType="EvtPrize">
+        UPDATE /* event.xml - com.plgrim.ncp.base.repository.evt.updatePrizeWinnerRank vito 20150529 */  
+        EVT_PRIZE SET
+                 PRIZE_RANK = #{prizeRank,jdbcType=NUMERIC}
+                ,PRIZE_DT = SYSDATE
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+        AND     PRIZE_TURN = #{prizeTurn,jdbcType=NUMERIC}
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </update>
+    
+    <insert id="insertEvtApplcn" parameterType="evtApplcn">
+	    INSERT /* event.xml - com.plgrim.ncp.base.repository.evt.insertEvtApplcn vito 20150529 */  
+	    INTO EVT_APPLCN
+		(
+	        EVT_PARTCPTN_SN
+	       ,EVT_NO
+	       ,FREE_GIFT_TURN
+	       ,APPLCN_MBR_SECT_CD
+	       ,MBR_NO
+	       ,APPLCN_DT
+	       ,ORD_NO
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+           ,UTID
+		)
+        SELECT
+            #{evtPartcptnSn,jdbcType=NUMERIC}
+           ,#{evtNo,jdbcType=VARCHAR}
+           ,#{freeGiftTurn,jdbcType=NUMERIC}
+           ,NVL(#{applcnMbrSectCd,jdbcType=VARCHAR}, m.mbr_tp_cd)
+           ,m.mbr_no
+           ,SYSDATE
+           ,#{ordNo,jdbcType=VARCHAR}
+           ,#{regtrId,jdbcType=VARCHAR}
+           ,#{udterId,jdbcType=VARCHAR}
+           ,SYSDATE
+           ,SYSDATE
+           ,#{userTrackingId,jdbcType=VARCHAR}
+        FROM MBR M
+        WHERE 1=1
+        AND m.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </insert>
+    
+    <select id="selectMaxPrizeTurn" parameterType="String" resultType="int">
+        SELECT /* event.xml - com.plgrim.ncp.base.repository.evt.selectMaxPrizeTurn vito 20150515 */
+                nvl(max(PRIZE_TURN), 0) cnt
+        FROM    EVT_PRIZE prz
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectEvtApplcn" parameterType="evtApplcn" resultType="evtApplcn">
+        SELECT /* event.xml - com.plgrim.ncp.base.repository.evt.selectEvtApplcn vito 20150529 */
+                 max(EVT_NO) EVT_NO
+                ,max(EVT_PARTCPTN_SN) EVT_PARTCPTN_SN
+        FROM    EVT_APPLCN t
+        WHERE   1 = 1
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </select>
+    
+    <update id="updateEvtPrizeFreeGift" parameterType="evtPrizeFreeGift">
+        UPDATE /* event.xml - com.plgrim.ncp.base.repository.evt.updateEvtPrizeFreeGift vito 20150529 */  
+        EVT_PRIZE_FREE_GIFT SET
+        		 FREE_GIFT_TURN = #{freeGiftTurn,jdbcType=NUMERIC}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+        WHERE   1 = 1
+        AND     EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}
+        AND     PRIZE_TURN = #{prizeTurn,jdbcType=NUMERIC}
+        AND     EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </update>
+    
+	<select id="selectRelateGodBeforeList" parameterType="evtRelateGod"  resultType="String">
+        SELECT /*[plan.xml][selectPromtGodCnncedList][기등록 연관 상품 목록][Andrew]*/ 
+			  god_no
+		FROM    EVT_RELATE_GOD g
+		WHERE   1 = 1
+        AND     g.EVT_NO = #{evtNo,jdbcType=VARCHAR}
+        AND     g.SPRTR_TURN = #{sprtrTurn,jdbcType=NUMERIC}
+	</select>
+	
+	<insert id="insertApplicantUploadExcel" parameterType="evtPrize">
+	    INSERT /* event.xml - com.plgrim.ncp.biz.promotion.insertApplicantUploadExcel jackie 20150608 */  
+	    INTO EVT_APPLCN
+        (
+             EVT_PARTCPTN_SN
+	    	,EVT_NO
+	    	,APPLCN_MBR_SECT_CD
+	    	,MBR_NO
+            ,APPLCN_DT
+	    	,REGTR_ID
+	    	,UDTER_ID
+            ,REG_DT
+            ,UDT_DT
+        )
+        SELECT
+            #{evtPartcptnSn,jdbcType=NUMERIC}
+           ,#{evtNo,jdbcType=VARCHAR}
+           ,m.MBR_TP_CD
+           ,m.MBR_NO
+           ,SYSDATE
+           ,#{regtrId,jdbcType=VARCHAR}
+           ,#{udterId,jdbcType=VARCHAR}
+           ,SYSDATE
+           ,SYSDATE
+        FROM MBR M
+        WHERE 1=1
+        AND m.MBR_NO = #{mbrNo,jdbcType=VARCHAR}   
+    </insert>
+    
+    <insert id="insertPrizeWinnerUploadExcel" parameterType="evtApplcn">
+	    INSERT /* event.xml - com.plgrim.ncp.biz.promotion.insertPrizeWinnerUploadExcel jackie 20150608 */  
+        INTO EVT_PRIZE
+        (
+             EVT_PARTCPTN_SN
+            ,PRIZE_TURN
+            ,PRIZE_RANK
+            ,EVT_NO
+            ,PRIZE_DT
+            ,REGTR_ID
+            ,UDTER_ID
+            ,REG_DT
+            ,UDT_DT
+        )
+        SELECT
+            #{evtPartcptnSn,jdbcType=NUMERIC}
+           ,#{prizeTurn,jdbcType=NUMERIC}
+           ,#{prizeRank,jdbcType=NUMERIC}
+           ,#{evtNo,jdbcType=VARCHAR}
+           ,SYSDATE
+           ,#{regtrId,jdbcType=VARCHAR}
+           ,#{udterId,jdbcType=VARCHAR}
+           ,SYSDATE
+           ,SYSDATE
+        FROM EVT_APPLCN A
+        WHERE 1=1
+        AND A.EVT_PARTCPTN_SN = #{evtPartcptnSn,jdbcType=NUMERIC}   
+    </insert>
+    
+    <update id="updateEventPrizeChoose" parameterType="evt">
+      UPDATE   /* event.xml - com.plgrim.ncp.biz.promotion.updateEventPrizeChoose  20150430 */
+      EVT SET
+               prize_hist_cd = #{prizeHistCd,jdbcType=VARCHAR}
+			 , pch_cnd_cd    = #{pchCndCd,jdbcType=VARCHAR}
+      <if test='empExclsYn == "Y"'>         
+             , emp_excls_yn    = 'Y'
+      </if>
+             , udter_id    = #{udterId,jdbcType=VARCHAR}
+             , udt_dt      = SYSDATE
+      WHERE  1 = 1
+      AND    EVT_NO = #{evtNo,jdbcType=VARCHAR}
+   </update>
+
+
+    <!-- 이벤트 대상자 등록 -->
+    <update id="saveEvtPartcptnTgtMbr" parameterType="evtPartcptnTgtMbr">
+        MERGE INTO EVT_PARTCPTN_TGT_MBR
+        USING DUAL
+          ON (EVT_NO = #{evtNo,jdbcType=VARCHAR} AND MBR_NO = #{mbrNo,jdbcType=VARCHAR} )
+
+        WHEN MATCHED
+        THEN UPDATE SET
+			  UDT_DT = SYSDATE,
+			  UDTER_ID = #{udterId,jdbcType=VARCHAR}
+            WHEN NOT MATCHED THEN
+        INSERT
+            (
+                EVT_NO,
+                MBR_NO,
+                REGTR_ID,
+                UDTER_ID,
+                REG_DT,
+                UDT_DT
+            )
+        VALUES
+            (
+                #{evtNo,jdbcType=VARCHAR},
+                #{mbrNo,jdbcType=VARCHAR},
+                #{udterId,jdbcType=VARCHAR},
+                #{udterId,jdbcType=VARCHAR},
+                SYSDATE,
+                SYSDATE
+            )
+    </update>
+
+    <!-- 이벤트대상자 전체 삭제 -->
+    <delete id="deleteEvtPartcptnTgtMbr" parameterType="evtPartcptnTgtMbr">
+        DELETE FROM EVT_PARTCPTN_TGT_MBR WHERE EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </delete>
+
+    <!-- SNS 인증정보 리스트 조회 -->
+    <select id="selectMbrSnsList" parameterType="mbrSns" resultType="mbrSns">
+		SELECT /* [event.xml][selectMbrSnsList][SNS 인증정보 리스트 조회] */
+			 MBR_NO
+			, MBR_SNS_CD
+			, MBR_SNS_CRTFC_TOKN_ID
+			, RESULT_URL
+			, LAST_USE_SNS_YN
+			, REG_DT
+			, UDT_DT
+		FROM    MBR_SNS t
+		WHERE   1 = 1
+        	AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	        <if test='mbrSnsCd != null'>
+	        	AND     MBR_SNS_CD = #{mbrSnsCd,jdbcType=VARCHAR}
+	        </if>
+	        <if test='lastUseSnsYn != null'>
+	        	AND     LAST_USE_SNS_YN = #{lastUseSnsYn,jdbcType=VARCHAR}
+	        </if>
+		ORDER BY UDT_DT DESC
+    </select>
+
+    <!-- SNS 인증정보 등록 -->
+    <update id="insertMbrSnsMerge" parameterType="mbrSns">
+        /* [event.xml][insertMbrSnsMerge][SNS 인증정보 등록] */
+        MERGE INTO MBR_SNS
+        USING DUAL
+        ON (MBR_NO = #{mbrNo,jdbcType=VARCHAR} AND MBR_SNS_CD = #{mbrSnsCd,jdbcType=VARCHAR})
+        WHEN MATCHED THEN
+          UPDATE SET
+                    UDT_DT = SYSDATE
+                    <if test='mbrSnsCrtfcToknId != null'>
+	                , MBR_SNS_CRTFC_TOKN_ID = #{mbrSnsCrtfcToknId,jdbcType=VARCHAR}
+	                </if>
+                    <if test='resultUrl != null'>
+	                , RESULT_URL = #{resultUrl,jdbcType=VARCHAR}
+	                </if>
+	                <if test='lastUseSnsYn != null'>
+	                , LAST_USE_SNS_YN = #{lastUseSnsYn,jdbcType=VARCHAR}
+	                </if>
+        WHEN NOT MATCHED THEN
+          INSERT
+                (
+					MBR_NO
+					, MBR_SNS_CD
+					<if test='mbrSnsCrtfcToknId != null'>
+					, MBR_SNS_CRTFC_TOKN_ID
+					</if>
+					<if test='resultUrl != null'>
+					, RESULT_URL
+					</if>
+					<if test='lastUseSnsYn != null'>
+					, LAST_USE_SNS_YN
+					</if>
+					, REG_DT
+					, UDT_DT
+                )
+        VALUES
+                (
+					#{mbrNo,jdbcType=VARCHAR}
+					, #{mbrSnsCd,jdbcType=VARCHAR}
+					<if test='mbrSnsCrtfcToknId != null'>
+					, #{mbrSnsCrtfcToknId,jdbcType=VARCHAR}
+					</if>
+					<if test='resultUrl != null'>
+					, #{resultUrl,jdbcType=VARCHAR}
+					</if>
+					<if test='lastUseSnsYn != null'>
+					, #{lastUseSnsYn,jdbcType=VARCHAR}
+					</if>
+					, SYSDATE
+					, SYSDATE
+                )
+    </update>
+
+    <!-- 최종사용 SNS 여부 update -->
+    <update id="updateMbrSnsLastUseYn" parameterType="mbrSns">
+        UPDATE /* [event.xml][updateMbrSnsLastUseYn][최종사용 SNS 여부 update] */
+        MBR_SNS SET
+                LAST_USE_SNS_YN = #{lastUseSnsYn,jdbcType=VARCHAR}
+        WHERE   1 = 1
+        	AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	        <if test='mbrSnsCd != null'>
+	        	AND     MBR_SNS_CD = #{mbrSnsCd,jdbcType=VARCHAR}
+	        </if>
+    </update>
+	
+	<select id="selectfcfsEvent" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="com.plgrim.ncp.biz.promotion.data.EventExtendsFoDTO">
+         SELECT * FROM  (    
+                         SELECT TO_DATE(to_char( E.APPLCN_BEG_DT +B.NUM-1 ,'yyyy/mm/dd')|| ' 10:00:00','yyyy/mm/dd hh24:mi:ss') AS evtBegDt
+                               ,TO_DATE(to_char( E.APPLCN_BEG_DT +B.NUM   ,'yyyy/mm/dd')|| ' 09:59:59','yyyy/mm/dd hh24:mi:ss') AS evtEndDt
+                               ,B.NUM AS atendDaycnt
+                               ,MAX(B.NUM ) OVER () AS lastDaycnt
+                           FROM EVT E 
+                             , (SELECT LEVEL AS NUM 
+                                  FROM DUAL 
+                            CONNECT BY LEVEL  <![CDATA[ <= ]]>   (SELECT TRUNC(APPLCN_END_DT -APPLCN_BEG_DT)+1  
+                                                                    FROM EVT
+                                                                   WHERE EVT_NO = #{evtNo}
+                                                                  )
+                                ) B 
+                         WHERE E.EVT_NO = #{evtNo}
+                           AND B.NUM BETWEEN 1 
+                           AND TRUNC(E.APPLCN_END_DT -E.APPLCN_BEG_DT)+1 
+                        )
+             WHERE SYSDATE BETWEEN evtBegDt AND evtEndDt
+    </select>
+    
+	<select id="selectfcfsRankingInformation" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="int">
+<!--       SELECT prizeRank FROM ( -->
+<!--                      SELECT EVT_PARTCPTN_SN -->
+<!--                           , mbr_no -->
+<!--                           , RANK() OVER (PARTITION BY ATEND_DAYCNT ORDER BY EVT_PARTCPTN_SN ) as prizeRank  -->
+<!--                        FROM EVT_APPLCN   -->
+<!--                       WHERE EVT_NO = #{evtNo} -->
+<!--                        <if test="atendDaycnt != null and atendDaycnt > 0"> -->
+<!--                         AND ATEND_DAYCNT =  #{atendDaycnt} -->
+<!--                       </if> -->
+<!--                     ) -->
+<!--                WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR} -->
+		SELECT SQ_EVT_${evtNo}_${atendDaycnt}.NEXTVAL FROM DUAL
+    </select>
+    
+ 	<select id="selectfcfsWinnerCountCheck" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO"  resultType="int">
+       SELECT COUNT(1)
+         FROM EVT_APPLCN  
+        WHERE EVT_NO = #{evtNo}
+         <if test="atendDaycnt != null and atendDaycnt > 0">
+          AND ATEND_DAYCNT =  #{atendDaycnt}
+        </if>
+    </select>
+ 	
+ 	<select id="selectfcfsDoubleWinningCheck" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO"  resultType="int">
+       SELECT COUNT(1)
+         FROM EVT_APPLCN  
+        WHERE EVT_NO = #{evtNo}
+          AND MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+    </select>
+   
+    <delete id="deletefcfsWinner" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO">
+        DELETE  
+        FROM EVT_APPLCN 
+        WHERE   EVT_NO = #{evtNo}
+        AND     EVT_PARTCPTN_SN = #{evtPartcptnSn}
+    </delete>
+    
+   <update id="updatefcfsWinner" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO">
+      UPDATE    
+      EVT_APPLCN SET
+               STMP_COUNT = #{stmpCount}
+        WHERE   EVT_NO = #{evtNo}
+        AND     ATEND_DAYCNT = #{atendDaycnt}
+        AND     MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+   </update>
+   
+    <select id="getfcfsFreeGift" parameterType="evtFreeGiftInfo" resultType="evtFreeGiftInfo">
+        SELECT  /* [com.plgrim.ncp.biz.promotion.single.singleEvent.xml][getFreeGiftList][경품목록조회] */
+                EVT_NO
+               ,FREE_GIFT_TURN
+               ,PRIZE_RANK
+               ,FREE_GIFT_NM
+          FROM  EVT_FREE_GIFT_INFO
+         WHERE  EVT_NO = #{evtNo, jdbcType=VARCHAR}
+           AND  PRIZE_RANK = #{prizeRank}
+    </select>
+    
+ 	<select id="selectEventPeriodNewMemberInquiry" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO"  resultType="int">
+       SELECT COUNT(1)
+         FROM EVT  
+        WHERE EVT_NO = #{evtNo}
+          AND (SELECT JOIN_DT FROM  MBR WHERE MBR_NO = #{mbrNo,jdbcType=VARCHAR}) BETWEEN  EVT_BEG_DT AND EVT_END_DT
+    </select>
+    
+ 	<select id="selectEventLwprt" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO"  resultType="com.plgrim.ncp.biz.promotion.data.EventExtendsFoDTO">
+       SELECT EVT_NO
+         FROM EVT  
+        WHERE UPPER_EVT_NO = #{evtNo}
+          AND SORT_SEQ     = #{sortSeq}
+    </select>
+    
+	<select id="selectEventRenewal" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="com.plgrim.ncp.biz.promotion.data.EventExtendsFoDTO">
+           SELECT E.EVT_NO
+             FROM EVT E            
+            WHERE E.EVT_NO = #{evtNo}
+              AND SYSDATE BETWEEN E.APPLCN_BEG_DT AND E.APPLCN_END_DT
+    </select>
+    
+    
+    <select id="selectEventFirstPurchase" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="int">
+      SELECT COUNT(1) 
+        FROM (
+              SELECT OG.ORD_NO 
+                FROM ORD O 
+                JOIN EVT E ON   O.ORD_DT BETWEEN E.APPLCN_BEG_DT AND E.APPLCN_END_DT 
+                JOIN PAY p ON O.ORD_NO = P.ORD_NO 
+                JOIN ORD_GOD OG ON O.ORD_NO = OG.ORD_NO 
+               WHERE E.EVT_NO = #{evtNo}
+                 AND P.MPAY_MN_YN = 'Y'
+                 AND p.DEAL_TP_CD = 'PAY_COMPT'
+                 AND O.MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+                 AND NOT EXISTS (
+                                  SELECT 1 
+                                    FROM (        
+                                          SELECT CWG.ORD_NO 
+                                               , OGC.ORD_GOD_TURN
+                                               , SUM(CWG.CLM_QTY -NVL(CLM_WTHDRAW_QTY,0)) AS qty 
+                                            FROM ORD_CLM_GOD_CNNC OGC  
+                                            JOIN CLM_WRHS_GOD CWG ON CWG.CLM_NO = OGC.CLM_NO AND CWG.CLM_WRHS_GOD_TURN = OGC.CLM_WRHS_GOD_TURN
+                                            JOIN CLM C  ON CWG.CLM_NO = C.CLM_NO
+                                            JOIN ORD O ON C.ORD_NO = O.ORD_NO
+                                           WHERE C.CLM_TP_CD IN('ALL_CNCL','PART_CNCL','RTGOD') 
+                                             AND O.MBR_NO = #{mbrNo,jdbcType=VARCHAR}                          
+                                        GROUP BY CWG.ORD_NO ,OGC.ORD_GOD_TURN
+                                        ) CL
+                                  WHERE OG.ORD_NO = CL.ORD_NO AND OG.ORD_GOD_TURN = CL.ORD_GOD_TURN AND CL.qty = OG.ORD_QTY
+                               )
+               
+            GROUP BY OG.ORD_NO
+            )
+    </select>
+    
+    <select id="selectEarlyBirdDoubleWinningCheck" parameterType="EvtApplcn"  resultType="int">
+       SELECT COUNT(1)
+         FROM EVT_APPLCN  
+        WHERE EVT_NO = #{evtNo}
+        <if test="cont == '/facebook' or cont == '/kakaostory' or cont == '/kakaotalk' or cont == '/kakaotak' or cont == '/naver' or cont == '/url'">
+          AND MBR_NO = #{mbrNo}
+        </if>
+          AND CONT = #{cont,jdbcType=VARCHAR}
+    </select>       
+    
+     <select id="selectRelayGiftDoubleWinningCheck" parameterType="EvtApplcn"  resultType="int">
+       SELECT COUNT(1)
+        FROM EVT_APPLCN  
+        WHERE EVT_NO = #{evtNo}
+        AND MBR_NO = #{mbrNo}
+        AND CONT = #{cont,jdbcType=VARCHAR}
+        AND APPLCN_DT BETWEEN TO_DATE(#{begDt}, 'YYYY-MM-DD') AND TO_DATE(#{endDt},'YYYY-MM-DD') + 0.99999
+    </select> 
+       <update id="updateEvtForGrid" parameterType="evt">
+      UPDATE    
+      EVT SET    UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <if test="spcifyUrlDspYn != null and spcifyUrlDspYn != ''"> 
+                ,SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+                </if>
+        WHERE   EVT_NO = #{evtNo}
+   </update>
+   
+       <select id="selectEventLang" parameterType="com.plgrim.ncp.biz.promotion.data.EventSearchFoDTO" resultType="String">       
+       SELECT LANG_CD 
+         FROM EVT_DSP_TGT 
+        WHERE EVT_NO = #{evtNo,jdbcType=VARCHAR}
+          AND evt_dsp_tgt_tp_cd = 'LANG'
+    </select>
+   
+</mapper>

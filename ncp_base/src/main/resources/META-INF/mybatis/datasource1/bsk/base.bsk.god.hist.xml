@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectBskGodHist" parameterType="bskGodHist" resultType="bskGodHist">
+		SELECT /* com.plgrim.ncp.base.selectBskGodHist		Generator(Generator)	2018-05-23 */
+			   BSK_GOD_HIST_SN
+			 , BSK_NO
+			 , MBR_NO
+			 , GOD_NO
+			 , ITM_NO
+			 , BSK_REG_DT
+			 , PCKAGE_GOD_YN
+			 , PCKAGE_GOD_TP_CD
+			 , UPPER_BSK_GOD_HIST_SN
+			 , DLV_SECT_CD
+			 , PKUP_SHOP_SN
+			 , PKUP_SHOP_VISIT_DATE
+			 , TRNSC_TP_CD
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM BSK_GOD_HIST
+		 WHERE 1 = 1
+	   	   AND BSK_GOD_HIST_SN = #{bskGodHistSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateBskGodHist" parameterType="bskGodHist">
+		UPDATE /* com.plgrim.ncp.base.updateBskGodHist		Generator(Generator)	2018-05-23 */
+		BSK_GOD_HIST SET
+			   BSK_NO = #{bskNo,jdbcType=VARCHAR}
+			 , MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+			 , GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , ITM_NO = #{itmNo,jdbcType=VARCHAR}
+			 , BSK_REG_DT = #{bskRegDt,jdbcType=TIMESTAMP}
+			 , PCKAGE_GOD_YN = #{pckageGodYn,jdbcType=VARCHAR}
+			 , PCKAGE_GOD_TP_CD = #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , UPPER_BSK_GOD_HIST_SN = #{upperBskGodHistSn,jdbcType=NUMERIC}
+			 , DLV_SECT_CD = #{dlvSectCd,jdbcType=VARCHAR}
+			 , PKUP_SHOP_SN = #{pkupShopSn,jdbcType=VARCHAR}
+			 , PKUP_SHOP_VISIT_DATE = #{pkupShopVisitDate,jdbcType=VARCHAR}
+			 , TRNSC_TP_CD = #{trnscTpCd,jdbcType=VARCHAR}
+			 , UTID = #{utid,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND BSK_GOD_HIST_SN = #{bskGodHistSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertBskGodHist" parameterType="bskGodHist">
+		INSERT /* com.plgrim.ncp.base.insertBskGodHist		Generator(Generator)	2018-05-23 */
+		INTO   BSK_GOD_HIST (
+			   BSK_GOD_HIST_SN
+			 , BSK_NO
+			 , MBR_NO
+			 , GOD_NO
+			 , ITM_NO
+			 , BSK_REG_DT
+			 , PCKAGE_GOD_YN
+			 , PCKAGE_GOD_TP_CD
+			 , UPPER_BSK_GOD_HIST_SN
+			 , DLV_SECT_CD
+			 , PKUP_SHOP_SN
+			 , PKUP_SHOP_VISIT_DATE
+			 , TRNSC_TP_CD
+			 , UTID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{bskGodHistSn,jdbcType=NUMERIC}
+			 , #{bskNo,jdbcType=VARCHAR}
+			 , #{mbrNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{itmNo,jdbcType=VARCHAR}
+			 , #{bskRegDt,jdbcType=TIMESTAMP}
+			 , #{pckageGodYn,jdbcType=VARCHAR}
+			 , #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , #{upperBskGodHistSn,jdbcType=NUMERIC}
+			 , #{dlvSectCd,jdbcType=VARCHAR}
+			 , #{pkupShopSn,jdbcType=VARCHAR}
+			 , #{pkupShopVisitDate,jdbcType=VARCHAR}
+			 , #{trnscTpCd,jdbcType=VARCHAR}
+			 , #{utid,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteBskGodHist" parameterType="bskGodHist">
+		DELETE /* com.plgrim.ncp.base.deleteBskGodHist		Generator(Generator)	2018-05-23 */
+		  FROM BSK_GOD_HIST
+		 WHERE 1 = 1
+		   AND BSK_GOD_HIST_SN = #{bskGodHistSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

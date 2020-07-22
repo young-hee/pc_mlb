@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectGodColor" parameterType="godColor" resultType="godColor">
+		SELECT /* com.plgrim.ncp.base.selectGodColor		Generator(Generator)	2018-05-23 */
+			   COLOR_CD
+			 , BRND_GRP_ID
+			 , COLOR_NM
+			 , COLOR_GRP_CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , COLOR_STYLE_CONT_1
+			 , COLOR_STYLE_CONT_2
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM GOD_COLOR
+		 WHERE 1 = 1
+	   	   AND COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateGodColor" parameterType="godColor">
+		UPDATE /* com.plgrim.ncp.base.updateGodColor		Generator(Generator)	2018-05-23 */
+		GOD_COLOR SET
+			   COLOR_NM = #{colorNm,jdbcType=VARCHAR}
+			 , COLOR_GRP_CD = #{colorGrpCd,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , COLOR_STYLE_CONT_1 = #{colorStyleCont1,jdbcType=VARCHAR}
+			 , COLOR_STYLE_CONT_2 = #{colorStyleCont2,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertGodColor" parameterType="godColor">
+		INSERT /* com.plgrim.ncp.base.insertGodColor		Generator(Generator)	2018-05-23 */
+		INTO   GOD_COLOR (
+			   COLOR_CD
+			 , BRND_GRP_ID
+			 , COLOR_NM
+			 , COLOR_GRP_CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , COLOR_STYLE_CONT_1
+			 , COLOR_STYLE_CONT_2
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{colorCd,jdbcType=VARCHAR}
+			 , #{brndGrpId,jdbcType=VARCHAR}
+			 , #{colorNm,jdbcType=VARCHAR}
+			 , #{colorGrpCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{colorStyleCont1,jdbcType=VARCHAR}
+			 , #{colorStyleCont2,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteGodColor" parameterType="godColor">
+		DELETE /* com.plgrim.ncp.base.deleteGodColor		Generator(Generator)	2018-05-23 */
+		  FROM GOD_COLOR
+		 WHERE 1 = 1
+		   AND COLOR_CD = #{colorCd,jdbcType=VARCHAR}
+		   AND BRND_GRP_ID = #{brndGrpId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

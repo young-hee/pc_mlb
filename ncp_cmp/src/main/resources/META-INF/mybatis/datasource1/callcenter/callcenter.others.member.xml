@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.others.member">
+	
+	<resultMap id="othersMemberResult" type="com.plgrim.ncp.biz.callcenter.result.CsoOthersMemberResult">
+	   <result property="payRfd.payNo"               column="PAY_NO" />                   <!-- 결제 번호 -->
+	   <result property="payRfd.rfdTurn"             column="RFD_TURN" />                 <!-- 환불 순번 -->
+	   <result property="payRfd.rfdStatCd"           column="RFD_STAT_CD" />              <!-- 환불 상태 코드 -->
+	   <result property="payRfd.rfdRequstDt"         column="RFD_REQUST_DT" />            <!-- 환불 요청 일시 -->
+	   <result property="payRfd.rfdRequstResn"       column="RFD_REQUST_RESN" />          <!-- 환불 요청 사유 -->
+	   <result property="payRfd.rfdComptDt"          column="RFD_COMPT_DT" />             <!-- 환불 완료 일시 -->
+	   <result property="payRfd.rfdReturnDt"         column="RFD_RETURN_DT" />            <!-- 환불 반려 일시 -->
+	   <result property="payRfd.rfdReturnResn"       column="RFD_RETURN_RESN" />          <!-- 환불 반려 사유 -->
+	   <result property="payRfd.rfdCnclDt"           column="RFD_CNCL_DT" />              <!-- 환불 취소 일시 -->
+	   <result property="payRfd.rfdCnclResn"         column="RFD_CNCL_RESN" />            <!-- 환불 취소 사유 -->
+	   <result property="payRfd.rfdErrDt"            column="RFD_ERR_DT" />               <!-- 환불 오류 일시 -->
+	   <result property="payRfd.rfdErrCont"          column="RFD_ERR_CONT" />             <!-- 환불 오류 내용 -->
+	   <result property="payRfd.preRfdYn"            column="PRE_RFD_YN" />               <!-- 선 환불 여부 -->
+	   <result property="payRfd.rfdOccurTpCd"        column="RFD_OCCUR_TP_CD" />          <!-- 환불 발생 유형 코드 -->
+	   <result property="payRfd.rfdTpCd"             column="RFD_TP_CD" />                <!-- 환불 유형 코드 -->
+	   <result property="payRfd.stdrCrncyRfdAmt"     column="STDR_CRNCY_RFD_AMT" />       <!-- 기준 통화 환불 금액 -->
+	   <result property="payRfd.rfdCrncyCd"          column="RFD_CRNCY_CD" />             <!-- 환불 통화 코드 -->
+	   <result property="payRfd.rfdAmt"              column="RFD_AMT" />                  <!-- 환불 금액 -->
+	   <result property="payRfd.rfdBnkAcctNo"        column="RFD_BNK_ACCT_NO" />          <!-- 환불 계좌 번호 -->
+	   <result property="payRfd.rfdBnkCd"            column="RFD_BNK_CD" />               <!-- 환불 은행 코드 -->
+	   <result property="payRfd.rfdAcnthldrNm"       column="RFD_ACNTHLDR_NM" />          <!-- 환불 예금주 명 -->
+	   
+	   <result property="rfdStatNm"                  column="RFD_STAT_NM" />              <!-- 환불 상태 코드명 -->
+	   <result property="rfdBnkNm"                   column="RFD_BNK_NM" />              <!-- 은행 코드명 -->
+	   <result property="clmNo"		 	             column="CLM_NO" />                   <!-- 클레임번호 -->
+	   <result property="ordNo"		 	             column="ORD_NO" />                   <!-- 주문번호 -->
+	   
+	   <result property="csoGodInq.godInqSn"             column="GOD_INQ_SN" />               <!-- 상품 문의 일련번호 -->
+	   <result property="csoGodInq.dsgnGrpNo"            column="DSGN_GRP_NO" />              <!-- 디자인 그룹 번호 -->
+	   <result property="csoGodInq.godNo"                column="GOD_NO" />                   <!-- 상품 번호 -->
+	   <result property="csoGodInq.mbrNo"                column="MBR_NO" />                   <!-- 회원 번호 -->
+	   <result property="csoGodInq.inqCstmrNm"           column="INQ_CSTMR_NM" />             <!-- 문의 고객 명 -->
+	   <result property="csoGodInq.inqSj"                column="INQ_SJ" />                   <!-- 문의 제목 -->
+	   <result property="csoGodInq.inqCont"              column="INQ_CONT" />                 <!-- 문의 내용 -->
+	   <result property="csoGodInq.inqDt"                column="INQ_DT" />                   <!-- 문의 일시 -->
+	   <result property="csoGodInq.secretsntncYn"        column="SECRETSNTNC_YN" />           <!-- 비밀글 여부 -->
+	   <result property="csoGodInq.ansStatCd"            column="ANS_STAT_CD" />              <!-- 답변 상태 코드 -->
+	   <result property="csoGodInq.inqireCount"          column="INQIRE_COUNT" />             <!-- 조회 횟수 -->
+	   <result property="csoGodInq.prcsComptDt"          column="PRCS_COMPT_DT" />            <!-- 처리 완료 일시 -->
+	   <result property="csoGodInq.deleteYn"             column="DELETE_YN" />                <!-- 삭제 여부 -->
+	   <result property="csoGodInq.langCd"               column="LANG_CD" />                  <!-- 언어 코드 -->
+	   <result property="csoGodInq.mallId"               column="MALL_ID" />                  <!-- 몰 ID -->
+	   <result property="csoGodInq.dvcCd"                column="DVC_CD" />                   <!-- 디바이스 코드 -->
+	   <result property="csoGodInq.regtrId"              column="REGTR_ID" />                 <!-- 등록자 ID -->
+	   <result property="csoGodInq.regDt"                column="REG_DT" />                   <!-- 등록 일시 -->
+	   <result property="csoGodInq.udterId"              column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="csoGodInq.udtDt"                column="UDT_DT" />                   <!-- 수정 일시 -->
+	   
+	   <result property="csoGodInqAns.godInqSn"          column="GOD_INQ_SN" />               <!-- 상품 문의 일련번호 -->
+	   <result property="csoGodInqAns.godAnsTurn"        column="GOD_ANS_TURN" />             <!-- 상품 답변 순번 -->
+	   <result property="csoGodInqAns.ansSj"             column="ANS_SJ" />                   <!-- 답변 제목 -->
+	   <result property="csoGodInqAns.ansCont"           column="ANS_CONT" />                 <!-- 답변 내용 -->
+	   <result property="csoGodInqAns.detailAnsStatCd"   column="DETAIL_ANS_STAT_CD" />       <!-- 상세 답변 상태 코드 -->
+	   <result property="csoGodInqAns.ansDt"             column="ANS_DT" />                   <!-- 답변 일시 -->
+	   <result property="csoGodInqAns.ansAdminId"        column="ANS_ADMIN_ID" />             <!-- 답변 관리자 ID -->
+	   
+	   <result property="godNm"                          column="GOD_NM" />                   <!-- 상품명 -->
+	   <result property="ansStatNm"                      column="ANS_STAT_NM" />              <!-- 답변 상태 코드명 -->
+	   <result property="adminNm"                        column="ADMIN_NM" />                 <!-- 관리자명 -->	
+	</resultMap>
+	
+	<resultMap id="othersMemberMtmResult" type="com.plgrim.ncp.biz.callcenter.result.CsoOthersMemberResult">
+	   <result property="csoMtmInq.mtmInqSn"            column="MTM_INQ_SN" />               <!-- 일대일 문의 일련번호 -->
+	   <result property="csoMtmInq.inqTpCd"             column="INQ_TP_CD" />                <!-- 문의 유형 코드 -->
+	   <result property="csoMtmInq.inqMbrNo"            column="INQ_MBR_NO" />               <!-- 문의 회원 번호 -->
+	   <result property="csoMtmInq.inqCstmrNm"          column="INQ_CSTMR_NM" />             <!-- 문의 고객 명 -->
+	   <result property="csoMtmInq.inqSj"               column="INQ_SJ" />                   <!-- 문의 제목 -->
+	   <result property="csoMtmInq.inqCont"             column="INQ_CONT" />                 <!-- 문의 내용 -->
+	   <result property="csoMtmInq.inqDt"               column="INQ_DT" />                   <!-- 문의 일시 -->
+	   <result property="csoMtmInq.ansStatCd"           column="ANS_STAT_CD" />              <!-- 답변 상태 코드 -->
+	   <result property="csoMtmInq.inqireCount"         column="INQIRE_COUNT" />             <!-- 조회 횟수 -->
+	   <result property="csoMtmInq.prcsComptDt"         column="PRCS_COMPT_DT" />            <!-- 처리 완료 일시 -->
+	   <result property="csoMtmInq.langCd"              column="LANG_CD" />                  <!-- 언어 코드 -->
+	   <result property="csoMtmInq.mallId"              column="MALL_ID" />                  <!-- 몰 ID -->
+	   <result property="csoMtmInq.dvcCd"               column="DVC_CD" />                   <!-- 디바이스 코드 -->
+	   <result property="csoMtmInq.regtrId"             column="REGTR_ID" />                 <!-- 등록자 ID -->
+	   <result property="csoMtmInq.regDt"               column="REG_DT" />                   <!-- 등록 일시 -->
+	   <result property="csoMtmInq.udterId"             column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="csoMtmInq.udtDt"               column="UDT_DT" />                   <!-- 수정 일시 -->
+	   
+       <result property="csoMtmInqAns.mtmInqAnsTurn"    column="MTM_INQ_ANS_TURN" />         <!-- 일대일 문의 답변 순번 -->
+	   <result property="csoMtmInqAns.ansSj"            column="ANS_SJ" />                   <!-- 답변 제목 -->
+	   <result property="csoMtmInqAns.ansCont"          column="ANS_CONT" />                 <!-- 답변 내용 -->
+	   <result property="csoMtmInqAns.detailAnsStatCd"  column="DETAIL_ANS_STAT_CD" />       <!-- 상세 답변 상태 코드 -->
+	   <result property="csoMtmInqAns.ansCnfirmYn"      column="ANS_CNFIRM_YN" />            <!-- 답변 확인 여부 -->
+	   <result property="csoMtmInqAns.ansDt"            column="ANS_DT" />                   <!-- 답변 일시 -->
+	   <result property="csoMtmInqAns.ansAdminId"       column="ANS_ADMIN_ID" />             <!-- 답변 관리자 ID -->
+	   
+	   <result property="inqTpNm"                       column="INQ_TP_NM" />                <!-- 문의 유형 코드명 -->
+	   <result property="ansStatNm"                     column="ANS_STAT_NM" />              <!-- 답변 상태 코드명 -->
+	   <result property="adminNm"                       column="ADMIN_NM" />                 <!-- 관리자명 -->
+	   <result property="godNo"                         column="GOD_NO" />                   <!-- 상품 번호 -->
+	   <result property="ordNo"		 	                column="ORD_NO" />                   <!-- 주문번호 -->
+	   <result property="onlneGrdNm"             column="ONLNE_GRD_NM" />			 <!-- 온라인 등급 -->
+	</resultMap>
+
+    <!-- 회원 환불 내역 건수 -->
+    <select id="selectRefundListCountForMember" parameterType="mbr" resultType="long">
+		SELECT /* [callcenter.others.member.xml][selectRefundListCountForMember][회원 환불 내역 건수 조회][Jessi] */
+		        COUNT(*)
+		  FROM ord o
+		  JOIN pay p ON p.ord_no = o.ord_no
+		  JOIN pay_rfd pr ON pr.pay_no = p.pay_no
+		  JOIN clm c ON c.clm_no = p.clm_no
+		 WHERE o.mbr_no = #{mbrNo, jdbcType=VARCHAR}	
+		   AND pr.rfd_tp_cd = 'CASH_RFD'		  
+		   AND o.mall_id = #{mallId, jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 회원 환불 내역 -->
+    <select id="selectRefundListForMember" parameterType="mbr" resultMap="othersMemberResult">
+        SELECT /* [callcenter.others.member.xml][selectRefundListForMember][회원 환불 내역 조회][Jessi] */
+	           fl.rfd_requst_dt
+	         , fl.rfd_compt_dt               	 /* 환불 완료 일시 */
+	         , scRfdStat.cd_nm AS rfd_stat_nm    /* 환불 상태 코드 */
+	         , fl.rfd_bnk_acct_no
+	         , scBnk.cd_nm AS rfd_bnk_nm
+	         , fl.rfd_acnthldr_nm
+	         , fl.rfd_requst_resn
+	         , fl.clm_no
+	         , fl.ord_no   
+	         , sa.admin_nm||DECODE(fl.regtr_id, null,'', '('||fl.regtr_id||')')	admin_nm /* 관리자명 */
+	         , fl.clm_tp_cd           
+          FROM (
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+			SELECT
+			        pr.pay_no                      /* 결제 번호 */
+			      , pr.rfd_turn                    /* 환불 순번 */
+			      , pr.rfd_stat_cd                 /* 환불 상태 코드 */
+			      , pr.rfd_requst_dt               /* 환불 요청 일시 */
+			      , pr.rfd_requst_resn             /* 환불 요청 사유 */
+			      , pr.rfd_compt_dt                /* 환불 완료 일시 */
+			      , pr.rfd_return_dt               /* 환불 반려 일시 */
+			      , pr.rfd_return_resn             /* 환불 반려 사유 */
+			      , pr.rfd_cncl_dt                 /* 환불 취소 일시 */
+			      , pr.rfd_cncl_resn               /* 환불 취소 사유 */
+			      , pr.rfd_err_dt                  /* 환불 오류 일시 */
+			      , pr.rfd_err_cont                /* 환불 오류 내용 */
+			      , pr.pre_rfd_yn                  /* 선 환불 여부 */
+			      , pr.rfd_occur_tp_cd             /* 환불 발생 유형 코드 */
+			      , pr.rfd_tp_cd                   /* 환불 유형 코드 */
+			      , pr.stdr_crncy_rfd_amt          /* 기준 통화 환불 금액 */
+			      , pr.rfd_crncy_cd                /* 환불 통화 코드 */
+			      , pr.PAY_CRNCY_RFD_AMT as rfd_amt                     /* 환불 금액 */
+			      , PKG_CRYPTO.DECRYPT(pr.rfd_bnk_acct_no, 'FNFBNT02-5200001') AS rfd_bnk_acct_no /* 환불 계좌 번호 */
+			      , pr.rfd_bnk_cd                  /* 환불 은행 코드 */
+			      , pr.rfd_acnthldr_nm             /* 환불 예금주 명 */
+			      , pr.regtr_id                    /* 등록자 ID */
+			      , pr.reg_dt                      /* 등록 일시 */
+			      , pr.udter_id                    /* 수정자 ID */
+			      , pr.udt_dt                      /* 수정 일시 */
+			      , p.clm_no                       /* 클레임 번호*/
+			      , o.ord_no  
+			      , c.clm_tp_cd
+			  FROM ord o
+			  JOIN pay p ON p.ord_no = o.ord_no
+			  JOIN pay_rfd pr ON pr.pay_no = p.pay_no
+              JOIN clm c ON c.clm_no = p.clm_no			  
+			 WHERE o.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+			   AND pr.rfd_tp_cd = 'CASH_RFD'
+			   AND o.mall_id = #{mallId, jdbcType=VARCHAR}
+             ORDER BY pr.rfd_requst_dt DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+        	   ) fl  
+		  LEFT OUTER JOIN mv_sys_cd scBnk 
+		    ON (scBnk.cd = fl.rfd_bnk_cd AND scBnk.upper_cd='BNK' AND scBnk.lang_cd = #{lang, jdbcType=VARCHAR}) 	   /* 은행 코드 */  
+		  LEFT OUTER JOIN mv_sys_cd scRfdStat
+		    ON (scRfdStat.cd = fl.rfd_stat_cd AND scRfdStat.upper_cd='RFD_STAT' AND scRfdStat.lang_cd = #{lang, jdbcType=VARCHAR}) 	   /* 환불 상태 코드 */
+          LEFT OUTER JOIN sys_admin sa ON sa.admin_id = fl.regtr_id		       
+    </select>
+    
+    <!-- 회원 환불 엑셀 -->
+    <select id="selectRefundExcelForMember" parameterType="mbr" resultType="java.util.LinkedHashMap">
+        SELECT /* [callcenter.others.member.xml][selectRefundExcelForMember][회원 환불 엑셀 조회][Jessi] */
+		        pr.rfd_requst_dt
+	          , pr.rfd_compt_dt               	 /* 환불 완료 일시 */
+		      , scRfdStat.cd_nm AS rfd_stat_nm   /* 환불 상태 */
+		      , PKG_CRYPTO.DECRYPT(pr.rfd_bnk_acct_no, 'FNFBNT02-5200001') AS rfd_bnk_acct_no /* 환불 계좌 번호 */
+		      , scBnk.cd_nm AS rfd_bnk_nm
+		      , pr.rfd_acnthldr_nm               /* 환불 예금주 명 */
+  	          , pr.rfd_requst_resn               /* 환불 요청 사유 */
+		      , p.clm_no                         /* 클레임 번호*/
+		      , o.ord_no					     /* 주문 번호*/
+		      , sa.admin_nm||DECODE(pr.regtr_id, null,'', '('||pr.regtr_id||')')	admin_nm /* 관리자명 */
+		  FROM ord o
+		  JOIN pay p ON p.ord_no = o.ord_no
+		  JOIN pay_rfd pr ON pr.pay_no = p.pay_no
+		  JOIN clm c ON c.clm_no = p.clm_no
+		  LEFT OUTER JOIN mv_sys_cd scBnk 
+		    ON (scBnk.cd = pr.rfd_bnk_cd AND scBnk.upper_cd='BNK' AND scBnk.lang_cd = #{lang, jdbcType=VARCHAR}) 	   /* 은행 코드 */  
+		  LEFT OUTER JOIN mv_sys_cd scRfdStat
+		    ON (scRfdStat.cd = pr.rfd_stat_cd AND scRfdStat.upper_cd='RFD_STAT' AND scRfdStat.lang_cd = #{lang, jdbcType=VARCHAR}) 	   /* 환불 상태 코드 */
+		  LEFT OUTER JOIN sys_admin sa ON sa.admin_id = pr.regtr_id     		  
+		 WHERE o.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+		   AND pr.rfd_tp_cd = 'CASH_RFD'
+		   AND o.mall_id = #{mallId, jdbcType=VARCHAR}
+         ORDER BY pr.rfd_requst_dt DESC
+    </select>    
+    
+    <!-- 회원 상품문의 내역 건수 -->
+    <select id="selectGoodsInquiryListCountForMember" parameterType="csoGodInq" resultType="long">
+        SELECT /* [callcenter.others.member.xml][selectGoodsInquiryListCountForMember][회원 고객서비스 상품문의 목록 건수 조회][Jessi] */
+                COUNT(*)
+          FROM cso_god_inq cgi
+         WHERE cgi.mbr_no = #{mbrNo, jdbcType=VARCHAR}	 		  
+    </select>
+    
+    <!-- 회원 상품문의 내역 -->
+    <select id="selectGoodsInquiryListForMember" parameterType="csoGodInq" resultMap="othersMemberResult">
+        SELECT /* [callcenter.others.member.xml][selectGoodsInquiryListForMember][회원 고객서비스 상품문의 목록 조회][Jessi] */
+		        fl.*
+		      , cgia.ans_dt                     /* 답변 일시 */
+		      , cgia.ans_admin_id               /* 답변 관리자 ID */
+		      , cgia.detail_ans_stat_cd         /* 상세 답변 상태 코드 */
+		      , g.god_nm						/* 상품명 */
+		      , scAnsStat.cd_nm AS ans_stat_nm	/* 답변상태 코드명 */
+		      , sa.admin_nm						/* 관리자명 */
+		  FROM (
+			<include refid="com.plgrim.ncp.base.beginPage"/>
+		        SELECT 
+		                cgi.god_inq_sn                  /* 상품 문의 일련번호 */
+		              , cgi.dsgn_grp_no                 /* 디자인 그룹 번호 */
+		              , cgi.god_no                      /* 상품 번호 */
+		              , cgi.mbr_no                      /* 회원 번호 */
+		              , cgi.inq_cstmr_nm                /* 문의 고객 명 */
+		              , (SUBSTR(cgi.inq_cont, 1, 50) || (CASE WHEN LENGTH(cgi.inq_cont) > 50 THEN '...' END)) AS inq_cont /* 문의 내용 */
+		              , cgi.inq_dt                      /* 문의 일시 */
+		              , cgi.secretsntnc_yn              /* 비밀글 여부 */
+		              , cgi.ans_stat_cd                 /* 답변 상태 코드 */
+		              , cgi.inqire_count                /* 조회 횟수 */
+		              , cgi.prcs_compt_dt               /* 처리 완료 일시 */
+		              , cgi.delete_yn                   /* 삭제 여부 */
+		              , cgi.regtr_id                    /* 등록자 ID */
+		              , cgi.reg_dt                      /* 등록 일시 */
+		              , cgi.udter_id                    /* 수정자 ID */
+		              , cgi.udt_dt                      /* 수정 일시 */
+		          FROM cso_god_inq cgi
+		         WHERE cgi.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+		         ORDER BY cgi.inq_dt DESC
+			<include refid="com.plgrim.ncp.base.endPage"/>         
+		       ) fl
+		  LEFT OUTER JOIN (
+                    SELECT 
+                            gia.god_inq_sn                  /* 상품 문의 일련번호 */
+                          , gia.god_ans_turn
+                          , gia.ans_sj                      /* 답변 제목 */
+                          , gia.detail_ans_stat_cd          /* 상세 답변 상태 코드 */
+                          , gia.ans_dt                      /* 답변 일시 */
+                          , gia.ans_admin_id                /* 답변 관리자 ID */
+                          , MAX(gia.god_ans_turn) OVER (PARTITION BY gia.god_inq_sn) max_god_ans_turn
+                      FROM cso_god_inq gi 
+                      JOIN cso_god_inq_ans gia ON gia.god_inq_sn = gi.god_inq_sn
+                     WHERE gi.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+                ) cgia
+		    ON cgia.god_inq_sn = fl.god_inq_sn
+		   AND cgia.god_ans_turn = cgia.max_god_ans_turn  
+		  LEFT OUTER JOIN god g ON g.god_no = fl.god_no     
+		  LEFT OUTER JOIN sys_admin sa ON sa.admin_id = cgia.ans_admin_id
+		  LEFT OUTER JOIN mv_sys_cd scAnsStat
+            ON (scAnsStat.cd = fl.ans_stat_cd AND scAnsStat.upper_cd='ANS_STAT' AND scAnsStat.lang_cd = #{lang, jdbcType=VARCHAR}) /* 답변상태 */   	   
+    </select>
+    
+    <!-- 회원 상품문의 엑셀 -->
+    <select id="selectGoodsInquiryExcelForMember" parameterType="mbr" resultType="java.util.LinkedHashMap">
+        SELECT /* [callcenter.others.member.xml][selectGoodsInquiryExcelForMember][회원 상품문의 엑셀 조회][Jessi] */
+		        fl.reg_dt
+		      , fl.god_no                       /* 상품 번호 */
+		      , g.god_nm						/* 상품명 */
+		      , TO_CHAR(fl.inq_cont) inq_cont   /* 문의 내용 */
+		      , fl.secretsntnc_yn               /* 비밀글 여부 */
+		      , fl.delete_yn                    /* 삭제 여부 */
+		      , scAnsStat.cd_nm AS ans_stat_nm	/* 답변상태 코드명 */
+		      , sa.admin_nm						/* 관리자명 */
+		      , cgia.ans_dt                     /* 답변 일시 */
+		  FROM (
+		        SELECT 
+		                cgi.god_inq_sn                  /* 상품 문의 일련번호 */
+		              , cgi.dsgn_grp_no                 /* 디자인 그룹 번호 */
+		              , cgi.god_no                      /* 상품 번호 */
+		              , cgi.mbr_no                      /* 회원 번호 */
+		              , cgi.inq_cstmr_nm                /* 문의 고객 명 */
+		              , cgi.inq_cont                    /* 문의 내용 */
+		              , cgi.inq_dt                      /* 문의 일시 */
+		              , cgi.secretsntnc_yn              /* 비밀글 여부 */
+		              , cgi.ans_stat_cd                 /* 답변 상태 코드 */
+		              , cgi.inqire_count                /* 조회 횟수 */
+		              , cgi.prcs_compt_dt               /* 처리 완료 일시 */
+		              , cgi.delete_yn                   /* 삭제 여부 */
+		              , cgi.reg_dt                      /* 등록 일시 */
+		          FROM cso_god_inq cgi
+		         WHERE cgi.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+		         ORDER BY cgi.inq_dt DESC   
+		       ) fl
+		  LEFT OUTER JOIN (
+                    SELECT 
+                            gia.god_inq_sn                  /* 상품 문의 일련번호 */
+                          , gia.god_ans_turn
+                          , gia.detail_ans_stat_cd          /* 상세 답변 상태 코드 */
+                          , gia.ans_dt                      /* 답변 일시 */
+                          , gia.ans_admin_id                /* 답변 관리자 ID */
+                          , MAX(gia.god_ans_turn) OVER (PARTITION BY gia.god_inq_sn) max_god_ans_turn
+                      FROM cso_god_inq gi 
+                      JOIN cso_god_inq_ans gia ON gia.god_inq_sn = gi.god_inq_sn
+                     WHERE gi.mbr_no = #{mbrNo, jdbcType=VARCHAR}
+                ) cgia
+		    ON cgia.god_inq_sn = fl.god_inq_sn
+		   AND cgia.god_ans_turn = cgia.max_god_ans_turn  
+		  LEFT OUTER JOIN god g ON g.god_no = fl.god_no     
+		  LEFT OUTER JOIN sys_admin sa ON sa.admin_id = cgia.ans_admin_id
+		  LEFT OUTER JOIN mv_sys_cd scAnsStat
+            ON (scAnsStat.cd = fl.ans_stat_cd AND scAnsStat.upper_cd='ANS_STAT' AND scAnsStat.lang_cd = #{lang, jdbcType=VARCHAR}) /* 답변상태 */   
+    </select>  
+    
+    <!-- 상품문의 삭제여부 변경 -->
+	<update id="updateGoodsInquiryForDeleteYn" parameterType="csoGodInq">
+		UPDATE /* [callcenter.others.member.xml][updateGoodsInquiryForDeleteYn][상품문의 삭제여부 수정][Jessi] */
+		       cso_god_inq
+		   SET 
+		        delete_yn = #{deleteYn, jdbcType=VARCHAR}                           /* 삭제 여부 */
+		      , udter_id = #{udterId, jdbcType=VARCHAR}                             /* 수정자 ID */
+		      , udt_dt = SYSDATE                                                    /* 수정 일시 */
+		 WHERE god_inq_sn = #{godInqSn, jdbcType=NUMERIC}
+		   AND god_no = #{godNo, jdbcType=VARCHAR}
+	</update>  
+    
+    <!-- 회원 1:1문의 내역 건수 -->
+    <select id="selectMtmInquiryListCountForMember" parameterType="csoMtmInq" resultType="long">
+        SELECT /* [callcenter.others.member.xml][selectMtmInquiryListCountForMember][회원 고객서비스 일대일문의 목록 건수 조회][Jessi] */
+                COUNT(*)
+          FROM cso_mtm_inq cmi
+          LEFT OUTER JOIN mbr_grd mbrGrd
+			ON cmi.inq_mbr_no = mbrGrd.mbr_no
+         WHERE cmi.inq_mbr_no = #{inqMbrNo, jdbcType=VARCHAR}	
+           AND cmi.mall_id    = #{mallId, jdbcType=VARCHAR} 		  
+    </select>
+        
+    <!-- 회원 1:1문의 내역 -->
+    <select id="selectMtmInquiryListForMember" parameterType="csoMtmInq" resultMap="othersMemberMtmResult">
+        SELECT /* [callcenter.others.member.xml][selectMtmInquiryListForMember][회원 고객서비스 일대일문의 목록 조회][Jessi] */
+			    fl.*
+		      , cmia.ans_dt                     /* 답변 일시 */
+		      , cmia.ans_admin_id               /* 답변 관리자 ID */
+		      , cmia.detail_ans_stat_cd         /* 상세 답변 상태 코드 */
+              , scInqTp.cd_nm AS inq_tp_nm      /* 문의 유형 코드명 */
+		      , scAnsStat.cd_nm AS ans_stat_nm	/* 답변상태 코드명 */
+		      , sa.admin_nm	
+		      , cmiog.ord_no AS ord_no
+		      , cmiog.god_no AS god_no
+			  , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 */
+		  FROM (
+			<include refid="com.plgrim.ncp.base.beginPage"/>
+		        SELECT 
+                        cmi.mtm_inq_sn                  /* 일대일 문의 일련번호 */
+                      , cmi.inq_tp_cd                   /* 문의 유형 코드 */
+                      , cmi.inq_mbr_no                  /* 문의 회원 번호 */
+                      , (SUBSTR(cmi.inq_cont, 1, 50) || (CASE WHEN LENGTH(cmi.inq_cont) > 50 THEN '...' END)) AS inq_cont /* 문의 내용 */
+                      , cmi.inq_dt                      /* 문의 일시 */
+                      , cmi.ans_stat_cd                 /* 답변 상태 코드 */
+                      , cmi.inqire_count                /* 조회 횟수 */
+                      , cmi.prcs_compt_dt               /* 처리 완료 일시 */
+                      , cmi.reg_dt                      /* 등록 일시 */
+					  , mbrGrd.onlne_grd_cd AS onlneGrdCd /* 온라인 등급 코드 */
+		          FROM cso_mtm_inq cmi
+				  LEFT OUTER JOIN mbr_grd mbrGrd
+					ON cmi.inq_mbr_no = mbrGrd.mbr_no
+					AND mbrGrd.mall_id =cmi.mall_id
+		         WHERE cmi.inq_mbr_no = #{inqMbrNo, jdbcType=VARCHAR}
+		           AND cmi.mall_id    = #{mallId, jdbcType=VARCHAR} 	
+		           AND cmi.reg_dt BETWEEN mbrGrd.GRD_APL_BEG_DT AND mbrGrd.GRD_APL_END_DT
+		         ORDER BY cmi.inq_dt DESC
+			<include refid="com.plgrim.ncp.base.endPage"/>         
+		       ) fl
+		  LEFT OUTER JOIN (
+                    SELECT 
+                            mia.mtm_inq_sn                  /* 일대일 문의 일련번호 */
+                          , mia.mtm_inq_ans_turn
+                          , mia.ans_sj                      /* 답변 제목 */
+                          , mia.detail_ans_stat_cd          /* 상세 답변 상태 코드 */
+                          , mia.ans_cnfirm_yn               /* 답변 확인 여부 */
+                          , mia.ans_dt                      /* 답변 일시 */
+                          , mia.ans_admin_id                /* 답변 관리자 ID */
+                          , MAX(mia.mtm_inq_ans_turn) OVER (PARTITION BY mia.mtm_inq_sn) max_mtm_inq_ans_turn
+                      FROM cso_mtm_inq mi 
+                      JOIN cso_mtm_inq_ans mia ON mia.mtm_inq_sn = mi.mtm_inq_sn
+                     WHERE mi.inq_mbr_no = #{inqMbrNo, jdbcType=VARCHAR}
+                ) cmia
+		    ON cmia.mtm_inq_sn = fl.mtm_inq_sn
+           AND cmia.mtm_inq_ans_turn = cmia.max_mtm_inq_ans_turn
+          LEFT OUTER JOIN (
+                    SELECT
+                             mtm_inq_sn
+                             , MAX(ord_no) AS ord_no
+                             , SUBSTR(MAX( SYS_CONNECT_BY_PATH(DECODE(RNUM, 4, '더보기', god_no), <![CDATA['<BR/>']]>)), 6) AS god_no
+                      FROM
+		                    (
+		                     SELECT
+		                            miog.mtm_inq_sn
+		                            , miog.ord_no
+		                            , og.god_no
+		                            , ROW_NUMBER() OVER(PARTITION BY miog.mtm_inq_sn ORDER BY miog.ord_god_turn) RNUM
+		                       FROM cso_mtm_inq mi
+		                       JOIN cso_mtm_inq_ord_god miog ON miog.mtm_inq_sn = mi.mtm_inq_sn
+		                       JOIN ord_god og ON og.ord_no = miog.ord_no AND og.ord_god_turn = miog.ord_god_turn
+		                      WHERE mi.inq_mbr_no = #{inqMbrNo, jdbcType=VARCHAR}
+		                    )
+                      START WITH RNUM = 1
+                    CONNECT BY
+                      PRIOR RNUM = RNUM - 1
+                        AND PRIOR mtm_inq_sn = mtm_inq_sn
+                        AND PRIOR RNUM <![CDATA[<]]> 4
+                      GROUP BY mtm_inq_sn
+               ) cmiog
+		    ON cmiog.mtm_inq_sn = fl.mtm_inq_sn            
+		  LEFT OUTER JOIN sys_admin sa ON sa.admin_id = cmia.ans_admin_id
+		  LEFT OUTER JOIN mv_sys_cd scAnsStat
+            ON (scAnsStat.cd = fl.ans_stat_cd AND scAnsStat.upper_cd='ANS_STAT' AND scAnsStat.lang_cd = #{lang, jdbcType=VARCHAR}) /* 답변상태 */
+          LEFT OUTER JOIN mv_sys_cd scInqTp
+            ON (scInqTp.cd = fl.inq_tp_cd AND scInqTp.upper_cd='INQ_TP' AND scInqTp.lang_cd = #{lang, jdbcType=VARCHAR}) /* 문의유형 */
+		  LEFT OUTER JOIN mv_sys_cd scOnlneMbrGrd
+		  ON (scOnlneMbrGrd.cd = fl.onlneGrdCd AND scOnlneMbrGrd.upper_cd='ONLNE_GRD' 	AND scOnlneMbrGrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+         ORDER BY fl.inq_dt DESC               	   
+    </select>    
+	
+	<!-- 회원 1:1문의 엑셀 -->
+    <select id="selectMtmInquiryExcelForMember" parameterType="csoMtmInq" resultType="java.util.LinkedHashMap">
+        SELECT /* [callcenter.others.member.xml][selectMtmInquiryListForMember][회원 고객서비스 일대일문의 엑셀 조회][Jessi] */
+		        fl.inq_dt                         /* 문의 일시 */
+		      , scInqTp.cd_nm AS inq_tp_nm        /* 문의 유형 코드명 */
+		      , TO_CHAR(fl.inq_cont) AS inq_cont  /* 문의 내용 */
+		      , scOnlneMbrGrd.cd_nm AS onlne_grd_nm /* 온라인 등급 */
+		      , cmiog.ord_no AS ord_no
+		      , cmiog.god_no AS god_no
+		      , scAnsStat.cd_nm AS ans_stat_nm	  /* 답변상태 코드명 */
+		      , sa.admin_nm	
+		      , cmia.ans_dt                       /* 답변 일시 */
+		  FROM (
+		        SELECT 
+                        cmi.mtm_inq_sn                  /* 일대일 문의 일련번호 */
+                      , cmi.inq_tp_cd                   /* 문의 유형 코드 */
+                      , cmi.inq_mbr_no                  /* 문의 회원 번호 */
+                      , cmi.inq_cont                    /* 문의 내용 */
+                      , cmi.inq_dt                      /* 문의 일시 */
+                      , cmi.ans_stat_cd                 /* 답변 상태 코드 */
+                      , cmi.inqire_count                /* 조회 횟수 */
+                      , cmi.prcs_compt_dt               /* 처리 완료 일시 */
+                      , cmi.reg_dt                      /* 등록 일시 */
+                      , mbrGrd.onlne_grd_cd AS onlneGrdCd /* 온라인 등급 코드 */
+		          FROM cso_mtm_inq cmi
+		          LEFT OUTER JOIN mbr_grd mbrGrd
+					ON cmi.inq_mbr_no = mbrGrd.mbr_no
+		         WHERE cmi.inq_mbr_no = #{inqMbrNo, jdbcType=VARCHAR}
+		           AND cmi.mall_id    = #{mallId, jdbcType=VARCHAR} 	
+		         ORDER BY cmi.inq_dt DESC
+		       ) fl
+		  LEFT OUTER JOIN (
+                    SELECT 
+                            mia.mtm_inq_sn                  /* 일대일 문의 일련번호 */
+                          , mia.mtm_inq_ans_turn
+                          , mia.ans_sj                      /* 답변 제목 */
+                          , mia.ans_cont                    /* 답변 내용 */
+                          , mia.detail_ans_stat_cd          /* 상세 답변 상태 코드 */
+                          , mia.ans_cnfirm_yn               /* 답변 확인 여부 */
+                          , mia.ans_dt                      /* 답변 일시 */
+                          , mia.ans_admin_id                /* 답변 관리자 ID */
+                          , MAX(mia.mtm_inq_ans_turn) OVER (PARTITION BY mia.mtm_inq_sn) max_mtm_inq_ans_turn
+                      FROM cso_mtm_inq mi 
+                      JOIN cso_mtm_inq_ans mia ON mia.mtm_inq_sn = mi.mtm_inq_sn
+                     WHERE mi.inq_mbr_no = #{inqMbrNo, jdbcType=VARCHAR}
+                ) cmia
+		    ON cmia.mtm_inq_sn = fl.mtm_inq_sn
+           AND cmia.mtm_inq_ans_turn = cmia.max_mtm_inq_ans_turn
+          LEFT OUTER JOIN (
+                    SELECT
+                             mtm_inq_sn
+                             , MAX(ord_no) AS ord_no
+                             , SUBSTR(MAX( SYS_CONNECT_BY_PATH(god_no, <![CDATA[',']]>)), 2) AS god_no
+                      FROM
+		                    (
+		                     SELECT
+		                            miog.mtm_inq_sn
+		                            , miog.ord_no
+		                            , og.god_no
+                              		, ROW_NUMBER() OVER(PARTITION BY miog.mtm_inq_sn ORDER BY miog.ord_god_turn) RNUM
+		                       FROM cso_mtm_inq mi
+		                       JOIN cso_mtm_inq_ord_god miog ON miog.mtm_inq_sn = mi.mtm_inq_sn
+		                       JOIN ord_god og ON og.ord_no = miog.ord_no AND og.ord_god_turn = miog.ord_god_turn
+		                      WHERE mi.inq_mbr_no = #{inqMbrNo, jdbcType=VARCHAR}
+		                    )
+                      START WITH RNUM = 1
+                    CONNECT BY
+                      PRIOR RNUM = RNUM - 1
+                        AND PRIOR mtm_inq_sn = mtm_inq_sn
+                      GROUP BY mtm_inq_sn
+               ) cmiog
+		    ON cmiog.mtm_inq_sn = fl.mtm_inq_sn            
+		  LEFT OUTER JOIN sys_admin sa ON sa.admin_id = cmia.ans_admin_id
+		  LEFT OUTER JOIN mv_sys_cd scAnsStat
+            ON (scAnsStat.cd = fl.ans_stat_cd AND scAnsStat.upper_cd='ANS_STAT' AND scAnsStat.lang_cd = #{lang, jdbcType=VARCHAR}) /* 답변상태 */
+          LEFT OUTER JOIN mv_sys_cd scInqTp
+            ON (scInqTp.cd = fl.inq_tp_cd AND scInqTp.upper_cd='INQ_TP' AND scInqTp.lang_cd = #{lang, jdbcType=VARCHAR}) /* 문의유형 */
+          LEFT OUTER JOIN mv_sys_cd scOnlneMbrGrd
+		  ON (scOnlneMbrGrd.cd = fl.onlneGrdCd AND scOnlneMbrGrd.upper_cd='ONLNE_GRD' 	AND scOnlneMbrGrd.lang_cd = 'KOR') /* 온라인 등급 상태 */
+         ORDER BY fl.inq_dt DESC               	   
+    </select>  
+    
+    <!-- 회원 1:1문의 상품목록 -->
+    <select id="selectMtmInquiryOrdGodList" parameterType="csoMtmInqOrdGod" resultType="ordGod">    
+	    SELECT
+		       og.dlv_pcupsp_turn
+		       , og.god_no
+		       , og.erp_god_no
+		       , og.god_nm
+		  FROM ord_god og
+		  <if test="mtmInqSn != null and mtmInqSn != ''">
+		  JOIN (SELECT ord_no, ord_god_turn  FROM cso_mtm_inq_ord_god WHERE mtm_inq_sn = #{mtmInqSn, jdbcType=NUMERIC}) miog 
+		    ON miog.ord_no = og.ord_no AND miog.ord_god_turn = og.ord_god_turn
+		  </if>  
+		 WHERE og.ord_no = #{ordNo, jdbcType=VARCHAR}  
+	 </select>
+</mapper>

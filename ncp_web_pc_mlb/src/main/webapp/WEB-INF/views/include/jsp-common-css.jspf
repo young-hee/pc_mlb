@@ -1,0 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<c:choose>
+    <c:when test="${_jsDebugMode == true}">
+		<link rel="stylesheet" href="${_resourceURL}static/css/base.css?v=${_version}">
+		<link rel="stylesheet" href="${_resourceURL}static/css/common.css?v=${_version}">
+		<link rel="stylesheet" href="${_resourceURL}static/css/member.css?v=${_version}">
+		<link rel="stylesheet" href="${_resourceURL}static/css/mypage.css?v=${_version}">
+    </c:when>    
+    <c:otherwise>
+		<link rel="stylesheet" href="${_resourceURL}static/css/base.css?v=${_version}">
+		<link rel="stylesheet" href="${_resourceURL}static/css/common.css?v=${_version}">
+		<link rel="stylesheet" href="${_resourceURL}static/css/member.css?v=${_version}">
+		<link rel="stylesheet" href="${_resourceURL}static/css/mypage.css?v=${_version}">
+    </c:otherwise>
+</c:choose>

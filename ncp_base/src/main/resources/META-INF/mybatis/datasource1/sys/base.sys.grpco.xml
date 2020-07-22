@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysGrpco" parameterType="sysGrpco" resultType="sysGrpco">
+		SELECT /* com.plgrim.ncp.base.selectSysGrpco		Generator(Generator)	2018-05-23 */
+			   GRPCO_ID
+			 , GRPCO_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_GRPCO
+		 WHERE 1 = 1
+	   	   AND GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysGrpco" parameterType="sysGrpco">
+		UPDATE /* com.plgrim.ncp.base.updateSysGrpco		Generator(Generator)	2018-05-23 */
+		SYS_GRPCO SET
+			   GRPCO_NM = #{grpcoNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysGrpco" parameterType="sysGrpco">
+		INSERT /* com.plgrim.ncp.base.insertSysGrpco		Generator(Generator)	2018-05-23 */
+		INTO   SYS_GRPCO (
+			   GRPCO_ID
+			 , GRPCO_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{grpcoId,jdbcType=VARCHAR}
+			 , #{grpcoNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysGrpco" parameterType="sysGrpco">
+		DELETE /* com.plgrim.ncp.base.deleteSysGrpco		Generator(Generator)	2018-05-23 */
+		  FROM SYS_GRPCO
+		 WHERE 1 = 1
+		   AND GRPCO_ID = #{grpcoId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

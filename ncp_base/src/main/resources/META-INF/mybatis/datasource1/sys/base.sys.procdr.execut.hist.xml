@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysProcdrExecutHist" parameterType="sysProcdrExecutHist" resultType="sysProcdrExecutHist">
+		SELECT /* com.plgrim.ncp.base.selectSysProcdrExecutHist		Generator(Generator)	2018-05-23 */
+			   PROCDR_EXECUT_SN
+			 , PROCDR_NM
+			 , BEG_DT
+			 , END_DT
+			 , ELAPSE_TIME
+			 , PROCDR_EXECUT_STAT_CD
+			 , MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_PROCDR_EXECUT_HIST
+		 WHERE 1 = 1
+	   	   AND PROCDR_EXECUT_SN = #{procdrExecutSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateSysProcdrExecutHist" parameterType="sysProcdrExecutHist">
+		UPDATE /* com.plgrim.ncp.base.updateSysProcdrExecutHist		Generator(Generator)	2018-05-23 */
+		SYS_PROCDR_EXECUT_HIST SET
+			   PROCDR_NM = #{procdrNm,jdbcType=VARCHAR}
+			 , BEG_DT = #{begDt,jdbcType=TIMESTAMP}
+			 , END_DT = #{endDt,jdbcType=TIMESTAMP}
+			 , ELAPSE_TIME = #{elapseTime,jdbcType=NUMERIC}
+			 , PROCDR_EXECUT_STAT_CD = #{procdrExecutStatCd,jdbcType=VARCHAR}
+			 , MSG_CONT = #{msgCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PROCDR_EXECUT_SN = #{procdrExecutSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertSysProcdrExecutHist" parameterType="sysProcdrExecutHist">
+		INSERT /* com.plgrim.ncp.base.insertSysProcdrExecutHist		Generator(Generator)	2018-05-23 */
+		INTO   SYS_PROCDR_EXECUT_HIST (
+			   PROCDR_EXECUT_SN
+			 , PROCDR_NM
+			 , BEG_DT
+			 , END_DT
+			 , ELAPSE_TIME
+			 , PROCDR_EXECUT_STAT_CD
+			 , MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{procdrExecutSn,jdbcType=NUMERIC}
+			 , #{procdrNm,jdbcType=VARCHAR}
+			 , #{begDt,jdbcType=TIMESTAMP}
+			 , #{endDt,jdbcType=TIMESTAMP}
+			 , #{elapseTime,jdbcType=NUMERIC}
+			 , #{procdrExecutStatCd,jdbcType=VARCHAR}
+			 , #{msgCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysProcdrExecutHist" parameterType="sysProcdrExecutHist">
+		DELETE /* com.plgrim.ncp.base.deleteSysProcdrExecutHist		Generator(Generator)	2018-05-23 */
+		  FROM SYS_PROCDR_EXECUT_HIST
+		 WHERE 1 = 1
+		   AND PROCDR_EXECUT_SN = #{procdrExecutSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

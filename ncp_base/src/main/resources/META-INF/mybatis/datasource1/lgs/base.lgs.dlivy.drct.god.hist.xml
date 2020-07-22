@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectLgsDlivyDrctGodHist" parameterType="lgsDlivyDrctGodHist" resultType="lgsDlivyDrctGodHist">
+		SELECT /* com.plgrim.ncp.base.selectLgsDlivyDrctGodHist		Generator(Generator)	2018-06-22 */
+			   DLIVY_DRCT_GOD_NO
+			 , HIST_TURN
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , PCKAGE_GOD_TURN
+			 , GFT_YN
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , OVSEA_DLV_TURN
+			 , DLV_SHOP_ID
+			 , DLV_SHOP_DLIVY_LC_ID
+			 , DLIVY_SHOP_ID
+			 , ACMTL_GOD_VOL
+			 , ACMTL_GOD_WT
+			 , LGS_ITM_YN
+			 , ASGN_SECT_CD
+			 , ASGN_COUNT
+			 , REJECT_COUNT
+			 , DLIVY_DRCT_TGT_YN
+			 , DLIVY_DRCT_YN
+			 , DLIVY_DRCT_GRP_DGRE
+			 , DLIVY_DRCT_USER_GRP_DGRE
+			 , DLIVY_DRCT_COUNT
+			 , DLIVY_DRCT_TP_CD
+			 , FIRST_DLIVY_DRCT_DT
+			 , DLIVY_DRCT_DT
+			 , DLIVY_DRCT_QTY
+			 , DLIVY_DRCT_CNCL_QTY
+			 , DLIVY_DRCT_CNCL_DT
+			 , DLIVY_DRCT_CNCL_STAT_CD
+			 , DLIVY_PREARNGE_DT
+			 , DLIVY_ACPT_YN
+			 , DLV_STAT_CD
+			 , SHTG_EXPECT_SMS_SND_YN
+			 , SHTG_QTY
+			 , SHTG_DT
+			 , SHTG_DCSN_YN
+			 , SHTG_DCSN_DT
+			 , DLIVY_COMPT_QTY
+			 , DLIVY_COMPT_DT
+			 , DLV_COMPT_DT
+			 , DLIVY_DRCT_GOD_MEMO_CONT
+			 , OVSEA_DLV_WRHS_COMPT_YN
+			 , RCPTFR_NO
+			 , RESVE_RCPTFR_CREAT_YN
+			 , RESVE_RCPTFR_CREAT_DT
+			 , RESVE_RCPTFR_DLIVY_YN
+			 , RESVE_RCPTFR_DLIVY_DT
+			 , RESVE_RCPTFR_DCSN_YN
+			 , RESVE_RCPTFR_DCSN_DT
+			 , ERP_RESVE_RCPTFR_CREAT_CNT
+			 , ERP_RESVE_RCPTFR_CREAT_YN
+			 , ERP_RESVE_RCPTFR_CREAT_DT
+			 , ERP_RESVE_RCPTFR_RECREAT_YN
+			 , ERP_RESVE_RCPTFR_RECREAT_DT
+			 , ERP_RESVE_RCPTFR_CNCL_YN
+			 , ERP_RESVE_RCPTFR_CNCL_DT
+			 , INV_APL_YN
+			 , CNTR_DLIVY_CNFIRM_YN
+			 , CNTR_DLIVY_CNFIRM_DT
+			 , ITM_DLIVY_ACPT_TGT_YN
+			 , S_STO_NO
+			 , S_DOC_NO
+			 , P_STO_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM LGS_DLIVY_DRCT_GOD_HIST
+		 WHERE 1 = 1
+	   	   AND DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+		   AND HIST_TURN = #{histTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateLgsDlivyDrctGodHist" parameterType="lgsDlivyDrctGodHist">
+		UPDATE /* com.plgrim.ncp.base.updateLgsDlivyDrctGodHist		Generator(Generator)	2018-06-22 */
+		LGS_DLIVY_DRCT_GOD_HIST SET
+			   ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+			 , PCKAGE_GOD_TURN = #{pckageGodTurn,jdbcType=NUMERIC}
+			 , GFT_YN = #{gftYn,jdbcType=VARCHAR}
+			 , DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , DLV_TURN = #{dlvTurn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_TURN = #{ovseaDlvTurn,jdbcType=NUMERIC}
+			 , DLV_SHOP_ID = #{dlvShopId,jdbcType=VARCHAR}
+			 , DLV_SHOP_DLIVY_LC_ID = #{dlvShopDlivyLcId,jdbcType=VARCHAR}
+			 , DLIVY_SHOP_ID = #{dlivyShopId,jdbcType=VARCHAR}
+			 , ACMTL_GOD_VOL = #{acmtlGodVol,jdbcType=NUMERIC}
+			 , ACMTL_GOD_WT = #{acmtlGodWt,jdbcType=NUMERIC}
+			 , LGS_ITM_YN = #{lgsItmYn,jdbcType=VARCHAR}
+			 , ASGN_SECT_CD = #{asgnSectCd,jdbcType=VARCHAR}
+			 , ASGN_COUNT = #{asgnCount,jdbcType=NUMERIC}
+			 , REJECT_COUNT = #{rejectCount,jdbcType=NUMERIC}
+			 , DLIVY_DRCT_TGT_YN = #{dlivyDrctTgtYn,jdbcType=VARCHAR}
+			 , DLIVY_DRCT_YN = #{dlivyDrctYn,jdbcType=VARCHAR}
+			 , DLIVY_DRCT_GRP_DGRE = #{dlivyDrctGrpDgre,jdbcType=NUMERIC}
+			 , DLIVY_DRCT_USER_GRP_DGRE = #{dlivyDrctUserGrpDgre,jdbcType=NUMERIC}
+			 , DLIVY_DRCT_COUNT = #{dlivyDrctCount,jdbcType=NUMERIC}
+			 , DLIVY_DRCT_TP_CD = #{dlivyDrctTpCd,jdbcType=VARCHAR}
+			 , FIRST_DLIVY_DRCT_DT = #{firstDlivyDrctDt,jdbcType=TIMESTAMP}
+			 , DLIVY_DRCT_DT = #{dlivyDrctDt,jdbcType=TIMESTAMP}
+			 , DLIVY_DRCT_QTY = #{dlivyDrctQty,jdbcType=NUMERIC}
+			 , DLIVY_DRCT_CNCL_QTY = #{dlivyDrctCnclQty,jdbcType=NUMERIC}
+			 , DLIVY_DRCT_CNCL_DT = #{dlivyDrctCnclDt,jdbcType=TIMESTAMP}
+			 , DLIVY_DRCT_CNCL_STAT_CD = #{dlivyDrctCnclStatCd,jdbcType=VARCHAR}
+			 , DLIVY_PREARNGE_DT = #{dlivyPrearngeDt,jdbcType=TIMESTAMP}
+			 , DLIVY_ACPT_YN = #{dlivyAcptYn,jdbcType=VARCHAR}
+			 , DLV_STAT_CD = #{dlvStatCd,jdbcType=VARCHAR}
+			 , SHTG_EXPECT_SMS_SND_YN = #{shtgExpectSmsSndYn,jdbcType=VARCHAR}
+			 , SHTG_QTY = #{shtgQty,jdbcType=NUMERIC}
+			 , SHTG_DT = #{shtgDt,jdbcType=TIMESTAMP}
+			 , SHTG_DCSN_YN = #{shtgDcsnYn,jdbcType=VARCHAR}
+			 , SHTG_DCSN_DT = #{shtgDcsnDt,jdbcType=TIMESTAMP}
+			 , DLIVY_COMPT_QTY = #{dlivyComptQty,jdbcType=NUMERIC}
+			 , DLIVY_COMPT_DT = #{dlivyComptDt,jdbcType=TIMESTAMP}
+			 , DLV_COMPT_DT = #{dlvComptDt,jdbcType=TIMESTAMP}
+			 , DLIVY_DRCT_GOD_MEMO_CONT = #{dlivyDrctGodMemoCont,jdbcType=VARCHAR}
+			 , OVSEA_DLV_WRHS_COMPT_YN = #{ovseaDlvWrhsComptYn,jdbcType=VARCHAR}
+			 , RCPTFR_NO = #{rcptfrNo,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_CREAT_YN = #{resveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_CREAT_DT = #{resveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , RESVE_RCPTFR_DLIVY_YN = #{resveRcptfrDlivyYn,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_DLIVY_DT = #{resveRcptfrDlivyDt,jdbcType=TIMESTAMP}
+			 , RESVE_RCPTFR_DCSN_YN = #{resveRcptfrDcsnYn,jdbcType=VARCHAR}
+			 , RESVE_RCPTFR_DCSN_DT = #{resveRcptfrDcsnDt,jdbcType=TIMESTAMP}
+			 , ERP_RESVE_RCPTFR_CREAT_CNT = #{erpResveRcptfrCreatCnt,jdbcType=NUMERIC}
+			 , ERP_RESVE_RCPTFR_CREAT_YN = #{erpResveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , ERP_RESVE_RCPTFR_CREAT_DT = #{erpResveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , ERP_RESVE_RCPTFR_RECREAT_YN = #{erpResveRcptfrRecreatYn,jdbcType=VARCHAR}
+			 , ERP_RESVE_RCPTFR_RECREAT_DT = #{erpResveRcptfrRecreatDt,jdbcType=TIMESTAMP}
+			 , ERP_RESVE_RCPTFR_CNCL_YN = #{erpResveRcptfrCnclYn,jdbcType=VARCHAR}
+			 , ERP_RESVE_RCPTFR_CNCL_DT = #{erpResveRcptfrCnclDt,jdbcType=TIMESTAMP}
+			 , INV_APL_YN = #{invAplYn,jdbcType=VARCHAR}
+			 , CNTR_DLIVY_CNFIRM_YN = #{cntrDlivyCnfirmYn,jdbcType=VARCHAR}
+			 , CNTR_DLIVY_CNFIRM_DT = #{cntrDlivyCnfirmDt,jdbcType=TIMESTAMP}
+			 , ITM_DLIVY_ACPT_TGT_YN = #{itmDlivyAcptTgtYn,jdbcType=VARCHAR}
+			 , S_STO_NO = #{sStoNo,jdbcType=VARCHAR}
+			 , S_DOC_NO = #{sDocNo,jdbcType=VARCHAR}
+			 , P_STO_NO = #{pStoNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+		   AND HIST_TURN = #{histTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertLgsDlivyDrctGodHist" parameterType="lgsDlivyDrctGodHist">
+		INSERT /* com.plgrim.ncp.base.insertLgsDlivyDrctGodHist		Generator(Generator)	2018-06-22 */
+		INTO   LGS_DLIVY_DRCT_GOD_HIST (
+			   DLIVY_DRCT_GOD_NO
+			 , HIST_TURN
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , PCKAGE_GOD_TURN
+			 , GFT_YN
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , OVSEA_DLV_TURN
+			 , DLV_SHOP_ID
+			 , DLV_SHOP_DLIVY_LC_ID
+			 , DLIVY_SHOP_ID
+			 , ACMTL_GOD_VOL
+			 , ACMTL_GOD_WT
+			 , LGS_ITM_YN
+			 , ASGN_SECT_CD
+			 , ASGN_COUNT
+			 , REJECT_COUNT
+			 , DLIVY_DRCT_TGT_YN
+			 , DLIVY_DRCT_YN
+			 , DLIVY_DRCT_GRP_DGRE
+			 , DLIVY_DRCT_USER_GRP_DGRE
+			 , DLIVY_DRCT_COUNT
+			 , DLIVY_DRCT_TP_CD
+			 , FIRST_DLIVY_DRCT_DT
+			 , DLIVY_DRCT_DT
+			 , DLIVY_DRCT_QTY
+			 , DLIVY_DRCT_CNCL_QTY
+			 , DLIVY_DRCT_CNCL_DT
+			 , DLIVY_DRCT_CNCL_STAT_CD
+			 , DLIVY_PREARNGE_DT
+			 , DLIVY_ACPT_YN
+			 , DLV_STAT_CD
+			 , SHTG_EXPECT_SMS_SND_YN
+			 , SHTG_QTY
+			 , SHTG_DT
+			 , SHTG_DCSN_YN
+			 , SHTG_DCSN_DT
+			 , DLIVY_COMPT_QTY
+			 , DLIVY_COMPT_DT
+			 , DLV_COMPT_DT
+			 , DLIVY_DRCT_GOD_MEMO_CONT
+			 , OVSEA_DLV_WRHS_COMPT_YN
+			 , RCPTFR_NO
+			 , RESVE_RCPTFR_CREAT_YN
+			 , RESVE_RCPTFR_CREAT_DT
+			 , RESVE_RCPTFR_DLIVY_YN
+			 , RESVE_RCPTFR_DLIVY_DT
+			 , RESVE_RCPTFR_DCSN_YN
+			 , RESVE_RCPTFR_DCSN_DT
+			 , ERP_RESVE_RCPTFR_CREAT_CNT
+			 , ERP_RESVE_RCPTFR_CREAT_YN
+			 , ERP_RESVE_RCPTFR_CREAT_DT
+			 , ERP_RESVE_RCPTFR_RECREAT_YN
+			 , ERP_RESVE_RCPTFR_RECREAT_DT
+			 , ERP_RESVE_RCPTFR_CNCL_YN
+			 , ERP_RESVE_RCPTFR_CNCL_DT
+			 , INV_APL_YN
+			 , CNTR_DLIVY_CNFIRM_YN
+			 , CNTR_DLIVY_CNFIRM_DT
+			 , ITM_DLIVY_ACPT_TGT_YN
+			 , S_STO_NO
+			 , S_DOC_NO
+			 , P_STO_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dlivyDrctGodNo,jdbcType=VARCHAR}
+			 , #{histTurn,jdbcType=NUMERIC}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{pckageGodTurn,jdbcType=NUMERIC}
+			 , #{gftYn,jdbcType=VARCHAR}
+			 , #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , #{dlvTurn,jdbcType=NUMERIC}
+			 , #{ovseaDlvTurn,jdbcType=NUMERIC}
+			 , #{dlvShopId,jdbcType=VARCHAR}
+			 , #{dlvShopDlivyLcId,jdbcType=VARCHAR}
+			 , #{dlivyShopId,jdbcType=VARCHAR}
+			 , #{acmtlGodVol,jdbcType=NUMERIC}
+			 , #{acmtlGodWt,jdbcType=NUMERIC}
+			 , #{lgsItmYn,jdbcType=VARCHAR}
+			 , #{asgnSectCd,jdbcType=VARCHAR}
+			 , #{asgnCount,jdbcType=NUMERIC}
+			 , #{rejectCount,jdbcType=NUMERIC}
+			 , #{dlivyDrctTgtYn,jdbcType=VARCHAR}
+			 , #{dlivyDrctYn,jdbcType=VARCHAR}
+			 , #{dlivyDrctGrpDgre,jdbcType=NUMERIC}
+			 , #{dlivyDrctUserGrpDgre,jdbcType=NUMERIC}
+			 , #{dlivyDrctCount,jdbcType=NUMERIC}
+			 , #{dlivyDrctTpCd,jdbcType=VARCHAR}
+			 , #{firstDlivyDrctDt,jdbcType=TIMESTAMP}
+			 , #{dlivyDrctDt,jdbcType=TIMESTAMP}
+			 , #{dlivyDrctQty,jdbcType=NUMERIC}
+			 , #{dlivyDrctCnclQty,jdbcType=NUMERIC}
+			 , #{dlivyDrctCnclDt,jdbcType=TIMESTAMP}
+			 , #{dlivyDrctCnclStatCd,jdbcType=VARCHAR}
+			 , #{dlivyPrearngeDt,jdbcType=TIMESTAMP}
+			 , #{dlivyAcptYn,jdbcType=VARCHAR}
+			 , #{dlvStatCd,jdbcType=VARCHAR}
+			 , #{shtgExpectSmsSndYn,jdbcType=VARCHAR}
+			 , #{shtgQty,jdbcType=NUMERIC}
+			 , #{shtgDt,jdbcType=TIMESTAMP}
+			 , #{shtgDcsnYn,jdbcType=VARCHAR}
+			 , #{shtgDcsnDt,jdbcType=TIMESTAMP}
+			 , #{dlivyComptQty,jdbcType=NUMERIC}
+			 , #{dlivyComptDt,jdbcType=TIMESTAMP}
+			 , #{dlvComptDt,jdbcType=TIMESTAMP}
+			 , #{dlivyDrctGodMemoCont,jdbcType=VARCHAR}
+			 , #{ovseaDlvWrhsComptYn,jdbcType=VARCHAR}
+			 , #{rcptfrNo,jdbcType=VARCHAR}
+			 , #{resveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , #{resveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , #{resveRcptfrDlivyYn,jdbcType=VARCHAR}
+			 , #{resveRcptfrDlivyDt,jdbcType=TIMESTAMP}
+			 , #{resveRcptfrDcsnYn,jdbcType=VARCHAR}
+			 , #{resveRcptfrDcsnDt,jdbcType=TIMESTAMP}
+			 , #{erpResveRcptfrCreatCnt,jdbcType=NUMERIC}
+			 , #{erpResveRcptfrCreatYn,jdbcType=VARCHAR}
+			 , #{erpResveRcptfrCreatDt,jdbcType=TIMESTAMP}
+			 , #{erpResveRcptfrRecreatYn,jdbcType=VARCHAR}
+			 , #{erpResveRcptfrRecreatDt,jdbcType=TIMESTAMP}
+			 , #{erpResveRcptfrCnclYn,jdbcType=VARCHAR}
+			 , #{erpResveRcptfrCnclDt,jdbcType=TIMESTAMP}
+			 , #{invAplYn,jdbcType=VARCHAR}
+			 , #{cntrDlivyCnfirmYn,jdbcType=VARCHAR}
+			 , #{cntrDlivyCnfirmDt,jdbcType=TIMESTAMP}
+			 , #{itmDlivyAcptTgtYn,jdbcType=VARCHAR}
+			 , #{sStoNo,jdbcType=VARCHAR}
+			 , #{sDocNo,jdbcType=VARCHAR}
+			 , #{pStoNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteLgsDlivyDrctGodHist" parameterType="lgsDlivyDrctGodHist">
+		DELETE /* com.plgrim.ncp.base.deleteLgsDlivyDrctGodHist		Generator(Generator)	2018-06-22 */
+		  FROM LGS_DLIVY_DRCT_GOD_HIST
+		 WHERE 1 = 1
+		   AND DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+		   AND HIST_TURN = #{histTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

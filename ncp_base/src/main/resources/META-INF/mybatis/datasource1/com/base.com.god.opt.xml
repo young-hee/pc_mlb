@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComGodOpt" parameterType="comGodOpt" resultType="comGodOpt">
+		SELECT /* com.plgrim.ncp.base.selectComGodOpt		Generator(Generator)	2018-05-23 */
+			   COM_ID
+			 , OPT_CD
+			 , OPT_TP_CD
+			 , OPT_NM
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_GOD_OPT
+		 WHERE 1 = 1
+	   	   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComGodOpt" parameterType="comGodOpt">
+		UPDATE /* com.plgrim.ncp.base.updateComGodOpt		Generator(Generator)	2018-05-23 */
+		COM_GOD_OPT SET
+			   OPT_TP_CD = #{optTpCd,jdbcType=VARCHAR}
+			 , OPT_NM = #{optNm,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComGodOpt" parameterType="comGodOpt">
+		INSERT /* com.plgrim.ncp.base.insertComGodOpt		Generator(Generator)	2018-05-23 */
+		INTO   COM_GOD_OPT (
+			   COM_ID
+			 , OPT_CD
+			 , OPT_TP_CD
+			 , OPT_NM
+			 , USE_YN
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{comId,jdbcType=VARCHAR}
+			 , #{optCd,jdbcType=VARCHAR}
+			 , #{optTpCd,jdbcType=VARCHAR}
+			 , #{optNm,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComGodOpt" parameterType="comGodOpt">
+		DELETE /* com.plgrim.ncp.base.deleteComGodOpt		Generator(Generator)	2018-05-23 */
+		  FROM COM_GOD_OPT
+		 WHERE 1 = 1
+		   AND COM_ID = #{comId,jdbcType=VARCHAR}
+		   AND OPT_CD = #{optCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

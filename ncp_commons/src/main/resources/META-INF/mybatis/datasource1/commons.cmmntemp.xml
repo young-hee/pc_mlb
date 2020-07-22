@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.cmmntemp">
+	
+	<resultMap id="resultSysCmmnTemplet" type="com.plgrim.ncp.commons.result.SysCmmnTempletResult">
+		<result property="sysTemplet.tempSn" column="CONTT_SN" />
+		<result property="sysTemplet.tempSj" column="CONTT_SJ" />
+		<result property="sysTemplet.useYn" column="USE_YN" />
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+		<result property="sysTemplet.inqireNum" column="INQIRE_CNT" />
+		<result property="sysTemplet.downloadNum" column="DWLD_CNT" />
+		<result property="sysTemplet.tempSectCd" column="CONTT_SECT_CD" />
+		<result property="sysTemplet.tempSectNm" column="CONTT_SECT_NM" />
+	</resultMap>
+
+	<!-- 템플릿 -->
+	<select id="selectSysCmmnTempletList" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultMap="resultSysCmmnTemplet">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT
+			*
+		FROM (
+			SELECT /* [commons.cmmntemp.xml]["selectSysCmmnTempletList"][템플릿 목록 조회][Peter] */
+				SN.CONTT_SN /* 템플릿번호 */
+				,CONTT_SECT_CD
+				,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'CONTT_SECT' AND LANG_CD= 'KOR' AND CD = SN.CONTT_SECT_CD) AS CONTT_SECT_NM /* 템플릿유형 */
+				,DECODE(SN.CONTT_SN,(SELECT MAX(CONTT_SN) FROM SYS_CONTT WHERE CONTT_SECT_CD = SN.CONTT_SECT_CD AND USE_YN='Y'),'Y','') AS DOWN_YN /* 다운여부 */
+				,SN.USE_YN /* 사용유무 */
+				,SN.CONTT_SJ /* 공지제목 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+				,TO_CHAR(SN.REG_DT, 'YYYY-MM-DD') AS REG_DT_NM /* 등록일 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+				,TO_CHAR(SN.UDT_DT,'YYYY-MM-DD') AS UDT_DT_NM /* 수정일 */
+				,SN.INQIRE_CNT /* 조회수 */
+				,SN.DWLD_CNT /* 다운수 */
+			FROM	SYS_CONTT SN
+			WHERE	1 = 1
+			<include refid="selectSysCmmnTempletListWhere"/>
+			ORDER BY SN.CONTT_SN DESC
+		) T
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+	
+	<!-- 템플릿 개수 -->
+	<select id="selectSysCmmnTempletListCount" resultType="long">
+		SELECT
+			COUNT(*)
+		FROM (
+			SELECT /* [commons.cmmntemp.xml]["selectSysCmmnTempletListCount"][템플릿 목록 조회 개수][Peter] */
+				SN.CONTT_SN /* 템플릿번호 */
+			FROM	SYS_CONTT SN
+			WHERE	1 = 1
+			<include refid="selectSysCmmnTempletListWhere"/>
+		) T
+	</select>
+	
+	<!-- 템플릿 엑셀-->
+	<select id="selectSysCmmnTempletListExcel" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultType="java.util.LinkedHashMap">
+		SELECT 
+			*
+		FROM (
+			SELECT /* [commons.cmmntemp.xml]["selectSysCmmnTempletListExcel"][템플릿 목록 조회 엑셀][Peter] */
+				ROWNUM AS NUM
+				,SN.CONTT_SN /* 템플릿번호 */
+				,SN.CONTT_SJ /* 공지제목 */
+				,DECODE(SN.CONTT_SN,(SELECT MAX(CONTT_SN) FROM SYS_CONTT WHERE CONTT_SECT_CD = SN.CONTT_SECT_CD AND USE_YN='Y'),'Y','') AS DOWN_YN /* 다운여부 */
+				,SN.USE_YN /* 사용유무 */
+				,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+				,TO_CHAR(SN.REG_DT, 'YYYY-MM-DD') AS REG_DT_NM /* 등록일 */
+				,SN.INQIRE_CNT /* 조회수 */
+				,SN.DWLD_CNT /* 다운수 */
+			FROM	SYS_CONTT SN
+			WHERE	1 = 1
+			<include refid="selectSysCmmnTempletListWhere"/>
+			ORDER BY SN.CONTT_SN DESC
+		) T
+	</select>
+	
+	<!-- 템플릿 조건문 -->
+	<sql id="selectSysCmmnTempletListWhere"> 
+		<if test='search.tempSj != null and search.tempSj != ""'>
+			AND UPPER(SN.CONTT_SJ) LIKE '%' || UPPER(#{search.tempSj}) || '%' /* 제목 */
+		</if>
+		<if test='search.regtrIdNm != null and search.regtrIdNm != ""'>
+			AND SN.REGTR_ID IN (SELECT ADMIN_ID FROM SYS_ADMIN WHERE ADMIN_NM = UPPER(#{search.regtrIdNm})) /* 작성자 */
+		</if>
+		<if test='search.tempSectCd != null and search.tempSectCd != ""'>
+			AND SN.CONTT_SECT_CD = #{search.tempSectCd}
+		</if>
+		<if test='search.useYn != null and search.useYn != "" and search.useYn != "Y,N"'>
+			AND SN.USE_YN = #{search.useYn}
+		</if>
+		<if test='search.regBegDt != null and search.regBegDt != "" and search.regEndDt != null and search.regEndDt != ""'>
+			AND SN.REG_DT >= TO_DATE(#{search.regBegDt}, 'YYYY-MM-DD') AND SN.REG_DT &lt;= TO_DATE(#{search.regEndDt} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS') /* 공지기간 */
+		</if>
+	</sql>
+	
+	<!-- 템플릿 등록 -->
+	<insert id="insertSysTemplet" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO">
+		<selectKey keyProperty="sysTemplet.tempSn" resultType="long" order="BEFORE">
+            SELECT SQ_SYS_CONTT.NEXTVAL FROM DUAL
+        </selectKey>
+	    INSERT /* [commons.cmmntemp.xml]["insertSysTemplet"][템플릿 등록][Ed] */  
+	    INTO SYS_CONTT
+		(
+	        CONTT_SN
+	       ,CONTT_SECT_CD
+	       ,CONTT_SJ
+	       ,CONTT_CONT
+	       ,USE_YN
+	       ,REGTR_ID
+	       ,REG_DT
+	       ,UDTER_ID
+	       ,UDT_DT
+	       ,INQIRE_CNT
+	       ,DWLD_CNT
+		)
+		VALUES
+		(
+	        #{sysTemplet.tempSn,jdbcType=NUMERIC}
+	       ,#{sysTemplet.tempSectCd,jdbcType=VARCHAR}
+	       ,#{sysTemplet.tempSj,jdbcType=VARCHAR}
+	       ,#{sysTemplet.tempCont,jdbcType=VARCHAR}
+	       ,#{sysTemplet.useYn,jdbcType=VARCHAR}
+	       ,#{sysTemplet.regtrId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,#{sysTemplet.udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,0
+	       ,0
+		)   
+    </insert>
+    
+    <resultMap id="resultSysCmmnTempletDetail" type="com.plgrim.ncp.commons.result.SysCmmnTempletResult">
+		<id property="sysTemplet.tempSn" column="CONTT_SN" />
+		<result property="sysTemplet.tempSj" column="CONTT_SJ" />
+		<result property="sysTemplet.tempSectCd" column="CONTT_SECT_CD" />
+		<result property="sysTemplet.useYn" column="USE_YN" />
+		<result property="sysTemplet.tempCont" column="CONTT_CONT" />		
+		<result property="sysTemplet.inqireNum" column="INQIRE_CNT" />
+		<result property="sysTemplet.downloadNum" column="DWLD_CNT" />		
+		<result property="regtrIdNm" column="REGTR_ID_NM" />
+		<result property="regDtNm" column="REG_DT_NM" />
+		<result property="udterIdNm" column="UDTER_ID_NM" />
+		<result property="udtDtNm" column="UDT_DT_NM" />
+		<!-- 
+		<collection property="sysTempletAtchFileList" ofType="SysTempletAtchFile">
+			<result property="tempAtchFileTurn" column="ATCH_FILE_TURN" />
+			<result property="tempAtchFileNm" column="ATCH_FILE_NM" />
+			<result property="tempAtchFileUrl" column="ATCH_FILE_URL" />
+			<result property="tempAtchFileCpcty" column="ATCH_FILE_CPCTY" />
+		</collection>
+		 -->
+	</resultMap>
+	
+    <!-- 템플릿 상세 -->
+	<select id="selectSysCmmnTempletDetail" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultMap="resultSysCmmnTempletDetail">
+		SELECT /* [commons.cmmntemp.xml]["selectSysCmmnTempletDetail"][템플릿 상세 조회][Ed] */
+		   	 SN.CONTT_SN /* 템플릿번호 */
+			,CONTT_SECT_CD
+			,(SELECT CD_NM FROM MV_SYS_CD WHERE UPPER_CD = 'CONTT_SECT' AND LANG_CD= 'KOR' AND CD = SN.CONTT_SECT_CD) AS CONTT_SECT_NM /* 템플릿유형 */
+			,SN.USE_YN /* 사용유무 */
+			,SN.CONTT_SJ /* 공지제목 */
+			,SN.CONTT_CONT /* 내용 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.REGTR_ID) AS REGTR_ID_NM /*등록자명*/
+			,TO_CHAR(SN.REG_DT, 'YYYY-MM-DD') AS REG_DT_NM /* 등록일 */
+			,(SELECT ADMIN_NM FROM SYS_ADMIN WHERE ADMIN_ID = SN.UDTER_ID) AS UDTER_ID_NM /*수정자명*/
+			,TO_CHAR(SN.UDT_DT,'YYYY-MM-DD') AS UDT_DT_NM /* 수정일 */
+			,SN.INQIRE_CNT /* 조회수 */
+			,SN.DWLD_CNT /* 다운수 */
+	       	,SNAF.ATCH_FILE_TURN /* 파일순번 */
+	       	,SNAF.ATCH_FILE_NM /* 파일명 */
+	       	,SNAF.ATCH_FILE_URL /* 파일경로 */
+	       	,SNAF.ATCH_FILE_CPCTY /* 파일사이즈 */
+		FROM	SYS_CONTT SN
+				, SYS_CONTT_ATCH_FILE SNAF
+		WHERE	1 = 1
+		AND 	SN.CONTT_SN = #{search.tempSn}
+		AND		SN.CONTT_SN = SNAF.CONTT_SN(+)
+	</select>
+	
+	<!-- 템플릿 수정 -->
+    <update id="updateSysTemplet" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO">
+		UPDATE /* [commons.cmmntemp.xml]["updateSysTemplet"][템플릿 수정][Ed] */  
+		SYS_CONTT SET
+			 CONTT_SJ = #{sysTemplet.tempSj,jdbcType=VARCHAR}
+			,CONTT_SECT_CD = #{sysTemplet.tempSectCd,jdbcType=VARCHAR}
+	        ,CONTT_CONT = #{sysTemplet.tempCont,jdbcType=CLOB}
+	        ,USE_YN = #{sysTemplet.useYn,jdbcType=VARCHAR}
+	        ,UDTER_ID = #{sysTemplet.udterId,jdbcType=VARCHAR}
+	        ,UDT_DT = SYSDATE
+		WHERE   1 = 1
+		AND     CONTT_SN = #{sysTemplet.tempSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 템플릿 그리드 수정 -->
+    <!-- 
+    <update id="updateSysTempletGrid" parameterType="com.plgrim.ncp.base.entities.datasource1.sys.SysTemplet">
+		UPDATE /* [commons.cmmntemp.xml]["updateSysTempletGrid"][템플릿 그리드 수정][Ed] */  
+		SYS_CONTT SET
+	         USE_YN = #{useYn,jdbcType=VARCHAR}
+	        ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+	        ,UDT_DT = SYSDATE
+		WHERE   1 = 1
+		AND     CONTT_SN = #{tempSn,jdbcType=NUMERIC}
+    </update>
+    -->
+    
+    <!-- 템플릿 삭제 -->
+    <update id="deleteTemplet" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDataDTO">
+		DELETE /* [commons.cmmntemp.xml]["deleteTemplet"][템플릿 삭제][Ed] */  
+		FROM SYS_CONTT 
+		WHERE CONTT_SN = #{sysTemplet.tempSn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 템플릿 첨부 삭제 -->
+    <update id="deleteTempletAttach" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDataDTO">
+		DELETE /* [commons.cmmntemp.xml]["deleteTempletAttach"][템플릿 삭제][Ed] */  
+		FROM SYS_CONTT_ATCH_FILE 
+		WHERE CONTT_SN = #{sysTemplet.tempSn,jdbcType=NUMERIC}
+    </update>
+	
+	<!-- 템플릿 첨부파일 등록 -->
+	<!-- 
+	<insert id="insertSysTempletAtchFile" parameterType="sysTempletAtchFile">
+	    INSERT /* [commons.cmmntemp.xml]["insertSysTempletAtchFile"][템플릿 첨부파일 등록][Ed] */ 
+	    INTO SYS_CONTT_ATCH_FILE
+		(
+	        CONTT_SN
+	       ,ATCH_FILE_TURN
+	       ,ATCH_FILE_NM
+	       ,ATCH_FILE_URL
+	       ,ATCH_FILE_CPCTY
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{tempSn,jdbcType=NUMERIC}
+	       ,(SELECT NVL(MAX(ATCH_FILE_TURN)+1,1) FROM SYS_CONTT_ATCH_FILE WHERE CONTT_SN = #{tempSn,jdbcType=NUMERIC})
+	       ,#{tempAtchFileNm,jdbcType=VARCHAR}
+	       ,#{tempAtchFileUrl,jdbcType=VARCHAR}
+	       ,#{tempAtchFileCpcty,jdbcType=NUMERIC}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+    -->
+    
+    <!-- 템플릿 첨부파일 1개 -->
+	<select id="selectSysCmmnTempletFile" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultMap="resultSysCmmnTempletDetail">
+		SELECT /* [commons.cmmntemp.xml]["selectSysCmmnTempletFile"][템플릿 첨부파일 1개][peter] */
+		   	 SN.CONTT_SN /* 공지번호 */
+	       	,SNAF.ATCH_FILE_TURN /* 파일순번 */
+	       	,SNAF.ATCH_FILE_NM /* 파일명 */
+	       	,SNAF.ATCH_FILE_URL /* 파일경로 */
+	       	,SNAF.ATCH_FILE_CPCTY /* 파일사이즈 */
+		FROM	SYS_CONTT SN
+				, SYS_CONTT_ATCH_FILE SNAF
+		WHERE	1 = 1
+		AND 	SN.CONTT_SN = #{search.tempSn}
+		AND		SN.CONTT_SN = SNAF.CONTT_SN
+		AND		SNAF.ATCH_FILE_TURN = #{search.tempFileSn}
+	</select>
+	
+	<!-- 템플릿 MAX Download 객체 구하기 -->
+	<select id="selectSysCmmnMaxTempletFile" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultMap="resultSysCmmnTempletDetail">
+		SELECT /* [commons.cmmntemp.xml]["selectSysCmmnMaxTempletFile"][템플릿 Max 첨부파일 1개][peter] */
+		   	 SN.CONTT_SN /* 공지번호 */
+	       	,SNAF.ATCH_FILE_TURN /* 파일순번 */
+	       	,SNAF.ATCH_FILE_NM /* 파일명 */
+	       	,SNAF.ATCH_FILE_URL /* 파일경로 */
+	       	,SNAF.ATCH_FILE_CPCTY /* 파일사이즈 */
+		FROM	SYS_CONTT SN
+				, SYS_CONTT_ATCH_FILE SNAF
+		WHERE	1 = 1
+		AND 	SN.CONTT_SN = (SELECT MAX(CONTT_SN) FROM SYS_CONTT WHERE CONTT_SECT_CD = #{search.tempSectCd} AND USE_YN='Y')
+		AND		SN.CONTT_SN = SNAF.CONTT_SN
+		AND		SNAF.ATCH_FILE_TURN = (
+		                                    SELECT MAX(ATCH_FILE_TURN)
+		                                    FROM SYS_CONTT_ATCH_FILE
+		                                    WHERE CONTT_SN = (SELECT MAX(CONTT_SN) FROM SYS_CONTT WHERE CONTT_SECT_CD = #{search.tempSectCd} AND USE_YN='Y')
+		                                   )
+	</select>
+    
+    <!-- 
+    <delete id="deleteSysTempletAtchFile" parameterType="sysTempletAtchFile">
+        DELETE /* com.plgrim.ncp.base.repository.sys.deleteSysTempletAtchFile kuktoong 20150603 */  
+        FROM SYS_CONTT_ATCH_FILE 
+        WHERE   1 = 1
+        AND     CONTT_SN = #{tempSn,jdbcType=NUMERIC}
+        AND     ATCH_FILE_TURN = #{tempAtchFileTurn,jdbcType=NUMERIC}
+    </delete>
+    -->
+    
+    <update id="updateTempletReadCnt" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO">
+        UPDATE /* com.plgrim.ncp.base.repository.sys.updateTempletReadCnt kuktoong 20150603 */  
+        SYS_CONTT 
+        SET INQIRE_CNT = INQIRE_CNT + 1
+        WHERE   1 = 1
+        AND     CONTT_SN = #{search.tempSn,jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateTempletDownloadCnt" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO">
+        UPDATE /* com.plgrim.ncp.base.repository.sys.updateTempletDownloadCnt kuktoong 20150603 */  
+        SYS_CONTT 
+        SET DWLD_CNT = DWLD_CNT + 1
+        WHERE   1 = 1
+        AND     CONTT_SN = #{sysTemplet.tempSn,jdbcType=NUMERIC}
+    </update>
+    
+    <update id="updateTempletMaxDownloadCnt" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO">
+        UPDATE /* com.plgrim.ncp.base.repository.sys.updateTempletMaxDownloadCnt kuktoong 20150603 */  
+        SYS_CONTT 
+        SET DWLD_CNT = DWLD_CNT + 1
+        WHERE   1 = 1
+        AND  CONTT_SN = (SELECT MAX(CONTT_SN) FROM SYS_CONTT WHERE CONTT_SECT_CD = #{search.tempSectCd} AND USE_YN='Y')
+    </update>
+    
+    <!-- ****************************************************************************************************** -->
+    <!-- ****************************************************************************************************** -->
+    <!-- ****************************************************************************************************** -->
+    <!-- ****************************************************************************************************** -->
+    <!-- ****************************************************************************************************** -->
+    
+    <!-- 1:1문의 첨부파일 1개 -->
+	<select id="selectSysCmmnInquiryFile" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultType="com.plgrim.ncp.base.entities.datasource1.cso.CsoMtmInqAtchFile">
+		SELECT  /* [commons.cmmntemp.xml]["selectSysCmmnInquiryFile"][1:1문의 첨부파일 1개][peter] */
+				  mtm_inq_sn
+        		, mtm_inq_atch_file_turn
+        		, mtm_inq_atch_file_nm
+        		, mtm_inq_atch_file_url
+        		, mtm_inq_atch_file_cpcty
+		  FROM cso_mtm_inq_atch_file
+		 WHERE 1=1
+		   AND mtm_inq_sn = #{search.tempSn}
+		   AND mtm_inq_atch_file_turn = #{search.tempFileSn}
+	</select>
+	
+	<!-- 업무게시판의 요청 첨부파일 1개 -->
+	<select id="selectSysCmmnTransferBoardReqFile" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultType="com.plgrim.ncp.commons.data.TransferBoardReqDTO">
+		SELECT /* [commons.cmmntemp.xml]["selectSysCmmnTransferBoardFile"][업무게시판의 요청 첨부파일 1개][peter] */
+			   requst_sn,
+		       requst_atchmnfl_turn,
+		       requst_atch_file_nm,
+		       requst_atch_file_url,
+		       requst_atch_file_cpcty
+		  FROM CSO_JOB_REQUST_ATCHMNFL
+		 WHERE requst_sn = #{search.tempSn}
+		 AND requst_atchmnfl_turn = #{search.tempFileSn}
+	</select>
+	
+	<!-- 업무게시판의 요청/답변 첨부파일 다운로드 권한 체크 카운트 -->
+	<select id="selectSysCmmnTransferBoardDownRoleCount" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultType="int">
+		SELECT count(*)
+		FROM cso_job_requst cjr
+		WHERE 1=1
+		AND cjr.requst_sn = #{search.tempSn}
+		AND (cjr.REG_ADMIN_ID = #{loginId} OR cjr.REQUST_RCEPT_ADMIN_ID = #{loginId}) /* 등록 관리자 ID, 요청 접수 관리자 ID */
+	</select>
+	
+	<!-- 업무게시판의 응답 첨부파일 1개 -->
+	<select id="selectSysCmmnTransferBoardResFile" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultType="com.plgrim.ncp.commons.data.TransferBoardResDTO">
+		SELECT /* [commons.cmmntemp.xml]["selectSysCmmnTransferBoardResFile"][업무게시판의 응답 첨부파일 1개][peter] */
+			   requst_sn,
+			   job_requst_ans_turn,
+		       requst_ans_atchmnfl_turn,
+		       requst_ans_atch_file_nm,
+		       requst_ans_atch_file_url,
+		       requst_ans_atch_file_cpcty
+		  FROM CSO_JOB_REQUST_ANS_ATCHMNFL
+		 WHERE requst_sn = #{search.tempSn}
+		 AND job_requst_ans_turn = #{search.tempFileSn}
+		 AND requst_ans_atchmnfl_turn = #{search.tempFileSubSn}
+	</select>
+	
+	<!-- FAQ의 첨부파일 1개 -->
+	<select id="selectSysCmmnFaqFile" parameterType="com.plgrim.ncp.commons.data.SysCmmnTempletDTO" resultType="com.plgrim.ncp.base.entities.datasource1.cso.CsoFaqAtchmnfl">
+		SELECT /* [commons.cmmntemp.xml]["selectSysCmmnFaqFile"][FAQ의 응답 첨부파일 1개][peter] */
+			   faq_sn,
+			   faq_atchmnfl_turn,
+		       faq_atch_file_nm,
+		       faq_atch_file_url,
+		       faq_atch_file_cpcty
+		  FROM cso_faq_atchmnfl
+		 WHERE faq_sn = #{search.tempSn}
+		 AND faq_atchmnfl_turn = #{search.tempFileSn}
+	</select>
+	
+
+</mapper>

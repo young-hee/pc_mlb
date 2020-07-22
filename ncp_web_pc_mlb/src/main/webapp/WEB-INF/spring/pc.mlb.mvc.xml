@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.1.xsd">
+
+	<!-- @Aspect 활성화 -->
+	<aop:aspectj-autoproxy />
+
+	<context:component-scan base-package="com.plgrim.ncp.web,com.plgrim.ncp.framework.controller">
+		<context:include-filter 
+			type="annotation" 
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<set>
+				<bean class="com.plgrim.ncp.framework.mvc.StringTrimConvert" />
+				<bean class="com.plgrim.ncp.framework.mvc.StringToIntegerConvert" />
+			</set>
+		</property>
+	</bean>
+	
+	<!-- 기본 mvc 설정 -->
+	<mvc:annotation-driven conversion-service="conversionService">
+		<mvc:message-converters>
+			<!-- @ResponseBody로 String 처리할때 한글처리 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html;charset=UTF-8</value>
+						<value>text/plain;charset=UTF-8</value>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+				  <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"
+					p:autoDetectFields="true"
+					p:autoDetectGettersSetters="true"/>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- language config -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/static/**"/>
+			<mvc:exclude-mapping path="/javascript/message/**"/>
+
+            <bean id="inflowInterceptor"
+                  class="com.plgrim.ncp.commons.filters.inflow.InflowInterceptor">
+            </bean>
+        </mvc:interceptor>
+
+		<!-- client ip check 를 통한 locale 세팅 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/static/**"/>
+			<mvc:exclude-mapping path="/javascript/message/**"/>
+
+			<bean id="geoIpInterceptor"
+				  class="com.plgrim.ncp.framework.interceptor.GeoIpLocaleInterceptor">
+			</bean>
+		</mvc:interceptor>
+
+		<bean id="contextInfoInterceptor"
+              class="com.plgrim.ncp.framework.systems.ContextInfoInterceptor">
+        </bean>
+
+        <bean id="gnbInterceptor"
+              class="com.plgrim.ncp.web.pc.mlb.GNBInterceptor">
+        </bean>
+        
+       
+	    <!-- <bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+	        <property name="cacheSeconds" value="0" />
+	        <property name="useExpiresHeader" value="true" />
+	        <property name="useCacheControlHeader" value="true" />
+	        <property name="useCacheControlNoStore" value="true" />
+		    <property name="cacheMappings">
+		        <props>
+		            <prop key="/display/**">86400</prop>
+		        </props>
+		    </property>
+	    </bean> -->
+		
+
+    </mvc:interceptors>
+
+	<!-- 뷰 네임 번역 -->
+	<bean id="viewNameTranslator"
+		class="org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator" />
+
+	<!-- resources 설정 (css, js, images) 사용법 : <img src="<c:url value="/resources/images/linux-logo.jpg"/>"> -->
+	
+
+	<mvc:resources location="/static/css/"			mapping="/static/css/**" />
+	<mvc:resources location="/static/favicon/"		mapping="/static/favicon/**" />
+	<mvc:resources location="/static/font/"	   		mapping="/static/font/**" />
+	<mvc:resources location="/static/html/"			mapping="/static/html/**" />
+	<mvc:resources location="/static/images/" 		mapping="/static/images/**" />
+	<mvc:resources location="/static/img/" 			mapping="/static/img/**" />
+	<mvc:resources location="/static/js/" 			mapping="/static/js/**" />
+	<mvc:resources location="/static/plugin/"		mapping="/static/plugin/**" />
+	
+	<mvc:resources location="/robots.txt"			mapping="/robots.txt" />
+	<mvc:resources location="/sitemap.xml"			mapping="/sitemap.xml" />
+
+	<!--구글 재크롤링으로 인한 추가-->
+	<mvc:resources location="/"			mapping="/googlec7ea0b23e04525a9.html" />
+
+	<!-- 바이두 인증으로 인한 추가-->
+	<mvc:resources location="/"			mapping="/baidu_verify_6Ufwtxv6e7.html" />
+
+	<mvc:view-controller path="/" view-name="index" />
+
+	<mvc:view-controller path="/errors/access_denied"		view-name="tiles:errors/404_notFounded" />
+	<mvc:view-controller path="/errors/not_founded"			view-name="tiles:errors/404_notFounded" />
+	<mvc:view-controller path="/errors/runtimeException"	view-name="tiles:errors/404_notFounded" />
+	<mvc:view-controller path="/errors/invalidSession"		view-name="tiles:errors/404_notFounded" />
+
+	<mvc:view-controller path="/errors/expiredSession"		view-name="tiles:errors/404_notFounded" />
+	<mvc:view-controller path="/errors/vulnerability" 		view-name="tiles:errors/404_notFounded" />
+
+	<mvc:view-controller path="/errors/vulnerabilitySessionExpire" view-name="tiles:errors/404_notFounded" />
+
+
+<!-- = Resolver view =================== -->
+
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="1" />
+
+	<!-- ContentNegotiation 매니져 -->
+	<bean id="cnManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="ignoreAcceptHeader" value="false" />
+		<property name="defaultContentType" value="text/html" />
+
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="dn" value="application/octet-stream" />
+			</map>
+		</property>
+	</bean>
+
+	<!-- ContentNegotiatingViewResolver 선언 -->
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver" p:order="2">
+
+		<property name="contentNegotiationManager" ref="cnManager" />
+		<property name="defaultViews">
+			<list>
+				<!-- Download 전용 뷰 -->
+				<bean class="com.plgrim.ncp.framework.mvc.DownloadView"
+					p:contentType="application/octet-stream" />
+
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"
+					p:contentType="application/json"
+					p:objectMapper-ref="jacksonObjectMapperFactoryBean"/>
+
+			</list>
+		</property>
+	</bean>
+
+	<bean id="tilesViewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver" p:order="3">
+		<property name="alwaysInclude" value="false" />
+	</bean>
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="4">
+		<property name="prefix"><value>/WEB-INF/views/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+	<bean id="jacksonObjectMapperFactoryBean" 
+		class="com.plgrim.ncp.framework.mvc.JacksonObjectMapperFactoryBean"
+		factory-method="createObjectMapper">
+	</bean>
+	
+
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<property name="definitions">
+			<list>
+
+				<!-- 공백 페이지 레이아웃. -->
+				<value>/WEB-INF/tiles/tiles.empty.xml</value>
+				
+                <!-- 팝업 페이지 레이아웃. -->
+                <value>/WEB-INF/tiles/tiles.popup.xml</value>
+                
+				<!-- 맨 마지막에 설정 해야 한다. -->
+				<value>/WEB-INF/tiles/tiles.default.xml</value>
+
+			</list>
+		</property>
+	</bean>
+
+	<!-- multipart 활성화 -->
+	<bean id="multipartResolver"
+		  class="org.hdiv.web.multipart.HdivCommonsMultipartResolver">
+		<!-- size unlimit -->
+		<property name="maxUploadSize" value="${ncp_base.spring.mvc.upload.size}"/>
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="uploadTempDir" ref="uploadTempDir" />
+	</bean>
+
+	<bean id="uploadTempDir" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg>
+			<value>${ncp_base.spring.mvc.upload.temp}</value>
+		</constructor-arg>
+	</bean>
+
+	
+	<!--  DispatcherServlet에서 기본적으로 사용하는 resolver의 id는 DispatcherServlet.HANDLER_EXCEPTION_RESOLVER_BEAN_NAME = handlerExceptionResolver 이다  -->
+	<bean id="handlerExceptionResolver" class="org.springframework.web.servlet.handler.HandlerExceptionResolverComposite">
+		<property name="exceptionResolvers">
+			<list>
+ 				<bean class="com.plgrim.ncp.framework.responsecode.HandlerMethodHoldingExceptionResolver"/>
+				<bean class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver"/>
+				<bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="com.plgrim.ncp.framework.responsecode.CommonExceptionHandlerConfig">
+		<property name="defaultView" 		value="tiles:errors/404_notFounded"/>
+		<property name="defaultPopupView" 	value="tiles:errors/404_notFounded"/>
+		<property name="goodsView" 			value="tiles:errors/404_notFounded"/>
+		<property name="orderView" 			value="tiles:errors/404_notFounded"/>
+	</bean>
+
+</beans>

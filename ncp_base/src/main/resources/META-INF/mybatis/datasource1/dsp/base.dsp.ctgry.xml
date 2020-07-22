@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCtgry" parameterType="dspCtgry" resultType="dspCtgry">
+		SELECT /* com.plgrim.ncp.base.selectDspCtgry		Generator(Generator)	2018-05-23 */
+			   DSP_CTGRY_NO
+			 , UPPER_DSP_CTGRY_NO
+			 , DSP_CTGRY_NM
+			 , STT_CTGRY_NM
+			 , CTGRY_TP_CD
+			 , CTGRY_SECT_CD
+			 , STRTGY_CTGRY_ATRB_CD
+			 , GOD_DSP_UNIT_CD
+			 , CTGRY_DPTH_CD
+			 , DSP_GOD_SORT_STDR_CD
+			 , LEAF_CTGRY_YN
+			 , DSP_YN
+			 , SPCIFY_URL_DSP_YN
+			 , CTGRY_DIV_LNE_YN
+			 , CTGRY_DIV_LNE_CSS_CD
+			 , DELETE_YN
+			 , CTGRY_OUTPT_TP_CD
+			 , OUTPT_SECT_CD
+			 , OUTPT_LINK_URL
+			 , SORT_SEQ
+			 , APL_MALL_ID
+			 , DSP_BRND_ID
+			 , EXPSR_LVL_CD
+			 , EXPSR_TGT_CD
+			 , PC_LIST_EXPSR_CNT_CD
+			 , MOBILE_LIST_EXPSR_CNT_CD
+			 , LIST_EXPSR_IMG_TURN
+			 , RPRST_IMG_FILE_NM
+			 , RPRST_IMG_FILE_URL
+			 , RPRST_IMG_ALTRTV_CONT
+			 , BCRN_STYLE_CLASS_ID
+			 , META_SJ_NM
+			 , META_DSCR_CONT
+			 , META_KWD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CTGRY
+		 WHERE 1 = 1
+	   	   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspCtgry" parameterType="dspCtgry">
+		UPDATE /* com.plgrim.ncp.base.updateDspCtgry		Generator(Generator)	2018-05-23 */
+		DSP_CTGRY SET
+			   UPPER_DSP_CTGRY_NO = #{upperDspCtgryNo,jdbcType=VARCHAR}
+			 , DSP_CTGRY_NM = #{dspCtgryNm,jdbcType=VARCHAR}
+			 , STT_CTGRY_NM = #{sttCtgryNm,jdbcType=VARCHAR}
+			 , CTGRY_TP_CD = #{ctgryTpCd,jdbcType=VARCHAR}
+			 , CTGRY_SECT_CD = #{ctgrySectCd,jdbcType=VARCHAR}
+			 , STRTGY_CTGRY_ATRB_CD = #{strtgyCtgryAtrbCd,jdbcType=VARCHAR}
+			 , GOD_DSP_UNIT_CD = #{godDspUnitCd,jdbcType=VARCHAR}
+			 , CTGRY_DPTH_CD = #{ctgryDpthCd,jdbcType=VARCHAR}
+			 , DSP_GOD_SORT_STDR_CD = #{dspGodSortStdrCd,jdbcType=VARCHAR}
+			 , LEAF_CTGRY_YN = #{leafCtgryYn,jdbcType=VARCHAR}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , SPCIFY_URL_DSP_YN = #{spcifyUrlDspYn,jdbcType=VARCHAR}
+			 , CTGRY_DIV_LNE_YN = #{ctgryDivLneYn,jdbcType=VARCHAR}
+			 , CTGRY_DIV_LNE_CSS_CD = #{ctgryDivLneCssCd,jdbcType=VARCHAR}
+			 , DELETE_YN = #{deleteYn,jdbcType=VARCHAR}
+			 , CTGRY_OUTPT_TP_CD = #{ctgryOutptTpCd,jdbcType=VARCHAR}
+			 , OUTPT_SECT_CD = #{outptSectCd,jdbcType=VARCHAR}
+			 , OUTPT_LINK_URL = #{outptLinkUrl,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , APL_MALL_ID = #{aplMallId,jdbcType=VARCHAR}
+			 , DSP_BRND_ID = #{dspBrndId,jdbcType=VARCHAR}
+			 , EXPSR_LVL_CD = #{expsrLvlCd,jdbcType=VARCHAR}
+			 , EXPSR_TGT_CD = #{expsrTgtCd,jdbcType=VARCHAR}
+			 , PC_LIST_EXPSR_CNT_CD = #{pcListExpsrCntCd,jdbcType=VARCHAR}
+			 , MOBILE_LIST_EXPSR_CNT_CD = #{mobileListExpsrCntCd,jdbcType=VARCHAR}
+			 , LIST_EXPSR_IMG_TURN = #{listExpsrImgTurn,jdbcType=NUMERIC}
+			 , RPRST_IMG_FILE_NM = #{rprstImgFileNm,jdbcType=VARCHAR}
+			 , RPRST_IMG_FILE_URL = #{rprstImgFileUrl,jdbcType=VARCHAR}
+			 , RPRST_IMG_ALTRTV_CONT = #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+			 , BCRN_STYLE_CLASS_ID = #{bcrnStyleClassId,jdbcType=VARCHAR}
+			 , META_SJ_NM = #{metaSjNm,jdbcType=VARCHAR}
+			 , META_DSCR_CONT = #{metaDscrCont,jdbcType=VARCHAR}
+			 , META_KWD = #{metaKwd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspCtgry" parameterType="dspCtgry">
+		INSERT /* com.plgrim.ncp.base.insertDspCtgry		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CTGRY (
+			   DSP_CTGRY_NO
+			 , UPPER_DSP_CTGRY_NO
+			 , DSP_CTGRY_NM
+			 , STT_CTGRY_NM
+			 , CTGRY_TP_CD
+			 , CTGRY_SECT_CD
+			 , STRTGY_CTGRY_ATRB_CD
+			 , GOD_DSP_UNIT_CD
+			 , CTGRY_DPTH_CD
+			 , DSP_GOD_SORT_STDR_CD
+			 , LEAF_CTGRY_YN
+			 , DSP_YN
+			 , SPCIFY_URL_DSP_YN
+			 , CTGRY_DIV_LNE_YN
+			 , CTGRY_DIV_LNE_CSS_CD
+			 , DELETE_YN
+			 , CTGRY_OUTPT_TP_CD
+			 , OUTPT_SECT_CD
+			 , OUTPT_LINK_URL
+			 , SORT_SEQ
+			 , APL_MALL_ID
+			 , DSP_BRND_ID
+			 , EXPSR_LVL_CD
+			 , EXPSR_TGT_CD
+			 , PC_LIST_EXPSR_CNT_CD
+			 , MOBILE_LIST_EXPSR_CNT_CD
+			 , LIST_EXPSR_IMG_TURN
+			 , RPRST_IMG_FILE_NM
+			 , RPRST_IMG_FILE_URL
+			 , RPRST_IMG_ALTRTV_CONT
+			 , BCRN_STYLE_CLASS_ID
+			 , META_SJ_NM
+			 , META_DSCR_CONT
+			 , META_KWD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{upperDspCtgryNo,jdbcType=VARCHAR}
+			 , #{dspCtgryNm,jdbcType=VARCHAR}
+			 , #{sttCtgryNm,jdbcType=VARCHAR}
+			 , #{ctgryTpCd,jdbcType=VARCHAR}
+			 , #{ctgrySectCd,jdbcType=VARCHAR}
+			 , #{strtgyCtgryAtrbCd,jdbcType=VARCHAR}
+			 , #{godDspUnitCd,jdbcType=VARCHAR}
+			 , #{ctgryDpthCd,jdbcType=VARCHAR}
+			 , #{dspGodSortStdrCd,jdbcType=VARCHAR}
+			 , #{leafCtgryYn,jdbcType=VARCHAR}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{spcifyUrlDspYn,jdbcType=VARCHAR}
+			 , #{ctgryDivLneYn,jdbcType=VARCHAR}
+			 , #{ctgryDivLneCssCd,jdbcType=VARCHAR}
+			 , #{deleteYn,jdbcType=VARCHAR}
+			 , #{ctgryOutptTpCd,jdbcType=VARCHAR}
+			 , #{outptSectCd,jdbcType=VARCHAR}
+			 , #{outptLinkUrl,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{aplMallId,jdbcType=VARCHAR}
+			 , #{dspBrndId,jdbcType=VARCHAR}
+			 , #{expsrLvlCd,jdbcType=VARCHAR}
+			 , #{expsrTgtCd,jdbcType=VARCHAR}
+			 , #{pcListExpsrCntCd,jdbcType=VARCHAR}
+			 , #{mobileListExpsrCntCd,jdbcType=VARCHAR}
+			 , #{listExpsrImgTurn,jdbcType=NUMERIC}
+			 , #{rprstImgFileNm,jdbcType=VARCHAR}
+			 , #{rprstImgFileUrl,jdbcType=VARCHAR}
+			 , #{rprstImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{bcrnStyleClassId,jdbcType=VARCHAR}
+			 , #{metaSjNm,jdbcType=VARCHAR}
+			 , #{metaDscrCont,jdbcType=VARCHAR}
+			 , #{metaKwd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCtgry" parameterType="dspCtgry">
+		DELETE /* com.plgrim.ncp.base.deleteDspCtgry		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CTGRY
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

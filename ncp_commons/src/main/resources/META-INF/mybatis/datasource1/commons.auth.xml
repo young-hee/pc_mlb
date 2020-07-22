@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.auth">
+	
+	<resultMap id="resultAuthGrp" type="com.plgrim.ncp.commons.result.AuthGrpResult">
+		<result property="sysAuthorGrp.authorGrpSn" column="author_grp_sn" />
+		<result property="sysAuthorGrp.authorGrpNm" column="author_grp_nm" />
+		<result property="sysAuthorGrp.useYn" column="use_yn" />
+		<result property="sysAuthorGrp.authorGrpDscr" column="author_grp_dscr" />
+		<result property="sysAuthorGrp.sortSeq" column="sort_seq" />
+		<result property="sysAuthorGrp.regtrId" column="regtr_id" />
+		<result property="sysAuthorGrp.regDt" column="reg_dt" />		
+	</resultMap>
+	
+	<resultMap id="resultAuthMenu" type="com.plgrim.ncp.commons.result.AuthResult">
+		<result property="sysMenu.menuSn" column="menu_sn" />
+		<result property="sysMenu.upperMenuSn" column="upper_menu_sn" />
+		<result property="sysMenu.boSiteId" column="bo_site_id" />
+		<result property="sysMenu.menuNm" column="menu_nm" />
+		<result property="sysMenu.menuImgUrl" column="menu_img_url" />
+		<result property="sysMenu.menuUrl" column="menu_url" />
+		<result property="sysMenu.sortSeq" column="sort_seq" />
+		<result property="sysMenu.menuTpCd" column="menu_tp_cd" />
+		<result property="menuDepth" column="menu_depth" />
+		<result property="upperMenuNm" column="upper_menu_nm" />
+		<result property="naMenuNm" column="na_menu_nm" />
+		<result property="sysAuthor.authorGrpSn" column="author_grp_sn" />
+		<result property="sysMenu.firstPgeYn" column="first_pge_yn" />
+	</resultMap>
+	
+	<resultMap id="resultAuth" type="com.plgrim.ncp.commons.result.AuthResult">
+		<result property="sysMenu.menuNm" column="menu_nm" />
+		<result property="sysAuthor.authorGrpSn" column="author_grp_sn" />
+		<result property="sysAuthor.authorTurn" column="author_turn" />
+		<result property="sysAuthor.menuSn" column="menu_sn" />
+		<result property="sysAuthor.authorResrcNm" column="author_resrc_nm" />
+		<result property="sysAuthor.authorResrcVal" column="author_resrc_val" />
+	</resultMap>
+	
+	
+	<resultMap id="resultMenu" type="com.plgrim.ncp.commons.result.MenuResult">
+		<result property="sysMenu.menuSn" column="menu_sn" />
+		<result property="sysMenu.upperMenuSn" column="upper_menu_sn" />
+		<result property="sysMenu.boSiteId" column="bo_site_id" />
+		<result property="sysMenu.menuNm" column="menu_nm" />
+		<result property="sysMenu.menuImgUrl" column="menu_img_url" />
+		<result property="sysMenu.menuUrl" column="menu_url" />
+		<result property="sysMenu.sortSeq" column="sort_seq" />
+		<result property="sysMenu.menuTpCd" column="menu_tp_cd" />
+		<result property="sysMenu.firstPgeYn" column="first_pge_yn" />
+		<result property="menuDepth" column="menu_depth" />
+		<result property="upperMenuNm" column="upper_menu_nm" />
+		<result property="naMenuNm" column="na_menu_nm" />
+		<result property="assignYn" column="assign_yn" />
+	</resultMap>
+	
+	
+	<select id="selectListAuthGrp" parameterType="com.plgrim.ncp.commons.data.FormSysAuthGrpDTO" resultMap="resultAuthGrp"> 
+		
+		<![CDATA[
+		SELECT   /* [commons.auth.xml][selectListAuthGrp][권한그룹  목록 조회][Tam] */
+		    author_grp_sn,  
+		    author_grp_nm, 
+		    use_yn,  
+		    author_grp_dscr, 
+		    sort_seq, 
+		    regtr_id, 
+		    reg_dt,
+		  /*  (select decode(count(*),0,' ','Y')
+             from SYS_AUTHOR b, SYS_MENU c
+             where b.author_grp_sn = sag.author_grp_sn
+             and b.menu_sn = c.menu_sn
+             and c.use_yn = 'Y'
+             and c.bo_site_id = 'BO') bo_yn,*/
+            (select decode(count(*),0,' ','Y') 
+             from SYS_AUTHOR b, SYS_MENU c
+             where b.author_grp_sn = sag.author_grp_sn 
+             and b.menu_sn = c.menu_sn
+             and c.use_yn = 'Y'
+             and c.bo_site_id = 'CS') cs_yn,
+            (select decode(count(*),0,' ','Y') 
+             from SYS_AUTHOR b, SYS_MENU c
+             where b.author_grp_sn = sag.author_grp_sn 
+             and b.menu_sn = c.menu_sn
+             and c.use_yn = 'Y'
+             and c.bo_site_id = 'PO') po_yn
+		FROM sys_author_grp sag
+		WHERE 1=1
+		]]>
+			<choose>
+				<when test="searchField != null and searchField == 1">
+					AND author_grp_nm like #{searchText}||'%'
+				</when>
+				<when test="searchField != null and searchField == 2">
+					AND author_grp_sn = #{searchText} 
+				</when>
+			</choose>
+			
+			<if test = "searchListUseYn != null" >
+				AND use_yn in
+				<foreach item ="item" index="index" collection="searchListUseYn" open="(" separator="," close=")">
+	         		#{item}
+	   			</foreach> 
+			</if> 
+			  
+		<![CDATA[ 
+		ORDER BY reg_dt DESC
+		]]>
+	</select>
+	<select id="selectListAuthMenu" parameterType="com.plgrim.ncp.commons.data.FormSysAuthGrpDTO" resultMap="resultAuthMenu">
+		<![CDATA[ 
+		SELECT  /* [commons.auth.xml][selectListAuthMenu]][메뉴권한 목록 조회][Tam]*/
+		    sm.menu_sn, sm.upper_menu_sn, sm.bo_site_id, sm.menu_nm, sm.menu_img_url,
+		    sm.menu_url, sm.sort_seq, sm.menu_tp_cd, sm.outpt_tp_cd, sm.first_pge_yn,
+		    LEVEL menu_depth,
+		    CASE  WHEN  PRIOR sm.menu_nm is null  and sm.upper_menu_sn is not null THEN  ( select menu_nm from  SYS_MENU  WHERE menu_sn = sm.upper_menu_sn ) 
+                ELSE  LPAD (' ', 2 * LEVEL - 1) || PRIOR sm.menu_nm
+            END upper_menu_nm,
+		    SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_menu_nm,
+		    sa.author_grp_sn
+		FROM 
+		    SYS_MENU sm INNER JOIN 
+		    ( SELECT  author_grp_sn, menu_sn FROM SYS_AUTHOR WHERE author_grp_sn = #{selAuthorGrpSn} GROUP BY author_grp_sn, menu_sn) sa
+			ON
+			    sm.use_yn = 'Y'
+			    AND
+			    sm.menu_sn = sa.menu_sn
+			    AND
+			    sa.author_grp_sn = #{selAuthorGrpSn}
+		 ]]>
+		 
+		 	START WITH 
+		 		sm.MENU_TP_CD = 'MENU'
+				<choose>
+					<when test="searchField != null and searchField == 1 and searchText != null and searchText != ''.toString()">
+						AND sm.menu_nm like #{searchText}||'%'
+					</when>
+					<when test="searchField != null and searchField == 2 and searchText != null and searchText != ''.toString()">
+						AND sm.menu_sn = #{searchText}
+					</when>
+					<otherwise>
+						AND sm.upper_menu_sn is NULL 
+					</otherwise>
+				</choose>
+			 CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+			 ORDER SIBLINGS BY sm.bo_site_id, sm.sort_seq
+	</select>
+	
+	
+	<select id="selectListAuth" parameterType="com.plgrim.ncp.commons.data.FormSysAuthGrpDTO" resultMap="resultAuth">
+	
+		/* [commons.auth.xml][selectListAuth]][권한(기능) 목록 조회][Tam] */ 
+		SELECT
+		    sm.menu_nm, sa.author_grp_sn, sa.author_turn, sa.menu_sn, sa.author_resrc_nm, sa.author_resrc_val
+		FROM 
+		    SYS_MENU sm INNER JOIN SYS_AUTHOR sa
+		on
+		    sm.menu_sn = sa.menu_sn
+		    AND
+		    sa.author_grp_sn = #{selAuthorGrpSn}
+		    AND
+		    sm.menu_sn = #{selMenuSn}
+		    AND
+		    sa.author_resrc_nm IS NOT NULL
+	
+	</select>
+	
+	
+	<select id="selectListMenu" parameterType="com.plgrim.ncp.commons.data.FormSysAuthGrpDTO" resultMap="resultMenu">
+		<![CDATA[
+		/* [commons.auth.xml][selectListMenu]][메뉴 목록 조회][Tam] */ 
+		SELECT
+		       sm.menu_sn, sm.upper_menu_sn, sm.bo_site_id, sm.menu_nm, sm.menu_img_url
+		     , sm.menu_url, sm.sort_seq, sm.menu_tp_cd, sm.outpt_tp_cd, sm.first_pge_yn
+		     , LEVEL menu_depth
+		     , LPAD(' ', 2*LEVEL-1)||PRIOR sm.menu_nm  upper_menu_nm
+		     , SUBSTR( SUBSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ')  ,0, INSTR(  SYS_CONNECT_BY_PATH(sm.menu_nm, ' &#47; ') ,' &#47; ',-1)   ),7)  na_menu_nm
+		     ,(
+               select case when count(*) > 0 then 'Y' else ' ' end
+               from SYS_AUTHOR
+               where 1=1
+               and AUTHOR_GRP_SN = #{selAuthorGrpSn}
+               and menu_sn = sm.menu_sn
+              ) as assign_yn
+		FROM
+		    SYS_MENU sm
+		WHERE 
+			sm.use_yn = 'Y' AND sm.delete_yn = 'N'
+		]]>
+			<choose>
+				<when test = "listBoSite != null">
+					AND sm.bo_site_id  in  
+					<foreach item ="item" index="index" collection="listBoSite" open="(" separator="," close=")">
+		         		#{item}
+		   			</foreach>
+				</when>   
+			</choose>
+						
+		START WITH  
+			sm.menu_tp_cd = 'MENU' AND sm.upper_menu_sn is NULL
+			<choose>
+				<when test="searchField != null and searchField == 1">
+					AND sm.menu_nm like #{searchText}||'%'
+				</when>
+				<when test="searchField != null and searchField == 2">
+					AND sm.menu_sn = #{searchText}
+				</when>
+			</choose>
+		CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+		 ORDER SIBLINGS BY sm.sort_seq
+	
+	</select>
+	
+	<select id="selectListRoleMenuAll" parameterType="com.plgrim.ncp.commons.data.SysAuthMenuDTO" resultMap="resultMenu">
+		<![CDATA[
+		/* [commons.auth.xml][selectListRoleMenuAll]][사용자 권한별 전체 메뉴 목록 조회][Tam] */
+		SELECT id AS menu_sn,
+		       menuUrl AS menu_url
+		FROM (
+		        SELECT
+		            sm.*,
+		            sm.menu_sn id,
+		            sm.upper_menu_sn upperKey,
+		            ( SELECT menu_url FROM sys_menu  WHERE menu_tp_cd = 'FILE' AND first_pge_yn ='Y'  AND upper_menu_sn = sm.menu_sn  AND delete_yn <> 'Y' AND rownum = 1 ) menuUrl
+		        FROM
+		        (
+		            SELECT
+		                NVL(sm2.childcount, 0) AS childCount,
+		                sm.bo_site_id, sm.menu_sn, sm.upper_menu_sn, sm.menu_nm,
+		                sm.menu_img_url, sm.use_yn, sm.sort_seq,      
+		                sm.outpt_tp_cd, sm.popup_left_lc , sm.popup_upend_lc, sm.popup_width, sm.popup_hg popupHg
+		            FROM 
+		                sys_menu sm 
+		                INNER JOIN 
+		                ( SELECT  B.author_grp_sn, B.menu_sn 
+		                  FROM SYS_ADMIN_AUTHOR_GRP_MAPNG A, 
+		                       SYS_AUTHOR B 
+		                  WHERE A.ADMIN_ID = #{adminId}
+		                  AND A.author_grp_sn = B.author_grp_sn 
+		                  GROUP BY B.author_grp_sn, B.menu_sn) sa
+		                ON
+		                    sm.delete_yn = 'N'
+		                    AND
+		                    sm.bo_site_id = #{boSiteId}
+		                    AND
+		                    sm.use_yn = 'Y'
+		                    AND
+		                    sm.menu_sn = sa.menu_sn
+		                    AND
+		                    sm.menu_tp_cd = 'MENU'
+		                LEFT OUTER JOIN 
+		                ( SELECT upper_menu_sn, COUNT (*) AS childCount FROM sys_menu WHERE delete_yn = 'N' AND use_yn = 'Y' AND menu_tp_cd='MENU' GROUP BY upper_menu_sn ) sm2
+		                ON 
+		                    sm.menu_sn = sm2.upper_menu_sn
+		        ) sm
+		        START WITH  
+		        sm.upper_menu_sn is NULL
+		        CONNECT BY PRIOR  sm.menu_sn = sm.upper_menu_sn
+		        ORDER SIBLINGS BY sm.sort_seq 
+		   )
+		]]>
+		<if test="url != null">
+			WHERE menuUrl = #{url}
+		</if>
+	</select>
+	
+	<update id="mergeAuthGrp" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO">
+		
+		<selectKey keyProperty="newAuthorGrpSn" resultType="Long" order="BEFORE">
+	        SELECT SQ_SYSAUTHOR_GRP.NEXTVAL FROM dual
+	    </selectKey> 
+	
+	
+		MERGE INTO sys_author_grp sag   /* [commons.auth.xml][mergeAuthGrp][권한그룹 저장처리][Tam] */
+		     USING ( select 0 as author_grp_sn FROM dual ) wsag
+		        ON (  sag.author_grp_sn = #{sysAuthorGrp.authorGrpSn,jdbcType=NUMERIC} )
+		WHEN MATCHED
+		THEN
+		   UPDATE SET  
+		        author_grp_nm = #{sysAuthorGrp.authorGrpNm} , use_yn = #{sysAuthorGrp.useYn}, author_grp_dscr = #{sysAuthorGrp.authorGrpDscr,jdbcType=VARCHAR},  udter_id = #{regtrId},   udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		   INSERT  (
+		       author_grp_sn, author_grp_nm, use_yn, author_grp_dscr,
+		       sort_seq, regtr_id, reg_dt
+		   ) VALUES ( 
+		      #{newAuthorGrpSn,jdbcType=NUMERIC}, #{sysAuthorGrp.authorGrpNm,jdbcType=VARCHAR}, #{sysAuthorGrp.useYn,jdbcType=VARCHAR}, #{sysAuthorGrp.authorGrpDscr,jdbcType=VARCHAR},
+		       0, #{regtrId,jdbcType=VARCHAR}, SYSDATE
+		   )
+	</update>
+	
+	<insert id="mergeAuthGrpHistMerge" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO">
+		<selectKey keyProperty="existCount" resultType="Long" order="BEFORE">
+       		SELECT count(*)  FROM sys_author_grp where author_grp_sn = #{sysAuthorGrp.authorGrpSn,jdbcType=NUMERIC}
+	    </selectKey> 
+
+			 /* [commons.auth.xml][mergeAuthGrpHistMerge][권한그룹 저장처리이력 저장][kenny]
+		<choose>
+			<when test="existCount == null or existCount == 0">
+			/* newAuthorGrpSn로 insert */
+		   INSERT  into sys_author_grp_hist (
+		       author_grp_sn, AUTHOR_GRP_HIST_DT ,author_grp_nm,use_yn,AUTHOR_GRP_DSCR,  sort_seq, regtr_id, reg_dt
+		   ) VALUES ( 
+		      #{newAuthorGrpSn,jdbcType=NUMERIC},SYSTIMESTAMP, #{sysAuthorGrp.authorGrpNm,jdbcType=VARCHAR}, #{sysAuthorGrp.useYn,jdbcType=VARCHAR}, #{sysAuthorGrp.authorGrpDscr,jdbcType=VARCHAR},
+		       0, #{regtrId,jdbcType=VARCHAR}, SYSDATE
+		   )		
+			</when>
+			<otherwise>
+			/* authorGrpSn로 insert */
+		   INSERT into sys_author_grp_hist (
+		       author_grp_sn, AUTHOR_GRP_HIST_DT ,author_grp_nm,use_yn,AUTHOR_GRP_DSCR,   sort_seq, regtr_id, reg_dt
+		   ) VALUES ( 
+		      #{sysAuthorGrp.authorGrpSn,jdbcType=NUMERIC},SYSTIMESTAMP, #{sysAuthorGrp.authorGrpNm,jdbcType=VARCHAR}, #{sysAuthorGrp.useYn,jdbcType=VARCHAR}, #{sysAuthorGrp.authorGrpDscr,jdbcType=VARCHAR},
+		       0, #{regtrId,jdbcType=VARCHAR}, SYSDATE
+		   )		
+			</otherwise>
+		</choose>
+	</insert>
+
+	<insert id="mergeAuthGrpHistInsert" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO">
+		   INSERT INTO /* [commons.auth.xml][mergeAuthGrpHistInsert][권한그룹 저장처리이력 저장][kenny] */  
+		   SYS_AUTHOR_GRP_HIST
+		   (
+		       author_grp_sn, AUTHOR_GRP_HIST_DT ,author_grp_nm,AUTHOR_GRP_DSCR, use_yn,  sort_seq, regtr_id, reg_dt
+		   ) VALUES ( 
+		      #{newAuthorGrpSn,jdbcType=NUMERIC},SYSTIMESTAMP, #{sysAuthorGrp.authorGrpNm,jdbcType=VARCHAR}, #{sysAuthorGrp.authorGrpDscr,jdbcType=VARCHAR}, #{sysAuthorGrp.useYn,jdbcType=VARCHAR},
+		       0, #{regtrId,jdbcType=VARCHAR}, SYSDATE
+		   )
+	</insert>
+	
+	<insert id="copyAuthGrp" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO">
+		INSERT INTO sys_author_grp (  /* [commons.auth.xml][copyAuthGrp][권한그룹 복사처리][Tam] */
+		   author_grp_sn, author_grp_nm, use_yn,  sort_seq, regtr_id, reg_dt
+		)SELECT
+		   #{newAuthorGrpSn} , '(복사)'||author_grp_nm, 'N', sort_seq, #{regtrId}, SYSDATE
+		FROM
+		    sys_author_grp
+		WHERE
+		    author_grp_sn = #{sysAuthorGrp.authorGrpSn}
+	</insert>
+	
+	<insert id="copyAuthGrpHist" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO">
+		INSERT INTO sys_author_grp_HIST (  /* [commons.auth.xml][copyAuthGrpHist][권한그룹 복사처리이력저장][kenny] */
+		   author_grp_sn, AUTHOR_GRP_HIST_DT ,author_grp_nm,AUTHOR_GRP_DSCR, use_yn,  sort_seq, regtr_id, reg_dt
+		)SELECT
+		   author_grp_sn, SYSTIMESTAMP,author_grp_nm, AUTHOR_GRP_DSCR ,use_yn,  sort_seq, #{regtrId,jdbcType=VARCHAR}, sysdate
+		FROM
+		    sys_author_grp
+		WHERE
+		    author_grp_sn = #{newAuthorGrpSn}
+	</insert>
+	
+	<insert id="copyAuth" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO">
+	INSERT INTO sys_author (  /* [commons.auth.xml][copyAuth][권한 복사처리][Tam] */
+	   author_grp_sn, 
+	   author_turn, 
+	   menu_sn, 
+	   author_resrc_nm, 
+	   author_resrc_val, 
+	   regtr_id, 
+	   reg_dt
+	) SELECT
+	   #{newAuthorGrpSn}  authorGrpSn, 
+	   author_turn, 
+	   menu_sn, 
+	   author_resrc_nm, 
+	   author_resrc_val, 
+	   #{regtrId}, 
+	   SYSDATE
+	FROM
+	    SYS_AUTHOR
+	WHERE
+	    author_grp_sn = #{sysAuthorGrp.authorGrpSn}
+    </insert>
+    
+    <select id="selectUseCntAuthGrp" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO" resultType="long">
+		<![CDATA[
+			SELECT  /* [commons.auth.xml][selectUseCntAuthGrp][권한그룹 사용 조회][Tam] */
+		        COUNT(*)  cnt 
+		     FROM sys_admin_author_grp_mapng
+		     WHERE
+		         author_grp_sn = #{sysAuthorGrp.authorGrpSn}
+		]]>
+	</select>
+	
+	<delete id="deleteAdmAuthGrp" parameterType="com.plgrim.ncp.commons.data.SysAuthGrpDTO">
+		/* [commons.auth.xml][deleteAdmAuthGrp][권한그룹 삭제][Tam] */
+		DELETE FROM  sys_author_grp where  author_grp_sn =  #{sysAuthorGrp.authorGrpSn}
+	</delete>
+	
+	<delete id="deleteAdmAuth" parameterType="com.plgrim.ncp.commons.data.SysAuthDTO">
+		/* [commons.auth.xml][deleteAdmAuth][권한 삭제][Tam] */
+		DELETE FROM sys_author where  author_grp_sn = #{sysAuthor.authorGrpSn}
+		<if test="sysMenu != null and sysMenu.menuSn != null">
+			AND menu_sn = #{sysMenu.menuSn}
+		</if>
+	</delete>
+	
+	<select id="selectUseCntAuth" parameterType="com.plgrim.ncp.commons.data.SysAuthDTO" resultType="long">
+		/* [commons.auth.xml][selectUseCntAuth]][권한 사용횟수 조회][Tam] */
+		SELECT count(*) cnt  FROM sys_author WHERE author_grp_sn = #{selAuthorGrpSn} 
+		<if test="selMenuSn != null">
+			AND menu_sn = #{selMenuSn}
+		</if>
+			
+	</select>
+	
+	<insert id="insertAuth" parameterType="com.plgrim.ncp.commons.data.SysAuthDTO">
+		
+		<selectKey keyProperty="maxAuthorTurn" resultType="int" order="BEFORE">
+       		SELECT NVL(MAX(author_turn)+1,1) AS ID FROM sys_author where author_grp_sn = #{sysAuthor.authorGrpSn}
+   		</selectKey>
+   
+		INSERT INTO sys_author (  /* [commons.auth.xml][insertAuth][권한 메뉴 등록][Tam] */
+		   author_grp_sn, 
+		   author_turn, 
+		   menu_sn, 
+		   author_resrc_nm, 
+		   author_resrc_val, 
+		   regtr_id, 
+		   reg_dt
+		) VALUES(
+		   #{sysAuthor.authorGrpSn}, 
+		   #{maxAuthorTurn}, 
+		   #{sysAuthor.menuSn}, 
+		   #{sysAuthor.authorResrcNm}, 
+		   #{sysAuthor.authorResrcVal}, 
+		   #{regtrId}, 
+		   SYSDATE
+		)
+    </insert>
+    
+   	<insert id="insertAuthHist" parameterType="com.plgrim.ncp.commons.data.SysAuthDTO">
+   
+		INSERT INTO SYS_AUTHOR_HIST (  /* [commons.auth.xml][insertAuthHist][권한 메뉴 등록이력 등록][Tam] */
+		   author_grp_sn, 
+		   author_turn, 
+		   AUTHOR_HIST_DT,
+		   menu_sn, 
+		   author_resrc_nm, 
+		   author_resrc_val, 
+		   regtr_id, 
+		   reg_dt
+		) VALUES(
+		   #{sysAuthor.authorGrpSn}, 
+		   #{maxAuthorTurn}, 
+		   SYSTIMESTAMP,
+		   #{sysAuthor.menuSn}, 
+		   #{sysAuthor.authorResrcNm}, 
+		   #{sysAuthor.authorResrcVal}, 
+		   #{regtrId}, 
+		   SYSDATE
+		)
+    </insert>
+     
+    <update id="updateAuth" parameterType="com.plgrim.ncp.commons.data.SysAuthDTO">
+		UPDATE  /* [commons.auth.xml][updateAuth][버튼권한 저장 처리][Tam] */
+			sys_author 
+		SET  
+	        author_resrc_nm = #{sysAuthor.authorResrcNm},
+	        author_resrc_val = #{sysAuthor.authorResrcVal},
+	        udter_id = #{regtrId},   
+	        udt_dt = SYSDATE
+		WHERE
+			author_grp_sn = #{sysAuthor.authorGrpSn} AND menu_sn = #{sysAuthor.menuSn}
+	</update>
+	
+	<update id="updateMaskingAuth" parameterType="com.plgrim.ncp.commons.data.SysAuthDTO">
+		
+		<![CDATA[
+		UPDATE  /* [commons.auth.xml][updateMaskingAuth][마스킹해제권한 저장 처리][Tam] */
+            sys_author 
+        SET  
+            author_resrc_nm = #{sysAuthor.authorResrcNm},
+            author_resrc_val = #{sysAuthor.authorResrcVal},
+            udter_id = #{regtrId},   
+            udt_dt = SYSDATE
+        WHERE
+            author_grp_sn = #{sysAuthor.authorGrpSn} 
+            AND menu_sn  in (  SELECT menu_sn  FROM sys_menu where MENU_TP_CD = 'FILE' AND FIRST_PGE_YN != 'Y' AND upper_menu_sn = ( select upper_menu_sn FROM sys_menu WHERE menu_sn =  #{sysAuthor.menuSn} )) 
+         ]]>
+	</update>
+	
+</mapper>

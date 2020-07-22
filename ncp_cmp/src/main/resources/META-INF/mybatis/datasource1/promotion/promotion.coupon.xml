@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion">
+
+    <update id="updatePrmCpn" parameterType="prmCpn">
+        UPDATE /* com.plgrim.ncp.base.updatePrmCpn [프로모션쿠폰정보 업데이트] 2018-05-10 */
+        PRM_CPN SET
+                 CPN_KND_CD = #{cpnKndCd,jdbcType=VARCHAR}
+                ,ONOFLNE_CPN_OFR_TP_CD = #{onoflneCpnOfrTpCd,jdbcType=VARCHAR}
+                ,ONOFLNE_CPN_PUBLI_SECT_CD = #{onoflneCpnPubliSectCd,jdbcType=VARCHAR}
+                ,DLV_CST_CPN_SECT_CD = #{dlvCstCpnSectCd,jdbcType=VARCHAR}
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ccRewardCpnYn)">
+                ,CC_REWARD_CPN_YN = #{ccRewardCpnYn,jdbcType=VARCHAR}
+                </if>
+                ,CPN_USE_MIN_PCH_AMT = #{cpnUseMinPchAmt,jdbcType=NUMERIC}
+                ,CPN_MAX_DC_PSB_AMT = #{cpnMaxDcPsbAmt,jdbcType=NUMERIC}
+                ,PUBLI_QTY_LMIT_CD = #{publiQtyLmitCd,jdbcType=VARCHAR}
+                ,ALL_PUBLI_QTY = #{allPubliQty,jdbcType=NUMERIC}
+                ,ALL_ISSU_INV_QTY = #{allIssuInvQty,jdbcType=NUMERIC}
+                ,DPLCT_ISSU_LMIT_CD = #{dplctIssuLmitCd,jdbcType=VARCHAR}
+                ,DPLCT_ISSU_PSB_QTY = #{dplctIssuPsbQty,jdbcType=NUMERIC}
+                ,CPN_ISSU_MTHD_CD = #{cpnIssuMthdCd,jdbcType=VARCHAR}
+                <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dwldCpnGodDetailExpsrYn)">
+                ,DWLD_CPN_GOD_DETAIL_EXPSR_YN = #{dwldCpnGodDetailExpsrYn,jdbcType=VARCHAR}
+                </if>
+                ,CPN_USE_PD_CD = #{cpnUsePdCd,jdbcType=VARCHAR}
+                ,ISSU_STDR_VALID_DAYCNT = #{issuStdrValidDaycnt,jdbcType=NUMERIC}
+                ,CPN_USE_PD_BEG_DATE = #{cpnUsePdBegDate,jdbcType=VARCHAR}
+                ,CPN_USE_PD_END_DATE = #{cpnUsePdEndDate,jdbcType=VARCHAR}
+                ,DATEBY_USE_PSB_BEG_HOUR = #{datebyUsePsbBegHour,jdbcType=VARCHAR}
+                ,DATEBY_USE_PSB_END_HOUR = #{datebyUsePsbEndHour,jdbcType=VARCHAR}
+                ,CPN_USE_PSB_DOWSMON = #{cpnUsePsbDowsmon,jdbcType=VARCHAR}
+                ,CPN_CRTFC_CD_TP_CD = #{cpnCrtfcCdTpCd,jdbcType=VARCHAR}
+                ,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+                ,UDT_DT = SYSDATE
+                <choose>
+                	<when test='naverEpCpnYn != null and naverEpCpnYn != "" and naverEpCpnYn == "Y"'>
+                		,NAVER_EP_CPN_YN  = #{naverEpCpnYn,jdbcType=VARCHAR}
+			            <if test='pcCpnImgUrl != null and pcCpnImgUrl != ""'>
+			            ,PC_CPN_IMG_URL  = #{pcCpnImgUrl,jdbcType=VARCHAR}
+			            </if>
+			            <if test='pcCpnImgAltrtvCont != null and pcCpnImgAltrtvCont != ""'>
+			            ,PC_CPN_IMG_ALTRTV_CONT  = #{pcCpnImgAltrtvCont,jdbcType=VARCHAR}
+			            </if>
+			            <if test='mobileCpnImgUrl != null and mobileCpnImgUrl != ""'>
+			            ,MOBILE_CPN_IMG_URL  =  #{mobileCpnImgUrl,jdbcType=VARCHAR}
+			            </if>
+			            <if test='mobileCpnImgAltrtvCont != null and mobileCpnImgAltrtvCont != ""'>
+			            ,MOBILE_CPN_IMG_ALTRTV_CONT  = #{mobileCpnImgAltrtvCont,jdbcType=VARCHAR}
+		            	</if>
+                	</when>
+					<otherwise>
+						,NAVER_EP_CPN_YN = 'N'
+			            ,PC_CPN_IMG_URL  = ''
+			            ,PC_CPN_IMG_ALTRTV_CONT  = ''
+			            ,MOBILE_CPN_IMG_URL  =  ''
+			            ,MOBILE_CPN_IMG_ALTRTV_CONT  = ''
+					</otherwise>
+                </choose>
+        WHERE   1 = 1
+        AND     PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPrmCpn" parameterType="prmCpn">
+		INSERT /* com.plgrim.ncp.base.insertPrmCpn [프로모션쿠폰정보 생성] 2018-05-10 */
+		INTO   PRM_CPN (
+			   PRM_NO
+			 , CPN_KND_CD
+			 , ONOFLNE_CPN_OFR_TP_CD
+			 , ONOFLNE_CPN_PUBLI_SECT_CD
+			 , CPN_ISSU_SECT_CD
+			 , DLV_CST_CPN_SECT_CD
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ccRewardCpnYn)">
+			 , CC_REWARD_CPN_YN
+			 </if>
+			 , CPN_USE_MIN_PCH_AMT
+			 , CPN_MAX_DC_PSB_AMT
+			 , PUBLI_QTY_LMIT_CD
+			 , ALL_PUBLI_QTY
+			 , ALL_ISSU_INV_QTY
+			 , DPLCT_ISSU_LMIT_CD
+			 , DPLCT_ISSU_PSB_QTY
+			 , CPN_ISSU_MTHD_CD
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dwldCpnGodDetailExpsrYn)">
+			 , DWLD_CPN_GOD_DETAIL_EXPSR_YN
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(naverEpCpnYn)">
+			 , NAVER_EP_CPN_YN
+			 </if>
+			 , CPN_USE_PD_CD
+			 , ISSU_STDR_VALID_DAYCNT
+			 , CPN_USE_PD_BEG_DATE
+			 , CPN_USE_PD_END_DATE
+			 , DATEBY_USE_PSB_BEG_HOUR
+			 , DATEBY_USE_PSB_END_HOUR
+			 , CPN_USE_PSB_DOWSMON
+			 , CPN_CRTFC_CD_TP_CD
+			 , MOBILE_CPN_IMG_URL
+			 , MOBILE_CPN_IMG_ALTRTV_CONT
+			 , PC_CPN_IMG_ALTRTV_CONT
+			 , PC_CPN_IMG_URL
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{prmNo,jdbcType=VARCHAR}
+			 , #{cpnKndCd,jdbcType=VARCHAR}
+			 , #{onoflneCpnOfrTpCd,jdbcType=VARCHAR}
+			 , #{onoflneCpnPubliSectCd,jdbcType=VARCHAR}
+			 , #{cpnIssuSectCd,jdbcType=VARCHAR}
+			 , #{dlvCstCpnSectCd,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(ccRewardCpnYn)">
+			 , #{ccRewardCpnYn,jdbcType=VARCHAR}
+			 </if>
+			 , #{cpnUseMinPchAmt,jdbcType=NUMERIC}
+			 , #{cpnMaxDcPsbAmt,jdbcType=NUMERIC}
+			 , #{publiQtyLmitCd,jdbcType=VARCHAR}
+			 , #{allPubliQty,jdbcType=NUMERIC}
+			 , #{allIssuInvQty,jdbcType=NUMERIC}
+			 , #{dplctIssuLmitCd,jdbcType=VARCHAR}
+			 , #{dplctIssuPsbQty,jdbcType=NUMERIC}
+			 , #{cpnIssuMthdCd,jdbcType=VARCHAR}
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(dwldCpnGodDetailExpsrYn)">
+			 , #{dwldCpnGodDetailExpsrYn,jdbcType=VARCHAR}
+			 </if>
+			 <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(naverEpCpnYn)">
+			 , #{naverEpCpnYn,jdbcType=VARCHAR}
+			 </if>
+			 , #{cpnUsePdCd,jdbcType=VARCHAR}
+			 , #{issuStdrValidDaycnt,jdbcType=NUMERIC}
+			 , #{cpnUsePdBegDate,jdbcType=VARCHAR}
+			 , #{cpnUsePdEndDate,jdbcType=VARCHAR}
+			 , #{datebyUsePsbBegHour,jdbcType=VARCHAR}
+			 , #{datebyUsePsbEndHour,jdbcType=VARCHAR}
+			 , #{cpnUsePsbDowsmon,jdbcType=VARCHAR}
+			 , #{cpnCrtfcCdTpCd,jdbcType=VARCHAR}
+			 , #{mobileCpnImgUrl,jdbcType=VARCHAR}
+			 , #{mobileCpnImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{pcCpnImgAltrtvCont,jdbcType=VARCHAR}
+			 , #{pcCpnImgUrl,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+   
+</mapper>

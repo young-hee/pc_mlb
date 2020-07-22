@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.rfd.bnk.acct">
+
+    <!-- 환불계좌 목록 조회 -->
+    <select id="selectMemberRefundAccountList" parameterType="mbrRfdBnkAcct" resultType="mbrRfdBnkAcct">
+        SELECT /* [biz.mbr.rfd.bnk.acct.xml][selectMemberRefundAccountList][회원 환불 계좌 목록 조회][Jessi] */ 
+                mrba.mbr_no AS mbrNo                                       /* 회원 번호 */
+              , mrba.rfd_bnk_acct_turn AS rfdBnkAcctTurn                   /* 환불 계좌 순번 */
+              , mrba.rfd_bnk_acct_nm AS rfdBnkAcctNm                       /* 환불 계좌 명 */
+              , PKG_CRYPTO.DECRYPT(mrba.rfd_bnk_acct_no, 'FNFBNT02-5200001') AS rfdBnkAcctNo
+              , msc1.cd_nm AS rfdBnkAcctBnkCd         			           /* 환불 계좌 은행 코드 */
+              , mrba.rfd_bnk_acct_acnthldr_nm AS rfdBnkAcctAcnthldrNm      /* 환불 계좌 예금주 명 */
+              , DECODE(mrba.rprst_rfd_bnk_acct_yn, 'Y', '1', '0') AS rprstRfdBnkAcctYn         /* 대표 환불 계좌 여부 */
+              , mrba.regtr_id AS regtrId                                   /* 등록자 ID */
+              , mrba.reg_dt AS regDt                                       /* 등록 일시 */
+              , mrba.udter_id AS udterId                                   /* 수정자 ID */
+              , mrba.udt_dt AS udtDt                                       /* 수정 일시 */
+          FROM mbr_rfd_bnk_acct mrba
+		  LEFT OUTER JOIN mv_sys_cd msc1 
+		    ON (mrba.rfd_bnk_acct_bnk_cd = msc1.cd AND msc1.upper_cd='BNK' AND msc1.lang_cd = #{lang, jdbcType=VARCHAR}) 	   /* 은행 코드 */  
+         WHERE mrba.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+         ORDER BY mrba.rprst_rfd_bnk_acct_yn DESC, mrba.mbr_no
+    </select>
+    
+    <!-- 대표 환불 계좌 제거 -->
+    <update id="updateRprstRefundAccountRevome" parameterType="mbrRfdBnkAcct">
+        UPDATE /* [biz.mbr.dlvsp.xml][updateRprstRefundAccountRevome][대표 환불 계좌 설정 제거][Jessi] */
+                mbr_rfd_bnk_acct
+           SET 
+                rprst_rfd_bnk_acct_yn = 'N'                      /* 대표 환불 계좌 여부 */
+              , udter_id = #{udterId, jdbcType=VARCHAR}
+              , udt_dt = SYSDATE
+         WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+           AND rprst_rfd_bnk_acct_yn = 'Y'
+    </update>
+    
+    <!-- 대표 환불 계좌 설정 -->
+    <update id="updateRprstRefundAccountSet" parameterType="mbrRfdBnkAcct">
+        UPDATE /* [biz.mbr.dlvsp.xml][updateRprstRefundAccountSet][대표 환불 계좌 설정][Jessi] */
+                 mbr_rfd_bnk_acct
+           SET 
+                rprst_rfd_bnk_acct_yn = 'Y'                      /* 대표 환불 계좌 여부 */
+              , udter_id = #{udterId, jdbcType=VARCHAR}
+              , udt_dt = SYSDATE
+         WHERE mbr_no = #{mbrNo, jdbcType=VARCHAR}
+           AND rfd_bnk_acct_turn = #{rfdBnkAcctTurn, jdbcType=NUMERIC}        
+    </update>
+    
+    <!-- 환불계좌 수정 -->
+    <update id="updateMemberRefundAccount" parameterType="mbrRfdBnkAcct">
+        UPDATE /* [biz.mbr.rfd.bnk.acct.xml][updateMemberRefundAccount][회원 환불 계좌 수정][Jessi] */
+        		mbr_rfd_bnk_acct
+           SET 
+                rfd_bnk_acct_nm = #{rfdBnkAcctNm,jdbcType=VARCHAR}                    /* 환불 계좌 명 */
+              , rfd_bnk_acct_no = PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=NUMERIC}, 'FNFBNT02-5200001') /* 환불 계좌 번호 */
+              , rfd_bnk_acct_bnk_cd = #{rfdBnkAcctBnkCd,jdbcType=NUMERIC}             /* 환불 계좌 은행 코드 */
+              , rfd_bnk_acct_acnthldr_nm = #{rfdBnkAcctAcnthldrNm,jdbcType=NUMERIC}   /* 환불 계좌 예금주 명 */
+              , udter_id = #{udterId}                             		    		  /* 수정자 ID */
+              , udt_dt = SYSDATE                                     				  /* 수정 일시 */
+         WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+           AND rfd_bnk_acct_turn = #{rfdBnkAcctTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 환불계좌 삭제 -->
+    <update id="deleteMemberRefundAccount" parameterType="mbrRfdBnkAcct">
+        DELETE /* [biz.mbr.rfd.bnk.acct.xml][deleteMemberRefundAccount][회원 환불 계좌 삭제][Jessi] */ 
+          FROM mbr_rfd_bnk_acct mrba
+         WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+           AND rfd_bnk_acct_turn = #{rfdBnkAcctTurn,jdbcType=NUMERIC}
+    </update>
+    
+    <!-- 환불계좌 입력 -->
+    <insert id="insertMbrRfdAcc" parameterType="mbrRfdBnkAcct">
+		MERGE INTO /* [biz.mbr.rfd.bnk.acct.xml][insertMbrRfdAcc][클레임 회원 환불계좌 등록][Aether] */
+		          mbr_rfd_bnk_acct
+		     USING DUAL
+		        ON (    rfd_bnk_acct_bnk_cd = #{rfdBnkAcctBnkCd,jdbcType=VARCHAR}
+		            AND rfd_bnk_acct_no = PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+		            AND mbr_no = #{mbrNo,jdbcType=VARCHAR})
+		WHEN MATCHED
+		THEN
+		    UPDATE SET udter_id = #{regtrId,jdbcType=VARCHAR}, udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		    INSERT     (    mbr_no
+			              , regtr_id
+			              , reg_dt
+			              , rfd_bnk_acct_acnthldr_nm
+			              , rfd_bnk_acct_bnk_cd
+			              , rfd_bnk_acct_nm
+			              , rfd_bnk_acct_no
+			              , rfd_bnk_acct_turn
+			              , rprst_rfd_bnk_acct_yn
+			              , udter_id
+			              , udt_dt)
+		        VALUES (  #{mbrNo}
+		                 ,#{regtrId}
+		                 ,sysdate
+		                 ,#{rfdBnkAcctAcnthldrNm}
+		                 ,#{rfdBnkAcctBnkCd}
+		                 ,#{rfdBnkAcctNm}
+		                 ,PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo}, 'FNFBNT02-5200001')
+		                 ,#{rfdBnkAcctTurn}
+		                 ,#{rprstRfdBnkAcctYn}
+		                 ,#{udterId}
+		                 ,sysdate )    
+    </insert>
+    
+</mapper>

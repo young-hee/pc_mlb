@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComAffComInvExcpItm" parameterType="comAffComInvExcpItm" resultType="comAffComInvExcpItm">
+		SELECT /* com.plgrim.ncp.base.selectComAffComInvExcpItm		Generator(Generator)	2018-05-23 */
+			   AFF_VRSC_COM_ID
+			 , AFF_COM_ID
+			 , GOD_NO
+			 , AFF_COM_INV_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_AFF_COM_INV_EXCP_ITM
+		 WHERE 1 = 1
+	   	   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateComAffComInvExcpItm" parameterType="comAffComInvExcpItm">
+		UPDATE /* com.plgrim.ncp.base.updateComAffComInvExcpItm		Generator(Generator)	2018-05-23 */
+		COM_AFF_COM_INV_EXCP_ITM SET
+			   AFF_COM_INV_QTY = #{affComInvQty,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertComAffComInvExcpItm" parameterType="comAffComInvExcpItm">
+		INSERT /* com.plgrim.ncp.base.insertComAffComInvExcpItm		Generator(Generator)	2018-05-23 */
+		INTO   COM_AFF_COM_INV_EXCP_ITM (
+			   AFF_VRSC_COM_ID
+			 , AFF_COM_ID
+			 , GOD_NO
+			 , AFF_COM_INV_QTY
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{affVrscComId,jdbcType=VARCHAR}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{affComInvQty,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComAffComInvExcpItm" parameterType="comAffComInvExcpItm">
+		DELETE /* com.plgrim.ncp.base.deleteComAffComInvExcpItm		Generator(Generator)	2018-05-23 */
+		  FROM COM_AFF_COM_INV_EXCP_ITM
+		 WHERE 1 = 1
+		   AND AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+		   AND AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

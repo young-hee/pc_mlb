@@ -1,0 +1,44 @@
+Key,Description,common,local,dev,stg_common,stg,stg2,prod
+mall.id,,SA,,,,,,
+ncp.server.target,,PC,,,,,,
+
+ncp_web_pc_sa.protocol.http.port,,80,8032,,,,,
+ncp_web_pc_sa.protocol.https.port,,443,8034,,,,,
+
+ncp_web_pc_sa.main.url,메인 페이지,/main/mall/view,,,,,,
+ncp_web_pc_sa.login.url,로그인 폼 URL,/member/login/view,,,,,,
+ncp_web_pc_sa.login.popup.url,login popup,/member/login/view.popup,,,,,,
+ncp_web_pc_sa.login.fail.url,팝업 로그인 실패 URL,/member/login/view.popup,,,,,,
+ncp_web_pc_sa.login.success.url,팝업 로그인 성공 URL,/public/popLoginSuccess,,,,,,
+ncp_web_pc_sa.login.process.url,로그인 처리 URL,/loginProcess,,,,,,
+ncp_web_pc_sa.logout.url,로그 아웃 처리 URL,/logoutProcess,,,,,,
+ncp_web_pc_sa.logout.success.url,로그 아웃 성공된 이후 리다이렉트 URL,${ncp_web_pc_sa.main.url},,,,,,
+
+ncp_web_pc_sa.naver.login.process.url,네이버 로그인 처리 URL,/naverloginProcess,,,,,,
+
+ncp_web_pc_sa.invalid.session.url,동시 2개의 세션이 존재 할 경우 요청 URL,/errors/invalidSession,,,,,,
+ncp_web_pc_sa.expired.url,세션 타임아웃,/errors/expiredSession,,,,,,
+ncp_web_pc_sa.vulnerability.url,HDIV 위반 페이지,/errors/vulnerability,,,,,,
+ncp_web_pc_sa.expired.vulnerability.url,CSRF 세션 타임 아웃,/member/login/view,,,,,,
+
+#AWS CloudFrontUrl,,,,,,,,
+ncp.cdn.url,discovery expediton cloudfront url,https://stg-static.stretch-angels.com,,https://stg-static.stretch-angels.com,https://stg-static.stretch-angels.com,,,https://static.stretch-angels.com
+ncp.image.url,cloudfront image URL,${ncp.cdn.url}/images,,,,,,
+ncp.web.resource.url,cloudfront web resource URL,${ncp.cdn.url}/pc/,/,,,,,
+ncp.web.content.path,cloudfront,/webresource/stretch-angels/content,,,,,,
+ncp.web.images.path,cloudfront,/webresource/stretch-angels/images,,,,,,
+
+ncp.cache.external.flush.enable,서버 기동 시 Redis 전시 캐시데이터 flsuh 여부(각 서버에 따름),true,false,,,,,
+##########################################,,,,,,,,
+# IPIN,,,,,,,,
+##########################################,,,,,,,,
+ncp_base.ipin.sitecode,사이트 코드,C468,,,,,,
+ncp_base.ipin.sitepassword,사이트 패스워드,nicefnf2019!,,,,,,
+ncp_base.ipin.returnurl,return url,${ncp.url.pc_SA.root.secure}/member/certification/ipinNiceSuccess.popup,http://prj.pec.com:8032/member/certification/ipinNiceSuccess.popup,,,,,
+##########################################,,,,,,,,
+# 본인인증,,,,,,,,
+##########################################,,,,,,,,
+ncp_base.cert.sitecode,사이트 코드,G7375,,,,,,
+ncp_base.cert.sitepassword,사이트 패스워드,JBPICLTHG8YH,,,,,,
+ncp_base.cert.returnsuccessurl,return success url,${ncp.url.pc_SA.root.secure}/member/certification/pccNiceSuccess.popup,http://prj.pec.com:8032/member/certification/pccNiceSuccess.popup,,,,,
+ncp_base.cert.returnfailurl,return fail url,${ncp.url.pc_SA.root.secure}/member/certification/pccNiceFail.popup,http://prj.pec.com:8032/member/certification/pccNiceFail.popup,,,,,

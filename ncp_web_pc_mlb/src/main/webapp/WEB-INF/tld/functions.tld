@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+	<description>skcc functions library</description>
+ 	<display-name>functions</display-name>
+ 	<tlib-version>1.1</tlib-version>
+ 	<short-name>NCPfn</short-name>
+
+ 	<function>
+  		<description>
+			yyyy-mm-dd
+		</description>
+  		<name>yyyymmdd</name>
+  		<function-class>com.plgrim.ncp.commons.taglib.Functions</function-class>
+  		<function-signature>
+  			java.lang.String yyyymmdd(java.lang.Object)</function-signature>
+  		<example>&lt;c:set var="value" value="${yyyymmdd(obj)}"&gt;</example>
+ 	</function>
+   
+      <function>
+      <description>
+         yyyy-MM-dd hh:mm:ss
+      </description>
+      <name>yyyymmddhhmmss</name>
+      <function-class>com.plgrim.ncp.commons.taglib.Functions</function-class>
+      <function-signature>
+         java.lang.String yyyymmddhhmmss(java.util.Date)</function-signature>
+      <example>&lt;c:set var="value" value="${yyyymmddhhmmss(date)}"&gt;</example>
+   </function>
+ 	
+ 	
+ 	 <function>
+      <description>
+         yyyymmddKr
+      </description>
+      <name>yyyymmddKr</name>
+      <function-class>com.plgrim.ncp.commons.taglib.Functions</function-class>
+      <function-signature>
+         java.lang.String yyyymmddKr(java.util.Date)</function-signature>
+      <example>&lt;c:set var="value" value="${yyyymmddKr(date)}"&gt;</example>
+   </function>
+ 	
+ 	
+   <function>
+      <description>
+         yyyy-mm-dd
+      </description>
+      <name>convertDate</name>
+      <function-class>com.plgrim.ncp.commons.taglib.Functions</function-class>
+      <function-signature>
+         java.lang.String convertDate(java.util.Date,java.lang.String)</function-signature>
+      <example>&lt;c:set var="value" value="${convertDate(date,'yyyy-mm-dd')}"&gt;</example>
+   </function>
+   
+   
+   <function>
+  		<description>
+			marshallingJson
+		</description>
+  		<name>marshallingJson</name>
+  		<function-class>com.plgrim.ncp.commons.taglib.Functions</function-class>
+  		<function-signature>
+  			java.lang.String marshallingJson(java.lang.Object)</function-signature>
+  		<example>&lt;c:set var="value" value="${marshallingJson(object)}"&gt;</example>
+ 	</function>
+ 	
+ 	
+ 	<function>
+      <description>
+         random number
+      </description>
+      <name>getRandomNum</name>
+      <function-class>com.plgrim.ncp.commons.taglib.Functions</function-class>
+      <function-signature>
+         int getRandomNum(int)</function-signature>
+      <example>&lt;c:set var="value" value="${getRandomNum(i)}"&gt;</example>
+   </function>
+</taglib>

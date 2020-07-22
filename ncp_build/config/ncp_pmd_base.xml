@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<ruleset name="NCP_All" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+	<rule ref="rulesets/java/basic.xml"></rule>
+	<rule ref="rulesets/java/braces.xml"></rule>
+	<rule ref="rulesets/java/clone.xml"></rule>
+	<rule ref="rulesets/java/codesize.xml">
+		<exclude name="TooManyMethods" />
+		<exclude name="ExcessiveParameterList"/>
+		<exclude name="ExcessivePublicCount"/>
+	</rule>
+	<rule ref="rulesets/java/comments.xml">
+		<exclude name="CommentSize" />
+		<exclude name="CommentRequired" />
+		
+	</rule>
+	<rule ref="rulesets/java/controversial.xml">
+		<exclude name="AtLeastOneConstructor" />
+		<exclude name="DefaultPackage" />
+		<exclude name="UseObjectForClearerAPI"/>
+		<exclude name="AvoidPrefixingMethodParameters"/>
+		<exclude name="OneDeclarationPerLine"/>
+		<exclude name="AvoidLiteralsInIfCondition"/>
+		<exclude name="OnlyOneReturn"/> <!--  Fast fail, Fast return 원칙에 따라 제거 -->
+		
+		
+	</rule>
+	<rule ref="rulesets/java/coupling.xml">
+		<exclude name="LoosePackageCoupling" />
+		<exclude name="LawOfDemeter" />
+	</rule>
+	<rule ref="rulesets/java/design.xml">
+		<exclude name="SimpleDateFormatNeedsLocale"/>
+		<exclude name="UseLocaleWithCaseConversions"/>
+	</rule>
+	<rule ref="rulesets/java/empty.xml">
+	</rule>
+	<rule ref="rulesets/java/finalizers.xml">
+	</rule>
+	<rule ref="rulesets/java/imports.xml">
+	</rule>
+	
+	<!-- SLF4j를 사용하기 때문에 commons-logging, java logging은 사용하지 않ㅇ 
+	<rule ref="rulesets/java/logging-jakarta-commons.xml">
+	</rule>
+	
+	 -->
+	<rule ref="rulesets/java/logging-java.xml">
+		<exclude name="GuardLogStatementJavaUtil"/> <!--  SLF4j에서는 내부적으로 guard를 제공함 -->
+	</rule>
+	<rule ref="rulesets/java/migrating.xml">
+		<exclude name="JUnit4TestShouldUseBeforeAnnotation"/>
+		<exclude name="JUnit4TestShouldUseAfterAnnotation"/>
+		<exclude name="JUnit4TestShouldUseTestAnnotation"/>
+		<exclude name="JUnit4SuitesShouldUseSuiteAnnotation"/>
+		<exclude name="JUnitUseExpected"/>
+	</rule>
+	<rule ref="rulesets/java/naming.xml">
+		<exclude name="ShortVariable" />
+		<exclude name="LongVariable" />
+		<exclude name="ShortMethodName" />
+		<exclude name="VariableNamingConventions" />
+		<exclude name="AbstractNaming" />
+		<exclude name="ShortClassName"/>
+	</rule>
+	<rule ref="rulesets/java/optimizations.xml">
+		<exclude name="AvoidInstantiatingObjectsInLoops" />
+		<exclude name="LocalVariableCouldBeFinal"/>
+		<exclude name="MethodArgumentCouldBeFinal"/>
+	</rule>
+	<rule ref="rulesets/java/strictexception.xml">
+		<exclude name="SignatureDeclareThrowsException"/>
+	</rule>
+	<rule ref="rulesets/java/strings.xml">
+		<exclude name="InefficientEmptyStringCheck"/>
+	</rule>
+	<rule ref="rulesets/java/sunsecure.xml">
+	</rule>
+	<rule ref="rulesets/java/typeresolution.xml">
+		<exclude name="UnusedImports" />
+		<exclude name="SignatureDeclareThrowsException" /> 
+	</rule>
+	<rule ref="rulesets/java/unnecessary.xml">
+	</rule>
+	<rule ref="rulesets/java/unusedcode.xml">
+		<exclude name="UnusedPrivateField" />
+	</rule>
+</ruleset>
+	

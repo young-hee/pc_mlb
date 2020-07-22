@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.agr">
+    
+    <update id="insertMergeMbrStplatAgr" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrStplatAgr"  >
+    	
+    	MERGE 
+    		into mbr_stplat_agr agr
+	     	USING (
+	     			SELECT 
+	     					m.mbr_no
+	                    	,agr1.stplat_cd
+              		FROM    mbr m
+                   			LEFT OUTER JOIN  mbr_stplat_agr agr1
+		                   			ON       m.mbr_no = agr1.mbr_no
+			                      	AND      agr1.stplat_cd = #{stplatCd,jdbcType=VARCHAR}
+	                      			WHERE 	 m.mbr_no = #{mbrNo,jdbcType=VARCHAR}
+	              ) agr2
+	        ON (
+		        agr.mbr_no = agr2.mbr_no 
+		        AND agr2.stplat_cd = #{stplatCd,jdbcType=VARCHAR}
+	        	)
+		WHEN MATCHED
+		THEN
+		   UPDATE SET 
+	   				agr.udter_id = #{udterId,jdbcType=VARCHAR}
+		              ,agr.udt_dt = SYSDATE
+		              ,agr.STPLAT_IEM_AGR_YN = #{stplatIemAgrYn,jdbcType=VARCHAR}
+	              WHERE agr.stplat_cd = agr2.stplat_cd
+		WHEN NOT MATCHED
+		THEN
+		   INSERT     (
+		   				MBR_NO,
+		               STPLAT_CD,
+		               STPLAT_IEM_AGR_YN,
+		               REGTR_ID,
+		               UDTER_ID,
+		               REG_DT,
+		               UDT_DT
+		               )
+		       VALUES (
+		       			#{mbrNo,jdbcType=VARCHAR}
+				       ,#{stplatCd,jdbcType=VARCHAR}
+				       ,#{stplatIemAgrYn,jdbcType=VARCHAR}
+				       ,#{regtrId,jdbcType=VARCHAR}
+				       ,#{udterId,jdbcType=VARCHAR}
+				       ,SYSDATE
+				       ,SYSDATE
+		               )
+    </update>
+    
+    <select id="selectMbrSysStplat" parameterType="com.plgrim.ncp.biz.member.data.MemberFoDTO" resultType="com.plgrim.ncp.biz.member.result.MemberFoResult">
+		SELECT 
+            STPLAT_CD AS stplatCd
+            , STPLAT_IEM_AGR_YN as stplatIemAgrYn 
+        FROM MBR_STPLAT_AGR
+        WHERE MBR_NO =  #{mbrNo,jdbcType=VARCHAR}
+        AND STPLAT_CD = #{mbrStplatCd,jdbcType=VARCHAR}
+	</select>
+    
+    <select id="selectStplatList" parameterType="sysStplatUse" resultType="sysStplat">
+        SELECT 
+            CASE
+                WHEN t1.stplat_cd = 'ONLNE_SITE_USEF_STPLAT' THEN '1'
+                WHEN t1.stplat_cd = 'PSNL_INFO_PRTC_USEF_AGR' THEN '2'
+                WHEN t1.stplat_cd = 'PSNL_INFO_TRTMNT_CNSGN_AGR' THEN '3'
+                WHEN t1.stplat_cd = 'MARKT_PSNL_INFO_COLCT_USEF_AGR' THEN '4'
+                WHEN t1.stplat_cd = 'PSNL_INFO_THPR_OFFER_DETL' THEN '5'
+                ELSE '0'
+             END
+                AS t
+             ,t1.stplat_cd
+            ,NVL(T3.STPLAT_CONT,t1.stplat_cont) AS stplat_cont
+             ,t1.stplat_dscr
+        FROM SYS_STPLAT t1 JOIN SYS_STPLAT_USE t2 ON t1.stplat_cd = t2.stplat_cd
+                           LEFT OUTER JOIN SYS_STPLAT_LANG t3 ON T1.STPLAT_CD = T3.STPLAT_CD AND t3.lang_cd = #{lang,jdbcType=VARCHAR}
+       WHERE t2.STPLAT_USE_TP_CD = #{stplatUseTpCd,jdbcType=VARCHAR}
+        AND t1.stplat_cd != 'PSNL_INFO_THPR_OFFER_DETL'
+       <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(stplatCd)">
+        AND t1.stplat_cd = #{stplatCd,jdbcType=VARCHAR}
+        </if>
+        ORDER BY t
+    </select>
+
+    <select id="selectJoinStplatList" parameterType="sysStplatUse" resultType="sysStplat">
+        SELECT /* [biz.mbr.agr.xml][selectJoinStplatList][회원가입시 약관 조회] */
+            CASE
+                WHEN t1.stplat_cd = 'ONLNE_SITE_USEF_STPLAT' THEN '1'
+                WHEN t1.stplat_cd = 'PSNL_INFO_PRTC_USEF_AGR' THEN '2'
+                WHEN t1.stplat_cd = 'PSNL_INFO_TRTMNT_CNSGN_AGR' THEN '3'
+                WHEN t1.stplat_cd = 'MARKT_PSNL_INFO_COLCT_USEF_AGR' THEN '4'
+                ELSE '0'
+             END
+                AS t
+             ,t1.stplat_cd
+            ,NVL(T3.STPLAT_CONT,t1.stplat_cont) AS stplat_cont
+             ,t1.stplat_dscr
+        FROM SYS_STPLAT t1 JOIN SYS_STPLAT_USE t2 ON t1.stplat_cd = t2.stplat_cd
+                           LEFT OUTER JOIN SYS_STPLAT_LANG t3 ON T1.STPLAT_CD = T3.STPLAT_CD AND t3.lang_cd = #{lang,jdbcType=VARCHAR}
+       WHERE t2.STPLAT_USE_TP_CD = #{stplatUseTpCd,jdbcType=VARCHAR}
+        AND t1.stplat_cd IN
+        <foreach collection="stplatUseTpCdList" item="stplatCd" open="(" close=")" separator=",">
+            #{stplatCd,jdbcType=VARCHAR}
+        </foreach>
+
+        ORDER BY t
+    </select>
+
+
+
+
+    <!-- 언어별 시스템 약관 조회 -->
+    <select id="selectSysStplatLangKindList" parameterType="sysStplatUse" resultType="sysStplat">
+        /* [biz.mbr.agr.xml][selectSysStplatLangKindList][언어별 시스템 약관 조회] */
+        SELECT
+              ROW_NUMBER() OVER(ORDER BY m.sort_seq) AS t
+            , a.stplat_cd
+            , a.stplat_cont
+            , m.cd_nm as stplat_dscr
+        FROM  sys_stplat a
+        <!-- JOIN  sys_stplat_use b -->
+        LEFT OUTER JOIN
+              sys_stplat_use b
+        ON    a.stplat_cd = b.stplat_cd
+        JOIN  mv_sys_cd m
+        ON    a.stplat_cd = m.cd
+        AND   m.lang_cd   = #{lang:VARCHAR}
+        AND   m.use_yn    = 'Y'
+        <where>
+        AND   b.stplat_use_tp_cd = #{stplatUseTpCd,jdbcType=VARCHAR}
+        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(stplatCd)">
+        AND   b.stplat_cd        = #{stplatCd,jdbcType=VARCHAR}
+        </if>
+        </where>
+        ORDER BY M.SORT_SEQ
+	</select>
+
+    <select id="selectMbrStplatThpr" parameterType="mbr" resultType="mbrStplatAgr">
+		SELECT
+			stplat_iem_agr_yn
+	    FROM mbr_stplat_agr
+	   WHERE mbr_no = #{mbrNo,jdbcType=VARCHAR}
+	   	AND stplat_cd = 'PSNL_INFO_THPR_OFFER_DETL'
+	</select>
+
+	<select id="selectMbrStplatAgrList" parameterType="java.lang.String" resultType="mbrStplatAgr">
+		SELECT /* com.plgrim.ncp.base.repository.mbr.selectMbrStplatAgrList */
+		MBR_NO
+		,STPLAT_CD
+		,STPLAT_IEM_AGR_YN
+		,REGTR_ID
+		,REG_DT
+		,UDTER_ID
+		,UDT_DT
+		FROM    MBR_STPLAT_AGR
+		WHERE  MBR_NO = #{mbrNo,jdbcType=VARCHAR}
+	</select>
+</mapper>

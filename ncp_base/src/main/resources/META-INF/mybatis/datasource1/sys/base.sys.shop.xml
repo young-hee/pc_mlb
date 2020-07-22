@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysShop" parameterType="sysShop" resultType="sysShop">
+		SELECT /* com.plgrim.ncp.base.selectSysShop		Generator(Generator)	2018-05-23 */
+			   SHOP_ID
+			 , SHOP_NM
+			 , SHOP_TP_CD
+			 , FO_EXPSR_YN
+			 , OTLT_SHOP_YN
+			 , DRTSTOR_DRDL_SHOP_YN
+			 , VIRTL_SHOP_YN
+			 , WRHUS_YN
+			 , USE_YN
+			 , SORT_SEQ
+			 , SPOT_NM
+			 , RPRSTIV_NM
+			 , SIDO_CD
+			 , SIGUNGU_CD
+			 , LTTD
+			 , LGTD
+			 , OPEN_DATE
+			 , SHOP_WIDTH_DSCR
+			 , SHOP_RPRST_IMG_URL
+			 , SHOP_URL
+			 , PARKNG_PSB_YN
+			 , PARKNG_UPODNL_INFO_CONT
+			 , TRNSPORT_INFO_CONT
+			 , NATION_CD
+			 , POST_NO
+			 , BASE_ADDR
+			 , DETAIL_ADDR
+			 , CTY_NM
+			 , LCLTY_NM
+			 , SHOP_TEL_NATION_NO
+			 , SHOP_TEL_AREA_NO
+			 , SHOP_TEL_TLOF_NO
+			 , SHOP_TEL_TLOF_WTHN_NO
+			 , RPRSTIV_MOBIL_NATION_NO
+			 , RPRSTIV_MOBIL_AREA_NO
+			 , RPRSTIV_MOBIL_TLOF_NO
+			 , RPRSTIV_MOBIL_TLOF_WTHN_NO
+			 , BSN_CHRGER_NM
+			 , BSN_CHRGER_MOBIL_NATION_NO
+			 , BSN_CHRGER_MOBIL_AREA_NO
+			 , BSN_CHRGER_MOBIL_TLOF_NO
+			 , BSN_CHRGER_MOBIL_TLOF_WTHN_NO
+			 , WKDY_OPER_BEG_HHMM
+			 , WKDY_OPER_END_HHMM
+			 , SAT_OPER_BEG_HHMM
+			 , SAT_OPER_END_HHMM
+			 , HLDY_OPER_BEG_HHMM
+			 , HLDY_OPER_END_HHMM
+			 , CPN_PRM_NO
+			 , INSTAGRAM_ACSS_TOKN_ID
+			 , ASGN_PRIO_RANK_SECT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_SHOP
+		 WHERE 1 = 1
+	   	   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysShop" parameterType="sysShop">
+		UPDATE /* com.plgrim.ncp.base.updateSysShop		Generator(Generator)	2018-05-23 */
+		SYS_SHOP SET
+			   SHOP_NM = #{shopNm,jdbcType=VARCHAR}
+			 , SHOP_TP_CD = #{shopTpCd,jdbcType=VARCHAR}
+			 , FO_EXPSR_YN = #{foExpsrYn,jdbcType=VARCHAR}
+			 , OTLT_SHOP_YN = #{otltShopYn,jdbcType=VARCHAR}
+			 , DRTSTOR_DRDL_SHOP_YN = #{drtstorDrdlShopYn,jdbcType=VARCHAR}
+			 , VIRTL_SHOP_YN = #{virtlShopYn,jdbcType=VARCHAR}
+			 , WRHUS_YN = #{wrhusYn,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , SPOT_NM = #{spotNm,jdbcType=VARCHAR}
+			 , RPRSTIV_NM = #{rprstivNm,jdbcType=VARCHAR}
+			 , SIDO_CD = #{sidoCd,jdbcType=VARCHAR}
+			 , SIGUNGU_CD = #{sigunguCd,jdbcType=VARCHAR}
+			 , LTTD = #{lttd,jdbcType=NUMERIC}
+			 , LGTD = #{lgtd,jdbcType=NUMERIC}
+			 , OPEN_DATE = #{openDate,jdbcType=VARCHAR}
+			 , SHOP_WIDTH_DSCR = #{shopWidthDscr,jdbcType=VARCHAR}
+			 , SHOP_RPRST_IMG_URL = #{shopRprstImgUrl,jdbcType=VARCHAR}
+			 , SHOP_URL = #{shopUrl,jdbcType=VARCHAR}
+			 , PARKNG_PSB_YN = #{parkngPsbYn,jdbcType=VARCHAR}
+			 , PARKNG_UPODNL_INFO_CONT = #{parkngUpodnlInfoCont,jdbcType=VARCHAR}
+			 , TRNSPORT_INFO_CONT = #{trnsportInfoCont,jdbcType=VARCHAR}
+			 , NATION_CD = #{nationCd,jdbcType=VARCHAR}
+			 , POST_NO = #{postNo,jdbcType=VARCHAR}
+			 , BASE_ADDR = #{baseAddr,jdbcType=VARCHAR}
+			 , DETAIL_ADDR = #{detailAddr,jdbcType=VARCHAR}
+			 , CTY_NM = #{ctyNm,jdbcType=VARCHAR}
+			 , LCLTY_NM = #{lcltyNm,jdbcType=VARCHAR}
+			 , SHOP_TEL_NATION_NO = #{shopTelNationNo,jdbcType=VARCHAR}
+			 , SHOP_TEL_AREA_NO = #{shopTelAreaNo,jdbcType=VARCHAR}
+			 , SHOP_TEL_TLOF_NO = #{shopTelTlofNo,jdbcType=VARCHAR}
+			 , SHOP_TEL_TLOF_WTHN_NO = #{shopTelTlofWthnNo,jdbcType=VARCHAR}
+			 , RPRSTIV_MOBIL_NATION_NO = #{rprstivMobilNationNo,jdbcType=VARCHAR}
+			 , RPRSTIV_MOBIL_AREA_NO = #{rprstivMobilAreaNo,jdbcType=VARCHAR}
+			 , RPRSTIV_MOBIL_TLOF_NO = #{rprstivMobilTlofNo,jdbcType=VARCHAR}
+			 , RPRSTIV_MOBIL_TLOF_WTHN_NO = #{rprstivMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , BSN_CHRGER_NM = #{bsnChrgerNm,jdbcType=VARCHAR}
+			 , BSN_CHRGER_MOBIL_NATION_NO = #{bsnChrgerMobilNationNo,jdbcType=VARCHAR}
+			 , BSN_CHRGER_MOBIL_AREA_NO = #{bsnChrgerMobilAreaNo,jdbcType=VARCHAR}
+			 , BSN_CHRGER_MOBIL_TLOF_NO = #{bsnChrgerMobilTlofNo,jdbcType=VARCHAR}
+			 , BSN_CHRGER_MOBIL_TLOF_WTHN_NO = #{bsnChrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , WKDY_OPER_BEG_HHMM = #{wkdyOperBegHhmm,jdbcType=VARCHAR}
+			 , WKDY_OPER_END_HHMM = #{wkdyOperEndHhmm,jdbcType=VARCHAR}
+			 , SAT_OPER_BEG_HHMM = #{satOperBegHhmm,jdbcType=VARCHAR}
+			 , SAT_OPER_END_HHMM = #{satOperEndHhmm,jdbcType=VARCHAR}
+			 , HLDY_OPER_BEG_HHMM = #{hldyOperBegHhmm,jdbcType=VARCHAR}
+			 , HLDY_OPER_END_HHMM = #{hldyOperEndHhmm,jdbcType=VARCHAR}
+			 , CPN_PRM_NO = #{cpnPrmNo,jdbcType=VARCHAR}
+			 , INSTAGRAM_ACSS_TOKN_ID = #{instagramAcssToknId,jdbcType=VARCHAR}
+			 , ASGN_PRIO_RANK_SECT_CD = #{asgnPrioRankSectCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysShop" parameterType="sysShop">
+		INSERT /* com.plgrim.ncp.base.insertSysShop		Generator(Generator)	2018-05-23 */
+		INTO   SYS_SHOP (
+			   SHOP_ID
+			 , SHOP_NM
+			 , SHOP_TP_CD
+			 , FO_EXPSR_YN
+			 , OTLT_SHOP_YN
+			 , DRTSTOR_DRDL_SHOP_YN
+			 , VIRTL_SHOP_YN
+			 , WRHUS_YN
+			 , USE_YN
+			 , SORT_SEQ
+			 , SPOT_NM
+			 , RPRSTIV_NM
+			 , SIDO_CD
+			 , SIGUNGU_CD
+			 , LTTD
+			 , LGTD
+			 , OPEN_DATE
+			 , SHOP_WIDTH_DSCR
+			 , SHOP_RPRST_IMG_URL
+			 , SHOP_URL
+			 , PARKNG_PSB_YN
+			 , PARKNG_UPODNL_INFO_CONT
+			 , TRNSPORT_INFO_CONT
+			 , NATION_CD
+			 , POST_NO
+			 , BASE_ADDR
+			 , DETAIL_ADDR
+			 , CTY_NM
+			 , LCLTY_NM
+			 , SHOP_TEL_NATION_NO
+			 , SHOP_TEL_AREA_NO
+			 , SHOP_TEL_TLOF_NO
+			 , SHOP_TEL_TLOF_WTHN_NO
+			 , RPRSTIV_MOBIL_NATION_NO
+			 , RPRSTIV_MOBIL_AREA_NO
+			 , RPRSTIV_MOBIL_TLOF_NO
+			 , RPRSTIV_MOBIL_TLOF_WTHN_NO
+			 , BSN_CHRGER_NM
+			 , BSN_CHRGER_MOBIL_NATION_NO
+			 , BSN_CHRGER_MOBIL_AREA_NO
+			 , BSN_CHRGER_MOBIL_TLOF_NO
+			 , BSN_CHRGER_MOBIL_TLOF_WTHN_NO
+			 , WKDY_OPER_BEG_HHMM
+			 , WKDY_OPER_END_HHMM
+			 , SAT_OPER_BEG_HHMM
+			 , SAT_OPER_END_HHMM
+			 , HLDY_OPER_BEG_HHMM
+			 , HLDY_OPER_END_HHMM
+			 , CPN_PRM_NO
+			 , INSTAGRAM_ACSS_TOKN_ID
+			 , ASGN_PRIO_RANK_SECT_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{shopId,jdbcType=VARCHAR}
+			 , #{shopNm,jdbcType=VARCHAR}
+			 , #{shopTpCd,jdbcType=VARCHAR}
+			 , #{foExpsrYn,jdbcType=VARCHAR}
+			 , #{otltShopYn,jdbcType=VARCHAR}
+			 , #{drtstorDrdlShopYn,jdbcType=VARCHAR}
+			 , #{virtlShopYn,jdbcType=VARCHAR}
+			 , #{wrhusYn,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{spotNm,jdbcType=VARCHAR}
+			 , #{rprstivNm,jdbcType=VARCHAR}
+			 , #{sidoCd,jdbcType=VARCHAR}
+			 , #{sigunguCd,jdbcType=VARCHAR}
+			 , #{lttd,jdbcType=NUMERIC}
+			 , #{lgtd,jdbcType=NUMERIC}
+			 , #{openDate,jdbcType=VARCHAR}
+			 , #{shopWidthDscr,jdbcType=VARCHAR}
+			 , #{shopRprstImgUrl,jdbcType=VARCHAR}
+			 , #{shopUrl,jdbcType=VARCHAR}
+			 , #{parkngPsbYn,jdbcType=VARCHAR}
+			 , #{parkngUpodnlInfoCont,jdbcType=VARCHAR}
+			 , #{trnsportInfoCont,jdbcType=VARCHAR}
+			 , #{nationCd,jdbcType=VARCHAR}
+			 , #{postNo,jdbcType=VARCHAR}
+			 , #{baseAddr,jdbcType=VARCHAR}
+			 , #{detailAddr,jdbcType=VARCHAR}
+			 , #{ctyNm,jdbcType=VARCHAR}
+			 , #{lcltyNm,jdbcType=VARCHAR}
+			 , #{shopTelNationNo,jdbcType=VARCHAR}
+			 , #{shopTelAreaNo,jdbcType=VARCHAR}
+			 , #{shopTelTlofNo,jdbcType=VARCHAR}
+			 , #{shopTelTlofWthnNo,jdbcType=VARCHAR}
+			 , #{rprstivMobilNationNo,jdbcType=VARCHAR}
+			 , #{rprstivMobilAreaNo,jdbcType=VARCHAR}
+			 , #{rprstivMobilTlofNo,jdbcType=VARCHAR}
+			 , #{rprstivMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{bsnChrgerNm,jdbcType=VARCHAR}
+			 , #{bsnChrgerMobilNationNo,jdbcType=VARCHAR}
+			 , #{bsnChrgerMobilAreaNo,jdbcType=VARCHAR}
+			 , #{bsnChrgerMobilTlofNo,jdbcType=VARCHAR}
+			 , #{bsnChrgerMobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{wkdyOperBegHhmm,jdbcType=VARCHAR}
+			 , #{wkdyOperEndHhmm,jdbcType=VARCHAR}
+			 , #{satOperBegHhmm,jdbcType=VARCHAR}
+			 , #{satOperEndHhmm,jdbcType=VARCHAR}
+			 , #{hldyOperBegHhmm,jdbcType=VARCHAR}
+			 , #{hldyOperEndHhmm,jdbcType=VARCHAR}
+			 , #{cpnPrmNo,jdbcType=VARCHAR}
+			 , #{instagramAcssToknId,jdbcType=VARCHAR}
+			 , #{asgnPrioRankSectCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysShop" parameterType="sysShop">
+		DELETE /* com.plgrim.ncp.base.deleteSysShop		Generator(Generator)	2018-05-23 */
+		  FROM SYS_SHOP
+		 WHERE 1 = 1
+		   AND SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.callcenter.counseltransferboard">
+
+    <resultMap id="counselTransferBoardAdminListResult"
+               type="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardAdminListResult">
+        <result property="adminId" column="ADMIN_ID"/>
+        <result property="adminNm" column="ADMIN_NM"/>
+        <result property="deptNm" column="DEPT_NM"/>
+        <result property="chrgJobTpCd" column="CHRG_JOB_TP_CD"/>
+        <result property="chrgJobTpNm" column="CHRG_JOB_TP_NM"/>
+        <result property="adminHp" column="ADMIN_HP"/>
+    </resultMap>
+
+    <resultMap id="counselTransferBoardListResult"
+               type="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardListResult">
+
+        <result property="cnsltSn" column="CNSLT_SN"/>
+        <result property="requstSn" column="REQUST_SN"/>
+        <result property="transRequstDt" column="TRANS_REQUST_DT"/>
+        <result property="transStatNm" column="TRANS_STAT_NM"/>
+        <result property="transRequstTpNm" column="TRANS_REQUST_TP_NM"/>
+        <result property="doiNm" column="DOI_NM"/>
+        <result property="deptNm" column="DEPT_NM"/>
+        <result property="transRecrNm" column="TRANS_RECR_NM"/>
+        <result property="ordNo" column="ORD_NO"/>
+        <result property="godNo" column="GOD_NO"/>
+        <result property="partmalSectCd" column="PARTMAL_SECT_CD"/>
+        <result property="requstCont" column="REQUST_CONT"/>
+        <result property="transDelay" column="TRANS_DELAY"/>
+        <result property="transComptDt" column="TRANS_COMPT_DT"/>
+        <result property="ansCont" column="ANS_CONT"/>
+        <result property="transRqesterNm" column="TRANS_RQESTER_NM"/>
+        <result property="cnsltReqstMbrNm" column="CNSLT_REQST_MBR_NM"/>
+        <result property="cnsltDetailTurn" column="CNSLT_DETAIL_TURN"/>
+        <result property="langNm" column="LANG_NM"/>
+        <result property="mallNm" column="MALL_NM"/>
+    </resultMap>
+
+    <resultMap id="counselTransferBoardDetailResult"
+               type="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardDetailResult">
+        <id property="requstSn" column="REQUST_SN"/>
+        <result property="transStatCd" column="TRANS_STAT_CD"/>
+        <result property="transStatNm" column="TRANS_STAT_NM"/>
+        <result property="chrgJobTpCd" column="CHRG_JOB_TP_CD"/>
+        <result property="chrgJobTpNm" column="CHRG_JOB_TP_NM"/>
+        <result property="transRequstTpCd" column="TRANS_REQUST_TP_CD"/>
+        <result property="transRequstTpNm" column="TRANS_REQUST_TP_NM"/>
+        <result property="regAdminId" column="REG_ADMIN_ID"/>
+        <result property="regAdminNm" column="REG_ADMIN_NM"/>
+        <result property="requstRceptAdminId" column="REQUST_RCEPT_ADMIN_ID"/>
+        <result property="requstRceptAdminNm" column="REQUST_RCEPT_ADMIN_NM"/>
+        <result property="requstSj" column="REQUST_SJ"/>
+        <result property="requstCont" column="REQUST_CONT"/>
+        <result property="cnsltSn" column="CNSLT_SN"/>
+        <result property="cnsltDetailTurn" column="CNSLT_DETAIL_TURN"/>
+        <result property="transRequstTurn" column="TRANS_REQUST_TURN"/>
+        <result property="regtrId" column="REGTR_ID"/>
+        <result property="regDt" column="REG_DT"/>
+        <result property="udterId" column="UDTER_ID"/>
+        <result property="udtDt" column="UDT_DT"/>
+        <result property="jobRequstAnsTurn" column="JOB_REQUST_ANS_TURN"/>
+        <result property="ansSj" column="ANS_SJ"/>
+        <result property="ansCont" column="ANS_CONT"/>
+        <result property="ansDt" column="ANS_DT"/>
+        <result property="ansAdminId" column="ANS_ADMIN_ID"/>
+        <result property="ansAdminNm" column="ANS_ADMIN_NM"/>
+        <result property="requstOrdGodTurn" column="REQUST_ORD_GOD_TURN"/>
+        <result property="mallId" column="MALL_ID"/>
+        <result property="mallNm" column="MALL_NM"/>
+        <result property="langCd" column="LANG_CD"/>
+        <result property="langNm" column="LANG_NM"/>
+        <collection property="ordGod" ofType="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardOrdGodResult">
+            <result property="ordNo" column="ORD_NO"/>
+            <result property="godNo" column="GOD_NO"/>
+            <result property="godNm" column="GOD_NM"/>
+            <result property="ordGodSectCd" column="ORD_GOD_SECT_CD"/>
+            <result property="ordGodTurn" column="ORD_GOD_TURN"/>
+        </collection>
+        <collection property="atchmnfl" ofType="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardAtchmnflResult">
+            <result property="requstAtchmnflTurn" column="REQUST_ATCHMNFL_TURN"/>
+            <result property="requstAtchFileNm" column="REQUST_ATCH_FILE_NM"/>
+            <result property="requstAtchFileUrl" column="REQUST_ATCH_FILE_URL"/>
+            <result property="requstAtchFileCpcty" column="REQUST_ATCH_FILE_CPCTY"/>
+        </collection>
+        <collection property="ansAtchmnfl"
+                    ofType="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardAnsAtchmnflResult">
+            <result property="requstAnsAtchmnflTurn" column="REQUST_ANS_ATCHMNFL_TURN"/>
+            <result property="requstAnsAtchFileNm" column="REQUST_ANS_ATCH_FILE_NM"/>
+            <result property="requstAnsAtchFileUrl" column="REQUST_ANS_ATCH_FILE_URL"/>
+            <result property="requstAnsAtchFileCpcty" column="REQUST_ANS_ATCH_FILE_CPCTY"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="counselTransferBoardDetailOrdGodResult"
+               type="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardDetailOrdGodResult">
+        <result property="requstSn" column="REQUST_SN"/>
+        <result property="requstOrdGodTurn" column="REQUST_ORD_GOD_TURN"/>
+        <result property="godNm" column="GOD_NM"/>
+        <result property="ordGodsectCd" column="ORD_GOD_SECT_CD"/>
+        <result property="godNo" column="GOD_NO"/>
+        <result property="ordNo" column="ORD_NO"/>
+        <result property="ordGodTurn" column="ORD_GOD_TURN"/>
+        <result property="regtrId" column="REGTR_ID"/>
+        <result property="regDt" column="REG_DT"/>
+        <result property="udterId" column="UDTER_ID"/>
+        <result property="udtDt" column="UDT_DT"/>
+    </resultMap>
+
+    <resultMap id="counselTransferBoardDetailAtchmnflResult"
+               type="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardDetailAtchmnflResult">
+        <result property="requstSn" column="REQUST_SN"/>
+        <result property="requstAtchmnflTurn" column="REQUST_ATCHMNFL_TURN"/>
+        <result property="requstAtchFileNm" column="REQUST_ATCH_FILE_NM"/>
+        <result property="requstAtchFileUrl" column="REQUST_ATCH_FILE_URL"/>
+        <result property="requstAtchFileCpcty" column="REQUST_ATCH_FILE_CPCTY"/>
+        <result property="regtrId" column="REGTR_ID"/>
+        <result property="regDt" column="REG_DT"/>
+        <result property="udterId" column="UDTER_ID"/>
+        <result property="udtDt" column="UDT_DT"/>
+    </resultMap>
+
+    <resultMap id="counselTransferBoardDetailAnsResult"
+               type="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardDetailAnsResult">
+        <result property="requstSn" column="REQUST_SN"/>
+        <result property="jobRequstAnsTurn" column="JOB_REQUST_ANS_TURN"/>
+        <result property="ansSj" column="ANS_SJ"/>
+        <result property="ansCont" column="ANS_CONT"/>
+        <result property="ansDt" column="ANS_DT"/>
+        <result property="ansAdminId" column="ANS_ADMIN_ID"/>
+        <result property="regtrId" column="REGTR_ID"/>
+        <result property="regtrNm" column="REGTR_NM"/>
+        <result property="regDt" column="REG_DT"/>
+        <result property="udterId" column="UDTER_ID"/>
+        <result property="udterNm" column="UDTER_NM"/>
+        <result property="udtDt" column="UDT_DT"/>
+    </resultMap>
+
+    <resultMap id="counselTransferBoardDetailAnsAtchmnflResult"
+               type="com.plgrim.ncp.biz.callcenter.result.CounselTransferBoardDetailAnsAtchmnflResult">
+        <result property="requstSn" column="REQUST_SN"/>
+        <result property="jobRequstAnsTurn" column="JOB_REQUST_ANS_TURN"/>
+        <result property="requstAnsAtchmnflTurn" column="REQUST_ANS_ATCHMNFL_TURN"/>
+        <result property="requstAnsAtchFileNm" column="REQUST_ANS_ATCH_FILE_NM"/>
+        <result property="requstAnsAtchFileUrl" column="REQUST_ANS_ATCH_FILE_URL"/>
+        <result property="requstAnsAtchFileCpcty" column="REQUST_ANS_ATCH_FILE_CPCTY"/>
+        <result property="regtrId" column="REGTR_ID"/>
+        <result property="regDt" column="REG_DT"/>
+        <result property="udterId" column="UDTER_ID"/>
+        <result property="udtDt" column="UDT_DT"/>
+    </resultMap>
+
+
+    <select id="selectAdmin" resultMap="counselTransferBoardAdminListResult">
+		SELECT  sa.admin_id
+				, sa.admin_nm
+				, sa.dept_nm
+				, sacj.chrg_job_tp_cd
+				, cd1.cd_nm AS chrg_job_tp_nm
+                , decode( sa.MOBIL_TLOF_WTHN_NO, NULL,'', sa.MOBIL_AREA_NO || '-' || sa.MOBIL_TLOF_NO || '-' || sa.MOBIL_TLOF_WTHN_NO )  AS admin_hp
+		FROM     SYS_ADMIN sa
+		LEFT JOIN SYS_ADMIN_CHRG_JOB sacj ON (sa.ADMIN_ID = sacj.ADMIN_ID)
+		LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = sacj.chrg_job_tp_cd)
+	</select>
+
+    <select id="selectTransferBoardList" parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultMap="counselTransferBoardListResult">
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+        SELECT /* [callcenter.counseltransferboard.xml][selectTransferBoardList][업무게시판 조회 CS][Henry] */
+        cjr.requst_sn
+        , cct.cnslt_sn
+        , TO_CHAR(cjr.reg_dt, 'YYYY-MM-DD HH24:MI:SS') AS trans_requst_dt
+        , cd1.cd_nm AS trans_stat_nm
+        , cd2.cd_nm || DECODE(cjr.trans_requst_tp_cd, NULL, '', '>'|| cd3.cd_nm) AS trans_requst_tp_nm
+        , cd4.cd_nm AS doi_nm
+        , sa.dept_nm
+        , sa.admin_nm AS trans_recr_nm
+        , od.ord_no
+        , od.erp_god_no
+        , od.god_no
+        , od.partmal_sect_cd
+        , SUBSTR(cjr.requst_cont, 0, 20) AS requst_cont
+        , (CASE
+        WHEN cjr.reg_dt is NOT NULL AND cjr.trans_compt_dt IS NULL
+        THEN
+        DECODE (
+        FLOOR (
+        MOD (MONTHS_BETWEEN (SYSDATE, cjr.reg_dt), 1) * 30.5),0, '',
+        FLOOR (MOD (MONTHS_BETWEEN (SYSDATE, cjr.reg_dt), 1)* 30.5)|| '일')
+        || DECODE (TRUNC (MOD (SYSDATE - cjr.reg_dt, 1) * 24),0, '',TRUNC (MOD (SYSDATE - cjr.reg_dt, 1) * 24) || '시')
+        || TRUNC (MOD ( (SYSDATE - cjr.reg_dt) * 24, 1) * 60) || '분'
+        ELSE '' END) as trans_delay
+        <!--, TO_CHAR(cct.trans_compt_dt, 'YYYY-MM-DD HH24:MI:SS') AS trans_compt_dt-->
+        , cjr.trans_compt_dt
+        , SUBSTR(cjra.ans_cont, 0, 20) AS ans_cont
+        , sa1.admin_nm AS trans_rqester_nm
+        , DECODE(mbr.mbr_nm,NULL,'', mbr.mbr_nm) AS cnslt_reqst_mbr_nm
+        , DECODE(cct.cnslt_detail_turn,NULL,'', cct.cnslt_sn || '-' || cct.cnslt_detail_turn) AS cnslt_detail_turn
+        , cd5.cd_nm AS lang_nm
+        , sm.mall_nm AS mall_nm
+        FROM cso_job_requst cjr
+        LEFT OUTER JOIN cso_job_requst_ans cjra ON (cjr.requst_sn = cjra.requst_sn)
+        LEFT OUTER JOIN cso_cnslt cc ON (cc.cnslt_sn = cjr.cnslt_sn)
+        LEFT OUTER JOIN cso_cnslt_trans cct ON (cjr.cnslt_sn = cct.cnslt_sn AND cjr.cnslt_detail_turn =
+        cct.cnslt_detail_turn)
+        LEFT OUTER JOIN mbr mbr ON (mbr.mbr_no = cc.cnslt_reqst_mbr_no)
+        left outer JOIN ( SELECT cjrog.requst_sn
+        , LISTAGG(cjrog.ord_no, ',<![CDATA[</br>]]>') WITHIN GROUP (ORDER BY cjrog.ord_no) AS ord_no
+        , LISTAGG(g.god_no, ',<![CDATA[</br>]]>') WITHIN GROUP (ORDER BY g.god_no) AS god_no
+        , LISTAGG(g.erp_god_no, ',<![CDATA[</br>]]>') WITHIN GROUP (ORDER BY g.erp_god_no) AS erp_god_no
+        , LISTAGG(g.partmal_sect_cd, ',') WITHIN GROUP (ORDER BY g.partmal_sect_cd) AS partmal_sect_cd
+        FROM cso_job_requst_ord_god cjrog
+        LEFT OUTER JOIN god g ON (g.god_no = cjrog.god_no)
+        GROUP BY cjrog.requst_sn) od ON (od.requst_sn = cjr.requst_sn)
+        LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = cjr.trans_stat_cd)
+        LEFT OUTER JOIN sys_cd cd2 ON (cd2.cd = cjr.chrg_job_tp_cd)
+        LEFT OUTER JOIN sys_cd cd3 ON (cd3.cd = cjr.trans_requst_tp_cd)
+        LEFT OUTER JOIN sys_cd cd4 ON (cd4.cd = cjr.doi_cd)
+        LEFT OUTER JOIN sys_admin sa ON (sa.admin_id = cjr.requst_rcept_admin_id)
+        LEFT OUTER JOIN sys_admin sa1 ON (sa1.admin_id = cjr.reg_admin_id)
+        LEFT OUTER JOIN sys_cd cd5 ON (cd5.cd = cjr.lang_cd)
+        LEFT OUTER JOIN sys_mall sm ON (sm.mall_id = cjr.mall_id)
+        WHERE 1=1
+        <choose>
+            <when test='(ordNo != "" and ordNo != null) or (godNo != "" and godNo != null) or (cnsltSn != "" and cnsltSn != null)'>
+                <if test='ordNo != "" and ordNo != null'>
+                    AND od.ord_no = #{ordNo}
+                </if>
+                <if test='godNo != "" and godNo != null'>
+                    AND od.god_no = #{godNo}
+                </if>
+                <if test='cnsltSn != "" and cnsltSn != null'>
+                    AND cjr.cnslt_sn = #{cnsltSn}
+                </if>
+            </when>
+            <otherwise>
+                <choose>
+                    <!--<when test='(elapseDay != "" and elapseDay != null) and (transStatCd == "TRANS_WAIT")'>-->
+                    <when test='elapseDay != "" and elapseDay != null'>
+                        AND CCT.REG_DT <![CDATA[<=]]> TO_DATE(TO_CHAR(SYSDATE -#{elapseDay},'YYYY-MM-DD'),'YYYY-MM-DD')
+                        AND CCT.trans_stat_cd = 'TRANS_WAIT'
+                    </when>
+                    <otherwise>
+                        <if test='searchDateType != "" and searchDateType != ""'>
+                            <if test='searchDateType == "TRANS_DT"'>
+                                <if test='transferBoardStartDt != "" and transferBoardStartDt != null'>
+                                    AND cjr.reg_dt <![CDATA[>=]]> TO_DATE(#{transferBoardStartDt}, 'YYYY-MM-DD')
+                                </if>
+                                <if test='transferBoardEndDt != "" and transferBoardEndDt != null'>
+                                    AND cjr.reg_dt <![CDATA[<=]]> TO_DATE(#{transferBoardEndDt}, 'YYYY-MM-DD') + 1
+                                </if>
+                            </if>
+                            <if test='searchDateType == "TRANS_PRCS_COMPT_DT"'>
+                                <if test='transferBoardStartDt != "" and transferBoardStartDt != null'>
+                                    AND cjr.trans_compt_dt <![CDATA[>=]]> TO_DATE(#{transferBoardStartDt}, 'YYYY-MM-DD')
+                                </if>
+                                <if test='transferBoardEndDt != "" and transferBoardEndDt != null'>
+                                    AND cjr.trans_compt_dt <![CDATA[<=]]> TO_DATE(#{transferBoardEndDt}, 'YYYY-MM-DD') +
+                                    1
+                                </if>
+                            </if>
+                            <if test='searchDateType == "CNSLT_DT"'>
+                                <if test='transferBoardStartDt != "" and transferBoardStartDt != null'>
+                                    AND cc.reg_dt <![CDATA[>=]]> TO_DATE(#{transferBoardStartDt}, 'YYYY-MM-DD')
+                                </if>
+                                <if test='transferBoardEndDt != "" and transferBoardEndDt != null'>
+                                    AND cc.reg_dt <![CDATA[<=]]> TO_DATE(#{transferBoardEndDt}, 'YYYY-MM-DD') + 1
+                                </if>
+                            </if>
+                        </if>
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+        <if test='transStatCd != "" and transStatCd != null'>
+            AND cjr.trans_stat_cd = #{transStatCd}
+        </if>
+        <if test='chrgJobTpCd != "" and chrgJobTpCd != null'>
+            AND cjr.chrg_job_tp_cd = #{chrgJobTpCd}
+        </if>
+        <if test='transRequstTpCd != "" and transRequstTpCd != null'>
+            AND cjr.trans_requst_tp_cd = #{transRequstTpCd}
+        </if>
+        <if test='regAdminId != "" and regAdminId != null'>
+            AND cjr.reg_admin_id = #{regAdminId}
+        </if>
+        <if test='doiCd != "" and doiCd != null'>
+            AND cjr.doi_cd = #{doiCd}
+        </if>
+        <if test='mallId != "" and mallId != null'>
+            AND cjr.mall_id = #{mallId}
+        </if>
+        <if test='langCd != "" and langCd != null'>
+            AND cjr.lang_cd = #{langCd}
+        </if>
+        <if test='tabSect != null'>
+            <choose>
+                <when test='tabSect == "REQ"'>
+                    AND cjr.REG_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id = #{comId,jdbcType=VARCHAR})
+                </when>
+                <when test='tabSect == "RES"'>
+                    AND cjr.REQUST_RCEPT_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id =
+                    #{comId,jdbcType=VARCHAR})
+                </when>
+                <otherwise>
+                    AND (cjr.REQUST_RCEPT_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id =
+                    #{comId, jdbcType=VARCHAR})
+                    OR cjr.REG_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id = #{comId, jdbcType=VARCHAR}))
+                </otherwise>
+            </choose>
+        </if>
+        <if test="mallId != '' and mallId != null">
+        	AND cjr.mall_id = #{mallId, jdbcType=VARCHAR}
+        </if>
+        ORDER BY cjr.reg_dt DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+    </select>
+
+    <select id="selectTransferBoardListTotal"
+            parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO" resultType="int">
+        SELECT /* [callcenter.counseltransferboard.xml][selectTransferBoardList][업무게시판 조회 CS][Henry] */
+        COUNT(*)
+        FROM cso_job_requst cjr
+        LEFT OUTER JOIN cso_job_requst_ans cjra ON (cjr.requst_sn = cjra.requst_sn)
+        LEFT OUTER JOIN cso_cnslt cc ON (cc.cnslt_sn = cjr.cnslt_sn)
+        LEFT OUTER JOIN cso_cnslt_trans cct ON (cjr.cnslt_sn = cct.cnslt_sn AND cjr.cnslt_detail_turn =
+        cct.cnslt_detail_turn)
+        LEFT OUTER JOIN mbr mbr ON (mbr.mbr_no = cc.cnslt_reqst_mbr_no)
+        LEFT OUTER JOIN ( SELECT cjrog.requst_sn
+        , LISTAGG(cjrog.ord_no, ',') WITHIN GROUP (ORDER BY cjrog.ord_no) AS ord_no
+        , LISTAGG(g.god_no, ',') WITHIN GROUP (ORDER BY g.god_no) AS god_no
+        , LISTAGG(g.erp_god_no, ',') WITHIN GROUP (ORDER BY g.erp_god_no) AS erp_god_no
+        , LISTAGG(g.partmal_sect_cd, ',') WITHIN GROUP (ORDER BY g.partmal_sect_cd) AS partmal_sect_cd
+        FROM cso_job_requst_ord_god cjrog
+        LEFT OUTER JOIN god g ON (g.god_no = cjrog.god_no)
+        GROUP BY cjrog.requst_sn) od ON (od.requst_sn = cjr.requst_sn)
+        LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = cjr.trans_stat_cd)
+        LEFT OUTER JOIN sys_cd cd2 ON (cd2.cd = cjr.chrg_job_tp_cd)
+        LEFT OUTER JOIN sys_cd cd3 ON (cd3.cd = cjr.trans_requst_tp_cd)
+        LEFT OUTER JOIN sys_cd cd4 ON (cd4.cd = cjr.doi_cd)
+        LEFT OUTER JOIN sys_admin sa ON (sa.admin_id = cjr.requst_rcept_admin_id)
+        LEFT OUTER JOIN sys_admin sa1 ON (sa1.admin_id = cjr.reg_admin_id)
+        LEFT OUTER JOIN sys_cd cd5 ON (cd5.cd = cjr.lang_cd)
+        LEFT OUTER JOIN sys_mall sm ON (sm.mall_id = cjr.mall_id)
+        WHERE 1=1
+        <choose>
+            <when test='(ordNo != "" and ordNo != null) or (godNo != "" and godNo != null) or (cnsltSn != "" and cnsltSn != null)'>
+                <if test='ordNo != "" and ordNo != null'>
+                    AND od.ord_no = #{ordNo}
+                </if>
+                <if test='godNo != "" and godNo != null'>
+                    AND od.god_no = #{godNo}
+                </if>
+                <if test='cnsltSn != "" and cnsltSn != null'>
+                    AND cjr.cnslt_sn = #{cnsltSn}
+                </if>
+            </when>
+            <otherwise>
+                <choose>
+                    <!--<when test='(elapseDay != "" and elapseDay != null) and (transStatCd == "TRANS_WAIT")'>-->
+                    <when test='elapseDay != "" and elapseDay != null'>
+                        AND CCT.REG_DT <![CDATA[<=]]> TO_DATE(TO_CHAR(SYSDATE -#{elapseDay},'YYYY-MM-DD'),'YYYY-MM-DD')
+                        AND CCT.trans_stat_cd = 'TRANS_WAIT'
+                    </when>
+                    <otherwise>
+                        <if test='searchDateType != "" and searchDateType != ""'>
+                            <if test='searchDateType == "TRANS_DT"'>
+                                <if test='transferBoardStartDt != "" and transferBoardStartDt != null'>
+                                    AND cjr.reg_dt <![CDATA[>=]]> TO_DATE(#{transferBoardStartDt}, 'YYYY-MM-DD')
+                                </if>
+                                <if test='transferBoardEndDt != "" and transferBoardEndDt != null'>
+                                    AND cjr.reg_dt <![CDATA[<=]]> TO_DATE(#{transferBoardEndDt}, 'YYYY-MM-DD') + 1
+                                </if>
+                            </if>
+                            <if test='searchDateType == "TRANS_PRCS_COMPT_DT"'>
+                                <if test='transferBoardStartDt != "" and transferBoardStartDt != null'>
+                                    AND cjr.trans_compt_dt <![CDATA[>=]]> TO_DATE(#{transferBoardStartDt}, 'YYYY-MM-DD')
+                                </if>
+                                <if test='transferBoardEndDt != "" and transferBoardEndDt != null'>
+                                    AND cjr.trans_compt_dt <![CDATA[<=]]> TO_DATE(#{transferBoardEndDt}, 'YYYY-MM-DD') +
+                                    1
+                                </if>
+                            </if>
+                            <if test='searchDateType == "CNSLT_DT"'>
+                                <if test='transferBoardStartDt != "" and transferBoardStartDt != null'>
+                                    AND cc.reg_dt <![CDATA[>=]]> TO_DATE(#{transferBoardStartDt}, 'YYYY-MM-DD')
+                                </if>
+                                <if test='transferBoardEndDt != "" and transferBoardEndDt != null'>
+                                    AND cc.reg_dt <![CDATA[<=]]> TO_DATE(#{transferBoardEndDt}, 'YYYY-MM-DD') + 1
+                                </if>
+                            </if>
+                        </if>
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+        <if test='transStatCd != "" and transStatCd != null'>
+            AND cjr.trans_stat_cd = #{transStatCd}
+        </if>
+        <if test='chrgJobTpCd != "" and chrgJobTpCd != null'>
+            AND cjr.chrg_job_tp_cd = #{chrgJobTpCd}
+        </if>
+        <if test='transRequstTpCd != "" and transRequstTpCd != null'>
+            AND cjr.trans_requst_tp_cd = #{transRequstTpCd}
+        </if>
+        <if test='regAdminId != "" and regAdminId != null'>
+            AND cjr.reg_admin_id = #{regAdminId}
+        </if>
+        <if test='doiCd != "" and doiCd != null'>
+            AND cjr.doi_cd = #{doiCd}
+        </if>
+        <if test='mallId != "" and mallId != null'>
+            AND cjr.mall_id = #{mallId}
+        </if>
+        <if test='langCd != "" and langCd != null'>
+            AND cjr.lang_cd = #{langCd}
+        </if>
+        <if test='tabSect != null'>
+            <choose>
+                <when test='tabSect == "REQ"'>
+                    AND cjr.REG_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id = #{comId,jdbcType=VARCHAR})
+                </when>
+                <when test='tabSect == "RES"'>
+                    AND cjr.REQUST_RCEPT_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id =
+                    #{comId,jdbcType=VARCHAR})
+                </when>
+                <otherwise>
+                    AND cjr.REQUST_RCEPT_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id =
+                    #{comId, jdbcType=VARCHAR})
+                    OR cjr.REG_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE com_id = #{comId, jdbcType=VARCHAR})
+                </otherwise>
+            </choose>
+        </if>
+        ORDER BY cjr.reg_dt DESC
+    </select>
+
+    <select id="selectAssignRoleCount" parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultType="int">
+		SELECT count(*)
+		FROM cso_job_requst cjr
+		WHERE 1=1
+		AND cjr.requst_sn = #{requstSn}
+		AND (cjr.REG_ADMIN_ID = #{loginId} OR cjr.REQUST_RCEPT_ADMIN_ID = #{loginId}) /* 등록 관리자 ID, 요청 접수 관리자 ID */
+	</select>
+
+    <select id="selectTransferBoardDetail"
+            parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultMap="counselTransferBoardDetailResult">
+		SELECT 	cjr.requst_sn
+					, cjr.trans_stat_cd
+					, (SELECT sc.cd_nm FROM sys_cd sc WHERE cd = cjr.trans_stat_cd) AS trans_stat_nm
+					, cjr.chrg_job_tp_cd
+					, (SELECT sc.cd_nm FROM sys_cd sc WHERE cd = cjr.chrg_job_tp_cd) AS chrg_job_tp_nm
+					, cjr.trans_requst_tp_cd
+					, (SELECT sc.cd_nm FROM sys_cd sc WHERE cd = cjr.trans_requst_tp_cd) AS trans_requst_tp_nm
+					, cjr.reg_admin_id
+					, (SELECT admin_nm FROM sys_admin WHERE admin_id = cjr.reg_admin_id) as reg_admin_nm
+					, cjr.requst_rcept_admin_id
+					, (SELECT admin_nm FROM sys_admin WHERE admin_id = cjr.requst_rcept_admin_id) as requst_rcept_admin_nm
+					, (SELECT mall_nm FROM sys_mall WHERE mall_id = cjr.mall_id) AS mall_nm
+					, (SELECT cd_nm FROM mv_sys_cd WHERE cd = cjr.lang_cd AND lang_cd = 'KOR' AND upper_cd = 'LANG') as lang_nm
+					, cjr.requst_sj
+					, cjr.requst_cont
+					, cjr.cnslt_sn
+					, cjr.cnslt_detail_turn
+					, cjr.trans_requst_turn
+					, cjr.regtr_id
+					, cjr.reg_dt
+					, cjr.udter_id
+					, cjr.udt_dt
+					, ( SELECT mall_nm FROM sys_mall WHERE mall_id = cjr.mall_id ) as mall_id
+                    , ( SELECT lang_cd_nm FROM sys_lang WHERE lang_cd = cjr.lang_cd ) as lang_cd
+		FROM cso_job_requst cjr
+		WHERE 1=1
+		AND cjr.requst_sn = #{requstSn}
+	</select>
+
+    <select id="selectTransferBoardDetailOrdGod"
+            parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultMap="counselTransferBoardDetailOrdGodResult">
+		SELECT requst_sn
+		      ,requst_ord_god_turn
+		      ,god_nm
+		      ,ord_god_sect_cd
+		      ,god_no
+		      ,ord_no
+		      ,ord_god_turn
+		      ,regtr_id
+		      ,reg_dt
+		      ,udter_id
+		      ,udt_dt
+		FROM cso_job_requst_ord_god
+		WHERE requst_sn = #{requstSn} 
+	</select>
+
+    <select id="selectTransferBoardDetailAtchmnfl"
+            parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultMap="counselTransferBoardDetailAtchmnflResult">
+		SELECT requst_sn
+				,requst_atchmnfl_turn
+				,requst_atch_file_nm
+				,requst_atch_file_url
+				,requst_atch_file_cpcty
+				,regtr_id
+				,reg_dt
+				,udter_id
+				,udt_dt
+		FROM cso_job_requst_atchmnfl
+		WHERE requst_sn = #{requstSn}
+	</select>
+
+    <select id="selectTransferBoardDetailAns"
+            parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultMap="counselTransferBoardDetailAnsResult">
+		SELECT requst_sn
+      			, job_requst_ans_turn
+      			, ans_sj
+      			, ans_cont
+      			, ans_admin_id
+      			, a.regtr_id
+      			, b.admin_nm AS regtr_nm
+      			, a.reg_dt
+      			, a.udter_id
+      			, b.admin_nm AS udter_nm
+      			, a.udt_dt
+		  FROM CSO_JOB_REQUST_ANS a
+		  LEFT OUTER JOIN SYS_ADMIN b ON a.regtr_id = b.admin_id
+		 WHERE requst_sn = #{requstSn}
+	</select>
+
+    <select id="selectTransferBoardDetailAnsAtch"
+            parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultMap="counselTransferBoardDetailAnsAtchmnflResult">
+		SELECT requst_sn
+		      ,job_requst_ans_turn
+		      ,requst_ans_atchmnfl_turn
+		      ,requst_ans_atch_file_nm
+		      ,requst_ans_atch_file_url
+		      ,requst_ans_atch_file_cpcty
+		      ,regtr_id
+		      ,reg_dt
+		      ,udter_id
+		      ,udt_dt
+		FROM cso_job_requst_ans_atchmnfl 
+		WHERE requst_sn = #{requstSn}
+	</select>
+
+    <select id="selectRequstCount" parameterType="Long" resultType="int">
+	SELECT COUNT(*) 
+	  FROM cso_job_requst_ans 
+	 WHERE requst_sn = #{requstSn}
+	</select>
+
+    <insert id="insertCounselTransferBoardWithGenSn" parameterType="csoJobRequst">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoJobRequst jackie 20150430 */
+	    INTO CSO_JOB_REQUST
+		(
+	        REQUST_SN
+	       ,TRANS_STAT_CD
+	       ,CHRG_JOB_TP_CD
+	       ,TRANS_REQUST_TP_CD
+	       ,DOI_CD
+	       ,REG_ADMIN_ID
+	       ,REQUST_RCEPT_ADMIN_ID
+	       ,REQUST_SJ
+	       ,REQUST_CONT
+	       ,CNSLT_SN
+	       ,CNSLT_DETAIL_TURN
+	       ,TRANS_REQUST_TURN
+	       ,TRANS_REQUST_DT
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+           ,MALL_ID
+		   ,LANG_CD
+		)
+		VALUES
+		(
+	        #{requstSn,jdbcType=NUMERIC}
+	       ,#{transStatCd,jdbcType=VARCHAR}
+	       ,#{chrgJobTpCd,jdbcType=VARCHAR}
+	       ,#{transRequstTpCd,jdbcType=VARCHAR}
+	       ,#{doiCd,jdbcType=VARCHAR}
+	       ,#{regAdminId,jdbcType=VARCHAR}
+	       ,#{requstRceptAdminId,jdbcType=VARCHAR}
+	       ,#{requstSj,jdbcType=VARCHAR}
+	       ,#{requstCont,jdbcType=VARCHAR}
+	       ,#{cnsltSn,jdbcType=NUMERIC}
+	       ,#{cnsltDetailTurn,jdbcType=NUMERIC}
+	       ,#{transRequstTurn,jdbcType=NUMERIC}
+	       ,SYSDATE
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+	       ,#{mallId,jdbcType=VARCHAR}
+	       ,#{langCd,jdbcType=VARCHAR}
+		)
+	</insert>
+
+    <insert id="insertCsoJobRequstOrdGodWithGenTurn" parameterType="csoJobRequstOrdGod">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoJobRequstOrdGod jackie 20150430 */
+		INTO CSO_JOB_REQUST_ORD_GOD
+		(
+			REQUST_SN
+			,REQUST_ORD_GOD_TURN
+			,GOD_NM
+			,ORD_GOD_SECT_CD
+			,GOD_NO
+			,ORD_NO
+			,ORD_GOD_TURN
+			,REGTR_ID
+			,UDTER_ID
+			,REG_DT
+			,UDT_DT
+		)
+		VALUES
+		(
+			#{requstSn,jdbcType=NUMERIC}
+			,#{requstOrdGodTurn,jdbcType=NUMERIC}
+			,#{godNm,jdbcType=VARCHAR}
+			,#{ordGodSectCd,jdbcType=VARCHAR}
+			,#{godNo,jdbcType=VARCHAR}
+			,#{ordNo,jdbcType=VARCHAR}
+			,#{ordGodTurn,jdbcType=NUMERIC}
+			,#{regtrId,jdbcType=VARCHAR}
+			,#{udterId,jdbcType=VARCHAR}
+			,SYSDATE
+			,SYSDATE
+		)
+	</insert>
+
+    <insert id="insertCounselTransferOrdGodWithGenTurn" parameterType="csoJobRequstOrdGod">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoJobRequstOrdGod jackie 20150430 */
+		INTO CSO_JOB_REQUST_ORD_GOD
+		(
+		REQUST_SN
+		,REQUST_ORD_GOD_TURN
+		,GOD_NM
+		,ORD_GOD_SECT_CD
+		,GOD_NO
+		,ORD_NO
+		,ORD_GOD_TURN
+		,REGTR_ID
+		,UDTER_ID
+		,REG_DT
+		,UDT_DT
+		)
+		VALUES
+		(
+		#{requstSn,jdbcType=NUMERIC}
+		,#{requstOrdGodTurn,jdbcType=NUMERIC}
+		,#{godNm,jdbcType=VARCHAR}
+		,#{ordGodSectCd,jdbcType=VARCHAR}
+		,#{godNo,jdbcType=VARCHAR}
+		,#{ordNo,jdbcType=VARCHAR}
+		,#{ordGodTurn,jdbcType=NUMERIC}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{udterId,jdbcType=VARCHAR}
+		,SYSDATE
+		,SYSDATE
+		)
+	</insert>
+
+    <insert id="insertCsoJobRequstAnsWithGenTurn" parameterType="csoJobRequstAns">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoJobRequstAns jackie 20150710 */
+	    INTO CSO_JOB_REQUST_ANS
+		(
+	        REQUST_SN
+	       ,JOB_REQUST_ANS_TURN
+	       ,ANS_SJ
+	       ,ANS_CONT
+	       ,ANS_DT
+	       ,ANS_ADMIN_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{requstSn,jdbcType=NUMERIC}
+	       ,#{jobRequstAnsTurn,jdbcType=NUMERIC}
+	       ,#{ansSj,jdbcType=VARCHAR}
+	       ,#{ansCont,jdbcType=CLOB}
+	       ,SYSDATE
+	       ,#{ansAdminId,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)
+	</insert>
+
+    <update id="updateCounselTransferBoard" parameterType="csoJobRequst">
+        UPDATE /* com.plgrim.ncp.base.repository.cso.updateCsoJobRequst jackie 20150710 */
+        CSO_JOB_REQUST SET
+        UDTER_ID = #{udterId,jdbcType=VARCHAR}
+        ,UDT_DT = SYSDATE
+        <if test="transStatCd != null and transStatCd !=''">
+            ,TRANS_STAT_CD = #{transStatCd,jdbcType=VARCHAR}
+            ,TRANS_COMPT_DT = SYSDATE
+        </if>
+        <if test="requstRceptAdminId != null and requstRceptAdminId != ''">
+            ,REQUST_RCEPT_ADMIN_ID = #{requstRceptAdminId,jdbcType=VARCHAR}
+        </if>
+        WHERE 1 = 1
+        AND REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+    </update>
+
+    <update id="updateCounseTransferBoardAns" parameterType="csoJobRequstAns">
+		UPDATE /* com.plgrim.ncp.base.repository.cso.updateCsoJobRequstAns jackie 20150710 */
+		CSO_JOB_REQUST_ANS SET
+		ANS_CONT = #{ansCont,jdbcType=CLOB}
+		,ANS_DT = SYSDATE
+		,ANS_ADMIN_ID = #{ansAdminId,jdbcType=VARCHAR}
+		,UDTER_ID = #{udterId,jdbcType=VARCHAR}
+		,UDT_DT = SYSDATE
+		WHERE   1 = 1
+		AND     REQUST_SN = #{requstSn,jdbcType=NUMERIC}
+		AND     JOB_REQUST_ANS_TURN = #{jobRequstAnsTurn,jdbcType=NUMERIC}
+	</update>
+
+    <insert id="insertCounselTransferBoardAnsAtchmnflWithGenTurn" parameterType="csoJobRequstAnsAtchmnfl">
+		INSERT /* com.plgrim.ncp.base.repository.cso.insertCsoJobRequstAnsAtchmnfl jackie 20150710 */
+		INTO CSO_JOB_REQUST_ANS_ATCHMNFL
+		(
+		REQUST_SN
+		,JOB_REQUST_ANS_TURN
+		,REQUST_ANS_ATCHMNFL_TURN
+		,REQUST_ANS_ATCH_FILE_NM
+		,REQUST_ANS_ATCH_FILE_URL
+		,REQUST_ANS_ATCH_FILE_CPCTY
+		,REGTR_ID
+		,UDTER_ID
+		,REG_DT
+		,UDT_DT
+		)
+		VALUES
+		(
+		#{requstSn,jdbcType=NUMERIC}
+		,#{jobRequstAnsTurn,jdbcType=NUMERIC}
+		,#{requstAnsAtchmnflTurn,jdbcType=NUMERIC}
+		,#{requstAnsAtchFileNm,jdbcType=VARCHAR}
+		,#{requstAnsAtchFileUrl,jdbcType=VARCHAR}
+		,#{requstAnsAtchFileCpcty,jdbcType=NUMERIC}
+		,#{regtrId,jdbcType=VARCHAR}
+		,#{udterId,jdbcType=VARCHAR}
+		,SYSDATE
+		,SYSDATE
+		)
+	</insert>
+
+    <select id="selectCounselTransferBoardOrdNoList" parameterType="Long" resultType="csoJobRequstOrdGod">
+		SELECT cjrog.ord_no
+		  FROM cso_job_requst cjr
+		  LEFT OUTER JOIN cso_job_requst_ord_god cjrog on cjr.requst_sn = cjrog.requst_sn
+		 WHERE 1=1
+		   AND cjr.requst_sn=#{requstSn}
+	</select>
+
+
+    <select id="selectPoMainIpTodoTransferBoardList"
+            parameterType="com.plgrim.ncp.biz.callcenter.data.CounselTransferBoardSearchDTO"
+            resultMap="counselTransferBoardListResult">
+        SELECT /* [callcenter.counseltransferboard.xml][selectPoMainIpTodoTransferBoardList][PO메인입점업체조회][peter] */
+        cjr.requst_sn
+        , cct.cnslt_sn
+        , TO_CHAR(cjr.reg_dt, 'YYYY-MM-DD HH24:MI:SS') AS trans_requst_dt
+        , cd1.cd_nm AS trans_stat_nm
+        , cd2.cd_nm || DECODE(cjr.trans_requst_tp_cd, NULL, '', '>'|| cd3.cd_nm) AS trans_requst_tp_nm
+        , cd4.cd_nm AS doi_nm
+        , sa.dept_nm
+        , sa.admin_nm AS trans_recr_nm
+        , od.ord_no
+        , od.erp_god_no
+        , od.god_no
+        , od.partmal_sect_cd
+        , SUBSTR(cjr.requst_cont, 0, 20) AS requst_cont
+        , (CASE WHEN cct.trans_requst_dt IS NOT NULL AND cct.trans_compt_dt IS NULL THEN
+        DECODE(TO_NUMBER(SUBSTR(NUMTODSINTERVAL(SYSDATE -
+        cct.trans_requst_dt,'DAY'),2,9)),0,'',TO_NUMBER(SUBSTR(NUMTODSINTERVAL(SYSDATE -
+        cct.trans_requst_dt,'DAY'),2,9)) ||'일 ')||
+        TO_NUMBER (SUBSTR(NUMTODSINTERVAL(SYSDATE - cct.trans_requst_dt,'DAY'), 12, 2)) || '시 ' ||
+        TO_NUMBER (SUBSTR(NUMTODSINTERVAL(SYSDATE - cct.trans_requst_dt,'DAY'), 15, 2)) || '분' ELSE '' END) AS
+        trans_delay
+        <!--, TO_CHAR(cct.trans_compt_dt, 'YYYY-MM-DD HH24:MI:SS') AS trans_compt_dt-->
+        , cjr.trans_compt_dt
+        , SUBSTR(cjra.ans_cont, 0, 20) AS ans_cont
+        , sa1.admin_nm AS trans_rqester_nm
+        , DECODE(mbr.mbr_nm,NULL,'', mbr.mbr_nm) AS cnslt_reqst_mbr_nm
+        , DECODE(cct.cnslt_detail_turn,NULL,'', cct.cnslt_sn || '-' || cct.cnslt_detail_turn) AS cnslt_detail_turn
+        , cd5.cd_nm AS lang_nm
+        , sm.mall_nm AS mall_nm
+        FROM cso_job_requst cjr
+        LEFT OUTER JOIN cso_job_requst_ans cjra ON (cjr.requst_sn = cjra.requst_sn)
+        LEFT OUTER JOIN cso_cnslt cc ON (cc.cnslt_sn = cjr.cnslt_sn)
+        LEFT OUTER JOIN cso_cnslt_trans cct ON (cjr.cnslt_sn = cct.cnslt_sn AND cjr.cnslt_detail_turn =
+        cct.cnslt_detail_turn)
+        LEFT OUTER JOIN mbr mbr ON (mbr.mbr_no = cc.cnslt_reqst_mbr_no)
+        left outer JOIN ( SELECT cjrog.requst_sn
+        , LISTAGG(cjrog.ord_no, ',<![CDATA[</br>]]>') WITHIN GROUP (ORDER BY cjrog.ord_no) AS ord_no
+        , LISTAGG(g.god_no, ',<![CDATA[</br>]]>') WITHIN GROUP (ORDER BY g.god_no) AS god_no
+        , LISTAGG(g.erp_god_no, ',<![CDATA[</br>]]>') WITHIN GROUP (ORDER BY g.erp_god_no) AS erp_god_no
+        , LISTAGG(g.partmal_sect_cd, ',') WITHIN GROUP (ORDER BY g.partmal_sect_cd) AS partmal_sect_cd
+        FROM cso_job_requst_ord_god cjrog
+        LEFT OUTER JOIN god g ON (g.god_no = cjrog.god_no)
+        GROUP BY cjrog.requst_sn) od ON (od.requst_sn = cjr.requst_sn)
+        LEFT OUTER JOIN sys_cd cd1 ON (cd1.cd = cjr.trans_stat_cd)
+        LEFT OUTER JOIN sys_cd cd2 ON (cd2.cd = cjr.chrg_job_tp_cd)
+        LEFT OUTER JOIN sys_cd cd3 ON (cd3.cd = cjr.trans_requst_tp_cd)
+        LEFT OUTER JOIN sys_cd cd4 ON (cd4.cd = cjr.doi_cd)
+        LEFT OUTER JOIN sys_admin sa ON (sa.admin_id = cjr.requst_rcept_admin_id)
+        LEFT OUTER JOIN sys_admin sa1 ON (sa1.admin_id = cjr.reg_admin_id)
+        LEFT OUTER JOIN sys_cd cd5 ON (cd5.cd = cjr.lang_cd)
+        LEFT OUTER JOIN sys_mall sm ON (sm.mall_id = cjr.mall_id)
+        WHERE 1=1
+        AND cjr.TRANS_STAT_CD = 'TRANS_WAIT'
+        <if test='tabSect == "REQ" and tabSect != null'>
+            AND cjr.REG_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE admin_tp_cd = 'PARTMAL_COM' AND com_id =
+            #{comId,jdbcType=VARCHAR})
+        </if>
+        <if test='tabSect == "RES" and tabSect != null'>
+            AND cjr.REQUST_RCEPT_ADMIN_ID IN (SELECT admin_id FROM SYS_ADMIN WHERE admin_tp_cd = 'PARTMAL_COM' AND
+            com_id = #{comId,jdbcType=VARCHAR})
+        </if>
+        ORDER BY cjr.reg_dt DESC
+    </select>
+
+
+</mapper>

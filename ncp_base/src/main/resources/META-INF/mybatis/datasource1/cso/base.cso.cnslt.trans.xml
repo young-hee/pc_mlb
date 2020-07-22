@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoCnsltTrans" parameterType="csoCnsltTrans" resultType="csoCnsltTrans">
+		SELECT /* com.plgrim.ncp.base.selectCsoCnsltTrans		Generator(Generator)	2018-05-23 */
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , TRANS_STAT_CD
+			 , TRANS_TGT_CD
+			 , CHRG_JOB_TP_CD
+			 , TRANS_REQUST_TP_CD
+			 , DOI_CD
+			 , CHRGER_CNFIRM_YN
+			 , RQESTER_CNFIRM_YN
+			 , TRANS_REQUST_SJ
+			 , TRANS_REQUST_CONT
+			 , TRANS_COM_ID
+			 , TRANS_RECR_ID
+			 , TRANS_REQUST_DT
+			 , TRANS_CNCL_DT
+			 , TRANS_COMPT_DT
+			 , TRANS_RQESTER_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_CNSLT_TRANS
+		 WHERE 1 = 1
+	   	   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoCnsltTrans" parameterType="csoCnsltTrans">
+		UPDATE /* com.plgrim.ncp.base.updateCsoCnsltTrans		Generator(Generator)	2018-05-23 */
+		CSO_CNSLT_TRANS SET
+			   TRANS_STAT_CD = #{transStatCd,jdbcType=VARCHAR}
+			 , TRANS_TGT_CD = #{transTgtCd,jdbcType=VARCHAR}
+			 , CHRG_JOB_TP_CD = #{chrgJobTpCd,jdbcType=VARCHAR}
+			 , TRANS_REQUST_TP_CD = #{transRequstTpCd,jdbcType=VARCHAR}
+			 , DOI_CD = #{doiCd,jdbcType=VARCHAR}
+			 , CHRGER_CNFIRM_YN = #{chrgerCnfirmYn,jdbcType=VARCHAR}
+			 , RQESTER_CNFIRM_YN = #{rqesterCnfirmYn,jdbcType=VARCHAR}
+			 , TRANS_REQUST_SJ = #{transRequstSj,jdbcType=VARCHAR}
+			 , TRANS_REQUST_CONT = #{transRequstCont,jdbcType=CLOB}
+			 , TRANS_COM_ID = #{transComId,jdbcType=VARCHAR}
+			 , TRANS_RECR_ID = #{transRecrId,jdbcType=VARCHAR}
+			 , TRANS_REQUST_DT = #{transRequstDt,jdbcType=TIMESTAMP}
+			 , TRANS_CNCL_DT = #{transCnclDt,jdbcType=TIMESTAMP}
+			 , TRANS_COMPT_DT = #{transComptDt,jdbcType=TIMESTAMP}
+			 , TRANS_RQESTER_ID = #{transRqesterId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoCnsltTrans" parameterType="csoCnsltTrans">
+		INSERT /* com.plgrim.ncp.base.insertCsoCnsltTrans		Generator(Generator)	2018-05-23 */
+		INTO   CSO_CNSLT_TRANS (
+			   CNSLT_SN
+			 , CNSLT_DETAIL_TURN
+			 , TRANS_REQUST_TURN
+			 , TRANS_STAT_CD
+			 , TRANS_TGT_CD
+			 , CHRG_JOB_TP_CD
+			 , TRANS_REQUST_TP_CD
+			 , DOI_CD
+			 , CHRGER_CNFIRM_YN
+			 , RQESTER_CNFIRM_YN
+			 , TRANS_REQUST_SJ
+			 , TRANS_REQUST_CONT
+			 , TRANS_COM_ID
+			 , TRANS_RECR_ID
+			 , TRANS_REQUST_DT
+			 , TRANS_CNCL_DT
+			 , TRANS_COMPT_DT
+			 , TRANS_RQESTER_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{cnsltSn,jdbcType=NUMERIC}
+			 , #{cnsltDetailTurn,jdbcType=NUMERIC}
+			 , #{transRequstTurn,jdbcType=NUMERIC}
+			 , #{transStatCd,jdbcType=VARCHAR}
+			 , #{transTgtCd,jdbcType=VARCHAR}
+			 , #{chrgJobTpCd,jdbcType=VARCHAR}
+			 , #{transRequstTpCd,jdbcType=VARCHAR}
+			 , #{doiCd,jdbcType=VARCHAR}
+			 , #{chrgerCnfirmYn,jdbcType=VARCHAR}
+			 , #{rqesterCnfirmYn,jdbcType=VARCHAR}
+			 , #{transRequstSj,jdbcType=VARCHAR}
+			 , #{transRequstCont,jdbcType=CLOB}
+			 , #{transComId,jdbcType=VARCHAR}
+			 , #{transRecrId,jdbcType=VARCHAR}
+			 , #{transRequstDt,jdbcType=TIMESTAMP}
+			 , #{transCnclDt,jdbcType=TIMESTAMP}
+			 , #{transComptDt,jdbcType=TIMESTAMP}
+			 , #{transRqesterId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoCnsltTrans" parameterType="csoCnsltTrans">
+		DELETE /* com.plgrim.ncp.base.deleteCsoCnsltTrans		Generator(Generator)	2018-05-23 */
+		  FROM CSO_CNSLT_TRANS
+		 WHERE 1 = 1
+		   AND CNSLT_SN = #{cnsltSn,jdbcType=NUMERIC}
+		   AND CNSLT_DETAIL_TURN = #{cnsltDetailTurn,jdbcType=NUMERIC}
+		   AND TRANS_REQUST_TURN = #{transRequstTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

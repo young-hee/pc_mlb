@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysBatchHist" parameterType="sysBatchHist" resultType="sysBatchHist">
+		SELECT /* com.plgrim.ncp.base.selectSysBatchHist		Generator(Generator)	2018-05-23 */
+			   REQUST_ID
+			 , BATCH_CLASS_ID
+			 , BATCH_PRMTR_CONT
+			 , BATCH_BEG_DT
+			 , BATCH_END_DT
+			 , ELAPSE_TIME
+			 , REBEG_YN
+			 , BATCH_HIST_STAT_CD
+			 , MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_BATCH_HIST
+		 WHERE 1 = 1
+	   	   AND REQUST_ID = #{requstId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysBatchHist" parameterType="sysBatchHist">
+		UPDATE /* com.plgrim.ncp.base.updateSysBatchHist		Generator(Generator)	2018-05-23 */
+		SYS_BATCH_HIST SET
+			   BATCH_CLASS_ID = #{batchClassId,jdbcType=VARCHAR}
+			 , BATCH_PRMTR_CONT = #{batchPrmtrCont,jdbcType=VARCHAR}
+			 , BATCH_BEG_DT = #{batchBegDt,jdbcType=TIMESTAMP}
+			 , BATCH_END_DT = #{batchEndDt,jdbcType=TIMESTAMP}
+			 , ELAPSE_TIME = #{elapseTime,jdbcType=NUMERIC}
+			 , REBEG_YN = #{rebegYn,jdbcType=VARCHAR}
+			 , BATCH_HIST_STAT_CD = #{batchHistStatCd,jdbcType=VARCHAR}
+			 , MSG_CONT = #{msgCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND REQUST_ID = #{requstId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysBatchHist" parameterType="sysBatchHist">
+		INSERT /* com.plgrim.ncp.base.insertSysBatchHist		Generator(Generator)	2018-05-23 */
+		INTO   SYS_BATCH_HIST (
+			   REQUST_ID
+			 , BATCH_CLASS_ID
+			 , BATCH_PRMTR_CONT
+			 , BATCH_BEG_DT
+			 , BATCH_END_DT
+			 , ELAPSE_TIME
+			 , REBEG_YN
+			 , BATCH_HIST_STAT_CD
+			 , MSG_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{requstId,jdbcType=VARCHAR}
+			 , #{batchClassId,jdbcType=VARCHAR}
+			 , #{batchPrmtrCont,jdbcType=VARCHAR}
+			 , #{batchBegDt,jdbcType=TIMESTAMP}
+			 , #{batchEndDt,jdbcType=TIMESTAMP}
+			 , #{elapseTime,jdbcType=NUMERIC}
+			 , #{rebegYn,jdbcType=VARCHAR}
+			 , #{batchHistStatCd,jdbcType=VARCHAR}
+			 , #{msgCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysBatchHist" parameterType="sysBatchHist">
+		DELETE /* com.plgrim.ncp.base.deleteSysBatchHist		Generator(Generator)	2018-05-23 */
+		  FROM SYS_BATCH_HIST
+		 WHERE 1 = 1
+		   AND REQUST_ID = #{requstId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

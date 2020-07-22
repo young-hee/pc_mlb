@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComOvseaDlvCstPlcHist" parameterType="comOvseaDlvCstPlcHist" resultType="comOvseaDlvCstPlcHist">
+		SELECT /* com.plgrim.ncp.base.selectComOvseaDlvCstPlcHist		Generator(Generator)	2018-05-23 */
+			   OVSEA_DLV_CST_PLC_SN
+			 , HIST_DT
+			 , DLV_PLC_NM
+			 , BASE_DLV_CST_PLC_YN
+			 , RTRVL_DRCT_PSB_YN
+			 , DLV_MN_CD
+			 , DLV_COM_CD
+			 , DLV_PSB_DAY
+			 , DLVSP_POST_NO
+			 , DLVSP_BASE_ADDR
+			 , DLVSP_DETAIL_ADDR
+			 , OVSEA_DLV_BOX_PSB_VOL
+			 , OVSEA_DLV_BOX_PSB_WT
+			 , DLV_CST_LEVY_SECT_CD
+			 , OVSEA_DLV_CST_EXM_STDR_AMT
+			 , RETRN_MN_CD
+			 , RETRN_COM_CD
+			 , RETRN_POST_NO
+			 , RETRN_BASE_ADDR
+			 , RETRN_DETAIL_ADDR
+			 , RTGOD_DLIVY_DLV_CST_INCLS_YN
+			 , DLV_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_OVSEA_DLV_CST_PLC_HIST
+		 WHERE 1 = 1
+	   	   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </select>
+
+    <update id="updateComOvseaDlvCstPlcHist" parameterType="comOvseaDlvCstPlcHist">
+		UPDATE /* com.plgrim.ncp.base.updateComOvseaDlvCstPlcHist		Generator(Generator)	2018-05-23 */
+		COM_OVSEA_DLV_CST_PLC_HIST SET
+			   DLV_PLC_NM = #{dlvPlcNm,jdbcType=VARCHAR}
+			 , BASE_DLV_CST_PLC_YN = #{baseDlvCstPlcYn,jdbcType=VARCHAR}
+			 , RTRVL_DRCT_PSB_YN = #{rtrvlDrctPsbYn,jdbcType=VARCHAR}
+			 , DLV_MN_CD = #{dlvMnCd,jdbcType=VARCHAR}
+			 , DLV_COM_CD = #{dlvComCd,jdbcType=VARCHAR}
+			 , DLV_PSB_DAY = #{dlvPsbDay,jdbcType=VARCHAR}
+			 , DLVSP_POST_NO = #{dlvspPostNo,jdbcType=VARCHAR}
+			 , DLVSP_BASE_ADDR = #{dlvspBaseAddr,jdbcType=VARCHAR}
+			 , DLVSP_DETAIL_ADDR = #{dlvspDetailAddr,jdbcType=VARCHAR}
+			 , OVSEA_DLV_BOX_PSB_VOL = #{ovseaDlvBoxPsbVol,jdbcType=NUMERIC}
+			 , OVSEA_DLV_BOX_PSB_WT = #{ovseaDlvBoxPsbWt,jdbcType=NUMERIC}
+			 , DLV_CST_LEVY_SECT_CD = #{dlvCstLevySectCd,jdbcType=VARCHAR}
+			 , OVSEA_DLV_CST_EXM_STDR_AMT = #{ovseaDlvCstExmStdrAmt,jdbcType=NUMERIC}
+			 , RETRN_MN_CD = #{retrnMnCd,jdbcType=VARCHAR}
+			 , RETRN_COM_CD = #{retrnComCd,jdbcType=VARCHAR}
+			 , RETRN_POST_NO = #{retrnPostNo,jdbcType=VARCHAR}
+			 , RETRN_BASE_ADDR = #{retrnBaseAddr,jdbcType=VARCHAR}
+			 , RETRN_DETAIL_ADDR = #{retrnDetailAddr,jdbcType=VARCHAR}
+			 , RTGOD_DLIVY_DLV_CST_INCLS_YN = #{rtgodDlivyDlvCstInclsYn,jdbcType=VARCHAR}
+			 , DLV_MTHD_DSCR = #{dlvMthdDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </update>
+
+	<insert id="insertComOvseaDlvCstPlcHist" parameterType="comOvseaDlvCstPlcHist">
+		INSERT /* com.plgrim.ncp.base.insertComOvseaDlvCstPlcHist		Generator(Generator)	2018-05-23 */
+		INTO   COM_OVSEA_DLV_CST_PLC_HIST (
+			   OVSEA_DLV_CST_PLC_SN
+			 , HIST_DT
+			 , DLV_PLC_NM
+			 , BASE_DLV_CST_PLC_YN
+			 , RTRVL_DRCT_PSB_YN
+			 , DLV_MN_CD
+			 , DLV_COM_CD
+			 , DLV_PSB_DAY
+			 , DLVSP_POST_NO
+			 , DLVSP_BASE_ADDR
+			 , DLVSP_DETAIL_ADDR
+			 , OVSEA_DLV_BOX_PSB_VOL
+			 , OVSEA_DLV_BOX_PSB_WT
+			 , DLV_CST_LEVY_SECT_CD
+			 , OVSEA_DLV_CST_EXM_STDR_AMT
+			 , RETRN_MN_CD
+			 , RETRN_COM_CD
+			 , RETRN_POST_NO
+			 , RETRN_BASE_ADDR
+			 , RETRN_DETAIL_ADDR
+			 , RTGOD_DLIVY_DLV_CST_INCLS_YN
+			 , DLV_MTHD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{histDt,jdbcType=TIMESTAMP}
+			 , #{dlvPlcNm,jdbcType=VARCHAR}
+			 , #{baseDlvCstPlcYn,jdbcType=VARCHAR}
+			 , #{rtrvlDrctPsbYn,jdbcType=VARCHAR}
+			 , #{dlvMnCd,jdbcType=VARCHAR}
+			 , #{dlvComCd,jdbcType=VARCHAR}
+			 , #{dlvPsbDay,jdbcType=VARCHAR}
+			 , #{dlvspPostNo,jdbcType=VARCHAR}
+			 , #{dlvspBaseAddr,jdbcType=VARCHAR}
+			 , #{dlvspDetailAddr,jdbcType=VARCHAR}
+			 , #{ovseaDlvBoxPsbVol,jdbcType=NUMERIC}
+			 , #{ovseaDlvBoxPsbWt,jdbcType=NUMERIC}
+			 , #{dlvCstLevySectCd,jdbcType=VARCHAR}
+			 , #{ovseaDlvCstExmStdrAmt,jdbcType=NUMERIC}
+			 , #{retrnMnCd,jdbcType=VARCHAR}
+			 , #{retrnComCd,jdbcType=VARCHAR}
+			 , #{retrnPostNo,jdbcType=VARCHAR}
+			 , #{retrnBaseAddr,jdbcType=VARCHAR}
+			 , #{retrnDetailAddr,jdbcType=VARCHAR}
+			 , #{rtgodDlivyDlvCstInclsYn,jdbcType=VARCHAR}
+			 , #{dlvMthdDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComOvseaDlvCstPlcHist" parameterType="comOvseaDlvCstPlcHist">
+		DELETE /* com.plgrim.ncp.base.deleteComOvseaDlvCstPlcHist		Generator(Generator)	2018-05-23 */
+		  FROM COM_OVSEA_DLV_CST_PLC_HIST
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND HIST_DT = #{histDt,jdbcType=TIMESTAMP}
+    </delete>
+
+</mapper>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectLgsRtrvlDrctGodHist" parameterType="lgsRtrvlDrctGodHist" resultType="lgsRtrvlDrctGodHist">
+		SELECT /* com.plgrim.ncp.base.selectLgsRtrvlDrctGodHist		Generator(Generator)	2018-05-23 */
+			   RTRVL_DRCT_GOD_NO
+			 , HIST_TURN
+			 , ORD_NO
+			 , CLM_NO
+			 , GFT_YN
+			 , CLM_WRHS_GOD_TURN
+			 , DLIVY_DRCT_GOD_NO
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , OVSEA_DLV_TURN
+			 , RTRVL_SHOP_ID
+			 , ACMTL_GOD_WT
+			 , ACMTL_GOD_VOL
+			 , LGS_ITM_YN
+			 , RTRVL_DRCT_TGT_YN
+			 , RTRVL_DRCT_YN
+			 , RTRVL_DRCT_GRP_DGRE
+			 , RTRVL_DRCT_COUNT
+			 , RTRVL_DRCT_TP_CD
+			 , RTRVL_DRCT_DT
+			 , RTRVL_DRCT_QTY
+			 , RTRVL_DRCT_WTHDRAW_QTY
+			 , RTRVL_DRCT_WTHDRAW_DT
+			 , RTRVL_STAT_CD
+			 , WRHS_COMPT_DT
+			 , RTRVL_COMPT_DT
+			 , RTRVL_GOD_STAT_CD
+			 , RTRVL_GOD_STAT_DETAIL_CD
+			 , RTRVL_GOD_PRCS_COMPT_YN
+			 , BADN_REQEST_CONT
+			 , HDRY_COM_TRNSMIS_TGT_YN
+			 , HDRY_COM_TRNSMIS_YN
+			 , HDRY_COM_TRNSMIS_DT
+			 , HDRY_COM_KEY
+			 , HDRY_COM_WRHS_YN
+			 , HDRY_COM_WRHS_DT
+			 , ERP_TRNSMIS_YN
+			 , ERP_TRNSMIS_DT
+			 , ERP_CNFIRM_YN
+			 , ERP_CNFIRM_DT
+			 , ERP_INV_TRNSMIS_SECT_CD
+			 , ERP_INV_TRNSMIS_DT
+			 , RTGODCST_CAL_SECT_CD
+			 , RTGODCST_CAL_AMT
+			 , RFD_DELAY_CD
+			 , RFD_DELAY_DT
+			 , RFD_DELAY_RESN_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM LGS_RTRVL_DRCT_GOD_HIST
+		 WHERE 1 = 1
+	   	   AND RTRVL_DRCT_GOD_NO = #{rtrvlDrctGodNo,jdbcType=VARCHAR}
+		   AND HIST_TURN = #{histTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateLgsRtrvlDrctGodHist" parameterType="lgsRtrvlDrctGodHist">
+		UPDATE /* com.plgrim.ncp.base.updateLgsRtrvlDrctGodHist		Generator(Generator)	2018-05-23 */
+		LGS_RTRVL_DRCT_GOD_HIST SET
+			   ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , CLM_NO = #{clmNo,jdbcType=VARCHAR}
+			 , GFT_YN = #{gftYn,jdbcType=VARCHAR}
+			 , CLM_WRHS_GOD_TURN = #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , DLIVY_DRCT_GOD_NO = #{dlivyDrctGodNo,jdbcType=VARCHAR}
+			 , DLV_PCUPSP_TURN = #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , DLV_TURN = #{dlvTurn,jdbcType=NUMERIC}
+			 , OVSEA_DLV_TURN = #{ovseaDlvTurn,jdbcType=NUMERIC}
+			 , RTRVL_SHOP_ID = #{rtrvlShopId,jdbcType=VARCHAR}
+			 , ACMTL_GOD_WT = #{acmtlGodWt,jdbcType=NUMERIC}
+			 , ACMTL_GOD_VOL = #{acmtlGodVol,jdbcType=NUMERIC}
+			 , LGS_ITM_YN = #{lgsItmYn,jdbcType=VARCHAR}
+			 , RTRVL_DRCT_TGT_YN = #{rtrvlDrctTgtYn,jdbcType=VARCHAR}
+			 , RTRVL_DRCT_YN = #{rtrvlDrctYn,jdbcType=VARCHAR}
+			 , RTRVL_DRCT_GRP_DGRE = #{rtrvlDrctGrpDgre,jdbcType=NUMERIC}
+			 , RTRVL_DRCT_COUNT = #{rtrvlDrctCount,jdbcType=NUMERIC}
+			 , RTRVL_DRCT_TP_CD = #{rtrvlDrctTpCd,jdbcType=VARCHAR}
+			 , RTRVL_DRCT_DT = #{rtrvlDrctDt,jdbcType=TIMESTAMP}
+			 , RTRVL_DRCT_QTY = #{rtrvlDrctQty,jdbcType=NUMERIC}
+			 , RTRVL_DRCT_WTHDRAW_QTY = #{rtrvlDrctWthdrawQty,jdbcType=NUMERIC}
+			 , RTRVL_DRCT_WTHDRAW_DT = #{rtrvlDrctWthdrawDt,jdbcType=TIMESTAMP}
+			 , RTRVL_STAT_CD = #{rtrvlStatCd,jdbcType=VARCHAR}
+			 , WRHS_COMPT_DT = #{wrhsComptDt,jdbcType=TIMESTAMP}
+			 , RTRVL_COMPT_DT = #{rtrvlComptDt,jdbcType=TIMESTAMP}
+			 , RTRVL_GOD_STAT_CD = #{rtrvlGodStatCd,jdbcType=VARCHAR}
+			 , RTRVL_GOD_STAT_DETAIL_CD = #{rtrvlGodStatDetailCd,jdbcType=VARCHAR}
+			 , RTRVL_GOD_PRCS_COMPT_YN = #{rtrvlGodPrcsComptYn,jdbcType=VARCHAR}
+			 , BADN_REQEST_CONT = #{badnReqestCont,jdbcType=VARCHAR}
+			 , HDRY_COM_TRNSMIS_TGT_YN = #{hdryComTrnsmisTgtYn,jdbcType=VARCHAR}
+			 , HDRY_COM_TRNSMIS_YN = #{hdryComTrnsmisYn,jdbcType=VARCHAR}
+			 , HDRY_COM_TRNSMIS_DT = #{hdryComTrnsmisDt,jdbcType=TIMESTAMP}
+			 , HDRY_COM_KEY = #{hdryComKey,jdbcType=VARCHAR}
+			 , HDRY_COM_WRHS_YN = #{hdryComWrhsYn,jdbcType=VARCHAR}
+			 , HDRY_COM_WRHS_DT = #{hdryComWrhsDt,jdbcType=TIMESTAMP}
+			 , ERP_TRNSMIS_YN = #{erpTrnsmisYn,jdbcType=VARCHAR}
+			 , ERP_TRNSMIS_DT = #{erpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , ERP_CNFIRM_YN = #{erpCnfirmYn,jdbcType=VARCHAR}
+			 , ERP_CNFIRM_DT = #{erpCnfirmDt,jdbcType=TIMESTAMP}
+			 , ERP_INV_TRNSMIS_SECT_CD = #{erpInvTrnsmisSectCd,jdbcType=VARCHAR}
+			 , ERP_INV_TRNSMIS_DT = #{erpInvTrnsmisDt,jdbcType=TIMESTAMP}
+			 , RTGODCST_CAL_SECT_CD = #{rtgodcstCalSectCd,jdbcType=VARCHAR}
+			 , RTGODCST_CAL_AMT = #{rtgodcstCalAmt,jdbcType=NUMERIC}
+			 , RFD_DELAY_CD = #{rfdDelayCd,jdbcType=VARCHAR}
+			 , RFD_DELAY_DT = #{rfdDelayDt,jdbcType=TIMESTAMP}
+			 , RFD_DELAY_RESN_DSCR = #{rfdDelayResnDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND RTRVL_DRCT_GOD_NO = #{rtrvlDrctGodNo,jdbcType=VARCHAR}
+		   AND HIST_TURN = #{histTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertLgsRtrvlDrctGodHist" parameterType="lgsRtrvlDrctGodHist">
+		INSERT /* com.plgrim.ncp.base.insertLgsRtrvlDrctGodHist		Generator(Generator)	2018-05-23 */
+		INTO   LGS_RTRVL_DRCT_GOD_HIST (
+			   RTRVL_DRCT_GOD_NO
+			 , HIST_TURN
+			 , ORD_NO
+			 , CLM_NO
+			 , GFT_YN
+			 , CLM_WRHS_GOD_TURN
+			 , DLIVY_DRCT_GOD_NO
+			 , DLV_PCUPSP_TURN
+			 , DLV_TURN
+			 , OVSEA_DLV_TURN
+			 , RTRVL_SHOP_ID
+			 , ACMTL_GOD_WT
+			 , ACMTL_GOD_VOL
+			 , LGS_ITM_YN
+			 , RTRVL_DRCT_TGT_YN
+			 , RTRVL_DRCT_YN
+			 , RTRVL_DRCT_GRP_DGRE
+			 , RTRVL_DRCT_COUNT
+			 , RTRVL_DRCT_TP_CD
+			 , RTRVL_DRCT_DT
+			 , RTRVL_DRCT_QTY
+			 , RTRVL_DRCT_WTHDRAW_QTY
+			 , RTRVL_DRCT_WTHDRAW_DT
+			 , RTRVL_STAT_CD
+			 , WRHS_COMPT_DT
+			 , RTRVL_COMPT_DT
+			 , RTRVL_GOD_STAT_CD
+			 , RTRVL_GOD_STAT_DETAIL_CD
+			 , RTRVL_GOD_PRCS_COMPT_YN
+			 , BADN_REQEST_CONT
+			 , HDRY_COM_TRNSMIS_TGT_YN
+			 , HDRY_COM_TRNSMIS_YN
+			 , HDRY_COM_TRNSMIS_DT
+			 , HDRY_COM_KEY
+			 , HDRY_COM_WRHS_YN
+			 , HDRY_COM_WRHS_DT
+			 , ERP_TRNSMIS_YN
+			 , ERP_TRNSMIS_DT
+			 , ERP_CNFIRM_YN
+			 , ERP_CNFIRM_DT
+			 , ERP_INV_TRNSMIS_SECT_CD
+			 , ERP_INV_TRNSMIS_DT
+			 , RTGODCST_CAL_SECT_CD
+			 , RTGODCST_CAL_AMT
+			 , RFD_DELAY_CD
+			 , RFD_DELAY_DT
+			 , RFD_DELAY_RESN_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{rtrvlDrctGodNo,jdbcType=VARCHAR}
+			 , #{histTurn,jdbcType=NUMERIC}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{clmNo,jdbcType=VARCHAR}
+			 , #{gftYn,jdbcType=VARCHAR}
+			 , #{clmWrhsGodTurn,jdbcType=NUMERIC}
+			 , #{dlivyDrctGodNo,jdbcType=VARCHAR}
+			 , #{dlvPcupspTurn,jdbcType=NUMERIC}
+			 , #{dlvTurn,jdbcType=NUMERIC}
+			 , #{ovseaDlvTurn,jdbcType=NUMERIC}
+			 , #{rtrvlShopId,jdbcType=VARCHAR}
+			 , #{acmtlGodWt,jdbcType=NUMERIC}
+			 , #{acmtlGodVol,jdbcType=NUMERIC}
+			 , #{lgsItmYn,jdbcType=VARCHAR}
+			 , #{rtrvlDrctTgtYn,jdbcType=VARCHAR}
+			 , #{rtrvlDrctYn,jdbcType=VARCHAR}
+			 , #{rtrvlDrctGrpDgre,jdbcType=NUMERIC}
+			 , #{rtrvlDrctCount,jdbcType=NUMERIC}
+			 , #{rtrvlDrctTpCd,jdbcType=VARCHAR}
+			 , #{rtrvlDrctDt,jdbcType=TIMESTAMP}
+			 , #{rtrvlDrctQty,jdbcType=NUMERIC}
+			 , #{rtrvlDrctWthdrawQty,jdbcType=NUMERIC}
+			 , #{rtrvlDrctWthdrawDt,jdbcType=TIMESTAMP}
+			 , #{rtrvlStatCd,jdbcType=VARCHAR}
+			 , #{wrhsComptDt,jdbcType=TIMESTAMP}
+			 , #{rtrvlComptDt,jdbcType=TIMESTAMP}
+			 , #{rtrvlGodStatCd,jdbcType=VARCHAR}
+			 , #{rtrvlGodStatDetailCd,jdbcType=VARCHAR}
+			 , #{rtrvlGodPrcsComptYn,jdbcType=VARCHAR}
+			 , #{badnReqestCont,jdbcType=VARCHAR}
+			 , #{hdryComTrnsmisTgtYn,jdbcType=VARCHAR}
+			 , #{hdryComTrnsmisYn,jdbcType=VARCHAR}
+			 , #{hdryComTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{hdryComKey,jdbcType=VARCHAR}
+			 , #{hdryComWrhsYn,jdbcType=VARCHAR}
+			 , #{hdryComWrhsDt,jdbcType=TIMESTAMP}
+			 , #{erpTrnsmisYn,jdbcType=VARCHAR}
+			 , #{erpTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{erpCnfirmYn,jdbcType=VARCHAR}
+			 , #{erpCnfirmDt,jdbcType=TIMESTAMP}
+			 , #{erpInvTrnsmisSectCd,jdbcType=VARCHAR}
+			 , #{erpInvTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{rtgodcstCalSectCd,jdbcType=VARCHAR}
+			 , #{rtgodcstCalAmt,jdbcType=NUMERIC}
+			 , #{rfdDelayCd,jdbcType=VARCHAR}
+			 , #{rfdDelayDt,jdbcType=TIMESTAMP}
+			 , #{rfdDelayResnDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteLgsRtrvlDrctGodHist" parameterType="lgsRtrvlDrctGodHist">
+		DELETE /* com.plgrim.ncp.base.deleteLgsRtrvlDrctGodHist		Generator(Generator)	2018-05-23 */
+		  FROM LGS_RTRVL_DRCT_GOD_HIST
+		 WHERE 1 = 1
+		   AND RTRVL_DRCT_GOD_NO = #{rtrvlDrctGodNo,jdbcType=VARCHAR}
+		   AND HIST_TURN = #{histTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

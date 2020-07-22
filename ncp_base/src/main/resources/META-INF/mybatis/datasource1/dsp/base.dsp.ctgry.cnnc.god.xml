@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCtgryCnncGod" parameterType="dspCtgryCnncGod" resultType="dspCtgryCnncGod">
+		SELECT /* com.plgrim.ncp.base.selectDspCtgryCnncGod		Generator(Generator)	2018-05-23 */
+			   DSP_CTGRY_NO
+			 , GOD_NO
+			 , RPRST_GOD_YN
+			 , DSP_YN
+			 , SORT_SEQ
+			 , BRND_CTGRY_DSP_YN
+			 , BRND_CTGRY_SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CTGRY_CNNC_GOD
+		 WHERE 1 = 1
+	   	   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateDspCtgryCnncGod" parameterType="dspCtgryCnncGod">
+		UPDATE /* com.plgrim.ncp.base.updateDspCtgryCnncGod		Generator(Generator)	2018-05-23 */
+		DSP_CTGRY_CNNC_GOD SET
+			   RPRST_GOD_YN = #{rprstGodYn,jdbcType=VARCHAR}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , BRND_CTGRY_DSP_YN = #{brndCtgryDspYn,jdbcType=VARCHAR}
+			 , BRND_CTGRY_SORT_SEQ = #{brndCtgrySortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertDspCtgryCnncGod" parameterType="dspCtgryCnncGod">
+		INSERT /* com.plgrim.ncp.base.insertDspCtgryCnncGod		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CTGRY_CNNC_GOD (
+			   DSP_CTGRY_NO
+			 , GOD_NO
+			 , RPRST_GOD_YN
+			 , DSP_YN
+			 , SORT_SEQ
+			 , BRND_CTGRY_DSP_YN
+			 , BRND_CTGRY_SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{rprstGodYn,jdbcType=VARCHAR}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{brndCtgryDspYn,jdbcType=VARCHAR}
+			 , #{brndCtgrySortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCtgryCnncGod" parameterType="dspCtgryCnncGod">
+		DELETE /* com.plgrim.ncp.base.deleteDspCtgryCnncGod		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CTGRY_CNNC_GOD
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

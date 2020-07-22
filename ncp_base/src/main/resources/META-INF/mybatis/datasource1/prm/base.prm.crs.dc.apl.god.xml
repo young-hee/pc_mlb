@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPrmCrsDcAplGod" parameterType="prmCrsDcAplGod" resultType="prmCrsDcAplGod">
+		SELECT /* com.plgrim.ncp.base.selectPrmCrsDcAplGod		Generator(Generator)	2018-05-23 */
+			   PRM_NO
+			 , APL_TGT_GOD_GRP_CD
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PRM_CRS_DC_APL_GOD
+		 WHERE 1 = 1
+	   	   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND APL_TGT_GOD_GRP_CD = #{aplTgtGodGrpCd,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updatePrmCrsDcAplGod" parameterType="prmCrsDcAplGod">
+		UPDATE /* com.plgrim.ncp.base.updatePrmCrsDcAplGod		Generator(Generator)	2018-05-23 */
+		PRM_CRS_DC_APL_GOD SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND APL_TGT_GOD_GRP_CD = #{aplTgtGodGrpCd,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertPrmCrsDcAplGod" parameterType="prmCrsDcAplGod">
+		INSERT /* com.plgrim.ncp.base.insertPrmCrsDcAplGod		Generator(Generator)	2018-05-23 */
+		INTO   PRM_CRS_DC_APL_GOD (
+			   PRM_NO
+			 , APL_TGT_GOD_GRP_CD
+			 , GOD_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{prmNo,jdbcType=VARCHAR}
+			 , #{aplTgtGodGrpCd,jdbcType=VARCHAR}
+			 , #{godNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePrmCrsDcAplGod" parameterType="prmCrsDcAplGod">
+		DELETE /* com.plgrim.ncp.base.deletePrmCrsDcAplGod		Generator(Generator)	2018-05-23 */
+		  FROM PRM_CRS_DC_APL_GOD
+		 WHERE 1 = 1
+		   AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		   AND APL_TGT_GOD_GRP_CD = #{aplTgtGodGrpCd,jdbcType=VARCHAR}
+		   AND GOD_NO = #{godNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

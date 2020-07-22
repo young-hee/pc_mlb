@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysGrpCd" parameterType="sysGrpCd" resultType="sysGrpCd">
+		SELECT /* com.plgrim.ncp.base.selectSysGrpCd		Generator(Generator)	2018-05-23 */
+			   GRP_CD
+			 , UPPER_GRP_CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , ASSTN_CD_1
+			 , ASSTN_CD_2
+			 , CD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_GRP_CD
+		 WHERE 1 = 1
+	   	   AND GRP_CD = #{grpCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysGrpCd" parameterType="sysGrpCd">
+		UPDATE /* com.plgrim.ncp.base.updateSysGrpCd		Generator(Generator)	2018-05-23 */
+		SYS_GRP_CD SET
+			   UPPER_GRP_CD = #{upperGrpCd,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , ASSTN_CD_1 = #{asstnCd1,jdbcType=VARCHAR}
+			 , ASSTN_CD_2 = #{asstnCd2,jdbcType=VARCHAR}
+			 , CD_DSCR = #{cdDscr,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND GRP_CD = #{grpCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysGrpCd" parameterType="sysGrpCd">
+		INSERT /* com.plgrim.ncp.base.insertSysGrpCd		Generator(Generator)	2018-05-23 */
+		INTO   SYS_GRP_CD (
+			   GRP_CD
+			 , UPPER_GRP_CD
+			 , USE_YN
+			 , SORT_SEQ
+			 , ASSTN_CD_1
+			 , ASSTN_CD_2
+			 , CD_DSCR
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{grpCd,jdbcType=VARCHAR}
+			 , #{upperGrpCd,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{asstnCd1,jdbcType=VARCHAR}
+			 , #{asstnCd2,jdbcType=VARCHAR}
+			 , #{cdDscr,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysGrpCd" parameterType="sysGrpCd">
+		DELETE /* com.plgrim.ncp.base.deleteSysGrpCd		Generator(Generator)	2018-05-23 */
+		  FROM SYS_GRP_CD
+		 WHERE 1 = 1
+		   AND GRP_CD = #{grpCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

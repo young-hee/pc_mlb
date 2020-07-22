@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspGodPrmThrgh" parameterType="dspGodPrmThrgh" resultType="dspGodPrmThrgh">
+		SELECT /* com.plgrim.ncp.base.selectDspGodPrmThrgh		Generator(Generator)	2018-05-23 */
+			   GOD_NO
+			 , PRM_NO
+			 , IMDTL_DC_YN
+		  FROM DSP_GOD_PRM_THRGH
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateDspGodPrmThrgh" parameterType="dspGodPrmThrgh">
+		UPDATE /* com.plgrim.ncp.base.updateDspGodPrmThrgh		Generator(Generator)	2018-05-23 */
+		DSP_GOD_PRM_THRGH SET
+			   GOD_NO = #{godNo,jdbcType=VARCHAR}
+			 , PRM_NO = #{prmNo,jdbcType=VARCHAR}
+			 , IMDTL_DC_YN = #{imdtlDcYn,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertDspGodPrmThrgh" parameterType="dspGodPrmThrgh">
+		INSERT /* com.plgrim.ncp.base.insertDspGodPrmThrgh		Generator(Generator)	2018-05-23 */
+		INTO   DSP_GOD_PRM_THRGH (
+			   GOD_NO
+			 , PRM_NO
+			 , IMDTL_DC_YN
+		)
+		VALUES (
+			   #{godNo,jdbcType=VARCHAR}
+			 , #{prmNo,jdbcType=VARCHAR}
+			 , #{imdtlDcYn,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteDspGodPrmThrgh" parameterType="dspGodPrmThrgh">
+		DELETE /* com.plgrim.ncp.base.deleteDspGodPrmThrgh		Generator(Generator)	2018-05-23 */
+		  FROM DSP_GOD_PRM_THRGH
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfAffOrdErr" parameterType="infAffOrdErr" resultType="infAffOrdErr">
+		SELECT /* com.plgrim.ncp.base.selectInfAffOrdErr		Generator(Generator)	2018-05-23 */
+			   AFF_ORD_SN
+			 , AFF_COM_NM
+			 , AFF_COM_ID
+			 , AFF_VRSC_COM_ID
+			 , AFF_GOD_ORD_NO
+			 , AFF_ITM_ORD_NO
+			 , ERP_GOD_NO
+			 , ITM_NM
+			 , AFF_ORD_ERR_CONT
+			 , CNTC_SECT_CD
+			 , ERR_SECT_CD
+			 , REGTR_ID
+			 , REG_DT
+		  FROM INF_AFF_ORD_ERR
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfAffOrdErr" parameterType="infAffOrdErr">
+		UPDATE /* com.plgrim.ncp.base.updateInfAffOrdErr		Generator(Generator)	2018-05-23 */
+		INF_AFF_ORD_ERR SET
+			   AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+			 , AFF_COM_NM = #{affComNm,jdbcType=VARCHAR}
+			 , AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+			 , AFF_VRSC_COM_ID = #{affVrscComId,jdbcType=VARCHAR}
+			 , AFF_GOD_ORD_NO = #{affGodOrdNo,jdbcType=VARCHAR}
+			 , AFF_ITM_ORD_NO = #{affItmOrdNo,jdbcType=VARCHAR}
+			 , ERP_GOD_NO = #{erpGodNo,jdbcType=VARCHAR}
+			 , ITM_NM = #{itmNm,jdbcType=VARCHAR}
+			 , AFF_ORD_ERR_CONT = #{affOrdErrCont,jdbcType=VARCHAR}
+			 , CNTC_SECT_CD = #{cntcSectCd,jdbcType=VARCHAR}
+			 , ERR_SECT_CD = #{errSectCd,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfAffOrdErr" parameterType="infAffOrdErr">
+		INSERT /* com.plgrim.ncp.base.insertInfAffOrdErr		Generator(Generator)	2018-05-23 */
+		INTO   INF_AFF_ORD_ERR (
+			   AFF_ORD_SN
+			 , AFF_COM_NM
+			 , AFF_COM_ID
+			 , AFF_VRSC_COM_ID
+			 , AFF_GOD_ORD_NO
+			 , AFF_ITM_ORD_NO
+			 , ERP_GOD_NO
+			 , ITM_NM
+			 , AFF_ORD_ERR_CONT
+			 , CNTC_SECT_CD
+			 , ERR_SECT_CD
+			 , REGTR_ID
+			 , REG_DT
+		)
+		VALUES (
+			   #{affOrdSn,jdbcType=NUMERIC}
+			 , #{affComNm,jdbcType=VARCHAR}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{affVrscComId,jdbcType=VARCHAR}
+			 , #{affGodOrdNo,jdbcType=VARCHAR}
+			 , #{affItmOrdNo,jdbcType=VARCHAR}
+			 , #{erpGodNo,jdbcType=VARCHAR}
+			 , #{itmNm,jdbcType=VARCHAR}
+			 , #{affOrdErrCont,jdbcType=VARCHAR}
+			 , #{cntcSectCd,jdbcType=VARCHAR}
+			 , #{errSectCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfAffOrdErr" parameterType="infAffOrdErr">
+		DELETE /* com.plgrim.ncp.base.deleteInfAffOrdErr		Generator(Generator)	2018-05-23 */
+		  FROM INF_AFF_ORD_ERR
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

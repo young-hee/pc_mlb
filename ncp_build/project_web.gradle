@@ -1,0 +1,158 @@
+// assemble_web
+
+// ncp_if_internal_server의 프로젝트 의존성은 다른 배포 어플리케이션과는 다르다.
+def IF_DEPENDS_PROJECTS = [
+        "${gradle.ext.PREFIX}:ncp_framework",
+        "${gradle.ext.PREFIX}:ncp_config",
+        "${gradle.ext.PREFIX}:ncp_base",
+        "${gradle.ext.PREFIX}:ncp_if",
+        "${gradle.ext.PREFIX}:ncp_commons",
+]
+
+def COMMON_DEPENDS_PROJECTS = [
+        "${gradle.ext.PREFIX}:ncp_framework",
+        "${gradle.ext.PREFIX}:ncp_config",
+        "${gradle.ext.PREFIX}:ncp_base",
+        "${gradle.ext.PREFIX}:ncp_if",
+        "${gradle.ext.PREFIX}:ncp_commons",
+        "${gradle.ext.PREFIX}:ncp_cmp",
+]
+
+def 대상_시스템 = System.getProperty('SYSTEM', 'local')
+def buildNumber = System.getProperty('build_number', '0')
+
+
+task('version_info') << {
+    rootProject.subprojects.each { cfg ->
+        def projectName = cfg.name.replaceAll("ncp_", "");
+
+        if (projectName.contains("html")) {
+            // version.info 기록 제외
+        } else if(projectName.contains("server") || projectName.contains("web")){
+            if ("local".equals(대상_시스템)) {
+                cfg.file("src/main/resources/version.info").write("developer-local-version", "UTF-8");
+            } else {
+                cfg.file("src/main/resources/version.info").write(대상_시스템 + "-version-" + buildNumber, "UTF-8");
+            }
+        } else {
+            if ("local".equals(대상_시스템)) {
+                cfg.file("src/main/resources/" + projectName + "-version.info").write(projectName + "-developer-local-version", "UTF-8");
+            } else {
+                cfg.file("src/main/resources/" + projectName + "-version.info").write(projectName + "-" + 대상_시스템 + "-version-" + buildNumber, "UTF-8");
+            }
+        }
+    }
+}
+
+
+rootProject.SERVER_PROJECTS.each { cfg ->
+
+    project(cfg.projectName) {
+
+        // eclipse 에서 webtool 세팅을 위한 설정값
+        eclipse {
+            wtp {
+
+                facet {
+                    facet name: 'jst.web', version: '3.0'
+                    facet name: 'java', version: '1.8'
+                    facet name: 'wst.jsdt.web', version: '1.0'
+                }
+
+                component {
+                    contextPath = '/'
+                    deployName = project.name
+
+
+                    resource sourcePath: 'src/main/webapp', deployPath: '/'
+
+                    cfg.resourceProjectNames.each { resourceProjectName ->
+                        resource(
+                                sourcePath: project(resourceProjectName).file('src/main/resources/META-INF/resources/WEB-INF/resources').absolutePath,
+                                deployPath: '/'
+                        )
+                    }
+
+                    resource sourcePath: 'src/main/webapp/WEB-INF', deployPath: '/WEB-INF'
+                    resource sourcePath: 'WebContent/WEB-INF/web.xml', deployPath: '/WEB-INF/web.xml'
+                }
+            }
+
+            //  이클립스에서  j2ee 컨테이너의 의존성 순서에 따라 이클립스내에서 소스보기가 되지 않는 문제가 있음.이를 해결하기 위해 의존성 순서를 정렬함
+            eclipse.classpath.file {
+                // Classpath entry for Eclipse which changes the order of classpathentries; otherwise no sources for 3rd party jars are shown
+                withXml { xml ->
+                    def node = xml.asNode()
+                    node.remove(node.find { it.@path == 'org.eclipse.jst.j2ee.internal.web.container' })
+                    node.appendNode('classpathentry', [kind: 'con', path: 'org.eclipse.jst.j2ee.internal.web.container', exported: 'true'])
+                }
+            }
+        }
+
+        // 실제 서버에 배포하기 위한 배포본 설정
+        // 1.  WAS용
+        // 2. 컨텐츠 배포용
+        task warWas(type: War) { // buildSrc/src/main/groovy/WebApp.groovy 참조
+
+            archiveName = cfg.appArchiveName
+            includeEmptyDirs = false
+            // 중복된 파일을 압축하려 하면 제외한다.
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            webAppDirName = "src/test/webapp"
+
+            //  프로젝트 의존성은  jar  파일을 만들어  WEB-INF/lib  에 넣는다. 하지만 이렇게 할때는 소스확인등이 불편하기 때문에  jar 파일을 제거하고 리소스를 WEB-INF/classess 에 넣는 설정을 한다.
+            classpath = classpath.filter { File file -> return !(file.name.startsWith("ncp_") && file.name.endsWith(".jar")) }
+
+
+
+            def relateProjects = null;
+            // ("ncp_if_internal_server"  == project.name ? IF_DEPENDS_PROJECTS : COMMON_DEPENDS_PROJECTS);
+            if ("ncp_if_external_server" == project.name || "ncp_if_internal_server" == project.name) {
+                relateProjects = IF_DEPENDS_PROJECTS
+            } else {
+                relateProjects = COMMON_DEPENDS_PROJECTS
+            }
+
+            classpath += project.sourceSets.main.output
+
+            relateProjects.each { prj ->
+                classpath += project(prj).sourceSets.main.output
+            }
+
+            into("/") {
+                from 'src/main/webapp'
+                exclude "css/**", "excel/**", "temp/**", "templet/**", "js/**", "images/**", "activex/**", "html/**", "favicon/**", "pie/**", "font/**", "robot.txt", "plugin/**", "**/web-fragment.xml", "WEB-INF**/web-fragment.xml",
+                        "common/**", "event/**", "linkprice/**", "static/**"
+            }
+
+        }
+
+//		//println "Archive: ${cfg.contentsArchiveName}"
+        task warContents(type: Jar, dependsOn: 'processResources') {
+
+            archiveName = cfg.contentsArchiveName
+            includeEmptyDirs = false
+
+            into("/") {
+                from 'src/main/webapp'
+                exclude "WEB-INF/**"
+                exclude "**/*.jsf"
+            }
+
+
+            into("/") {
+                from 'src/main/webapp/WEB-INF/resources'
+            }
+
+            into("/") {
+                cfg.resourceProjectNames.each { resourceProjectName ->
+                    from project(resourceProjectName).file('src/main/resources/META-INF/resources/WEB-INF/resources')
+                }
+            }
+
+        }
+
+        task warWebAll(dependsOn: ['warWas', 'warContents'])
+
+    }
+}

@@ -1,0 +1,1029 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.promotion">
+
+	<!-- 프로모션 적용 상품 가격 (배치)프로시져 수동 실행 -->
+	<update id="updatePromotionGoodsPriceProcedure" statementType="CALLABLE" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO">
+		/* [promotion.xml][updatePromotionGoodsPriceProcedure][프로모션 적용 상품 가격 (배치)프로시져 수동 실행][Leo] */
+		{ CALL PKG_DSP_GOD_PRC.PC_DSP_GOD_PRC_MAIN
+			(
+			  #{icSect, mode=IN, jdbcType=VARCHAR, javaType=String}
+			, #{godNo, mode=IN, jdbcType=VARCHAR, javaType=String}
+			, #{prm.prmNo, mode=IN, jdbcType=VARCHAR, javaType=String}
+			, #{ocResultCd, mode=OUT, jdbcType=VARCHAR, javaType=String}
+			, #{ocResultCont, mode=OUT, jdbcType=VARCHAR, javaType=String}
+			)
+		}
+	</update>
+	
+   <!-- 프로모션 즉시포인트 사용여부 적용 프로시져 실행 -->
+   <update id="updateGodImdtlDcProcedure" statementType="CALLABLE" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO">
+		/* [promotion.xml][updateGodImdtlDcProcedure][즉시포인트 사용여부 적용 프로시져 실행][Vito] */
+		{ CALL PC_GOD_IMDTL_DC_YN_SET
+			(
+			  #{icSect, mode=IN, jdbcType=VARCHAR, javaType=String}
+			, #{godNo, mode=IN, jdbcType=VARCHAR, javaType=String}
+			, #{prm.prmNo, mode=IN, jdbcType=VARCHAR, javaType=String}
+			, #{ocResultCd, mode=OUT, jdbcType=VARCHAR, javaType=String}
+			, #{ocResultCont, mode=OUT, jdbcType=VARCHAR, javaType=String}
+			)
+		}
+	</update>
+   
+   <update id="updatePromotionStatus" parameterType="prm">
+      UPDATE   prm /* com.plgrim.ncp.biz.promotion.updatePromotionStatus  20150417 */
+      SET
+               prm_stat_cd   = #{prmStatCd}
+             , prm_cncl_dscr = nvl(#{prmCnclDscr:VARCHAR}, prm_cncl_dscr)
+             , udter_id      = #{udterId}
+             , udt_dt        = SYSDATE
+      WHERE    1 = 1
+      AND      prm_no   IN (  SELECT  regexp_substr(d.param, '[^-]+', 1, level) as param
+                              FROM    (SELECT #{prmNo} AS param FROM dual) d
+                              CONNECT BY level <![CDATA[<=]]> regexp_count(d.param, '[^-]+'))
+   </update>
+
+   <!-- 프로모션 수정 승인상태용 -->
+   <update id="updatePromotion" parameterType="prm">
+      UPDATE   prm /* com.plgrim.ncp.biz.promotion.updatePromotion  20150417 */
+      SET       
+               prm_nm                       = nvl(#{prmNm:VARCHAR},         prm_nm)
+             , prm_beg_date                 = nvl(#{prmBegDate:VARCHAR},    prm_beg_date)
+             , prm_end_date                 = nvl(#{prmEndDate:VARCHAR},    prm_end_date)
+             , prm_apl_dowsmon              = #{prmAplDowsmon:VARCHAR}
+             , prm_dateby_beg_hour          = #{prmDatebyBegHour:VARCHAR}
+             , prm_dateby_end_hour          = #{prmDatebyEndHour:VARCHAR}
+             , RPRST_IMG_USE_SECT_CD        = #{rprstImgUseSectCd,jdbcType=VARCHAR}
+             , RPRST_IMG_PC_URL             = #{rprstImgPcUrl,jdbcType=VARCHAR}
+             , RPRST_IMG_PC_ALTRTV_CONT     = #{rprstImgPcAltrtvCont,jdbcType=VARCHAR}
+             , RPRST_IMG_MOBILE_URL         = #{rprstImgMobileUrl,jdbcType=VARCHAR}
+             , RPRST_IMG_MOBILE_ALTRTV_CONT = #{rprstImgMobileAltrtvCont,jdbcType=VARCHAR}
+             , RELATE_URL 					=  #{relateUrl,jdbcType=VARCHAR}
+             , udter_id                     = nvl(#{udterId:VARCHAR},       udter_id)
+             , udt_dt                       = SYSDATE
+      WHERE    1 = 1
+      AND      prm_no                       = #{prmNo}
+   </update>
+   
+   <delete id="deletePromotionApplyPeriod" parameterType="prmAplPd">
+      DELETE /* com.plgrim.ncp.biz.promotion.deletePrmAplPd vito 20150601 */  
+      FROM  prm_apl_pd 
+      WHERE 1 = 1
+      AND   prm_no = #{prmNo:VARCHAR}
+      <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(aplPdCd)">
+      AND   apl_pd_cd = #{aplPdCd:VARCHAR}
+      </if>
+   </delete>
+
+	<!-- 발급쿠폰 사용중지 update -->
+	<update id="updateCouponStopStatus" parameterType="mbrIssuCpn">
+		/* [promotion.xml][updateCouponStopStatus][발급쿠폰 사용중지 update][Leo] */
+		UPDATE MBR_ISSU_CPN
+		   SET   CPN_STAT_CD = #{cpnStatCd, jdbcType=VARCHAR}
+		       , CPN_USE_IMPS_RESN_DSCR = #{cpnUseImpsResnDscr, jdbcType=VARCHAR}
+		       , UDTER_ID = #{udterId, jdbcType=VARCHAR}
+		       , UDT_DT = SYSDATE
+		 WHERE 1=1
+		  AND MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		  AND MBR_CPN_NO = #{mbrCpnNo, jdbcType=VARCHAR}
+		  AND CPN_STAT_CD = 'NO_USE'
+	</update>
+	
+	<!-- 발급 가능 일시 체크 -->
+    <select id="selectPrmAplPdCount" parameterType="prmAplPd" resultType="Integer">
+    	/* [promotion.xml][selectPrmAplPdCount][발급 가능 일시 체크][Leo] */
+        SELECT COUNT(PRM_NO) AS CNT
+          FROM PRM_APL_PD
+         WHERE 1 = 1
+           AND PRM_NO = #{prmNo,jdbcType=VARCHAR}
+           AND APL_PD_CD = #{aplPdCd,jdbcType=VARCHAR}
+           AND BEG_DT <![CDATA[ <= ]]> SYSDATE
+           AND SYSDATE <![CDATA[ <= ]]> END_DT
+    </select>
+    
+	<!-- 쿠폰 발급 대상 체크 - 몰, 디바이스, 언어, 회원유형, 회원속성 -->
+    <select id="selectCouponIssueTargetCheck" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO" resultType="Integer">
+        /* [promotion.xml][selectCouponIssueTargetCheck][쿠폰 발급 대상 체크][Leo] */
+        SELECT COUNT(Z.PRM_NO) CNT
+          FROM (
+                  SELECT PRM.PRM_NO
+                    FROM PRM PRM
+                   WHERE #{prm.ordDcRelatePromtSn:NUMERIC} IS NULL
+                     AND PRM.PRM_NO = #{mbrIssuCpn.prmNo, jdbcType=VARCHAR}
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'MALL_ID'
+                                    AND MALL_ID = #{mallId, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'LANG'
+                                    AND LANG_CD = #{lang, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'DVC'
+                                    AND DVC_CD = #{device, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'TGT_MBR_TP'
+                                    AND TGT_MBR_TP_CD = #{absMbrTpCd, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'TGT_MBR_ATRB'
+									AND (('GRPCO' = #{absMbrAtrbCd, jdbcType=VARCHAR} 
+                                   		 	AND ((TGT_MBR_ATRB_CD = 'GRPCO_IND' AND GRPCO_ID = #{absGepcoId, jdbcType=VARCHAR})
+												OR TGT_MBR_ATRB_CD = 'GRPCO_ALL'))
+                                        OR TGT_MBR_ATRB_CD = #{absMbrAtrbCd, jdbcType=VARCHAR}))
+                  UNION ALL
+                  SELECT PRM.PRM_NO
+                    FROM PRM PRM
+                    JOIN DSP_PROMT DP
+                      ON DP.PROMT_SN = PRM.ORD_DC_RELATE_PROMT_SN
+                   WHERE #{prm.ordDcRelatePromtSn:NUMERIC} IS NOT NULL
+                     AND PRM.PRM_NO = #{mbrIssuCpn.prmNo, jdbcType=VARCHAR}
+                     AND PRM.PRM_TP_CD = 'CPN'
+                     AND PRM.ORD_DC_RELATE_PROMT_SN = #{prm.ordDcRelatePromtSn:NUMERIC}
+                     AND EXISTS (SELECT 1
+                                   FROM DSP_PROMT_DSP_TGT A
+                                  WHERE A.PROMT_SN = DP.PROMT_SN
+                                    AND DSP_TGT_TP_CD = 'MALL_ID'
+                                    AND MALL_ID = #{mallId, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM DSP_PROMT_DSP_TGT A
+                                  WHERE A.PROMT_SN = DP.PROMT_SN
+                                    AND DSP_TGT_TP_CD = 'LANG'
+                                    AND LANG_CD = #{lang, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM DSP_PROMT_DSP_TGT A
+                                  WHERE A.PROMT_SN = DP.PROMT_SN
+                                    AND DSP_TGT_TP_CD = 'DVC'
+                                    AND DVC_CD = #{device, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM DSP_PROMT_DSP_TGT A
+                                  WHERE A.PROMT_SN = DP.PROMT_SN
+                                    AND DSP_TGT_TP_CD = 'TGT_MBR_TP'
+                                    AND TGT_MBR_TP_CD = #{absMbrTpCd, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM DSP_PROMT_DSP_TGT A
+                                  WHERE A.PROMT_SN = DP.PROMT_SN
+                                    AND DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+									AND (('GRPCO' = #{absMbrAtrbCd, jdbcType=VARCHAR} 
+                                   		 	AND ((TGT_MBR_ATRB_CD = 'GRPCO_IND' AND GRPCO_ID = #{absGepcoId, jdbcType=VARCHAR})
+												OR TGT_MBR_ATRB_CD = 'GRPCO_ALL'))
+                                        OR TGT_MBR_ATRB_CD = #{absMbrAtrbCd, jdbcType=VARCHAR}))
+                ) Z
+    </select>
+    
+	<!-- (회원) 쿠폰 발급 Count -->
+	<select id="selectCouponIssueCount" parameterType="mbrIssuCpn" resultType="Integer">
+		/* [promotion.xml][selectCouponIssueCount][(회원) 쿠폰 발급 Count][Leo] */
+		SELECT COUNT(MIC.MBR_CPN_NO) AS ISSU_CNT
+          FROM MBR_ISSU_CPN MIC JOIN MBR MBR ON MIC.MBR_NO = MBR.MBR_NO JOIN PRM_CPN PC ON MIC.PRM_NO = PC.PRM_NO
+         WHERE 1=1
+           AND MIC.PRM_NO = #{prmNo, jdbcType=VARCHAR}
+       	   <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(mbrNo)">
+           AND MIC.MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+           </if>
+           <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(validBegDate)">
+           AND MIC.VALID_BEG_DATE = #{validBegDate, jdbcType=VARCHAR}
+           </if>
+           <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(cpnStatCd)">
+           AND MIC.CPN_STAT_CD = #{cpnStatCd, jdbcType=VARCHAR}
+           </if>
+	</select>
+	
+	
+	<select id="selectCpnCrtfcCount" parameterType="prmCpnCrtfcCd" resultType="Integer">
+		/* [promotion.xml][selectCouponIssueCount][(회원) 쿠폰 발급 Count][eunsik10.kim] */
+		SELECT COUNT(1) AS  EXISTS_CNT 
+		FROM PRM_CPN_CRTFC_CD 
+		WHERE  PRM_NO =  #{prmNo, jdbcType=VARCHAR}
+		  AND  CPN_CRTFC_CD= #{cpnCrtfcCd , jdbcType=VARCHAR}
+	</select>
+	
+	
+   
+	<!-- 회원번호 유효체크 -->
+	<select id="selectMemberCheck" parameterType="mbrIssuCpn" resultType="Integer">
+		/* [promotion.xml][selectMemberCheck][회원번호 유효체크][Leo] */
+		SELECT COUNT(MBR_NO) CNT
+		  FROM MBR
+		 WHERE 1=1
+		   AND MBR_STAT_CD = 'ACT'
+		   AND MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+	</select>
+   
+	<!-- 사용 온라인 쿠폰 복원 (CS) -->
+	<update id="updateCouponRevertStatus" parameterType="mbrIssuCpn">
+		/* [promotion.xml][updateCouponRevertStatus][사용 온라인 쿠폰 복원 (CS)][Leo] */
+		UPDATE MBR_ISSU_CPN
+		   SET   CPN_STAT_CD = #{cpnStatCd, jdbcType=VARCHAR}
+		       <if test="cpnStatCd == 'USE_STPGE' ">
+		       , CLM_NO = #{clmNo, jdbcType=VARCHAR}
+		       </if>
+		       <if test="cpnStatCd == 'NO_USE' ">
+		       , CLM_NO = #{clmNo, jdbcType=VARCHAR}
+		       , ORD_NO = #{ordNo, jdbcType=VARCHAR}
+		       , CPN_USE_DT = #{cpnUseDt, jdbcType=TIMESTAMP}
+		       </if>
+		       , UDTER_ID = #{udterId, jdbcType=VARCHAR}
+		       , UDT_DT = SYSDATE
+		 WHERE MBR_CPN_NO = #{mbrCpnNo, jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 회원 온/오프 보유 쿠폰 일련번호(난수) 조회 -->
+	<select id="selectMemberOwnCouponCrtfcCd" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO" resultType="String">
+		/* [promotion.xml][selectMemberOwnCouponCrtfcCd][회원 온/오프 보유 쿠폰 일련번호(난수) 조회][Leo] */
+		SELECT OFFER_NUMBER
+		  FROM INF_ET_OFFERDAT
+		 WHERE 1=1
+		   AND PARTNER = #{erpCstmrNo, jdbcType=VARCHAR}
+		   AND MBR_CPN_NO IS NULL
+	</select>
+	
+	<!-- 쿠폰 일련번호(난수) 조회 -->
+	<select id="selectCouponCrtfcCd" parameterType="mbrIssuCpn" resultType="String">
+		/* [promotion.xml][selectCouponCrtfcCd][쿠폰 일련번호(난수) 조회][Leo] */
+		SELECT MAX(PCCC.CPN_CRTFC_CD) AS CPN_CRTFC_CD
+		  FROM PRM_CPN_CRTFC_CD PCCC
+		                  JOIN PRM PRM
+		                    ON PCCC.PRM_NO = PRM.PRM_NO
+		                  JOIN PRM_CPN PC
+		                    ON PRM.PRM_NO = PC.PRM_NO
+		       LEFT OUTER JOIN MBR_ISSU_CPN MIC
+		                    ON PCCC.CPN_CRTFC_CD = MIC.CPN_CRTFC_CD
+		       LEFT OUTER JOIN INF_ET_OFFERDAT IEO
+		                    ON PRM.ERP_CMPG_ID = IEO.EXTERNAL_ID
+		                   AND PRM.ERP_CPN_ID = IEO.TICKET_NO
+		                   AND PCCC.CPN_CRTFC_CD = IEO.OFFER_NUMBER
+		 WHERE 1=1
+		   AND PCCC.PRM_NO = #{prmNo, jdbcType=VARCHAR}
+		   AND IEO.OFFER_NUMBER IS NULL
+		   AND PC.CPN_ISSU_MTHD_CD = 'CRTFC_CD'
+		   AND (PC.CPN_CRTFC_CD_TP_CD = 'RPRST_CRTFC_CD'
+		       OR (PC.CPN_CRTFC_CD_TP_CD = 'IND_CRTFC_CD' AND MIC.CPN_CRTFC_CD IS NULL))
+	</select>
+	
+	<!-- 일련번호(난수) 쿠폰 회원 발급 사용 체크 -->
+	<select id="selectCouponCrtfcCdIssueUseCheck" parameterType="mbrIssuCpn" resultType="com.plgrim.ncp.biz.promotion.result.PromotionBoResult">
+		/* [promotion.xml][selectCouponCrtfcCdIssueUseCheck][일련번호(난수) 쿠폰 회원 발급 사용 체크][Leo] */
+		SELECT /*+ INDEX_SS(PCCC PK_PRM_CPN_CRTFC_CD) */ DISTINCT
+		       PCCC.PRM_NO ,
+               CASE
+		         WHEN PCCC.CPN_CRTFC_CD IS NULL AND MIC.CPN_CRTFC_CD IS NULL THEN 'N'
+		         WHEN PCCC.CPN_CRTFC_CD IS NOT NULL AND MIC.CPN_CRTFC_CD IS NOT NULL THEN 'D'
+		         WHEN PCCC.CPN_CRTFC_CD IS NOT NULL AND MIC.CPN_CRTFC_CD IS NULL THEN 'W'
+		         ELSE 'X'
+		       END MBR_CPN_USE_CHK
+		  FROM (SELECT #{cpnCrtfcCd, jdbcType=VARCHAR} AS CPN_CRTFC_CD FROM DUAL) TMP
+		       LEFT OUTER JOIN PRM_CPN_CRTFC_CD PCCC
+		                    ON TMP.CPN_CRTFC_CD = PCCC.CPN_CRTFC_CD
+		       LEFT OUTER JOIN MBR_ISSU_CPN MIC
+		                    ON TMP.CPN_CRTFC_CD = MIC.CPN_CRTFC_CD
+                           AND PCCC.PRM_NO=MIC.PRM_NO
+	</select>
+	
+	<!-- 쿠폰 회원 발급 insert -->
+	<insert id="insertCouponIssue" parameterType="mbrIssuCpn">
+		
+	    <selectKey keyProperty="mbrCpnNo" resultType="String" order="BEFORE">
+	        SELECT 'CP' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(TO_CHAR(SQ_MBR_ISSU_CPN.NEXTVAL), 7, '0')
+	          FROM DUAL
+	    </selectKey>
+		
+		/* [promotion.xml][insertCouponIssue][쿠폰 회원 발급 insert][Leo] */
+		INSERT INTO MBR_ISSU_CPN
+		(
+	        MBR_CPN_NO
+	       ,MBR_NO
+	       ,CPN_TP_CD
+	       ,CPN_STAT_CD
+	       ,CPN_PUBLI_DT
+	       ,VALID_BEG_DATE
+	       ,VALID_END_DATE
+	       ,PRM_NO
+	       ,CPN_CRTFC_CD
+	       ,ISSU_ADMIN_ID
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		SELECT   #{mbrCpnNo,jdbcType=VARCHAR}
+		       , #{mbrNo, jdbcType=VARCHAR}
+		       , PRM.PRM_DTL_TP_CD
+		       , 'NO_USE'
+		       , SYSDATE
+		       <choose>
+		       <when test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(validBegDate) and !@com.plgrim.ncp.framework.commons.StringService@isEmpty(validEndDate)">
+		       , #{validBegDate, jdbcType=VARCHAR}
+		       , #{validEndDate, jdbcType=VARCHAR}
+		       </when>
+		       <otherwise>
+		       , CASE
+		           WHEN PC.CPN_USE_PD_CD = 'PD_APPN' THEN PC.CPN_USE_PD_BEG_DATE
+		           ELSE TO_CHAR(SYSDATE, 'YYYYMMDD')
+		         END VALID_BEG_DATE
+		       , CASE
+		           WHEN PC.CPN_USE_PD_CD = 'PD_APPN' THEN PC.CPN_USE_PD_END_DATE
+		           ELSE TO_CHAR(SYSDATE + TO_NUMBER(PC.ISSU_STDR_VALID_DAYCNT), 'YYYYMMDD')
+		         END VALID_END_DATE
+		       </otherwise>
+		       </choose>
+		       , PRM.PRM_NO
+		       , #{cpnCrtfcCd, jdbcType=VARCHAR}
+		       , #{issuAdminId, jdbcType=VARCHAR}
+		       , #{regtrId, jdbcType=VARCHAR}
+		       , #{udterId, jdbcType=VARCHAR}
+		       , SYSDATE
+		       , SYSDATE
+		  FROM PRM PRM JOIN PRM_CPN PC
+		                 ON PRM.PRM_NO = PC.PRM_NO
+		 WHERE 1=1
+		   AND PRM.PRM_NO = #{prmNo, jdbcType=VARCHAR}
+		   AND PRM.PRM_TP_CD = 'CPN'
+		   AND PC.CPN_ISSU_MTHD_CD != 'IMDTL_DC'
+	</insert>
+	
+	<!-- ERP 고객이 통합회원 전환 후 쿠폰을 발급 받은 경우 if table에 발급 정보 update. -->
+	<update id="updateInfEtOfferdat" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO">
+		/* [promotion.xml][updateInfEtOfferdat][ERP 고객이 통합회원 전환 후 쿠폰을 발급 받은 경우 if table에 발급 정보 update.][Leo] */
+		UPDATE INF_ET_OFFERDAT
+		   SET MBR_CPN_NO = #{mbrIssuCpn.mbrCpnNo, jdbcType=VARCHAR}
+		 WHERE 1=1
+		   AND OFFER_NUMBER = #{mbrIssuCpn.cpnCrtfcCd, jdbcType=VARCHAR}
+		   AND PARTNER = #{erpCstmrNo, jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 쿠폰 발급 재고 수량 update -->
+	<update id="updateIssueCouponInvQty" parameterType="prmCpn">
+		/* [promotion.xml][updateIssueCouponInvQty][쿠폰 발급 재고 수량 update][Leo] */
+		UPDATE PRM_CPN
+		   SET ALL_ISSU_INV_QTY = ALL_ISSU_INV_QTY - 1
+		 WHERE PRM_NO = #{prmNo, jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 쿠폰 인증(난수)코드 발급 insert -->
+	<insert id="insertCouponCrtfcCdIssue" parameterType="prmCpnCrtfcCd">
+		/* [promotion.xml][insertCouponCrtfcCdIssue][쿠폰 인증(난수)코드 발급 insert][Leo] */
+		INSERT INTO PRM_CPN_CRTFC_CD
+		(
+	        PRM_NO
+	       ,CPN_CRTFC_CD
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		SELECT   PRM.PRM_NO
+		       , #{cpnCrtfcCd, jdbcType=VARCHAR}
+		       , #{regtrId, jdbcType=VARCHAR}
+		       , #{udterId, jdbcType=VARCHAR}
+		       , SYSDATE
+		       , SYSDATE
+		  FROM PRM PRM JOIN PRM_CPN PC
+		                 ON PRM.PRM_NO = PC.PRM_NO
+		 WHERE PRM.PRM_NO = #{prmNo, jdbcType=VARCHAR}
+		   AND PRM.PRM_TP_CD = 'CPN'
+		   AND PC.CPN_ISSU_MTHD_CD = 'CRTFC_CD'
+	</insert>
+	
+	
+	<insert id="insertCouponCrtfcCode" parameterType="prmCpnCrtfcCd">
+		/*  [promotion.xml][insertCouponCrtfcCode][쿠폰 인증코드(일련번호) 저장] */
+	    INSERT INTO PRM_CPN_CRTFC_CD
+		(
+	        PRM_NO
+	       ,CPN_CRTFC_CD
+	       ,CHK_NUM
+	       ,REGTR_ID
+	       ,UDTER_ID
+           ,REG_DT
+           ,UDT_DT
+		)
+		VALUES
+		(
+	        #{prmNo,jdbcType=VARCHAR}
+	       ,#{cpnCrtfcCd,jdbcType=VARCHAR}
+	       ,#{chkNum,jdbcType=VARCHAR}
+	       ,#{regtrId,jdbcType=VARCHAR}
+	       ,#{udterId,jdbcType=VARCHAR}
+	       ,SYSDATE
+	       ,SYSDATE
+		)   
+    </insert>
+	
+	
+	<!-- 쿠폰 발급 유형 코드 update -->
+	<update id="updateCouponCrtfcCdTp" parameterType="prmCpn">
+		/* [promotion.xml][updateCouponCrtfcCdTp][쿠폰 발급 유형 코드 update][Leo] */
+		UPDATE PRM_CPN
+		   SET   CPN_CRTFC_CD_TP_CD = #{cpnCrtfcCdTpCd, jdbcType=VARCHAR}
+		       , UDTER_ID = #{udterId, jdbcType=VARCHAR}
+		       , UDT_DT = SYSDATE
+		 WHERE PRM_NO = #{prmNo, jdbcType=VARCHAR}
+	</update>
+   
+   
+   <!-- 프로모션 유효성 체크 -->
+   <select id="selectValidPromotionInfo" parameterType="prm" resultType="com.plgrim.ncp.biz.promotion.data.PrmExtend">
+      SELECT /* promotion.xml - com.plgrim.ncp.biz.promotion.selectValidPromotionInfo  20150504 */
+            p.prm_count
+          , (SELECT prm_stat_cd FROM prm WHERE prm_no = #{prmNo:VARCHAR}) AS prm_stat_cd
+          , (SELECT prm_tp_cd FROM prm WHERE prm_no = #{prmNo:VARCHAR}) AS prm_tp_cd
+          , (SELECT prm_dtl_tp_cd FROM prm WHERE prm_no = #{prmNo:VARCHAR}) AS prm_dtl_tp_cd
+          , (SELECT count(1) FROM prm_apl_god WHERE god_apl_yn = 'Y' AND prm_no = #{prmNo:VARCHAR} AND apl_god_sect_cd <![CDATA[<>]]> 'SESON') AS god_apl_count
+          , (SELECT count(1) FROM prm_apl_god WHERE god_apl_yn = 'Y' AND prm_no = #{prmNo:VARCHAR} AND apl_god_sect_cd = 'SESON') AS god_apl_seson_count
+          , (SELECT count(1) FROM prm_crs_dc_apl_god WHERE prm_no = #{prmNo:VARCHAR}) AS crs_dc_apl_count
+      FROM  (
+               SELECT
+                     count(1) AS prm_count
+               FROM  prm
+               WHERE 1 = 1
+               AND   prm_no = #{prmNo:VARCHAR}
+            ) p
+   </select>
+   
+   <sql id="com.plgrim.ncp.biz.promotion.promotionFromTargetGoodInclude">
+            JOIN  (
+                     /* 전체 */
+                     SELECT
+                           ag.prm_no
+                     FROM  prm_apl_god ag
+                     WHERE 1 = 1
+                     AND   ag.apl_god_sect_cd = 'ALL'
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+                     AND   EXISTS   (
+                              SELECT
+                                    1
+                              FROM  god g
+                              WHERE 1 = 1
+                              AND   g.god_no = #{godNo:VARCHAR}
+                           )
+                     </if>
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+                     AND   EXISTS   (
+                              SELECT
+                                    1
+                              FROM  god g
+                              WHERE 1 = 1
+                              AND   g.erp_god_no = #{erpGodNo:VARCHAR}
+                           )
+                     </if>
+                     UNION
+                     /* 브랜드 */
+                     SELECT
+                           ag.prm_no
+                     FROM  prm_apl_god ag
+                     WHERE 1 = 1
+                     AND   EXISTS   (
+                              SELECT
+                                    1
+                              FROM  god g
+                              WHERE 1 = 1
+                              <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+                              AND   g.god_no = #{godNo:VARCHAR}
+                              </if>
+                              <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+                              AND   g.god_no IN   (
+                                       SELECT
+                                             god_no
+                                       FROM  god
+                                       WHERE erp_god_no = #{erpGodNo:VARCHAR}
+                                       AND   INSTR(god_tp_cd, 'GFT') <![CDATA[<]]> 1
+                                    )
+                              </if>
+                              AND   ag.brnd_id = g.brnd_id
+                           )
+                     UNION
+                     /* 카테고리 */
+                     SELECT
+                           ag.prm_no
+                     FROM  prm_apl_god ag
+                     WHERE 1 = 1
+                     AND   EXISTS ( SELECT
+                                          1
+                                    FROM  dsp_ctgry_cnnc_god dg
+                                    WHERE 1 = 1
+                                    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+                                    AND   dg.god_no = #{godNo:VARCHAR}
+                                    </if>
+                                    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+                                    AND   dg.god_no IN   (
+                                             SELECT
+                                                   god_no
+                                             FROM  god g
+                                             WHERE erp_god_no = #{erpGodNo:VARCHAR}
+                                             AND   INSTR(god_tp_cd, 'GFT') <![CDATA[<]]> 1
+                                          )
+                                    </if>
+                                    AND   ag.dsp_ctgry_no IS NOT NULL
+                                    AND   dg.dsp_ctgry_no LIKE ag.dsp_ctgry_no || '%')
+                     UNION
+                     /* 상품 */
+                     SELECT
+                           ag.prm_no
+                     FROM  prm_apl_god ag
+                     WHERE 1 = 1
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+                     AND   ag.god_no = #{godNo:VARCHAR}
+                     </if>
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+                     AND   ag.god_no IN   (
+                              SELECT
+                                    god_no
+                              FROM  god g
+                              WHERE erp_god_no = #{erpGodNo:VARCHAR}
+                              AND   INSTR(god_tp_cd, 'GFT') <![CDATA[<]]> 1
+                           )
+                     </if>
+                     UNION
+                     /* 교차할인 상품 */
+                     SELECT
+                           ag.prm_no
+                     FROM  prm_crs_dc_apl_god ag
+                     WHERE 1 = 1
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+                     AND   ag.god_no = #{godNo:VARCHAR}
+                     </if>
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+                     AND   ag.god_no IN   (
+                              SELECT
+                                    god_no
+                              FROM  god g
+                              WHERE erp_god_no = #{erpGodNo:VARCHAR}
+                              AND   INSTR(god_tp_cd, 'GFT') <![CDATA[<]]> 1
+                           )
+                     </if>
+                     UNION
+                     /* 제공사은품 상품 */
+                     SELECT
+                           ag.prm_no
+                     FROM  prm_offer_gft ag
+                     WHERE 1 = 1
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(godNo)">
+                     AND   ag.god_no = #{godNo:VARCHAR}
+                     </if>
+                     <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(erpGodNo)">
+                     AND   ag.god_no IN   (
+                              SELECT
+                                    god_no
+                              FROM  god g
+                              WHERE erp_god_no = #{erpGodNo:VARCHAR}
+                              AND   INSTR(god_tp_cd, 'GFT') <![CDATA[<]]> 0
+                           )
+                     </if>
+                  ) gd
+            ON gd.prm_no = p.prm_no
+   </sql>
+
+   <!-- 프로모션 대상 체크 -->
+	<select id="selectPromotionTargetGodCheck" parameterType="prm" resultType="Integer">
+		/* [promotion.xml][selectPromotionTargetGodCheck][프로모션 대상 체크][SangSik] */
+		SELECT COUNT(*)
+		  FROM PRM p
+		  	 , PRM_APL_GOD pag
+		 WHERE p.PRM_NO = pag.PRM_NO
+		   AND p.PRM_NO = #{prmNo}
+	</select>
+
+   <!-- 기획전 쿠폰다운로드 유효성 체크 -->
+   <select id="selectValidPromtCpnDown" parameterType="prm" resultType="com.plgrim.ncp.biz.promotion.data.PrmExtend">
+      SELECT /* promotion.xml - com.plgrim.ncp.biz.promotion.selectValidPromtCpnDown  20151224 */
+            Z.*
+      FROM  (
+               SELECT
+                     A.PRM_NO
+                   , A.PRM_STAT_CD
+                   , A.ORD_DC_RELATE_PROMT_SN
+                   , COUNT(1) OVER(PARTITION BY PRM_STAT_CD) AS PRM_COUNT
+                   , ROW_NUMBER() OVER(PARTITION BY ORD_DC_RELATE_PROMT_SN ORDER BY PRM_NO DESC) AS RNUM
+               FROM  PRM A
+               WHERE 1 = 1
+               AND   A.PRM_TP_CD = 'CPN'
+               AND   A.ORD_DC_RELATE_PROMT_SN = #{ordDcRelatePromtSn}
+               AND   A.PRM_STAT_CD = 'APRV'
+               <if test="@com.plgrim.ncp.framework.commons.StringService@isNotEmpty(prmNo)">
+               AND   A.PRM_NO = #{prmNo}
+               </if>
+               AND   EXISTS (SELECT 1
+                             FROM   PRM_CPN C
+                             WHERE  A.PRM_NO = C.PRM_NO
+                             AND    C.CPN_ISSU_MTHD_CD = 'DWLD')
+            ) Z
+      WHERE 1 = 1
+      AND   RNUM = 1
+   </select>
+   
+   <update id="insertPrmAplGodByBrandCode" parameterType="prmAplGod">
+<!-- 		INSERT INTO  /* [base.prm.apl.god.xml][insertPrmAplGodByBrandCode][상위브랜드 코드로 하위브랜드 일괄매핑 insert 처리][chris] */ -->
+<!-- 			PRM_APL_GOD (PRM_NO, APL_TURN, GOD_APL_YN, APL_GOD_SECT_CD, BRND_ID, REGTR_ID, UDTER_ID, REG_DT, UDT_DT) -->
+<!-- 		SELECT -->
+<!-- 		    #{prmNo,jdbcType=VARCHAR} AS PRM_NO -->
+<!-- 		    , rownum AS APL_TURN -->
+<!-- 		    , #{godAplYn,jdbcType=VARCHAR} AS GOD_APL_YN -->
+<!-- 		    , #{aplGodSectCd,jdbcType=VARCHAR} AS APL_GOD_SECT_CD -->
+<!-- 		    , sb1.brnd_id AS BRND_ID -->
+<!-- 		    , #{regtrId,jdbcType=VARCHAR} AS REGTR_ID -->
+<!-- 		    , #{udterId,jdbcType=VARCHAR} AS UDTER_ID -->
+<!-- 		    , SYSDATE -->
+<!-- 			, SYSDATE -->
+<!-- 		FROM -->
+<!-- 		( -->
+<!-- 		    SELECT sb.brnd_id, sb.upper_brnd_id, sb.brnd_nm,  -->
+<!-- 		    level as brnd_level -->
+<!-- 		    FROM sys_brnd sb -->
+<!-- 		    WHERE sb.use_yn = 'Y' -->
+<!-- 		    START WITH sb.upper_brnd_id is null -->
+<!-- 		    CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id -->
+<!-- 		    ORDER SIBLINGS BY sb.sort_seq -->
+<!-- 		) sb1 -->
+<!-- 		INNER JOIN -->
+<!-- 		( -->
+<!-- 		    SELECT sb.brnd_id, sb.brnd_nm -->
+<!-- 		    FROM  sys_brnd sb -->
+<!-- 		    WHERE sb.use_yn = 'Y' -->
+<!-- 		    <if test="brndIdList != null"> -->
+<!-- 		        START WITH sb.upper_brnd_id in -->
+<!-- 		        <foreach item="brnd" collection="brndIdList" open="(" separator="," close=")"> -->
+<!-- 		            #{brnd,jdbcType=VARCHAR} -->
+<!-- 		        </foreach> -->
+<!-- 		        CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id -->
+<!-- 		        ORDER SIBLINGS BY sb.sort_seq -->
+<!-- 		    </if> -->
+<!-- 		) sb2 -->
+<!-- 		ON sb1.brnd_id = sb2.brnd_id -->
+<!-- 		    AND sb1.brnd_level = 3 -->
+		MERGE INTO /* [base.prm.apl.god.xml][insertPrmAplGodByBrandCode][상위브랜드 코드로 하위브랜드 일괄매핑 insert 처리][chris] */
+		          PRM_APL_GOD a
+		     USING (SELECT  #{prmNo,jdbcType=VARCHAR} AS PRM_NO,
+		                     NVL ( (SELECT MAX (NVL (APL_TURN, 0))
+		                              FROM PRM_APL_GOD
+		                             WHERE PRM_NO =  #{prmNo,jdbcType=VARCHAR}),
+		                          0)
+		                   + ROWNUM
+		                      AS APL_TURN,
+		                   #{godAplYn,jdbcType=VARCHAR} AS GOD_APL_YN,
+		                   #{aplGodSectCd,jdbcType=VARCHAR} AS APL_GOD_SECT_CD,
+		                   sb1.brnd_id AS BRND_ID,
+		                    #{regtrId,jdbcType=VARCHAR} AS REGTR_ID,
+		                   #{udterId,jdbcType=VARCHAR} AS UDTER_ID,
+		                   SYSDATE AS reg_dt,
+		                   SYSDATE AS udt_dt
+		              FROM (           SELECT sb.brnd_id,
+		                                      sb.upper_brnd_id,
+		                                      sb.brnd_nm,
+		                                      LEVEL AS brnd_level
+		                                 FROM sys_brnd sb
+		                                WHERE sb.use_yn = 'Y'
+		                           START WITH sb.upper_brnd_id IS NULL
+		                           CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id
+		                    ORDER SIBLINGS BY sb.sort_seq) sb1
+		                   INNER JOIN (           SELECT sb.brnd_id, sb.brnd_nm
+		                                            FROM sys_brnd sb
+		                                           WHERE sb.use_yn = 'Y'
+											    <if test="brndIdList != null">
+											        START WITH sb.upper_brnd_id in
+											        <foreach item="brnd" collection="brndIdList" open="(" separator="," close=")">
+											            #{brnd,jdbcType=VARCHAR}
+											        </foreach>
+		                                      CONNECT BY PRIOR sb.brnd_id = sb.upper_brnd_id
+		                               ORDER SIBLINGS BY sb.sort_seq
+		                               		    </if> ) sb2
+		                      ON sb1.brnd_id = sb2.brnd_id AND sb1.brnd_level = 3) b
+		        ON (    a.PRM_NO =  #{prmNo,jdbcType=VARCHAR}
+		        	AND A.GOD_APL_YN = #{godAplYn,jdbcType=VARCHAR}
+		            AND a.APL_GOD_SECT_CD = #{aplGodSectCd,jdbcType=VARCHAR}
+		            AND a.prm_no = b.prm_no
+		            AND a.apl_god_sect_cd = b.apl_god_sect_cd
+		            AND a.brnd_id = b.brnd_id)
+		WHEN MATCHED
+		THEN
+		   UPDATE SET A.UDTER_ID = #{udterId,jdbcType=VARCHAR}, A.udt_dt = SYSDATE
+		WHEN NOT MATCHED
+		THEN
+		   INSERT     (A.PRM_NO,
+		               A.APL_TURN,
+		               A.GOD_APL_YN,
+		               A.APL_GOD_SECT_CD,
+		               A.BRND_ID,
+		               A.REGTR_ID,
+		               A.UDTER_ID,
+		               A.REG_DT,
+		               A.UDT_DT)
+		       VALUES (B.PRM_NO,
+		               B.APL_TURN,
+		               B.GOD_APL_YN,
+		               B.APL_GOD_SECT_CD,
+		               B.BRND_ID,
+		               B.REGTR_ID,
+		               B.UDTER_ID,
+		               B.REG_DT,
+		               B.UDT_DT)		    
+    </update>
+
+    <!-- 쿠폰 적용 대상 디바이스 조회 -->
+    <select id="selectCpnIssuTgtDvc" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO" resultType="String">
+        SELECT  /* [promotion.xml][selectCpnIssuTgtDvc][쿠폰 적용 대상 디바이스 조회][nana] */
+                CASE
+                WHEN A.CNT = 1 AND INSTR(dvcTargetList, 'PC') > 0 THEN 'ONLY_PC'
+                WHEN A.CNT = 1 AND INSTR(dvcTargetList, 'MOBILE_APP') > 0 THEN 'ONLY_MOBILEAPP'
+                WHEN A.CNT = 1 AND INSTR(dvcTargetList, 'MOBILE_WEB') > 0 THEN 'ONLY_MOBILEWEB'
+                WHEN A.CNT = 2 AND INSTR(dvcTargetList, 'PC') > 0 AND INSTR(dvcTargetList, 'MOBILE_APP') > 0 THEN 'ONLY_PC_AND_MOBILEAPP'
+                WHEN A.CNT = 2 AND INSTR(dvcTargetList, 'PC') > 0 AND INSTR(dvcTargetList, 'MOBILE_WEB') > 0 THEN 'ONLY_PC_AND_MOBILEWEB'
+                WHEN A.CNT = 2 AND INSTR(dvcTargetList, 'MOBILE_APP') > 0 AND INSTR(dvcTargetList, 'MOBILE_WEB') > 0 THEN 'ONLY_MOBILE'
+                ELSE 'ETC'
+                END cpnIssuTgtDvc
+        FROM (
+                SELECT  COUNT(PAT.DVC_CD) AS CNT,
+                        LISTAGG(PAT.DVC_CD, ',') WITHIN GROUP (ORDER BY PRM.PRM_NO) AS dvcTargetList
+                FROM    PRM PRM
+                JOIN    PRM_APL_TGT PAT
+                    ON  PRM.PRM_NO = PAT.PRM_NO
+                    AND PAT.PRM_TGT_TP_CD = 'DVC'
+                WHERE   PRM.PRM_TP_CD = 'CPN'
+                AND     PRM.PRM_NO = #{mbrIssuCpn.prmNo, jdbcType=VARCHAR}
+                AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'MALL_ID'
+                                    AND MALL_ID = #{mallId, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'LANG'
+                                    AND LANG_CD = #{lang, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'TGT_MBR_TP'
+                                    AND TGT_MBR_TP_CD = #{absMbrTpCd, jdbcType=VARCHAR} )
+                     AND EXISTS (SELECT 1
+                                   FROM PRM_APL_TGT A
+                                  WHERE A.PRM_NO = PRM.PRM_NO
+                                    AND PRM_TGT_TP_CD = 'TGT_MBR_ATRB'
+									AND (('GRPCO' = #{absMbrAtrbCd, jdbcType=VARCHAR} 
+                                   		 	AND ((TGT_MBR_ATRB_CD = 'GRPCO_IND' AND GRPCO_ID = #{absGepcoId, jdbcType=VARCHAR})
+												OR TGT_MBR_ATRB_CD = 'GRPCO_ALL'))
+                                        OR TGT_MBR_ATRB_CD = #{absMbrAtrbCd, jdbcType=VARCHAR}))
+        ) A
+    </select>
+
+	<update id="updateDspGodPrmProcedure" statementType="CALLABLE" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO">
+	    /* [goods.xml][updateDspGodPrmProcedure][상품상세노출 프로모션 생성 프로시져 실행] */
+	    DECLARE
+	    IC_SECT VARCHAR2(32767);
+	    IC_GOD_NO VARCHAR2(20);
+	    IC_PRM_NO VARCHAR2(20);
+	    OC_RESULT_CD VARCHAR2(32767);
+	    OC_RESULT_CONT VARCHAR2(32767);
+
+	    BEGIN
+	    IC_SECT := #{icSect, jdbcType=VARCHAR};
+	    IC_GOD_NO := NULL;
+	    IC_PRM_NO := #{prm.prmNo, jdbcType=VARCHAR};
+	    OC_RESULT_CD := NULL;
+	    OC_RESULT_CONT := NULL;
+
+	    PKG_DSP_GOD_PRC.PC_DSP_GOD_PRC ( IC_SECT, IC_GOD_NO, IC_PRM_NO, OC_RESULT_CD, OC_RESULT_CONT );
+	    COMMIT;
+	    END;
+	</update>
+	<select id="selectPrmNoByErpCmpgId" parameterType="com.plgrim.ncp.biz.promotion.data.PromotionBoDTO" resultType="String">
+		/* [promotion.xml][selectPromotionPrmNo][캠페인아이디로 프로모션번호 찾기] */
+		SELECT PRM_NO
+		FROM PRM p
+		WHERE ERP_CMPG_ID = #{prm.erpCmpgId,jdbcType=VARCHAR}
+		AND EXISTS
+		(
+			SELECT 1
+			FROM PRM_APL_TGT pat
+			WHERE pat.prm_no = p.prm_no
+			AND pat.prm_tgt_tp_cd = 'MALL_ID'
+			AND pat.mall_id = #{prmAplTgt.mallId,jdbcType=VARCHAR}
+		)
+	</select>
+
+    <!-- 	#31806  2016.12.08 seokbin.cho  멤버십 제도 개선관련   -->
+	<resultMap id="prmCpnCrtfcCdResult" type="prmCpnCrtfcCd">
+   	   <result property="prmNo"	   	   	    	   	   	 column="PRM_NO" />                   <!-- 프로모션 번호 -->
+	   <result property="cpnCrtfcCd"	   	   	   	   	 column="CPN_CRTFC_CD" />             <!-- 인증번호 -->
+	   <result property="chkNum"	   	   	   	   	   	 column="CHK_NUM" />                  <!-- 체크 수 -->
+	   <result property="regtrId"	   	   	   	   	   	 column="REGTR_ID" />                 <!-- 등록자 ID -->
+       <result property="regDt"  	   	   	   	   	     column="REG_DT" />                   <!-- 등록 일시 -->
+	   <result property="udterId" 	   	   	   	         column="UDTER_ID" />                 <!-- 수정자 ID -->
+	   <result property="udtDt" 	   	   	   	         column="UDT_DT" />                   <!-- 수정 일시 -->	   
+	</resultMap>
+               
+    <select id="selectPrmCpnCrtfcCdList" parameterType="com.plgrim.ncp.biz.promotion.data.PrmCpnCrtfcCdDTO" resultMap="prmCpnCrtfcCdResult">
+	    SELECT /* com.plgrim.ncp.biz.promotion.selectPrmCpnCrtfcCdList seokbin.cho 20161122 */
+	                PRM_NO
+	               ,CPN_CRTFC_CD
+	               ,CHK_NUM
+	               ,REGTR_ID
+	               ,REG_DT
+	               ,UDTER_ID
+	               ,UDT_DT
+	     FROM (
+	      <foreach collection="prmCpnCrtfcCdList" item ="item" separator=" UNION " index="idx">
+	        SELECT 
+	                PRM_NO
+	               ,CPN_CRTFC_CD
+	               ,CHK_NUM
+	               ,REGTR_ID
+	               ,REG_DT
+	               ,UDTER_ID
+	               ,UDT_DT
+	        FROM    PRM_CPN_CRTFC_CD t
+	        WHERE   1 = 1
+	        AND     PRM_NO = #{item.prmNo,jdbcType=VARCHAR}
+	        AND     CPN_CRTFC_CD = #{item.cpnCrtfcCd,jdbcType=VARCHAR}
+	      </foreach>
+	      )
+    </select>
+    
+    <resultMap id="couponStatResult" type="com.plgrim.ncp.biz.promotion.result.CouponUseResult">
+       <result property="prmNo"	   	   	    	   	   	 column="PRM_NO" />                   <!-- 프로모션 번호 -->
+	   <result property="cpnCrtfcCd"	   	   	   	   	 column="CPN_CRTFC_CD" />             <!-- 인증번호 -->
+	   <result property="cpnStatCd" 	   	   	         column="CPN_STAT_CD" />              <!-- 쿠폰상태 -->	   
+	</resultMap>
+    
+    <select id="selectCouponList" parameterType="com.plgrim.ncp.biz.promotion.data.PrmCpnCrtfcCdDTO" resultMap="couponStatResult">
+        SELECT /* com.plgrim.ncp.biz.promotion.selectCouponList seokbin.cho 20161125 */
+                   PRM_NO
+	              ,CPN_CRTFC_CD
+	              ,CPN_STAT_CD
+	     FROM (
+	      <foreach collection="prmCpnCrtfcCdList" item ="item" separator=" UNION " index="idx">
+	        SELECT 
+	               PRM_NO
+	              ,CPN_CRTFC_CD
+	              ,CPN_STAT_CD	               
+	        FROM    MBR_ISSU_CPN
+	        WHERE   1 = 1
+	        AND     PRM_NO = #{item.prmNo,jdbcType=VARCHAR}
+	        AND     CPN_CRTFC_CD = #{item.cpnCrtfcCd,jdbcType=VARCHAR}
+	      </foreach>
+	      )
+    </select>  
+    
+    <!-- 쿠폰 stat update -->
+	<update id="updateCouponUse" parameterType="mbrIssuCpn">
+		/* [promotion.xml][updateCouponUse][쿠폰 상태 update][seokbin.cho] */
+		UPDATE MBR_ISSU_CPN x
+		   SET   CPN_STAT_CD = #{cpnStatCd, jdbcType=VARCHAR}
+		       <if test="cpnStatCd == 'NO_USE' ">
+		       , CLM_NO = #{clmNo, jdbcType=VARCHAR}
+		       , ORD_NO = #{ordNo, jdbcType=VARCHAR}		       
+		       </if>
+		       , CPN_USE_DT = #{cpnUseDt, jdbcType=TIMESTAMP}
+		       , UDTER_ID = #{udterId, jdbcType=VARCHAR}
+		       , UDT_DT = SYSDATE
+		 WHERE 1=1
+		  AND CPN_CRTFC_CD = #{cpnCrtfcCd, jdbcType=VARCHAR}
+		  AND PRM_NO = #{prmNo, jdbcType=VARCHAR}
+		  AND EXISTS ( SELECT 1 
+                       FROM  PRM_CPN 
+                       WHERE  PRM_NO= #{prmNo, jdbcType=VARCHAR}
+                       AND    CPN_KND_CD ='ONOFLNE_CPN' 
+                       and   PRM_NO =  X.PRM_NO  
+                     ) 
+	</update>
+	
+			
+	<!-- ERP고객 온라인 회원번호 받아오기 -->
+	<select id="selectErpCustomerInfo" parameterType="String" resultType="String">
+		/* [promotion.xml][selectErpCustomerInfo][ERP고객 온라인 회원번호 받아오기][Leo] 2016.06.08 steven AND SSO_GRP_CD = FNF_GRP 조건추가  */
+		SELECT MAX(MBR_NO) AS MBR_NO /* 테스트 데이터 문제로 MAX 값 사용. 운영 전환시 ERP회원과 통합회원은 1:1이 된다 함 */
+		  FROM MBR
+		 WHERE MBR_STAT_CD = 'ACT'
+		   AND MBR_TP_CD = 'UNITY_MBR'
+		   AND ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+		   AND SSO_GRP_CD = #{ssoGrpCd,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 쿠폰 정보 저장 update -->
+	<update id="updateCouponPromotion" parameterType="com.plgrim.ncp.base.entities.datasource1.prm.PrmCpn">
+		/* [promotion.xml][updateCouponPromotion][쿠폰 정보 저장 update][Leo] */
+	    UPDATE PRM_CPN
+	       SET ALL_ISSU_INV_QTY = #{allIssuInvQty,jdbcType=NUMERIC}
+	     WHERE PRM_NO = #{prmNo,jdbcType=VARCHAR}
+    </update>
+    
+    <resultMap id="mbrIssuCpnResult" type="mbrIssuCpn">
+   	   <result property="mbrCpnNo"			column="MBR_CPN_NO" />
+	   <result property="cpnStatCd"			column="CPN_STAT_CD" />
+	   <result property="cpnUseDt"			column="CPN_USE_DT" />
+	</resultMap>
+	
+    <select id="selectMbrIssuCpnInfo" parameterType="mbrIssuCpn" resultMap="mbrIssuCpnResult" >
+	/* [promotion.xml][selectMbrIssuCpnInfo][회원발급 쿠폰 정보 조회][sh629.kim] */
+	SELECT
+		MBR_CPN_NO, CPN_STAT_CD, CPN_USE_DT
+	FROM MBR_ISSU_CPN
+	WHERE MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+	AND PRM_NO = #{prmNo, jdbcType=VARCHAR}
+	AND CPN_CRTFC_CD = #{cpnCrtfcCd, jdbcType=VARCHAR}
+    </select>
+    
+    <update id="mergeCouponCrtfcCode" parameterType="prmCpnCrtfcCd">
+    	MERGE INTO
+		        PRM_CPN_CRTFC_CD
+		USING   DUAL
+		ON  (
+		    PRM_NO = #{prmNo,jdbcType=VARCHAR}
+		    AND CPN_CRTFC_CD = #{cpnCrtfcCd,jdbcType=VARCHAR}
+		)
+		WHEN NOT MATCHED THEN
+		    INSERT
+			(
+		        PRM_NO
+		       ,CPN_CRTFC_CD
+		       ,CHK_NUM
+		       ,REGTR_ID
+		       ,UDTER_ID
+	           ,REG_DT
+	           ,UDT_DT
+			)
+			VALUES
+			(
+		        #{prmNo,jdbcType=VARCHAR}
+		       ,#{cpnCrtfcCd,jdbcType=VARCHAR}
+		       ,#{chkNum,jdbcType=VARCHAR}
+		       ,#{regtrId,jdbcType=VARCHAR}
+		       ,#{udterId,jdbcType=VARCHAR}
+		       ,SYSDATE
+		       ,SYSDATE
+			)    
+    </update>
+    
+    <!-- 온오프 쿠폰 등록 여부 확인  -->
+	<select id="selectAddCheck" parameterType="prm" resultType="int">
+		/* [promotion.xml][selectAddChe ck][온오프 쿠폰 등록 여부 확인][Leo] */
+		SELECT COUNT(ERP_CMPG_ID) AS cnt
+		  FROM PRM
+		 WHERE ERP_CMPG_ID = #{erpCmpgId,jdbcType=VARCHAR}
+		    OR ERP_CPN_ID = #{erpCpnId,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateOnOffPrm" parameterType="prm">
+		/* [promotion.xml][updateOnOffPrm][온오프라인 프로모션 수정][sh629.kim] */
+		UPDATE	PRM
+		SET		GOD_DC_DPLCT_CD = #{godDcDplctCd, jdbcType=VARCHAR}
+			, GOD_CPN_DPLCT_CD = #{godCpnDplctCd, jdbcType=VARCHAR}
+			, UDTER_ID = #{udterId, jdbcType=VARCHAR}
+			, UDT_DT = SYSDATE
+		WHERE	PRM_NO = #{prmNo, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateOnOffPrmCpn" parameterType="prmCpn">
+		/* [promotion.xml][updateOnOffPrmCpn][온오프라인 프로모션 쿠폰 수정][sh629.kim] */
+		UPDATE	PRM_CPN
+		SET		CPN_USE_PD_CD = #{cpnUsePdCd, jdbcType=VARCHAR}
+			, CPN_USE_PD_BEG_DATE = #{cpnUsePdBegDate, jdbcType=VARCHAR}
+			, CPN_USE_PD_END_DATE = #{cpnUsePdEndDate, jdbcType=VARCHAR}
+			, DATEBY_USE_PSB_BEG_HOUR = #{datebyUsePsbBegHour, jdbcType=VARCHAR}
+			, DATEBY_USE_PSB_END_HOUR = #{datebyUsePsbEndHour, jdbcType=VARCHAR}
+			, ISSU_STDR_VALID_DAYCNT = #{issuStdrValidDaycnt, jdbcType=NUMERIC}
+			, UDTER_ID = #{udterId, jdbcType=VARCHAR}
+			, UDT_DT = SYSDATE
+		WHERE	PRM_NO = #{prmNo, jdbcType=VARCHAR}
+	</update>
+
+	<resultMap id="OnOffCpnTargetBrndResultMap" type="com.plgrim.ncp.biz.promotion.result.CouponPromotionResult">
+		<result property="prmAplGodEx.brndId"		column="BRND_ID" />
+		<result property="prmAplGodEx.brndNm"		column="BRND_NM" />
+		<result property="prmAplGodEx.brndGrp"		column="ERP_BRND_GRP_ID" />
+	</resultMap>
+	
+	<select id="selectOnOffCpnTargetBrnd" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO" resultMap="OnOffCpnTargetBrndResultMap">
+		/* [promotion.coupon.xml][selectOnOffCpnTargetBrnd][온오프쿠폰 타겟브랜드 조회][sh629.kim] */
+		SELECT	brnd_id, erp_brnd_grp_id, brnd_nm
+		FROM	SYS_BRND
+		WHERE	1 = 1
+		AND		use_yn = 'Y'
+		AND		brnd_id = #{brndId, jdbcType=VARCHAR}
+	</select>
+	
+	<resultMap id="OnOffCpnTargetGodResultMap" type="com.plgrim.ncp.biz.promotion.result.CouponPromotionResult">
+		<result property="prmAplGodEx.godNo"		column="GOD_NO" />
+		<result property="prmAplGodEx.godNm"		column="GOD_NM" />
+		<result property="prmAplGodEx.erpGodNo"		column="ERP_GOD_NO" />
+		<result property="prmAplGodEx.dsgnGrpNo"	column="DSGN_GRP_NO" />
+	</resultMap>
+	
+	<select id="selectOnOffCpnTargetGod" parameterType="com.plgrim.ncp.biz.promotion.data.CouponPromotionDTO" resultMap="OnOffCpnTargetGodResultMap">
+		/* [promotion.coupon.xml][selectOnOffCpnTargetGod][온오프쿠폰 타겟상품 조회][sh629.kim] */
+		SELECT	GOD_NO, GOD_NM, ERP_GOD_NO, DSGN_GRP_NO
+		FROM	GOD
+		WHERE	GOD_SALE_SECT_CD != 'SALE_END'
+		AND		DSGN_GRP_NO = #{dsgnGrpNo,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

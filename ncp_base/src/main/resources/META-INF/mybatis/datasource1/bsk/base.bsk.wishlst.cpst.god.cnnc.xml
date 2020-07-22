@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectBskWishlstCpstGodCnnc" parameterType="bskWishlstCpstGodCnnc" resultType="bskWishlstCpstGodCnnc">
+		SELECT /* com.plgrim.ncp.base.selectBskWishlstCpstGodCnnc		Generator(Generator)	2018-05-23 */
+			   WISHLST_SN
+			 , CPST_GOD_TURN
+			 , GOD_TURN
+			 , PCKAGE_GOD_TP_CD
+			 , CPST_GOD_QTY
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM BSK_WISHLST_CPST_GOD_CNNC
+		 WHERE 1 = 1
+	   	   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+		   AND CPST_GOD_TURN = #{cpstGodTurn,jdbcType=NUMERIC}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateBskWishlstCpstGodCnnc" parameterType="bskWishlstCpstGodCnnc">
+		UPDATE /* com.plgrim.ncp.base.updateBskWishlstCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		BSK_WISHLST_CPST_GOD_CNNC SET
+			   PCKAGE_GOD_TP_CD = #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , CPST_GOD_QTY = #{cpstGodQty,jdbcType=NUMERIC}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+		   AND CPST_GOD_TURN = #{cpstGodTurn,jdbcType=NUMERIC}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertBskWishlstCpstGodCnnc" parameterType="bskWishlstCpstGodCnnc">
+		INSERT /* com.plgrim.ncp.base.insertBskWishlstCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		INTO   BSK_WISHLST_CPST_GOD_CNNC (
+			   WISHLST_SN
+			 , CPST_GOD_TURN
+			 , GOD_TURN
+			 , PCKAGE_GOD_TP_CD
+			 , CPST_GOD_QTY
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{wishlstSn,jdbcType=NUMERIC}
+			 , #{cpstGodTurn,jdbcType=NUMERIC}
+			 , #{godTurn,jdbcType=NUMERIC}
+			 , #{pckageGodTpCd,jdbcType=VARCHAR}
+			 , #{cpstGodQty,jdbcType=NUMERIC}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteBskWishlstCpstGodCnnc" parameterType="bskWishlstCpstGodCnnc">
+		DELETE /* com.plgrim.ncp.base.deleteBskWishlstCpstGodCnnc		Generator(Generator)	2018-05-23 */
+		  FROM BSK_WISHLST_CPST_GOD_CNNC
+		 WHERE 1 = 1
+		   AND WISHLST_SN = #{wishlstSn,jdbcType=NUMERIC}
+		   AND CPST_GOD_TURN = #{cpstGodTurn,jdbcType=NUMERIC}
+		   AND GOD_TURN = #{godTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

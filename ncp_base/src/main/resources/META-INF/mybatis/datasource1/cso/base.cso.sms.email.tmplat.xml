@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectCsoSmsEmailTmplat" parameterType="csoSmsEmailTmplat" resultType="csoSmsEmailTmplat">
+		SELECT /* com.plgrim.ncp.base.selectCsoSmsEmailTmplat		Generator(Generator)	2018-05-23 */
+			   SMS_EMAIL_TMPLAT_SN
+			 , MALL_ID
+			 , LANG_CD
+			 , SMS_EMAIL_TMPLAT_NM
+			 , USE_YN
+			 , SMS_EMAIL_TMPLAT_KND_CD
+			 , SMS_CLFC_CD
+			 , SMS_CLFC_DETAIL_CD
+			 , EMAIL_CLFC_CD
+			 , EMAIL_CLFC_DETAIL_CD
+			 , SMS_EMAIL_TMPLAT_SJ
+			 , SMS_EMAIL_TMPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM CSO_SMS_EMAIL_TMPLAT
+		 WHERE 1 = 1
+	   	   AND SMS_EMAIL_TMPLAT_SN = #{smsEmailTmplatSn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateCsoSmsEmailTmplat" parameterType="csoSmsEmailTmplat">
+		UPDATE /* com.plgrim.ncp.base.updateCsoSmsEmailTmplat		Generator(Generator)	2018-05-23 */
+		CSO_SMS_EMAIL_TMPLAT SET
+			   MALL_ID = #{mallId,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , SMS_EMAIL_TMPLAT_NM = #{smsEmailTmplatNm,jdbcType=VARCHAR}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SMS_EMAIL_TMPLAT_KND_CD = #{smsEmailTmplatKndCd,jdbcType=VARCHAR}
+			 , SMS_CLFC_CD = #{smsClfcCd,jdbcType=VARCHAR}
+			 , SMS_CLFC_DETAIL_CD = #{smsClfcDetailCd,jdbcType=VARCHAR}
+			 , EMAIL_CLFC_CD = #{emailClfcCd,jdbcType=VARCHAR}
+			 , EMAIL_CLFC_DETAIL_CD = #{emailClfcDetailCd,jdbcType=VARCHAR}
+			 , SMS_EMAIL_TMPLAT_SJ = #{smsEmailTmplatSj,jdbcType=VARCHAR}
+			 , SMS_EMAIL_TMPLAT_CONT = #{smsEmailTmplatCont,jdbcType=CLOB}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND SMS_EMAIL_TMPLAT_SN = #{smsEmailTmplatSn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertCsoSmsEmailTmplat" parameterType="csoSmsEmailTmplat">
+		INSERT /* com.plgrim.ncp.base.insertCsoSmsEmailTmplat		Generator(Generator)	2018-05-23 */
+		INTO   CSO_SMS_EMAIL_TMPLAT (
+			   SMS_EMAIL_TMPLAT_SN
+			 , MALL_ID
+			 , LANG_CD
+			 , SMS_EMAIL_TMPLAT_NM
+			 , USE_YN
+			 , SMS_EMAIL_TMPLAT_KND_CD
+			 , SMS_CLFC_CD
+			 , SMS_CLFC_DETAIL_CD
+			 , EMAIL_CLFC_CD
+			 , EMAIL_CLFC_DETAIL_CD
+			 , SMS_EMAIL_TMPLAT_SJ
+			 , SMS_EMAIL_TMPLAT_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{smsEmailTmplatSn,jdbcType=NUMERIC}
+			 , #{mallId,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{smsEmailTmplatNm,jdbcType=VARCHAR}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{smsEmailTmplatKndCd,jdbcType=VARCHAR}
+			 , #{smsClfcCd,jdbcType=VARCHAR}
+			 , #{smsClfcDetailCd,jdbcType=VARCHAR}
+			 , #{emailClfcCd,jdbcType=VARCHAR}
+			 , #{emailClfcDetailCd,jdbcType=VARCHAR}
+			 , #{smsEmailTmplatSj,jdbcType=VARCHAR}
+			 , #{smsEmailTmplatCont,jdbcType=CLOB}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteCsoSmsEmailTmplat" parameterType="csoSmsEmailTmplat">
+		DELETE /* com.plgrim.ncp.base.deleteCsoSmsEmailTmplat		Generator(Generator)	2018-05-23 */
+		  FROM CSO_SMS_EMAIL_TMPLAT
+		 WHERE 1 = 1
+		   AND SMS_EMAIL_TMPLAT_SN = #{smsEmailTmplatSn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectEvt" parameterType="evt" resultType="evt">
+		SELECT /* com.plgrim.ncp.base.selectEvt		Generator(Generator)	2018-05-23 */
+			   EVT_NO
+			 , UPPER_EVT_NO
+			 , RPRST_LWPRT_SECT_CD
+			 , SORT_SEQ
+			 , EVT_GOD_SORT_STDR_CD
+			 , EVT_NM
+			 , EVT_DSCR
+			 , EVT_TP_CD
+			 , EVT_STAT_CD
+			 , EVT_CNCL_DSCR
+			 , EVT_BEG_DT
+			 , EVT_END_DT
+			 , DSP_YN
+			 , GNB_UPEND_BANNER_EXPSR_YN
+			 , PC_MOBILE_RPRST_IMG_IND_USE_YN
+			 , PC_MOBILE_BCRN_IMG_IND_USE_YN
+			 , EVT_DETAIL_TP_CD
+			 , PC_URL
+			 , MOBILE_URL
+			 , PC_HTML
+			 , MOBILE_HTML
+			 , APPLCN_BEG_DT
+			 , APPLCN_END_DT
+			 , DATEBY_APPLCN_BEG_HOUR
+			 , DATEBY_APPLCN_END_HOUR
+			 , DRWT_DATE
+			 , PRIZE_PRESNATN_DATE
+			 , FREE_GIFT_SND_DATE
+			 , APPLCN_COUNT_SECT_CD
+			 , PCH_AMT_STDR_CD
+			 , PARTCPTN_BEG_PCH_AMT
+			 , PARTCPTN_END_PCH_AMT
+			 , PCH_PD_BEG_DT
+			 , PCH_PD_END_DT
+			 , APPLCN_MTHD_CD
+			 , EVT_SPRTR_TP_CD
+			 , EMP_EXCLS_YN
+			 , PRIZE_HIST_CD
+			 , PCH_CND_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM EVT
+		 WHERE 1 = 1
+	   	   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateEvt" parameterType="evt">
+		UPDATE /* com.plgrim.ncp.base.updateEvt		Generator(Generator)	2018-05-23 */
+		EVT SET
+			   UPPER_EVT_NO = #{upperEvtNo,jdbcType=VARCHAR}
+			 , RPRST_LWPRT_SECT_CD = #{rprstLwprtSectCd,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , EVT_GOD_SORT_STDR_CD = #{evtGodSortStdrCd,jdbcType=VARCHAR}
+			 , EVT_NM = #{evtNm,jdbcType=VARCHAR}
+			 , EVT_DSCR = #{evtDscr,jdbcType=VARCHAR}
+			 , EVT_TP_CD = #{evtTpCd,jdbcType=VARCHAR}
+			 , EVT_STAT_CD = #{evtStatCd,jdbcType=VARCHAR}
+			 , EVT_CNCL_DSCR = #{evtCnclDscr,jdbcType=VARCHAR}
+			 , EVT_BEG_DT = #{evtBegDt,jdbcType=TIMESTAMP}
+			 , EVT_END_DT = #{evtEndDt,jdbcType=TIMESTAMP}
+			 , DSP_YN = #{dspYn,jdbcType=VARCHAR}
+			 , GNB_UPEND_BANNER_EXPSR_YN = #{gnbUpendBannerExpsrYn,jdbcType=VARCHAR}
+			 , PC_MOBILE_RPRST_IMG_IND_USE_YN = #{pcMobileRprstImgIndUseYn,jdbcType=VARCHAR}
+			 , PC_MOBILE_BCRN_IMG_IND_USE_YN = #{pcMobileBcrnImgIndUseYn,jdbcType=VARCHAR}
+			 , EVT_DETAIL_TP_CD = #{evtDetailTpCd,jdbcType=VARCHAR}
+			 , PC_URL = #{pcUrl,jdbcType=VARCHAR}
+			 , MOBILE_URL = #{mobileUrl,jdbcType=VARCHAR}
+			 , PC_HTML = #{pcHtml,jdbcType=CLOB}
+			 , MOBILE_HTML = #{mobileHtml,jdbcType=CLOB}
+			 , APPLCN_BEG_DT = #{applcnBegDt,jdbcType=TIMESTAMP}
+			 , APPLCN_END_DT = #{applcnEndDt,jdbcType=TIMESTAMP}
+			 , DATEBY_APPLCN_BEG_HOUR = #{datebyApplcnBegHour,jdbcType=VARCHAR}
+			 , DATEBY_APPLCN_END_HOUR = #{datebyApplcnEndHour,jdbcType=VARCHAR}
+			 , DRWT_DATE = #{drwtDate,jdbcType=VARCHAR}
+			 , PRIZE_PRESNATN_DATE = #{prizePresnatnDate,jdbcType=VARCHAR}
+			 , FREE_GIFT_SND_DATE = #{freeGiftSndDate,jdbcType=VARCHAR}
+			 , APPLCN_COUNT_SECT_CD = #{applcnCountSectCd,jdbcType=VARCHAR}
+			 , PCH_AMT_STDR_CD = #{pchAmtStdrCd,jdbcType=VARCHAR}
+			 , PARTCPTN_BEG_PCH_AMT = #{partcptnBegPchAmt,jdbcType=NUMERIC}
+			 , PARTCPTN_END_PCH_AMT = #{partcptnEndPchAmt,jdbcType=NUMERIC}
+			 , PCH_PD_BEG_DT = #{pchPdBegDt,jdbcType=TIMESTAMP}
+			 , PCH_PD_END_DT = #{pchPdEndDt,jdbcType=TIMESTAMP}
+			 , APPLCN_MTHD_CD = #{applcnMthdCd,jdbcType=VARCHAR}
+			 , EVT_SPRTR_TP_CD = #{evtSprtrTpCd,jdbcType=VARCHAR}
+			 , EMP_EXCLS_YN = #{empExclsYn,jdbcType=VARCHAR}
+			 , PRIZE_HIST_CD = #{prizeHistCd,jdbcType=VARCHAR}
+			 , PCH_CND_CD = #{pchCndCd,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertEvt" parameterType="evt">
+		INSERT /* com.plgrim.ncp.base.insertEvt		Generator(Generator)	2018-05-23 */
+		INTO   EVT (
+			   EVT_NO
+			 , UPPER_EVT_NO
+			 , RPRST_LWPRT_SECT_CD
+			 , SORT_SEQ
+			 , EVT_GOD_SORT_STDR_CD
+			 , EVT_NM
+			 , EVT_DSCR
+			 , EVT_TP_CD
+			 , EVT_STAT_CD
+			 , EVT_CNCL_DSCR
+			 , EVT_BEG_DT
+			 , EVT_END_DT
+			 , DSP_YN
+			 , GNB_UPEND_BANNER_EXPSR_YN
+			 , PC_MOBILE_RPRST_IMG_IND_USE_YN
+			 , PC_MOBILE_BCRN_IMG_IND_USE_YN
+			 , EVT_DETAIL_TP_CD
+			 , PC_URL
+			 , MOBILE_URL
+			 , PC_HTML
+			 , MOBILE_HTML
+			 , APPLCN_BEG_DT
+			 , APPLCN_END_DT
+			 , DATEBY_APPLCN_BEG_HOUR
+			 , DATEBY_APPLCN_END_HOUR
+			 , DRWT_DATE
+			 , PRIZE_PRESNATN_DATE
+			 , FREE_GIFT_SND_DATE
+			 , APPLCN_COUNT_SECT_CD
+			 , PCH_AMT_STDR_CD
+			 , PARTCPTN_BEG_PCH_AMT
+			 , PARTCPTN_END_PCH_AMT
+			 , PCH_PD_BEG_DT
+			 , PCH_PD_END_DT
+			 , APPLCN_MTHD_CD
+			 , EVT_SPRTR_TP_CD
+			 , EMP_EXCLS_YN
+			 , PRIZE_HIST_CD
+			 , PCH_CND_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{evtNo,jdbcType=VARCHAR}
+			 , #{upperEvtNo,jdbcType=VARCHAR}
+			 , #{rprstLwprtSectCd,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{evtGodSortStdrCd,jdbcType=VARCHAR}
+			 , #{evtNm,jdbcType=VARCHAR}
+			 , #{evtDscr,jdbcType=VARCHAR}
+			 , #{evtTpCd,jdbcType=VARCHAR}
+			 , #{evtStatCd,jdbcType=VARCHAR}
+			 , #{evtCnclDscr,jdbcType=VARCHAR}
+			 , #{evtBegDt,jdbcType=TIMESTAMP}
+			 , #{evtEndDt,jdbcType=TIMESTAMP}
+			 , #{dspYn,jdbcType=VARCHAR}
+			 , #{gnbUpendBannerExpsrYn,jdbcType=VARCHAR}
+			 , #{pcMobileRprstImgIndUseYn,jdbcType=VARCHAR}
+			 , #{pcMobileBcrnImgIndUseYn,jdbcType=VARCHAR}
+			 , #{evtDetailTpCd,jdbcType=VARCHAR}
+			 , #{pcUrl,jdbcType=VARCHAR}
+			 , #{mobileUrl,jdbcType=VARCHAR}
+			 , #{pcHtml,jdbcType=CLOB}
+			 , #{mobileHtml,jdbcType=CLOB}
+			 , #{applcnBegDt,jdbcType=TIMESTAMP}
+			 , #{applcnEndDt,jdbcType=TIMESTAMP}
+			 , #{datebyApplcnBegHour,jdbcType=VARCHAR}
+			 , #{datebyApplcnEndHour,jdbcType=VARCHAR}
+			 , #{drwtDate,jdbcType=VARCHAR}
+			 , #{prizePresnatnDate,jdbcType=VARCHAR}
+			 , #{freeGiftSndDate,jdbcType=VARCHAR}
+			 , #{applcnCountSectCd,jdbcType=VARCHAR}
+			 , #{pchAmtStdrCd,jdbcType=VARCHAR}
+			 , #{partcptnBegPchAmt,jdbcType=NUMERIC}
+			 , #{partcptnEndPchAmt,jdbcType=NUMERIC}
+			 , #{pchPdBegDt,jdbcType=TIMESTAMP}
+			 , #{pchPdEndDt,jdbcType=TIMESTAMP}
+			 , #{applcnMthdCd,jdbcType=VARCHAR}
+			 , #{evtSprtrTpCd,jdbcType=VARCHAR}
+			 , #{empExclsYn,jdbcType=VARCHAR}
+			 , #{prizeHistCd,jdbcType=VARCHAR}
+			 , #{pchCndCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteEvt" parameterType="evt">
+		DELETE /* com.plgrim.ncp.base.deleteEvt		Generator(Generator)	2018-05-23 */
+		  FROM EVT
+		 WHERE 1 = 1
+		   AND EVT_NO = #{evtNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

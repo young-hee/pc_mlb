@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectOrdGodOptMod" parameterType="ordGodOptMod" resultType="ordGodOptMod">
+		SELECT /* com.plgrim.ncp.base.selectOrdGodOptMod		Generator(Generator)	2018-05-23 */
+			   OPT_MOD_NO
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , MOD_BF_ITM_NO
+			 , MOD_AF_ITM_NO
+			 , PCHHIST_REDCT_TRNSMIS_YN
+			 , PCHHIST_REDCT_TRNSMIS_DT
+			 , PCHHIST_ADIT_TRNSMIS_YN
+			 , PCHHIST_ADIT_TRNSMIS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM ORD_GOD_OPT_MOD
+		 WHERE 1 = 1
+	   	   AND OPT_MOD_NO = #{optModNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateOrdGodOptMod" parameterType="ordGodOptMod">
+		UPDATE /* com.plgrim.ncp.base.updateOrdGodOptMod		Generator(Generator)	2018-05-23 */
+		ORD_GOD_OPT_MOD SET
+			   ORD_NO = #{ordNo,jdbcType=VARCHAR}
+			 , ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+			 , MOD_BF_ITM_NO = #{modBfItmNo,jdbcType=VARCHAR}
+			 , MOD_AF_ITM_NO = #{modAfItmNo,jdbcType=VARCHAR}
+			 , PCHHIST_REDCT_TRNSMIS_YN = #{pchhistRedctTrnsmisYn,jdbcType=VARCHAR}
+			 , PCHHIST_REDCT_TRNSMIS_DT = #{pchhistRedctTrnsmisDt,jdbcType=TIMESTAMP}
+			 , PCHHIST_ADIT_TRNSMIS_YN = #{pchhistAditTrnsmisYn,jdbcType=VARCHAR}
+			 , PCHHIST_ADIT_TRNSMIS_DT = #{pchhistAditTrnsmisDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND OPT_MOD_NO = #{optModNo,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertOrdGodOptMod" parameterType="ordGodOptMod">
+		INSERT /* com.plgrim.ncp.base.insertOrdGodOptMod		Generator(Generator)	2018-05-23 */
+		INTO   ORD_GOD_OPT_MOD (
+			   OPT_MOD_NO
+			 , ORD_NO
+			 , ORD_GOD_TURN
+			 , MOD_BF_ITM_NO
+			 , MOD_AF_ITM_NO
+			 , PCHHIST_REDCT_TRNSMIS_YN
+			 , PCHHIST_REDCT_TRNSMIS_DT
+			 , PCHHIST_ADIT_TRNSMIS_YN
+			 , PCHHIST_ADIT_TRNSMIS_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{optModNo,jdbcType=VARCHAR}
+			 , #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{modBfItmNo,jdbcType=VARCHAR}
+			 , #{modAfItmNo,jdbcType=VARCHAR}
+			 , #{pchhistRedctTrnsmisYn,jdbcType=VARCHAR}
+			 , #{pchhistRedctTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{pchhistAditTrnsmisYn,jdbcType=VARCHAR}
+			 , #{pchhistAditTrnsmisDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteOrdGodOptMod" parameterType="ordGodOptMod">
+		DELETE /* com.plgrim.ncp.base.deleteOrdGodOptMod		Generator(Generator)	2018-05-23 */
+		  FROM ORD_GOD_OPT_MOD
+		 WHERE 1 = 1
+		   AND OPT_MOD_NO = #{optModNo,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

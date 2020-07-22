@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfGodFitLktb" parameterType="infGodFitLktb" resultType="infGodFitLktb">
+		SELECT /* com.plgrim.ncp.base.selectInfGodFitLktb		Generator(Generator)	2019-11-15 */
+			   BRND_ID
+			 , PRDLST_CD
+			 , LANG_CD
+			 , FIT_SECT_CD
+			 , SESON_GRP_CD
+			 , RECOMEND_SEX_CD
+			 , POM_CD
+			 , FIT_LKTB_CNNC_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_GOD_FIT_LKTB
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfGodFitLktb" parameterType="infGodFitLktb">
+		UPDATE /* com.plgrim.ncp.base.updateInfGodFitLktb		Generator(Generator)	2019-11-15 */
+		INF_GOD_FIT_LKTB SET
+			   BRND_ID = #{brndId,jdbcType=VARCHAR}
+			 , PRDLST_CD = #{prdlstCd,jdbcType=VARCHAR}
+			 , LANG_CD = #{langCd,jdbcType=VARCHAR}
+			 , FIT_SECT_CD = #{fitSectCd,jdbcType=VARCHAR}
+			 , SESON_GRP_CD = #{sesonGrpCd,jdbcType=VARCHAR}
+			 , RECOMEND_SEX_CD = #{recomendSexCd,jdbcType=VARCHAR}
+			 , POM_CD = #{pomCd,jdbcType=VARCHAR}
+			 , FIT_LKTB_CNNC_NO = #{fitLktbCnncNo,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfGodFitLktb" parameterType="infGodFitLktb">
+		INSERT /* com.plgrim.ncp.base.insertInfGodFitLktb		Generator(Generator)	2019-11-15 */
+		INTO   INF_GOD_FIT_LKTB (
+			   BRND_ID
+			 , PRDLST_CD
+			 , LANG_CD
+			 , FIT_SECT_CD
+			 , SESON_GRP_CD
+			 , RECOMEND_SEX_CD
+			 , POM_CD
+			 , FIT_LKTB_CNNC_NO
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{brndId,jdbcType=VARCHAR}
+			 , #{prdlstCd,jdbcType=VARCHAR}
+			 , #{langCd,jdbcType=VARCHAR}
+			 , #{fitSectCd,jdbcType=VARCHAR}
+			 , #{sesonGrpCd,jdbcType=VARCHAR}
+			 , #{recomendSexCd,jdbcType=VARCHAR}
+			 , #{pomCd,jdbcType=VARCHAR}
+			 , #{fitLktbCnncNo,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfGodFitLktb" parameterType="infGodFitLktb">
+		DELETE /* com.plgrim.ncp.base.deleteInfGodFitLktb		Generator(Generator)	2019-11-15 */
+		  FROM INF_GOD_FIT_LKTB
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.syscommon">
+
+	<resultMap id="resultUserAccount" type="com.plgrim.ncp.commons.result.RefundAccountResult">
+		<result property="seqNo" 			column="SEQ_NO" />
+		<result property="userId" 			column="USER_ID" />
+		<result property="orderNo" 			column="ORDER_NO" />
+		<result property="userGb" 			column="USER_GB" />
+		<result property="codeValue" 		column="CODE_VALUE" />
+	</resultMap>
+
+	<!--  개인키 읽기   -->
+	<select id="selectPrivateKeyCryption" parameterType="java.util.Map" resultMap="resultUserAccount">
+        SELECT /* com.plgrim.ncp.commons.syscommon.selectPrivateKeyCryption Louis 20150530 */
+               SEQ AS SEQ_NO
+             , USER_ID
+             , ORDER_NO
+             , USER_GB
+             , CODE_VALUE
+         FROM  USER_REFUND_ACCOUNT
+         WHERE USER_ID = #{userId}
+           AND ORDER_NO = #{orderNo}
+         <if test='userGb != null and userGb != ""'>
+				AND USER_GB = #{userGb}
+		 </if>
+	</select>
+	
+	<!-- /* 개인키 저장  */ -->
+	<insert id="insertPrivateKeyCryption" parameterType="java.util.Map">
+        INSERT INTO USER_REFUND_ACCOUNT ( /* com.plgrim.ncp.commons.syscommon.insertPrivateKeyCryption Louis 20150530 */
+             SEQ
+             , USER_ID
+             , ORDER_NO
+             , USER_GB
+             , CODE_VALUE
+         ) VALUES (
+         	 SEQ_USER_REFUND_ACCOUNT.NEXTVAL
+         	 , #{userId} 
+         	 , #{orderNo}
+         	 , #{userGb}
+         	 , #{codeValue}
+         ) 
+	</insert>
+
+</mapper>

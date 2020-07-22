@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.commons.sysezipcode">
+	<resultMap id="zipcodeMap" type="com.plgrim.ncp.commons.result.ZipcodeResult">
+	  	<result property="zipcode"                column="ZIPCODE" />              <!-- 우편번호 코드 -->
+	    <result property="ordno"                  column="ORDNO" />                <!-- 신우편번호 코드 -->
+	    <result property="addrDoro"       	     column="ADDR_DORO" />             <!-- 도로주소-->
+	    <result property="addrJibun"             column="ADDR_JIBUN" />            <!-- 지번주소 -->
+	</resultMap>   
+
+	<select id="selectSearchZipcode" parameterType="com.plgrim.ncp.commons.data.ZipcodeDTO" resultMap="zipcodeMap">
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT B.*
+		FROM (
+            SELECT /*+ USE_CONCAT INDEX(SYS_POST_NO IX1_SYS_POST_NO) */
+                      POST_NO AS ZIPCODE
+                    , NEW_POST_NO AS ORDNO
+                    , CASE
+                      	WHEN #{lang}  = 'ENG' THEN 
+                        	ENG_RD_ADDR_BASE_ADDR
+                        ELSE
+                        	RD_ADDR_BASE_ADDR                        
+                      END AS ADDR_DORO  
+                    , CASE
+                      	WHEN #{lang}  = 'ENG' THEN 
+                        	''
+                        ELSE
+                        	LNM_ADDR_BASE_ADDR                        
+                      END AS ADDR_JIBUN 
+            FROM SYS_POST_NO
+            WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND (ROAD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%' OR ENG_ROAD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%')
+            </if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+				AND MJR_BULD_NO = #{keyword2,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+				AND MNR_BULD_NO = #{keyword3,jdbcType=VARCHAR}
+			</if>
+			UNION
+            SELECT /*+ INDEX(SYS_POST_NO IX2_SYS_POST_NO) */
+                      POST_NO AS ZIPCODE
+                    , NEW_POST_NO AS ORDNO
+                    , RD_ADDR_BASE_ADDR AS ADDR_DORO
+                    , LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+            FROM SYS_POST_NO
+            WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND SUD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+			<choose>
+				<when test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+					/* keyword2 가 숫자일 경우(법정동 + 지번) */
+					AND MJR_LNM = #{keyword2,jdbcType=VARCHAR}
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MNR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+				</when>
+				<otherwise>
+					/* 법정동 + 법정리 + 지번 검색 */
+					<if test="keyword2 != null and keyword2 != ''">
+						AND LEGALRI_NM LIKE #{keyword2,jdbcType=VARCHAR}||'%'
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MJR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword4)">
+						AND MNR_LNM = #{keyword4,jdbcType=VARCHAR}
+					</if>
+				</otherwise>
+			</choose>
+            UNION
+            SELECT /*+ INDEX(SYS_POST_NO IX3_SYS_POST_NO) */
+                      POST_NO AS ZIPCODE
+                    , NEW_POST_NO AS ORDNO
+                    , RD_ADDR_BASE_ADDR AS ADDR_DORO
+                    , LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+            FROM SYS_POST_NO
+            WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND AUD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+            <choose>
+				<when test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+					/* keyword2 가 숫자일 경우(법정동 + 지번) */
+					AND MJR_LNM = #{keyword2,jdbcType=VARCHAR}
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MNR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+				</when>
+				<otherwise>
+					/* 행정동 + 법정리 + 지번 검색 */
+					<if test="keyword2 != null and keyword2 != ''">
+						AND LEGALRI_NM LIKE #{keyword2,jdbcType=VARCHAR}||'%'
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MJR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword4)">
+						AND MNR_LNM = #{keyword4,jdbcType=VARCHAR}
+					</if>
+				</otherwise>
+			</choose>
+			UNION
+            SELECT /*+ INDEX(SYS_POST_NO IX8_SYS_POST_NO) */
+                      POST_NO AS ZIPCODE
+                    , NEW_POST_NO AS ORDNO
+                    , RD_ADDR_BASE_ADDR AS ADDR_DORO
+                    , LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+            FROM SYS_POST_NO
+            WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND LEGALRI_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+				AND MJR_LNM = #{keyword2,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+				AND MNR_LNM = #{keyword3,jdbcType=VARCHAR}
+			</if>
+            UNION
+            SELECT /*+ INDEX(SYS_POST_NO IX4_SYS_POST_NO) */
+                      POST_NO AS ZIPCODE
+                    , NEW_POST_NO AS ORDNO
+                    , RD_ADDR_BASE_ADDR AS ADDR_DORO
+                    , LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+            FROM SYS_POST_NO
+            WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND SIGNGU_BULD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+		) B
+		WHERE 1 = 1
+		<if test="keyword2 != null and keyword2 != ''">
+			AND( ADDR_DORO LIKE '%'||#{keyword2,jdbcType=VARCHAR}||'%' OR ADDR_JIBUN LIKE '%'||#{keyword2,jdbcType=VARCHAR}||'%' )
+		</if>
+		<if test="keyword3 != null and keyword3 != ''">
+			AND( ADDR_DORO LIKE '%'||#{keyword3,jdbcType=VARCHAR}||'%' OR ADDR_JIBUN LIKE '%'||#{keyword3,jdbcType=VARCHAR}||'%' )
+		</if>
+		<if test="keyword4 != null and keyword4 != ''">
+			AND( ADDR_DORO LIKE '%'||#{keyword4,jdbcType=VARCHAR}||'%' OR ADDR_JIBUN LIKE '%'||#{keyword4,jdbcType=VARCHAR}||'%' )
+		</if>
+		<include refid="com.plgrim.ncp.base.endPage"/>
+	</select>
+
+	<select id="countSearchZipcode" parameterType="com.plgrim.ncp.commons.data.ZipcodeDTO" resultType="long">
+		SELECT COUNT(B.ORDNO)
+		FROM (
+			SELECT /*+ INDEX(SYS_POST_NO IX1_SYS_POST_NO) */
+					  POST_NO AS ZIPCODE
+					, NEW_POST_NO AS ORDNO
+					, RD_ADDR_BASE_ADDR AS ADDR_DORO
+					, LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+			FROM SYS_POST_NO
+			WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND ROAD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+				AND MJR_BULD_NO = #{keyword2,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+				AND MNR_BULD_NO = #{keyword3,jdbcType=VARCHAR}
+			</if>
+			UNION
+			SELECT /*+ INDEX(SYS_POST_NO IX2_SYS_POST_NO) */
+					  POST_NO AS ZIPCODE
+					, NEW_POST_NO AS ORDNO
+					, RD_ADDR_BASE_ADDR AS ADDR_DORO
+					, LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+			FROM SYS_POST_NO
+			WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND SUD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+			<choose>
+				<when test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+					/* keyword2 가 숫자일 경우(법정동 + 지번) */
+					AND MJR_LNM = #{keyword2,jdbcType=VARCHAR}
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MNR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+				</when>
+				<otherwise>
+					/* 법정동 + 법정리 + 지번 검색 */
+					<if test="keyword2 != null and keyword2 != ''">
+						AND LEGALRI_NM LIKE #{keyword2,jdbcType=VARCHAR}||'%'
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MJR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword4)">
+						AND MNR_LNM = #{keyword4,jdbcType=VARCHAR}
+					</if>
+				</otherwise>
+			</choose>
+			UNION
+			SELECT /*+ INDEX(SYS_POST_NO IX3_SYS_POST_NO) */
+					  POST_NO AS ZIPCODE
+					, NEW_POST_NO AS ORDNO
+					, RD_ADDR_BASE_ADDR AS ADDR_DORO
+					, LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+			FROM SYS_POST_NO
+			WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND AUD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+			<choose>
+				<when test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+					/* keyword2 가 숫자일 경우(법정동 + 지번) */
+					AND MJR_LNM = #{keyword2,jdbcType=VARCHAR}
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MNR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+				</when>
+				<otherwise>
+					/* 행정동 + 법정리 + 지번 검색 */
+					<if test="keyword2 != null and keyword2 != ''">
+						AND LEGALRI_NM LIKE #{keyword2,jdbcType=VARCHAR}||'%'
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+						AND MJR_LNM = #{keyword3,jdbcType=VARCHAR}
+					</if>
+					<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword4)">
+						AND MNR_LNM = #{keyword4,jdbcType=VARCHAR}
+					</if>
+				</otherwise>
+			</choose>
+			UNION
+            SELECT /*+ INDEX(SYS_POST_NO IX8_SYS_POST_NO) */
+                      POST_NO AS ZIPCODE
+                    , NEW_POST_NO AS ORDNO
+                    , RD_ADDR_BASE_ADDR AS ADDR_DORO
+                    , LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+            FROM SYS_POST_NO
+            WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND LEGALRI_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword2)">
+				AND MJR_LNM = #{keyword2,jdbcType=VARCHAR}
+			</if>
+			<if test="@com.plgrim.ncp.framework.commons.StringService@isNumeric(keyword3)">
+				AND MNR_LNM = #{keyword3,jdbcType=VARCHAR}
+			</if>
+			UNION
+			SELECT /*+ INDEX(SYS_POST_NO IX4_SYS_POST_NO) */
+					  POST_NO AS ZIPCODE
+					, NEW_POST_NO AS ORDNO
+					, RD_ADDR_BASE_ADDR AS ADDR_DORO
+					, LNM_ADDR_BASE_ADDR AS ADDR_JIBUN
+			FROM SYS_POST_NO
+			WHERE 1 = 1
+            <if test="keyword1 != null and keyword1 != ''">
+                AND SIGNGU_BULD_NM LIKE #{keyword1,jdbcType=VARCHAR}||'%'
+            </if>
+		) B
+		WHERE 1 = 1
+		<if test="keyword2 != null and keyword2 != ''">
+			AND( ADDR_DORO LIKE '%'||#{keyword2,jdbcType=VARCHAR}||'%' OR ADDR_JIBUN LIKE '%'||#{keyword2,jdbcType=VARCHAR}||'%' )
+		</if>
+		<if test="keyword3 != null and keyword3 != ''">
+			AND( ADDR_DORO LIKE '%'||#{keyword3,jdbcType=VARCHAR}||'%' OR ADDR_JIBUN LIKE '%'||#{keyword3,jdbcType=VARCHAR}||'%' )
+		</if>
+		<if test="keyword4 != null and keyword4 != ''">
+			AND( ADDR_DORO LIKE '%'||#{keyword4,jdbcType=VARCHAR}||'%' OR ADDR_JIBUN LIKE '%'||#{keyword4,jdbcType=VARCHAR}||'%' )
+		</if>
+	</select>
+
+</mapper>

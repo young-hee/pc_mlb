@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.token">
+	<insert id="자동로그인토큰저장" parameterType="java.util.Map">		
+		INSERT  /* [biz.mbr.token.xml][자동로그인토큰저장][naru] */ 
+        INTO MBR_LOGIN_COOKIE_LOG
+        (
+            COOKIE_ID
+           ,MBR_NO           
+           ,TOKN_ID
+           ,LAST_LOGIN_DT
+        )
+        VALUES
+        (
+            NVL(#{cookieId,jdbcType=VARCHAR},' ')
+           ,#{mbrNo,jdbcType=VARCHAR} 
+           ,#{toknId,jdbcType=VARCHAR}
+           ,#{lastLoginDt,jdbcType=TIMESTAMP}
+        )   
+    </insert>
+    
+    <select id="자동로그인토큰_찾기" parameterType="java.util.Map" resultType="java.util.Map">
+	SELECT /* [biz.mbr.token.xml][자동로그인토큰_찾기][naru] */
+		A.COOKIE_ID,
+		A.MBR_NO,
+		B.MBR_ID,
+		A.TOKN_ID,
+		A.LAST_LOGIN_DT
+	FROM
+		MBR_LOGIN_COOKIE_LOG A,
+		MBR B
+	WHERE 
+		A.MBR_NO = B.MBR_NO
+		AND
+		COOKIE_ID = #{cookieId,jdbcType=VARCHAR}
+		AND
+		LAST_LOGIN_DT between #{startAt,jdbcType=TIMESTAMP} and #{endAt,jdbcType=TIMESTAMP}  
+    </select>
+    
+
+    
+    <delete id="유효하지_않은_과거토큰_제거" parameterType="java.util.Map">
+    	DELETE FROM /* [biz.mbr.token.xml][유효하지_않은_과거토큰_제거][naru] */
+    		MBR_LOGIN_COOKIE_LOG
+		WHERE 
+			MBR_NO = #{mbrNo,jdbcType=VARCHAR} 
+			AND 
+			NOT (TOKN_ID =  #{TOKN_ID,jdbcType=VARCHAR})
+    </delete>
+    
+    <delete id="전체_과거토큰_제거" parameterType="String">
+    	DELETE FROM /* [biz.mbr.token.xml][전체_과거토큰_제거][naru] */
+    		MBR_LOGIN_COOKIE_LOG
+		WHERE 
+			MBR_NO = (SELECT MBR_NO FROM MBR WHERE MBR_ID=#{mbrId,jdbcType=VARCHAR}) 
+    </delete>
+    
+    <insert id="rememberMeLogHist" parameterType="mbrLoginCookieLog">
+    	INSERT  /* [biz.mbr.token.xml][rememberMeLogHist][리멤버미 사용자 접속 이력][peter] */
+        INTO MBR_LOGIN_COOKIE_HIST
+        (
+            SEQ
+           ,COOKIE_ID
+           ,MBR_NO
+           ,TOKN_ID
+           ,LAST_LOGIN_DT
+           ,ACTION_NM
+           ,ACTION_DSCR
+           ,CLIENT_IP
+           ,WAS_IP
+           ,INSTANCE_NM
+        )
+        VALUES
+        (
+        	SQ_SYS_REMEMBERME.NEXTVAL
+           ,NVL(#{cookieId,jdbcType=VARCHAR},' ')
+           ,NVL((SELECT MBR_NO FROM MBR WHERE MBR_ID = #{mbrNo,jdbcType=VARCHAR}),'-')
+           ,#{toknId,jdbcType=VARCHAR}
+           ,SYSDATE
+           ,#{actionNm,jdbcType=VARCHAR}
+           ,#{actionDscr,jdbcType=VARCHAR}
+           ,#{clientIp,jdbcType=VARCHAR}
+           ,#{wasIp,jdbcType=VARCHAR}
+           ,#{instanceNm,jdbcType=VARCHAR}
+        )
+    </insert>
+
+</mapper>

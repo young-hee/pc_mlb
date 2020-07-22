@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectMbrPsnlInfoUsefJobDetail" parameterType="mbrPsnlInfoUsefJobDetail" resultType="mbrPsnlInfoUsefJobDetail">
+		SELECT /* com.plgrim.ncp.base.selectMbrPsnlInfoUsefJobDetail		Generator(Generator)	2018-05-23 */
+			   PSNL_INFO_USEF_SN
+			 , USEF_JOB_DETAIL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM MBR_PSNL_INFO_USEF_JOB_DETAIL
+		 WHERE 1 = 1
+	   	   AND PSNL_INFO_USEF_SN = #{psnlInfoUsefSn,jdbcType=NUMERIC}
+		   AND USEF_JOB_DETAIL_CD = #{usefJobDetailCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateMbrPsnlInfoUsefJobDetail" parameterType="mbrPsnlInfoUsefJobDetail">
+		UPDATE /* com.plgrim.ncp.base.updateMbrPsnlInfoUsefJobDetail		Generator(Generator)	2018-05-23 */
+		MBR_PSNL_INFO_USEF_JOB_DETAIL SET
+			   UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PSNL_INFO_USEF_SN = #{psnlInfoUsefSn,jdbcType=NUMERIC}
+		   AND USEF_JOB_DETAIL_CD = #{usefJobDetailCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertMbrPsnlInfoUsefJobDetail" parameterType="mbrPsnlInfoUsefJobDetail">
+		INSERT /* com.plgrim.ncp.base.insertMbrPsnlInfoUsefJobDetail		Generator(Generator)	2018-05-23 */
+		INTO   MBR_PSNL_INFO_USEF_JOB_DETAIL (
+			   PSNL_INFO_USEF_SN
+			 , USEF_JOB_DETAIL_CD
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{psnlInfoUsefSn,jdbcType=NUMERIC}
+			 , #{usefJobDetailCd,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteMbrPsnlInfoUsefJobDetail" parameterType="mbrPsnlInfoUsefJobDetail">
+		DELETE /* com.plgrim.ncp.base.deleteMbrPsnlInfoUsefJobDetail		Generator(Generator)	2018-05-23 */
+		  FROM MBR_PSNL_INFO_USEF_JOB_DETAIL
+		 WHERE 1 = 1
+		   AND PSNL_INFO_USEF_SN = #{psnlInfoUsefSn,jdbcType=NUMERIC}
+		   AND USEF_JOB_DETAIL_CD = #{usefJobDetailCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

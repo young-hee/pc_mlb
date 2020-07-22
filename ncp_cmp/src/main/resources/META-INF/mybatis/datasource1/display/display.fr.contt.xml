@@ -1,0 +1,2320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plgrim.ncp.biz.display">
+	<!-- contt -->
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspCnrConttFrResult" id="dspCnrConttFrResultMap">
+		<id property="cnrSn" column="CNR_SN" />
+		<id property="cnrSetSn" column="CNR_SET_SN" />
+		<id property="conttTurn" column="CONTT_TURN" />
+
+		<result property="dspCnrTpGrp.dspCnt" column="TP_DSP_CNT" />
+		<result property="dspCnrTpGrp.sortSeq" column="TP_SORT_SEQ" />
+
+
+		<result property="dspCnrContt.cnrSn" column="CNR_SN" />
+		<result property="dspCnrContt.cnrSetSn" column="CNR_SET_SN" />
+		<result property="dspCnrContt.conttTurn" column="CONTT_TURN" />
+		<result property="dspCnrContt.conttTpCd" column="CONTT_TP_CD" />
+		<result property="dspCnrContt.godNo" column="GOD_NO" />
+		<result property="dspCnrContt.conttNm" column="CONTT_NM" />
+		<result property="dspCnrContt.imgNm" column="IMG_NM" />
+		<result property="dspCnrContt.imgFileNm" column="IMG_FILE_NM" />
+		<result property="dspCnrContt.imgFileUrl" column="IMG_FILE_URL" />
+		<result property="dspCnrContt.imgAltrtvCont" column="IMG_ALTRTV_CONT" />
+		<result property="dspCnrContt.imgOvFileNm" column="IMG_OV_FILE_NM" />
+		<result property="dspCnrContt.imgOvFileUrl" column="IMG_OV_FILE_URL" />
+		<result property="dspCnrContt.imgOvAltrtvCont" column="IMG_OV_ALTRTV_CONT" />
+		<result property="dspCnrContt.imgBcrnColorCd" column="IMG_BCRN_Color_CD" />
+		<result property="dspCnrContt.imgMapCont" column="IMG_MAP_CONT" />
+		<result property="dspCnrContt.imgDscr" column="IMG_DSCR" />
+		<result property="dspCnrContt.moviNm" column="MOVI_NM" />
+		<result property="dspCnrContt.moviFileUrl" column="MOVI_FILE_URL" />
+		<result property="dspCnrContt.moviImgFileNm" column="MOVI_IMG_FILE_NM" />
+		<result property="dspCnrContt.moviImgUrl" column="MOVI_IMG_URL" />
+		<result property="dspCnrContt.moviImgAltrtvCont" column="MOVI_IMG_ALTRTV_CONT" />
+		<result property="dspCnrContt.htmlSj" column="HTML_SJ" />
+		<result property="dspCnrContt.htmlDscr" column="HTML_DSCR" />
+		<result property="dspCnrContt.htmlCont" column="HTML_CONT" />
+		<result property="dspCnrContt.promtSn" column="CONTT_PROMT_SN" />
+		<result property="dspCnrContt.strndSn" column="CONTT_STRND_SN" />
+
+		<result property="dspCnrContt.outptTpCd" column="OUTPT_TP_CD" />
+		<result property="dspCnrContt.conttCnncUrl" column="CONTT_CNNC_URL" />
+		<result property="dspCnrContt.sortSeq" column="SORT_SEQ" />
+		<result property="dspCnrContt.dspYn" column="DSP_YN" />
+		<result property="dspCnrContt.dspBegDt" column="DSP_BEG_DT" />
+		<result property="dspCnrContt.dspEndDt" column="DSP_END_DT" />
+
+		<result property="dspCnrConttLang.cnrSn" column="CNR_SN" />
+		<result property="dspCnrConttLang.cnrSetSn" column="CNR_SET_SN" />
+		<result property="dspCnrConttLang.conttTurn" column="CONTT_TURN" />
+		<result property="dspCnrConttLang.langCd" column="LANG_LANG_CD" />
+		<result property="dspCnrConttLang.conttNm" column="LANG_CONTT_NM" />
+		<result property="dspCnrConttLang.imgFileNm" column="LANG_IMG_FILE_NM" />
+		<result property="dspCnrConttLang.imgFileUrl" column="LANG_IMG_FILE_URL" />
+		<result property="dspCnrConttLang.imgAltrtvCont" column="LANG_IMG_ALTRTV_CONT" />
+		<result property="dspCnrConttLang.imgOvFileNm" column="LANG_IMG_OV_FILE_NM" />
+		<result property="dspCnrConttLang.imgOvFileUrl" column="LANG_IMG_OV_FILE_URL" />
+		<result property="dspCnrConttLang.imgOvAltrtvCont" column="LANG_IMG_OV_ALTRTV_CONT" />
+		<result property="dspCnrConttLang.imgMapCont" column="LANG_IMG_MAP_CONT" />
+		<result property="dspCnrConttLang.imgDscr" column="LANG_IMG_DSCR" />
+		<result property="dspCnrConttLang.moviImgFileNm" column="LANG_MOVI_IMG_FILE_NM" />
+		<result property="dspCnrConttLang.moviImgUrl" column="LANG_MOVI_IMG_URL" />
+		<result property="dspCnrConttLang.moviImgAltrtvCont" column="LANG_MOVI_IMG_ALTRTV_CONT" />
+		<result property="dspCnrConttLang.htmlSj" column="LANG_HTML_SJ" />
+		<result property="dspCnrConttLang.htmlDscr" column="LANG_HTML_DSCR" />
+		<result property="dspCnrConttLang.htmlCont" column="LANG_HTML_CONT" />
+
+		<association property="dspCnrGod" javaType="com.plgrim.ncp.biz.display.result.DspCommonGodFrResult">
+        	<id column="GOD_NO" property="god.godNo" />
+        	<result property="god.godNo" column="GOD_NO" />
+			<result property="god.erpGodNo" column="ERP_GOD_NO" />
+			<result property="god.dsgnGrpNo" column="DSGN_GRP_NO" />
+			<result property="god.godNm" column="GOD_NM" />
+			<result property="god.mobileGodNm" column="MOBILE_GOD_NM" />
+			<result property="god.tagNm" column="TAG_NM" />
+			<result property="god.colorTagNm" column="COLOR_TAG_NM" />
+			<result property="god.themaTagNm" column="THEMA_TAG_NM" />
+			<result property="god.godAprvSectCd" column="GOD_APRV_SECT_CD" />
+			<result property="god.godSaleSectCd" column="GOD_SALE_SECT_CD" />
+			<result property="god.saleBegDate" column="SALE_BEG_DATE" />
+			<result property="god.saleEndDate" column="SALE_END_DATE" />
+			<result property="god.colorNm" column="COLOR_NM" />
+			<result property="god.colorCd" column="COLOR_CD" />
+			<result property="god.clorChipImgUrl" column="CLOR_CHIP_IMG_URL" />
+			<result property="god.godTpCd" column="GOD_TP_CD" />
+			<result property="god.partmalSectCd" column="PARTMAL_SECT_CD" />
+			<result property="god.brndId" column="GOD_BRND_ID" />
+			<result property="god.brndGrpId" column="GOD_BRND_GRP_ID" />
+			<result property="god.stdCtgryNo" column="STD_CTGRY_NO" />
+			<result property="god.tdfSect" column="TDF_SECT" />
+			<result property="god.sesonGrpCd" column="SESON_GRP_CD" />
+			<result property="god.sesonCd" column="SESON_CD" />
+			<result property="god.prdlstCd" column="PRDLST_CD" />
+			<result property="god.resveSaleGodYn" column="RESVE_SALE_GOD_YN" />
+			<result property="god.resveOrdPaySectCd" column="RESVE_ORD_PAY_SECT_CD" />
+			<result property="god.resveOrdPartPayAmt" column="RESVE_ORD_PART_PAY_AMT" />
+			<result property="god.resveOrdPayClosDt" column="RESVE_ORD_PAY_CLOS_DT" />
+			<result property="god.resveOrdDlivyPrearngeDate" column="RESVE_ORD_DLIVY_PREARNGE_DATE" />
+			<result property="god.dmstcDlvCstPlcSn" column="DMSTC_DLV_CST_PLC_SN" />
+			<result property="god.ovseaDlvPsbYn" column="OVSEA_DLV_PSB_YN" />
+			<result property="god.ovseaDlvDmstcDlvCstPlcSn" column="OVSEA_DLV_DMSTC_DLV_CST_PLC_SN" />
+			<result property="god.ovseaDlvCstPlcSn" column="OVSEA_DLV_CST_PLC_SN" />
+			<result property="god.otltYn" column="OTLT_YN" />
+			<result property="god.regtrId" column="REGTR_ID" />
+			<result property="god.regDt" column="REG_DT" />
+			<result property="god.udterId" column="UDTER_ID" />
+			<result property="god.udtDt" column="UDT_DT" />
+			<result property="dspGodPrc.rtlPrc" column="RTL_PRC" />
+			<result property="dspGodPrc.godDcRt" column="DGPRC_GOD_DC_RT" />
+			<result property="dspGodPrc.lastSalePrc" column="DGPRC_LAST_SALE_PRC" />
+			<result property="dspGodPrc.cpnDcRt" column="DGPRC_CPN_DC_RT" />
+			<result property="sysBrnd.brndId" column="BRND_ID" />
+			<result property="sysBrnd.upperBrndId" column="UPPER_BRND_ID" />
+			<result property="sysBrnd.brndNm" column="BRND_NM" />
+			<result property="godLangbyGodNm.godNm" column="GLGNM_GOD_NM" />
+			<result property="godLangbyGodNm.mobileGodNm" column="GLGNM_MOBILE_GOD_NM" />
+			<result property="godLangbyGodNm.tagNm" column="GLGNM_TAG_NM" />
+			<result property="godLangbyGodNm.colorTagNm" column="GLGNM_COLOR_TAG_NM" />
+			<result property="godLangbyGodNm.themaTagNm" column="GLGNM_THEMA_TAG_NM" />
+			<result property="godLangbyGodNm.colorNm" column="GLGNM_COLOR_NM" />
+			<result property="mnfcturDate" column="MNFCTUR_DATE" />
+			<result property="iconNm" column="ICON_NM" />
+			<result property="godTagResve.tagNm" column="GR_TAG_NM" />
+			<result property="godLangbyTagResve.tagNm" column="GLTR_TAG_NM" />
+			<result property="colorStyleCd" column="COLOR_STYLE_CD" />
+			<result property="imgFrontUrl" column="IMG_FRONT_URL" />
+			<result property="imgBackUrl" column="IMG_BACK_URL" />
+			<result property="sesonGrpNm" column="SESON_GRP_NM" />
+      	</association>
+      	<association property="dspCnrPromt" javaType="com.plgrim.ncp.biz.display.result.DspCnrConttPromtFoResult">
+        	<id column="CONTT_PROMT_SN" property="dspPromt.promtSn" />
+        	<result property="dspPromt.promtSn" column="CONTT_PROMT_SN" />
+			<result property="dspPromt.promtNm" column="PROMT_NM" />
+			<result property="dspPromt.promtDscr" column="PROMT_DSCR" />
+			<result property="dspPromt.promtAprvStatCd" column="PROMT_APRV_STAT_CD" />
+			<result property="dspPromt.promtAprvDt" column="PROMT_APRV_DT" />
+			<result property="dspPromt.promtAprvRejectDt" column="PROMT_APRV_REJECT_DT" />
+			<result property="dspPromt.promtAprvRejectResnCont" column="PROMT_APRV_REJECT_RESN_CONT" />
+			<result property="dspPromt.promtTpCd" column="PROMT_TP_CD" />
+			<result property="dspPromt.dspBegDt" column="DSP_BEG_DT" />
+			<result property="dspPromt.dspEndDt" column="DSP_END_DT" />
+			<result property="dspPromt.dspYn" column="DSP_YN" />
+			<result property="dspPromt.chrgMdAdminId" column="CHRG_MD_ADMIN_ID" />
+			<result property="dspPromt.sortSeq" column="SORT_SEQ" />
+			<result property="dspPromt.spcifyUrlDspYn" column="SPCIFY_URL_DSP_YN" />
+			<result property="dspPromt.b2eCrtfcCd" column="B2E_CRTFC_CD" />
+			<result property="dspPromt.dspGodSortStdrCd" column="DSP_GOD_SORT_STDR_CD" />
+			<result property="dspPromt.signlCrtfcYn" column="SIGNL_CRTFC_YN" />
+			<result property="dspPromt.pcMobileTmplatIndUseYn" column="PC_MOBILE_TMPLAT_IND_USE_YN" />
+			<result property="dspPromt.pcTmplatSn" column="PC_TMPLAT_SN" />
+			<result property="dspPromt.mobileTmplatSn" column="MOBILE_TMPLAT_SN" />
+			<result property="pcMobileImgIndUseYn" column="PC_MOBILE_IMG_IND_USE_YN" />
+			<result property="pcImgFileNm" column="PC_IMG_FILE_NM" />
+			<result property="pcImgFileUrl" column="PC_IMG_FILE_URL" />
+			<result property="pcImgAltrtvCont" column="PC_IMG_ALTRTV_CONT" />
+			<result property="pcImgExpsrTxt1Cont" column="PC_IMG_EXPSR_TXT1_CONT" />
+			<result property="pcImgExpsrTxt2Cont" column="PC_IMG_EXPSR_TXT2_CONT" />
+			<result property="pPcImgFileNm" column="P_PC_IMG_FILE_NM" />
+			<result property="pPcImgFileUrl" column="P_PC_IMG_FILE_URL" />
+			<result property="pPcImgAltrtvCont" column="P_PC_IMG_ALTRTV_CONT" />
+			<result property="pPcImgExpsrTxt1Cont" column="P_PC_IMG_EXPSR_TXT1_CONT" />
+			<result property="pPcImgExpsrTxt2Cont" column="P_PC_IMG_EXPSR_TXT2_CONT" />
+			<result property="pcMobileImgIndUseYn2pce" column="PC_MOBILE_IMG_IND_USE_YN_2PCE" />
+			<result property="pcImgFileNm2pce" column="PC_IMG_FILE_NM_2PCE" />
+			<result property="pcImgFileUrl2pce" column="PC_IMG_FILE_URL_2PCE" />
+			<result property="pcImgAltrtvCont2pce" column="PC_IMG_ALTRTV_CONT_2PCE" />
+			<result property="pcImgExpsrTxt1Cont2pce" column="PC_IMG_EXPSR_TXT1_CONT_2PCE" />
+			<result property="pcImgExpsrTxt2Cont2pce" column="PC_IMG_EXPSR_TXT2_CONT_2PCE" />
+			<result property="pPcImgFileNm2pce" column="P_PC_IMG_FILE_NM_2PCE" />
+			<result property="pPcImgFileUrl2pce" column="P_PC_IMG_FILE_URL_2PCE" />
+			<result property="pPcImgAltrtvCont2pce" column="P_PC_IMG_ALTRTV_CONT_2PCE" />
+			<result property="pPcImgExpsrTxt1Cont2pce" column="P_PC_IMG_EXPSR_TXT1_CONT_2PCE" />
+			<result property="pPcImgExpsrTxt2Cont2pce" column="P_PC_IMG_EXPSR_TXT2_CONT_2PCE" />
+			<result property="dspPromtLang.promtSn" column="P_PROMT_SN" />
+			<result property="dspPromtLang.langCd" column="LANG_CD" />
+			<result property="dspPromtLang.promtNm" column="P_PROMT_NM" />
+      	</association>
+      	<association property="dspCnrStrnd" javaType="com.plgrim.ncp.biz.display.result.DspCnrConttStrndFoResult">
+        	<id column="CONTT_STRND_SN" property="dspStrnd.strndSn" />
+        	<result property="dspStrnd.strndSn" column="CONTT_STRND_SN" />
+			<result property="dspStrnd.strndTpCd" column="STRND_TP_CD" />
+			<result property="dspStrnd.strndNm" column="STRND_NM" />
+			<result property="dspStrnd.strndDscr" column="STRND_DSCR" />
+			<result property="dspStrnd.dspBegDt" column="DSP_BEG_DT" />
+			<result property="dspStrnd.dspEndDt" column="DSP_END_DT" />
+			<result property="dspStrnd.dspYn" column="DSP_YN" />
+			<result property="dspStrnd.sortSeq" column="SORT_SEQ" />
+			<result property="dspStrnd.brndId" column="BRND_ID" />
+			<result property="dspStrnd.sesonCd" column="SESON_CD" />
+			<result property="dspStrnd.rprstImgFileNm" column="RPRST_IMG_FILE_NM" />
+			<result property="dspStrnd.rprstImgFileUrl" column="RPRST_IMG_FILE_URL" />
+			<result property="dspStrnd.rprstImgAltrtvCont" column="RPRST_IMG_ALTRTV_CONT" />
+			<result property="dspStrnd.pcMobileTmplatIndUseYn" column="PC_MOBILE_TMPLAT_IND_USE_YN" />
+			<result property="dspStrnd.pcTmplatSn" column="PC_TMPLAT_SN" />
+			<result property="dspStrnd.mobileTmplatSn" column="MOBILE_TMPLAT_SN" />
+			<result property="dspStrnd.regDt" column="REG_DT" />
+			<result property="dspStrndLang.strndSn" column="DSTLANG_STRND_SN" />
+			<result property="dspStrndLang.langCd" column="LANG_CD" />
+			<result property="dspStrndLang.strndNm" column="DSTLANG_STRND_NM" />
+			<result property="dspStrndLang.strndDscr" column="DSTLANG_STRND_DSCR" />
+			<result property="dspStrndLang.rprstImgFileNm" column="DSTLANG_RPRST_IMG_FILE_NM" />
+			<result property="dspStrndLang.rprstImgFileUrl" column="DSTLANG_RPRST_IMG_FILE_URL" />
+			<result property="dspStrndLang.rprstImgAltrtvCont" column="DSTLANG_RPRST_IMG_ALTRTV_CONT" />
+      	</association>
+
+	</resultMap>
+
+	<!-- set -->
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspCnrSetFrResult" id="dspCnrSetFrResultMap">
+		<id property="cnrSn" column="CNR_SN" />
+		<id property="cnrSetSn" column="CNR_SET_SN" />
+		<result property="cnrConttTpGrpNm" column="CNR_CONTT_TP_GRP_NM" />
+
+		<result property="dspCnrSet.cnrSn" column="CNR_SN" />
+		<result property="dspCnrSet.cnrSetSn" column="CNR_SET_SN" />
+		<result property="dspCnrSet.cnrTpGrpSn" column="CNR_TP_GRP_SN" />
+		<result property="dspCnrSet.setNm" column="SET_NM" />
+		<result property="dspCnrSet.setDscr" column="SET_DSCR" />
+		<result property="dspCnrSet.sortSeq" column="SET_SORT_SEQ" />
+		<result property="dspCnrSet.dspCtgryNo" column="DSP_CTGRY_NO" />
+		<result property="dspCnrSet.promtSn" column="PROMT_SN" />
+		<result property="dspCnrSet.evtNo" column="EVT_NO" />
+		<result property="dspCnrSet.strndSn" column="STRND_SN" />
+		<result property="dspCnrSet.dspYn" column="SET_DSP_YN" />
+		<result property="dspCnrSet.rndYn" column="RND_YN" />
+		<result property="dspCnrSet.altrtvDspGodTpCd" column="ALTRTV_DSP_GOD_TP_CD" />
+		<result property="dspCnrSetLang.langCd" column="LANG_LANG_CD" />
+		<result property="dspCnrSetLang.setNm" column="LANG_SET_NM" />
+		<result property="dspCnrSetLang.setDscr" column="LANG_SET_DSCR" />
+
+		<collection property="dspCnrConttList"  resultMap="dspCnrConttFrResultMap" javaType="java.util.ArrayList" />
+	</resultMap>
+
+	<!-- corner -->
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspCnrFrResult" id="dspCnrFrResultMap">
+		<id property="cnrSn" column="CNR_SN" />
+		<result property="dspCnr.cnrSn" column="CNR_SN" />
+		<result property="dspCnr.dspCnrNm" column="DSP_CNR_NM" />
+		<result property="dspCnr.dspCnrDscr" column="DSP_CNR_DSCR" />
+		<result property="dspCnr.useYn" column="DC_USE_YN" />
+		<result property="cnrSortSeq" column="CNR_SORT_SEQ" />
+
+		<collection property="dspCnrSetList" resultMap="dspCnrSetFrResultMap" javaType="java.util.ArrayList" />
+	</resultMap>
+
+	<!-- tmplat info  -->
+	<resultMap type="com.plgrim.ncp.biz.display.result.DspTmplatFrResult" id="dspTmplatFrResultMap">
+		<result property="dspTmplat.tmplatSn" column="tmplat_sn" />
+		<result property="dspTmplat.tmplatNm" column="tmplat_nm" />
+		<result property="dspTmplat.tmplatDscr" column="tmplat_dscr" />
+		<result property="dspTmplat.tmplatUseYn" column="tmplat_use_yn" />
+		<result property="dspTmplat.tmplatTpCd" column="tmplat_tp_cd" />
+		<result property="dspTmplat.tmplatCnncUrl" column="tmplat_cnnc_url" />
+		<result property="dspTmplat.conttRegGdImgUrl" column="contt_reg_gd_img_url" />
+		<result property="dspTmplat.dvcSectCd" column="dvc_sect_cd" />
+		<result property="dspTmplat.regtrId" column="regtr_id" />
+		<result property="dspTmplat.regDt" column="reg_dt" />
+		<result property="dspTmplat.udterId" column="udter_id" />
+		<result property="dspTmplat.udtDt" column="udt_dt" />
+		<result property="dspCnrTmplatInfoCnnc.cnrSn" column="cnr_sn" />
+		<result property="dspCnr.dspCnrNm" column="dsp_cnr_nm" />
+		<!-- 카테고리 or 테마페이지 -->
+		<result property="dspCtgry.dspCtgryNo" column="DSP_CTGRY_NO" />
+		<result property="dspCtgry.upperDspCtgryNo" column="UPPER_DSP_CTGRY_NO" />
+		<result property="dspCtgry.dspCtgryNm" column="DSP_CTGRY_NM" />
+		<result property="dspCtgry.ctgryTpCd" column="CTGRY_TP_CD" />
+		<result property="dspCtgry.godDspUnitCd" column="GOD_DSP_UNIT_CD" />
+		<result property="dspCtgry.ctgryDpthCd" column="CTGRY_DPTH_CD" />
+		<result property="dspCtgry.dspGodSortStdrCd" column="DSP_GOD_SORT_STDR_CD" />
+		<result property="dspCtgry.leafCtgryYn" column="LEAF_CTGRY_YN" />
+		<result property="dspCtgry.dspYn" column="DSP_YN" />
+		<result property="dspCtgry.spcifyUrlDspYn" column="SPCIFY_URL_DSP_YN" />
+		<result property="dspCtgry.ctgryDivLneYn" column="CTGRY_DIV_LNE_YN" />
+		<result property="dspCtgry.ctgryDivLneCssCd" column="CTGRY_DIV_LNE_CSS_CD" />
+		<result property="dspCtgry.deleteYn" column="DELETE_YN" />
+		<result property="dspCtgry.ctgryOutptTpCd" column="CTGRY_OUTPT_TP_CD" />
+		<result property="dspCtgry.outptSectCd" column="OUTPT_SECT_CD" />
+		<result property="dspCtgry.outptLinkUrl" column="OUTPT_LINK_URL" />
+		<result property="dspCtgry.sortSeq" column="SORT_SEQ" />
+		<result property="dspCtgry.aplMallId" column="APL_MALL_ID" />
+		<result property="dspCtgry.dspBrndId" column="DSP_BRND_ID" />
+		<result property="dspCtgry.expsrLvlCd" column="EXPSR_LVL_CD" />
+		<result property="dspCtgry.rprstImgFileNm" column="RPRST_IMG_FILE_NM" />
+		<result property="dspCtgry.rprstImgFileUrl" column="RPRST_IMG_FILE_URL" />
+		<result property="dspCtgry.rprstImgAltrtvCont" column="RPRST_IMG_ALTRTV_CONT" />
+		<result property="dspCtgry.bcrnStyleClassId" column="BCRN_STYLE_CLASS_ID" />
+		<result property="dspCtgryLang.langCd" column="LANG_CD" />
+		<result property="dspCtgryLang.dspCtgryNm" column="DCLANG_DSP_CTGRY_NM" />
+		<result property="dspCtgryLang.rprstImgFileNm" column="DCLANG_RPRST_IMG_FILE_NM" />
+		<result property="dspCtgryLang.rprstImgFileUrl" column="DCLANG_RPRST_IMG_FILE_URL" />
+		<result property="dspCtgryLang.rprstImgAltrtvCont" column="DCLANG_RPRST_IMG_ALTRTV_CONT" />
+
+		<result property="dspBrndCtgry.dspCtgryNo" column="BR_DSP_CTGRY_NO" />
+        <result property="dspBrndCtgry.dspBrndId" column="BR_DSP_BRND_ID" />
+        <result property="dspBrndCtgry.dspCtgryNm" column="BR_DSP_CTGRY_NM" />
+        <result property="dspBrndCtgry.godDspUnitCd" column="BR_GOD_DSP_UNIT_CD" />
+        <result property="dspBrndCtgry.dspGodSortStdrCd" column="BR_DSP_GOD_SORT_STDR_CD" />
+        <result property="dspBrndCtgry.dspYn" column="BR_DSP_YN" />
+        <result property="dspBrndCtgry.spcifyUrlDspYn" column="BR_SPCIFY_URL_DSP_YN" />
+        <result property="dspBrndCtgry.ctgryOutptTpCd" column="BR_CTGRY_OUTPT_TP_CD" />
+        <result property="dspBrndCtgry.outptSectCd" column="BR_OUTPT_SECT_CD" />
+        <result property="dspBrndCtgry.outptLinkUrl" column="BR_OUTPT_LINK_URL" />
+        <result property="dspBrndCtgry.expsrLvlCd" column="BR_EXPSR_LVL_CD" />
+        <result property="dspBrndCtgry.rprstImgFileNm" column="BR_RPRST_IMG_FILE_NM" />
+        <result property="dspBrndCtgry.rprstImgFileUrl" column="BR_RPRST_IMG_FILE_URL" />
+        <result property="dspBrndCtgry.rprstImgAltrtvCont" column="BR_RPRST_IMG_ALTRTV_CONT" />
+        <result property="dspBrndCtgry.bcrnStyleClassId" column="BR_BCRN_STYLE_CLASS_ID" />
+        <result property="dspBrndCtgry.sortSeq" column="BR_SORT_SEQ" />
+		<!-- 기획전 -->
+		<result property="dspPromt.promtSn" column="PROMT_SN" />
+		<result property="dspPromt.promtNm" column="PROMT_NM" />
+		<result property="dspPromt.promtAprvStatCd" column="PROMT_APRV_STAT_CD" />
+		<result property="dspPromt.promtAprvDt" column="PROMT_APRV_DT" />
+		<result property="dspPromt.promtAprvRejectDt" column="PROMT_APRV_REJECT_DT" />
+		<result property="dspPromt.promtAprvRejectResnCont" column="PROMT_APRV_REJECT_RESN_CONT" />
+		<result property="dspPromt.promtTpCd" column="PROMT_TP_CD" />
+		<result property="dspPromt.promtSprtrTpCd" column="PROMT_SPRTR_TP_CD" />
+		<result property="dspPromt.dspBegDt" column="DSP_BEG_DT" />
+		<result property="dspPromt.dspEndDt" column="DSP_END_DT" />
+		<result property="dspPromt.dspYn" column="DSP_YN" />
+		<result property="dspPromt.chrgMdAdminId" column="CHRG_MD_ADMIN_ID" />
+		<result property="dspPromt.sortSeq" column="SORT_SEQ" />
+		<result property="dspPromt.spcifyUrlDspYn" column="SPCIFY_URL_DSP_YN" />
+		<result property="dspPromt.b2eCrtfcCd" column="B2E_CRTFC_CD" />
+		<result property="dspPromt.promtExpsrSectCd" column="PROMT_EXPSR_SECT_CD" />
+		<result property="dspPromt.dspGodSortStdrCd" column="DSP_GOD_SORT_STDR_CD" />
+		<result property="dspPromt.pcListExpsrCntCd" column="PC_LIST_EXPSR_CNT_CD" />
+		<result property="dspPromt.mobileListExpsrCntCd" column="MOBILE_LIST_EXPSR_CNT_CD" />
+		<result property="dspPromt.signlCrtfcYn" column="SIGNL_CRTFC_YN" />
+		<result property="pcMobileImgIndUseYn" column="PC_MOBILE_IMG_IND_USE_YN" />
+		<result property="pcImgFileNm" column="PC_IMG_FILE_NM" />
+		<result property="pcImgFileUrl" column="PC_IMG_FILE_URL" />
+		<result property="pcImgAltrtvCont" column="PC_IMG_ALTRTV_CONT" />
+		<result property="pcImgExpsrTxt1Cont" column="PC_IMG_EXPSR_TXT1_CONT" />
+		<result property="pcImgExpsrTxt2Cont" column="PC_IMG_EXPSR_TXT2_CONT" />
+		<result property="pPcImgFileNm" column="P_PC_IMG_FILE_NM" />
+		<result property="pPcImgFileUrl" column="P_PC_IMG_FILE_URL" />
+		<result property="pPcImgAltrtvCont" column="P_PC_IMG_ALTRTV_CONT" />
+		<result property="pPcImgExpsrTxt1Cont" column="P_PC_IMG_EXPSR_TXT1_CONT" />
+		<result property="pPcImgExpsrTxt2Cont" column="P_PC_IMG_EXPSR_TXT2_CONT" />
+		<result property="pcMobileImgIndUseYn2pce" column="PC_MOBILE_IMG_IND_USE_YN_2PCE" />
+		<result property="pcImgFileNm2pce" column="PC_IMG_FILE_NM_2PCE" />
+		<result property="pcImgFileUrl2pce" column="PC_IMG_FILE_URL_2PCE" />
+		<result property="pcImgAltrtvCont2pce" column="PC_IMG_ALTRTV_CONT_2PCE" />
+		<result property="pcImgExpsrTxt1Cont2pce" column="PC_IMG_EXPSR_TXT1_CONT_2PCE" />
+		<result property="pcImgExpsrTxt2Cont2pce" column="PC_IMG_EXPSR_TXT2_CONT_2PCE" />
+		<result property="pPcImgFileNm2pce" column="P_PC_IMG_FILE_NM_2PCE" />
+		<result property="pPcImgFileUrl2pce" column="P_PC_IMG_FILE_URL_2PCE" />
+		<result property="pPcImgAltrtvCont2pce" column="P_PC_IMG_ALTRTV_CONT_2PCE" />
+		<result property="pPcImgExpsrTxt1Cont2pce" column="P_PC_IMG_EXPSR_TXT1_CONT_2PCE" />
+		<result property="pPcImgExpsrTxt2Cont2pce" column="P_PC_IMG_EXPSR_TXT2_CONT_2PCE" />
+		<result property="dspPromtLang.promtSn" column="P_PROMT_SN" />
+		<result property="dspPromtLang.langCd" column="LANG_CD" />
+		<result property="dspPromtLang.promtNm" column="P_PROMT_NM" />
+		<result property="dspPromtLang.promtNm" column="LPROMT_NM" />
+		<result property="dspPromt.dspPdExpsrYn" column="DSP_PD_EXPSR_YN" />
+		<!-- STrnd -->
+		<result property="dspStrnd.strndSn" column="STRND_SN" />
+		<result property="dspStrnd.strndTpCd" column="STRND_TP_CD" />
+		<result property="dspStrnd.strndNm" column="STRND_NM" />
+		<result property="dspStrnd.strndDscr" column="STRND_DSCR" />
+		<result property="dspStrnd.dspBegDt" column="DSP_BEG_DT" />
+		<result property="dspStrnd.dspEndDt" column="DSP_END_DT" />
+		<result property="dspStrnd.dspYn" column="DSP_YN" />
+		<result property="dspStrnd.sortSeq" column="SORT_SEQ" />
+		<result property="dspStrnd.brndId" column="BRND_ID" />
+		<result property="brndNm" column="BRND_NM" />
+		<result property="dspStrnd.sesonCd" column="SESON_CD" />
+		<result property="sesonNm" column="SESON_NM" />
+		<result property="dspStrnd.rprstImgFileNm" column="RPRST_IMG_FILE_NM" />
+		<result property="dspStrnd.rprstImgFileUrl" column="RPRST_IMG_FILE_URL" />
+		<result property="dspStrnd.rprstImgAltrtvCont" column="RPRST_IMG_ALTRTV_CONT" />
+		<result property="dspStrndLang.strndNm" column="LSTRND_NM" />
+		<result property="dspStrndLang.strndDscr" column="LSTRND_DSCR" />
+		<result property="dspStrndLang.rprstImgFileNm" column="LRPRST_IMG_FILE_NM" />
+		<result property="dspStrndLang.rprstImgFileUrl" column="LRPRST_IMG_FILE_URL" />
+		<result property="dspStrndLang.rprstImgAltrtvCont" column="LRPRST_IMG_ALTRTV_CONT" />
+		<!-- 이벤트 -->
+		<result property="evt.evtNo" column="EVT_NO" />
+		<result property="evt.evtNm" column="EVT_NM" />
+		<result property="evt.evtDscr" column="EVT_DSCR" />
+		<result property="evt.evtStatCd" column="EVT_STAT_CD" />
+		<result property="evt.evtBegDt" column="EVT_BEG_DT" />
+		<result property="evt.evtEndDt" column="EVT_END_DT" />
+        <result property="evt.applcnBegDt" column="APPLCN_BEG_DT" />
+        <result property="evt.applcnEndDt" column="APPLCN_END_DT" />
+		<result property="evt.evtTpCd" column="EVT_TP_CD" />
+		<result property="evt.evtDetailTpCd" column="EVT_DETAIL_TP_CD" />
+		<result property="evt.pcUrl" column="PC_URL" />
+		<result property="evt.mobileUrl" column="MOBILE_URL" />
+		<result property="evt.pcHtml" column="PC_HTML" />
+		<result property="evt.mobileHtml" column="MOBILE_HTML" />
+		<result property="evtLang.evtNm" column="LANG_EVT_NM" />
+		<result property="evtLang.evtDscr" column="LANG_EVT_DSCR" />
+		<result property="evtLang.pcHtml" column="LANG_PC_HTML" />
+		<result property="evtLang.mobileHtml" column="LANG_MOBILE_HTML" />
+    </resultMap>
+
+	<resultMap id="sysBrndImg" type="com.plgrim.ncp.biz.display.result.DspBrndImgResult">
+		<result property="sysBrnd.brndStoryIntrcnCont" column="BRND_STORY_INTRCN_CONT" />
+		<result property="sysBrnd.brndNm" column="BRND_NM" />
+		<result property="sysBrndImg1.brndImgFileNm" column="BRND_IMG_FILE_NM_1" />
+		<result property="sysBrndImg1.brndImgFileUrl" column="BRND_IMG_FILE_URL_1" />
+		<result property="sysBrndImg1.brndImgAltrtvCont" column="BRND_IMG_ALTRTV_CONT_1" />
+		<result property="sysBrndImg2.brndImgFileNm" column="BRND_IMG_FILE_NM_2" />
+		<result property="sysBrndImg2.brndImgFileUrl" column="BRND_IMG_FILE_URL_2" />
+		<result property="sysBrndImg2.brndImgAltrtvCont" column="BRND_IMG_ALTRTV_CONT_2" />
+		<result property="sysBrndImg3.brndImgFileNm" column="BRND_IMG_FILE_NM_3" />
+		<result property="sysBrndImg3.brndImgFileUrl" column="BRND_IMG_FILE_URL_3" />
+		<result property="sysBrndImg3.brndImgAltrtvCont" column="BRND_IMG_ALTRTV_CONT_3" />
+		<result property="sysBrndImg4.brndImgFileNm" column="BRND_IMG_FILE_NM_4" />
+		<result property="sysBrndImg4.brndImgFileUrl" column="BRND_IMG_FILE_URL_4" />
+		<result property="sysBrndImg4.brndImgAltrtvCont" column="BRND_IMG_ALTRTV_CONT_4" />
+	</resultMap>
+	<!-- common -->
+	<sql id="mbrCondSql" >
+		AND EXISTS (
+	        SELECT 1
+	        FROM  DSP_CNR_CONTT_DSP_TGT TGT
+	        WHERE DCC.REV_SN = TGT.REV_SN
+	        AND   DCC.CNR_SN = TGT.CNR_SN
+	        AND   DCC.CNR_SET_SN = TGT.CNR_SET_SN
+	        AND   DCC.CONTT_TURN = TGT.CONTT_TURN
+	        AND  (TGT.DSP_TGT_TP_CD = 'MALL_ID'
+	        AND   TGT.MALL_ID = #{mallId,jdbcType=VARCHAR})
+	    )
+	    AND EXISTS (
+	        SELECT 1
+	        FROM  DSP_CNR_CONTT_DSP_TGT TGT
+	        WHERE DCC.REV_SN = TGT.REV_SN
+	        AND   DCC.CNR_SN = TGT.CNR_SN
+	        AND   DCC.CNR_SET_SN = TGT.CNR_SET_SN
+	        AND   DCC.CONTT_TURN = TGT.CONTT_TURN
+	        AND  (TGT.DSP_TGT_TP_CD = 'LANG'
+	        AND   TGT.LANG_CD = #{lang,jdbcType=VARCHAR})
+	    )
+	    AND EXISTS (
+	        SELECT 1
+	        FROM  DSP_CNR_CONTT_DSP_TGT TGT
+	        WHERE DCC.REV_SN = TGT.REV_SN
+	        AND   DCC.CNR_SN = TGT.CNR_SN
+	        AND   DCC.CNR_SET_SN = TGT.CNR_SET_SN
+	        AND   DCC.CONTT_TURN = TGT.CONTT_TURN
+	        AND  (TGT.DSP_TGT_TP_CD = 'DVC'
+	        AND   TGT.DVC_CD = #{device,jdbcType=VARCHAR})
+	    )
+	    AND EXISTS (
+	        SELECT 1
+	        FROM  DSP_CNR_CONTT_DSP_TGT TGT
+	        WHERE DCC.REV_SN = TGT.REV_SN
+	        AND   DCC.CNR_SN = TGT.CNR_SN
+	        AND   DCC.CNR_SET_SN = TGT.CNR_SET_SN
+	        AND   DCC.CONTT_TURN = TGT.CONTT_TURN
+	        AND  (TGT.DSP_TGT_TP_CD = 'TGT_MBR_TP'
+	        AND   TGT.TGT_MBR_TP_CD = #{aplMbrTp,jdbcType=VARCHAR})
+	    )
+	    <if test="aplMbrAtrb != null">
+	    	<if test="aplMbrAtrb != 'GRPCO'">
+		    	AND EXISTS (
+			        SELECT 1
+			        FROM  DSP_CNR_CONTT_DSP_TGT TGT
+			        WHERE DCC.REV_SN = TGT.REV_SN
+			        AND   DCC.CNR_SN = TGT.CNR_SN
+			        AND   DCC.CNR_SET_SN = TGT.CNR_SET_SN
+			        AND   DCC.CONTT_TURN = TGT.CONTT_TURN
+			        AND  (TGT.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+			        AND   TGT.TGT_MBR_ATRB_CD = #{aplMbrAtrb,jdbcType=VARCHAR})
+			    )
+	    	</if>
+	    	<if test="aplMbrAtrb == 'GRPCO'">
+	    		AND (
+			        EXISTS (
+			            SELECT 1
+			            FROM  DSP_CNR_CONTT_DSP_TGT TGT
+			            WHERE DCC.REV_SN = TGT.REV_SN
+			            AND   DCC.CNR_SN = TGT.CNR_SN
+			            AND   DCC.CNR_SET_SN = TGT.CNR_SET_SN
+			            AND   DCC.CONTT_TURN = TGT.CONTT_TURN
+			            AND  (TGT.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+			            AND   TGT.TGT_MBR_ATRB_CD = 'GRPCO_IND'
+			            AND   TGT.GRPCO_ID = #{grpcoId,jdbcType=VARCHAR})
+			        )
+			        OR
+			        EXISTS (
+			            SELECT 1
+			            FROM  DSP_CNR_CONTT_DSP_TGT TGT
+			            WHERE DCC.REV_SN = TGT.REV_SN
+			            AND   DCC.CNR_SN = TGT.CNR_SN
+			            AND   DCC.CNR_SET_SN = TGT.CNR_SET_SN
+			            AND   DCC.CONTT_TURN = TGT.CONTT_TURN
+			            AND  (TGT.DSP_TGT_TP_CD = 'TGT_MBR_ATRB'
+			            AND   TGT.TGT_MBR_ATRB_CD = 'GRPCO_ALL')
+			        )
+			    )
+	    	</if>
+	    </if>
+	</sql>
+
+	<sql id="tmplatKeySql">
+		<choose>
+	      	<when test="tmplatTp == 'THEMA_PGE'">
+	        AND DCS.DSP_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	      	</when>
+	      	<when test="tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+	        AND DCS.DSP_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	      	</when>
+	      	<when test="tmplatTp == 'STRND'">
+	        AND DCS.STRND_SN = #{tmplatScKey,jdbcType=NUMERIC}
+	      	</when>
+	      	<when test="tmplatTp == 'EVT'">
+	        AND DCS.EVT_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	      	</when>
+	      	<when test="tmplatTp == 'PROMT'">
+	        AND DCS.PROMT_SN = #{tmplatScKey,jdbcType=NUMERIC}
+	      	</when>
+	      	<otherwise/>
+	   	</choose>
+	</sql>
+
+	<sql id="tmplatKeySqlV2">
+		AND DCTI.TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC}
+		<choose>
+	      	<when test="tmplatTp == 'THEMA_PGE'">
+	        AND DCS.DSP_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	        AND DCS.DSP_CTGRY_NO = DCTI.DSP_CTGRY_NO
+	        </when>
+	      	<when test="tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+	      	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+	      	AND DCS.DSP_BRND_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	      	AND DCS.DSP_BRND_ID = #{tmplatKeyBrndId,jdbcType=VARCHAR}
+	      	AND DCS.DSP_BRND_CTGRY_NO = DCTI.DSP_BRND_CTGRY_NO
+			AND DCS.DSP_BRND_ID = DCTI.DSP_BRND_ID
+	        </if>
+	      	<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+	      	AND DCS.DSP_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	        AND DCS.DSP_CTGRY_NO = DCTI.DSP_CTGRY_NO
+	        </if>
+	        </when>
+	      	<when test="tmplatTp == 'STRND'">
+	        AND DCS.STRND_SN = #{tmplatScKey,jdbcType=NUMERIC}
+	        AND DCS.STRND_SN = DCTI.STRND_SN
+	      	</when>
+	      	<when test="tmplatTp == 'EVT'">
+	        AND DCS.EVT_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	        AND DCS.EVT_NO = DCTI.EVT_NO
+	      	</when>
+	      	<when test="tmplatTp == 'PROMT'">
+	        AND DCS.PROMT_SN = #{tmplatScKey,jdbcType=NUMERIC}
+	      	AND DCS.PROMT_SN = DCTI.PROMT_SN
+	      	</when>
+	      	<otherwise/>
+	   	</choose>
+	</sql>
+
+	<sql id="selectConttSql" >
+		DCC.REV_SN
+	   ,DCC.CNR_SN
+       ,DCC.CNR_SET_SN
+       ,DCC.CONTT_TURN
+       ,DCC.CONTT_TP_CD
+       ,DCC.GOD_NO
+       ,replace(DCC.CONTT_NM, '''','@q@') AS CONTT_NM
+       ,DCC.IMG_NM
+       ,DCC.IMG_FILE_NM
+       ,DCC.IMG_FILE_URL
+       ,replace(DCC.IMG_ALTRTV_CONT, '''','@q@') AS IMG_ALTRTV_CONT
+       ,DCC.IMG_OV_FILE_NM
+       ,DCC.IMG_OV_FILE_URL
+       ,replace(DCC.IMG_OV_ALTRTV_CONT, '''','@q@') AS IMG_OV_ALTRTV_CONT
+       ,DCC.IMG_BCRN_COLOR_CD
+       ,DCC.IMG_MAP_CONT
+       ,replace(DCC.IMG_DSCR, '''','@q@') AS IMG_DSCR
+       ,DCC.MOVI_NM
+       ,DCC.MOVI_FILE_URL
+       ,DCC.MOVI_IMG_FILE_NM
+       ,DCC.MOVI_IMG_URL
+       ,DCC.MOVI_IMG_ALTRTV_CONT
+       ,DCC.HTML_SJ
+       ,DCC.HTML_DSCR
+       ,DCC.HTML_CONT
+       ,DCC.PROMT_SN AS CONTT_PROMT_SN
+       ,DCC.STRND_SN AS CONTT_STRND_SN
+       ,DCC.OUTPT_TP_CD
+       ,DCC.CONTT_CNNC_URL
+       ,DCC.SORT_SEQ
+       ,DCC.DSP_YN
+       ,DCC.DSP_BEG_DT
+       ,DCC.DSP_END_DT
+       ,DCC.IMG_TURN
+       ,DCTI.SORT_SEQ AS CNR_SORT_SEQ
+       ,DC.DSP_CNR_NM
+       ,DC.DSP_CNR_DSCR
+       ,DC.USE_YN AS DC_USE_YN
+       ,DCTG.DSP_CNT AS TP_DSP_CNT
+       ,DCTG.SORT_SEQ AS TP_SORT_SEQ
+       ,DCTG2.CNR_CONTT_TP_GRP_NM
+       ,DCS.CNR_TP_GRP_SN
+       ,DCS.SET_NM
+       ,DCS.SET_DSCR
+       ,DCS.SORT_SEQ AS SET_SORT_SEQ
+       ,DCS.DSP_CTGRY_NO
+       ,DCS.PROMT_SN
+       ,DCS.EVT_NO
+       ,DCS.STRND_SN
+       ,DCS.DSP_YN AS SET_DSP_YN
+       ,DCS.RND_YN
+       ,DCS.ALTRTV_DSP_GOD_TP_CD
+	</sql>
+
+	<sql id="selectGodSql">
+		,G.ERP_GOD_NO
+        ,G.DSGN_GRP_NO
+        ,G.GOD_NM
+        ,G.MOBILE_GOD_NM
+        ,G.TAG_NM
+        ,G.COLOR_TAG_NM
+        ,G.THEMA_TAG_NM
+        ,G.GOD_APRV_SECT_CD
+
+ 		<choose>
+		    <when test="lang != 'KOR' ">
+		   		, DECODE(G.GOD_SALE_SECT_CD, 'SALE_PROGRS_PKUP', 'SLDOUT', G.GOD_SALE_SECT_CD) as GOD_SALE_SECT_CD
+		   	</when>
+			<otherwise>
+				, DECODE(G.GOD_SALE_SECT_CD, 'SALE_PROGRS_PKUP', 'SALE_PROGRS', G.GOD_SALE_SECT_CD) as GOD_SALE_SECT_CD
+			</otherwise>
+		</choose>
+
+        ,G.SALE_BEG_DATE
+        ,G.SALE_END_DATE
+        ,G.COLOR_NM
+        ,G.COLOR_CD
+        ,G.CLOR_CHIP_IMG_URL
+        ,G.GOD_TP_CD
+        ,G.PARTMAL_SECT_CD
+        ,G.GOD_BRND_ID
+        ,G.GOD_BRND_GRP_ID
+        ,G.STD_CTGRY_NO
+        ,G.TDF_SECT
+        ,G.SESON_GRP_CD
+        ,G.SESON_CD
+        ,G.PRDLST_CD
+        ,G.RESVE_SALE_GOD_YN
+        ,G.RESVE_ORD_PAY_SECT_CD
+        ,G.RESVE_ORD_PART_PAY_AMT
+        ,G.RESVE_ORD_PAY_CLOS_DT
+        ,G.RESVE_ORD_DLIVY_PREARNGE_DATE
+        ,G.DMSTC_DLV_CST_PLC_SN
+        ,G.OVSEA_DLV_PSB_YN
+        ,G.OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+        ,G.OVSEA_DLV_CST_PLC_SN
+        ,G.OTLT_YN
+        ,G.DGPRC_LAST_SALE_PRC
+        ,G.DGPRC_GOD_DC_RT
+        ,G.DGPRC_CPN_DC_RT
+        ,G.RTL_PRC
+        ,G.BRND_ID
+        ,G.UPPER_BRND_ID
+        ,G.BRND_NM
+	</sql>
+	<sql id="selectGodNullSql">
+		,null AS ERP_GOD_NO
+        ,null AS DSGN_GRP_NO
+        ,null AS GOD_NM
+        ,null AS MOBILE_GOD_NM
+        ,null AS TAG_NM
+        ,null AS COLOR_TAG_NM
+        ,null AS THEMA_TAG_NM
+        ,null AS GOD_APRV_SECT_CD
+        ,null AS GOD_SALE_SECT_CD
+        ,null AS SALE_BEG_DATE
+        ,null AS SALE_END_DATE
+        ,null AS COLOR_NM
+        ,null AS COLOR_CD
+        ,null AS CLOR_CHIP_IMG_URL
+        ,null AS GOD_TP_CD
+        ,null AS PARTMAL_SECT_CD
+        ,null AS GOD_BRND_ID
+        ,null AS GOD_BRND_GRP_ID
+        ,null AS STD_CTGRY_NO
+        ,null AS TDF_SECT
+        ,null AS SESON_GRP_CD
+        ,null AS SESON_CD
+        ,null AS PRDLST_CD
+        ,null AS RESVE_SALE_GOD_YN
+        ,null AS RESVE_ORD_PAY_SECT_CD
+        ,null AS RESVE_ORD_PART_PAY_AMT
+        ,null AS RESVE_ORD_PAY_CLOS_DT
+        ,null AS RESVE_ORD_DLIVY_PREARNGE_DATE
+        ,null AS DMSTC_DLV_CST_PLC_SN
+        ,null AS OVSEA_DLV_PSB_YN
+        ,null AS OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+        ,null AS OVSEA_DLV_CST_PLC_SN
+        ,null AS OTLT_YN
+        ,null AS DGPRC_LAST_SALE_PRC
+        ,null AS DGPRC_GOD_DC_RT
+        ,null AS DGPRC_CPN_DC_RT
+        ,null AS RTL_PRC
+        ,null AS BRND_ID
+        ,null AS UPPER_BRND_ID
+        ,null AS BRND_NM
+		<if test="lang != 'KOR' ">
+		/* 해외판매여부 체크 */
+        ,null AS GLGNM_GOD_NM
+        ,null AS GLGNM_MOBILE_GOD_NM
+        ,null AS GLGNM_TAG_NM
+        ,null AS GLGNM_COLOR_TAG_NM
+        ,null AS GLGNM_THEMA_TAG_NM
+        ,null AS GLGNM_COLOR_NM
+		</if>
+        ,null AS MNFCTUR_DATE
+        ,null AS COLOR_STYLE_CD
+        ,null AS IMG_FRONT_URL
+		,null AS IMG_BACK_URL
+		,null AS SESON_GRP_NM
+	</sql>
+
+	<sql id="selectPromtSql">
+		,P.PROMT_NM
+        ,P.PROMT_APRV_STAT_CD
+        ,P.PROMT_APRV_DT
+        ,P.PROMT_APRV_REJECT_DT
+        ,P.PROMT_APRV_REJECT_RESN_CONT
+        ,P.PROMT_TP_CD
+        ,P.CHRG_MD_ADMIN_ID
+        ,P.SPCIFY_URL_DSP_YN
+        ,P.B2E_CRTFC_CD
+        ,P.DSP_GOD_SORT_STDR_CD
+        ,P.SIGNL_CRTFC_YN
+        ,P.PROMT_DSCR
+        ,P.PC_TMPLAT_SN
+        ,P.MOBILE_TMPLAT_SN
+        ,P.P_PROMT_SN
+        ,P.P_PROMT_NM
+        ,P.PC_MOBILE_IMG_IND_USE_YN
+        ,P.PC_IMG_FILE_NM
+        ,P.PC_IMG_FILE_URL
+        ,P.PC_IMG_ALTRTV_CONT
+        ,P.PC_IMG_EXPSR_TXT1_CONT
+        ,P.PC_IMG_EXPSR_TXT2_CONT
+        ,P.P_PC_IMG_FILE_NM
+        ,P.P_PC_IMG_FILE_URL
+        ,P.P_PC_IMG_ALTRTV_CONT
+        ,P.P_PC_IMG_EXPSR_TXT1_CONT
+        ,P.P_PC_IMG_EXPSR_TXT2_CONT
+        ,P.PC_MOBILE_IMG_IND_USE_YN_2PCE
+        ,P.PC_IMG_FILE_NM_2PCE
+        ,P.PC_IMG_FILE_URL_2PCE
+        ,P.PC_IMG_ALTRTV_CONT_2PCE
+        ,P.PC_IMG_EXPSR_TXT1_CONT_2PCE
+        ,P.PC_IMG_EXPSR_TXT2_CONT_2PCE
+        ,P.P_PC_IMG_FILE_NM_2PCE
+        ,P.P_PC_IMG_FILE_URL_2PCE
+        ,P.P_PC_IMG_ALTRTV_CONT_2PCE
+        ,P.P_PC_IMG_EXPSR_TXT1_CONT_2PCE
+        ,P.P_PC_IMG_EXPSR_TXT2_CONT_2PCE
+	</sql>
+	<sql id="selectPromtNullSql">
+		,null AS PROMT_NM
+        ,null AS PROMT_APRV_STAT_CD
+        ,null AS PROMT_APRV_DT
+        ,null AS PROMT_APRV_REJECT_DT
+        ,null AS PROMT_APRV_REJECT_RESN_CONT
+        ,null AS PROMT_TP_CD
+        ,null AS CHRG_MD_ADMIN_ID
+        ,null AS SPCIFY_URL_DSP_YN
+        ,null AS B2E_CRTFC_CD
+        ,null AS DSP_GOD_SORT_STDR_CD
+        ,null AS SIGNL_CRTFC_YN
+        ,null AS PROMT_DSCR
+        ,null AS PC_TMPLAT_SN
+        ,null AS MOBILE_TMPLAT_SN
+        ,null AS P_PROMT_SN
+        ,null AS P_PROMT_NM
+        ,null AS PC_MOBILE_IMG_IND_USE_YN
+        ,null AS PC_IMG_FILE_NM
+        ,null AS PC_IMG_FILE_URL
+        ,null AS PC_IMG_ALTRTV_CONT
+        ,null AS PC_IMG_EXPSR_TXT1_CONT
+        ,null AS PC_IMG_EXPSR_TXT2_CONT
+        ,null AS P_PC_IMG_FILE_NM
+        ,null AS P_PC_IMG_FILE_URL
+        ,null AS P_PC_IMG_ALTRTV_CONT
+        ,null AS P_PC_IMG_EXPSR_TXT1_CONT
+        ,null AS P_PC_IMG_EXPSR_TXT2_CONT
+        ,null AS PC_MOBILE_IMG_IND_USE_YN_2PCE
+        ,null AS PC_IMG_FILE_NM_2PCE
+        ,null AS PC_IMG_FILE_URL_2PCE
+        ,null AS PC_IMG_ALTRTV_CONT_2PCE
+        ,null AS PC_IMG_EXPSR_TXT1_CONT_2PCE
+        ,null AS PC_IMG_EXPSR_TXT2_CONT_2PCE
+        ,null AS P_PC_IMG_FILE_NM_2PCE
+        ,null AS P_PC_IMG_FILE_URL_2PCE
+        ,null AS P_PC_IMG_ALTRTV_CONT_2PCE
+        ,null AS P_PC_IMG_EXPSR_TXT1_CONT_2PCE
+        ,null AS P_PC_IMG_EXPSR_TXT2_CONT_2PCE
+	</sql>
+
+	<sql id="selectStrndSql">
+		,S.STRND_TP_CD
+        ,S.STRND_NM
+        ,S.STRND_DSCR
+        ,S.BRND_ID AS STRND_BRND_ID
+        ,S.SESON_CD AS STRND_SESON_CD
+        ,S.RPRST_IMG_FILE_NM
+        ,S.RPRST_IMG_FILE_URL
+        ,S.RPRST_IMG_ALTRTV_CONT
+        ,S.DSTLANG_STRND_SN
+        ,S.DSTLANG_STRND_NM
+        ,S.DSTLANG_STRND_DSCR
+        ,S.DSTLANG_RPRST_IMG_FILE_NM
+        ,S.DSTLANG_RPRST_IMG_FILE_URL
+        ,S.DSTLANG_RPRST_IMG_ALTRTV_CONT
+	</sql>
+	<sql id="selectStrndNullSql">
+		,null AS STRND_TP_CD
+	    ,null AS STRND_NM
+	    ,null AS STRND_DSCR
+	    ,null AS STRND_BRND_ID
+	    ,null AS STRND_SESON_CD
+	    ,null AS RPRST_IMG_FILE_NM
+	    ,null AS RPRST_IMG_FILE_URL
+	    ,null AS RPRST_IMG_ALTRTV_CONT
+	    ,null AS DSTLANG_STRND_SN
+	    ,null AS DSTLANG_STRND_NM
+	    ,null AS DSTLANG_STRND_DSCR
+	    ,null AS DSTLANG_RPRST_IMG_FILE_NM
+	    ,null AS DSTLANG_RPRST_IMG_FILE_URL
+	    ,null AS DSTLANG_RPRST_IMG_ALTRTV_CONT
+	</sql>
+
+	<sql id="selectGodListSql" >
+		SELECT
+	         t1.GOD_NO
+	        ,t1.ERP_GOD_NO
+	        ,t1.DSGN_GRP_NO
+	        ,t1.GOD_NM
+	        ,t1.MOBILE_GOD_NM
+	        ,t1.TAG_NM
+	        ,t1.COLOR_TAG_NM
+	        ,t1.THEMA_TAG_NM
+	        ,t1.GOD_APRV_SECT_CD
+
+   			<choose>
+			    <when test="lang != 'KOR' ">
+			   		, DECODE(t1.GOD_SALE_SECT_CD, 'SALE_PROGRS_PKUP', 'SLDOUT', t1.GOD_SALE_SECT_CD) as GOD_SALE_SECT_CD
+			   	</when>
+				<otherwise>
+					, DECODE(t1.GOD_SALE_SECT_CD, 'SALE_PROGRS_PKUP', 'SALE_PROGRS', t1.GOD_SALE_SECT_CD) as GOD_SALE_SECT_CD
+				</otherwise>
+			</choose>
+
+	        ,t1.SALE_BEG_DATE
+	        ,t1.SALE_END_DATE
+	        ,t1.COLOR_NM
+	        ,t1.COLOR_CD
+	        ,t1.CLOR_CHIP_IMG_URL
+	        ,t1.GOD_TP_CD
+	        ,t1.PARTMAL_SECT_CD
+	        ,t1.BRND_ID AS GOD_BRND_ID
+	        ,t1.BRND_GRP_ID AS GOD_BRND_GRP_ID
+	        ,t1.STD_CTGRY_NO
+	        ,t1.TDF_SECT
+	        ,t1.SESON_GRP_CD
+	        ,t1.SESON_CD
+	        ,t1.PRDLST_CD
+	        ,t1.RESVE_SALE_GOD_YN
+	        ,t1.RESVE_ORD_PAY_SECT_CD
+	        ,t1.RESVE_ORD_PART_PAY_AMT
+	        ,t1.RESVE_ORD_PAY_CLOS_DT
+	        ,t1.RESVE_ORD_DLIVY_PREARNGE_DATE
+	        ,t1.DMSTC_DLV_CST_PLC_SN
+	        ,t1.OVSEA_DLV_PSB_YN
+	        ,t1.OVSEA_DLV_DMSTC_DLV_CST_PLC_SN
+	        ,t1.OVSEA_DLV_CST_PLC_SN
+	        ,t1.OTLT_YN
+	        ,t1.REG_DT
+		<if test="lang != 'KOR' ">
+			,t3.GOD_NM as GLGNM_GOD_NM
+			,t3.MOBILE_GOD_NM as GLGNM_MOBILE_GOD_NM
+			,t3.TAG_NM as GLGNM_TAG_NM
+			,t3.COLOR_TAG_NM as GLGNM_COLOR_TAG_NM
+			,t3.THEMA_TAG_NM as GLGNM_THEMA_TAG_NM
+			,t3.COLOR_NM as GLGNM_COLOR_NM
+		</if>
+	        ,t6.LAST_SALE_PRC AS DGPRC_LAST_SALE_PRC
+	        ,CASE
+	            WHEN t6.GOD_DC_RT > 0 THEN
+	                ROUND ( (t6.RTL_PRC - t6.DC_PRC) / t6.RTL_PRC * 100)
+	            ELSE
+	            (CASE
+	                WHEN t6.RTL_PRC > t6.CSMR_PRC THEN
+	                    ROUND((t6.RTL_PRC - t6.CSMR_PRC) / t6.RTL_PRC * 100)
+	                ELSE 0
+	            END)
+	         END AS DGPRC_GOD_DC_RT
+	        ,t6.CPN_DC_RT AS DGPRC_CPN_DC_RT
+	        ,t6.RTL_PRC
+
+	        ,t5.BRND_ID
+	        ,t5.UPPER_BRND_ID
+			<choose>
+			<when test="lang != 'KOR' ">
+			/* 브랜드명 다국어 변환 */
+			,t55.BRND_NM
+			</when>
+			<otherwise>
+	        ,t5.BRND_NM
+			</otherwise>
+			</choose>
+        FROM GOD t1
+        INNER JOIN DSP_GOD_PRC t6
+        ON (T1.GOD_NO = t6.GOD_NO
+        AND t6.MALL_ID =  #{mallId, jdbcType=VARCHAR}
+        AND t6.LANG_CD = #{lang, jdbcType=VARCHAR}
+    	<if test='spcPrmTp != null and spcPrmTp != ""'>
+   		AND t6.PRC_SECT_CD = CASE WHEN (
+    			SELECT 1
+    			FROM DSP_GOD_PRC A
+    			WHERE A.PRC_SECT_CD = #{spcPrmTp, jdbcType=VARCHAR} AND A.GOD_NO = T6.GOD_NO AND ROWNUM = 1) IS NOT NULL THEN #{spcPrmTp, jdbcType=VARCHAR}
+   			ELSE #{prcSectCd, jdbcType=VARCHAR}
+   			END
+    	</if>
+    	<if test='spcPrmTp == null or spcPrmTp == ""'>
+    	AND t6.PRC_SECT_CD = #{prcSectCd, jdbcType=VARCHAR}
+    	</if>
+        )
+        JOIN SYS_BRND t5 ON T1.BRND_GRP_ID = T5.BRND_ID AND T5.USE_YN = 'Y'
+		<if test="lang != 'KOR' ">
+		/* 브랜드명 다국어 변환 */
+		JOIN SYS_BRND_LANG t55 ON  T5.BRND_ID = T55.BRND_ID AND T55.LANG_CD = #{lang,jdbcType=VARCHAR}
+		</if>
+        <if test="lang != 'KOR' ">
+		/* 해외판매여부 체크 */
+		JOIN GOD_LANGBY_GOD_NM t3 ON t1.GOD_NO=T3.GOD_NO AND T3.LANG_CD= #{lang, jdbcType=VARCHAR} AND t3.OVSEA_DSP_STAT_CD = 'DSP_APRV'
+		</if>
+        WHERE 1 = 1
+        AND t1.GOD_APRV_SECT_CD = 'APRV_COMPT'
+        AND t1.DSP_YN = 'Y'
+        AND t1.SPCIFY_URL_DSP_YN = 'N'
+		AND t1.GOD_SALE_SECT_CD in ('SALE_PROGRS', 'SLDOUT', 'SALE_PROGRS_PKUP')
+		<if test='empYn == "N"'>
+		AND t1.EMP_ONLY_YN = 'N'
+		</if>
+		<if test="lang != 'KOR' ">
+		/* 해외판매여부 체크 */
+		AND t1.OVSEA_DLV_PSB_YN = 'Y'
+		</if>
+	</sql>
+
+	<!-- 코너컨텐츠목록 조회 -->
+	<select id="selectDspCnrConttFullList" parameterType="com.plgrim.ncp.biz.display.data.DspCnrScFrDTO" resultMap="dspCnrFrResultMap" >
+		SELECT * /* [display.fr.contt.xml][selectDspCnrConttFullList][코너컨텐츠목록 조회][Dian] */
+		FROM (
+			SELECT
+			     T.*
+			    ,CASE WHEN T.RND_YN = 'N' THEN
+		             ROW_NUMBER () OVER (PARTITION BY T.CNR_SN,T.CNR_SET_SN,T.CONTT_TP_CD ORDER BY T.SORT_SEQ)
+		         ELSE
+		             ROW_NUMBER () OVER (PARTITION BY T.CNR_SN,T.CNR_SET_SN,T.CONTT_TP_CD ORDER BY DBMS_RANDOM.RANDOM)
+		         END
+		             AS RNUM
+			    ,DCSL.SET_NM AS LANG_SET_NM
+			    ,DCSL.SET_DSCR AS LANG_SET_DSCR
+			    ,DCCL.LANG_CD AS LANG_LANG_CD
+			    ,DCCL.CONTT_NM AS LANG_CONTT_NM
+			    ,DCCL.IMG_FILE_NM AS LANG_IMG_FILE_NM
+			    ,DCCL.IMG_FILE_URL AS LANG_IMG_FILE_URL
+			    ,DCCL.IMG_ALTRTV_CONT AS LANG_IMG_ALTRTV_CONT
+			    ,DCCL.IMG_OV_FILE_NM AS LANG_IMG_OV_FILE_NM
+			    ,DCCL.IMG_OV_FILE_URL AS LANG_IMG_OV_FILE_URL
+			    ,DCCL.IMG_OV_ALTRTV_CONT AS LANG_IMG_OV_ALTRTV_CONT
+			    ,DCCL.MOVI_IMG_FILE_NM AS LANG_MOVI_IMG_FILE_NM
+			    ,DCCL.MOVI_IMG_URL AS LANG_MOVI_IMG_URL
+			    ,DCCL.MOVI_IMG_ALTRTV_CONT AS LANG_MOVI_IMG_ALTRTV_CONT
+			FROM
+			(
+				/* 상품, 기획전, S-Trnd 이외의 컨텐츠 목록 */
+			    SELECT
+			         <include refid="selectConttSql" />
+			         <include refid="selectGodNullSql" />
+			         <include refid="selectPromtNullSql" />
+			         <include refid="selectStrndNullSql" />
+			    FROM DSP_CNR_CONTT DCC
+			    JOIN DSP_CNR_SET DCS ON (DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+			    JOIN DSP_CNR DC ON (DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+			    JOIN DSP_CNR_TMPLAT_INFO DCTI ON (DC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC} AND DCTI.DSP_CNR_USE_YN = 'Y')
+			    JOIN DSP_CNR_TP_GRP DCTG ON (DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+				JOIN DSP_CNR_TP_GRP DCTG2 ON (DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+			    WHERE 1 = 1
+			    AND DCC.DSP_YN = 'Y'
+			    AND DCC.CONTT_TP_CD NOT IN ('GOD','PROMT','STRND')
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND DCC.DSP_END_DT >= SYSDATE
+				]]>
+				<if test="cnrSn != null and cnrSn > 0">
+				AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+				</if>
+				<include refid="tmplatKeySql" />
+			   	<include refid="mbrCondSql" />
+
+			   	/* 상품 컨텐츠 목록 */
+			   	UNION ALL
+			   	SELECT
+			         <include refid="selectConttSql" />
+			         <include refid="selectGodSql" />
+			         <include refid="selectPromtNullSql" />
+			         <include refid="selectStrndNullSql" />
+			    FROM DSP_CNR_CONTT DCC
+			    JOIN DSP_CNR_SET DCS ON (DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+			    JOIN DSP_CNR DC ON (DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+			    JOIN DSP_CNR_TMPLAT_INFO DCTI ON (DC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC} AND DCTI.DSP_CNR_USE_YN = 'Y')
+			    JOIN DSP_CNR_TP_GRP DCTG ON (DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+				JOIN DSP_CNR_TP_GRP DCTG2 ON (DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+			    JOIN (
+			    	<include refid="selectGodListSql" />
+	            	) G ON (DCC.GOD_NO = G.GOD_NO)
+			    WHERE 1 = 1
+			    AND DCC.DSP_YN = 'Y'
+			    AND DCC.CONTT_TP_CD = 'GOD'
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND DCC.DSP_END_DT >= SYSDATE
+				]]>
+				<if test="cnrSn != null and cnrSn > 0">
+				AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+				</if>
+				<include refid="tmplatKeySql" />
+			   	<include refid="mbrCondSql" />
+
+			   	/* 기획전 컨텐츠 목록 */
+			   	UNION ALL
+			   	SELECT
+			         <include refid="selectConttSql" />
+			         <include refid="selectGodNullSql" />
+			         <include refid="selectPromtSql" />
+			         <include refid="selectStrndNullSql" />
+			    FROM DSP_CNR_CONTT DCC
+			    JOIN DSP_CNR_SET DCS ON (DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+			    JOIN DSP_CNR DC ON (DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+			    JOIN DSP_CNR_TMPLAT_INFO DCTI ON (DC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC} AND DCTI.DSP_CNR_USE_YN = 'Y')
+			    JOIN DSP_CNR_TP_GRP DCTG ON (DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+				JOIN DSP_CNR_TP_GRP DCTG2 ON (DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+			    JOIN (
+	                SELECT
+	                     t1.PROMT_SN
+	                    ,t1.PROMT_NM
+	                    ,NVL(t2.PROMT_DSCR, t1.PROMT_DSCR) AS PROMT_DSCR
+	                    ,t1.PROMT_APRV_STAT_CD
+	                    ,t1.PROMT_APRV_DT
+	                    ,t1.PROMT_APRV_REJECT_DT
+	                    ,t1.PROMT_APRV_REJECT_RESN_CONT
+	                    ,t1.PROMT_TP_CD
+	                    ,t1.DSP_BEG_DT
+	                    ,t1.DSP_END_DT
+	                    ,t1.DSP_YN
+	                    ,t1.CHRG_MD_ADMIN_ID
+	                    ,t1.SORT_SEQ
+	                    ,t1.SPCIFY_URL_DSP_YN
+	                    ,t1.B2E_CRTFC_CD
+	                    ,t1.DSP_GOD_SORT_STDR_CD
+	                    ,t1.SIGNL_CRTFC_YN
+	                    ,t1.PC_MOBILE_TMPLAT_IND_USE_YN
+	                    ,t1.PC_TMPLAT_SN
+	                    ,t1.MOBILE_TMPLAT_SN
+	                    ,t1.PC_MOBILE_IMG_IND_USE_YN
+	                    ,t1.PC_IMG_FILE_NM
+	                    ,t1.PC_IMG_FILE_URL
+	                    ,t1.PC_IMG_ALTRTV_CONT
+	                    ,t1.MOBILE_IMG_FILE_NM
+	                    ,t1.MOBILE_IMG_FILE_URL
+	                    ,t1.MOBILE_IMG_ALTRTV_CONT
+	                    ,t2.PROMT_SN AS P_PROMT_SN
+	                    ,t2.PROMT_NM AS P_PROMT_NM
+	                    ,t2.PC_IMG_FILE_NM AS P_PC_RPRST_IMG_FILE_NM
+	                    ,t2.PC_IMG_FILE_URL AS P_PC_RPRST_IMG_FILE_URL
+	                    ,t2.PC_IMG_ALTRTV_CONT AS P_PC_RPRST_IMG_ALTRTV_CONT
+	                    ,t2.MOBILE_IMG_FILE_NM AS P_MOBILE_RPRST_IMG_FILE_NM
+	                    ,t2.MOBILE_IMG_FILE_URL AS P_MOBILE_RPRST_IMG_FILE_URL
+	                    ,t2.MOBILE_IMG_ALTRTV_CONT AS P_MOBILE_RPRST_IMG_ALTRTV_CONT
+	                FROM DSP_PROMT t1
+	                LEFT OUTER JOIN DSP_PROMT_LANG t2 ON t1.PROMT_SN = T2.PROMT_SN AND T2.LANG_CD = #{lang, jdbcType=VARCHAR}
+	                WHERE 1 = 1
+	                AND t1.PROMT_APRV_STAT_CD = 'APRV_COMPT'
+	                AND t1.DSP_YN = 'Y'
+	                AND t1.SPCIFY_URL_DSP_YN = 'N'
+	                <![CDATA[
+	                AND 	t1.DSP_BEG_DT <= sysdate
+	                AND		t1.DSP_END_DT >= sysdate
+	                ]]>
+	            ) P ON (DCC.PROMT_SN = P.PROMT_SN)
+			    WHERE 1 = 1
+			    AND DCC.DSP_YN = 'Y'
+			    AND DCC.CONTT_TP_CD = 'PROMT'
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND DCC.DSP_END_DT >= SYSDATE
+				]]>
+				<if test="cnrSn != null and cnrSn > 0">
+				AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+				</if>
+				<include refid="tmplatKeySql" />
+			   	<include refid="mbrCondSql" />
+
+			   	/* S-trnd 컨텐츠 목록 */
+			   	UNION ALL
+			   	SELECT
+			         <include refid="selectConttSql" />
+			         <include refid="selectGodNullSql" />
+			         <include refid="selectPromtNullSql" />
+			         <include refid="selectStrndSql" />
+			    FROM DSP_CNR_CONTT DCC
+			    JOIN DSP_CNR_SET DCS ON (DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+			    JOIN DSP_CNR DC ON (DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+			    JOIN DSP_CNR_TMPLAT_INFO DCTI ON (DC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.TMPLAT_SN = #{tmplatSn,jdbcType=NUMERIC} AND DCTI.DSP_CNR_USE_YN = 'Y')
+			    JOIN DSP_CNR_TP_GRP DCTG ON (DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+				JOIN DSP_CNR_TP_GRP DCTG2 ON (DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+			    JOIN (
+	                SELECT
+		                 t1.STRND_SN
+						,t1.STRND_TP_CD
+						,t1.STRND_NM
+						,t1.STRND_DSCR
+						,t1.DSP_BEG_DT
+						,t1.DSP_END_DT
+						,t1.DSP_YN
+						,t1.SORT_SEQ
+						,t1.BRND_ID
+						,t1.SESON_CD
+						,t1.RPRST_IMG_FILE_NM
+						,t1.RPRST_IMG_FILE_URL
+						,t1.RPRST_IMG_ALTRTV_CONT
+						,t1.PC_MOBILE_TMPLAT_IND_USE_YN
+						,t1.PC_TMPLAT_SN
+						,t1.MOBILE_TMPLAT_SN
+						,t1.REG_DT
+						,t2.STRND_SN AS DSTLANG_STRND_SN
+						,t2.STRND_NM AS DSTLANG_STRND_NM
+						,t2.STRND_DSCR AS DSTLANG_STRND_DSCR
+						,t2.RPRST_IMG_FILE_NM AS DSTLANG_RPRST_IMG_FILE_NM
+						,t2.RPRST_IMG_FILE_URL AS DSTLANG_RPRST_IMG_FILE_URL
+						,t2.RPRST_IMG_ALTRTV_CONT AS DSTLANG_RPRST_IMG_ALTRTV_CONT
+		            FROM DSP_STRND t1
+		            LEFT OUTER JOIN DSP_STRND_LANG t2 ON t1.STRND_SN = T2.STRND_SN AND T2.LANG_CD = #{lang,jdbcType=VARCHAR}
+		            WHERE 1 = 1
+		            AND t1.DSP_YN = 'Y'
+		            <![CDATA[
+		            AND 	t1.DSP_BEG_DT <= sysdate
+		            AND		t1.DSP_END_DT >= sysdate
+		            ]]>
+	            ) S ON (DCC.STRND_SN = S.STRND_SN)
+			    WHERE 1 = 1
+			    AND DCC.DSP_YN = 'Y'
+			    AND DCC.CONTT_TP_CD = 'STRND'
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND DCC.DSP_END_DT >= SYSDATE
+				]]>
+				<if test="cnrSn != null and cnrSn > 0">
+				AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+				</if>
+				<include refid="tmplatKeySql" />
+			   	<include refid="mbrCondSql" />
+			) T
+			LEFT OUTER JOIN DSP_CNR_SET_LANG DCSL
+			ON (T.CNR_SN = DCSL.CNR_SN AND T.CNR_SET_SN = DCSL.CNR_SET_SN AND DCSL.LANG_CD = #{lang,jdbcType=VARCHAR})
+			LEFT OUTER JOIN DSP_CNR_CONTT_LANG DCCL
+			ON (T.CNR_SN = DCCL.CNR_SN AND T.CNR_SET_SN = DCCL.CNR_SET_SN AND T.CONTT_TURN = DCCL.CONTT_TURN AND DCCL.LANG_CD = #{lang,jdbcType=VARCHAR})
+
+		) TT
+		<![CDATA[
+		WHERE TT.RNUM <= TT.TP_DSP_CNT
+		]]>
+		ORDER BY TT.CNR_SORT_SEQ, TT.SET_SORT_SEQ, TT.CNR_SET_SN, TT.TP_SORT_SEQ, TT.RNUM
+	</select>
+ 
+	<!-- 템플릿 정보 및 템플릿 유형별 페이지 기본정보 조회 -->
+	<select id="selectTmplatPageInfo" parameterType="com.plgrim.ncp.biz.display.data.DspCnrScFrDTO" resultMap="dspTmplatFrResultMap">
+		SELECT /* [display.cnr.contt.xml][selectTmplatPageInfo][템플릿정보 및 유형별 기본정보][Dian] */
+    		<choose>
+		      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+		         B.DSP_CTGRY_NO
+			    ,B.UPPER_DSP_CTGRY_NO
+			    ,B.DSP_CTGRY_NM
+			    ,B.CTGRY_TP_CD
+			    ,B.GOD_DSP_UNIT_CD
+			    ,B.CTGRY_DPTH_CD
+			    ,B.DSP_GOD_SORT_STDR_CD
+			    ,B.LEAF_CTGRY_YN
+			    ,B.DSP_YN
+			    ,B.SPCIFY_URL_DSP_YN
+			    ,B.CTGRY_DIV_LNE_YN
+			    ,B.CTGRY_DIV_LNE_CSS_CD
+			    ,B.DELETE_YN
+			    ,B.CTGRY_OUTPT_TP_CD
+			    ,B.OUTPT_SECT_CD
+			    ,B.OUTPT_LINK_URL
+			    ,B.SORT_SEQ
+			    ,B.APL_MALL_ID
+			    ,B.DSP_BRND_ID
+			    ,B.EXPSR_LVL_CD
+			    ,B.RPRST_IMG_FILE_NM
+			    ,B.RPRST_IMG_FILE_URL
+			    ,B.RPRST_IMG_ALTRTV_CONT
+			    ,B.BCRN_STYLE_CLASS_ID
+			    ,B.PC_MOBILE_TMPLAT_IND_USE_YN
+			    ,B.PC_TMPLAT_SN
+			    ,B.MOBILE_TMPLAT_SN
+			    ,CLANG.LANG_CD
+			    ,CLANG.DSP_CTGRY_NM          AS DCLANG_DSP_CTGRY_NM
+			    ,CLANG.RPRST_IMG_FILE_NM     AS DCLANG_RPRST_IMG_FILE_NM
+			    ,CLANG.RPRST_IMG_FILE_URL    AS DCLANG_RPRST_IMG_FILE_URL
+			    ,CLANG.RPRST_IMG_ALTRTV_CONT AS DCLANG_RPRST_IMG_ALTRTV_CONT
+		      	</when>
+		      	<when test="tmplatTp == 'STRND'">
+		          B.STRND_SN
+			     ,B.STRND_TP_CD
+			     ,B.STRND_NM
+			     ,B.DSP_BEG_DT
+			     ,B.DSP_END_DT
+			     ,B.DSP_YN
+			     ,B.SORT_SEQ
+			     ,B.BRND_ID
+			     ,(SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = B.BRND_ID) AS BRND_NM
+			     ,B.SESON_CD
+			     ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = B.SESON_CD AND LANG_CD = #{lang,jdbcType=VARCHAR}) AS SESON_NM
+			     ,B.RPRST_IMG_FILE_URL
+			     ,B.RPRST_IMG_FILE_NM
+			     ,B.RPRST_IMG_ALTRTV_CONT
+			     ,B.PC_MOBILE_TMPLAT_IND_USE_YN
+			     ,B.PC_TMPLAT_SN
+			     ,B.MOBILE_TMPLAT_SN
+			     ,B.REGTR_ID
+			     ,B.REG_DT
+			     ,B.UDTER_ID
+			     ,B.UDT_DT
+			     ,LANG.STRND_NM AS LSTRND_NM
+			     ,LANG.STRND_DSCR AS LSTRND_DSCR
+			     ,LANG.RPRST_IMG_FILE_NM AS LRPRST_IMG_FILE_NM
+			     ,LANG.RPRST_IMG_FILE_URL AS LRPRST_IMG_FILE_URL
+			     ,LANG.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT
+		      	</when>
+		      	<when test="tmplatTp == 'EVT'">
+		          B.EVT_NO
+			     ,B.EVT_NM
+			     ,B.EVT_DSCR
+			     ,B.EVT_STAT_CD
+			     ,B.EVT_BEG_DT
+			     ,B.EVT_END_DT
+	             ,B.APPLCN_BEG_DT
+	             ,B.APPLCN_END_DT
+			     ,B.EVT_TP_CD
+			     ,B.EVT_DETAIL_TP_CD
+			     ,B.PC_URL
+			     ,B.MOBILE_URL
+			     ,B.PC_HTML
+			     ,B.MOBILE_HTML
+			     ,B.PC_MOBILE_TMPLAT_IND_USE_YN
+			     ,B.PC_TMPLAT_SN
+			     ,B.MOBILE_TMPLAT_SN
+			     ,LANG.EVT_NM AS LANG_EVT_NM
+			     ,LANG.EVT_DSCR AS LANG_EVT_DSCR
+			     ,LANG.PC_HTML AS LANG_PC_HTML
+			     ,LANG.MOBILE_HTML AS LANG_MOBILE_HTML
+		      	</when>
+		      	<when test="tmplatTp == 'PROMT'">
+		         B.PROMT_SN
+				,B.PROMT_NM
+				,B.PROMT_APRV_STAT_CD
+				,B.PROMT_APRV_DT
+				,B.PROMT_APRV_REJECT_DT
+				,B.PROMT_APRV_REJECT_RESN_CONT
+				,B.PROMT_TP_CD
+				,B.PROMT_SPRTR_TP_CD
+				,B.DSP_BEG_DT
+				,B.DSP_END_DT
+				,B.DSP_YN
+				,B.CHRG_MD_ADMIN_ID
+				,B.SORT_SEQ
+				,B.SPCIFY_URL_DSP_YN
+				,B.B2E_CRTFC_CD
+				,B.PROMT_EXPSR_SECT_CD
+				,B.DSP_GOD_SORT_STDR_CD
+				,B.PC_LIST_EXPSR_CNT_CD
+				,B.MOBILE_LIST_EXPSR_CNT_CD
+				,B.SIGNL_CRTFC_YN
+				,B.PC_MOBILE_TMPLAT_IND_USE_YN
+				,B.PC_TMPLAT_SN
+				,B.MOBILE_TMPLAT_SN
+				,B.PC_MOBILE_IMG_IND_USE_YN
+				,B.PC_IMG_FILE_NM
+				,B.PC_IMG_FILE_URL
+				,B.PC_IMG_ALTRTV_CONT
+				,B.MOBILE_IMG_FILE_NM
+				,B.MOBILE_IMG_FILE_URL
+				,B.MOBILE_IMG_ALTRTV_CONT
+				,B.PC_MOBILE_GOD_IMG_IND_USE_YN
+				,B.PC_GOD_IMG_FILE_NM
+				,B.PC_GOD_IMG_FILE_URL
+				,B.PC_GOD_IMG_ALTRTV_CONT
+				,B.MOBILE_GOD_IMG_FILE_NM
+				,B.MOBILE_GOD_IMG_FILE_URL
+				,B.MOBILE_GOD_IMG_ALTRTV_CONT
+				,LANG.PROMT_NM AS LPROMT_NM
+				,LANG.PC_IMG_FILE_NM AS LPC_IMG_FILE_NM
+				,LANG.PC_IMG_FILE_URL AS LPC_IMG_FILE_URL
+				,LANG.PC_IMG_ALTRTV_CONT AS LPC_IMG_ALTRTV_CONT
+				,LANG.MOBILE_IMG_FILE_NM AS LMOBILE_IMG_FILE_NM
+				,LANG.MOBILE_IMG_FILE_URL AS LMOBILE_IMG_FILE_URL
+				,LANG.MOBILE_IMG_ALTRTV_CONT AS LMOBILE_IMG_ALTRTV_CONT
+				,LANG.PC_GOD_IMG_FILE_NM AS LPC_GOD_IMG_FILE_NM
+				,LANG.PC_GOD_IMG_FILE_URL AS LPC_GOD_IMG_FILE_URL
+				,LANG.PC_GOD_IMG_ALTRTV_CONT AS LPC_GOD_IMG_FILE_URL
+				,LANG.MOBILE_GOD_IMG_FILE_NM AS LMOBILE_GOD_IMG_FILE_NM
+				,LANG.MOBILE_GOD_IMG_FILE_URL AS LMOBILE_GOD_IMG_FILE_URL
+				,LANG.MOBILE_GOD_IMG_ALTRTV_CONT AS LMOBILE_GOD_IMG_ALTRTV_CONT
+				,B.DSP_PD_EXPSR_YN
+		      	</when>
+		      	<otherwise/>
+		   	</choose>
+		    ,T.TMPLAT_SN
+		    ,T.TMPLAT_TP_CD
+		    ,T.DVC_SECT_CD
+		    ,T.TMPLAT_NM
+		    ,T.TMPLAT_DSCR
+		    ,T.TMPLAT_USE_YN
+		    ,T.TMPLAT_CNNC_URL
+		    ,T.CONTT_REG_GD_IMG_URL
+		    ,T.REGTR_ID
+		    ,T.REG_DT
+		    ,T.UDTER_ID
+		    ,T.UDT_DT
+		    ,DCTI.CNR_SN
+		    ,DCTI.SORT_SEQ
+		    ,DC.DSP_CNR_NM
+		FROM
+			<choose>
+		      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+		        DSP_CTGRY B
+		   	 	LEFT OUTER JOIN DSP_CTGRY_LANG CLANG ON (B.DSP_CTGRY_NO = CLANG.DSP_CTGRY_NO AND CLANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+		      	</when>
+		      	<when test="tmplatTp == 'STRND'">
+		        DSP_STRND B
+				LEFT OUTER JOIN DSP_STRND_LANG LANG ON (B.STRND_SN  = LANG.STRND_SN AND LANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+		      	</when>
+		      	<when test="tmplatTp == 'EVT'">
+		        EVT B
+				LEFT OUTER JOIN EVT_LANG LANG ON (B.EVT_NO  = LANG.EVT_NO AND LANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+		      	</when>
+		      	<when test="tmplatTp == 'PROMT'">
+		        DSP_PROMT B
+				LEFT OUTER JOIN DSP_PROMT_LANG LANG ON (B.PROMT_SN  = LANG.PROMT_SN AND LANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+		      	</when>
+		      	<otherwise/>
+		   	</choose>
+		    LEFT OUTER JOIN DSP_TMPLAT T ON (
+		    <choose>
+		      	<when test="device == 'PC'">
+		        B.PC_TMPLAT_SN = T.TMPLAT_SN
+		        </when>
+		      	<otherwise>
+		      	B.MOBILE_TMPLAT_SN = T.TMPLAT_SN
+		      	</otherwise>
+		   	</choose>
+		    AND T.TMPLAT_USE_YN = 'Y' )
+		    JOIN DSP_CNR_TMPLAT_INFO DCTI ON (DCTI.TMPLAT_SN = T.TMPLAT_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+		    JOIN DSP_CNR DC ON (DC.CNR_SN = DCTI.CNR_SN AND DC.USE_YN = 'Y')
+		WHERE   1 = 1
+		<choose>
+	      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+	        AND B.DSP_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+			AND B.APL_MALL_ID = #{mallId,jdbcType=VARCHAR}
+			AND B.DELETE_YN = 'N'
+			AND B.DSP_YN = 'Y'
+	      	</when>
+	      	<when test="tmplatTp == 'STRND'">
+	        AND B.DSP_YN = 'Y'
+			AND B.STRND_SN = #{tmplatScKey,jdbcType=NUMERIC}
+			<![CDATA[
+			AND B.DSP_BEG_DT <= SYSDATE
+	    	AND B.DSP_END_DT >= SYSDATE
+	    	]]>
+	      	</when>
+	      	<when test="tmplatTp == 'EVT'">
+	        AND B.EVT_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	      	</when>
+	      	<when test="tmplatTp == 'PROMT'">
+	      	<if test="prev == null or prev == '' or prev != 'Y'.toString()">
+			AND B.DSP_YN = 'Y'
+			AND	B.PROMT_APRV_STAT_CD = 'APRV_COMPT'
+			AND B.SPCIFY_URL_DSP_YN = 'N'
+			<![CDATA[
+		    AND B.DSP_BEG_DT <= sysdate
+		    AND	B.DSP_END_DT >= sysdate
+	        ]]>
+	        </if>
+	        AND B.PROMT_SN = #{tmplatScKey,jdbcType=INTEGER}
+	      	</when>
+	      	<otherwise/>
+	   	</choose>
+	   	ORDER BY DCTI.SORT_SEQ
+	</select>
+
+
+	<select id="selectStrndSnForBrnd" parameterType="com.plgrim.ncp.biz.display.data.DspCnrScFrDTO" resultType="Long">
+		select a.*
+		from
+		(
+		    select
+		         s.strnd_sn
+		    from dsp_strnd s
+		    where 1=1
+		    <if test="strndTpCd != null and strndTpCd != ''">
+		    and s.strnd_tp_cd = #{strndTpCd,jdbcType=VARCHAR}
+		    </if>
+		    and s.brnd_id = #{strndBrndId,jdbcType=VARCHAR}
+		    and s.dsp_yn = 'Y'
+		    <include refid="stDspTgt"/> <!-- 2016.03.16 T/T 추가로 인한 STRAN 전시대상 조건 추가 -->
+		    <![CDATA[
+		    AND s.DSP_BEG_DT <= SYSDATE
+		    AND s.DSP_END_DT >= SYSDATE
+		    ]]>
+		    order by s.reg_dt desc
+		) a
+		where rownum = 1
+	</select>
+
+
+	<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- 2016/07 (UX/UI) -->
+	<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- 템플릿 정보 및 템플릿 유형별 페이지 기본정보 조회 -->
+	<select id="selectTmplatPageInfoV2" parameterType="com.plgrim.ncp.biz.display.data.DspCnrScFrDTO" resultMap="dspTmplatFrResultMap">
+		SELECT /* [display.fr.contt.xml][selectTmplatPageInfoV2][템플릿정보 및 유형별 기본정보V2][Dian] */
+    		<choose>
+		      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+		         B.DSP_CTGRY_NO
+			    ,B.UPPER_DSP_CTGRY_NO
+			    ,B.DSP_CTGRY_NM
+			    ,B.CTGRY_TP_CD
+			    ,B.GOD_DSP_UNIT_CD
+			    ,B.CTGRY_DPTH_CD
+			    ,B.DSP_GOD_SORT_STDR_CD
+			    ,B.LEAF_CTGRY_YN
+			    ,B.DSP_YN
+			    ,B.SPCIFY_URL_DSP_YN
+			    ,B.CTGRY_DIV_LNE_YN
+			    ,B.CTGRY_DIV_LNE_CSS_CD
+			    ,B.DELETE_YN
+			    ,B.CTGRY_OUTPT_TP_CD
+			    ,B.OUTPT_SECT_CD
+			    ,B.OUTPT_LINK_URL
+			    ,B.SORT_SEQ
+			    ,B.APL_MALL_ID
+			    ,B.DSP_BRND_ID
+			    ,B.EXPSR_LVL_CD
+			    ,B.RPRST_IMG_FILE_NM
+			    ,B.RPRST_IMG_FILE_URL
+			    ,B.RPRST_IMG_ALTRTV_CONT
+			    ,B.BCRN_STYLE_CLASS_ID
+			    ,CLANG.LANG_CD
+			    ,CLANG.DSP_CTGRY_NM          AS DCLANG_DSP_CTGRY_NM
+			    ,CLANG.RPRST_IMG_FILE_NM     AS DCLANG_RPRST_IMG_FILE_NM
+			    ,CLANG.RPRST_IMG_FILE_URL    AS DCLANG_RPRST_IMG_FILE_URL
+			    ,CLANG.RPRST_IMG_ALTRTV_CONT AS DCLANG_RPRST_IMG_ALTRTV_CONT
+			    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+			    ,bctg.DSP_CTGRY_NO  AS  BR_DSP_CTGRY_NO
+                ,bctg.DSP_BRND_ID AS  BR_DSP_BRND_ID
+             	,bctg.DSP_CTGRY_NM AS  BR_DSP_CTGRY_NM
+             	,bctg.GOD_DSP_UNIT_CD AS  BR_GOD_DSP_UNIT_CD
+             	,bctg.DSP_GOD_SORT_STDR_CD AS  BR_DSP_GOD_SORT_STDR_CD
+             	,bctg.DSP_YN  BR_DSP_YN
+             	,bctg.SPCIFY_URL_DSP_YN AS  BR_SPCIFY_URL_DSP_YN
+             	,bctg.CTGRY_OUTPT_TP_CD  AS  BR_CTGRY_OUTPT_TP_CD
+             	,bctg.OUTPT_SECT_CD AS  BR_OUTPT_SECT_CD
+            	,bctg.OUTPT_LINK_URL AS  BR_OUTPT_LINK_URL
+             	,bctg.EXPSR_LVL_CD  AS  BR_EXPSR_LVL_CD
+             	,bctg.RPRST_IMG_FILE_NM AS  BR_RPRST_IMG_FILE_NM
+             	,bctg.RPRST_IMG_FILE_URL AS  BR_RPRST_IMG_FILE_URL
+             	,bctg.RPRST_IMG_ALTRTV_CONT AS  BR_RPRST_IMG_ALTRTV_CONT
+             	,bctg.BCRN_STYLE_CLASS_ID AS  BR_BCRN_STYLE_CLASS_ID
+             	,bctg.SORT_SEQ AS  BR_SORT_SEQ
+			    </if>
+		      	</when>
+		      	<when test="tmplatTp == 'STRND'">
+		          B.STRND_SN
+			     ,B.STRND_TP_CD
+			     ,B.STRND_NM
+			     ,B.DSP_BEG_DT
+			     ,B.DSP_END_DT
+			     ,B.DSP_YN
+			     ,B.SORT_SEQ
+			     ,B.BRND_ID
+			     ,(SELECT BRND_NM FROM SYS_BRND WHERE BRND_ID = B.BRND_ID) AS BRND_NM
+			     ,B.SESON_CD
+			     ,(SELECT CD_NM FROM MV_SYS_CD WHERE CD = B.SESON_CD AND LANG_CD = #{lang,jdbcType=VARCHAR}) AS SESON_NM
+			     ,B.RPRST_IMG_FILE_URL
+			     ,B.RPRST_IMG_FILE_NM
+			     ,B.RPRST_IMG_ALTRTV_CONT
+			     ,B.REGTR_ID
+			     ,B.REG_DT
+			     ,B.UDTER_ID
+			     ,B.UDT_DT
+			     ,LANG.STRND_NM AS LSTRND_NM
+			     ,LANG.STRND_DSCR AS LSTRND_DSCR
+			     ,LANG.RPRST_IMG_FILE_NM AS LRPRST_IMG_FILE_NM
+			     ,LANG.RPRST_IMG_FILE_URL AS LRPRST_IMG_FILE_URL
+			     ,LANG.RPRST_IMG_ALTRTV_CONT AS LRPRST_IMG_ALTRTV_CONT
+		      	</when>
+		      	<when test="tmplatTp == 'EVT'">
+		          B.EVT_NO
+			     ,B.EVT_NM
+			     ,B.EVT_DSCR
+			     ,B.EVT_STAT_CD
+			     ,B.EVT_BEG_DT
+			     ,B.EVT_END_DT
+	             ,B.APPLCN_BEG_DT
+	             ,B.APPLCN_END_DT
+			     ,B.EVT_TP_CD
+			     ,B.EVT_DETAIL_TP_CD
+			     ,B.PC_URL
+			     ,B.MOBILE_URL
+			     ,B.PC_HTML
+			     ,B.MOBILE_HTML
+			     ,LANG.EVT_NM AS LANG_EVT_NM
+			     ,LANG.EVT_DSCR AS LANG_EVT_DSCR
+			     ,LANG.PC_HTML AS LANG_PC_HTML
+			     ,LANG.MOBILE_HTML AS LANG_MOBILE_HTML
+		      	</when>
+		      	<when test="tmplatTp == 'PROMT'">
+		         B.PROMT_SN
+				,B.PROMT_NM
+				,B.PROMT_APRV_STAT_CD
+				,B.PROMT_APRV_DT
+				,B.PROMT_APRV_REJECT_DT
+				,B.PROMT_APRV_REJECT_RESN_CONT
+				,B.PROMT_TP_CD
+				,B.PROMT_SPRTR_TP_CD
+				,B.DSP_BEG_DT
+				,B.DSP_END_DT
+				,B.DSP_YN
+				,B.CHRG_MD_ADMIN_ID
+				,B.SORT_SEQ
+				,B.SPCIFY_URL_DSP_YN
+				,B.B2E_CRTFC_CD
+				,B.PROMT_EXPSR_SECT_CD
+				,B.DSP_GOD_SORT_STDR_CD
+				,B.PC_LIST_EXPSR_CNT_CD
+				,B.MOBILE_LIST_EXPSR_CNT_CD
+				,B.SIGNL_CRTFC_YN
+				,pi1.PC_MOBILE_IMG_IND_USE_YN
+                ,pi1.PC_IMG_FILE_NM
+                ,pi1.PC_IMG_FILE_URL
+                ,pi1.PC_IMG_ALTRTV_CONT
+                ,pi1.PC_IMG_EXPSR_TXT1_CONT
+                ,pi1.PC_IMG_EXPSR_TXT2_CONT
+                ,pi1.P_PC_IMG_FILE_NM
+                ,pi1.P_PC_IMG_FILE_URL
+                ,pi1.P_PC_IMG_ALTRTV_CONT
+                ,pi1.P_PC_IMG_EXPSR_TXT1_CONT
+                ,pi1.P_PC_IMG_EXPSR_TXT2_CONT
+                ,pi2.PC_MOBILE_IMG_IND_USE_YN AS PC_MOBILE_IMG_IND_USE_YN_2PCE
+                ,pi2.PC_IMG_FILE_NM AS PC_IMG_FILE_NM_2PCE
+                ,pi2.PC_IMG_FILE_URL AS PC_IMG_FILE_URL_2PCE
+                ,pi2.PC_IMG_ALTRTV_CONT AS PC_IMG_ALTRTV_CONT_2PCE
+                ,pi2.PC_IMG_EXPSR_TXT1_CONT AS PC_IMG_EXPSR_TXT1_CONT_2PCE
+                ,pi2.PC_IMG_EXPSR_TXT2_CONT AS PC_IMG_EXPSR_TXT2_CONT_2PCE
+                ,pi2.P_PC_IMG_FILE_NM AS P_PC_IMG_FILE_NM_2PCE
+                ,pi2.P_PC_IMG_FILE_URL AS P_PC_IMG_FILE_URL_2PCE
+                ,pi2.P_PC_IMG_ALTRTV_CONT AS P_PC_IMG_ALTRTV_CONT_2PCE
+                ,pi2.P_PC_IMG_EXPSR_TXT1_CONT AS P_PC_IMG_EXPSR_TXT1_CONT_2PCE
+                ,pi2.P_PC_IMG_EXPSR_TXT2_CONT AS P_PC_IMG_EXPSR_TXT2_CONT_2PCE
+				,LANG.PROMT_NM AS LPROMT_NM
+				,B.DSP_PD_EXPSR_YN
+		      	</when>
+		      	<otherwise/>
+		   	</choose>
+		    ,T.TMPLAT_SN
+		    ,T.TMPLAT_TP_CD
+		    ,T.DVC_SECT_CD
+		    ,T.TMPLAT_NM
+		    ,T.TMPLAT_DSCR
+		    ,T.TMPLAT_USE_YN
+		    ,T.TMPLAT_CNNC_URL
+		    ,T.CONTT_REG_GD_IMG_URL
+		    ,T.REGTR_ID
+		    ,T.REG_DT
+		    ,T.UDTER_ID
+		    ,T.UDT_DT
+		    ,DCTI.CNR_SN
+		    ,DCTI.SORT_SEQ
+		    ,DC.DSP_CNR_NM
+		FROM
+			<choose>
+		      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+		        DSP_CTGRY B
+		        <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		        JOIN DSP_REV_CPST cpst ON B.DSP_CTGRY_NO = cpst.DSP_CTGRY_NO
+		        </if>
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		        LEFT OUTER JOIN DSP_BRND_CTGRY bctg ON B.DSP_CTGRY_NO = bctg.DSP_CTGRY_NO AND bctg.DSP_BRND_ID = #{tmplatKeyBrndId,jdbcType=VARCHAR}
+		        LEFT OUTER JOIN DSP_REV_CPST bcpst ON (bcpst.DSP_BRND_CTGRY_NO = bctg.DSP_CTGRY_NO AND bcpst.DSP_BRND_ID = bctg.DSP_BRND_ID AND bcpst.REV_SN = #{revSn, jdbcType=NUMERIC})
+		        </if>
+		        LEFT OUTER JOIN DSP_CTGRY_LANG CLANG ON (B.DSP_CTGRY_NO = CLANG.DSP_CTGRY_NO AND CLANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+		      	</when>
+		      	<when test="tmplatTp == 'STRND'">
+		        DSP_STRND B
+		        JOIN DSP_REV_CPST cpst ON B.STRND_SN = CPST.STRND_SN
+				LEFT OUTER JOIN DSP_STRND_LANG LANG ON (B.STRND_SN  = LANG.STRND_SN AND LANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+		      	</when>
+		      	<when test="tmplatTp == 'EVT'">
+		        EVT B
+		        JOIN DSP_REV_CPST cpst ON B.EVT_NO = CPST.EVT_NO
+				LEFT OUTER JOIN EVT_LANG LANG ON (B.EVT_NO  = LANG.EVT_NO AND LANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+		      	</when>
+		      	<when test="tmplatTp == 'PROMT'">
+		        DSP_PROMT B
+		        JOIN DSP_REV_CPST cpst ON B.PROMT_SN = CPST.PROMT_SN
+				LEFT OUTER JOIN DSP_PROMT_LANG LANG ON (B.PROMT_SN  = LANG.PROMT_SN AND LANG.LANG_CD = #{lang,jdbcType=VARCHAR})
+				LEFT OUTER JOIN (
+                    SELECT
+                        i.PROMT_SN
+                       ,i.PROMT_IMG_SECT_CD
+                       ,i.PC_MOBILE_IMG_IND_USE_YN
+                       ,i.PC_IMG_FILE_NM
+                       ,i.PC_IMG_FILE_URL
+                       ,i.PC_IMG_ALTRTV_CONT
+                       ,i.PC_IMG_EXPSR_TXT1_CONT
+                       ,i.PC_IMG_EXPSR_TXT2_CONT
+                       ,il.PC_IMG_FILE_NM AS P_PC_IMG_FILE_NM
+                       ,il.PC_IMG_FILE_URL AS P_PC_IMG_FILE_URL
+                       ,il.PC_IMG_ALTRTV_CONT AS P_PC_IMG_ALTRTV_CONT
+                       ,il.PC_IMG_EXPSR_TXT1_CONT AS P_PC_IMG_EXPSR_TXT1_CONT
+                       ,il.PC_IMG_EXPSR_TXT2_CONT AS P_PC_IMG_EXPSR_TXT2_CONT
+                    FROM DSP_PROMT_IMG i
+                    LEFT OUTER JOIN DSP_PROMT_IMG_LANG il ON (i.PROMT_SN = il.PROMT_SN AND i.PROMT_IMG_SECT_CD = il.PROMT_IMG_SECT_CD AND il.LANG_CD = #{lang,jdbcType=VARCHAR})
+                    WHERE 1 = 1
+                    AND i.PROMT_IMG_SECT_CD = 'RPRST_IMG_1PCE'
+                ) pi1 ON (B.PROMT_SN = pi1.PROMT_SN)
+                LEFT OUTER JOIN (
+                    SELECT
+                        i.PROMT_SN
+                       ,i.PROMT_IMG_SECT_CD
+                       ,i.PC_MOBILE_IMG_IND_USE_YN
+                       ,i.PC_IMG_FILE_NM
+                       ,i.PC_IMG_FILE_URL
+                       ,i.PC_IMG_ALTRTV_CONT
+                       ,i.PC_IMG_EXPSR_TXT1_CONT
+                       ,i.PC_IMG_EXPSR_TXT2_CONT
+                       ,il.PC_IMG_FILE_NM AS P_PC_IMG_FILE_NM
+                       ,il.PC_IMG_FILE_URL AS P_PC_IMG_FILE_URL
+                       ,il.PC_IMG_ALTRTV_CONT AS P_PC_IMG_ALTRTV_CONT
+                       ,il.PC_IMG_EXPSR_TXT1_CONT AS P_PC_IMG_EXPSR_TXT1_CONT
+                       ,il.PC_IMG_EXPSR_TXT2_CONT AS P_PC_IMG_EXPSR_TXT2_CONT
+                    FROM DSP_PROMT_IMG i
+                    LEFT OUTER JOIN DSP_PROMT_IMG_LANG il ON (i.PROMT_SN = il.PROMT_SN AND i.PROMT_IMG_SECT_CD = il.PROMT_IMG_SECT_CD AND il.LANG_CD = #{lang,jdbcType=VARCHAR})
+                    WHERE 1 = 1
+                    AND i.PROMT_IMG_SECT_CD = 'RPRST_IMG_2PCE'
+                ) pi2 ON (B.PROMT_SN = pi2.PROMT_SN)
+		      	</when>
+		      	<otherwise/>
+		   	</choose>
+		    LEFT OUTER JOIN DSP_TMPLAT T ON (
+		    <choose>
+		      	<when test="device == 'PC'">
+		      	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		      	bcpst.PC_TMPLAT_SN = T.TMPLAT_SN
+		        </if>
+		      	<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		        cpst.PC_TMPLAT_SN = T.TMPLAT_SN
+		        </if>
+		        </when>
+		      	<otherwise>
+		      	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		      	bcpst.MOBILE_TMPLAT_SN = T.TMPLAT_SN
+		      	</if>
+		      	<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		      	cpst.MOBILE_TMPLAT_SN = T.TMPLAT_SN
+		      	</if>
+		      	</otherwise>
+		   	</choose>
+		    AND T.TMPLAT_USE_YN = 'Y' )
+		    JOIN DSP_CNR_TMPLAT_INFO_CNNC DCTI
+		    <choose>
+		      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+		      	<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		      	ON (DCTI.REV_SN = bcpst.REV_SN AND DCTI.TMPLAT_SN = T.TMPLAT_SN AND DCTI.DSP_BRND_CTGRY_NO = bctg.DSP_CTGRY_NO AND DCTI.DSP_BRND_ID = bctg.DSP_BRND_ID AND DCTI.DSP_CNR_USE_YN = 'Y')
+		      	</if>
+		      	<if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		      	ON (DCTI.REV_SN = cpst.REV_SN AND DCTI.TMPLAT_SN = T.TMPLAT_SN AND DCTI.DSP_CTGRY_NO = B.DSP_CTGRY_NO AND DCTI.DSP_CNR_USE_YN = 'Y')
+		      	</if>
+		      	</when>
+		      	<when test="tmplatTp == 'STRND'">
+		   		ON (DCTI.REV_SN = cpst.REV_SN AND DCTI.TMPLAT_SN = T.TMPLAT_SN AND DCTI.STRND_SN = B.STRND_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+		        </when>
+		        <when test="tmplatTp == 'EVT'">
+		        ON (DCTI.REV_SN = cpst.REV_SN AND DCTI.TMPLAT_SN = T.TMPLAT_SN AND DCTI.EVT_NO = B.EVT_NO AND DCTI.DSP_CNR_USE_YN = 'Y')
+		    	</when>
+		        <when test="tmplatTp == 'PROMT'">
+		        ON (DCTI.REV_SN = cpst.REV_SN AND DCTI.TMPLAT_SN = T.TMPLAT_SN AND DCTI.PROMT_SN = B.PROMT_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+		    	</when>
+		    </choose>
+		    <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		    JOIN DSP_CNR DC ON (DC.REV_SN = bcpst.REV_SN AND DC.CNR_SN = DCTI.CNR_SN AND DC.USE_YN = 'Y')
+		WHERE   bcpst.REV_SN = #{revSn, jdbcType=NUMERIC}
+		    </if>
+		    <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		    JOIN DSP_CNR DC ON (DC.REV_SN = cpst.REV_SN AND DC.CNR_SN = DCTI.CNR_SN AND DC.USE_YN = 'Y')
+		WHERE   cpst.REV_SN = #{revSn, jdbcType=NUMERIC}
+		    </if>
+
+		<choose>
+	      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+	        AND B.DSP_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+			AND B.APL_MALL_ID = #{mallId,jdbcType=VARCHAR}
+			AND B.DELETE_YN = 'N'
+			AND B.DSP_YN = 'Y'
+	      	</when>
+	      	<when test="tmplatTp == 'STRND'">
+	        AND B.DSP_YN = 'Y'
+			AND B.STRND_SN = #{tmplatScKey,jdbcType=NUMERIC}
+			<choose>
+		    <when test="strndTpCd != null and strndTpCd == 'GTS'">
+		    <![CDATA[
+		    AND B.DSP_BEG_DT <= SYSDATE
+		    AND add_months(B.DSP_BEG_DT, 6) >= SYSDATE
+			]]>
+		    </when>
+		    <otherwise>
+		    <![CDATA[
+			AND B.DSP_BEG_DT <= SYSDATE
+	    	AND B.DSP_END_DT >= SYSDATE
+	    	]]>
+		    </otherwise>
+		    </choose>
+	    	</when>
+	      	<when test="tmplatTp == 'EVT'">
+	        AND B.EVT_NO = #{tmplatScKey,jdbcType=VARCHAR}
+	      	</when>
+	      	<when test="tmplatTp == 'PROMT'">
+	      	<if test="prev == null or prev == '' or prev != 'Y'.toString()">
+			AND B.DSP_YN = 'Y'
+			AND	B.PROMT_APRV_STAT_CD = 'APRV_COMPT'
+			<![CDATA[
+		    AND B.DSP_BEG_DT <= sysdate
+		    AND	B.DSP_END_DT >= sysdate
+	        ]]>
+	        </if>
+	        AND B.PROMT_SN = #{tmplatScKey,jdbcType=INTEGER}
+	      	</when>
+	      	<otherwise/>
+	   	</choose>
+	   	ORDER BY DCTI.SORT_SEQ
+	</select>
+
+
+	<!-- 코너컨텐츠목록 조회 -->
+	<select id="selectDspCnrConttFullListV2" parameterType="com.plgrim.ncp.biz.display.data.DspCnrScFrDTO" resultMap="dspCnrFrResultMap" >
+		SELECT * /* [display.fr.contt.xml][selectDspCnrConttFullListV2][코너컨텐츠목록 조회V2][Dian] */
+		FROM (
+			SELECT
+			     T.*
+                ,rtg.GR_TAG_NM
+                ,rtg.GLTR_TAG_NM
+			    ,CASE WHEN T.RND_YN = 'N' THEN
+		             ROW_NUMBER () OVER (PARTITION BY T.CNR_SN,T.CNR_SET_SN,T.CONTT_TP_CD ORDER BY T.SORT_SEQ)
+		         ELSE
+		             ROW_NUMBER () OVER (PARTITION BY T.CNR_SN,T.CNR_SET_SN,T.CONTT_TP_CD ORDER BY DBMS_RANDOM.RANDOM)
+		         END
+		             AS RNUM
+			    ,DCSL.SET_NM AS LANG_SET_NM
+			    ,DCSL.SET_DSCR AS LANG_SET_DSCR
+			    ,DCCL.LANG_CD AS LANG_LANG_CD
+			    ,replace(DCCL.CONTT_NM, '''','@q@') AS LANG_CONTT_NM
+			    ,DCCL.IMG_FILE_NM AS LANG_IMG_FILE_NM
+			    ,DCCL.IMG_FILE_URL AS LANG_IMG_FILE_URL
+			    ,replace(DCCL.IMG_ALTRTV_CONT, '''','@q@') AS LANG_IMG_ALTRTV_CONT
+			    ,DCCL.IMG_OV_FILE_NM AS LANG_IMG_OV_FILE_NM
+			    ,DCCL.IMG_OV_FILE_URL AS LANG_IMG_OV_FILE_URL
+			    ,replace(DCCL.IMG_OV_ALTRTV_CONT, '''','@q@') AS LANG_IMG_OV_ALTRTV_CONT
+			    ,DCCL.IMG_MAP_CONT AS LANG_IMG_MAP_CONT
+       			,replace(DCCL.IMG_DSCR, '''','@q@') AS LANG_IMG_DSCR
+       		    ,DCCL.MOVI_IMG_FILE_NM AS LANG_MOVI_IMG_FILE_NM
+			    ,DCCL.MOVI_IMG_URL AS LANG_MOVI_IMG_URL
+			    ,replace(DCCL.MOVI_IMG_ALTRTV_CONT, '''','@q@') AS LANG_MOVI_IMG_ALTRTV_CONT
+			    ,DCCL.HTML_SJ AS LANG_HTML_SJ
+			    ,DCCL.HTML_DSCR AS LANG_HTML_DSCR
+			    ,DCCL.HTML_CONT AS LANG_HTML_CONT
+			FROM
+			(
+				/* 상품, 기획전, S-Trnd 이외의 컨텐츠 목록 */
+			    SELECT
+			    	 <include refid="selectConttSql" />
+			         <if test="conttTpList != null and conttTpList.contains('GOD')">
+			         <include refid="selectGodNullSql" />
+			         </if>
+			         <if test="conttTpList != null and conttTpList.contains('PROMT')">
+			         <include refid="selectPromtNullSql" />
+			         </if>
+			         <if test="conttTpList != null and conttTpList.contains('STRND')">
+			         <include refid="selectStrndNullSql" />
+			         </if>
+			    FROM DSP_CNR_CONTT DCC
+            JOIN DSP_CNR_SET DCS ON (DCC.REV_SN = DCS.REV_SN AND DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+            JOIN DSP_CNR_TMPLAT_INFO_CNNC DCTI ON (DCC.REV_SN = DCTI.REV_SN AND DCC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+            JOIN DSP_CNR DC ON (DCC.REV_SN = DC.REV_SN AND DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+            JOIN DSP_CNR_TP_GRP DCTG ON (DCC.REV_SN = DCTG.REV_SN AND DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+            JOIN DSP_CNR_TP_GRP DCTG2 ON (DCC.REV_SN = DCTG2.REV_SN AND DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+			    WHERE 1 = 1
+			    AND	DCC.REV_SN = #{revSn, jdbcType=NUMERIC}
+			    AND DCC.DSP_YN = 'Y'
+			    AND DCC.CONTT_TP_CD NOT IN ('GOD','PROMT','STRND')
+			    <choose>
+			    <when test="strndTpCd != null and strndTpCd == 'GTS'">
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND add_months(DCC.DSP_BEG_DT, 6) >= SYSDATE
+				]]>
+			    </when>
+			    <otherwise>
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND DCC.DSP_END_DT >= SYSDATE
+				]]>
+			    </otherwise>
+			    </choose>
+			    <if test="cnrSn != null and cnrSn > 0">
+				AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+				</if>
+				<if test="filterBrndCd != null and filterBrndCd.length > 0" >
+			  	AND DCC.MD_BRND_CD IN
+			  	<foreach item="filterBrnd" collection="filterBrndCd" open="(" separator="," close=")">
+			  	 #{filterBrnd}
+			  	</foreach>
+			  	</if>
+		  		<include refid="tmplatKeySqlV2" />
+			   	<include refid="mbrCondSql" />
+
+			   	<if test="conttTpList != null and conttTpList.contains('GOD')">
+			   	/* 상품 컨텐츠 목록 */
+			   	UNION ALL
+			   	SELECT
+			        GG.*
+			        ,T13.MNFCTUR_DATE
+			        ,(
+			           SELECT  LISTAGG(
+							<!-- (
+						    CASE WHEN A.clor_chip_img_url IS NOT NULL
+								THEN A.clor_chip_img_url
+								ELSE B.color_style_cd
+						    END
+						    )-->
+						    B.color_style_cd
+			  				, ',') WITHIN GROUP (ORDER BY  B.COLOR_STYLE_CD)  AS COLOR_STYLE_CD
+			             FROM GOD A
+			         JOIN INF_COLOR_GRP B ON (A.COLOR_CD = B.COLOR_GRP_CD AND B.LANGUAGE = DECODE( 'KOR' , 'ENG' , 'EN' , 'CHI' , 'ZH' , 'KO' ))
+			            WHERE A.DSP_YN = 'Y'
+			              AND A.GOD_APRV_SECT_CD = 'APRV_COMPT'
+			              AND A.GOD_SALE_SECT_CD IN ('SLDOUT', 'SALE_PROGRS', 'SALE_PROGRS_PKUP')
+			          AND A.PARTMAL_SECT_CD ='MCOM'
+			              AND EXISTS
+			                     (SELECT 1
+			                        FROM DSP_CTGRY_CNNC_GOD T1
+			                             INNER JOIN DSP_CTGRY T2
+			                                ON (T1.DSP_CTGRY_NO = T2.DSP_CTGRY_NO AND T2.DSP_YN = 'Y' AND T2.DELETE_YN = 'N')
+			                       WHERE T1.GOD_NO = A.GOD_NO AND T1.DSP_YN = 'Y'
+			                     )
+			            AND GG.DSGN_GRP_NO  = A.DSGN_GRP_NO
+			           )  AS COLOR_STYLE_CD
+			         ,fimg.IMG_URL AS IMG_FRONT_URL
+			         ,bimg.IMG_URL AS IMG_BACK_URL
+			         ,(select cd_nm from mv_sys_cd where upper_cd = 'SESON_GRP' and cd = GG.SESON_GRP_CD and lang_cd = #{lang, jdbcType=VARCHAR}) AS SESON_GRP_NM
+			         <if test="conttTpList != null and conttTpList.contains('PROMT')">
+			         <include refid="selectPromtNullSql" />
+			         </if>
+			         <if test="conttTpList != null and conttTpList.contains('STRND')">
+			         <include refid="selectStrndNullSql" />
+			         </if>
+			    FROM (
+				   	SELECT
+				   		 <include refid="selectConttSql" />
+				         <if test="conttTpList != null and conttTpList.contains('GOD')">
+				         <include refid="selectGodSql" />
+				         </if>
+						 <if test="lang != 'KOR' ">
+							,G.GLGNM_GOD_NM
+							,G.GLGNM_MOBILE_GOD_NM
+							,G.GLGNM_TAG_NM
+							,G.GLGNM_COLOR_TAG_NM
+							,G.GLGNM_THEMA_TAG_NM
+							,G.GLGNM_COLOR_NM
+						 </if>
+				    FROM DSP_CNR_CONTT DCC
+					JOIN DSP_CNR_SET DCS ON (DCC.REV_SN = DCS.REV_SN AND DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+					JOIN DSP_CNR_TMPLAT_INFO_CNNC DCTI ON (DCC.REV_SN = DCTI.REV_SN AND DCC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+					JOIN DSP_CNR DC ON (DCC.REV_SN = DC.REV_SN AND DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+					JOIN DSP_CNR_TP_GRP DCTG ON (DCC.REV_SN = DCTG.REV_SN AND DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+					JOIN DSP_CNR_TP_GRP DCTG2 ON (DCC.REV_SN = DCTG2.REV_SN AND DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+				    JOIN (
+				    	<include refid="selectGodListSql" />
+		            	) G ON (DCC.GOD_NO = G.GOD_NO)
+				    WHERE 1 = 1
+				    AND	DCC.REV_SN = #{revSn, jdbcType=NUMERIC}
+				    AND DCC.DSP_YN = 'Y'
+				    AND DCC.CONTT_TP_CD = 'GOD'
+				    <choose>
+				    <when test="strndTpCd != null and strndTpCd == 'GTS'">
+				    <![CDATA[
+				    AND DCC.DSP_BEG_DT <= SYSDATE
+				    AND add_months(DCC.DSP_BEG_DT, 6) >= SYSDATE
+					]]>
+				    </when>
+				    <otherwise>
+				    <![CDATA[
+				    AND DCC.DSP_BEG_DT <= SYSDATE
+				    AND DCC.DSP_END_DT >= SYSDATE
+					]]>
+				    </otherwise>
+				    </choose>
+					<if test="cnrSn != null and cnrSn > 0">
+					AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+					</if>
+					<include refid="tmplatKeySqlV2" />
+				   	<include refid="mbrCondSql" />
+				) GG
+			   	LEFT OUTER JOIN GOD_NTFC_DETAIL T13 ON GG.GOD_NO = T13.GOD_NO AND T13.LANG_CD = #{lang,jdbcType=VARCHAR}
+				LEFT OUTER JOIN GOD_IMG fimg ON GG.GOD_NO = fimg.GOD_NO AND fimg.IMG_TP_CD = 'THNAIL' AND fimg.IMG_TURN = NVL(GG.IMG_TURN,0) AND fimg.IMG_SIZE_CD = #{imgSize,jdbcType=VARCHAR} AND fimg.IMG_USE_YN = 'Y' AND fimg.IMG_APRV_YN = 'Y'
+		        LEFT OUTER JOIN GOD_IMG bimg ON GG.GOD_NO = bimg.GOD_NO AND bimg.IMG_TP_CD = 'THNAIL' AND bimg.IMG_TURN = NVL(GG.IMG_TURN,1) AND bimg.IMG_SIZE_CD = #{imgSize,jdbcType=VARCHAR} AND bimg.IMG_USE_YN = 'Y' AND bimg.IMG_APRV_YN = 'Y'
+				</if>
+
+			   	<if test="conttTpList != null and conttTpList.contains('PROMT')">
+			   	/* 기획전 컨텐츠 목록 */
+			   	UNION ALL
+			   	SELECT
+			   		 <include refid="selectConttSql" />
+			         <if test="conttTpList != null and conttTpList.contains('GOD')">
+			         <include refid="selectGodNullSql" />
+			         </if>
+			         <if test="conttTpList != null and conttTpList.contains('PROMT')">
+			         <include refid="selectPromtSql" />
+			         </if>
+			         <if test="conttTpList != null and conttTpList.contains('STRND')">
+			         <include refid="selectStrndNullSql" />
+			         </if>
+			    FROM DSP_CNR_CONTT DCC
+					JOIN DSP_CNR_SET DCS ON (DCC.REV_SN = DCS.REV_SN AND DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+					JOIN DSP_CNR_TMPLAT_INFO_CNNC DCTI ON (DCC.REV_SN = DCTI.REV_SN AND DCC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+					JOIN DSP_CNR DC ON (DCC.REV_SN AND DC.REV_SN AND DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+					JOIN DSP_CNR_TP_GRP DCTG ON (DCC.REV_SN = DCTG.REV_SN AND DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+					JOIN DSP_CNR_TP_GRP DCTG2 ON (DCC.REV_SN = DCTG2.REV_SN AND DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+			    JOIN (
+	                SELECT
+	                     t1.PROMT_SN
+	                    ,t1.PROMT_NM
+	                    ,NVL(t2.PROMT_DSCR, t1.PROMT_DSCR) AS PROMT_DSCR
+	                    ,t1.PROMT_APRV_STAT_CD
+	                    ,t1.PROMT_APRV_DT
+	                    ,t1.PROMT_APRV_REJECT_DT
+	                    ,t1.PROMT_APRV_REJECT_RESN_CONT
+	                    ,t1.PROMT_TP_CD
+	                    ,t1.DSP_BEG_DT
+	                    ,t1.DSP_END_DT
+	                    ,t1.DSP_YN
+	                    ,t1.CHRG_MD_ADMIN_ID
+	                    ,t1.SORT_SEQ
+	                    ,t1.SPCIFY_URL_DSP_YN
+	                    ,t1.B2E_CRTFC_CD
+	                    ,t1.DSP_GOD_SORT_STDR_CD
+	                    ,t1.SIGNL_CRTFC_YN
+	                    ,t1.PC_MOBILE_TMPLAT_IND_USE_YN
+	                    ,t1.PC_TMPLAT_SN
+	                    ,t1.MOBILE_TMPLAT_SN
+	                    ,pi1.PC_MOBILE_IMG_IND_USE_YN
+	                    ,pi1.PC_IMG_FILE_NM
+	                    ,pi1.PC_IMG_FILE_URL
+	                    ,pi1.PC_IMG_ALTRTV_CONT
+	                    ,pi1.PC_IMG_EXPSR_TXT1_CONT
+	                    ,pi1.PC_IMG_EXPSR_TXT2_CONT
+                        ,pi1.P_PC_IMG_FILE_NM
+	                    ,pi1.P_PC_IMG_FILE_URL
+	                    ,pi1.P_PC_IMG_ALTRTV_CONT
+	                    ,pi1.P_PC_IMG_EXPSR_TXT1_CONT
+	                    ,pi1.P_PC_IMG_EXPSR_TXT2_CONT
+                        ,pi2.PC_MOBILE_IMG_IND_USE_YN AS PC_MOBILE_IMG_IND_USE_YN_2PCE
+	                    ,pi2.PC_IMG_FILE_NM AS PC_IMG_FILE_NM_2PCE
+	                    ,pi2.PC_IMG_FILE_URL AS PC_IMG_FILE_URL_2PCE
+	                    ,pi2.PC_IMG_ALTRTV_CONT AS PC_IMG_ALTRTV_CONT_2PCE
+	                    ,pi2.PC_IMG_EXPSR_TXT1_CONT AS PC_IMG_EXPSR_TXT1_CONT_2PCE
+	                    ,pi2.PC_IMG_EXPSR_TXT2_CONT AS PC_IMG_EXPSR_TXT2_CONT_2PCE
+                        ,pi2.P_PC_IMG_FILE_NM AS P_PC_IMG_FILE_NM_2PCE
+	                    ,pi2.P_PC_IMG_FILE_URL AS P_PC_IMG_FILE_URL_2PCE
+	                    ,pi2.P_PC_IMG_ALTRTV_CONT AS P_PC_IMG_ALTRTV_CONT_2PCE
+	                    ,pi2.P_PC_IMG_EXPSR_TXT1_CONT AS P_PC_IMG_EXPSR_TXT1_CONT_2PCE
+	                    ,pi2.P_PC_IMG_EXPSR_TXT2_CONT AS P_PC_IMG_EXPSR_TXT2_CONT_2PCE
+	                    ,t2.PROMT_SN AS P_PROMT_SN
+	                    ,t2.PROMT_NM AS P_PROMT_NM
+	                FROM DSP_PROMT t1
+	                LEFT OUTER JOIN DSP_PROMT_LANG t2 ON t1.PROMT_SN = T2.PROMT_SN AND T2.LANG_CD = #{lang, jdbcType=VARCHAR}
+	                LEFT OUTER JOIN (
+                        SELECT
+                            i.PROMT_SN
+                           ,i.PROMT_IMG_SECT_CD
+                           ,i.PC_MOBILE_IMG_IND_USE_YN
+                           ,i.PC_IMG_FILE_NM
+                           ,i.PC_IMG_FILE_URL
+                           ,i.PC_IMG_ALTRTV_CONT
+                           ,i.PC_IMG_EXPSR_TXT1_CONT
+                           ,i.PC_IMG_EXPSR_TXT2_CONT
+                           ,il.PC_IMG_FILE_NM AS P_PC_IMG_FILE_NM
+                           ,il.PC_IMG_FILE_URL AS P_PC_IMG_FILE_URL
+                           ,il.PC_IMG_ALTRTV_CONT AS P_PC_IMG_ALTRTV_CONT
+                           ,il.PC_IMG_EXPSR_TXT1_CONT AS P_PC_IMG_EXPSR_TXT1_CONT
+                           ,il.PC_IMG_EXPSR_TXT2_CONT AS P_PC_IMG_EXPSR_TXT2_CONT
+                        FROM DSP_PROMT_IMG i
+                        LEFT OUTER JOIN DSP_PROMT_IMG_LANG il ON (i.PROMT_SN = il.PROMT_SN AND i.PROMT_IMG_SECT_CD = il.PROMT_IMG_SECT_CD AND il.LANG_CD = #{lang, jdbcType=VARCHAR})
+                        WHERE 1 = 1
+                        AND i.PROMT_IMG_SECT_CD = 'RPRST_IMG_1PCE'
+                    ) pi1 ON (t1.PROMT_SN = pi1.PROMT_SN)
+	                LEFT OUTER JOIN (
+                        SELECT
+                            i.PROMT_SN
+                           ,i.PROMT_IMG_SECT_CD
+                           ,i.PC_MOBILE_IMG_IND_USE_YN
+                           ,i.PC_IMG_FILE_NM
+                           ,i.PC_IMG_FILE_URL
+                           ,i.PC_IMG_ALTRTV_CONT
+                           ,i.PC_IMG_EXPSR_TXT1_CONT
+                           ,i.PC_IMG_EXPSR_TXT2_CONT
+                           ,il.PC_IMG_FILE_NM AS P_PC_IMG_FILE_NM
+                           ,il.PC_IMG_FILE_URL AS P_PC_IMG_FILE_URL
+                           ,il.PC_IMG_ALTRTV_CONT AS P_PC_IMG_ALTRTV_CONT
+                           ,il.PC_IMG_EXPSR_TXT1_CONT AS P_PC_IMG_EXPSR_TXT1_CONT
+                           ,il.PC_IMG_EXPSR_TXT2_CONT AS P_PC_IMG_EXPSR_TXT2_CONT
+                        FROM DSP_PROMT_IMG i
+                        LEFT OUTER JOIN DSP_PROMT_IMG_LANG il ON (i.PROMT_SN = il.PROMT_SN AND i.PROMT_IMG_SECT_CD = il.PROMT_IMG_SECT_CD AND il.LANG_CD = #{lang, jdbcType=VARCHAR})
+                        WHERE 1 = 1
+                        AND i.PROMT_IMG_SECT_CD = 'RPRST_IMG_2PCE'
+                    ) pi2 ON (t1.PROMT_SN = pi2.PROMT_SN)
+	                WHERE 1 = 1
+	                AND t1.PROMT_APRV_STAT_CD = 'APRV_COMPT'
+	                AND t1.DSP_YN = 'Y'
+	                AND t1.SPCIFY_URL_DSP_YN = 'N'
+	                <choose>
+				    <when test="strndTpCd != null and strndTpCd == 'GTS'">
+				    <![CDATA[
+				    AND t1.DSP_BEG_DT <= SYSDATE
+				    AND add_months(t1.DSP_BEG_DT, 6) >= SYSDATE
+					]]>
+				    </when>
+				    <otherwise>
+				    <![CDATA[
+		            AND 	t1.DSP_BEG_DT <= sysdate
+		            AND		t1.DSP_END_DT >= sysdate
+		            ]]>
+				    </otherwise>
+				    </choose>
+	            ) P ON (DCC.PROMT_SN = P.PROMT_SN)
+			    WHERE 1 = 1
+				AND DCC.REV_SN = #{revSn, jdbcType=NUMERIC}
+			    AND DCC.DSP_YN = 'Y'
+			    AND DCC.CONTT_TP_CD = 'PROMT'
+			    <choose>
+			    <when test="strndTpCd != null and strndTpCd == 'GTS'">
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND add_months(DCC.DSP_BEG_DT, 6) >= SYSDATE
+				]]>
+			    </when>
+			    <otherwise>
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND DCC.DSP_END_DT >= SYSDATE
+				]]>
+			    </otherwise>
+			    </choose>
+				<if test="cnrSn != null and cnrSn > 0">
+				AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+				</if>
+				<include refid="tmplatKeySqlV2" />
+			   	<include refid="mbrCondSql" />
+			   	</if>
+
+			   	<if test="conttTpList != null and conttTpList.contains('STRND')">
+			   	/* S-trnd 컨텐츠 목록 */
+			   	UNION ALL
+			   	SELECT
+			   		 <include refid="selectConttSql" />
+			         <if test="conttTpList != null and conttTpList.contains('GOD')">
+			         <include refid="selectGodNullSql" />
+			         </if>
+			         <if test="conttTpList != null and conttTpList.contains('PROMT')">
+			         <include refid="selectPromtNullSql" />
+			         </if>
+			         <include refid="selectStrndSql" />
+			    FROM DSP_CNR_CONTT DCC
+					JOIN DSP_CNR_SET DCS ON (DCC.REV_SN = DCS.REV_SN AND DCC.CNR_SN = DCS.CNR_SN AND DCC.CNR_SET_SN = DCS.CNR_SET_SN AND DCS.DSP_YN = 'Y')
+					JOIN DSP_CNR_TMPLAT_INFO_CNNC DCTI ON (DCC.REV_SN = DCTI.REV_SN AND DCC.CNR_SN = DCTI.CNR_SN AND DCS.CNR_SN = DCTI.CNR_SN AND DCTI.DSP_CNR_USE_YN = 'Y')
+					JOIN DSP_CNR DC ON (DCC.REV_SN = DC.REV_SN AND DC.CNR_SN = DCS.CNR_SN AND DC.USE_YN = 'Y')
+					JOIN DSP_CNR_TP_GRP DCTG ON (DCC.REV_SN = DCTG.REV_SN AND DCTG.CNR_SN = DCC.CNR_SN AND DCTG.UPPER_CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN AND DCTG.CONTT_TP_CD = DCC.CONTT_TP_CD)
+					JOIN DSP_CNR_TP_GRP DCTG2 ON (DCC.REV_SN = DCTG2.REV_SN AND DCTG2.CNR_SN = DCC.CNR_SN AND DCTG2.CNR_TP_GRP_SN = DCS.CNR_TP_GRP_SN)
+			    JOIN (
+	                SELECT
+		                 t1.STRND_SN
+						,t1.STRND_TP_CD
+						,t1.STRND_NM
+						,t1.STRND_DSCR
+						,t1.DSP_BEG_DT
+						,t1.DSP_END_DT
+						,t1.DSP_YN
+						,t1.SORT_SEQ
+						,t1.BRND_ID
+						,t1.SESON_CD
+						,t1.RPRST_IMG_FILE_NM
+						,t1.RPRST_IMG_FILE_URL
+						,t1.RPRST_IMG_ALTRTV_CONT
+						,t1.PC_MOBILE_TMPLAT_IND_USE_YN
+						,t1.PC_TMPLAT_SN
+						,t1.MOBILE_TMPLAT_SN
+						,t1.REG_DT
+						,t2.STRND_SN AS DSTLANG_STRND_SN
+						,t2.STRND_NM AS DSTLANG_STRND_NM
+						,t2.STRND_DSCR AS DSTLANG_STRND_DSCR
+						,t2.RPRST_IMG_FILE_NM AS DSTLANG_RPRST_IMG_FILE_NM
+						,t2.RPRST_IMG_FILE_URL AS DSTLANG_RPRST_IMG_FILE_URL
+						,t2.RPRST_IMG_ALTRTV_CONT AS DSTLANG_RPRST_IMG_ALTRTV_CONT
+		            FROM DSP_STRND t1
+		            LEFT OUTER JOIN DSP_STRND_LANG t2 ON t1.STRND_SN = T2.STRND_SN AND T2.LANG_CD = #{lang,jdbcType=VARCHAR}
+		            WHERE 1 = 1
+		            AND t1.DSP_YN = 'Y'
+		            <choose>
+				    <when test="strndTpCd != null and strndTpCd == 'GTS'">
+				    <![CDATA[
+				    AND t1.DSP_BEG_DT <= SYSDATE
+				    AND add_months(t1.DSP_BEG_DT, 6) >= SYSDATE
+					]]>
+				    </when>
+				    <otherwise>
+				    <![CDATA[
+		            AND 	t1.DSP_BEG_DT <= sysdate
+		            AND		t1.DSP_END_DT >= sysdate
+		            ]]>
+				    </otherwise>
+				    </choose>
+	            ) S ON (DCC.STRND_SN = S.STRND_SN)
+			    WHERE 1 = 1
+			    AND	DCC.REV_SN = #{revSn, jdbcType=NUMERIC}
+			    AND DCC.DSP_YN = 'Y'
+			    AND DCC.CONTT_TP_CD = 'STRND'
+			    <choose>
+			    <when test="strndTpCd != null and strndTpCd == 'GTS'">
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND add_months(DCC.DSP_BEG_DT, 6) >= SYSDATE
+				]]>
+			    </when>
+			    <otherwise>
+			    <![CDATA[
+			    AND DCC.DSP_BEG_DT <= SYSDATE
+			    AND DCC.DSP_END_DT >= SYSDATE
+				]]>
+			    </otherwise>
+			    </choose>
+				<if test="cnrSn != null and cnrSn > 0">
+				AND DCC.CNR_SN = #{cnrSn,jdbcType=NUMERIC}
+				</if>
+				<include refid="tmplatKeySqlV2" />
+			   	<include refid="mbrCondSql" />
+			   	</if>
+			) T
+            LEFT OUTER JOIN
+                (SELECT a.GOD_NO,
+                a.TAG_NM AS GR_TAG_NM,
+                a.GLTR_TAG_NM AS GLTR_TAG_NM
+                FROM (SELECT T19.GOD_NO,
+                        T19.TAG_RESVE_SN,
+                        T20.TAG_NM,
+                        T21.TAG_NM AS GLTR_TAG_NM,
+                        ROW_NUMBER ()
+                        OVER (PARTITION BY t19.god_no
+                        ORDER BY T19.REG_DT DESC)
+                        AS rn
+                      FROM GOD_TAG_RESVE_CNNC T19
+                        JOIN GOD_TAG_RESVE T20
+                        ON     T19.TAG_RESVE_SN =
+                        T20.TAG_RESVE_SN
+                      LEFT OUTER JOIN GOD_LANGBY_TAG_RESVE T21
+                        ON     T20.TAG_RESVE_SN = t21.TAG_RESVE_SN
+                        AND t21.LANG_CD = #{lang,jdbcType=VARCHAR}
+                      WHERE     1 = 1
+                      <![CDATA[
+                        AND T20.RESVE_BEG_DT <= SYSDATE
+                        AND T20.RESVE_END_DT >= SYSDATE
+                      ]]>
+                        AND T20.USE_YN = 'Y') a
+                WHERE a.rn = 1) rtg
+            ON (T.god_no = rtg.god_no)
+			LEFT OUTER JOIN DSP_CNR_SET_LANG DCSL
+			ON (T.REV_SN = DCSL.REV_SN AND T.CNR_SN = DCSL.CNR_SN AND T.CNR_SET_SN = DCSL.CNR_SET_SN AND DCSL.LANG_CD = #{lang,jdbcType=VARCHAR})
+			LEFT OUTER JOIN DSP_CNR_CONTT_LANG DCCL
+			ON (T.REV_SN = DCCL.REV_SN AND T.CNR_SN = DCCL.CNR_SN AND T.CNR_SET_SN = DCCL.CNR_SET_SN AND T.CONTT_TURN = DCCL.CONTT_TURN AND DCCL.LANG_CD = #{lang,jdbcType=VARCHAR})
+
+		) TT
+		<![CDATA[
+		WHERE TT.RNUM <= TT.TP_DSP_CNT
+		]]>
+		ORDER BY TT.CNR_SORT_SEQ, TT.SET_SORT_SEQ, TT.CNR_SET_SN, TT.TP_SORT_SEQ, TT.RNUM
+	</select>
+
+	<select id="selectBrndCtgryBrndId" parameterType="String" resultType="String">
+		SELECT /* [display.fr.contt.xml][selectBrndCtgryBrndId][브랜드카테고리의 전시브랜드ID조회 V2][Dian] */
+			DSP_BRND_ID
+		FROM dsp_ctgry
+		WHERE dsp_ctgry_no = #{dspCtgryNo,jdbcType=VARCHAR}
+		and dsp_yn = 'Y'
+	</select>
+
+	<select id="selectBrndStory" parameterType="String" resultMap="sysBrndImg">
+
+		SELECT sb.BRND_STORY_INTRCN_CONT, /* [display.fr.contt.xml][selectBrndStory][브랜드스토리 이미지 조회][Emily] */
+			   sb.BRND_NM,
+			   sbi1.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_1,
+			   sbi1.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_1,
+			   sbi1.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_1,
+			   sbi2.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_2,
+			   sbi2.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_2,
+			   sbi2.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_2,
+			   sbi3.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_3,
+			   sbi3.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_3,
+			   sbi3.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_3,
+			   sbi4.BRND_IMG_FILE_NM AS BRND_IMG_FILE_NM_4,
+			   sbi4.BRND_IMG_FILE_URL AS BRND_IMG_FILE_URL_4,
+			   sbi4.BRND_IMG_ALTRTV_CONT AS BRND_IMG_ALTRTV_CONT_4
+		FROM SYS_BRND sb
+		JOIN SYS_BRND_IMG sbi1
+		ON sbi1.BRND_ID = sb.BRND_ID
+		AND sbi1.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_1'
+		AND sbi1.LANG_CD = 'KOR'
+		LEFT OUTER JOIN SYS_BRND_IMG sbi2
+		ON sbi2.BRND_ID = sb.BRND_ID
+		AND sbi2.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_2'
+		AND sbi2.LANG_CD = 'KOR'
+		LEFT OUTER JOIN SYS_BRND_IMG sbi3
+		ON sbi3.BRND_ID = sb.BRND_ID
+		AND sbi3.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_3'
+		AND sbi3.LANG_CD = 'KOR'
+		LEFT OUTER JOIN SYS_BRND_IMG sbi4
+		ON sbi4.BRND_ID = sb.BRND_ID
+		AND sbi4.BRND_IMG_SECT_CD = 'BRND_STORY_RPRST_IMG_4'
+		AND sbi4.LANG_CD = 'KOR'
+		WHERE 1 = 1
+		 AND sb.BRND_ID = #{brndId, jdbcType=VARCHAR}
+
+	</select>
+
+	<select id="selectDspCnrConttTp" parameterType="com.plgrim.ncp.biz.display.data.DspCnrScFrDTO" resultType="String" >
+		SELECT /* [display.fr.contt.xml][selectDspCnrConttTp][코너컨텐츠유형목록][Dian] */
+		    DISTINCT CONTT_TP_CD
+		FROM DSP_CNR_CONTT CNTT
+		WHERE (REV_SN, CNR_SN, CNR_SET_SN) IN (
+		    SELECT CNNC.REV_SN,CNNC.CNR_SN,CS.CNR_SET_SN
+		    FROM DSP_CNR_TMPLAT_INFO_CNNC CNNC
+		    JOIN DSP_CNR_SET CS
+		    ON ( CNNC.REV_SN = CS.REV_SN
+		    	AND CNNC.CNR_SN = CS.CNR_SN
+		    <choose>
+		      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+		        <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		        AND CNNC.DSP_CTGRY_NO = CS.DSP_CTGRY_NO
+		        </if>
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		        AND CNNC.DSP_BRND_CTGRY_NO = CS.DSP_BRND_CTGRY_NO
+		        AND CNNC.DSP_BRND_ID  = CS.DSP_BRND_ID
+		        </if>
+		      	</when>
+		      	<when test="tmplatTp == 'STRND'">
+				AND CNNC.STRND_SN = CS.STRND_SN
+		      	</when>
+		      	<when test="tmplatTp == 'EVT'">
+		        AND CNNC.EVT_NO = CS.EVT_NO
+		      	</when>
+		      	<when test="tmplatTp == 'PROMT'">
+		        AND CNNC.PROMT_SN = CS.PROMT_SN
+		      	</when>
+		      	<otherwise/>
+		   	</choose>
+		    )
+		    WHERE CNNC.TMPLAT_SN = #{tmplatSn, jdbcType=NUMERIC}
+		    AND	CNNC.REV_SN = #{revSn, jdbcType=NUMERIC}
+
+		    <choose>
+		      	<when test="tmplatTp == 'THEMA_PGE' or tmplatTp == 'DSP_CTGRY' or tmplatTp == 'BRND'">
+		        <if test="@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		        AND CNNC.DSP_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+		        </if>
+		        <if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(tmplatKeyBrndId)">
+		        AND CNNC.DSP_BRND_CTGRY_NO = #{tmplatScKey,jdbcType=VARCHAR}
+		        AND CNNC.DSP_BRND_ID  = #{tmplatKeyBrndId,jdbcType=VARCHAR}
+		        </if>
+		      	</when>
+		      	<when test="tmplatTp == 'STRND'">
+				AND CNNC.STRND_SN = #{tmplatScKey,jdbcType=NUMERIC}
+		      	</when>
+		      	<when test="tmplatTp == 'EVT'">
+		        AND CNNC.EVT_NO = #{tmplatScKey,jdbcType=VARCHAR}
+		      	</when>
+		      	<when test="tmplatTp == 'PROMT'">
+		        AND CNNC.PROMT_SN = #{tmplatScKey,jdbcType=NUMERIC}
+		      	</when>
+		      	<otherwise/>
+		   	</choose>
+		    AND CNNC.DSP_CNR_USE_YN = 'Y'
+		    AND CS.DSP_YN = 'Y'
+		)
+		AND CNTT.DSP_YN = 'Y'
+	</select>
+
+</mapper>

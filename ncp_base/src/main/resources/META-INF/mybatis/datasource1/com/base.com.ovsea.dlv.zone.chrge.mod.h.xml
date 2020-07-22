@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectComOvseaDlvZoneChrgeModH" parameterType="comOvseaDlvZoneChrgeModH" resultType="comOvseaDlvZoneChrgeModH">
+		SELECT /* com.plgrim.ncp.base.selectComOvseaDlvZoneChrgeModH		Generator(Generator)	2018-05-23 */
+			   OVSEA_DLV_CST_PLC_SN
+			 , ZONE_TURN
+			 , GOD_MIN_WT
+			 , DLV_CHRGE_HIST_TURN
+			 , GOD_MAX_WT
+			 , OVSEA_DLV_CST
+			 , USE_YN
+			 , SLR_IMPT_RTGOD_DLV_CST
+			 , SLR_IMPT_EXCHG_DLV_CST
+			 , BUYER_IMPT_RTGOD_DLV_CST
+			 , BUYER_IMPT_EXCHG_DLV_CST
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM COM_OVSEA_DLV_ZONE_CHRGE_MOD_H
+		 WHERE 1 = 1
+	   	   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND ZONE_TURN = #{zoneTurn,jdbcType=NUMERIC}
+		   AND GOD_MIN_WT = #{godMinWt,jdbcType=NUMERIC}
+		   AND DLV_CHRGE_HIST_TURN = #{dlvChrgeHistTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateComOvseaDlvZoneChrgeModH" parameterType="comOvseaDlvZoneChrgeModH">
+		UPDATE /* com.plgrim.ncp.base.updateComOvseaDlvZoneChrgeModH		Generator(Generator)	2018-05-23 */
+		COM_OVSEA_DLV_ZONE_CHRGE_MOD_H SET
+			   GOD_MAX_WT = #{godMaxWt,jdbcType=NUMERIC}
+			 , OVSEA_DLV_CST = #{ovseaDlvCst,jdbcType=NUMERIC}
+			 , USE_YN = #{useYn,jdbcType=VARCHAR}
+			 , SLR_IMPT_RTGOD_DLV_CST = #{slrImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , SLR_IMPT_EXCHG_DLV_CST = #{slrImptExchgDlvCst,jdbcType=NUMERIC}
+			 , BUYER_IMPT_RTGOD_DLV_CST = #{buyerImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , BUYER_IMPT_EXCHG_DLV_CST = #{buyerImptExchgDlvCst,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND ZONE_TURN = #{zoneTurn,jdbcType=NUMERIC}
+		   AND GOD_MIN_WT = #{godMinWt,jdbcType=NUMERIC}
+		   AND DLV_CHRGE_HIST_TURN = #{dlvChrgeHistTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertComOvseaDlvZoneChrgeModH" parameterType="comOvseaDlvZoneChrgeModH">
+		INSERT /* com.plgrim.ncp.base.insertComOvseaDlvZoneChrgeModH		Generator(Generator)	2018-05-23 */
+		INTO   COM_OVSEA_DLV_ZONE_CHRGE_MOD_H (
+			   OVSEA_DLV_CST_PLC_SN
+			 , ZONE_TURN
+			 , GOD_MIN_WT
+			 , DLV_CHRGE_HIST_TURN
+			 , GOD_MAX_WT
+			 , OVSEA_DLV_CST
+			 , USE_YN
+			 , SLR_IMPT_RTGOD_DLV_CST
+			 , SLR_IMPT_EXCHG_DLV_CST
+			 , BUYER_IMPT_RTGOD_DLV_CST
+			 , BUYER_IMPT_EXCHG_DLV_CST
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+			 , #{zoneTurn,jdbcType=NUMERIC}
+			 , #{godMinWt,jdbcType=NUMERIC}
+			 , #{dlvChrgeHistTurn,jdbcType=NUMERIC}
+			 , #{godMaxWt,jdbcType=NUMERIC}
+			 , #{ovseaDlvCst,jdbcType=NUMERIC}
+			 , #{useYn,jdbcType=VARCHAR}
+			 , #{slrImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , #{slrImptExchgDlvCst,jdbcType=NUMERIC}
+			 , #{buyerImptRtgodDlvCst,jdbcType=NUMERIC}
+			 , #{buyerImptExchgDlvCst,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteComOvseaDlvZoneChrgeModH" parameterType="comOvseaDlvZoneChrgeModH">
+		DELETE /* com.plgrim.ncp.base.deleteComOvseaDlvZoneChrgeModH		Generator(Generator)	2018-05-23 */
+		  FROM COM_OVSEA_DLV_ZONE_CHRGE_MOD_H
+		 WHERE 1 = 1
+		   AND OVSEA_DLV_CST_PLC_SN = #{ovseaDlvCstPlcSn,jdbcType=NUMERIC}
+		   AND ZONE_TURN = #{zoneTurn,jdbcType=NUMERIC}
+		   AND GOD_MIN_WT = #{godMinWt,jdbcType=NUMERIC}
+		   AND DLV_CHRGE_HIST_TURN = #{dlvChrgeHistTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

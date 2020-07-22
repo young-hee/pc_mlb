@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectSysAdmin" parameterType="sysAdmin" resultType="sysAdmin">
+		SELECT /* com.plgrim.ncp.base.selectSysAdmin		Generator(Generator)	2018-05-23 */
+			   ADMIN_ID
+			 , PW
+			 , ADMIN_TP_CD
+			 , ADMIN_STAT_CD
+			 , APRV_DT
+			 , REJECT_DT
+			 , LAYOFF_DT
+			 , DRMC_DT
+			 , SECSN_DT
+			 , ADMIN_NM
+			 , ADMIN_EMP_NO
+			 , DEPT_NM
+			 , COM_ID
+			 , SHOP_ID
+			 , EMAIL
+			 , PG_INTRLCK_EXPSR_YN
+			 , CC_CNTR_SECT_CD
+			 , CC_TEAM_SECT_CD
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , FAX_NATION_NO
+			 , FAX_AREA_NO
+			 , FAX_TLOF_NO
+			 , FAX_TLOF_WTHN_NO
+			 , LAST_LOGIN_DT
+			 , LOGIN_FAILR_COUNT
+			 , PW_INTZ_YN
+			 , PW_INTZ_DT
+			 , LOGIN_PSB_IP_CHK_YN
+			 , LOGIN_PSB_IP
+			 , SESION_ID
+			 , CTI_ID
+			 , CTI_PW
+			 , CTI_EXNO
+			 , CTI_RECRD_ID
+			 , CTI_GRP_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM SYS_ADMIN
+		 WHERE 1 = 1
+	   	   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSysAdmin" parameterType="sysAdmin">
+		UPDATE /* com.plgrim.ncp.base.updateSysAdmin		Generator(Generator)	2018-05-23 */
+		SYS_ADMIN SET
+			   PW = #{pw,jdbcType=VARCHAR}
+			 , ADMIN_TP_CD = #{adminTpCd,jdbcType=VARCHAR}
+			 , ADMIN_STAT_CD = #{adminStatCd,jdbcType=VARCHAR}
+			 , APRV_DT = #{aprvDt,jdbcType=TIMESTAMP}
+			 , REJECT_DT = #{rejectDt,jdbcType=TIMESTAMP}
+			 , LAYOFF_DT = #{layoffDt,jdbcType=TIMESTAMP}
+			 , DRMC_DT = #{drmcDt,jdbcType=TIMESTAMP}
+			 , SECSN_DT = #{secsnDt,jdbcType=TIMESTAMP}
+			 , ADMIN_NM = #{adminNm,jdbcType=VARCHAR}
+			 , ADMIN_EMP_NO = #{adminEmpNo,jdbcType=VARCHAR}
+			 , DEPT_NM = #{deptNm,jdbcType=VARCHAR}
+			 , COM_ID = #{comId,jdbcType=VARCHAR}
+			 , SHOP_ID = #{shopId,jdbcType=VARCHAR}
+			 , EMAIL = #{email,jdbcType=VARCHAR}
+			 , PG_INTRLCK_EXPSR_YN = #{pgIntrlckExpsrYn,jdbcType=VARCHAR}
+			 , CC_CNTR_SECT_CD = #{ccCntrSectCd,jdbcType=VARCHAR}
+			 , CC_TEAM_SECT_CD = #{ccTeamSectCd,jdbcType=VARCHAR}
+			 , MOBIL_NATION_NO = #{mobilNationNo,jdbcType=VARCHAR}
+			 , MOBIL_AREA_NO = #{mobilAreaNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_NO = #{mobilTlofNo,jdbcType=VARCHAR}
+			 , MOBIL_TLOF_WTHN_NO = #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , TEL_NATION_NO = #{telNationNo,jdbcType=VARCHAR}
+			 , TEL_AREA_NO = #{telAreaNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_NO = #{telTlofNo,jdbcType=VARCHAR}
+			 , TEL_TLOF_WTHN_NO = #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , FAX_NATION_NO = #{faxNationNo,jdbcType=VARCHAR}
+			 , FAX_AREA_NO = #{faxAreaNo,jdbcType=VARCHAR}
+			 , FAX_TLOF_NO = #{faxTlofNo,jdbcType=VARCHAR}
+			 , FAX_TLOF_WTHN_NO = #{faxTlofWthnNo,jdbcType=VARCHAR}
+			 , LAST_LOGIN_DT = #{lastLoginDt,jdbcType=TIMESTAMP}
+			 , LOGIN_FAILR_COUNT = #{loginFailrCount,jdbcType=NUMERIC}
+			 , PW_INTZ_YN = #{pwIntzYn,jdbcType=VARCHAR}
+			 , PW_INTZ_DT = #{pwIntzDt,jdbcType=TIMESTAMP}
+			 , LOGIN_PSB_IP_CHK_YN = #{loginPsbIpChkYn,jdbcType=VARCHAR}
+			 , LOGIN_PSB_IP = #{loginPsbIp,jdbcType=VARCHAR}
+			 , SESION_ID = #{sesionId,jdbcType=VARCHAR}
+			 , CTI_ID = #{ctiId,jdbcType=VARCHAR}
+			 , CTI_PW = #{ctiPw,jdbcType=VARCHAR}
+			 , CTI_EXNO = #{ctiExno,jdbcType=VARCHAR}
+			 , CTI_RECRD_ID = #{ctiRecrdId,jdbcType=VARCHAR}
+			 , CTI_GRP_ID = #{ctiGrpId,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertSysAdmin" parameterType="sysAdmin">
+		INSERT /* com.plgrim.ncp.base.insertSysAdmin		Generator(Generator)	2018-05-23 */
+		INTO   SYS_ADMIN (
+			   ADMIN_ID
+			 , PW
+			 , ADMIN_TP_CD
+			 , ADMIN_STAT_CD
+			 , APRV_DT
+			 , REJECT_DT
+			 , LAYOFF_DT
+			 , DRMC_DT
+			 , SECSN_DT
+			 , ADMIN_NM
+			 , ADMIN_EMP_NO
+			 , DEPT_NM
+			 , COM_ID
+			 , SHOP_ID
+			 , EMAIL
+			 , PG_INTRLCK_EXPSR_YN
+			 , CC_CNTR_SECT_CD
+			 , CC_TEAM_SECT_CD
+			 , MOBIL_NATION_NO
+			 , MOBIL_AREA_NO
+			 , MOBIL_TLOF_NO
+			 , MOBIL_TLOF_WTHN_NO
+			 , TEL_NATION_NO
+			 , TEL_AREA_NO
+			 , TEL_TLOF_NO
+			 , TEL_TLOF_WTHN_NO
+			 , FAX_NATION_NO
+			 , FAX_AREA_NO
+			 , FAX_TLOF_NO
+			 , FAX_TLOF_WTHN_NO
+			 , LAST_LOGIN_DT
+			 , LOGIN_FAILR_COUNT
+			 , PW_INTZ_YN
+			 , PW_INTZ_DT
+			 , LOGIN_PSB_IP_CHK_YN
+			 , LOGIN_PSB_IP
+			 , SESION_ID
+			 , CTI_ID
+			 , CTI_PW
+			 , CTI_EXNO
+			 , CTI_RECRD_ID
+			 , CTI_GRP_ID
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{adminId,jdbcType=VARCHAR}
+			 , #{pw,jdbcType=VARCHAR}
+			 , #{adminTpCd,jdbcType=VARCHAR}
+			 , #{adminStatCd,jdbcType=VARCHAR}
+			 , #{aprvDt,jdbcType=TIMESTAMP}
+			 , #{rejectDt,jdbcType=TIMESTAMP}
+			 , #{layoffDt,jdbcType=TIMESTAMP}
+			 , #{drmcDt,jdbcType=TIMESTAMP}
+			 , #{secsnDt,jdbcType=TIMESTAMP}
+			 , #{adminNm,jdbcType=VARCHAR}
+			 , #{adminEmpNo,jdbcType=VARCHAR}
+			 , #{deptNm,jdbcType=VARCHAR}
+			 , #{comId,jdbcType=VARCHAR}
+			 , #{shopId,jdbcType=VARCHAR}
+			 , #{email,jdbcType=VARCHAR}
+			 , #{pgIntrlckExpsrYn,jdbcType=VARCHAR}
+			 , #{ccCntrSectCd,jdbcType=VARCHAR}
+			 , #{ccTeamSectCd,jdbcType=VARCHAR}
+			 , #{mobilNationNo,jdbcType=VARCHAR}
+			 , #{mobilAreaNo,jdbcType=VARCHAR}
+			 , #{mobilTlofNo,jdbcType=VARCHAR}
+			 , #{mobilTlofWthnNo,jdbcType=VARCHAR}
+			 , #{telNationNo,jdbcType=VARCHAR}
+			 , #{telAreaNo,jdbcType=VARCHAR}
+			 , #{telTlofNo,jdbcType=VARCHAR}
+			 , #{telTlofWthnNo,jdbcType=VARCHAR}
+			 , #{faxNationNo,jdbcType=VARCHAR}
+			 , #{faxAreaNo,jdbcType=VARCHAR}
+			 , #{faxTlofNo,jdbcType=VARCHAR}
+			 , #{faxTlofWthnNo,jdbcType=VARCHAR}
+			 , #{lastLoginDt,jdbcType=TIMESTAMP}
+			 , #{loginFailrCount,jdbcType=NUMERIC}
+			 , #{pwIntzYn,jdbcType=VARCHAR}
+			 , #{pwIntzDt,jdbcType=TIMESTAMP}
+			 , #{loginPsbIpChkYn,jdbcType=VARCHAR}
+			 , #{loginPsbIp,jdbcType=VARCHAR}
+			 , #{sesionId,jdbcType=VARCHAR}
+			 , #{ctiId,jdbcType=VARCHAR}
+			 , #{ctiPw,jdbcType=VARCHAR}
+			 , #{ctiExno,jdbcType=VARCHAR}
+			 , #{ctiRecrdId,jdbcType=VARCHAR}
+			 , #{ctiGrpId,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteSysAdmin" parameterType="sysAdmin">
+		DELETE /* com.plgrim.ncp.base.deleteSysAdmin		Generator(Generator)	2018-05-23 */
+		  FROM SYS_ADMIN
+		 WHERE 1 = 1
+		   AND ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

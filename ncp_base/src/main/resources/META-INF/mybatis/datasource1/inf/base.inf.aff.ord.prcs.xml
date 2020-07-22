@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfAffOrdPrcs" parameterType="infAffOrdPrcs" resultType="infAffOrdPrcs">
+		SELECT /* com.plgrim.ncp.base.selectInfAffOrdPrcs		Generator(Generator)	2018-05-23 */
+			   AFF_ORD_SN
+			 , AFF_ORD_TURN
+			 , AFF_COM_ID
+			 , AFF_COM_NM
+			 , AFF_ORD_DT
+			 , AFF_ORD_CNFIRM_PRCS_YN
+			 , AFF_ORD_PRCS_CNFIRM_DT
+			 , AFF_ORD_SHTG_YN
+			 , AFF_ORD_SHTG_PRCS_DT
+			 , DLV_INFO_DLIV_YN
+			 , DLV_INFO_DLIV_DT
+			 , DLV_COM_CD
+			 , DMSTC_WAYBIL_NO
+			 , AFF_COM_DLV_NO
+			 , AFF_COM_DLV_TURN
+			 , DLIVY_COMPT_YN
+			 , DLIVY_COMPT_PRCS_DT
+			 , RTRVL_CNFIRM_PRCS_YN
+			 , RTRVL_CNFIRM_PRCS_DT
+			 , RETRN_CD
+			 , RETRN_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_AFF_ORD_PRCS
+		 WHERE 1 = 1
+	   	   AND AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+		   AND AFF_ORD_TURN = #{affOrdTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateInfAffOrdPrcs" parameterType="infAffOrdPrcs">
+		UPDATE /* com.plgrim.ncp.base.updateInfAffOrdPrcs		Generator(Generator)	2018-05-23 */
+		INF_AFF_ORD_PRCS SET
+			   AFF_COM_ID = #{affComId,jdbcType=VARCHAR}
+			 , AFF_COM_NM = #{affComNm,jdbcType=VARCHAR}
+			 , AFF_ORD_DT = #{affOrdDt,jdbcType=TIMESTAMP}
+			 , AFF_ORD_CNFIRM_PRCS_YN = #{affOrdCnfirmPrcsYn,jdbcType=VARCHAR}
+			 , AFF_ORD_PRCS_CNFIRM_DT = #{affOrdPrcsCnfirmDt,jdbcType=TIMESTAMP}
+			 , AFF_ORD_SHTG_YN = #{affOrdShtgYn,jdbcType=VARCHAR}
+			 , AFF_ORD_SHTG_PRCS_DT = #{affOrdShtgPrcsDt,jdbcType=TIMESTAMP}
+			 , DLV_INFO_DLIV_YN = #{dlvInfoDlivYn,jdbcType=VARCHAR}
+			 , DLV_INFO_DLIV_DT = #{dlvInfoDlivDt,jdbcType=TIMESTAMP}
+			 , DLV_COM_CD = #{dlvComCd,jdbcType=VARCHAR}
+			 , DMSTC_WAYBIL_NO = #{dmstcWaybilNo,jdbcType=VARCHAR}
+			 , AFF_COM_DLV_NO = #{affComDlvNo,jdbcType=VARCHAR}
+			 , AFF_COM_DLV_TURN = #{affComDlvTurn,jdbcType=NUMERIC}
+			 , DLIVY_COMPT_YN = #{dlivyComptYn,jdbcType=VARCHAR}
+			 , DLIVY_COMPT_PRCS_DT = #{dlivyComptPrcsDt,jdbcType=TIMESTAMP}
+			 , RTRVL_CNFIRM_PRCS_YN = #{rtrvlCnfirmPrcsYn,jdbcType=VARCHAR}
+			 , RTRVL_CNFIRM_PRCS_DT = #{rtrvlCnfirmPrcsDt,jdbcType=TIMESTAMP}
+			 , RETRN_CD = #{retrnCd,jdbcType=VARCHAR}
+			 , RETRN_CONT = #{retrnCont,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+		   AND AFF_ORD_TURN = #{affOrdTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertInfAffOrdPrcs" parameterType="infAffOrdPrcs">
+		INSERT /* com.plgrim.ncp.base.insertInfAffOrdPrcs		Generator(Generator)	2018-05-23 */
+		INTO   INF_AFF_ORD_PRCS (
+			   AFF_ORD_SN
+			 , AFF_ORD_TURN
+			 , AFF_COM_ID
+			 , AFF_COM_NM
+			 , AFF_ORD_DT
+			 , AFF_ORD_CNFIRM_PRCS_YN
+			 , AFF_ORD_PRCS_CNFIRM_DT
+			 , AFF_ORD_SHTG_YN
+			 , AFF_ORD_SHTG_PRCS_DT
+			 , DLV_INFO_DLIV_YN
+			 , DLV_INFO_DLIV_DT
+			 , DLV_COM_CD
+			 , DMSTC_WAYBIL_NO
+			 , AFF_COM_DLV_NO
+			 , AFF_COM_DLV_TURN
+			 , DLIVY_COMPT_YN
+			 , DLIVY_COMPT_PRCS_DT
+			 , RTRVL_CNFIRM_PRCS_YN
+			 , RTRVL_CNFIRM_PRCS_DT
+			 , RETRN_CD
+			 , RETRN_CONT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{affOrdSn,jdbcType=NUMERIC}
+			 , #{affOrdTurn,jdbcType=NUMERIC}
+			 , #{affComId,jdbcType=VARCHAR}
+			 , #{affComNm,jdbcType=VARCHAR}
+			 , #{affOrdDt,jdbcType=TIMESTAMP}
+			 , #{affOrdCnfirmPrcsYn,jdbcType=VARCHAR}
+			 , #{affOrdPrcsCnfirmDt,jdbcType=TIMESTAMP}
+			 , #{affOrdShtgYn,jdbcType=VARCHAR}
+			 , #{affOrdShtgPrcsDt,jdbcType=TIMESTAMP}
+			 , #{dlvInfoDlivYn,jdbcType=VARCHAR}
+			 , #{dlvInfoDlivDt,jdbcType=TIMESTAMP}
+			 , #{dlvComCd,jdbcType=VARCHAR}
+			 , #{dmstcWaybilNo,jdbcType=VARCHAR}
+			 , #{affComDlvNo,jdbcType=VARCHAR}
+			 , #{affComDlvTurn,jdbcType=NUMERIC}
+			 , #{dlivyComptYn,jdbcType=VARCHAR}
+			 , #{dlivyComptPrcsDt,jdbcType=TIMESTAMP}
+			 , #{rtrvlCnfirmPrcsYn,jdbcType=VARCHAR}
+			 , #{rtrvlCnfirmPrcsDt,jdbcType=TIMESTAMP}
+			 , #{retrnCd,jdbcType=VARCHAR}
+			 , #{retrnCont,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfAffOrdPrcs" parameterType="infAffOrdPrcs">
+		DELETE /* com.plgrim.ncp.base.deleteInfAffOrdPrcs		Generator(Generator)	2018-05-23 */
+		  FROM INF_AFF_ORD_PRCS
+		 WHERE 1 = 1
+		   AND AFF_ORD_SN = #{affOrdSn,jdbcType=NUMERIC}
+		   AND AFF_ORD_TURN = #{affOrdTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hdiv="http://www.hdiv.org/schema/hdiv"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.hdiv.org/schema/hdiv http://www.hdiv.org/schema/hdiv/hdiv.xsd">
+
+    <hdiv:config showErrorPageOnEditableValidation="true" errorPage="${ncp_web_pc_mlb.vulnerability.url}" excludedExtensions="ico,jpg,woff2,woff,ttf,css,png,gif,jpeg,jpg,js"
+                 avoidCookiesConfidentiality="true"   avoidValidationInUrlsWithoutParams="true" reuseExistingPageInAjaxRequest="true">
+        <hdiv:startPages>/.*</hdiv:startPages>
+        <hdiv:paramsWithoutValidation>
+        </hdiv:paramsWithoutValidation>
+    </hdiv:config>
+
+    <!-- Accepted pattern within the application for all editable parameters (generated from textbox and textarea) -->
+    <!-- 2015/09/17 : 웹취약성 관련 정규hd표현식 추가 -->
+    <hdiv:validation id="searchText" componentType="text">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9.,/\-\_:=?!@^#$%*\[\]\(\)\+\{\}\`\\~\s]*$]]></hdiv:acceptedPattern>
+        <hdiv:rejectedPattern><![CDATA[(?s).*(?i)(script|iframe|onload|href|onerror|onclick|alert)(?s).*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="searchTextArea" componentType="textarea">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9.,/\-\_:=?!@^#$%*\[\]\(\)\+\{\}\`\\~\'\s]*$]]></hdiv:acceptedPattern>
+    </hdiv:validation>
+
+    <!-- Accepted pattern within the application for all editable parameters (generated from textbox and textarea) -->
+    <hdiv:validation id="defaultText" componentType="text">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9.\&-_?!@#$%\s]*$]]></hdiv:acceptedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="defaultTextArea" componentType="textarea">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9.\&-_?!@#$%\s]*$]]></hdiv:acceptedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="userInputContentText" componentType="text">
+        <hdiv:rejectedPattern>(?s).*([/\\:&gt;&lt;]+).*</hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="userInputContentTextArea" componentType="textarea">
+        <hdiv:rejectedPattern>(?s).*([/\\:&gt;&lt;]+).*</hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_TagText" componentType="text">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*((%3C)|<)(.|\n)*?((%3E)|>)(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_ScriptText" componentType="text">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*((%73)|s)(\s)*((%63)|c)(\s)*((%72)|r)(\s)*((%69)|i)(\s)*((%70)|p)(\s)*((%74)|t){1}(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_EvalText" componentType="text">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*((%65)|e)(\s)*((%76)|v)(\s)*((%61)|a)(\s)*((%6C)|l)(\s)*(\()(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_ExecText" componentType="text">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*(exec(\s|\+)+(s|x)p\w+)(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_ImageText" componentType="text">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*(exec(\s|\+)+(s|x)p\w+)(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_Tag" componentType="textarea">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*((%3C)|<)(.|\n)*?((%3E)|>)(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_Script" componentType="textarea">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*((%73)|s)(\s)*((%63)|c)(\s)*((%72)|r)(\s)*((%69)|i)(\s)*((%70)|p)(\s)*((%74)|t){1}(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_Eval" componentType="textarea">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*((%65)|e)(\s)*((%76)|v)(\s)*((%61)|a)(\s)*((%6C)|l)(\s)*(\()(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_Exec" componentType="textarea">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*(exec(\s|\+)+(s|x)p\w+)(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="simpleXss_Image" componentType="textarea">
+        <hdiv:rejectedPattern><![CDATA[(\s|\S)*(exec(\s|\+)+(s|x)p\w+)(\s|\S)*]]></hdiv:rejectedPattern>
+    </hdiv:validation>
+
+    <!-- 패스워드 특수문자 처리 -->
+    <hdiv:validation id="passwordText" componentType="text">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9\~\․\!\@\#\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\|\\\;\:\'\"\<\>\,\.\?\/\\\s]*$]]></hdiv:acceptedPattern>
+    </hdiv:validation>
+
+
+    <hdiv:validation id="passwordTextArea" componentType="textarea">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9\~\․\!\@\#\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\|\\\;\:\'\"\<\>\,\.\?\/\\\s]*$]]></hdiv:acceptedPattern>
+    </hdiv:validation>
+
+
+    <!-- 결제수단변경 팝업 배송지 정보( ~, 콤마(,) ), receiveURL( / ) 로 인한 추가 -->
+     <hdiv:validation id="pkupOrderChangeText" componentType="text">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9\~.,/\&-_?!@#$%\s]*$]]></hdiv:acceptedPattern>
+    </hdiv:validation>
+
+    <hdiv:validation id="pkupOrderChangeArea" componentType="textarea">
+        <hdiv:acceptedPattern><![CDATA[^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\p{IsHan}|a-zA-Z0-9\~.,/\&-_?!@#$%\s]*$]]></hdiv:acceptedPattern>
+    </hdiv:validation>
+
+
+
+    <hdiv:editableValidations registerDefaults="true">
+
+        <hdiv:validationRule url="/sample.order/npay.json"	enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/sample.order/kcp.pay.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/sample.order/kcp.pay.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/sample.order/mkcpView" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/sample.order/npayView" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+
+        <hdiv:validationRule url="/mypage/order/payment/changepay" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/mypage/order/payment/paylagqtyord" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/mypage/claim/payment/addpay.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/mypage/claim/include/refundInfo" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/mypage/claim/exchange/request.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/mypage/claim/return/request.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/mypage/goods/addReviewAction.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/mypage/goods/editReviewAction.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+
+		<hdiv:validationRule url="/member/certification/nice"						enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+		<hdiv:validationRule url="/member/certification/pccNiceSuccess.popup"		enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+		<hdiv:validationRule url="/member/certification/pccNiceFail.popup"			enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+		<hdiv:validationRule url="/member/certification/ipinNiceSuccess.popup"		enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+		<hdiv:validationRule url="/member/naver/linkNaverLogin.popup"				enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+		<hdiv:validationRule url="/member/naver/linkNaver.popup"					enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+        <hdiv:validationRule url="/member/login/view"								enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+		<hdiv:validationRule url="/member/login/view.popup"							enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+
+        <hdiv:validationRule url="/loginProcess"									enableDefaults="false">passwordText, passwordTextArea</hdiv:validationRule>
+
+		<!-- 1:1문의 등록 rule 적용 -->
+		<hdiv:validationRule url="/helpdesk/csInquiry/add" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+		<hdiv:validationRule url="/helpdesk/fileUploadHelpDesk.json" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+		<hdiv:validationRule url="/mypage/inquiry/updateMypageInquiry" enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+
+		<!-- SNS 공유 rule 적용 -->
+		<hdiv:validationRule url="/event/snscnrshist.json"				enableDefaults="false">simpleXss_Eval, simpleXss_Exec, simpleXss_Image</hdiv:validationRule>
+
+        <!-- 기존 고도몰 EP 패턴 defaultText,defaultTextArea rule 적용 -->
+        <hdiv:validationRule url="/shop4/shop/.*"                                        enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/shop7/shop/.*"                                        enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/product/detail/brandno/.*"                                        enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+
+        <!-- Naver 광고 유입으로 인해 상품, 이벤트, 전시, inflow, special, lookbook, culture, 메인 defaultText,defaultTextArea rule 적용-->
+        <hdiv:validationRule url="/goods/.*"                                        enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/event/.*"                                        enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/display/.*"                                      enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/inflow/.*"                                       enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/special/.*"                                      enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/lookbook/.*"                                     enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/culture/.*"                                      enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/olapic/.*"                                       enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/main/mall/view"                                  enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+        <hdiv:validationRule url="/"                                                enableDefaults="false">defaultText, defaultTextArea</hdiv:validationRule>
+
+        <hdiv:validationRule url="/.*" enableDefaults="true"></hdiv:validationRule>
+
+    </hdiv:editableValidations>
+</beans>

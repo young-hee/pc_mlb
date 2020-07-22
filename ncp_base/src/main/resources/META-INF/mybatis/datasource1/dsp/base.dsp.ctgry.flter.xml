@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspCtgryFlter" parameterType="dspCtgryFlter" resultType="dspCtgryFlter">
+		SELECT /* com.plgrim.ncp.base.selectDspCtgryFlter		Generator(Generator)	2018-05-23 */
+			   DSP_CTGRY_NO
+			 , CTGRY_FLTER_TURN
+			 , CTGRY_FLTER_SECT_CD
+			 , OPT_VAL_CD
+			 , COLOR_GRP_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CTGRY_FLTER
+		 WHERE 1 = 1
+	   	   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND CTGRY_FLTER_TURN = #{ctgryFlterTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspCtgryFlter" parameterType="dspCtgryFlter">
+		UPDATE /* com.plgrim.ncp.base.updateDspCtgryFlter		Generator(Generator)	2018-05-23 */
+		DSP_CTGRY_FLTER SET
+			   CTGRY_FLTER_SECT_CD = #{ctgryFlterSectCd,jdbcType=VARCHAR}
+			 , OPT_VAL_CD = #{optValCd,jdbcType=VARCHAR}
+			 , COLOR_GRP_CD = #{colorGrpCd,jdbcType=VARCHAR}
+			 , SORT_SEQ = #{sortSeq,jdbcType=NUMERIC}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND CTGRY_FLTER_TURN = #{ctgryFlterTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspCtgryFlter" parameterType="dspCtgryFlter">
+		INSERT /* com.plgrim.ncp.base.insertDspCtgryFlter		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CTGRY_FLTER (
+			   DSP_CTGRY_NO
+			 , CTGRY_FLTER_TURN
+			 , CTGRY_FLTER_SECT_CD
+			 , OPT_VAL_CD
+			 , COLOR_GRP_CD
+			 , SORT_SEQ
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{dspCtgryNo,jdbcType=VARCHAR}
+			 , #{ctgryFlterTurn,jdbcType=NUMERIC}
+			 , #{ctgryFlterSectCd,jdbcType=VARCHAR}
+			 , #{optValCd,jdbcType=VARCHAR}
+			 , #{colorGrpCd,jdbcType=VARCHAR}
+			 , #{sortSeq,jdbcType=NUMERIC}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspCtgryFlter" parameterType="dspCtgryFlter">
+		DELETE /* com.plgrim.ncp.base.deleteDspCtgryFlter		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CTGRY_FLTER
+		 WHERE 1 = 1
+		   AND DSP_CTGRY_NO = #{dspCtgryNo,jdbcType=VARCHAR}
+		   AND CTGRY_FLTER_TURN = #{ctgryFlterTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

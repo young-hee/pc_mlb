@@ -1,0 +1,203 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script id="PKUP_DLV_View" type="text/x-jsrender">
+<div class="orderTable orderStore">
+{{if cartList}}
+{{for cartList itemVar="~shopItem"}}
+<div class="storeArea">
+	<div class="storeName">
+		<strong>{{:~shopItem[0].shopNm}} ({{:~shopItem.length}}) </strong>
+		<a href="#" onclick="~otool.showPopupShop('{{:~shopItem[0].shopId}}');" class="btnMap"><img src="${_resourceURL}static/images/od/icon_location.png" alt="{{:~messages['common.js.map']}}" onerror="errorImgShow(this, 100);"/></a>
+		<span>
+			{{if ~shopItem[0].shopTelAreaNo}}{{:~shopItem[0].shopTelAreaNo}}-{{:~shopItem[0].shopTelTlofNo}}-{{:~shopItem[0].shopTelTlofWthnNo}} / {{/if}}
+			({{if ~shopItem[0].holdyYn=='N'}}{{:~messages['common.js.week.day']}}{{else}}{{:~messages['common.js.holi.day']}}{{/if}}) {{:~otool.timeConvert(~shopItem[0].shopBegHhmm)}} ~ {{:~otool.timeConvert(~shopItem[0].shopEndHhmm)}}
+		</span>
+	</div>
+	<div class="tableTopArea">
+		<a href="#;" class="btn sm gray" onclick="cart.deleteCart('PKUP_DLV','','{{:~shopItem[0].shopId}}')"><span>{{:~messages['cart.js.txt.select.goods.delete']}}</span></A>
+	</div>
+	<table class="board-list">
+		<colgroup>
+			<col style="width:35px">
+	        <col style="width:">
+	        <col style="width:120px">
+	        <col style="width:120px">
+	        <col style="width:120px">
+	        <col style="width:120px">
+	        <col style="width:60px">
+		</colgroup>
+		<thead>
+			<tr>
+				<th scope="col">
+					<span class="check-skin">
+						<input type="checkbox" name="entireCheck_pickup" id="PKUP_DLV_entireCheck_{{:~shopItem[0].shopId}}" value="{{:~shopItem[0].shopId}}" checked="checked"/>
+						<span>{{:~messages['cart.js.txt.select']}}</span>
+					</span>
+				</th>
+				<th scope="col">{{:~messages['cart.js.txt.goods.info']}}</th>
+				<th scope="col">{{:~messages['cart.js.txt.count']}}</th>
+				<th scope="col">{{:~messages['cart.js.txt.promotion']}}</th>
+				<th scope="col">{{:~messages['cart.js.txt.pickup.info']}}</th>
+				<th scope="col">{{:~messages['cart.js.txt.order.price']}}</th>
+				<th scope="col">{{:~messages['cart.js.txt.delete']}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{for ~shopItem itemVar="~item"}}
+			<tr>
+				<td>
+					<span class="check-skin">
+						<input type="checkbox" name="godCheck" id="godCheck_{{:~item.bskGod.godTurn}}" checked="checked" value="{{:~item.shopId}}"
+							{{if ~item.sellYn != 'Y' || ~item.invYn != 'Y'}}
+								disabled="disabled"
+							{{/if}}
+						>
+						<span>{{:~messages['cart.js.txt.select']}}</span>
+					</span>
+				</td>
+				<td class="tleft">
+					<div class="product-info">
+						<div class="product-info-img"><a href="/goods/{{:~item.bskGod.godNo}}/view"><img src="{{:~pimg(~item.imgUrl,'100x100')}}" alt="{{:~messages['cart.js.txt.goods.img']}}" onerror="errorImgShow(this, 100);"></a></div>
+						<input type="hidden" class="recommendProduct" value="{{:~item.god.erpGodNo}}"/>
+                        <div class="product-info-text">
+							<div class="product-info-box">
+								<p class="product-name"><a href="/goods/{{:~item.bskGod.godNo}}/view">{{:~item.god.godNm}}</a></p>
+								<div class="product-price">
+									<span>{{:~otool.commaInAmount(~item.price)}}{{:~messages['common.js.crncy']}}</span>
+								</div>
+							</div>
+							<div class="product-option">
+								{{if ~item.bskGod.pckageGodYn === 'Y' && pckageGodTpCd !== 'ADIT_CPST_GOD'}}
+									<span>
+										{{for ~item.bskCpstGodCnnc itemVar="~citem"}}
+				 							{{if #getIndex()!==0}} , {{/if}} {{:~citem.godNm}} : {{:~citem.colorCd}}
+				 							{{for ~item.bskCpstGodItmCnnc itemVar="~innerItem"}}
+												{{if ~citem.godNo === ~innerItem.godNo}}
+													/ {{:~innerItem.itmNm}}
+												{{/if}}
+											{{/for}} 
+										{{/for}}
+									</span>
+								{{/if}}
+								{{if ~item.bskGod.pckageGodYn !== 'Y' || ~item.pckageGodTpCd === 'ADIT_CPST_GOD'}}
+									<span> {{:~item.god.colorCd}} / {{:~item.godItm.itmNm}}</span>
+								{{/if}}
+								{{if ~item.pckageGodTpCd != 'ADIT_CPST_GOD'}}
+									<a href="#layerPopupOption" data-godturn="{{:~item.bskGod.godTurn}}" data-godno="{{:~item.bskGod.godNo}}" data-itmqty="{{:~item.bskGod.itmQty}}" data-shopid="{{:~item.shopId}}" class="btn_txt btn_modify d_layer_open"><em>{{:~messages['cart.js.txt.change']}}</em></a>
+								{{/if}}
+							</div>
+						</div>
+					</div>
+				</td>
+				<td>
+					{{if ~item.sellYn == 'Y' && ~item.invYn == 'Y'}}
+					<div class="quantityWrap">
+							<button type="button" class="btMinus" name="itmFigureAdd" onClick="cart.changeQtyCart('{{:~item.bskGod.godTurn}}',-1,false,'{{:~item.shopId}}');">{{:~messages['cart.js.txt.substract']}}</button>
+							<button type="button" class="btPlus" name="itmFigureDel" onClick="cart.changeQtyCart('{{:~item.bskGod.godTurn}}',1,false,'{{:~item.shopId}}');">{{:~messages['cart.js.txt.add']}}</button>
+							<input type="hidden" name="itmFigureShopId" value="{{:~item.shopId}}"/>
+							<input type="number" class="pdNumber" name="itmFigure" maxlength="5" id="itmFigure_{{:~item.bskGod.godTurn}}" checked="checked" value="{{:~item.bskGod.itmQty}}">
+					</div>
+					<a href="#" class="btn_txt btn_num_save" name="itmFigureApply" onClick="cart.applyQtyCart('PKUP_DLV','{{:~item.bskGod.godTurn}}','{{:~item.shopId}}');"><em>{{:~messages['cart.js.txt.apply']}}</em></button>
+					{{else}}
+					<div class="quantity-wrap">
+						{{:~item.bskGod.itmQty}}
+					</div>				
+					{{/if}}
+				</td>
+				<td>
+					{{if ~item.sellYn == 'Y' && ~item.invYn == 'Y'}}
+					<span id="totDcTitleInfo_{{:~item.bskGod.godTurn}}">{{:~otool.commaInAmount(~item.cpnAplyDcAmt*~item.bskGod.itmQty)}} {{:~messages['common.js.crncy']}}</span>
+					<div class="tooltip-wrap d_dropdown layer_discount">
+						<button type="button" class="btn_pay_view d_dropdown_sel" {{if !~item.cpnAplyDcAmt}}style="display:none;"{{/if}} id="dcLayerBtn_{{:~item.bskGod.godTurn}}" title="{{:~messages['cart.js.txt.dc.info.detail']}}">{{:~messages['cart.js.txt.tool.tip.open.close']}}</button>
+						<!-- 툴팁 레이어  -->
+						<div class="tooltip-layer" id="dcLayerInfo_{{:~item.bskGod.godTurn}}">
+							<div class="tooltip-cnt">
+
+								{{if ~item.cpnNo}}
+								<dl>
+									<dt>{{:~item.cpnNm}} </dt>
+									<dd>{{:~otool.commaInAmount(~otool.parseAmount(~item.cpnAplyDcAmt)*~otool.parseAmount(~item.bskGod.itmQty))}} {{:~messages['common.js.crncy']}}</dd>
+								</dl>
+								{{/if}}
+								<dl id="bskDcInfo_{{:~item.bskGod.godTurn}}">
+									<dt class="left"></dt>
+									<dd class="right"></dd>
+								</dl>
+								<dl id="totDcInfo_{{:~item.bskGod.godTurn}}">
+									<dt class="left fw_bold">{{:~messages['cart.js.txt.total.dc.price']}}</dt>
+									<dd class="right fw_bold">{{:~otool.commaInAmount(~item.cpnAplyDcAmt*~item.bskGod.itmQty)}} {{:~messages['common.js.crncy']}}</dd>
+								<dl>
+
+							</div>
+							<button type="button" class="tooltip-close d_dropdown_close">{{:~messages['cart.js.txt.close']}}</button>
+						</div>
+						<!-- //툴팁 레이어  -->
+					</div>
+					{{/if}}
+				</td>
+				<td>
+					{{if ~item.pkupDay == ~item.crntDay}}
+						{{:~messages['cart.js.txt.day.pickup']}}
+					{{else}}
+						{{:~messages['cart.js.txt.after.pickup']}}
+					{{/if}}
+				</td>
+				<td>
+					{{if ~item.sellYn == 'Y' && ~item.invYn == 'Y'}}
+						<strong class="fw_bold" id="item-price_{{:~item.bskGod.godTurn}}">{{:~otool.commaInAmount(~otool.parseAmount(~item.price)*~otool.parseAmount(~item.bskGod.itmQty))}}{{:~messages['common.js.crncy']}}</strong>
+					{{else}}
+						{{if ~item.sellYn == 'N' }}
+							<strong class="fc_black">{{:~messages['cart.js.txt.sell.stop']}}</strong>
+						{{else}}
+							<strong class="fc_black">{{:~messages['cart.js.txt.sold.out.temp']}}</strong>
+						{{/if}}
+					{{/if}}
+				</td>
+				<td>
+					<a href="#" class="btn_list_del" onClick="cart.deleteCart('PKUP_DLV','{{:~item.bskGod.godTurn}}','{{:~shopItem[0].shopId}}');">{{:~messages['cart.js.txt.delete']}}</a>
+				</td>
+			</tr>
+			{{/for}}
+		</tbody>
+		<tfoot>
+	    	<tr>
+	        	<td colspan="3" class="pdPaySel">
+					<dl>
+						<dt>{{:~messages['cart.js.txt.select.goods.price']}}</dt>
+						<dd><strong id="PKUP_DLV_god_amt_{{:~shopItem[0].shopId}}">999,999,000</strong>{{:~messages['common.js.crncy']}}</dd>
+					</dl>
+				</td>
+	            <td colspan="2" class="disPaySel">
+					<dl>
+						<dt>{{:~messages['cart.js.txt.select.dc.price']}}</dt>
+						<dd><strong id="PKUP_DLV_dc_amt_{{:~shopItem[0].shopId}}">-10,000</strong>{{:~messages['common.js.crncy']}}</dd>
+					</dl>
+				</td>
+	            <td colspan="2" class="orderPaySel">
+					<dl>
+						<dt>{{:~messages['cart.js.txt.total.order.price']}}</dt>
+						<dd><strong id="PKUP_DLV_total_amt_{{:~shopItem[0].shopId}}">94,589,000</strong>{{:~messages['common.js.crncy']}}</dd>
+					</dl>
+				</td>
+	    	</tr>
+	        <tr>
+	        	<td colspan="7" class="sel_r">{{:~messages['cart.js.txt.expect.earn.mileage']}} <span id="PKUP_DLV_mileage_{{:~shopItem[0].shopId}}"></span></td>
+	        </tr>
+		</tfoot>
+	</table>
+
+	<div class="tableBtarea"><a href="#" onclick="cart.deleteCart('PKUP_DLV','','{{:~shopItem[0].shopId}}')" class="btn sm gray"><span>{{:~messages['cart.js.txt.select.goods.delete']}}</span></a></div>
+	<div class="btnWrap">
+		<a href="/" class="btn-style03">{{:~messages['cart.js.txt.go.shopping']}}</a>
+		<a href="javascript:cart.orderCart('PKUP_DLV','{{:~shopItem[0].shopId}}');" class="btn-style02">{{:~messages['cart.js.txt.ordering']}}</a>
+	</div>
+
+</div>
+{{/for}}
+{{/if}}
+	<ul class="text-list02 col-type01">
+		<li>{{:~messages['cart.js.txt.info.save.term.1.1']}}</li>
+		<li>{{:~messages['cart.js.txt.info.save.gift.term.1.1']}}</li>
+		<li>{{:~messages['cart.js.txt.info.save.gift.term.1.2']}}</li>
+	</ul>
+</div>
+</script>

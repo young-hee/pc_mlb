@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectDspConttImg" parameterType="dspConttImg" resultType="dspConttImg">
+		SELECT /* com.plgrim.ncp.base.selectDspConttImg		Generator(Generator)	2018-05-23 */
+			   CONTT_SN
+			 , CONTT_IMG_TURN
+			 , TMPLAT_TP_CD
+			 , IMG_SJ_NM
+			 , IMG_FILE_URL
+			 , IMG_FILE_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM DSP_CONTT_IMG
+		 WHERE 1 = 1
+	   	   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+		   AND CONTT_IMG_TURN = #{conttImgTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updateDspConttImg" parameterType="dspConttImg">
+		UPDATE /* com.plgrim.ncp.base.updateDspConttImg		Generator(Generator)	2018-05-23 */
+		DSP_CONTT_IMG SET
+			   TMPLAT_TP_CD = #{tmplatTpCd,jdbcType=VARCHAR}
+			 , IMG_SJ_NM = #{imgSjNm,jdbcType=VARCHAR}
+			 , IMG_FILE_URL = #{imgFileUrl,jdbcType=VARCHAR}
+			 , IMG_FILE_NM = #{imgFileNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+		   AND CONTT_IMG_TURN = #{conttImgTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertDspConttImg" parameterType="dspConttImg">
+		INSERT /* com.plgrim.ncp.base.insertDspConttImg		Generator(Generator)	2018-05-23 */
+		INTO   DSP_CONTT_IMG (
+			   CONTT_SN
+			 , CONTT_IMG_TURN
+			 , TMPLAT_TP_CD
+			 , IMG_SJ_NM
+			 , IMG_FILE_URL
+			 , IMG_FILE_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{conttSn,jdbcType=NUMERIC}
+			 , #{conttImgTurn,jdbcType=NUMERIC}
+			 , #{tmplatTpCd,jdbcType=VARCHAR}
+			 , #{imgSjNm,jdbcType=VARCHAR}
+			 , #{imgFileUrl,jdbcType=VARCHAR}
+			 , #{imgFileNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteDspConttImg" parameterType="dspConttImg">
+		DELETE /* com.plgrim.ncp.base.deleteDspConttImg		Generator(Generator)	2018-05-23 */
+		  FROM DSP_CONTT_IMG
+		 WHERE 1 = 1
+		   AND CONTT_SN = #{conttSn,jdbcType=NUMERIC}
+		   AND CONTT_IMG_TURN = #{conttImgTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

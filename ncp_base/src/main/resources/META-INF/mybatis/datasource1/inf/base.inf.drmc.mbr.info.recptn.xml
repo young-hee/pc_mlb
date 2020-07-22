@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfDrmcMbrInfoRecptn" parameterType="infDrmcMbrInfoRecptn" resultType="infDrmcMbrInfoRecptn">
+		SELECT /* com.plgrim.ncp.base.selectInfDrmcMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+			   ERP_CSTMR_NO
+			 , DRMC_DT
+			 , DRMC_RESN_CONT
+			 , REG_DT
+		  FROM INF_DRMC_MBR_INFO_RECPTN
+		 WHERE 1 = 1
+	   	   
+    </select>
+
+    <update id="updateInfDrmcMbrInfoRecptn" parameterType="infDrmcMbrInfoRecptn">
+		UPDATE /* com.plgrim.ncp.base.updateInfDrmcMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+		INF_DRMC_MBR_INFO_RECPTN SET
+			   ERP_CSTMR_NO = #{erpCstmrNo,jdbcType=VARCHAR}
+			 , DRMC_DT = #{drmcDt,jdbcType=TIMESTAMP}
+			 , DRMC_RESN_CONT = #{drmcResnCont,jdbcType=VARCHAR}
+		 WHERE 1 = 1
+		   
+    </update>
+
+	<insert id="insertInfDrmcMbrInfoRecptn" parameterType="infDrmcMbrInfoRecptn">
+		INSERT /* com.plgrim.ncp.base.insertInfDrmcMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+		INTO   INF_DRMC_MBR_INFO_RECPTN (
+			   ERP_CSTMR_NO
+			 , DRMC_DT
+			 , DRMC_RESN_CONT
+			 , REG_DT
+		)
+		VALUES (
+			   #{erpCstmrNo,jdbcType=VARCHAR}
+			 , #{drmcDt,jdbcType=TIMESTAMP}
+			 , #{drmcResnCont,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfDrmcMbrInfoRecptn" parameterType="infDrmcMbrInfoRecptn">
+		DELETE /* com.plgrim.ncp.base.deleteInfDrmcMbrInfoRecptn		Generator(Generator)	2018-06-11 */
+		  FROM INF_DRMC_MBR_INFO_RECPTN
+		 WHERE 1 = 1
+		   
+    </delete>
+
+</mapper>

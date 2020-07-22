@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.biz.mbr.webPnt">
+
+
+	<!-- TODO 포인트 -->
+
+	<insert id="insertWebPnt" parameterType="mbrWebpntHist">
+		/* [biz.mbr.webpnt.xml][insertWebPnt][회원 포인트 적립][Nana] */
+		INSERT INTO mbr_webpnt_hist (
+			webpnt_sn,
+			upper_webpnt_sn, 		/* 상위포인트 일련번호 */
+			mbr_no,					/* 회원번호 */
+			webpnt_tp_cd,			/* 포인트유형 : WEBPNT */
+			webpnt_resn_cd,			/* 포인트 사유코드 */
+			webpnt_detail_resn_cd,	/* 포인트 상세 사유코드 */
+			webpnt_stat_cd,			/* 포인트 상태코드 */
+			webpnt_amt,
+			remndr_webpnt_amt,
+			occur_dt,
+			USE_BEG_DT,
+			cncl_dt,
+			resn_dscr,
+			mall_id,
+			use_end_dt,
+			ord_no,
+			ord_god_turn,
+			qty_turn,
+			clm_no,
+			clm_wrhs_god_turn,
+			evt_no,
+			god_no,
+			god_evl_turn,
+			regtr_id,
+			reg_dt,
+			udter_id,
+			udt_dt
+		)
+		VALUES (
+			#{webpntSn},
+			#{upperWebpntSn},
+			#{mbrNo},
+			#{webpntTpCd},
+			#{webpntResnCd},
+			#{webpntDetailResnCd},
+			#{webpntStatCd},
+			#{webpntAmt},
+			#{remndrWebpntAmt},
+			SYSDATE,
+			#{useBegDt},
+			#{cnclDt},
+			#{resnDscr},
+			#{mallId},
+			#{useEndDt},
+			#{ordNo},
+			#{ordGodTurn},
+			#{qtyTurn},
+			#{clmNo},
+			#{clmWrhsGodTurn},
+			#{evtNo},
+			#{godNo},
+			#{godEvlTurn},
+			#{regtrId},
+			SYSDATE,
+			#{udterId},
+			SYSDATE
+		)
+	</insert>
+
+	<select id="listWebPointRemndrList" parameterType="mbrWebpntHistExt" resultType="mbrWebpntHistExt">
+		SELECT	/* [biz.mbr.webpnt.xml][listWebPointRemndrList][잔여포인트 목록 조회][Nana] */
+				mwh.*,
+				TO_DATE(TO_CHAR(use_end_dt, 'yyyymmdd'), 'yyyymmdd') - TO_DATE(TO_CHAR(SYSDATE, 'yyyymmdd'),'yyyymmdd') AS validDt
+		FROM 	mbr_webpnt_hist mwh
+		WHERE 	mbr_no = #{mbrNo}
+		AND 	TO_CHAR(SYSDATE, 'yyyyMMdd') BETWEEN TO_CHAR(use_beg_dt,'yyyyMMdd') AND TO_CHAR(use_end_dt, 'yyyyMMdd')
+		AND 	webpnt_stat_cd = 'ACCML_DCSN'   /*적립확정*/
+		AND 	remndr_webpnt_amt > 0
+		<if test="ordNo != null and ordNo != '' ">
+			AND ord_no = #{ordNo} AND ord_god_turn = #{ordGodTurn} AND mwh.qty_turn = #{qtyTurn}
+		</if>
+		<if test="evtNo != null and evtNo != '' ">
+			AND evt_no = #{evtNo}
+		</if>
+		<if test="godNo != null and godNo != '' ">
+			AND god_no = #{godNo} AND god_evl_turn = #{godEvlTurn}
+		</if>
+		<if test="mallId != null and mallId != '' ">
+			AND mall_id = #{mallId} 
+		</if>
+		ORDER BY validDt ASC, mwh.USE_BEG_DT ASC /* TODO bynana. : USE_BEG_DT ? occur_dt ? */
+	</select>
+
+	<select id="selectOriginOrdGodInfo" parameterType="mbrWebpntHistExt" resultType="java.util.HashMap">
+         	SELECT /* [biz.mbr.webpnt.xml][selectOriginOrdGodInfo][원 주문상품정보 조회] */
+         	       T1.ORI_ORD_NO AS ordNo, T1.ORI_ORD_GOD_TURN AS oriOrdGodTurn, T1.ORI_QTY_TURN AS oriQtyTurn, T1.ORD_GOD_TURN AS ordGodTurn, T1.QTY_TURN AS qtyTurn
+              FROM (
+                      SELECT ORI_ORD_NO
+                            ,ORI_ORD_GOD_TURN
+                            ,ORI_QTY_TURN
+                            ,ORD_GOD_TURN
+                            ,QTY_TURN
+                       FROM (
+                               SELECT ORD_NO AS ORI_ORD_NO
+	                                  ,ORD_GOD_TURN ORI_ORD_GOD_TURN
+	                                  ,QTY_TURN ORI_QTY_TURN
+	                                  ,#{ordGodTurn} ORD_GOD_TURN
+	                                  ,#{qtyTurn} QTY_TURN
+	                                  ,ROW_NUMBER() OVER(PARTITION BY ORD_GOD_TURN ORDER BY ORD_GOD_TURN ASC, QTY_TURN ASC) RANK
+                                FROM(
+                                      SELECT IOGSP.ORD_NO
+	                                        ,IOGSP.ORD_GOD_TURN
+	                                        ,IOGSP.QTY_TURN
+	                                    FROM INF_ORD_GOD_ERP_DSTB IOGSP
+	                                   WHERE 1 = 1
+	                                     AND IOGSP.ORD_NO= #{ordNo}
+	                                   MINUS
+	                                  SELECT MWH.ORD_NO
+	                                        ,MWH.ORD_GOD_TURN
+	                                        ,MWH.QTY_TURN
+	                                    FROM MBR_WEBPNT_HIST MWH
+	                                   WHERE CLM_NO IS NOT NULL
+	                                     <!--
+	                                     AND WEBPNT_STAT_CD IN ('USE_CNCL','ACCML_CNCL')
+	                                     -->
+	                                     AND WEBPNT_STAT_CD = (#{webpntStatCd})
+	                                     AND ORD_NO= #{ordNo}
+                                  )
+                             )
+                       WHERE RANK=1
+                  )T1 ,
+                 (
+                     SELECT ORD_NO, MAX(ORD_GOD_TURN) ORD_GOD_TURN, MIN(ORI_ORD_GOD_TURN) ORI_ORD_GOD_TURN
+                      FROM (
+	                            SELECT ORD_NO, ORD_GOD_TURN, ORI_ORD_GOD_TURN
+	                              FROM (
+	                                        SELECT cn1.ord_no, cn1.ORD_GOD_TURN, cn1.CLM_NO, cn1.CLM_WRHS_GOD_TURN, cn2.ORD_GOD_TURN ORI_ORD_GOD_TURN
+	                                          FROM ORD_CLM_GOD_CNNC cn1
+	                                              ,ORD_CLM_GOD_CNNC cn2
+	                                              ,CLM c
+	                                         WHERE cn1.ord_no = cn2.ord_no
+	                                           AND cn1.CLM_NO = cn2.CLM_NO
+	                                           AND cn1.CLM_WRHS_GOD_TURN = cn2.CLM_WRHS_GOD_TURN
+	                                           AND cn1.CLM_NO = c.CLM_NO
+	                                           AND cn1.GOD_CNNC_TP_CD = 'DLIVY_GOD_CNNC'   /* 출고 상품 연결 : 교환 출고 */
+	                                           AND cn2.GOD_CNNC_TP_CD = 'WRHS_GOD_CNNC'  /* 입고 상품 연결 : 반품 입고 */
+	                                           AND c.CLM_STAT_CD = 'COMPT'                            /* 교환 완료 */
+	                                           AND cn1.ord_no = #{ordNo}  /* 반품 요청할 상품의 주문 번호 */
+	                                   )
+	                           CONNECT BY PRIOR ORI_ORD_GOD_TURN = ORD_GOD_TURN
+	                             START WITH ORD_GOD_TURN IN (#{ordGodTurn})    /* 반품 요청 상품 순번 */
+                           )
+                      GROUP BY ORD_NO
+                   ) T2
+              WHERE T1.ORI_ORD_NO=T2.ORD_NO
+                AND T1.ORI_ORD_GOD_TURN=T2.ORI_ORD_GOD_TURN
+	</select>
+
+	<select id="listWebPointUseList" parameterType="mbrWebpntHistExt" resultType="mbrWebpntHistExt">
+		SELECT	/* [biz.mbr.webpnt.xml][listWebPointUseList][사용포인트 목록 조회][Nana] */
+				mwh.*,
+				NVL((SELECT remndr_webpnt_amt FROM mbr_webpnt_hist a WHERE a.webpnt_sn = mwh.upper_webpnt_sn),0) AS orgRemndrWebpntAmt
+		FROM 	mbr_webpnt_hist mwh
+		WHERE 	mwh.mbr_no = #{mbrNo}
+		AND 	mwh.ord_no = #{ordNo}
+		AND 	mwh.ord_god_turn = #{ordGodTurn}
+		AND 	mwh.qty_turn = #{qtyTurn}
+		AND 	mwh.webpnt_resn_cd = 'PCH'
+		AND 	mwh.webpnt_detail_resn_cd = 'WEBPNT_USE'
+		AND 	mwh.webpnt_stat_cd = 'USE'
+		<if test='mallId != null and mallId !=""'>
+		AND 	mwh.mall_id = #{mallId}
+		</if>
+	</select>
+
+	<select id="listWebPointAccmlList" parameterType="mbrWebpntHistExt" resultType="mbrWebpntHistExt">
+		SELECT	/* [biz.mbr.webpnt.xml][listWebPointAccmlList][구매적립포인트 목록 조회][Nana] */
+				mwh.*
+		FROM 	mbr_webpnt_hist mwh
+		WHERE 	mwh.mbr_no = #{mbrNo}
+		AND 	mwh.ord_no = #{ordNo}
+		AND 	mwh.ord_god_turn = #{ordGodTurn}
+		AND 	mwh.qty_turn = #{qtyTurn}
+		AND 	mwh.webpnt_resn_cd = 'PCH'
+		AND 	mwh.webpnt_detail_resn_cd = 'WEBPNT_ACCML'
+		AND 	mwh.webpnt_stat_cd IN ('ACCML_DCSN', 'ACCML_PREARNGE')
+	</select>
+
+	<select id="listWebPointDdctList" parameterType="mbrWebpntHistExt" resultType="mbrWebpntHistExt">
+		SELECT	/* [biz.mbr.webpnt.xml][listWebPointDdctList][차감해야하는 포인트 목록 조회][Nana] */
+				mwh.*
+		FROM 	mbr_webpnt_hist mwh
+		WHERE 	mwh.mbr_no = #{mbrNo}
+		/*AND 	mwh.webpnt_stat_cd = 'USE'*/
+		AND 	mwh.remndr_webpnt_amt <![CDATA[ < ]]> 0
+		AND     mwh.mall_id = #{mallId}
+		ORDER BY mwh.occur_dt ASC
+	</select>
+
+	<!-- 포인트 수정 (잔여포인트, 상태) -->
+	<update id="updateWebPoint" parameterType="mbrWebpntHist">
+		UPDATE	/* [biz.mbr.webpnt.xml][updateWebPoint][포인트 수정][Nana] */
+				MBR_WEBPNT_HIST
+		SET
+				remndr_webpnt_amt = #{remndrWebpntAmt},
+				udter_id = #{udterId},
+				udt_dt = SYSDATE
+		WHERE
+				webpnt_sn = #{webpntSn}
+		AND 	mbr_no = #{mbrNo}
+	</update>
+
+	<!-- 클레임으로 인한 사용취소적립 시 사용기간 연장 -->
+	<update id="updateWebPointExtension" parameterType="mbrWebpntHist">
+		UPDATE	/* [biz.mbr.webpnt.xml][updateWebPointExtension][포인트 기간 연장] */
+				MBR_WEBPNT_HIST
+		SET
+				use_end_dt = use_end_dt + 30,
+				webpnt_stat_cd = CASE WHEN webpnt_stat_cd = 'EXTSH' AND use_end_dt + 30 > SYSDATE THEN 'ACCML_DCSN' ELSE webpnt_stat_cd END,
+				udter_id = #{udterId},
+				udt_dt = SYSDATE
+		WHERE
+				webpnt_sn = #{webpntSn}
+		AND 	mbr_no = #{mbrNo}
+		AND		use_end_dt <![CDATA[<]]> SYSDATE
+		AND		use_end_dt <![CDATA[>=]]> SYSDATE - 30
+	</update>
+
+	<!-- 포인트 현황 조회 -->
+	<select id="selectWebPointInfo"	parameterType="mbrWebpntHist" resultType="mbrWebpntHistExt">
+		SELECT 	/* [biz.mbr.webpnt.xml][selectWebPointInfo][포인트 현황 조회][Nana] */
+				NVL(SUM(a.usefulAmt), 0) + NVL(SUM(a.ddctAmt), 0) 		AS usefulAmt,			/*가용포인트*/
+				NVL(SUM(a.accmlPrearngeAmt), 0) AS accmlPrearngeAmt,	/*적립예정포인트*/
+				NVL(SUM(a.extshPrearngeAmt), 0) AS extshPrearngeAmt, 	/*소멸예정포인트*/
+                TO_CHAR(LAST_DAY(SYSDATE),'YYYY-MM-DD') AS procDtStr      /*소멸예정일자(매월말일)*/
+		FROM (
+				SELECT
+						CASE WHEN mwh.webpnt_stat_cd = 'ACCML_DCSN' AND mwh.remndr_webpnt_amt <![CDATA[ > ]]>  0 AND TO_CHAR(SYSDATE, 'yyyyMMdd') BETWEEN TO_CHAR(mwh.use_beg_dt,'yyyyMMdd') AND TO_CHAR(mwh.use_end_dt, 'yyyyMMdd')
+							 THEN mwh.remndr_webpnt_amt
+							 ELSE 0
+						END  usefulAmt,
+						/*DECODE(webpnt_stat_cd, 'ACCML_PREARNGE', webpnt_amt, 0) AS accmlPrearngeAmt,*/
+						CASE WHEN mwh.webpnt_stat_cd = 'ACCML_PREARNGE' AND NOT EXISTS (SELECT	1
+																					FROM 	mbr_webpnt_hist m
+																					WHERE 	m.upper_webpnt_sn = mwh.webpnt_sn
+																					AND 	m.webpnt_resn_cd = 'PCH'
+																					AND 	m.webpnt_detail_resn_cd = 'PCH_CANCL_DDCT'
+																					AND 	m.webpnt_stat_cd = 'ACCML_CNCL')
+							 THEN webpnt_amt
+						 	 ELSE 0
+						END accmlPrearngeAmt,
+						<!-- CASE WHEN mwh.webpnt_stat_cd = 'ACCML_DCSN' AND MONTHS_BETWEEN(to_date(to_char(mwh.use_end_dt, 'yyyymmdd'), 'yyyymmdd'), to_date(to_char(SYSDATE, 'yyyymmdd'),'yyyymmdd')) <![CDATA[ <= ]]> 1
+							 THEN mwh.remndr_webpnt_amt
+							 ELSE 0
+						END  extshPrearngeAmt, 2018.08.10 ryan-->
+						-- 소멸예정 포인트 (현재일시 ~ 월말) 변경
+						CASE WHEN mwh.webpnt_stat_cd = 'ACCML_DCSN' AND ( to_char(mwh.use_end_dt, 'yyyymmdd') BETWEEN to_char( SYSDATE, 'yyyymmdd')  AND to_char( LAST_DAY(SYSDATE), 'yyyymmdd')  )
+							 THEN mwh.remndr_webpnt_amt
+							 ELSE 0
+						END  extshPrearngeAmt,
+						CASE WHEN mwh.remndr_webpnt_amt <![CDATA[ < ]]> 0
+							 THEN mwh.remndr_webpnt_amt
+							 ELSE 0
+						END  ddctAmt	/*차감해야하는 코인*/
+				FROM mbr_webpnt_hist mwh
+				WHERE mwh.mbr_no = #{mbrNo}
+				  AND mwh.mall_id = #{mallId}
+			  ) a
+	</select>
+
+	<select id="selectWebPointInfoByGodEvl" parameterType="mbrWebpntHistExt" resultType="mbrWebpntHistExt">
+		SELECT	/* [biz.mbr.webpnt.xml][selectWebPointInfoByGodEvl][상품평으로 인한 적립 정보 조회][Nana] */
+				MWH.*
+		FROM 	MBR_WEBPNT_HIST MWH
+		WHERE 	WEBPNT_RESN_CD = 'EVT'
+		AND 	WEBPNT_DETAIL_RESN_CD = 'GOD_REV'
+		AND 	MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		AND 	GOD_NO = #{godNo, jdbcType=VARCHAR}
+		AND 	GOD_EVL_TURN = #{godEvlTurn, jdbcType=NUMERIC}
+	</select>
+	
+	<select id="selectWebPointInfoByCriteria" parameterType="mbrWebpntHistExt" resultType="mbrWebpntHistExt">
+		SELECT	/* [biz.mbr.webpnt.xml][selectWebPointInfoByCriteria][상품평으로 인한 적립 정보 조회][Nana] */
+				MWH.*
+		FROM 	MBR_WEBPNT_HIST MWH
+		WHERE 1 = 1
+		AND 	WEBPNT_RESN_CD = nvl(#{webpntResnCd, jdbcType=VARCHAR}, 'EVT')
+		AND 	WEBPNT_DETAIL_RESN_CD = nvl(#{webpntDetailResnCd, jdbcType=VARCHAR}, 'GOD_REV')
+		AND 	MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		AND 	GOD_NO = #{godNo, jdbcType=VARCHAR}
+		AND   ORD_NO = #{ordNo, jdbcType=VARCHAR}
+		<!-- AND 	GOD_EVL_TURN = #{godEvlTurn, jdbcType=NUMERIC} -->
+	</select>
+
+	<!-- 소멸 안내 대상 조회 -->
+
+	<resultMap id="mbrWebpntResultMap" type="com.plgrim.ncp.biz.member.result.MemberBoResult">
+		<result property="mbrWebpntHist.webpntSn"                column="WEBPNT_SN" />               <!--웹포인트 일련번호-->
+		<result property="mbrWebpntHist.upperWebpntSn"           column="UPPER_WEBPNT_SN" />         <!--상위 웹포인트 일련번호-->
+		<result property="mbrWebpntHist.mbrNo"                   column="MBR_NO" />                  <!--회원 번호-->
+		<result property="mbrWebpntHist.webpntTpCd"              column="WEBPNT_TP_CD" />            <!--웹포인트 유형 코드-->
+		<result property="mbrWebpntHist.webpntResnCd"            column="WEBPNT_RESN_CD" />          <!--웹포인트 사유 코드-->
+		<result property="mbrWebpntHist.webpntResnNm"            column="WEBPNT_RESN_NM" />          <!--웹포인트 유형 명-->
+		<result property="mbrWebpntHist.webpntDetailResnCd"      column="WEBPNT_DETAIL_RESN_CD" />   <!--웹포인트 상세 사유 코드-->
+		<result property="mbrWebpntHist.webpntDetailResnNm"      column="WEBPNT_DETAIL_RESN_NM" />   <!--웹포인트 상세 사유 명-->
+		<result property="mbrWebpntHist.webpntStatCd"            column="WEBPNT_STAT_CD" />          <!--웹포인트 상태 코드-->
+		<result property="mbrWebpntHist.webpntStatNm"            column="WEBPNT_STAT_NM" />          <!--웹포인트 상태 명-->
+		<result property="mbrWebpntHist.webpntAmt"               column="WEBPNT_AMT" />              <!--웹포인트 금액-->
+		<result property="mbrWebpntHist.remndrWebpntAmt"         column="REMNDR_WEBPNT_AMT" />       <!--잔여웹포인트 금액-->
+		<result property="mbrWebpntHist.procDt"                  column="PROC_DT" />                 <!--발생 일시-->
+		<result property="mbrWebpntHist.occurDt"                 column="OCCUR_DT" />                <!--발생 일시-->
+		<result property="mbrWebpntHist.useBegDt"                column="USE_BEG_DT" />            	 <!--사용 시작 일시-->
+		<result property="mbrWebpntHist.useEndDt"                column="USE_END_DT" />              <!--사용 종료 일시-->
+		<result property="mbrWebpntHist.cnclDt"                  column="CNCL_DT" />                 <!--취소 일시-->
+		<result property="mbrWebpntHist.resnDscr"                column="RESN_DSCR" />               <!--사유 설명-->
+		<result property="mbrWebpntHist.webpntNos"               column="WEBPNT_NOS" />              <!--주문/클레임/이벤트/상품 번호-->
+		<result property="mbrWebpntHist.ordNo"                   column="ORD_NO" />                  <!--주문 번호-->
+		<result property="mbrWebpntHist.ordGodTurn"              column="ORD_GOD_TURN" />            <!--주문 상품 순번-->
+		<result property="mbrWebpntHist.clmNo"                   column="CLM_NO" /> 				 <!--클레임 번호-->
+		<result property="mbrWebpntHist.clmWrhsGodTurn"          column="CLM_WRHS_GOD_TURN" />       <!--클레임 입고 상품 순번-->
+		<result property="mbrWebpntHist.evtNo"                   column="EVT_NO" />       			 <!--이벤트 번호-->
+		<result property="mbrWebpntHist.godNo"             		 column="GOD_NO" />            		 <!--상품 번호-->
+		<result property="mbrWebpntHist.godEvlTurn"              column="GOD_EVL_TURN" />            <!--상품평 순번-->
+		<result property="mbrWebpntHist.regtrId"                 column="REGTR_ID" />                <!--등록자 ID-->
+		<result property="mbrWebpntHist.regDt"                   column="REG_DT" />                  <!--등록 일시-->
+		<result property="mbrWebpntHist.udterId"                 column="UDTER_ID" />                <!--수정자 ID-->
+		<result property="mbrWebpntHist.mbrNo"                   column="UDT_DT" />                  <!--수정 일시-->
+		<result property="mbrWebpntHist.useDtStr"                column="USE_DT_STR" />                  <!--사용유효기간-->
+		<result property="mbrWebpntHist.procDtStr"                column="PROC_DT_STR" />                  <!--사용유효기간-->
+		<result property="mbrWebpntHist.occurDtStr"              column="OCCUR_DT_STR" />            <!---->
+	</resultMap>
+
+	<!-- 회원 웹적립금 건수 조회 -->
+	<select id="selectMemberPurpleCoinListCount" parameterType="mbrWebpntHist" resultType="Long">
+		SELECT /* [biz.mbr.webpnt.xml][selectMemberPurpleCoinListCount][회원 포인트 목록 건수 조회][Yoon] */
+		COUNT(*)
+		FROM MBR_WEBPNT_HIST mwh
+		WHERE mwh.MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		  AND mwh.WEBPNT_TP_CD = 'WEBPNT'
+		  AND NVL(mwh.MALL_ID, 'DXM') = #{mallId, jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="selectMemberPurpleCoinList" parameterType="mbrWebpntHist" resultMap="mbrWebpntResultMap">
+		SELECT  /* [biz.mbr.webpnt.xml][selectMemberPurpleCoinList][회원 포인트 목록 조회][Yoon] */
+		  WEBPNT_SN      																					<!--웹포인트 일련번호-->
+		, UPPER_WEBPNT_SN     																				<!--상위 웹포인트 일련번호-->
+		, MBR_NO																							<!--회원 번호-->
+		, WEBPNT_TP_CD																						<!--웹포인트 유형 코드-->
+		, WEBPNT_RESN_CD																					<!--웹포인트 사유 코드-->
+		, (SELECT CD_NM
+			 FROM MV_SYS_CD
+			WHERE WEBPNT_RESN_CD = CD
+			  AND UPPER_CD = 'WEBPNT_RESN'
+			  AND LANG_CD = 'KOR'
+		  )	AS WEBPNT_RESN_NM																				<!--웹포인트 사유 명-->
+		, WEBPNT_DETAIL_RESN_CD 																			<!--웹포인트 상세 사유 코드-->
+		, WEBPNT_STAT_CD																					<!--웹포인트 상태 코드-->
+		, (SELECT CD_NM
+			 FROM MV_SYS_CD
+			WHERE WEBPNT_STAT_CD = CD AND UPPER_CD = 'WEBPNT_STAT' AND LANG_CD='KOR') AS WEBPNT_STAT_NM		<!--웹포인트 상태 명-->
+		, NVL ( CASE WHEN WEBPNT_RESN_CD = 'PCH' AND WEBPNT_DETAIL_RESN_CD IN ( 'PCH_CANCL_ACCML' , 'PCH_CANCL_DDCT' ) THEN CLM_NO
+                WHEN WEBPNT_RESN_CD = 'EVT' THEN EVT_NO
+                WHEN WEBPNT_RESN_CD = 'GOD_REV' THEN GOD_NO
+                ELSE ORD_NO END
+                , '-') AS WEBPNT_NOS
+		, CASE
+			WHEN WEBPNT_STAT_CD IN ('USE', 'ACCML_CNCL', 'EXTSH', 'ACCML_DDCT')
+			THEN CASE WHEN WEBPNT_AMT > 0 THEN -WEBPNT_AMT ELSE WEBPNT_AMT END
+			ELSE WEBPNT_AMT
+		  END AS WEBPNT_AMT																					<!--웹포인트 금액-->
+		, REMNDR_WEBPNT_AMT																					<!--잔여웹포인트 금액-->
+		, CASE
+			WHEN WEBPNT_STAT_CD IN ('USE_CNCL', 'ACCML_CNCL') THEN TO_CHAR(CNCL_DT, 'YYYY-MM-DD')
+			ELSE CASE
+					WHEN WEBPNT_STAT_CD IN ('USE', 'EXTSH') THEN TO_CHAR(OCCUR_DT, 'YYYY-MM-DD')
+					ELSE DECODE(WEBPNT_STAT_CD, 'ACCML_PREARNGE', TO_CHAR(OCCUR_DT, 'YYYY-MM-DD'), TO_CHAR(USE_BEG_DT, 'YYYY-MM-DD'))
+				  END
+		  END AS PROC_DT_STR																				<!--처리 일시-->
+		, TO_CHAR(OCCUR_DT, 'YYYY-MM-DD HH24:MI') AS OCCUR_DT_STR											<!--발생 일시-->
+		, USE_BEG_DT 																						<!--확정 일시-->
+		, CNCL_DT																							<!--취소 일시-->
+		, CASE
+			WHEN WEBPNT_RESN_CD = 'PCH' THEN GOD_NM
+			WHEN WEBPNT_RESN_CD = 'EVT' AND WEBPNT_DETAIL_RESN_CD != 'GOD_REV' THEN EVT_NM
+			ELSE RESN_DSCR
+		  END AS RESN_DSCR																					<!--사유 설명-->
+		, CASE
+			WHEN WEBPNT_STAT_CD IN ('USE', 'ACCML_CNCL', 'EXTSH', 'ACCML_DDCT') THEN ''
+			ELSE TO_CHAR(USE_BEG_DT, 'YYYY-MM-DD') || ' ~ ' ||  TO_CHAR(USE_END_DT, 'YYYY-MM-DD')
+		  END AS USE_DT_STR																					<!--사용유효기간-->
+		, ORD_NO																							<!--주문 번호-->
+		, ORD_GOD_TURN																						<!--주문 상품 순번-->
+		, CLM_NO																							<!--클레임 번호-->
+		, CLM_WRHS_GOD_TURN																					<!--클레임 입고 상품 순번-->
+		, EVT_NO																							<!--이벤트 번호-->
+		, GOD_NO																							<!--상품 번호-->
+		, GOD_EVL_TURN																						<!--상품평 순번-->
+		, REGTR_ID																							<!--등록자 ID-->
+		, REG_DT																							<!--등록 일시-->
+		, UDTER_ID																							<!--수정자 ID-->
+		, UDT_DT																							<!--수정 일시-->
+		  FROM (
+		<include refid="com.plgrim.ncp.base.beginPage"/>
+			SELECT mwh.WEBPNT_SN               																<!--웹포인트 일련번호-->
+					, mwh.UPPER_WEBPNT_SN       																<!--상위 웹포인트 일련번호-->
+					, mwh.MBR_NO																				<!--회원 번호-->
+					, mwh.WEBPNT_TP_CD																			<!--웹포인트 유형 코드-->
+					, mwh.WEBPNT_RESN_CD																		<!--웹포인트 사유 코드-->
+					, mwh.WEBPNT_DETAIL_RESN_CD 																<!--웹포인트 상세 사유 코드-->
+					, mwh.WEBPNT_STAT_CD																		<!--웹포인트 상태 코드-->
+					, mwh.WEBPNT_AMT																			<!--웹포인트 금액-->
+					, mwh.REMNDR_WEBPNT_AMT																		<!--잔여웹포인트 금액-->
+					, mwh.OCCUR_DT																				<!--발생 일시-->
+					, mwh.USE_BEG_DT																			<!--확정 일시-->
+					, mwh.CNCL_DT																				<!--취소 일시-->
+					, mwh.RESN_DSCR																				<!--사유 설명-->
+					, mwh.USE_END_DT																			<!--사용 종료 일시-->
+					, mwh.ORD_NO																				<!--주문 번호-->
+					, mwh.ORD_GOD_TURN																			<!--주문 상품 순번-->
+					, mwh.CLM_NO																				<!--클레임 번호-->
+					, mwh.CLM_WRHS_GOD_TURN																		<!--클레임 입고 상품 순번-->
+					, mwh.EVT_NO																				<!--이벤트 번호-->
+					, mwh.GOD_NO																				<!--상품 번호-->
+					, mwh.GOD_EVL_TURN																			<!--상품평 순번-->
+					, mwh.REGTR_ID																				<!--등록자 ID-->
+					, mwh.REG_DT																				<!--등록 일시-->
+					, mwh.UDTER_ID																				<!--수정자 ID-->
+					, mwh.UDT_DT																				<!--수정 일시-->
+					, og.GOD_NM
+					, evt.EVT_NM
+		FROM MBR_WEBPNT_HIST mwh
+		LEFT OUTER JOIN ord_god og ON mwh.ord_no = og.ord_no AND MWH.ORD_GOD_TURN = OG.ORD_GOD_TURN
+		LEFT OUTER JOIN CLM_WRHS_GOD cwg ON MWH.CLM_NO = CWG.CLM_NO AND MWH.CLM_WRHS_GOD_TURN = CWG.CLM_WRHS_GOD_TURN
+		LEFT OUTER JOIN evt evt ON MWH.EVT_NO = EVT.EVT_No
+		LEFT OUTER JOIN god_god_evl gge ON MWH.GOD_NO = GGE.GOD_NO AND MWH.GOD_EVL_TURN = GGE.GOD_EVL_TURN
+		WHERE mwh.mbr_no = #{mbrNo}
+		  AND NVL(mwh.MALL_ID, 'DXM') = #{mallId, jdbcType=VARCHAR}
+		ORDER BY mwh.OCCUR_DT DESC
+		<include refid="com.plgrim.ncp.base.endPage"/>
+		)
+	</select>
+
+	<select id="selectMemberPurpleCoinExcel" parameterType="mbrWebpntHist" resultType="java.util.LinkedHashMap">
+		SELECT /* [biz.mbr.webpnt.xml][selectMemberPurpleCoinExcel][회원 포인트 목록 엑셀 다운로드][Yoon] */
+			( SELECT CD_NM
+				FROM MV_SYS_CD
+			   WHERE WEBPNT_RESN_CD = CD
+				 AND UPPER_CD = 'WEBPNT_RESN'
+				 AND LANG_CD = 'KOR'
+			)	AS WEBPNT_RESN_NM																				<!--웹포인트 사유 명-->
+			, NVL (ORD_NO || CLM_NO || EVT_NO || GOD_NO, '-') AS WEBPNT_NOS
+			, CASE
+				WHEN WEBPNT_RESN_CD = 'PCH' THEN GOD_NM
+				WHEN WEBPNT_RESN_CD = 'EVT' THEN EVT_NM
+				ELSE RESN_DSCR
+			  END AS RESN_DSCR																					<!--사유 설명-->
+			, (SELECT CD_NM
+				 FROM MV_SYS_CD
+				WHERE WEBPNT_STAT_CD = CD AND UPPER_CD = 'WEBPNT_STAT' AND LANG_CD='KOR') AS WEBPNT_STAT_NM		<!--웹포인트 상태 명-->
+			, CASE
+				WHEN WEBPNT_STAT_CD IN ('USE', 'ACCML_CNCL', 'EXTSH')
+				THEN CASE WHEN WEBPNT_AMT > 0 THEN -WEBPNT_AMT ELSE WEBPNT_AMT END
+				ELSE WEBPNT_AMT
+			   END AS WEBPNT_AMT																				<!--웹포인트 금액-->
+			, CASE
+				WHEN WEBPNT_STAT_CD IN ('USE', 'ACCML_PREARNGE', 'ACCML_CNCL', 'EXTSH') THEN ''
+				ELSE TO_CHAR(USE_END_DT, 'YYYY-MM-DD HH:MI:SS')
+			  END AS USE_END_DT
+			, CASE
+				WHEN WEBPNT_STAT_CD IN ('USE_CNCL', 'ACCML_CNCL') THEN TO_CHAR(CNCL_DT, 'YYYY-MM-DD HH:MI:SS')
+				ELSE
+					CASE WHEN WEBPNT_STAT_CD IN ('USE', 'EXTSH') THEN TO_CHAR(OCCUR_DT, 'YYYY-MM-DD HH:MI:SS')
+					ELSE DECODE(WEBPNT_STAT_CD, 'ACCML_PREARNGE', '', TO_CHAR(USE_BEG_DT, 'YYYY-MM-DD HH:MI:SS'))
+				END
+			  END AS PROC_DT																					<!--처리 일시-->
+			, REGTR_ID																							<!--등록자 ID-->
+			, REG_DT																							<!--등록 일시-->
+			, UDTER_ID																							<!--수정자 ID-->
+			, UDT_DT																							<!--수정 일시-->
+		FROM (
+			SELECT mwh.WEBPNT_SN               																<!--웹포인트 일련번호-->
+			, mwh.UPPER_WEBPNT_SN       																<!--상위 웹포인트 일련번호-->
+			, mwh.MBR_NO																				<!--회원 번호-->
+			, mwh.WEBPNT_TP_CD																			<!--웹포인트 유형 코드-->
+			, mwh.WEBPNT_RESN_CD																		<!--웹포인트 사유 코드-->
+			, mwh.WEBPNT_DETAIL_RESN_CD 																<!--웹포인트 상세 사유 코드-->
+			, mwh.WEBPNT_STAT_CD																		<!--웹포인트 상태 코드-->
+			, mwh.WEBPNT_AMT																			<!--웹포인트 금액-->
+			, mwh.REMNDR_WEBPNT_AMT																		<!--잔여웹포인트 금액-->
+			, mwh.OCCUR_DT																				<!--발생 일시-->
+			, mwh.USE_BEG_DT																			<!--사용 시작 일시-->
+			, mwh.USE_END_DT																			<!--사용 종료 일시-->
+			, mwh.CNCL_DT																				<!--취소 일시-->
+			, mwh.RESN_DSCR																				<!--사유 설명-->
+			, mwh.ORD_NO																				<!--주문 번호-->
+			, mwh.ORD_GOD_TURN																			<!--주문 상품 순번-->
+			, mwh.CLM_NO																				<!--클레임 번호-->
+			, mwh.CLM_WRHS_GOD_TURN																		<!--클레임 입고 상품 순번-->
+			, mwh.EVT_NO																				<!--이벤트 번호-->
+			, mwh.GOD_NO																				<!--상품 번호-->
+			, mwh.GOD_EVL_TURN																			<!--상품평 순번-->
+			, mwh.REGTR_ID																				<!--등록자 ID-->
+			, mwh.REG_DT																				<!--등록 일시-->
+			, mwh.UDTER_ID																				<!--수정자 ID-->
+			, mwh.UDT_DT																				<!--수정 일시-->
+			, og.GOD_NM
+			, evt.EVT_NM
+			FROM MBR_WEBPNT_HIST mwh
+			LEFT OUTER JOIN ord_god og ON mwh.ord_no = og.ord_no AND MWH.ORD_GOD_TURN = OG.ORD_GOD_TURN
+			LEFT OUTER JOIN CLM_WRHS_GOD cwg ON MWH.CLM_NO = CWG.CLM_NO AND MWH.CLM_WRHS_GOD_TURN = CWG.CLM_WRHS_GOD_TURN
+			LEFT OUTER JOIN evt evt ON MWH.EVT_NO = EVT.EVT_No
+			LEFT OUTER JOIN god_god_evl gge ON MWH.GOD_NO = GGE.GOD_NO AND MWH.GOD_EVL_TURN = GGE.GOD_EVL_TURN
+			WHERE mwh.mbr_no = #{mbrNo}
+			  AND NVL(mwh.MALL_ID, 'DXM') = #{mallId, jdbcType=VARCHAR}
+			ORDER BY mwh.OCCUR_DT DESC
+		)
+	</select>
+
+
+	<resultMap id="mbrWebpntFoResultMap" type="com.plgrim.ncp.biz.member.result.MemberFoResult">
+		<result property="mbrWebpntHistExt.webpntSn"                column="WEBPNT_SN" />               <!--웹포인트 일련번호-->
+		<result property="mbrWebpntHistExt.upperWebpntSn"           column="UPPER_WEBPNT_SN" />         <!--상위 웹포인트 일련번호-->
+		<result property="mbrWebpntHistExt.mbrNo"                   column="MBR_NO" />                  <!--회원 번호-->
+		<result property="mbrWebpntHistExt.webpntTpCd"              column="WEBPNT_TP_CD" />            <!--웹포인트 유형 코드-->
+		<result property="mbrWebpntHistExt.webpntResnCd"            column="WEBPNT_RESN_CD" />          <!--웹포인트 사유 코드-->
+		<result property="mbrWebpntHistExt.webpntResnNm"            column="WEBPNT_RESN_NM" />          <!--웹포인트 유형 명-->
+		<result property="mbrWebpntHistExt.webpntDetailResnCd"      column="WEBPNT_DETAIL_RESN_CD" />   <!--웹포인트 상세 사유 코드-->
+		<result property="mbrWebpntHistExt.webpntDetailResnNm"      column="WEBPNT_DETAIL_RESN_NM" />   <!--웹포인트 상세 사유 명-->
+		<result property="mbrWebpntHistExt.webpntStatCd"            column="WEBPNT_STAT_CD" />          <!--웹포인트 상태 코드-->
+		<result property="mbrWebpntHistExt.webpntStatNm"            column="WEBPNT_STAT_NM" />          <!--웹포인트 상태 명-->
+		<result property="mbrWebpntHistExt.webpntAmt"               column="WEBPNT_AMT" />              <!--웹포인트 금액-->
+		<result property="mbrWebpntHistExt.remndrWebpntAmt"         column="REMNDR_WEBPNT_AMT" />       <!--잔여웹포인트 금액-->
+		<result property="mbrWebpntHistExt.procDt"                  column="PROC_DT" />                 <!--발생 일시-->
+		<result property="mbrWebpntHistExt.occurDt"                 column="OCCUR_DT" />                <!--발생 일시-->
+		<result property="mbrWebpntHistExt.useBegDt"                column="USE_BEG_DT" />            	 <!--사용 시작 일시-->
+		<result property="mbrWebpntHistExt.useEndDt"                column="USE_END_DT" />              <!--사용 종료 일시-->
+		<result property="mbrWebpntHistExt.cnclDt"                  column="CNCL_DT" />                 <!--취소 일시-->
+		<result property="mbrWebpntHistExt.resnDscr"                column="RESN_DSCR" />               <!--사유 설명-->
+		<result property="mbrWebpntHistExt.webpntNos"               column="WEBPNT_NOS" />              <!--주문/클레임/이벤트/상품 번호-->
+		<result property="mbrWebpntHistExt.ordNo"                   column="ORD_NO" />                  <!--주문 번호-->
+		<result property="mbrWebpntHistExt.ordGodTurn"              column="ORD_GOD_TURN" />            <!--주문 상품 순번-->
+		<result property="mbrWebpntHistExt.clmNo"                   column="CLM_NO" /> 					<!--클레임 번호-->
+		<result property="mbrWebpntHistExt.clmWrhsGodTurn"          column="CLM_WRHS_GOD_TURN" />       <!--클레임 입고 상품 순번-->
+		<result property="mbrWebpntHistExt.evtNo"                   column="EVT_NO" />       			<!--이벤트 번호-->
+		<result property="mbrWebpntHistExt.godNo"             		column="GOD_NO" />            		<!--상품 번호-->
+		<result property="mbrWebpntHistExt.godEvlTurn"              column="GOD_EVL_TURN" />            <!--상품평 순번-->
+		<result property="mbrWebpntHistExt.regtrId"                 column="REGTR_ID" />                <!--등록자 ID-->
+		<result property="mbrWebpntHistExt.regDt"                   column="REG_DT" />                  <!--등록 일시-->
+		<result property="mbrWebpntHistExt.udterId"                 column="UDTER_ID" />                <!--수정자 ID-->
+		<result property="mbrWebpntHistExt.mbrNo"                   column="UDT_DT" />                  <!--수정 일시-->
+		<result property="mbrWebpntHistExt.useDtStr"                column="USE_DT_STR" />              <!--사용유효기간-->
+		<result property="mbrWebpntHistExt.occurDtStr"              column="OCCUR_DT_STR" />            <!---->
+		<result property="mbrWebpntHistExt.useAmt"            	    column="USE_AMT" />                 <!---->
+		<result property="mbrWebpntHistExt.accmlAmt"       	        column="ACCML_AMT" />               <!---->
+		<result property="mbrWebpntHistExt.useBegDtStr"      	    column="USE_BEG_DT_STR" />          <!---->
+		<result property="mbrWebpntHistExt.useEndDtStr"       	    column="USE_END_DT_STR" />          <!---->
+		<result property="mbrWebpntHistExt.godNm"       	        column="GOD_NM" />                  <!---->
+		<result property="mbrWebpntHistExt.totalRow"       	        column="TOTAL_ROW" />               <!---->
+	</resultMap>
+
+	<sql id="whereMemberWebpnt">
+		<if test="dateStart != null and dateStart != '' and dateEnd != null and dateEnd != '' ">
+			AND mwh.occur_dt BETWEEN TO_DATE(#{dateStart, jdbcType=VARCHAR},'yyyyMMdd') AND TO_DATE(#{dateEnd, jdbcType=VARCHAR}, 'yyyyMMdd')+1-1/86400
+		</if>
+	</sql>
+
+	<!-- FO 마이페이지 포인트 내역조회	-->
+	<select id="selectMyPurpleCoinList" parameterType="mbrWebpntHist" resultMap="mbrWebpntFoResultMap">
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT	/* [biz.mbr.webpnt.xml][selectMyPurpleCoinList][FO 마이페이지 포인트내역조회][nana] */
+                x.WEBPNT_RESN_PK,
+				TO_CHAR(x.OCCUR_DT,'YYYY-MM-DD') as OCCUR_DT_STR,
+				x.RESN_DSCR,
+				x.WEBPNT_RESN_CD,
+				x.WEBPNT_DETAIL_RESN_CD,
+				(select cd_nm from MV_SYS_CD where UPPER_CD = 'WEBPNT_RESN' and LANG_CD = #{lang, jdbcType=VARCHAR} and CD = x.WEBPNT_RESN_CD) as WEBPNT_RESN_NM, /* 'KOR' 변경 2018.08.07 */
+				x.WEBPNT_STAT_CD,
+				(select cd_nm from MV_SYS_CD where UPPER_CD = 'WEBPNT_STAT' and LANG_CD = #{lang, jdbcType=VARCHAR} and CD = x.WEBPNT_STAT_CD) as WEBPNT_STAT_NM, /* 'KOR' 변경 2018.08.07 */
+				sum(x.USE_AMT) as use_amt,
+				sum(x.ACCML_AMT) as accml_amt,
+				CASE WHEN x.WEBPNT_STAT_CD IN ('ACCML_DCSN', 'EXTSH') AND (x.WEBPNT_RESN_CD = 'EVT'
+																	  OR x.WEBPNT_DETAIL_RESN_CD = 'PCH_CANCL_ACCML'
+																	  OR x.WEBPNT_DETAIL_RESN_CD = 'WEBPNT_ACCML'
+																	  OR x.WEBPNT_DETAIL_RESN_CD = 'ADMIN_ADIT')
+					 THEN TO_CHAR(x.USE_BEG_DT,'YYYY-MM-DD') ||'<![CDATA[<br/>~]]>'|| TO_CHAR(x.USE_END_DT,'YYYY-MM-DD')
+					 ELSE ''
+				END USE_DT_STR,
+				TO_CHAR(x.USE_BEG_DT,'YYYY-MM-DD') as USE_BEG_DT_STR,
+				TO_CHAR(x.USE_END_DT,'YYYY-MM-DD') as USE_END_DT_STR,
+				x.ORD_NO,
+                COUNT(1) OVER() as total_row
+		FROM (
+				SELECT	mwh.WEBPNT_SN
+					  , mwh.UPPER_WEBPNT_SN
+					  , mwh.MBR_NO
+					  , mwh.WEBPNT_TP_CD
+					  , mwh.WEBPNT_RESN_CD
+					  , mwh.WEBPNT_DETAIL_RESN_CD
+                      , NVL ( CASE WHEN  mwh.WEBPNT_RESN_CD = 'PCH' AND  mwh.WEBPNT_DETAIL_RESN_CD IN ( 'PCH_CANCL_ACCML' , 'PCH_CANCL_ACCML' ) THEN cwg.CLM_NO
+                              WHEN  mwh.WEBPNT_RESN_CD = 'EVT' THEN evt.EVT_NO
+                              WHEN  mwh.WEBPNT_RESN_CD = 'GOD_REV' THEN og.GOD_NO
+                              ELSE og.ORD_NO END , '-') AS WEBPNT_RESN_PK
+					  /*, mwh.WEBPNT_STAT_CD*/
+					  , CASE WHEN mwh.webpnt_stat_cd IN ('ACCML_PREARNGE', 'ACCML_DCSN') AND EXISTS (SELECT	1
+																									FROM 	mbr_webpnt_hist m
+																									WHERE 	m.upper_webpnt_sn = mwh.webpnt_sn
+																									AND 	m.webpnt_resn_cd = 'PCH'
+																									AND 	m.webpnt_detail_resn_cd = 'PCH_CANCL_DDCT'
+																									AND 	m.webpnt_stat_cd = 'ACCML_CNCL')
+							THEN 'ACCML_CNCL'
+							WHEN mwh.webpnt_stat_cd = 'USE' AND EXISTS (SELECT	1
+																		FROM 	mbr_webpnt_hist m
+																		WHERE 	m.upper_webpnt_sn = mwh.webpnt_sn
+																		AND 	m.webpnt_resn_cd = 'PCH'
+																		AND 	m.webpnt_detail_resn_cd = 'PCH_CANCL_ACCML'
+																		AND 	m.webpnt_stat_cd = 'USE_CNCL')
+							THEN 'USE_CNCL'
+							ELSE mwh.WEBPNT_STAT_CD
+						END WEBPNT_STAT_CD
+					  , mwh.WEBPNT_AMT
+					  , mwh.REMNDR_WEBPNT_AMT
+					  , mwh.OCCUR_DT
+					  , mwh.USE_BEG_DT
+					  , mwh.CNCL_DT
+					  , mwh.RESN_DSCR
+					  , mwh.USE_END_DT
+					  , mwh.ORD_NO
+					  , mwh.ORD_GOD_TURN
+					  , mwh.CLM_NO
+					  , mwh.CLM_WRHS_GOD_TURN
+					  , mwh.EVT_NO
+					  , mwh.GOD_NO
+					  , mwh.GOD_EVL_TURN
+					  , mwh.REGTR_ID
+					  , mwh.REG_DT
+					  , mwh.UDTER_ID
+					  , mwh.UDT_DT
+					  , og.GOD_NM
+					  , evt.EVT_NM
+					  <!-- ,(CASE WHEN mwh.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_USE', 'PCH_CANCL_DDCT', 'ADMIN_DDCT') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS USE_AMT
+		              ,(CASE WHEN mwh.WEBPNT_RESN_CD = 'EVT' OR mwh.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_ACCML', 'PCH_CANCL_ACCML', 'ADMIN_ADIT') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS ACCML_AMT -->
+                      <!--  2018.07.18 포인트상태코드(WEBPNT_STAT_CD)로 변경 -->
+                      ,(CASE WHEN mwh.WEBPNT_STAT_CD IN ('ACCML_DDCT', 'EXTSH', 'USE', 'ACCML_CNCL') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS USE_AMT
+		              ,(CASE WHEN mwh.WEBPNT_RESN_CD = 'EVT' OR mwh.WEBPNT_STAT_CD IN ('ACCML_DCSN', 'ACCML_PREARNGE', 'USE_CNCL') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS ACCML_AMT
+				FROM	MBR_WEBPNT_HIST mwh
+				LEFT OUTER JOIN ORD_GOD og ON mwh.ORD_NO = og.ORD_NO AND MWH.ORD_GOD_TURN = OG.ORD_GOD_TURN
+				LEFT OUTER JOIN CLM_WRHS_GOD cwg ON MWH.CLM_NO = CWG.CLM_NO AND MWH.CLM_WRHS_GOD_TURN = CWG.CLM_WRHS_GOD_TURN
+				LEFT OUTER JOIN EVT evt ON MWH.EVT_NO = EVT.EVT_No
+				LEFT OUTER JOIN GOD_GOD_EVL gge ON MWH.GOD_NO = GGE.GOD_NO AND MWH.GOD_EVL_TURN = GGE.GOD_EVL_TURN
+				WHERE 	mwh.MBR_NO = #{mbrNo}
+				<!--  2018.08.03 적립취소, 사용취소도 조회되도록 수정
+				AND 	mwh.webpnt_stat_cd NOT IN ('ACCML_CNCL', 'USE_CNCL')	/*적립취소, 사용취소*/  -->
+				<!--  2018.08.03 적립취소, 사용취소도 조회되도록 수정 변경 -->
+				<include refid="com.plgrim.ncp.biz.mbr.webPnt.whereMemberWebpnt"/>
+			) x
+        GROUP BY WEBPNT_RESN_PK , OCCUR_DT , RESN_DSCR, WEBPNT_RESN_CD, WEBPNT_DETAIL_RESN_CD, WEBPNT_RESN_CD, WEBPNT_STAT_CD , USE_BEG_DT, USE_END_DT, ORD_NO
+        ORDER BY OCCUR_DT DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+
+	</select>
+
+	<!-- FO 마이페이지 포인트 내역조회	-->
+	<select id="selectMyPurpleCoinListForMall" parameterType="mbrWebpntHist" resultMap="mbrWebpntFoResultMap">
+        <include refid="com.plgrim.ncp.base.beginPage"/>
+		SELECT	/* [biz.mbr.webpnt.xml][selectMyPurpleCoinListForMall][FO 마이페이지 포인트내역조회][nana] */
+                x.WEBPNT_RESN_PK,
+				TO_CHAR(x.OCCUR_DT,'YYYY-MM-DD') as OCCUR_DT_STR,
+				x.RESN_DSCR,
+				x.WEBPNT_RESN_CD,
+				x.WEBPNT_DETAIL_RESN_CD,
+				(select cd_nm from MV_SYS_CD where UPPER_CD = 'WEBPNT_RESN' and LANG_CD = #{lang, jdbcType=VARCHAR} and CD = x.WEBPNT_RESN_CD) as WEBPNT_RESN_NM, /* 'KOR' 변경 2018.08.07 */
+				x.WEBPNT_STAT_CD,
+				(select cd_nm from MV_SYS_CD where UPPER_CD = 'WEBPNT_STAT' and LANG_CD = #{lang, jdbcType=VARCHAR} and CD = x.WEBPNT_STAT_CD) as WEBPNT_STAT_NM, /* 'KOR' 변경 2018.08.07 */
+				sum(x.USE_AMT) as use_amt,
+				sum(x.ACCML_AMT) as accml_amt,
+				CASE WHEN x.WEBPNT_STAT_CD IN ('ACCML_DCSN', 'EXTSH') AND (x.WEBPNT_RESN_CD = 'EVT'
+																	  OR x.WEBPNT_DETAIL_RESN_CD = 'PCH_CANCL_ACCML'
+																	  OR x.WEBPNT_DETAIL_RESN_CD = 'WEBPNT_ACCML'
+																	  OR x.WEBPNT_DETAIL_RESN_CD = 'ADMIN_ADIT')
+					 THEN TO_CHAR(x.USE_BEG_DT,'YYYY-MM-DD') ||'<![CDATA[<br/>~]]>'|| TO_CHAR(x.USE_END_DT,'YYYY-MM-DD')
+					 ELSE ''
+				END USE_DT_STR,
+				TO_CHAR(x.USE_BEG_DT,'YYYY-MM-DD') as USE_BEG_DT_STR,
+				TO_CHAR(x.USE_END_DT,'YYYY-MM-DD') as USE_END_DT_STR,
+				x.ORD_NO,
+                COUNT(1) OVER() as total_row
+		FROM (
+				SELECT	mwh.WEBPNT_SN
+					  , mwh.UPPER_WEBPNT_SN
+					  , mwh.MBR_NO
+					  , mwh.WEBPNT_TP_CD
+					  , mwh.WEBPNT_RESN_CD
+					  , mwh.WEBPNT_DETAIL_RESN_CD
+                      , NVL ( CASE WHEN  mwh.WEBPNT_RESN_CD = 'PCH' AND  mwh.WEBPNT_DETAIL_RESN_CD IN ( 'PCH_CANCL_ACCML' , 'PCH_CANCL_ACCML' ) THEN cwg.CLM_NO
+                              WHEN  mwh.WEBPNT_RESN_CD = 'EVT' THEN evt.EVT_NO
+                              WHEN  mwh.WEBPNT_RESN_CD = 'GOD_REV' THEN og.GOD_NO
+                              ELSE og.ORD_NO END , '-') AS WEBPNT_RESN_PK
+					  /*, mwh.WEBPNT_STAT_CD*/
+					  , CASE WHEN mwh.webpnt_stat_cd IN ('ACCML_PREARNGE', 'ACCML_DCSN') AND EXISTS (SELECT	1
+																									FROM 	mbr_webpnt_hist m
+																									WHERE 	m.upper_webpnt_sn = mwh.webpnt_sn
+																									AND 	m.webpnt_resn_cd = 'PCH'
+																									AND 	m.webpnt_detail_resn_cd = 'PCH_CANCL_DDCT'
+																									AND 	m.webpnt_stat_cd = 'ACCML_CNCL')
+							THEN 'ACCML_CNCL'
+							WHEN mwh.webpnt_stat_cd = 'USE' AND EXISTS (SELECT	1
+																		FROM 	mbr_webpnt_hist m
+																		WHERE 	m.upper_webpnt_sn = mwh.webpnt_sn
+																		AND 	m.webpnt_resn_cd = 'PCH'
+																		AND 	m.webpnt_detail_resn_cd = 'PCH_CANCL_ACCML'
+																		AND 	m.webpnt_stat_cd = 'USE_CNCL')
+							THEN 'USE_CNCL'
+							ELSE mwh.WEBPNT_STAT_CD
+						END WEBPNT_STAT_CD
+					  , mwh.WEBPNT_AMT
+					  , mwh.REMNDR_WEBPNT_AMT
+					  , mwh.OCCUR_DT
+					  , mwh.USE_BEG_DT
+					  , mwh.CNCL_DT
+					  , mwh.RESN_DSCR
+					  , mwh.USE_END_DT
+					  , mwh.ORD_NO
+					  , mwh.ORD_GOD_TURN
+					  , mwh.CLM_NO
+					  , mwh.CLM_WRHS_GOD_TURN
+					  , mwh.EVT_NO
+					  , mwh.GOD_NO
+					  , mwh.GOD_EVL_TURN
+					  , mwh.REGTR_ID
+					  , mwh.REG_DT
+					  , mwh.UDTER_ID
+					  , mwh.UDT_DT
+					  , og.GOD_NM
+					  , evt.EVT_NM
+					  <!-- ,(CASE WHEN mwh.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_USE', 'PCH_CANCL_DDCT', 'ADMIN_DDCT') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS USE_AMT
+		              ,(CASE WHEN mwh.WEBPNT_RESN_CD = 'EVT' OR mwh.WEBPNT_DETAIL_RESN_CD IN ('WEBPNT_ACCML', 'PCH_CANCL_ACCML', 'ADMIN_ADIT') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS ACCML_AMT -->
+                      <!--  2018.07.18 포인트상태코드(WEBPNT_STAT_CD)로 변경 -->
+                      ,(CASE WHEN mwh.WEBPNT_STAT_CD IN ('ACCML_DDCT', 'EXTSH', 'USE', 'ACCML_CNCL') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS USE_AMT
+		              ,(CASE WHEN mwh.WEBPNT_RESN_CD = 'EVT' OR mwh.WEBPNT_STAT_CD IN ('ACCML_DCSN', 'ACCML_PREARNGE', 'USE_CNCL') THEN mwh.WEBPNT_AMT ELSE 0 END ) AS ACCML_AMT
+				FROM	MBR_WEBPNT_HIST mwh
+				LEFT OUTER JOIN ORD_GOD og ON mwh.ORD_NO = og.ORD_NO AND MWH.ORD_GOD_TURN = OG.ORD_GOD_TURN
+				LEFT OUTER JOIN CLM_WRHS_GOD cwg ON MWH.CLM_NO = CWG.CLM_NO AND MWH.CLM_WRHS_GOD_TURN = CWG.CLM_WRHS_GOD_TURN
+				LEFT OUTER JOIN EVT evt ON MWH.EVT_NO = EVT.EVT_No
+				LEFT OUTER JOIN GOD_GOD_EVL gge ON MWH.GOD_NO = GGE.GOD_NO AND MWH.GOD_EVL_TURN = GGE.GOD_EVL_TURN
+				WHERE 	mwh.MBR_NO = #{mbrNo}
+				AND mwh.MALL_ID = #{mallId,jdbcType=VARCHAR}
+				<!--  2018.08.03 적립취소, 사용취소도 조회되도록 수정
+				AND 	mwh.webpnt_stat_cd NOT IN ('ACCML_CNCL', 'USE_CNCL')	/*적립취소, 사용취소*/  -->
+				<!--  2018.08.03 적립취소, 사용취소도 조회되도록 수정 변경 -->
+				<include refid="com.plgrim.ncp.biz.mbr.webPnt.whereMemberWebpnt"/>
+			) x
+        GROUP BY WEBPNT_RESN_PK , OCCUR_DT , RESN_DSCR, WEBPNT_RESN_CD, WEBPNT_DETAIL_RESN_CD, WEBPNT_RESN_CD, WEBPNT_STAT_CD , USE_BEG_DT, USE_END_DT, ORD_NO
+        ORDER BY OCCUR_DT DESC
+        <include refid="com.plgrim.ncp.base.endPage"/>
+
+	</select>
+
+	<select id="selectWebPntResnCdCount" parameterType="com.plgrim.ncp.base.entities.datasource1.mbr.MbrWebpntHist" resultType="int">
+		SELECT /* [biz.mbr.webpnt.xml][selectWebPntResnCdCount][웹포인트 상세 사유코드를 이용한 COUNT SELECT][YOON] */
+				COUNT(*)
+		  FROM MBR_WEBPNT_HIST
+		 WHERE MBR_NO = #{mbrNo, jdbcType=VARCHAR}
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(webpntTpCd)">
+		   AND WEBPNT_TP_CD = #{webpntTpCd, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(webpntDetailResnCd)">
+		   AND WEBPNT_DETAIL_RESN_CD = #{webpntDetailResnCd, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(webpntResnCd)">
+		   AND WEBPNT_RESN_CD = #{webpntResnCd, jdbcType=VARCHAR}
+		</if>
+		<if test="!@com.plgrim.ncp.framework.commons.StringService@isEmpty(webpntStatCd)">
+		   AND WEBPNT_STAT_CD = #{webpntStatCd, jdbcType=VARCHAR}
+		</if>
+	</select>
+</mapper>

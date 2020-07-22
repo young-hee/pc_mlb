@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectPayRfd" parameterType="payRfd" resultType="payRfd">
+		SELECT /* com.plgrim.ncp.base.selectPayRfd		Generator(Generator)	2018-05-23 */
+			   PAY_NO
+			 , RFD_TURN
+			 , RFD_STAT_CD
+			 , RFD_REQUST_DT
+			 , RFD_REQUST_RESN
+			 , RFD_COMPT_DT
+			 , RFD_RETURN_DT
+			 , RFD_RETURN_RESN
+			 , RFD_CNCL_DT
+			 , RFD_CNCL_RESN
+			 , RFD_ERR_DT
+			 , RFD_ERR_CONT
+			 , PRE_RFD_YN
+			 , RFD_OCCUR_TP_CD
+			 , RFD_TP_CD
+			 , RFD_CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_RFD_AMT
+			 , PAY_CRNCY_RFD_AMT
+			 , PKG_CRYPTO.DECRYPT(RFD_BNK_ACCT_NO, 'FNFBNT02-5200001') AS RFD_BNK_ACCT_NO
+			 , RFD_BNK_CD
+			 , RFD_ACNTHLDR_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM PAY_RFD
+		 WHERE 1 = 1
+	   	   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+		   AND RFD_TURN = #{rfdTurn,jdbcType=NUMERIC}
+    </select>
+
+    <update id="updatePayRfd" parameterType="payRfd">
+		UPDATE /* com.plgrim.ncp.base.updatePayRfd		Generator(Generator)	2018-05-23 */
+		PAY_RFD SET
+			   RFD_STAT_CD = #{rfdStatCd,jdbcType=VARCHAR}
+			 , RFD_REQUST_DT = #{rfdRequstDt,jdbcType=TIMESTAMP}
+			 , RFD_REQUST_RESN = #{rfdRequstResn,jdbcType=VARCHAR}
+			 , RFD_COMPT_DT = #{rfdComptDt,jdbcType=TIMESTAMP}
+			 , RFD_RETURN_DT = #{rfdReturnDt,jdbcType=TIMESTAMP}
+			 , RFD_RETURN_RESN = #{rfdReturnResn,jdbcType=VARCHAR}
+			 , RFD_CNCL_DT = #{rfdCnclDt,jdbcType=TIMESTAMP}
+			 , RFD_CNCL_RESN = #{rfdCnclResn,jdbcType=VARCHAR}
+			 , RFD_ERR_DT = #{rfdErrDt,jdbcType=TIMESTAMP}
+			 , RFD_ERR_CONT = #{rfdErrCont,jdbcType=VARCHAR}
+			 , PRE_RFD_YN = #{preRfdYn,jdbcType=VARCHAR}
+			 , RFD_OCCUR_TP_CD = #{rfdOccurTpCd,jdbcType=VARCHAR}
+			 , RFD_TP_CD = #{rfdTpCd,jdbcType=VARCHAR}
+			 , RFD_CRNCY_CD = #{rfdCrncyCd,jdbcType=VARCHAR}
+			 , EXCHG_RT_APL_BEG_DT = #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , STDR_CRNCY_RFD_AMT = #{stdrCrncyRfdAmt,jdbcType=NUMERIC}
+			 , PAY_CRNCY_RFD_AMT = #{payCrncyRfdAmt,jdbcType=NUMERIC}
+			 , RFD_BNK_ACCT_NO = PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , RFD_BNK_CD = #{rfdBnkCd,jdbcType=VARCHAR}
+			 , RFD_ACNTHLDR_NM = #{rfdAcnthldrNm,jdbcType=VARCHAR}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+		   AND RFD_TURN = #{rfdTurn,jdbcType=NUMERIC}
+    </update>
+
+	<insert id="insertPayRfd" parameterType="payRfd">
+		INSERT /* com.plgrim.ncp.base.insertPayRfd		Generator(Generator)	2018-05-23 */
+		INTO   PAY_RFD (
+			   PAY_NO
+			 , RFD_TURN
+			 , RFD_STAT_CD
+			 , RFD_REQUST_DT
+			 , RFD_REQUST_RESN
+			 , RFD_COMPT_DT
+			 , RFD_RETURN_DT
+			 , RFD_RETURN_RESN
+			 , RFD_CNCL_DT
+			 , RFD_CNCL_RESN
+			 , RFD_ERR_DT
+			 , RFD_ERR_CONT
+			 , PRE_RFD_YN
+			 , RFD_OCCUR_TP_CD
+			 , RFD_TP_CD
+			 , RFD_CRNCY_CD
+			 , EXCHG_RT_APL_BEG_DT
+			 , STDR_CRNCY_RFD_AMT
+			 , PAY_CRNCY_RFD_AMT
+			 , RFD_BNK_ACCT_NO
+			 , RFD_BNK_CD
+			 , RFD_ACNTHLDR_NM
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{payNo,jdbcType=VARCHAR}
+			 , #{rfdTurn,jdbcType=NUMERIC}
+			 , #{rfdStatCd,jdbcType=VARCHAR}
+			 , #{rfdRequstDt,jdbcType=TIMESTAMP}
+			 , #{rfdRequstResn,jdbcType=VARCHAR}
+			 , #{rfdComptDt,jdbcType=TIMESTAMP}
+			 , #{rfdReturnDt,jdbcType=TIMESTAMP}
+			 , #{rfdReturnResn,jdbcType=VARCHAR}
+			 , #{rfdCnclDt,jdbcType=TIMESTAMP}
+			 , #{rfdCnclResn,jdbcType=VARCHAR}
+			 , #{rfdErrDt,jdbcType=TIMESTAMP}
+			 , #{rfdErrCont,jdbcType=VARCHAR}
+			 , #{preRfdYn,jdbcType=VARCHAR}
+			 , #{rfdOccurTpCd,jdbcType=VARCHAR}
+			 , #{rfdTpCd,jdbcType=VARCHAR}
+			 , #{rfdCrncyCd,jdbcType=VARCHAR}
+			 , #{exchgRtAplBegDt,jdbcType=TIMESTAMP}
+			 , #{stdrCrncyRfdAmt,jdbcType=NUMERIC}
+			 , #{payCrncyRfdAmt,jdbcType=NUMERIC}
+			 , PKG_CRYPTO.ENCRYPT(#{rfdBnkAcctNo,jdbcType=VARCHAR}, 'FNFBNT02-5200001')
+			 , #{rfdBnkCd,jdbcType=VARCHAR}
+			 , #{rfdAcnthldrNm,jdbcType=VARCHAR}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deletePayRfd" parameterType="payRfd">
+		DELETE /* com.plgrim.ncp.base.deletePayRfd		Generator(Generator)	2018-05-23 */
+		  FROM PAY_RFD
+		 WHERE 1 = 1
+		   AND PAY_NO = #{payNo,jdbcType=VARCHAR}
+		   AND RFD_TURN = #{rfdTurn,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

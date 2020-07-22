@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plgrim.ncp.base">
+    <select id="selectInfOrdGodErpDstbFlg" parameterType="infOrdGodErpDstbFlg" resultType="infOrdGodErpDstbFlg">
+		SELECT /* com.plgrim.ncp.base.selectInfOrdGodErpDstbFlg		Generator(Generator)	2018-05-23 */
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , DSTB_FLG_CD
+			 , DSTB_FLG_YN
+			 , DSTB_FLG_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		  FROM INF_ORD_GOD_ERP_DSTB_FLG
+		 WHERE 1 = 1
+	   	   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+		   AND DSTB_FLG_CD = #{dstbFlgCd,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateInfOrdGodErpDstbFlg" parameterType="infOrdGodErpDstbFlg">
+		UPDATE /* com.plgrim.ncp.base.updateInfOrdGodErpDstbFlg		Generator(Generator)	2018-05-23 */
+		INF_ORD_GOD_ERP_DSTB_FLG SET
+			   DSTB_FLG_YN = #{dstbFlgYn,jdbcType=VARCHAR}
+			 , DSTB_FLG_DT = #{dstbFlgDt,jdbcType=TIMESTAMP}
+			 , UDTER_ID = #{udterId,jdbcType=VARCHAR}
+			 , UDT_DT = SYSDATE
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+		   AND DSTB_FLG_CD = #{dstbFlgCd,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertInfOrdGodErpDstbFlg" parameterType="infOrdGodErpDstbFlg">
+		INSERT /* com.plgrim.ncp.base.insertInfOrdGodErpDstbFlg		Generator(Generator)	2018-05-23 */
+		INTO   INF_ORD_GOD_ERP_DSTB_FLG (
+			   ORD_NO
+			 , ORD_GOD_TURN
+			 , QTY_TURN
+			 , DSTB_FLG_CD
+			 , DSTB_FLG_YN
+			 , DSTB_FLG_DT
+			 , REGTR_ID
+			 , REG_DT
+			 , UDTER_ID
+			 , UDT_DT
+		)
+		VALUES (
+			   #{ordNo,jdbcType=VARCHAR}
+			 , #{ordGodTurn,jdbcType=NUMERIC}
+			 , #{qtyTurn,jdbcType=NUMERIC}
+			 , #{dstbFlgCd,jdbcType=VARCHAR}
+			 , #{dstbFlgYn,jdbcType=VARCHAR}
+			 , #{dstbFlgDt,jdbcType=TIMESTAMP}
+			 , #{regtrId,jdbcType=VARCHAR}
+			 , SYSDATE
+			 , #{udterId,jdbcType=VARCHAR}
+			 , SYSDATE
+        )
+    </insert>
+
+    <delete id="deleteInfOrdGodErpDstbFlg" parameterType="infOrdGodErpDstbFlg">
+		DELETE /* com.plgrim.ncp.base.deleteInfOrdGodErpDstbFlg		Generator(Generator)	2018-05-23 */
+		  FROM INF_ORD_GOD_ERP_DSTB_FLG
+		 WHERE 1 = 1
+		   AND ORD_NO = #{ordNo,jdbcType=VARCHAR}
+		   AND ORD_GOD_TURN = #{ordGodTurn,jdbcType=NUMERIC}
+		   AND QTY_TURN = #{qtyTurn,jdbcType=NUMERIC}
+		   AND DSTB_FLG_CD = #{dstbFlgCd,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
